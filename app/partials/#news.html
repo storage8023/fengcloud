@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app = "myNews">
+<head>
+    <title>news</title>
+    <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
+    <link rel = "stylesheet" href = "../css/file.css" type = "text/css" />
+    <link rel = "stylesheet" href = "../css/base.css" type = "text/css" />
+</head>
+<body>
+    <div id = "news-wrapper" class = "news-wrapper-slide">
+        <div class = "news-content-scroll ">
+            <h1>
+                消息
+            </h1>
+            <div id = "news-content scrollbar">
+                <div id = "results-display">
+                    <h3 class = "day">今天 , 2013年10月7日</h3>
+                    <ol class = "day-results">
+                        <li class = "entry">
+                            <div class = "entry-box-container">
+                                <div class = "time">13:45</div>
+                                <div class = "title">
+                                    <a href = "#" title = "" id = "checkbox-0">杨飞在常用图标下新增了16-Free-Flat-Icons...tyle-Vol1.psd等4个文件/文件夹</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class = "gap"></li>
+                    </ol>
+                    <hr />
+                    <h3 class = "day">昨天 , 2013年10月6号</h3>
+                    <ol class = "day-results">
+                        <li class = "entry"> </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div id = "news-footer" ng-click = "xx" ng-controller = "newsCharge">
+            <img id = "news-charge"  src = "../img/down-up.jpg" alt = "charge" />
+        </div>
+    </div>
+    <script type = "text/javascript" src = "../lib/jquery/jquery.js"></script>
+    <script type = "text/javascript" src = "../lib/angular/angular.min.js"></script>
+    <script type = "text/javascript" src = "../lib/angular/news.js"></script>
+</body>
+</html>
