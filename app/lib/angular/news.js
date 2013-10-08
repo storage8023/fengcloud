@@ -5,14 +5,13 @@
  * Time: 上午9:27
  * To change this template use File | Settings | File Templates.
  */
-/* news.js */
+/* news.js
 var app = angular.module("myNews",[]);
 
-
+ */
 /* newsCharge */
-app.controller("newsCharge",function($scope){
-    $scope.xx = function() {
-        $("#news-wrapper").slideUp("slow");
-    }
-
-});
+/*app.controller("newsCharge",function($scope){
+    jQuery("#news-charge").click(function(){
+        jQuery("#news-wrapper").slideUp("slow");
+    });
+});*/
