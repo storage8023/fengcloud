@@ -6,12 +6,3 @@
  * To change this template use File | Settings | File Templates.
  */
 /* news.js
-var app = angular.module("myNews",[]);
-
- */
-/* newsCharge */
-/*app.controller("newsCharge",function($scope){
-    jQuery("#news-charge").click(function(){
-        jQuery("#news-wrapper").slideUp("slow");
-    });
-});*/

@@ -7,6 +7,7 @@
     <link rel = "stylesheet" href = "../css/base.css" type = "text/css" />
     <script src="../lib/angular/angular.js"></script>
     <script src="../lib/angular/angular-animate.js"></script>
+    <script src="../js/news.js"></script>
 
     <script>
         var app = angular.module('myApp', ['ngAnimate']);
@@ -28,64 +29,55 @@
              <div id = "news-content">
                 <div id = "news-display">
                     <h3 class = "news-day">今天 , 10-07</h3>
-
-
-
                     <ol class = "news-day-display">
-                        <li class = "news-entry">
-                            <div class = "news-entry-container">
-                                <div class = "news-time">13:45</div>
+                        <li class = "news-entry c_f_after">
+                                <div class = "news-time ">13:45</div>
                                 <div class = "news-title">
-                                    <a href = "#" title = "杨飞在常用图标下新增了16-Free-Flat-Icons...tyle-Vol1.psd等4个文件/文件夹">杨飞在常用图标下新增了16-Free-Flat-Icons...tyle-Vol1.psd等4个文件/文件夹</a>
+                                     杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
                                 </div>
+                        </li>
+                        <li class = "news-entry c_f_after">
+                            <div class = "news-time ">13:45</div>
+                            <div class = "news-title">
+                                杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
+                            </div>
+                        </li>
+                        <li class = "news-entry c_f_after">
+                            <div class = "news-time ">13:45</div>
+                            <div class = "news-title">
+                                杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
                             </div>
                         </li>
                     </ol>
-
-
-
-                    <hr />
+                    <div class = "news-line"></div>
                     <h3 class = "day">2013-10-06</h3>
                     <ol class = "day-results">
                         <li class = "entry"> </li>
                     </ol>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
-                    <div >fa </div>
                 </div>
-            </div>
+                 <ul >
+                     <li ></li>
+                 </ul>
+                 <script type="text/ng-template" >
+                     <div id = "news-display" ng-controller="newCtrl">
+                         <h3 class = "news-day" ng-repeat="newsDay in datetime">{{newsDay.date}}</h3>
+                         <ol class = "news-day-display">
+                             <li class = "news-entry c_f_after">
+                                 <div class = "news-time ">{{time | date:HH:mm}}</div>
+                                 <div class = "news-title">
+                                     {{news-title}}
+                                 </div>
+                             </li>
+
+                         </ol>
+                         <div class = "news-line"></div>
+                     </div>
+                 </script>
+             </div>
         </div>
         <div id = "news-footer">
             <img src = "../img/down-up.jpg" alt = "charge" ng-click="isHidden=!isHidden" />
         </div>
     </div>
-
-
-
 </body>
 </html>
