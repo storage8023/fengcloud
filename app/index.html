@@ -1,28 +1,28 @@
 <!doctype html>
-<html lang="en" ng-app="myApp">
+<html lang="zh-CN" ng-app="gkClientIndex">
 <head>
   <meta charset="utf-8">
-  <title>My AngularJS App</title>
+  <title>够快文档协作云平台</title>
+  <link rel="stylesheet" href="css/base.css"/>
+  <link rel="stylesheet" href="css/component.css"/>
   <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="lib/angular.treeview/css/angular.treeview.css"/>
+    <link rel="stylesheet" href="css/angular.treeview.gk.css"/>
+  <script src="lib/angular/angular.js"></script>
+  <script src="lib/angular.treeview/angular.treeview.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#/view1">view1</a></li>
-    <li><a href="#/view2">view2</a></li>
-  </ul>
+  <header>
 
-  <div ng-view></div>
+  </header>
+  <div class="main">
+      <div ng-include="'partials/left_sidebar.html'"></div>
 
-  <div>Angular seed app: v<span app-version></span></div>
-
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
-  -->
-  <script src="lib/angular/angular.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/services.js"></script>
-  <script src="js/controllers.js"></script>
-  <script src="js/filters.js"></script>
-  <script src="js/directives.js"></script>
+      <div class="content"></div>
+      <aside class="right_sidebar"></aside>
+  </div>
+  <footer></footer>
 </body>
 </html>
