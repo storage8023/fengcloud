@@ -1,33 +1,45 @@
 /* app css stylesheet */
-
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
+body{
+    background: #fff;
+    color:#5f6c81;
+    -webkit-user-select:none;
+    user-select:none;
 }
-
-.menu:before {
-  content: "[";
+header{
+    height: 50px;
+    border-bottom: 1px solid #aebcd4;
+    background: #ecf0f5;
 }
-
-.menu:after {
-  content: "]";
+footer{
+    position: absolute;
+    bottom: 0;
+    left:0;
+    right:0;
+    height:42px;
+    border-top: 1px solid #aebcd4;
+    background: #ecf0f5;
 }
-
-.menu > li {
-  display: inline;
+.main{
+    position:absolute;
+    top:50px;
+    left:0;
+    right:0;
+    bottom:42px;
 }
-
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
+.left_sidebar,
+.right_sidebar{
+    position: absolute;
+    top:0;
+    bottom:0;
+    width: 200px;
+    background: #ecf0f5;
 }
-
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
+.left_sidebar{
+    left:0;
+    border-right: 1px solid #aebcd4;
+    overflow: auto;
 }
+<<<<<<< HEAD
 
 /************* news **************/
 .news-wrapper{
@@ -133,3 +145,16 @@
     height:470px;
 }
 /************* news *****************/
+=======
+.right_sidebar{
+    right:0;
+    border-left: 1px solid #aebcd4;
+}
+.main .content{
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:200px;
+    right: 200px;
+}
+>>>>>>> 2079c24241d2b55a14a2c432fe814cd565facc3f
