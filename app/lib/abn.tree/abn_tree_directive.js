@@ -9,10 +9,11 @@ module.directive('abnTree', function($timeout) {
     scope: {
       treeData: '=',
       onSelect: '&',
-      initialSelection: '='
+      initialSelection: '=',
+      onExpand: '&'
     },
     link: function(scope, element, attrs) {
-      var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch;
+      var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch;
       if (attrs.iconExpand == null) {
         attrs.iconExpand = 'icon-plus';
       }
@@ -62,7 +63,8 @@ module.directive('abnTree', function($timeout) {
       };
       for_each_branch(function(b, level) {
         b.level = level;
-        return b.expanded = b.level < expand_level;
+        //return b.expanded = b.level < expand_level;
+          return b.expanded = b.children !== undefined;
       });
       selected_branch = null;
       select_branch = function(branch) {
@@ -87,11 +89,37 @@ module.directive('abnTree', function($timeout) {
           }
         }
       };
-      scope.user_clicks_branch = function(branch) {
-        if (branch !== selected_branch) {
-          return select_branch(branch);
+      expand_branch = function(branch){
+          //console.log(branch);return;
+          branch.expanded = !branch.expanded;
+          if (branch.onExpand != null) {
+              return $timeout(function() {
+                  return branch.onExpand(branch);
+              });
+          } else {
+              if (scope.onExpand != null) {
+                  return $timeout(function() {
+                      return scope.onExpand({
+                          branch: branch
+                      });
+                  });
+              }
+          }
+      }
+      scope.user_clicks_branch = function($event,branch) {
+        if(!angular.element($event.target).hasClass('tree-icon')){
+            if (branch !== selected_branch) {
+                return select_branch(branch);
+            }
+        }else{
+            return expand_branch(branch);
         }
+
       };
+      scope.user_dblclicks_branch = function(branch){
+          expand_branch(branch);
+          select_branch(branch);
+      }
       scope.tree_rows = [];
       on_treeData_change = function() {
         var add_branch_to_list, root_branch, _i, _len, _ref, _results;

@@ -2,6 +2,8 @@
 body{
     background: #fff;
     color:#5f6c81;
+    -webkit-user-select:none;
+    user-select:none;
 }
 header{
     height: 50px;

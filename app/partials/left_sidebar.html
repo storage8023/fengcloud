@@ -1,18 +1,7 @@
 <!-- 左侧边栏 -->
 
 <aside class="left_sidebar" ng-controller="leftSidebar">
-    <abn-tree tree-data="myFileList"
-              icon-leaf="icon-file">
-
+    <abn-tree tree-data="treeList"
+              icon-leaf="icon-file" on-select="handleSelect(branch)" on-expand="handleExpand(branch)">
     </abn-tree>
-    <abn-tree tree-data="teamFileList">
-
-    </abn-tree>
-    <abn-tree tree-data="otherStorageList">
-
-    </abn-tree>
-    <abn-tree tree-data="smartFolderList">
-
-    </abn-tree>
-
 </aside>

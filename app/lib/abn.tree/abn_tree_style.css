@@ -86,8 +86,13 @@ ul.nav.nav-list.abn-tree .level-9 .indented {
 ul.nav.nav-list.abn-tree > li{
     margin-top: 5px;
 }
-ul.nav.nav-list.abn-tree > li > a:hover,
-ul.nav.nav-list.abn-tree > li > a:focus,
+
+ul.nav.abn-tree > li > a:hover,
+ul.nav.abn-tree > li > a:focus{
+    background-color: transparent;
+}
+/*ul.nav.nav-list.abn-tree > li > a:hover,*/
+/*ul.nav.nav-list.abn-tree > li > a:focus,*/
 ul.nav.nav-list.abn-tree>.active>a,
 ul.nav.nav-list.abn-tree>a:hover,
 ul.nav.nav-list.abn-tree>a:focus{
@@ -95,8 +100,8 @@ ul.nav.nav-list.abn-tree>a:focus{
     background-color: #4d8bd8;
     color:#fff;
 }
-ul.nav.nav-list.abn-tree > li > a:hover .tree-icon,
-ul.nav.nav-list.abn-tree > li > a:focus .tree-icon,
+/*ul.nav.nav-list.abn-tree > li > a:hover .tree-icon,*/
+/*ul.nav.nav-list.abn-tree > li > a:focus .tree-icon,*/
 ul.nav.nav-list.abn-tree>.active>a .tree-icon,
 ul.nav.nav-list.abn-tree>a:hover .tree-icon,
 ul.nav.nav-list.abn-tree>a:focus .tree-icon
@@ -104,8 +109,8 @@ ul.nav.nav-list.abn-tree>a:focus .tree-icon
     background-position: 0 -40px;
 }
 
-ul.nav.nav-list.abn-tree > li > a:hover .icon-minus,
-ul.nav.nav-list.abn-tree > li > a:focus .icon-minus,
+/*ul.nav.nav-list.abn-tree > li > a:hover .icon-minus,*/
+/*ul.nav.nav-list.abn-tree > li > a:focus .icon-minus,*/
 ul.nav.nav-list.abn-tree>.active>a .icon-minus,
 ul.nav.nav-list.abn-tree>a:hover .icon-minus,
 ul.nav.nav-list.abn-tree>a:focus .icon-minus{
