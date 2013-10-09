@@ -1,5 +1,4 @@
-div[data-angular-treeview] {
-    /* prevent user selection */
+.ng-tree{
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -9,47 +8,6 @@ div[data-angular-treeview] {
     text-decoration: none;
 }
 
-div[data-tree-model] ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border: none;
-    overflow: hidden;
-}
-
-div[data-tree-model] li {
-    position: relative;
+.ng-tree .ng-binding{
     padding: 0 0 0 20px;
-    line-height: 36px;
-}
-div[data-tree-model] li i{
-    background-position: 50%;
-}
-div[data-tree-model] li .expanded {
-    padding: 1px 10px;
-    background-image: url(../lib/angular.treeview/img/folder.png);
-    background-repeat: no-repeat;
-
-}
-
-div[data-tree-model] li .collapsed {
-    padding: 1px 10px;
-    background-image: url(../lib/angular.treeview/img/folder.png);
-    background-repeat: no-repeat;
-}
-
-div[data-tree-model] li .normal {
-    padding: 1px 10px;
-    background-image: url(../lib/angular.treeview/img/folder.png);
-    background-repeat: no-repeat;
-}
-
-div[data-tree-model] li i, div[data-tree-model] li span {
-    cursor: pointer;
-}
-
-div[data-tree-model] li .selected {
-    background-color: #aaddff;
-    font-weight: bold;
-    padding: 1px 5px;
 }

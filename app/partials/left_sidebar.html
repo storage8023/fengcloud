@@ -1,40 +1,18 @@
 <!-- 左侧边栏 -->
 
 <aside class="left_sidebar" ng-controller="leftSidebar">
-    <div data-angular-treeview="true"
-         data-tree-id="myFiles"
-         data-tree-model="myFileList"
-         data-node-id="id"
-         data-node-label="label"
-         data-node-children="children"
-            >
+    <abn-tree tree-data="myFileList"
+              icon-leaf="icon-file">
 
-    </div>
-    <div data-angular-treeview="true"
-         data-tree-id="teamFiles"
-         data-tree-model="teamFileList"
-         data-node-id="id"
-         data-node-label="label"
-         data-node-children="children"
-            >
+    </abn-tree>
+    <abn-tree tree-data="teamFileList">
 
-    </div>
-    <div data-angular-treeview="true"
-         data-tree-id="otherStorages"
-         data-tree-model="otherStorageList"
-         data-node-id="id"
-         data-node-label="label"
-         data-node-children="children"
-            >
+    </abn-tree>
+    <abn-tree tree-data="otherStorageList">
 
-    </div>
-    <div data-angular-treeview="true"
-         data-tree-id="smartFolders"
-         data-tree-model="smartFolderList"
-         data-node-id="id"
-         data-node-label="label"
-         data-node-children="children"
-            >
+    </abn-tree>
+    <abn-tree tree-data="smartFolderList">
 
-    </div>
+    </abn-tree>
+
 </aside>

@@ -19,10 +19,10 @@ footer{
 }
 .main{
     position:absolute;
-    top:51px;
+    top:50px;
     left:0;
     right:0;
-    bottom:43px;
+    bottom:42px;
 }
 .left_sidebar,
 .right_sidebar{
@@ -35,6 +35,7 @@ footer{
 .left_sidebar{
     left:0;
     border-right: 1px solid #aebcd4;
+    overflow: auto;
 }
 .right_sidebar{
     right:0;
@@ -44,6 +45,6 @@ footer{
     position: absolute;
     top:0;
     bottom:0;
-    left:201px;
-    right: 201px;
+    left:200px;
+    right: 200px;
 }
