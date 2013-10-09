@@ -1,45 +1,83 @@
 <!DOCTYPE html>
-<html ng-app = "myNews">
+<html ng-app = "myApp">
 <head>
     <title>news</title>
     <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
     <link rel = "stylesheet" href = "../css/file.css" type = "text/css" />
     <link rel = "stylesheet" href = "../css/base.css" type = "text/css" />
+    <script src="../lib/angular/angular.js"></script>
+    <script src="../lib/angular/angular-animate.js"></script>
+    <script src="../js/news.js"></script>
+
+    <script>
+        var app = angular.module('myApp', ['ngAnimate']);
+    </script>
 </head>
-<body>
-    <div id = "news-wrapper" class = "news-wrapper-slide">
-        <div class = "news-content-scroll ">
+<body  ng-init="isHidden=false">
+    <div id = "news-wrapper" class = "news-wrapper-slide news-charge" ng-hide="isHidden" >
+        <div id = "news-header">
             <h1>
                 消息
             </h1>
-            <div id = "news-content scrollbar">
-                <div id = "results-display">
-                    <h3 class = "day">今天 , 2013年10月7日</h3>
-                    <ol class = "day-results">
-                        <li class = "entry">
-                            <div class = "entry-box-container">
-                                <div class = "time">13:45</div>
-                                <div class = "title">
-                                    <a href = "#" title = "" id = "checkbox-0">杨飞在常用图标下新增了16-Free-Flat-Icons...tyle-Vol1.psd等4个文件/文件夹</a>
+            <div id = "news-tip">
+                <label>
+                    你有x条新消息，点击查看
+                </label>
+            </div>
+        </div>
+        <div class = "news-content-scroll scrollbar">
+             <div id = "news-content">
+                <div id = "news-display">
+                    <h3 class = "news-day">今天 , 10-07</h3>
+                    <ol class = "news-day-display">
+                        <li class = "news-entry c_f_after">
+                                <div class = "news-time ">13:45</div>
+                                <div class = "news-title">
+                                     杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
                                 </div>
+                        </li>
+                        <li class = "news-entry c_f_after">
+                            <div class = "news-time ">13:45</div>
+                            <div class = "news-title">
+                                杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
                             </div>
                         </li>
-                        <li class = "gap"></li>
+                        <li class = "news-entry c_f_after">
+                            <div class = "news-time ">13:45</div>
+                            <div class = "news-title">
+                                杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
+                            </div>
+                        </li>
                     </ol>
-                    <hr />
-                    <h3 class = "day">昨天 , 2013年10月6号</h3>
+                    <div class = "news-line"></div>
+                    <h3 class = "day">2013-10-06</h3>
                     <ol class = "day-results">
                         <li class = "entry"> </li>
                     </ol>
                 </div>
-            </div>
+                 <ul >
+                     <li ></li>
+                 </ul>
+                 <script type="text/ng-template" >
+                     <div id = "news-display" ng-controller="newCtrl">
+                         <h3 class = "news-day" ng-repeat="newsDay in datetime">{{newsDay.date}}</h3>
+                         <ol class = "news-day-display">
+                             <li class = "news-entry c_f_after">
+                                 <div class = "news-time ">{{time | date:HH:mm}}</div>
+                                 <div class = "news-title">
+                                     {{news-title}}
+                                 </div>
+                             </li>
+
+                         </ol>
+                         <div class = "news-line"></div>
+                     </div>
+                 </script>
+             </div>
         </div>
-        <div id = "news-footer" ng-click = "xx" ng-controller = "newsCharge">
-            <img id = "news-charge"  src = "../img/down-up.jpg" alt = "charge" />
+        <div id = "news-footer">
+            <img src = "../img/down-up.jpg" alt = "charge" ng-click="isHidden=!isHidden" />
         </div>
     </div>
-    <script type = "text/javascript" src = "../lib/jquery/jquery.js"></script>
-    <script type = "text/javascript" src = "../lib/angular/angular.min.js"></script>
-    <script type = "text/javascript" src = "../lib/angular/news.js"></script>
 </body>
 </html>
