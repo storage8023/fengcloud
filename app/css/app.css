@@ -191,3 +191,108 @@ footer{
     text-align: center;
     border-radius: 5px;
 }
+
+/************* news **************/
+.news-wrapper{
+    width:890px;
+    height:470px;
+    margin:0 auto;
+    color: #949494;
+}
+.news-container{
+    background: #F8F9FB;
+    border:1px solid #AEBCD4;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1),
+    3px 0 10px rgba(0, 0, 0, 0.1),
+    -3px 0 10px rgba(0, 0, 0, 0.1),
+    inset 0 3px 10px rgba(0,0,0,0.1);
+}
+/* news-header */
+.news-header{
+    border-bottom:1px solid #AEBCD4;
+    height: 35px;
+    text-align: center;
+    box-shadow:inset 0 -20px 10px rgba(0, 0, 0, 0.1),
+    inset 0 5px 10px rgba(0,0,0,0.1);
+}
+.news-header h1{
+    font-size:20px;
+    line-height: 35px;
+    font-weight: bold;
+}
+/* news-content */
+.news-content,.news-tip{
+    width:625px;
+    margin:0 auto;
+}
+.news-content-scroll{
+    overflow-y: auto;
+    height: 410px;
+}
+.news-tip{
+    width:368px;
+    height:18px;
+    border:1px solid #14FF4E;
+    margin:0 auto;
+    text-align: center;
+}
+.news-header .news-tip label{
+    color:#B26600;
+}
+.news-display h3{
+    font-weight: bold;
+}
+.news-display h3,.news-display ol{
+    margin-left:30px;
+}
+.news-display{
+    line-height: 30px;
+}
+.news-time ,.news-title{
+    float: left;
+    line-height: 30px;
+}
+.news-time{
+    padding-right: 15px;
+}
+.news-line{
+    border-bottom:1px solid #AEBCD4;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+/* news-footer */
+.news-packup{
+    width: 130px;
+    height:22px;
+    line-height: 22px;
+    border:1px solid #5379A6;
+    margin: 0 auto;
+    box-shadow:inset 0 -10px 10px rgba(0, 0, 0, 0.1),
+    inset 0 5px 10px rgba(0,0,0,0.1);
+    border-radius: 0 0 6px 6px;
+    cursor:pointer;
+    color: #FFF;
+    font-weight: bold;
+    background: #337DC0;
+    text-align: center;
+}
+/*news charge*/
+.news-charge.ng-hide-add,
+.news-charge.ng-hide-remove {
+    -webkit-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+    display:block!important;
+}
+.news-charge.ng-hide-add.ng-hide-add-active,
+.news-charge.ng-hide-remove {
+    opacity:0;
+    height:0;
+}
+
+.news-charge.ng-hide-add,
+.news-charge.ng-hide-remove.ng-hide-remove-active {
+    opacity:1;
+    height:470px;
+}
+/************* news *****************/
