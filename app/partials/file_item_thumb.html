@@ -1,0 +1,8 @@
+<div class="file_item" ng-class="file.selected?'selected':''" ng-repeat="file in fileData" ng-dblclick="handleDblClick($event,file)" ng-click="handleClick($event,file)">
+    <div class="thumb">
+        <img ng-src="{{file.thumb}}" alt="" />
+    </div>
+    <div class="file_name">
+        <span>{{file.file_name}}</span>
+    </div>
+</div>

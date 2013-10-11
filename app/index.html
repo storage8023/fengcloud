@@ -8,12 +8,22 @@
     <link rel="stylesheet" href="lib/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="css/app.css"/>
     <link rel="stylesheet" href="lib/abn.tree/abn_tree_style.css"/>
+    <link rel="stylesheet" href="lib/jquery/gridly/jquery.gridly.css"/>
     <script src="js/util.js"></script>
     <script src="js/interface.js"></script>
+    <script src="lib/jquery/jquery.js"></script>
     <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular/angular-route.js"></script>
     <script src="lib/abn.tree/abn_tree_directive.js"></script>
-    <script src="js/app.js"></script>
+    <script src="lib/angular-ui/module.js"></script>
+    <script src="lib/angular-ui/ng-grid/ng-grid.js"></script>
+    <script src="lib/angular-ui/jq/jq.js"></script>
+    <script src="lib/jquery/gridly/jquery.gridly.js"></script>
     <script src="js/controllers.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/directives.js"></script>
+    <script src="js/app.js"></script>
+
 </head>
 <body>
 <header>
@@ -22,7 +32,9 @@
 <div class="main">
     <div ng-include="'partials/left_sidebar.html'"></div>
 
-    <div class="content"></div>
+    <div class="content">
+        <div ng-view></div>
+    </div>
     <aside class="right_sidebar"></aside>
 </div>
 <footer></footer>

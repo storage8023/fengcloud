@@ -1,4 +1,7 @@
 /* app css stylesheet */
+div,p,span,a{
+    cursor: default;
+}
 body{
     background: #fff;
     color:#5f6c81;
@@ -49,4 +52,142 @@ footer{
     bottom:0;
     left:200px;
     right: 200px;
+}
+
+/*文件列表区样式*/
+.toolbar{
+    height: 46px;
+    border-bottom: 1px solid #aebcd4;
+    background: #ecf0f5;
+    line-height: 24px;
+    padding: 0 5px;
+}
+.toolbar .opt{
+    margin-top: 11px;
+}
+.toolbar .opt.opt_view_change > a{
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    border-radius: 4px;
+    text-align: center;
+}
+.toolbar .opt.opt_view_change > a > i{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url(../img/icon.png);
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    margin-top: -2px;
+}
+.toolbar .opt.opt_view_change > a.list_view > i{
+    background-position: -22px -182px;
+}
+.toolbar .opt.opt_view_change > a.thumb_view > i{
+    background-position: -22px -202px;
+}
+
+.toolbar .opt.opt_view_change > a.active{
+    background: #7f8999;
+}
+
+.toolbar .opt.opt_view_change > a.active.list_view > i{
+    background-position: -2px -182px;
+}
+.toolbar .opt.opt_view_change > a.active.thumb_view > i{
+    background-position: -2px -202px;
+}
+.bread{
+    height: 30px;
+    line-height: 30px;
+    padding: 0 10px;
+}
+.bread .bread_item{
+    display: inline-block;
+}
+.bread .bread_item .bread_grid{
+    margin: 0 5px;
+}
+.file_list_wrapper {
+    position: absolute;
+    top:46px;
+    left:0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+.file_list_wrapper .file_list_header{
+    font-size: 12px;
+    height: 32px;
+    line-height: 32px;
+    border-top: 1px solid #aebcd4;
+}
+.file_list_wrapper .list_view .file_name{
+    margin-right: 340px;
+}
+.file_list_wrapper .file_list_header .list_view .file_name span{
+    margin: 0 0 0 15px;
+}
+.file_list_wrapper .last_edit_time,
+.file_list_wrapper .file_type,
+.file_list_wrapper .file_size{
+    float: right;
+    margin: -32px 0 0 0;
+    font-size: 12px;
+}
+
+.file_list_wrapper .last_edit_time{
+    width:130px;
+}
+
+.file_list_wrapper .file_type{
+    width:130px;
+    margin-right: 130px;
+}
+
+.file_list_wrapper .file_size{
+    width: 80px;
+    margin-right: 260px;
+}
+.file_item .last_edit_time,
+.file_item .file_type,
+.file_item .file_size{
+    color:#8e98a8;
+}
+.list_view .file_item{
+    padding: 5px 0;
+    height:42px;
+    line-height: 32px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.list_view .file_item:nth-child(even){
+    background-color: #f1f4f7;
+}
+.file_item .file_icon{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    margin:-2px 15px 0 15px;
+}
+.file_list_wrapper .file_item.selected{
+    background: #4d8bd8;
+}
+.file_list_wrapper .file_item.selected *{
+    color:#fff;
+}
+
+.file_list_wrapper .ngViewport{
+    outline: 0;
+}
+
+.thumb_view .file_item{
+    /*float: left;*/
+    margin: 20px 30px;
+    width: 128px;
+    height: 150px;
+    text-align: center;
+    border-radius: 5px;
 }

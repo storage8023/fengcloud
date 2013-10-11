@@ -3,9 +3,15 @@
 /* Directives */
 
 
-angular.module('myApp.directives', []).
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
-  }]);
+angular.module('gkClientIndex.directives', []).
+    directive('thumbitem', function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "partials/file_item_thumb.html",
+            link:function(scope, element, attrs){
+                element.parent().gridly('layout');
+            }
+        };
+    });
+;

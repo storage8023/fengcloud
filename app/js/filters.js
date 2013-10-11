@@ -2,9 +2,10 @@
 
 /* Filters */
 
-angular.module('myApp.filters', []).
-  filter('interpolate', ['version', function(version) {
-    return function(text) {
-      return String(text).replace(/\%VERSION\%/mg, version);
-    }
-  }]);
+angular.module('gkClientIndex.filters', [])
+    .filter('formatFileSize', function () {
+        return function (filesize, dir) {
+            return dir == 1 ? '-' : Util.Number.bitSize(filesize);
+        }
+    })
+
