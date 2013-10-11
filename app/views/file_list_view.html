@@ -1,0 +1,7 @@
+<div class="file_browser">
+    <div ng-include="'views/toolbar.html'"></div>
+    <div class="file_list_wrapper" ng-dblclick="handleDblClick($event)">
+        <div ng-include="'views/bread.html'"></div>
+        <div class="file_grid list_view" ng-grid="gridOptions"></div>
+    </div>
+</div>

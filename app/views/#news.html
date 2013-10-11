@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html ng-app = "myNews">
+<head>
+    <title>news</title>
+    <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
+    <link rel = "stylesheet" href = "../css/file.css" type = "text/css" />
+    <link rel = "stylesheet" href = "../css/base.css" type = "text/css" />
+    <script src="../lib/angular/angular.js"></script>
+    <script src="../lib/angular/angular-animate.js"></script>
+    <script src="../js/news.js"></script>
+    <script>
+        var app = angular.module('myNews', ['ngAnimate']);
+    </script>
+</head>
+<body  ng-init = "isHidden=false">
+    <div class = "news-wrapper news-charge"  ng-hide = "isHidden" >
+        <div class = "news-container ">
+            <div class = "news-header">
+                <h1>
+                    消息
+                </h1>
+            </div>
+            <div class = "news-content-scroll scrollbar">
+                <div class = "news-tip">
+                    <label>
+                        你有x条新消息，点击查看
+                    </label>
+                </div>
+
+                 <div class = "news-content">
+
+                    <div class = "news-display">
+                        <h3 class = "news-day">今天 , 10-07</h3>
+                        <ol class = "news-day-display">
+                            <li class = "news-entry c_f_after">
+                                    <div class = "news-time ">13:45</div>
+                                    <div class = "news-title">
+                                         杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
+                                    </div>
+                            </li>
+                            <li class = "news-entry c_f_after">
+                                <div class = "news-time ">13:45</div>
+                                <div class = "news-title">
+                                    杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
+                                </div>
+                            </li>
+                            <li class = "news-entry c_f_after">
+                                <div class = "news-time ">13:45</div>
+                                <div class = "news-title">
+                                    杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹
+                                </div>
+                            </li>
+                        </ol>
+                        <div class = "news-line"></div>
+                        <h3 class = "day">2013-10-06</h3>
+                        <ol class = "day-results">
+                            <li class = "entry"> </li>
+                        </ol>
+                    </div>
+
+                     <script type="text/ng-template" >
+                         <div class = "news-display" ng-controller="newCtrl">
+                             <h3 class = "news-day" ng-repeat="newsDay in datetime">{{newsDay.date}}</h3>
+                             <ol class = "news-day-display">
+                                 <li class = "news-entry c_f_after">
+                                     <div class = "news-time ">{{time | date:HH:mm}}</div>
+                                     <div class = "news-title">
+                                         {{news-title}}
+                                     </div>
+                                 </li>
+
+                             </ol>
+                             <div class = "news-line"></div>
+                         </div>
+                     </script>
+                 </div>
+            </div>
+        </div>
+        <div class = "news-packup" ng-click="isHidden=!isHidden" >
+                 收起
+        </div>
+    </div>
+</body>
+</html>

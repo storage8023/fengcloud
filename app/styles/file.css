@@ -1,0 +1,156 @@
+/* 文件列表样式 */
+
+/******* Personal Information ********/
+#personal-wrapper{
+    width:670px;
+    height:490px;
+    margin:50px auto;
+    background: #FCFCFC;
+}
+.personal-wrapper-slide{
+    background: #F8F9FB;
+    border:1px solid #969FA8;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+   /* personal-header */
+#personal-header{
+    width:100%;
+    height:35px;
+    background: #E7EAEF;
+}
+   /* personal-information */
+#personal-information{
+    width:100%;
+    height:106px;
+    border-top: 1px solid #B5B8BF;
+    border-bottom: 1px solid #B5B8BF;
+    background: url('../images/information.jpg') no-repeat;
+}
+#personal-information .personal-picture{
+    width:62px;
+    height:62px;
+    border-radius:31px 31px 31px 31px;
+    margin-top: 20px;
+    margin-left: 45px;
+    overflow: hidden;
+}
+#personal-information .personal-picture a img{
+    width:62px;
+    height: 62px;
+}
+#personal-information .personal-message{
+    height:100%;
+    margin-left: 20px;
+    color: #FFF;
+    padding-top: 20px;
+}
+.personal-username span,.personal-username input{
+    height: 40px;
+    line-height: 40px;
+    font-size: 26px;
+    font-weight: bold;
+}
+.personal-contact .personal-contact-email,.personal-contact .personal-contact-phone{
+    padding-right: 30px;
+}
+.personal-contact .personal-contact-email input,.personal-contact .personal-contact-phone input,.personal-contact-stored input,.personal-username input{
+    display: none;
+}
+.personal-contact .personal-contact-email span,.personal-contact .personal-contact-phone span,.personal-contact-stored span,.personal-username span{
+
+}
+.personal-contact li span{
+    font-size: 14px;
+}
+.personal-message-site{
+    margin-top: 15px;
+    margin-right: 15px;
+}
+
+    /* personal-function */
+#personal-function{
+    width:100%;
+    height:70px;
+    background: #ECEFF4;
+}
+.personal-function-group{
+    padding-top:35px;
+    width: 380px;
+    margin: 0 auto;
+
+}
+.personal-function-management,.personal-function-software,.personal-function-cancellation{
+    width: 60px;
+    border:1px solid #969FA8;
+    padding-left: 35px;
+}
+.personal-function-management,.personal-function-software{
+    margin-right: 40px;
+}
+.personal-function-management a ,.personal-function-software a ,.personal-function-cancellation a{
+    line-height: 20px;
+    font-size: 13px;
+    color: #868686;
+}
+    /* personal-function */
+#personal-title{
+    width:670px;
+    height:40px;
+    border-top: 1px solid #B5B8BF;
+    border-bottom: 1px solid #B5B8BF;
+}
+.personal-myteam{
+    margin-left: 20px;
+}
+.personal-myteam span{
+    font-size: 18px;
+    color: #868686;
+    line-height: 38px;
+}
+.personal-newteam{
+    margin-right: 20px;
+    margin-top: 10px;
+    border: 1px solid #B5B8BF;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: #E2E4E6;
+}
+.personal-newteam a{
+    color: #868686;
+    line-height: 20px;
+}
+    /* personal-mangement */
+#personal-management{
+    width:670px;
+    height:190px;
+}
+.personal-menagement-team{
+    width:185px;
+    height:100px;
+    margin-top: 10px;
+    margin-left: 15px;
+    border: 1px solid #B5B8BF;
+    border-radius: 6px 6px 6px 6px;
+    background: #F9FCF2;
+}
+    /* personal-footer */
+#personal-footer{
+    border-bottom: 1px solid #B5B8BF;
+    background: #E8EBF0;
+    height: 45px;
+}
+.personal-close{
+    float: right;
+    width: 65px;
+    margin-right: 15px;
+    margin-top: 10px;
+    padding-top: 5px;
+    height: 20px;
+    border: 1px solid #B5B8BF;
+    border-radius: 3px 3px 3px 3px;
+    font-size: 12px;
+    text-align: center;
+}
+
+
