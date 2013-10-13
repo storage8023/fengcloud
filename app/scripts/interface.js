@@ -251,7 +251,45 @@ var gkClientInterface = {
                         "lockname": "aaa",
                         "status": 4,
                         "version": 123
-                    }
+                    },
+                    {
+                        "path": "快测试.doc",
+                        "dir": 0,
+                        "filehash": "",
+                        "filesize": 12345,
+                        "uuidhash": "",
+                        "lasttime": 1381568604,
+                        "lastid": 111,
+                        "lastname": "aaa",
+                        "creatortime": 12345678,
+                        "creatorid": 111,
+                        "creatorname": "111",
+                        "lock": 1,
+                        "locktime": 12345678,
+                        "lockid": 111,
+                        "lockname": "aaa",
+                        "status": 4,
+                        "version": 123
+                    },
+                    {
+                        "path": "够快测试2.doc",
+                        "dir": 0,
+                        "filehash": "",
+                        "filesize": 12345,
+                        "uuidhash": "",
+                        "lasttime": 1381568604,
+                        "lastid": 111,
+                        "lastname": "aaa",
+                        "creatortime": 12345678,
+                        "creatorid": 111,
+                        "creatorname": "111",
+                        "lock": 1,
+                        "locktime": 12345678,
+                        "lockid": 111,
+                        "lockname": "aaa",
+                        "status": 4,
+                        "version": 123
+                    },
 
 
                 ];

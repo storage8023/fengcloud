@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('leftSidebar', ['$scope',function ($scope) {
+    .controller('leftSidebar', ['$scope','$location','GKPath',function ($scope,$location,GKPath) {
 
         /**
          * 对获取的树数据进行再处理
@@ -55,6 +55,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleSelect = function (branch) {
             console.log(branch);
+            $location.path(GKPath.getPath('myfile',branch.data.path,'list'));
         };
 
         /**
@@ -199,8 +200,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         });
 
         $scope.fileData = fileData;
-
-        $scope.multiSelect = false;
 
         /**
          * 当击文件
