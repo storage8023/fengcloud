@@ -49,3 +49,39 @@
 .icon_private_folder{
     background-image:url(../images/icon/private_folder32x32.png);
 }
+
+/*通过border实现的箭头*/
+
+.gk_up_arrow{
+    display: inline-block;
+    height: 0;
+    width: 0;
+    line-height: 0;
+    border:4px solid transparent;
+    border-top-color: #7f8999;
+}
+
+.gk_down_arrow{
+    display: inline-block;
+    height: 0;
+    width: 0;
+    line-height: 0;
+    border:4px solid transparent;
+    border-bottom-color: #7f8999;
+}
+.gk_left_arrow{
+    display: inline-block;
+    height: 0;
+    width: 0;
+    line-height: 0;
+    border:4px solid transparent;
+    border-left-color: #7f8999;
+}
+.gk_right_arrow{
+    display: inline-block;
+    height: 0;
+    width: 0;
+    line-height: 0;
+    border:4px solid transparent;
+    border-right-color: #7f8999;
+}

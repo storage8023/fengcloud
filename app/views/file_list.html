@@ -1,0 +1,36 @@
+<div class="file_list {{view}}_view" tabindex="0" ui-keydown="{'enter':'enterPress($event)','up left':'upLeftPress($event)','down right':'downRightPress($event)'}">
+    <div class="file_list_header" ng-show="view=='list'">
+        <div class="file_name" ng-class="orderType=='file_name'?'current':''" ng-click="setOrder('file_name')">
+            <span>文件名</span>
+            <i ng-class="orderAsc=='-'?'gk_down_arrow':'gk_up_arrow'"></i>
+        </div>
+        <div class="last_edit_time" ng-class="orderType=='last_edit_time'?'current '+(orderAsc=='-'?'asc':'desc'):''" ng-click="setOrder('last_edit_time')">
+            <i class="grid_line"></i>
+            <span>最后修改时间</span>
+            <i ng-class="orderAsc=='-'?'gk_down_arrow':'gk_up_arrow'"></i>
+        </div>
+        <div class="file_type" ng-class="orderType=='file_type'?'current':''" ng-click="setOrder('file_type')">
+            <i class="grid_line"></i>
+            <span>类型</span>
+            <i ng-class="orderAsc=='-'?'gk_down_arrow':'gk_up_arrow'"></i>
+        </div>
+        <div class="file_size" ng-class="orderType=='file_size'?'current':''" ng-click="setOrder('file_size')">
+            <i class="grid_line"></i>
+            <span>大小</span>
+            <i ng-class="orderAsc=='-'?'gk_down_arrow':'gk_up_arrow'"></i>
+        </div>
+    </div>
+    <div class="file_item" ng-class="file.selected?'selected':''" ng-repeat="file in fileData | orderBy:orderAsc+orderType"
+         ng-dblclick="handleDblClick($event,file)" ng-click="handleClick($event,$index)">
+        <div class="thumb" ng-show="view=='thumb'">
+            <img ng-src="{{file.thumb}}" alt=""/>
+        </div>
+        <div class="file_name">
+            <i class="file_icon {{file.file_icon}}" ng-show="view=='list'"></i>
+            <span class="name">{{file.file_name}}</span>
+        </div>
+        <div class="last_edit_time" ng-show="view=='list'"><span>{{file.last_edit_time | date:'yyyy/M/d H:m'}}</span></div>
+        <div class="file_type" ng-show="view=='list'"><span>{{file.file_type}}</span></div>
+        <div class="file_size" ng-show="view=='list'"><span>{{file.file_size}}</span></div>
+    </div>
+</div>

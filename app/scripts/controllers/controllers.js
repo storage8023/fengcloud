@@ -2,8 +2,8 @@
 
 /* Controllers */
 
-angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
-    controller('leftSidebar', function ($scope) {
+angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
+    .controller('leftSidebar', ['$scope',function ($scope) {
 
         /**
          * 对获取的树数据进行再处理
@@ -67,16 +67,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
             }
         };
 
-    })
-    .controller('fileBrowser', function ($scope, $routeParams,$location,$filter) {
-        var pathArr = $location.path().split('/');
-        var pageParams = {
-            path:$routeParams?$routeParams.path||'':'',
-            partition:pathArr[1],
-            view:pathArr[3]
-        };
+    }])
+    .controller('fileBrowser', ['$scope', '$routeParams','$location','$filter','GKPath',function ($scope, $routeParams,$location,$filter,GKPath) {
 
-        $scope.pageParams = pageParams;
+        /**
+         * 分析路径获取参数
+         * @type {*}
+         */
+        var pathArr = $location.path().split('/');
+        $scope.path = $routeParams?$routeParams.path||'':'';  //当前的文件路径
+        $scope.partition = pathArr[1]; //当前的分区
+        $scope.view = $routeParams?$routeParams.view||'':''; //当前的视图模式
 
         /**
          * 文件类型列表
@@ -94,7 +95,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
         };
 
         var fileList = gkClientInterface.getFileList({
-            webpath:pageParams.path
+            webpath:$scope.path
         });
 
         /**
@@ -182,13 +183,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
          * 文件列表数据
          */
         angular.forEach(fileList, function (value) {
-            var type = getFileIconSuffix(value.name,value.dir);
-            var ext = value.dir==1?'':Util.String.getExt(value.name);
+            var fileName = Util.String.baseName(value.path);
+            var type = getFileIconSuffix(fileName,value.dir);
+            var ext = value.dir==1?'':Util.String.getExt(fileName);
             file = {
-                file_name:Util.String.baseName(value.path),
+                file_name:fileName,
                 file_size:value.dir == 1 ? '-' : Util.Number.bitSize(value.filesize),
                 file_type:ext+getFileType(type, value.dir),
-                last_edit_time: $filter('date')(value.lasttime*1000, 'yyyy/M/d H:m'),
+                last_edit_time: value.lasttime*1000,
                 file_icon:'icon_'+type,
                 thumb:'images/icon/'+type+'128x128.png',
                 path:value.path
@@ -197,40 +199,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
         });
 
         $scope.fileData = fileData;
-
-        $scope.gridOptions = {
-            data:'fileData',
-            multiSelect:false,
-            rowTemplate:'views/file_row.html',
-            headerRowTemplate:'views/file_head_row.html',
-            rowHeight:42,
-            columnDefs: [
-                {
-                    field:'file_name',
-                    displayName:'文件名',
-                    cellTemplate:'views/file_cell_name.html',
-                    headerCellTemplate:'views/file_head_cell.html'
-                },
-                {
-                    field:'file_size',
-                    displayName:'大小',
-                    cellTemplate:'views/file_cell_filesize.html',
-                    headerCellTemplate:'views/file_head_cell.html'
-                },
-                {
-                    field:'file_type',
-                    displayName:'文件类型',
-                    cellTemplate:'views/file_cell_filetype.html',
-                    headerCellTemplate:'views/file_head_cell.html'
-                },
-                {
-                    field:'last_edit_time',
-                    displayName:'最后修改时间',
-                    cellTemplate:'views/file_cell_last_edit_time.html',
-                    headerCellTemplate:'views/file_head_cell.html'
-                }
-            ]
-        };
 
         $scope.multiSelect = false;
 
@@ -253,20 +221,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
             selectedFile.push(file);
         };
 
-        $scope.handleClick = function($event,file){
-           selectFile(file);
-        };
 
-        /**
-         * 双击文件
-         * @param $event
-         * @param file
-         */
-        $scope.handleDblClick = function($event,file){
-            var param = [pageParams.partition,file.path,pageParams.view];
-            var path = Util.String.rtrim(param.join('/'),'/');
-            $location.path(Util.String.rtrim(param.join('/'),'/'));
-        };
 
         var getPartitionName = function(partition){
            var partitionName = '';
@@ -291,7 +246,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
          * 面包屑
          */
         var getBreads = function(){
-            var path = Util.String.rtrim(Util.String.ltrim(pageParams.path||'', '/'), '/'),breads = [], bread;
+            var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'),breads = [], bread;
             if(path.length){
                 var paths = path.split('/');
                 for (var i = 0; i < paths.length; i++) {
@@ -304,13 +259,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
                     }
                     fullpath = Util.String.rtrim(fullpath, '/');
                     bread.path = fullpath;
+                    bread.url = '#'+GKPath.getPath($scope.partition,$scope.path,$scope.view);
                     breads.push(bread);
                 }
             }
 
             breads.unshift({
-                name:getPartitionName(pageParams.partition),
-                path:''
+                name:getPartitionName($scope.partition),
+                url:'#'+GKPath.getPath($scope.partition,'',$scope.view)
             });
             return breads;
         };
@@ -324,4 +280,4 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree']).
             $location.path($location.path().replace(/\/(list|thumb)/,'/'+view));
         }
 
-    });
+    }]);

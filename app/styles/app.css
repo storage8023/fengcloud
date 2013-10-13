@@ -123,10 +123,30 @@ footer{
     line-height: 32px;
     border-top: 1px solid #aebcd4;
 }
+.file_list_wrapper .file_list_header > div:hover{
+    background: -webkit-gradient(linear, 0 0, 0 85%, from(#dfe4ea), to(rgb(255, 255, 255))) ;
+}
 .file_list_wrapper .list_view .file_name{
     margin-right: 340px;
 }
-.file_list_wrapper .file_list_header .list_view .file_name span{
+.file_list_wrapper .file_list_header i:first-child{
+    float: left;
+    height: 30px;
+    width: 1px;
+    background: -webkit-gradient(linear, 0 0, 0 90%, from(#aebcd4), to(rgb(255, 255, 255))) ;
+}
+.file_list_wrapper .file_list_header i:last-child{
+    float: right;
+    margin: 12px 8px 0 0;
+    display: none;
+}
+.file_list_wrapper .file_list_header i:last-child.gk_down_arrow{
+    margin-top: 8px;
+}
+.file_list_wrapper .file_list_header .current i:last-child{
+    display: inline-block;
+}
+.file_list_wrapper .file_list_header .file_name span{
     margin: 0 0 0 15px;
 }
 .file_list_wrapper .last_edit_time,
@@ -136,7 +156,11 @@ footer{
     margin: -32px 0 0 0;
     font-size: 12px;
 }
-
+.file_list_wrapper .last_edit_time span,
+.file_list_wrapper .file_type span,
+.file_list_wrapper .file_size span{
+    margin: 0 0 0 5px;
+}
 .file_list_wrapper .last_edit_time{
     width:130px;
 }
@@ -149,6 +173,9 @@ footer{
 .file_list_wrapper .file_size{
     width: 80px;
     margin-right: 260px;
+}
+.file_list_wrapper .file_list{
+    outline: 0;
 }
 .file_item .last_edit_time,
 .file_item .file_type,
@@ -184,7 +211,7 @@ footer{
 }
 
 .thumb_view .file_item{
-    /*float: left;*/
+    float: left;
     margin: 20px 30px;
     width: 128px;
     height: 150px;
