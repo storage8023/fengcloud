@@ -3,8 +3,8 @@
 /* Directives */
 
 
-angular.module('gkClientIndex.directives', []).
-    directive('finder', ['$location', 'GKPath', '$filter', function ($location, GKPath, $filter) {
+angular.module('gkClientIndex.directives', [])
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache','$compile', function ($location, GKPath, $filter, $templateCache,$compile) {
         return {
             replace: true,
             restrict: 'E',
@@ -13,7 +13,8 @@ angular.module('gkClientIndex.directives', []).
                 fileData: '=',
                 view: '=',
                 partition: '=',
-                order: '@'
+                order: '@',
+                selectedFile:'='
             },
             link: function ($scope, $element, $attrs) {
                 var selectedFile = [], //当前已选中的条目
@@ -25,14 +26,12 @@ angular.module('gkClientIndex.directives', []).
                 selectFile = function (index, multiSelect) {
                     multiSelect = arguments[1] === undefined ? false : true;
                     if (!multiSelect && selectedFile && selectedFile.length) {
-                        selectedIndex = [];
-                        angular.forEach(selectedFile, function (value) {
-                            value.selected = false;
-                        });
+                        unSelectAllFile();
                     }
                     $scope.fileData[index].selected = true;
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
+                    $scope.selectedFile = selectedFile;
                 };
 
                 unSelectFile = function (index) {
@@ -128,6 +127,7 @@ angular.module('gkClientIndex.directives', []).
                 });
 
 
+
                 $scope.setOrder = function (type) {
                     if ($scope.orderType == type) {
                         $scope.orderAsc = $scope.orderAsc == '+' ? '-' : '+';
@@ -139,7 +139,6 @@ angular.module('gkClientIndex.directives', []).
 
                 };
 
-
                 /**
                  * enter 键
                  */
@@ -149,20 +148,20 @@ angular.module('gkClientIndex.directives', []).
                     }
                 };
 
-                var checkScroll = function(elem){
+                var checkScroll = function (elem) {
                     var scrollY = false;
                     var st = elem.scrollTop();
-                    elem.scrollTop(st>0?-1:1);
-                    if(elem.scrollTop() !== st){
+                    elem.scrollTop(st > 0 ? -1 : 1);
+                    if (elem.scrollTop() !== st) {
                         scrollY = scrollY || true;
                     }
                     elem.scrollTop(st);
                     return scrollY;
                 }
                 var setListHeaderWidth = function () {
-                    if(checkScroll($element.find('.list_body'))){
+                    if (checkScroll($element.find('.list_body'))) {
                         $element.find('.file_list_header').css('right', 16);
-                    }else{
+                    } else {
                         $element.find('.file_list_header').css('right', 0);
                     }
                 };
@@ -174,15 +173,13 @@ angular.module('gkClientIndex.directives', []).
                 /**
                  * fix列表出现滚动条后列表头部对不齐的问题
                  */
-                setTimeout(function(){
+                setTimeout(function () {
                     setListHeaderWidth();
-                },0);
+                }, 0);
 
                 var getColCount = function () {
                     var colCount = 4;
                     if ($scope.view == 'thumb' && $element.find('.file_item').size()) {
-                        console.log($element.width());
-                        console.log($element.find('.file_item').eq(0).outerWidth(true));
                         colCount = Math.floor($element.width() / $element.find('.file_item').eq(0).outerWidth(true));
                     }
                     return colCount;
@@ -347,8 +344,60 @@ angular.module('gkClientIndex.directives', []).
                             items: items
                         };
                     }
-                });
+                })
 
+                $scope.$on('fileNewFolderStart', function (event, callback) {
+                    unSelectAllFile();
+                    var newFileItem = $compile($templateCache.get('newFileItem.html'))($scope);
+                    newFileItem.addClass('selected').prependTo($element.find('.list_body'));
+                    var input = newFileItem.find('input[type="text"]');
+                    input.val('新建文件夹');
+                    input[0].select();
+                    input.bind('keydown',function(e){
+                        if(e.keyCode==13){
+                            angular.isFunction(callback) && callback(input.val());
+                            return false;
+                        }
+                    });
+
+                    input.bind('blur',function(){
+                        angular.isFunction(callback) && callback(input.val());
+                    })
+                })
+
+                $scope.$on('fileNewFolderEnd', function (event,newFileData,newFilePath) {
+                    $element.find('.file_item_edit').remove();
+                    $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
+                    angular.forEach($scope.fileData,function(value,key){
+                        if(value.path === newFilePath){
+                            selectFile(key);
+                        }
+                    });
+                })
+
+                $scope.$on('fileEditNameStart', function (event, file,callback) {
+                   var fileItem = $element.find('.file_item[data-path="'+file.path+'"]');
+                    var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="'+file.file_name+'" class="new_file_name form-control" />');
+                    fileItem.addClass('file_item_edit');
+                    fileItem.find('.name').hide().after(input);
+                    input.focus();
+                    input.bind('keydown',function(e){
+                        if(e.keyCode==13){
+                            angular.isFunction(callback) && callback(input.val());
+                            return false;
+                        }
+                    });
+                    input.bind('blur',function(){
+                        angular.isFunction(callback) && callback(input.val());
+                    })
+                })
+
+                $scope.$on('fileEditNameEnd', function (event) {
+                    var fileItem = $element.find('.file_item.file_item_edit');
+                    fileItem.removeClass('file_item_edit');
+                    fileItem.find('input[type="text"]').remove();
+                    fileItem.find('.name').show();
+                })
 
             }
         };
@@ -363,6 +412,18 @@ angular.module('gkClientIndex.directives', []).
             },
             link: function () {
 
+            }
+        }
+    }])
+    .directive('toolbar', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/toolbar.html",
+            scope: true,
+            link: function ($scope, $element) {
+                var parentScope = $scope.$parent;
+                $scope.opts = parentScope.opts;
             }
         }
     }])

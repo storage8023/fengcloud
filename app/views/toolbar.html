@@ -1,6 +1,22 @@
 <div class="toolbar">
-        <span class="opt f_r opt_view_change">
-            <a href="javascript:;" ng-click="changeView('list')" class="list_view" ng-class="view=='list'?'active':''"><i></i></a>
-            <a href="javascript:;" ng-click="changeView('thumb')" class="thumb_view" ng-class="view=='thumb'?'active':''"><i></i></a>
-        </span>
+    <span ng-repeat="opt in opts" class="f_l opt dropdown">
+        <a dropdown-toggle href="javascript:void(0);" class="opt"
+           ng-class="opt.className?opt.className:'opt_'+opt.name" ng-click="opt.callback($event)">
+            <i></i><span>{{opt.text}}</span>
+        </a>
+        <ul class="dropdown-menu" ng-if="opt.opts && opt.opts.length">
+            <li ng-repeat="subOpt in opt.opts">
+                <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.name"
+                   ng-click="subOpt.callback($event)">
+                    <i></i><span>{{subOpt.text}}</span>
+                </a>
+            </li>
+        </ul>
+    </span>
+    <span class="opt f_r opt_view_change">
+            <a href="javascript:;" ng-click="changeView('list')" class="list_view"
+               ng-class="view=='list'?'active':''"><i></i></a>
+            <a href="javascript:;" ng-click="changeView('thumb')" class="thumb_view"
+               ng-class="view=='thumb'?'active':''"><i></i></a>
+    </span>
 </div>

@@ -1,7 +1,7 @@
 <div class="file_browser">
-    <div ng-include="'views/toolbar.html'"></div>
+    <toolbar></toolbar>
     <bread breads="breads"></bread>
     <div class="file_list_wrapper" ng-dblclick="handleDblClick($event)">
-        <finder file-data="fileData" view="view" partition="partition" order=""></finder>
+        <finder file-data="fileData" view="view" partition="partition" order="" selected-file="selectedFile"></finder>
     </div>
 </div>

@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="styles/app.css"/>
     <link rel="stylesheet" href="bower_components/abn.tree/abn_tree_style.css"/>
-    <!--<link rel="stylesheet" href="bower_components/jquery/context-menu/jquery.contextMenu.css"/>-->
     <script src="scripts/util.js"></script>
     <script src="scripts/interface.js"></script>
     <script src="bower_components/jquery/jquery.js"></script>
@@ -18,6 +17,7 @@
     <script src="bower_components/abn.tree/abn_tree_directive.js"></script>
     <script src="bower_components/angular-ui/module.js"></script>
     <script src="bower_components/angular-localstorage/angular-local-storage.js"></script>
+    <script src="bower_components/bootstrap/ui-bootstrap.js"></script>
     <script src="scripts/controllers/controllers.js"></script>
     <script src="scripts/filters/filters.js"></script>
     <script src="scripts/directives/directives.js"></script>
@@ -38,5 +38,19 @@
     <aside class="right_sidebar"></aside>
 </div>
 <footer></footer>
+<script type="text/ng-template" id="newFileItem.html">
+    <div class="file_item file_item_edit">
+        <div class="thumb" ng-show="view=='thumb'">
+            <img ng-src="images/icon/folder128x128.png" alt=""/>
+        </div>
+        <div class="file_name">
+            <i class="file_icon icon_folder" ng-show="view=='list'"></i>
+            <input type="text" value="" class="new_file_name form-control" name="file_name" class="" />
+        </div>
+        <div class="last_edit_time" ng-show="view=='list'"><span>&nbsp;</span></div>
+        <div class="file_type" ng-show="view=='list'"><span>&nbsp;</span></div>
+        <div class="file_size" ng-show="view=='list'"><span>&nbsp;</span></div>
+    </div>
+</script>
 </body>
 </html>

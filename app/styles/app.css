@@ -4,7 +4,7 @@ div,p,span,a{
 }
 body{
     background: #fff;
-    color:#5f6c81;
+    color:#3d4f69;
     -webkit-user-select:none;
     user-select:none;
 }
@@ -64,15 +64,10 @@ footer{
 }
 .toolbar .opt{
     margin-top: 11px;
+    font-family: 'SimSun','宋体';
+    font-size: 13px;
 }
-.toolbar .opt.opt_view_change > a{
-    display: inline-block;
-    height: 24px;
-    width: 24px;
-    border-radius: 4px;
-    text-align: center;
-}
-.toolbar .opt.opt_view_change > a > i{
+.toolbar .opt i{
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -81,13 +76,58 @@ footer{
     vertical-align: middle;
     margin-top: -2px;
 }
+.toolbar .opt.f_l{
+    margin-left: 10px;
+    border-radius: 4px;
+    border:1px solid transparent;
+    padding:0 6px;
+}
+.toolbar .opt.f_l:hover{
+    border-color:#c2cbd3;
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#f7f7f7),to(#dbdee1));
+    box-shadow: inset 0 1px 1px rgba(255,255,255,1), 0 1px 1px rgba(255,255,255,1);
+}
+.toolbar .opt.f_l i{
+    margin-right: 4px;
+}
+.toolbar .opt.opt_view_change > a{
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    border-radius: 4px;
+    text-align: center;
+}
+
 .toolbar .opt.opt_view_change > a.list_view > i{
     background-position: -22px -182px;
 }
 .toolbar .opt.opt_view_change > a.thumb_view > i{
     background-position: -22px -202px;
 }
-
+.toolbar .opt.opt_add i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_new_folder i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_lock i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_unlock i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_save i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_del i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_rename i{
+    background-position: -22px -222px;
+}
+.toolbar .opt.opt_move i{
+    background-position: -22px -222px;
+}
 .toolbar .opt.opt_view_change > a.active{
     background: #7f8999;
 }
@@ -221,7 +261,7 @@ footer{
 .file_list_wrapper .file_item.selected{
     background: #4d8bd8;
 }
-.file_list_wrapper .file_item.selected *{
+.file_list_wrapper .file_item.selected span{
     color:#fff;
 }
 
@@ -237,7 +277,13 @@ footer{
     text-align: center;
     border-radius: 5px;
 }
-
+.file_item_edit .form-control.new_file_name{
+    display: inline-block;
+    width: 300px;
+    height: 32px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
 /*右键菜单*/
 
 .context-menu-list {
