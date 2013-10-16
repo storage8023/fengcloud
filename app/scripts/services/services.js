@@ -272,24 +272,32 @@ angular.module('gkClientIndex.services', [])
     .factory('GKOpt', [function () {
         var GKOpt = {
             getOpts: function (currentFile, selectedFiles) {
-                var optKey = [];
-                if (!selectedFiles || !selectedFiles.length) {
-                    optKey = this.getCurrentOpts(currentFile);
-                } else if (selectedFiles.length == 1) {
-                    optKey = this.getSingleSelectOpts(selectedFiles[0])
-                } else {
-                    optKey = this.getMultiSelectOpts(selectedFiles);
-                }
-                return optKey;
+                var
+                currentOpts = this.getCurrentOpts(currentFile),
+                multiOpts = this.getMultiSelectOpts(selectedFiles),
+                singleOpts = this.getSingleSelectOpts(selectedFiles);
+                return this.getFinalOpts(currentOpts,multiOpts,singleOpts);
             },
-            getCurrentOpts: function (currentFile) {
+            getFinalOpts:function(){
+                var arr = Array.prototype.slice.call(arguments);
+                return Array.prototype.concat.apply([],arr);
+
+            },
+            getCurrentOpts: function () {
                 return ['add','new_folder','order_by'];
             },
             getMultiSelectOpts: function (files) {
-                return ['add','new_folder','del'];
+                if(!files || files.length <= 1){
+                    return [];
+                }
+                return ['del'];
             },
-            getSingleSelectOpts: function (file) {
-                var opts = ['add','new_folder','lock','unlock','save','del','rename'];
+            getSingleSelectOpts: function (files) {
+                if(!files || files.length != 1){
+                    return [];
+                }
+                var file = files[0];
+                var opts = ['lock','unlock','save','del','rename'];
                 if(file.dir == 1){
                     this.disableOpt(opts,'lock','unlock');
                 }else{

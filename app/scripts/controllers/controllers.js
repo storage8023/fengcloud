@@ -195,6 +195,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var allOpts = {
             'add': {
                 name: '添加',
+                index:0,
                 callback: function () {
                     var addFiles = gkClientInterface.addFileDialog();
                     if (!addFiles || !addFiles.list || !addFiles.list.length) {
@@ -214,6 +215,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'new_folder': {
                 name: '新建',
+                index:1,
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
@@ -232,6 +234,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'lock': {
                 name: '锁定',
+                index:2,
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
@@ -247,6 +250,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'unlock': {
                 name: '解锁',
+                index:3,
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     if (file.lock_member_id != GKSession.User.id) {
@@ -266,6 +270,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'save': {
                 name: '另存为',
+                index:4,
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -289,6 +294,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'del': {
                 name: '删除',
+                index:5,
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -319,6 +325,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'rename': {
                 name: '重命名',
+                index:6,
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {
@@ -340,6 +347,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'order_by': {
                 name: '排序方式',
+                index:7,
                 items: {
                     'order_by_file_name': {
                         name: '文件名',
@@ -389,11 +397,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$watch('selectedFile', function () {
             var optKeys = GKOpt.getOpts(GKSession.File, $scope.selectedFile);
-            $scope.opts = {};
+            $scope.opts = [];
             $scope.rightOpts = {};
+            var excludeRightOpts = ['add']; //右键要排除的操作
+            var excludeOpts = ['order_by']; // 顶部要排除的操作
             angular.forEach(optKeys, function (value) {
-                $scope.opts[value] = allOpts[value];
-
+                if(excludeOpts.indexOf(value)<0){
+                    $scope.opts.push(angular.extend(allOpts[value],{key:value}));
+                }
             });
             var rightOptKeys = [];
             if(!$scope.selectedFile || !$scope.selectedFile.length){
@@ -405,7 +416,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
 
             angular.forEach(rightOptKeys, function (value) {
-                $scope.rightOpts[value] = allOpts[value];
+                if(excludeRightOpts.indexOf(value)<0){
+                    $scope.rightOpts[value] = allOpts[value];
+                }
             });
 
         }, true);

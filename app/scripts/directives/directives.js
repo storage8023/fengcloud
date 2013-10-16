@@ -102,8 +102,10 @@ angular.module('gkClientIndex.directives', [])
                         var jqTarget = jQuery($event.target);
                         var fileItem = jqTarget.hasClass('file_item')?jqTarget:jqTarget.parents('.file_item');
                         if (fileItem.size()) {
-                            console.log(fileItem.index());
-                            selectFile(fileItem.index());
+                            var index = fileItem.index();
+                            if(!$scope.fileData[index].selected){
+                                selectFile(index);
+                            }
                         } else {
                             unSelectAllFile();
                         }
@@ -341,7 +343,7 @@ angular.module('gkClientIndex.directives', [])
                          //});
 
                     }
-                })
+                });
 
                 /**
                  * 新建文件开始
@@ -364,7 +366,7 @@ angular.module('gkClientIndex.directives', [])
                     input.bind('blur', function () {
                         //angular.isFunction(callback) && callback(input.val());
                     })
-                })
+                });
 
                 /**
                  * 新建文件结束
@@ -377,7 +379,7 @@ angular.module('gkClientIndex.directives', [])
                             selectFile(key);
                         }
                     });
-                })
+                });
 
                 /**
                  * 重命名开始
@@ -397,7 +399,7 @@ angular.module('gkClientIndex.directives', [])
                     input.bind('blur', function () {
                         angular.isFunction(callback) && callback(input.val());
                     })
-                })
+                });
 
                 /**
                  * 重命名结束
@@ -407,14 +409,22 @@ angular.module('gkClientIndex.directives', [])
                     fileItem.removeClass('file_item_edit');
                     fileItem.find('input[type="text"]').remove();
                     fileItem.find('.name').show();
-                })
+                });
 
                 /**
                  * ctrlV结束
                  */
                 $scope.$on('ctrlVEnd', function (event, newFileData) {
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-                })
+                });
+
+                //监听mountdown时间
+                $scope.handleMouseDown = function(event){
+                    var $target = jQuery(event.target);
+                    if(!$target.hasClass('.file_item') && !$target.parents('.file_item').size()){
+                        unSelectAllFile();
+                    }
+                };
             }
         };
     }])
