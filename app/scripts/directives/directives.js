@@ -21,7 +21,9 @@ angular.module('gkClientIndex.directives', [])
                     selectedIndex = [], //已选中文件的索引
                     unSelectFile, //取消选中的函数
                     unSelectAllFile, //取消所有选中的文件
-                    selectFile;  //选中函数
+                    selectFile,//选中函数
+                    shiftLastIndex = 0 //shift键盘的起始点
+                    ;
 
                 selectFile = function (index, multiSelect) {
                     multiSelect = arguments[1] === undefined ? false : true;
@@ -36,18 +38,18 @@ angular.module('gkClientIndex.directives', [])
 
                 unSelectFile = function (index) {
                     $scope.fileData[index].selected = false;
-                    angular.forEach(selectedIndex, function (value, key) {
-                        if (value == index) {
-                            selectedIndex.splice(key, 1);
-                            selectedFile.splice(key, 1);
-                        }
-                    })
+                    var i = selectedIndex.indexOf(index);
+                    if(i>=0){
+                        selectedIndex.splice(i, 1);
+                        selectedFile.splice(i, 1);
+                    }
                 };
 
                 unSelectAllFile = function () {
-                    angular.forEach(selectedIndex, function (value) {
-                        unSelectFile(value);
-                    });
+                    for(var i=selectedIndex.length-1;i>=0;i--){
+                        unSelectFile(selectedIndex[i]);
+                    }
+
                 };
 
                 $scope.handleClick = function ($event, index) {
@@ -58,16 +60,12 @@ angular.module('gkClientIndex.directives', [])
                         } else {
                             selectFile(index, true);
                         }
-                    } else if ($event.shiftKey && selectedIndex.length) {
-                        var lastIndex = 0;
-                        if (selectedIndex.length) {
-                            lastIndex = selectedIndex[selectedIndex.length - 1];
-                        }
-
+                    } else if ($event.shiftKey) {
+                        var lastIndex = shiftLastIndex;
                         unSelectAllFile();
-
                         if (index > lastIndex) {
                             for (var i = lastIndex; i <= index; i++) {
+                                console.log(i);
                                 selectFile(i, true);
                             }
                         } else if (index < lastIndex) {
@@ -79,7 +77,9 @@ angular.module('gkClientIndex.directives', [])
                     } else {
                         selectFile(index);
                     }
-
+                    if(!$event.shiftKey){
+                        shiftLastIndex = index;
+                    }
                 };
 
                 /**
@@ -135,8 +135,8 @@ angular.module('gkClientIndex.directives', [])
                         $scope.orderType = type;
                         $scope.orderAsc = '+';
                     }
-                    $scope.order = $scope.orderAsc + $scope.orderType;
 
+                    $scope.order = $scope.orderAsc + $scope.orderType;
                 };
 
                 /**
@@ -200,7 +200,14 @@ angular.module('gkClientIndex.directives', [])
                     if ($scope.view == 'thumb' && $event.keyCode == 38) {
                         step = getColCount();
                     }
+                    /**
+                     * 初始index是最后一个
+                     * @type {number}
+                     */
                     var initIndex = $scope.fileData.length + step - 1;
+                    /**
+                     * 如果已经选中，则取已选中的最小一个
+                     */
                     if (selectedIndex.length) {
                         initIndex = Math.min.apply('', selectedIndex);
                     }
@@ -208,8 +215,16 @@ angular.module('gkClientIndex.directives', [])
                     if (newIndex < 0) {
                         newIndex = 0;
                     }
-                    unSelectAllFile();
-                    selectFile(newIndex);
+
+                    if($event.shiftKey){
+                        for(var i=(initIndex>($scope.fileData.length-1)?$scope.fileData.length-1:initIndex);i>=newIndex;i--){
+                            selectFile(i,true);
+                        }
+                    }else{
+                        unSelectAllFile();
+                        selectFile(newIndex);
+                        shiftLastIndex = newIndex;
+                    }
                 };
 
                 /**
@@ -228,36 +243,68 @@ angular.module('gkClientIndex.directives', [])
                     if ($scope.view == 'thumb' && $event.keyCode == 40) {
                         step = getColCount();
                     }
+                    /**
+                     * 初始index是第一个
+                     * @type {number}
+                     */
                     var initIndex = -1 * step;
+                    /**
+                     * 如果已经选中，则取已选中的最大一个
+                     */
                     if (selectedIndex.length) {
-                        initIndex = Math.min.apply('', selectedIndex);
+                        initIndex = Math.max.apply('', selectedIndex);
                     }
                     var newIndex = initIndex + step;
                     if (newIndex > $scope.fileData.length - 1) {
                         newIndex = $scope.fileData.length - 1;
                     }
-
-                    unSelectAllFile();
-                    selectFile(newIndex);
+                    if($event.shiftKey){
+                        for(var i=(initIndex>0?initIndex:0);i<=newIndex;i++){
+                            selectFile(i,true);
+                        }
+                    }else{
+                        unSelectAllFile();
+                        selectFile(newIndex);
+                        shiftLastIndex = newIndex;
+                    }
                 };
 
                 /**
                  * 监听键盘事件
                  */
                 jQuery(document).bind('keydown', function ($event) {
+                    var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
+                    //console.log($event.keyCode);
                     $scope.$apply(function () {
                         switch ($event.keyCode) {
-                            case 13:
+                            case 13: //enter
                                 $scope.enterPress();
                                 break;
-                            case 37:
-                            case 38:
+                            case 37: //up
+                            case 38: //left
                                 $scope.upLeftPress($event);
                                 break;
-                            case 39:
-                            case 40:
+                            case 39: //down
+                            case 40: //right
                                 $scope.downRightPress($event);
-                                break
+                                break;
+                            case 67: //c
+                                if(ctrlKeyOn){
+                                    $scope.$emit('ctrlC');
+                                }
+                                $scope.view = 'thumb';
+                                break;
+
+                            case 86: //v
+                                if(ctrlKeyOn){
+                                    $scope.$emit('ctrlV');
+                                }
+                                break;
+                            case 88: //x
+                                if(ctrlKeyOn){
+                                    $scope.$emit('ctrlX');
+                                }
+                                break;
                         }
                     });
 
@@ -346,13 +393,17 @@ angular.module('gkClientIndex.directives', [])
                     }
                 })
 
+                /**
+                 * 新建文件开始
+                 */
                 $scope.$on('fileNewFolderStart', function (event, callback) {
                     unSelectAllFile();
                     var newFileItem = $compile($templateCache.get('newFileItem.html'))($scope);
                     newFileItem.addClass('selected').prependTo($element.find('.list_body'));
                     var input = newFileItem.find('input[type="text"]');
-                    input.val('新建文件夹');
-                    input[0].select();
+                    var inputParent = input.parent();
+                    var iElem = inputParent.find('i');
+                    input.val('新建文件夹')[0].select();
                     input.bind('keydown',function(e){
                         if(e.keyCode==13){
                             angular.isFunction(callback) && callback(input.val());
@@ -361,10 +412,13 @@ angular.module('gkClientIndex.directives', [])
                     });
 
                     input.bind('blur',function(){
-                        angular.isFunction(callback) && callback(input.val());
+                        //angular.isFunction(callback) && callback(input.val());
                     })
                 })
 
+                /**
+                 * 新建文件结束
+                 */
                 $scope.$on('fileNewFolderEnd', function (event,newFileData,newFilePath) {
                     $element.find('.file_item_edit').remove();
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
@@ -375,6 +429,9 @@ angular.module('gkClientIndex.directives', [])
                     });
                 })
 
+                /**
+                 * 重命名开始
+                 */
                 $scope.$on('fileEditNameStart', function (event, file,callback) {
                    var fileItem = $element.find('.file_item[data-path="'+file.path+'"]');
                     var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="'+file.file_name+'" class="new_file_name form-control" />');
@@ -392,6 +449,9 @@ angular.module('gkClientIndex.directives', [])
                     })
                 })
 
+                /**
+                 * 重命名结束
+                 */
                 $scope.$on('fileEditNameEnd', function (event) {
                     var fileItem = $element.find('.file_item.file_item_edit');
                     fileItem.removeClass('file_item_edit');
@@ -399,6 +459,12 @@ angular.module('gkClientIndex.directives', [])
                     fileItem.find('.name').show();
                 })
 
+                /**
+                 * ctrlV结束
+                 */
+                $scope.$on('ctrlVEnd', function (event,newFileData) {
+                    $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
+                })
             }
         };
     }])
@@ -420,10 +486,8 @@ angular.module('gkClientIndex.directives', [])
             replace: true,
             restrict: 'E',
             templateUrl: "views/toolbar.html",
-            scope: true,
             link: function ($scope, $element) {
-                var parentScope = $scope.$parent;
-                $scope.opts = parentScope.opts;
+
             }
         }
     }])

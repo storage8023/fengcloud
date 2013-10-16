@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' ,function ($scope, $location, GKPath) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession', function ($scope, $location, GKPath, GKSession) {
 
         /**
          * 对获取的树数据进行再处理
@@ -31,10 +31,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 dataItem = fileData[i];
                 item = {
                     label: Util.String.baseName(dataItem.path),
-                    data: {
-                        path: dataItem.path,
-                        hash: dataItem.uuidhash
-                    },
+                    data: dataItem,
                     expanded: false
                 };
                 newData.push(item);
@@ -54,7 +51,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleSelect = function (branch) {
+            GKSession.File = branch.data;
             $location.path(GKPath.getPath('myfile ', branch.data.path, 'list'));
+
         };
 
         /**
@@ -68,7 +67,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException','GKSession','GKFile', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException,GKSession,GKFile) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKSession', 'GKFile', 'GKCilpboard', 'GKOpt', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKSession, GKFile, GKCilpboard, GKOpt) {
 
         /**
          * 分析路径获取参数
@@ -82,11 +81,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 文件列表数据
          */
-        var fileList = gkClientInterface.getFileList({
-            webpath: $scope.path
-        });
+        var getFileData = function (debug) {
+            var fileList = gkClientInterface.getFileList({
+                webpath: $scope.path,
+                debug: debug
+            });
+            return GKFile.dealFileList(fileList);
+        };
 
-        $scope.fileData = GKFile.dealFileList(fileList);
+        $scope.fileData = getFileData();
 
 
         /**
@@ -163,15 +166,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 改变视图
          */
         $scope.changeView = function (view) {
-            $location.path($location.path().replace(/\/(list|thumb)/, '/' + view));
+            $scope.view = view;
         }
 
-        /**
-         * 操作
-         * @type {Array}
-         */
-        $scope.opts = [
-            {
+        var openFile = function (mount_id, webpath) {
+            GK.open({
+                mount_id: mount_id,
+                webpath: webpath
+            });
+        };
+
+        var allOpts = {
+            'add': {
                 name: 'add',
                 text: '添加',
                 callback: function () {
@@ -191,23 +197,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     })
                 }
             },
-            {
+            'new_folder': {
                 name: 'new_folder',
                 text: '新建',
                 callback: function () {
-
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
-                        var webpath =  $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
+                        var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
                         GK.createFolder({
                             webpath: webpath,
                             dir: 1
                         }).then(function () {
-                                fileList = gkClientInterface.getFileList({
-                                    webpath: $scope.path,
-                                    newFileName:new_file_name
-                                });
-                                var newFileData = GKFile.dealFileList(fileList);
-                                $scope.$broadcast('fileNewFolderEnd',newFileData,webpath);
+                                var newFileData = getFileData();
+                                $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
 
                             }, function (error) {
                                 GKException.handleClientException(error);
@@ -215,7 +216,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                 }
             },
-            {
+            'lock': {
                 name: 'lock',
                 text: '锁定',
                 callback: function () {
@@ -224,20 +225,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         webpath: file.path
                     }).then(function () {
                             file.lock = 1;
-                            file.lock_member_name = GKSession.username;
-                            file.lock_member_id = GKSession.id;
+                            file.lock_member_name = GKSession.User.username;
+                            file.lock_member_id = GKSession.User.id;
                         }, function () {
                             GKException.handleClientException(error);
                         });
                 }
             },
-            {
+            'unlock': {
                 name: 'unlock',
                 text: '解锁',
-                callback:function(){
+                callback: function () {
                     var file = $scope.selectedFile[0];
-                    if(file.lock_member_id != GKSession.id){
-                        alert(file.lock_member_name+' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 '+file.lock_member_name+' 先将其解锁。'+file.lock_member_name+' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 '+file.lock_member_name+' 先将其解锁。');
+                    if (file.lock_member_id != GKSession.User.id) {
+                        alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
                         return;
                     }
                     GK.unlock({
@@ -251,50 +252,53 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         });
                 }
             },
-            {
+            'save': {
                 name: 'save',
                 text: '另存为',
-                callback:function(){
+                callback: function () {
                     var files = [];
-                    angular.forEach($scope.selectedFile,function(value){
+                    angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath:value.path
+                            webpath: value.path
                         })
                     });
                     var params = {
-                        list:files,
-                        mount_id:GKSession.mount_id
+                        list: files,
+                        mount_id: GKSession.User.mount_id
                     };
 
                     GK.saveToLocal(params).then(function () {
-                            file.lock = 0;
-                            file.lock_member_name = 0;
-                            file.lock_member_id = 0;
-                        }, function () {
-                            GKException.handleClientException(error);
-                        });
+                        file.lock = 0;
+                        file.lock_member_name = 0;
+                        file.lock_member_id = 0;
+                    }, function () {
+                        GKException.handleClientException(error);
+                    });
                 }
             },
-            {
+            'del': {
                 name: 'del',
                 text: '删除',
-                callback:function(){
+                callback: function () {
                     var files = [];
-                    angular.forEach($scope.selectedFile,function(value){
+                    angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath:value.path
+                            webpath: value.path
                         })
                     });
                     var params = {
-                        list:files,
-                        mount_id:GKSession.mount_id
+                        list: files,
+                        mount_id: GKSession.User.mount_id
                     };
-
+                    var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].file_name + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
+                    if (!confirm(confirmMsg)) {
+                        return;
+                    }
                     GK.del(params).then(function () {
-                        angular.forEach($scope.selectedFile,function(value){
-                            angular.forEach($scope.fileData,function(file,key){
-                                if(value == file){
-                                    $scope.fileData.splice(key,1);
+                        angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach($scope.fileData, function (file, key) {
+                                if (value == file) {
+                                    $scope.fileData.splice(key, 1);
                                 }
                             })
                         });
@@ -303,17 +307,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                 }
             },
-            {
+            'rename': {
                 name: 'rename',
                 text: '重命名',
-                callback:function(){
+                callback: function () {
                     var file = $scope.selectedFile[0];
-                    $scope.$broadcast('fileEditNameStart', file,function (new_file_name) {
-                        var newpath = Util.String.ltrim(('/'+file.path).replace('/'+file.file_name,'/'+new_file_name),'/');
+                    $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {
+                        var newpath = Util.String.ltrim(('/' + file.path).replace('/' + file.file_name, '/' + new_file_name), '/');
                         GK.rename({
                             oldpath: file.path,
-                            newpath:newpath,
-                            mount_id: GKSession.mount_id
+                            newpath: newpath,
+                            mount_id: GKSession.User.mount_id
                         }).then(function () {
                                 file.path = newpath;
                                 file.file_name = Util.String.baseName(file.path);
@@ -325,8 +329,78 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                 }
             }
-        ];
+        };
 
+        /**
+         * 操作
+         * @type {Array}
+         */
+        $scope.opts = [];
+        $scope.$watch('selectedFile', function () {
+            var optKeys = GKOpt.getOpts(GKSession.File, $scope.selectedFile);
+            var opts = [];
+            angular.forEach(optKeys, function (value) {
+                opts.push(allOpts[value]);
+            });
+            $scope.opts = opts;
+        }, true);
+
+        /**
+         * 已选中的文件
+         * @type {Array}
+         */
         $scope.selectedFile = [];
 
+        /**
+         * ctrl-C的 处理函数
+         */
+        $scope.$on('ctrlC', function () {
+            var data = {
+                code: 'ctrlC',
+                mount_id: GKSession.User.mount_id,
+                files: $scope.selectedFile
+            };
+            GKCilpboard.setData(data);
+        });
+
+        /**
+         * ctrl-X的 处理函数
+         */
+        $scope.$on('ctrlX', function () {
+            var data = {
+                code: 'ctrlX',
+                mount_id: GKSession.User.mount_id,
+                files: $scope.selectedFile
+            }
+            GKCilpboard.setData(data);
+        });
+
+        /**
+         * ctrl-V的 处理函数
+         */
+        $scope.$on('ctrlV', function () {
+            var data = GKCilpboard.getData();
+            console.log(data);
+            var params = {
+                target: $scope.path,
+                targetmountid: GKSession.User.mount_id,
+                from_mountid: data.mount_id,
+                from_list: data.files
+            };
+            if (data.code == 'ctrlC') {
+                GK.copy(params).then(function () {
+                    $scope.$broadcast('ctrlVEnd', getFileData('test12345'));
+                    //GKCilpboard.clearData();
+                }, function () {
+                    GKException.handleClientException(error);
+                });
+            } else if (data.code == 'ctrlX') {
+                GK.move(params).then(function () {
+                    $scope.$broadcast('ctrlVEnd', getFileData('test123456'));
+                    //GKCilpboard.clearData();
+                }, function () {
+                    GKException.handleClientException(error);
+                });
+            }
+        });
     }]);

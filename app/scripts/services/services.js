@@ -3,102 +3,138 @@
 /* Services */
 
 angular.module('gkClientIndex.services', [])
-    .factory('GKPath', function() {
-       return {
-           getPath:function(){
-               var paramArr = Array.prototype.slice.call(arguments);
-               return '/'+paramArr.join('/');
-           }
-       }
+    .factory('GKPath', function () {
+        return {
+            getPath: function () {
+                var paramArr = Array.prototype.slice.call(arguments);
+                return '/' + paramArr.join('/');
+            }
+        }
     })
 /**
  * 对请求后返回的错误的处理
  */
-    .factory('GKException',[function(){
+    .factory('GKException', [function () {
         return {
-            handleClientException:function(error){
+            handleClientException: function (error) {
                 alert(error.message);
             },
-            handleAjaxException:function(){
+            handleAjaxException: function () {
 
             }
         }
     }])
-    .factory('GK',['$q',function($q){
+    .factory('GK', ['$q', function ($q) {
         return {
-           addFile:function(params){
-               var re =  gkClientInterface.addFile(params);
-               var deferred = $q.defer();
-               if(re.error == 0 ){
-                   deferred.resolve(re);
-               }else{
-                   deferred.reject(re);
-               }
-               return deferred.promise;
-           },
-           createFolder:function(params){
-               var re =  gkClientInterface.addFile(params);
-               var deferred = $q.defer();
-               if(re.error == 0 ){
-                   deferred.resolve(re);
-               }else{
-                   deferred.reject(re);
-               }
-               return deferred.promise;
-           },
-            lock:function(params){
-                var re =  gkClientInterface.lock(params);
+            addFile: function (params) {
+                var re = gkClientInterface.addFile(params);
                 var deferred = $q.defer();
-                if(re.error == 0 ){
+                if (re.error == 0) {
                     deferred.resolve(re);
-                }else{
+                } else {
                     deferred.reject(re);
                 }
                 return deferred.promise;
             },
-            unlock:function(){
-                var re =  gkClientInterface.unlock(params);
+            createFolder: function (params) {
+                var re = gkClientInterface.addFile(params);
                 var deferred = $q.defer();
-                if(re.error == 0 ){
+                if (re.error == 0) {
                     deferred.resolve(re);
-                }else{
+                } else {
                     deferred.reject(re);
                 }
                 return deferred.promise;
             },
-            getUser:function(){
+            lock: function (params) {
+                var re = gkClientInterface.lock(params);
+                var deferred = $q.defer();
+                if (re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            unlock: function (params) {
+                var re = gkClientInterface.unlock(params);
+                var deferred = $q.defer();
+                if (re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            getUser: function () {
                 return gkClientInterface.getUser();
             },
-            saveTolocal:function(params){
+            saveTolocal: function (params) {
                 gkClientInterface.saveToLocal(params);
             },
-            del:function(params){
-                var re =  gkClientInterface.unlock(params);
+            del: function (params) {
+                var re = gkClientInterface.unlock(params);
                 var deferred = $q.defer();
-                if(!re || re.error == 0 ){
+                if (!re || re.error == 0) {
                     deferred.resolve(re);
-                }else{
+                } else {
                     deferred.reject(re);
                 }
                 return deferred.promise;
             },
-            rename:function(params){
-                var re =  gkClientInterface.rename(params);
+            rename: function (params) {
+                var re = gkClientInterface.rename(params);
                 var deferred = $q.defer();
-                if(!re || re.error == 0 ){
+                if (!re || re.error == 0) {
                     deferred.resolve(re);
-                }else{
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            copy: function (params) {
+                var re = gkClientInterface.copy(params);
+                var deferred = $q.defer();
+                if (!re || re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            move: function (params) {
+                var re = gkClientInterface.move(params);
+                var deferred = $q.defer();
+                if (!re || re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            open: function () {
+                var re = gkClientInterface.open(params);
+                var deferred = $q.defer();
+                if (!re || re.error == 0) {
+                    deferred.resolve(re);
+                } else {
                     deferred.reject(re);
                 }
                 return deferred.promise;
             }
         }
     }])
-    .factory('GKSession',['GK',function(GK){
-        return GK.getUser()
+    .factory('GKSession', ['GK', function (GK) {
+        return {
+            User:GK.getUser(),
+            File:{
+                webpath:''
+            }
+        }
     }])
 
-    .factory('GKFile',[function(){
+
+    .factory('GKFile', [function () {
         /**
          * 文件类型列表
          * @type {{SORT_SPEC: Array, SORT_MOVIE: Array, SORT_MUSIC: Array, SORT_IMAGE: Array, SORT_DOCUMENT: Array, SORT_CODE: Array, SORT_ZIP: Array, SORT_EXE: Array}}
@@ -114,8 +150,8 @@ angular.module('gkClientIndex.services', [])
             'SORT_EXE': ['exe', 'bat', 'com']
         };
 
-        var GKFile =  {
-            dealFileList:function(fileList){
+        var GKFile = {
+            dealFileList: function (fileList) {
                 var fileData = [], file;
                 angular.forEach(fileList, function (value) {
                     var fileName = Util.String.baseName(value.path);
@@ -131,7 +167,8 @@ angular.module('gkClientIndex.services', [])
                         path: value.path,
                         lock: value.lock,
                         lock_member_name: value.lockname,
-                        lock_member_id: value.lockid
+                        lock_member_id: value.lockid,
+                        dir:value.dir
                     };
                     fileData.push(file);
                 });
@@ -142,10 +179,10 @@ angular.module('gkClientIndex.services', [])
              * @param type
              * @param dir
              */
-            getFileType:function(type, dir){
+            getFileType: function (type, dir) {
                 return dir ? '文件夹' : GKFile.getFileTypeName(type);
             },
-            getFileTypeName : function (type) {
+            getFileTypeName: function (type) {
                 var typeName;
                 switch (type) {
                     case 'movie':
@@ -180,7 +217,7 @@ angular.module('gkClientIndex.services', [])
              * @param local
              * @returns {string}
              */
-             getFileIconSuffix : function (filename, dir, share, local) {
+            getFileIconSuffix: function (filename, dir, share, local) {
                 var suffix = '';
                 var sorts = FILE_SORTS;
                 if (dir) {
@@ -216,5 +253,64 @@ angular.module('gkClientIndex.services', [])
             }
         };
         return GKFile;
+    }])
+    .factory('GKCilpboard', [function () {
+        var GKClipboard = {
+            data: null,
+            setData: function (data) {
+                this.data = data;
+            },
+            getData: function () {
+                return this.data;
+            },
+            clearData: function () {
+                this.data = null;
+            }
+        };
+        return GKClipboard
+    }])
+    .factory('GKOpt', [function () {
+        var GKOpt = {
+            getOpts: function (currentFile, selectedFiles) {
+                var optKey = [];
+                if (!selectedFiles || !selectedFiles.length) {
+                    optKey = this.getCurrentOpts(currentFile);
+                } else if (selectedFiles.length == 1) {
+                    optKey = this.getSingleSelectOpts(selectedFiles[0])
+                } else {
+                    optKey = this.getMultiSelectOpts(selectedFiles);
+                }
+                return optKey;
+            },
+            getCurrentOpts: function (currentFile) {
+                return ['add','new_folder'];
+            },
+            getMultiSelectOpts: function (files) {
+                return ['add','new_folder','del'];
+            },
+            getSingleSelectOpts: function (file) {
+                var opts = ['add','new_folder','lock','unlock','save','del','rename'];
+                if(file.dir == 1){
+                    this.disableOpt(opts,'lock','unlock');
+                }else{
+                    if(file.lock == 1){
+                        this.disableOpt(opts,'lock');
+                    }else{
+                        this.disableOpt(opts,'unlock');
+                    }
+                }
+                return opts;
+            },
+            disableOpt:function(opts){
+                var disableOpts = Array.prototype.slice.call(arguments).splice(1);
+                var l = opts.length;
+                for(var i=opts.length-1;i>=0;i--){
+                    if(disableOpts.indexOf(opts[i])>=0){
+                        opts.splice(i,1);
+                    }
+                }
+            }
+        };
+        return GKOpt
     }])
 ;

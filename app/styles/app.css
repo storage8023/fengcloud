@@ -183,6 +183,7 @@ footer{
 }
 .file_list_wrapper .list_view .file_name{
     margin-right: 340px;
+    height: 32px;
 }
 .file_list_wrapper .file_list_header i:first-child{
     float: left;
@@ -257,6 +258,16 @@ footer{
     height: 32px;
     vertical-align: middle;
     margin:-2px 15px 0 15px;
+    position: relative;
+}
+.file_item .file_icon s.locked{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    bottom:-2px;
+    right: -4px;
+    position: absolute;
+    background: url(../images/icon.png) no-repeat -2px -282px;
 }
 .file_list_wrapper .file_item.selected{
     background: #4d8bd8;
@@ -272,8 +283,8 @@ footer{
 .thumb_view .file_item{
     float: left;
     margin: 20px 30px;
-    width: 128px;
-    height: 150px;
+    width: 144px;
+    height: 166px;
     text-align: center;
     border-radius: 5px;
 }
@@ -283,6 +294,9 @@ footer{
     height: 32px;
     padding-top: 3px;
     padding-bottom: 3px;
+}
+.thumb_view .file_item_edit .form-control.new_file_name{
+    width: 120px;
 }
 /*右键菜单*/
 

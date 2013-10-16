@@ -27,7 +27,9 @@
                 <img ng-src="{{file.thumb}}" alt=""/>
             </div>
             <div class="file_name">
-                <i class="file_icon {{file.file_icon}}" ng-show="view=='list'"></i>
+                <i class="file_icon {{file.file_icon}}" ng-show="view=='list'">
+                    <s class="locked" ng-show="file.lock==1"></s>
+                </i>
                 <span class="name">{{file.file_name}}</span>
             </div>
             <div class="last_edit_time" ng-show="view=='list'"><span>{{file.last_edit_time | date:'yyyy/M/d H:m'}}</span></div>

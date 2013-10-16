@@ -190,7 +190,7 @@ var gkClientInterface = {
                         "creatortime": 12345678,
                         "creatorid": 111,
                         "creatorname": "111",
-                        "lock": 1,
+                        "lock": 0,
                         "locktime": 12345678,
                         "lockid": 111,
                         "lockname": "aaa",
@@ -209,7 +209,7 @@ var gkClientInterface = {
                         "creatortime": 12345678,
                         "creatorid": 111,
                         "creatorname": "111",
-                        "lock": 1,
+                        "lock": 0,
                         "locktime": 12345678,
                         "lockid": 111,
                         "lockname": "aaa",
@@ -230,7 +230,7 @@ var gkClientInterface = {
                         "creatorname": "111",
                         "lock": 1,
                         "locktime": 12345678,
-                        "lockid": 111,
+                        "lockid": 2,
                         "lockname": "aaa",
                         "status": 4,
                         "version": 123
@@ -247,7 +247,7 @@ var gkClientInterface = {
                         "creatortime": 12345678,
                         "creatorid": 111,
                         "creatorname": "111",
-                        "lock": 1,
+                        "lock": 0,
                         "locktime": 12345678,
                         "lockid": 111,
                         "lockname": "aaa",
@@ -266,7 +266,7 @@ var gkClientInterface = {
                         "creatortime": 12345678,
                         "creatorid": 111,
                         "creatorname": "111",
-                        "lock": 1,
+                        "lock": 0,
                         "locktime": 12345678,
                         "lockid": 111,
                         "lockname": "aaa",
@@ -285,7 +285,7 @@ var gkClientInterface = {
                         "creatortime": 12345678,
                         "creatorid": 111,
                         "creatorname": "111",
-                        "lock": 1,
+                        "lock": 0,
                         "locktime": 12345678,
                         "lockid": 111,
                         "lockname": "aaa",
@@ -294,9 +294,9 @@ var gkClientInterface = {
                     },
 
                 ];
-                if(params.newFileName){
+                if(params.debug){
                     list.push({
-                        "path": params.newFileName,
+                        "path": params.debug,
                         "dir": 1,
                         "filehash": "",
                         "filesize": 2121212,
@@ -434,6 +434,39 @@ var gkClientInterface = {
         try {
             return {error:0,message:'test'};
             return gkClient.gRename(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    copy:function(params){
+        try {
+            return {error:0,message:'test'};
+            return gkClient.gCopy(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    move:function(params){
+        try {
+            return {error:0,message:'test'};
+            return gkClient.gMove(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    open:function(params){
+        try {
+            params.opentype = 'open';
+            return gkClient.gOpen(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    openLocation:function(params){
+        try {
+            return {error:0,message:'test'};
+            params.opentype = 'select';
+            return gkClient.gOpen(params);
         } catch (e) {
             this._handleException(e);
         }
