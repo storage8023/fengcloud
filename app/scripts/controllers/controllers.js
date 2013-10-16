@@ -178,8 +178,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var allOpts = {
             'add': {
-                name: 'add',
-                text: '添加',
+                uuid: 'add',
+                name: '添加',
                 callback: function () {
                     var addFiles = gkClientInterface.addFileDialog();
                     if (!addFiles || !addFiles.list || !addFiles.list.length) {
@@ -198,8 +198,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'new_folder': {
-                name: 'new_folder',
-                text: '新建',
+                uuid: 'new_folder',
+                name: '新建',
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
@@ -217,8 +217,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'lock': {
-                name: 'lock',
-                text: '锁定',
+                uuid: 'lock',
+                name: '锁定',
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
@@ -233,8 +233,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'unlock': {
-                name: 'unlock',
-                text: '解锁',
+                uuid: 'unlock',
+                name: '解锁',
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     if (file.lock_member_id != GKSession.User.id) {
@@ -253,8 +253,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'save': {
-                name: 'save',
-                text: '另存为',
+                uuid: 'save',
+                name: '另存为',
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -277,8 +277,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'del': {
-                name: 'del',
-                text: '删除',
+                uuid: 'del',
+                name: '删除',
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -308,8 +308,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'rename': {
-                name: 'rename',
-                text: '重命名',
+                uuid: 'rename',
+                name: '重命名',
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {
@@ -335,14 +335,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 操作
          * @type {Array}
          */
-        $scope.opts = [];
         $scope.$watch('selectedFile', function () {
             var optKeys = GKOpt.getOpts(GKSession.File, $scope.selectedFile);
-            var opts = [];
+            $scope.opts = [];
+            $scope.rightOpts = {};
             angular.forEach(optKeys, function (value) {
-                opts.push(allOpts[value]);
+                $scope.opts.push(allOpts[value]);
+                $scope.rightOpts[value] = allOpts[value];
             });
-            $scope.opts = opts;
         }, true);
 
         /**

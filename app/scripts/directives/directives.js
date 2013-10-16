@@ -14,7 +14,8 @@ angular.module('gkClientIndex.directives', [])
                 view: '=',
                 partition: '=',
                 order: '@',
-                selectedFile:'='
+                selectedFile:'=',
+                rightOpts:'='
             },
             link: function ($scope, $element, $attrs) {
                 var selectedFile = [], //当前已选中的条目
@@ -92,8 +93,18 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 /**
+                 * 右键文件
+                 * @param $event
+                 * @param file
+                 */
+                $scope.handleContextMenu = function ($event, index) {
+                    selectFile(index);
+                };
+
+                /**
                  * 重新索引文件
                  * @param fileData
+                 * todo 对shiftlastindex的重新索引
                  */
                 var reIndex = function (fileData) {
                     var newSelectedIndex = [];
@@ -125,8 +136,6 @@ angular.module('gkClientIndex.directives', [])
                     $scope.fileData = $filter('orderBy')($scope.fileData, $scope.order);
                     reIndex($scope.fileData);
                 });
-
-
 
                 $scope.setOrder = function (type) {
                     if ($scope.orderType == type) {
@@ -315,81 +324,81 @@ angular.module('gkClientIndex.directives', [])
                  */
                 jQuery.contextMenu({
                     selector: '.file_list .list_body',
+                    reposition:false,
                     animation: {
                         show: "show",
                         hide: "hide"
                     },
                     build: function (trigger, $event) {
+                        return $scope.$apply(function(){
+                            var items = {};
+                            var jqTarget = jQuery($event.target);
 
-                        var items = {};
-                        var jqTarget = jQuery($event.target);
-                        if (jqTarget.hasClass('file_item') || jqTarget.parents('.file_item').size()) {
-                            items = {
-                                'test': {
-                                    name: 'test'
-                                }
-                            }
-                        } else {
-                            items = {
-                                'new_folder': {
-                                    name: '新建文件夹'
-                                },
-                                'order_by': {
-                                    name: '排序方式',
-                                    items: {
-                                        'order_by_file_name': {
-                                            name: '文件名',
-                                            className: $scope.orderType == 'file_name' ? 'current' : '',
-                                            callback: function () {
-                                                $scope.$apply(function () {
-                                                    $scope.setOrder('file_name');
-                                                })
+                            if (jqTarget.hasClass('file_item') || jqTarget.parents('.file_item').size()) {
+                                items = $scope.rightOpts;
+                            } else {
+                                items = {
+                                    'new_folder': {
+                                        name: '新建文件夹'
+                                    },
+                                    'order_by': {
+                                        name: '排序方式',
+                                        items: {
+                                            'order_by_file_name': {
+                                                name: '文件名',
+                                                className: $scope.orderType == 'file_name' ? 'current' : '',
+                                                callback: function () {
+                                                    $scope.$apply(function () {
+                                                        $scope.setOrder('file_name');
+                                                    })
 
-                                            }
-                                        },
-                                        'order_by_file_size': {
-                                            name: '大小',
-                                            className: $scope.orderType == 'file_size' ? 'current' : '',
-                                            callback: function () {
-                                                $scope.$apply(function () {
-                                                    $scope.setOrder('file_size');
-                                                })
+                                                }
+                                            },
+                                            'order_by_file_size': {
+                                                name: '大小',
+                                                className: $scope.orderType == 'file_size' ? 'current' : '',
+                                                callback: function () {
+                                                    $scope.$apply(function () {
+                                                        $scope.setOrder('file_size');
+                                                    })
 
-                                            }
-                                        },
-                                        'order_by_file_type': {
-                                            name: '类型',
-                                            className: $scope.orderType == 'file_type' ? 'current' : '',
-                                            callback: function () {
-                                                $scope.$apply(function () {
-                                                    $scope.setOrder('file_type');
-                                                })
+                                                }
+                                            },
+                                            'order_by_file_type': {
+                                                name: '类型',
+                                                className: $scope.orderType == 'file_type' ? 'current' : '',
+                                                callback: function () {
+                                                    $scope.$apply(function () {
+                                                        $scope.setOrder('file_type');
+                                                    })
 
-                                            }
-                                        },
-                                        'order_by_last_edit_time': {
-                                            name: '最后修改时间',
-                                            className: $scope.orderType == 'last_edit_time' ? 'current' : '',
-                                            callback: function () {
-                                                $scope.$apply(function () {
-                                                    $scope.setOrder('last_edit_time');
-                                                })
+                                                }
+                                            },
+                                            'order_by_last_edit_time': {
+                                                name: '最后修改时间',
+                                                className: $scope.orderType == 'last_edit_time' ? 'current' : '',
+                                                callback: function () {
+                                                    $scope.$apply(function () {
+                                                        $scope.setOrder('last_edit_time');
+                                                    })
 
+                                                }
                                             }
                                         }
                                     }
-                                }
 
+                                };
                             }
-                        }
 
-                        return {
-                            className: 'dropdown-menu',
-                            callback: function (key, options) {
+                            return {
+                                className: 'dropdown-menu',
+                                callback: function (key, options) {
 
-                            },
-                            items: items
-                        };
+                                },
+                                items: items
+                            };
+                        });
+
                     }
                 })
 
@@ -491,4 +500,15 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
+    .directive('ngRightClick', function($parse) {
+        return function($scope, $elemesnt, $attrs) {
+            var fn = $parse($attrs.ngRightClick);
+            $elemesnt.bind('contextmenu', function(event) {
+                $scope.$apply(function() {
+                    event.preventDefault();
+                    fn($scope, {$events:event});
+                });
+            });
+        };
+    });
 ;

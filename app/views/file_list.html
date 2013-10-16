@@ -21,8 +21,14 @@
         </div>
     </div>
     <div class="list_body">
-        <div class="file_item" ng-class="file.selected?'selected':''" ng-repeat="file in fileData"
-             ng-dblclick="handleDblClick($event,file)" ng-click="handleClick($event,$index)" data-path="{{file.path}}">
+        <div class="file_item"
+             ng-class="file.selected?'selected':''"
+             ng-repeat="file in fileData"
+             ng-dblclick="handleDblClick($event,file)"
+             ng-click="handleClick($event,$index)"
+             data-path="{{file.path}}"
+             ng-right-click = "handleContextMenu($event,$index)"
+             >
             <div class="thumb" ng-show="view=='thumb'">
                 <img ng-src="{{file.thumb}}" alt=""/>
             </div>

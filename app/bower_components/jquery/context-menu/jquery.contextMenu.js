@@ -128,8 +128,8 @@ var // currently active contextMenu trigger
             // correct offset if viewport demands it
             var bottom = $win.scrollTop() + $win.height(),
                 right = $win.scrollLeft() + $win.width(),
-                height = opt.$menu.height(),
-                width = opt.$menu.width();
+                height = opt.$menu.outerHeight(),
+                width = opt.$menu.outerWidth();
             
             if (offset.top + height > bottom) {
                 offset.top -= height;
@@ -158,6 +158,22 @@ var // currently active contextMenu trigger
                     top: 0,
                     left: this.outerWidth()
                 };
+                var offsetParent = $menu.offsetParent();
+                var offsetParentPosition = offsetParent.offset();
+                var bottom = $win.scrollTop() + $win.height(),
+                    right = $win.scrollLeft() + $win.width(),
+                    height = $menu.outerHeight(),
+                    width = $menu.outerWidth();
+
+                if (offset.top+offsetParentPosition.top + height > bottom) {
+                    offset.top -= height;
+                    offset.top += offsetParent.outerHeight();
+                }
+
+                if (offset.left+offsetParentPosition.left + width > right) {
+                    offset.left -= width;
+                    offset.left -= offsetParent.outerWidth();
+                }
                 $menu.css(offset);
             }
         },

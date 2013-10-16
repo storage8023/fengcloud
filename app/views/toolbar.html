@@ -1,14 +1,14 @@
 <div class="toolbar">
     <span ng-repeat="opt in opts" class="f_l opt dropdown">
         <a dropdown-toggle href="javascript:void(0);" class="opt"
-           ng-class="opt.className?opt.className:'opt_'+opt.name" ng-click="opt.callback($event)">
-            <i></i><span>{{opt.text}}</span>
+           ng-class="opt.className?opt.className:'opt_'+opt.uuid" ng-click="opt.callback($event)">
+            <i></i><span>{{opt.name}}</span>
         </a>
         <ul class="dropdown-menu" ng-if="opt.opts && opt.opts.length">
             <li ng-repeat="subOpt in opt.opts">
-                <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.name"
+                <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.uuid"
                    ng-click="subOpt.callback($event)">
-                    <i></i><span>{{subOpt.text}}</span>
+                    <i></i><span>{{subOpt.name}}</span>
                 </a>
             </li>
         </ul>
