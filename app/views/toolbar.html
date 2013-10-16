@@ -1,12 +1,12 @@
 <div class="toolbar">
-    <span ng-repeat="opt in opts" class="f_l opt dropdown">
+    <span ng-repeat="(key,opt) in opts" class="f_l opt dropdown">
         <a dropdown-toggle href="javascript:void(0);" class="opt"
-           ng-class="opt.className?opt.className:'opt_'+opt.uuid" ng-click="opt.callback($event)">
+           ng-class="opt.className?opt.className:'opt_'+key" ng-click="opt.callback($event)">
             <i></i><span>{{opt.name}}</span>
         </a>
-        <ul class="dropdown-menu" ng-if="opt.opts && opt.opts.length">
-            <li ng-repeat="subOpt in opt.opts">
-                <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.uuid"
+        <ul class="dropdown-menu" ng-if="opt.items">
+            <li ng-repeat="(subKey,subOpt) in opt.items">
+                <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.subKey"
                    ng-click="subOpt.callback($event)">
                     <i></i><span>{{subOpt.name}}</span>
                 </a>

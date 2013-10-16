@@ -4,7 +4,7 @@
 
 
 angular.module('gkClientIndex.directives', [])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache','$compile', function ($location, GKPath, $filter, $templateCache,$compile) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', function ($location, GKPath, $filter, $templateCache, $compile) {
         return {
             replace: true,
             restrict: 'E',
@@ -13,9 +13,9 @@ angular.module('gkClientIndex.directives', [])
                 fileData: '=',
                 view: '=',
                 partition: '=',
-                order: '@',
-                selectedFile:'=',
-                rightOpts:'='
+                order: '=',
+                selectedFile: '=',
+                rightOpts: '='
             },
             link: function ($scope, $element, $attrs) {
                 var selectedFile = [], //当前已选中的条目
@@ -40,14 +40,14 @@ angular.module('gkClientIndex.directives', [])
                 unSelectFile = function (index) {
                     $scope.fileData[index].selected = false;
                     var i = selectedIndex.indexOf(index);
-                    if(i>=0){
+                    if (i >= 0) {
                         selectedIndex.splice(i, 1);
                         selectedFile.splice(i, 1);
                     }
                 };
 
                 unSelectAllFile = function () {
-                    for(var i=selectedIndex.length-1;i>=0;i--){
+                    for (var i = selectedIndex.length - 1; i >= 0; i--) {
                         unSelectFile(selectedIndex[i]);
                     }
 
@@ -78,7 +78,7 @@ angular.module('gkClientIndex.directives', [])
                     } else {
                         selectFile(index);
                     }
-                    if(!$event.shiftKey){
+                    if (!$event.shiftKey) {
                         shiftLastIndex = index;
                     }
                 };
@@ -97,9 +97,19 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  * @param file
                  */
-                $scope.handleContextMenu = function ($event, index) {
-                    selectFile(index);
-                };
+                $element.find('.list_body').bind('contextmenu',function($event){
+                    $scope.$apply(function(){
+                        var jqTarget = jQuery($event.target);
+                        var fileItem = jqTarget.hasClass('file_item')?jqTarget:jqTarget.parents('.file_item');
+                        if (fileItem.size()) {
+                            console.log(fileItem.index());
+                            selectFile(fileItem.index());
+                        } else {
+                            unSelectAllFile();
+                        }
+                    });
+
+                });
 
                 /**
                  * 重新索引文件
@@ -122,30 +132,19 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 /**
-                 * 排序方式
-                 * @type {string}
+                 * 监听order的变化
                  */
-                if (!$scope.order) {
-                    $scope.order = '+file_name';
-                }
-
-                $scope.orderType = $scope.order.slice(1);
-                $scope.orderAsc = $scope.order.slice(0, 1);
-
                 $scope.$watch('order', function () {
                     $scope.fileData = $filter('orderBy')($scope.fileData, $scope.order);
                     reIndex($scope.fileData);
                 });
 
-                $scope.setOrder = function (type) {
-                    if ($scope.orderType == type) {
-                        $scope.orderAsc = $scope.orderAsc == '+' ? '-' : '+';
-                    } else {
-                        $scope.orderType = type;
-                        $scope.orderAsc = '+';
-                    }
-
-                    $scope.order = $scope.orderAsc + $scope.orderType;
+                /**
+                 * 设置order
+                 * @param order
+                 */
+                $scope.setOrder = function(order){
+                    $scope.$emit('setOrder',order);
                 };
 
                 /**
@@ -225,11 +224,11 @@ angular.module('gkClientIndex.directives', [])
                         newIndex = 0;
                     }
 
-                    if($event.shiftKey){
-                        for(var i=(initIndex>($scope.fileData.length-1)?$scope.fileData.length-1:initIndex);i>=newIndex;i--){
-                            selectFile(i,true);
+                    if ($event.shiftKey) {
+                        for (var i = (initIndex > ($scope.fileData.length - 1) ? $scope.fileData.length - 1 : initIndex); i >= newIndex; i--) {
+                            selectFile(i, true);
                         }
-                    }else{
+                    } else {
                         unSelectAllFile();
                         selectFile(newIndex);
                         shiftLastIndex = newIndex;
@@ -267,11 +266,11 @@ angular.module('gkClientIndex.directives', [])
                     if (newIndex > $scope.fileData.length - 1) {
                         newIndex = $scope.fileData.length - 1;
                     }
-                    if($event.shiftKey){
-                        for(var i=(initIndex>0?initIndex:0);i<=newIndex;i++){
-                            selectFile(i,true);
+                    if ($event.shiftKey) {
+                        for (var i = (initIndex > 0 ? initIndex : 0); i <= newIndex; i++) {
+                            selectFile(i, true);
                         }
-                    }else{
+                    } else {
                         unSelectAllFile();
                         selectFile(newIndex);
                         shiftLastIndex = newIndex;
@@ -298,19 +297,19 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.downRightPress($event);
                                 break;
                             case 67: //c
-                                if(ctrlKeyOn){
+                                if (ctrlKeyOn) {
                                     $scope.$emit('ctrlC');
                                 }
                                 $scope.view = 'thumb';
                                 break;
 
                             case 86: //v
-                                if(ctrlKeyOn){
+                                if (ctrlKeyOn) {
                                     $scope.$emit('ctrlV');
                                 }
                                 break;
                             case 88: //x
-                                if(ctrlKeyOn){
+                                if (ctrlKeyOn) {
                                     $scope.$emit('ctrlX');
                                 }
                                 break;
@@ -324,72 +323,14 @@ angular.module('gkClientIndex.directives', [])
                  */
                 jQuery.contextMenu({
                     selector: '.file_list .list_body',
-                    reposition:false,
+                    reposition: false,
                     animation: {
                         show: "show",
                         hide: "hide"
                     },
                     build: function (trigger, $event) {
-                        return $scope.$apply(function(){
-                            var items = {};
-                            var jqTarget = jQuery($event.target);
-
-                            if (jqTarget.hasClass('file_item') || jqTarget.parents('.file_item').size()) {
-                                items = $scope.rightOpts;
-                            } else {
-                                items = {
-                                    'new_folder': {
-                                        name: '新建文件夹'
-                                    },
-                                    'order_by': {
-                                        name: '排序方式',
-                                        items: {
-                                            'order_by_file_name': {
-                                                name: '文件名',
-                                                className: $scope.orderType == 'file_name' ? 'current' : '',
-                                                callback: function () {
-                                                    $scope.$apply(function () {
-                                                        $scope.setOrder('file_name');
-                                                    })
-
-                                                }
-                                            },
-                                            'order_by_file_size': {
-                                                name: '大小',
-                                                className: $scope.orderType == 'file_size' ? 'current' : '',
-                                                callback: function () {
-                                                    $scope.$apply(function () {
-                                                        $scope.setOrder('file_size');
-                                                    })
-
-                                                }
-                                            },
-                                            'order_by_file_type': {
-                                                name: '类型',
-                                                className: $scope.orderType == 'file_type' ? 'current' : '',
-                                                callback: function () {
-                                                    $scope.$apply(function () {
-                                                        $scope.setOrder('file_type');
-                                                    })
-
-                                                }
-                                            },
-                                            'order_by_last_edit_time': {
-                                                name: '最后修改时间',
-                                                className: $scope.orderType == 'last_edit_time' ? 'current' : '',
-                                                callback: function () {
-                                                    $scope.$apply(function () {
-                                                        $scope.setOrder('last_edit_time');
-                                                    })
-
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                };
-                            }
-
+                         //return $scope.$apply(function(){
+                            var items = $scope.rightOpts;
                             return {
                                 className: 'dropdown-menu',
                                 callback: function (key, options) {
@@ -397,7 +338,7 @@ angular.module('gkClientIndex.directives', [])
                                 },
                                 items: items
                             };
-                        });
+                         //});
 
                     }
                 })
@@ -413,14 +354,14 @@ angular.module('gkClientIndex.directives', [])
                     var inputParent = input.parent();
                     var iElem = inputParent.find('i');
                     input.val('新建文件夹')[0].select();
-                    input.bind('keydown',function(e){
-                        if(e.keyCode==13){
+                    input.bind('keydown', function (e) {
+                        if (e.keyCode == 13) {
                             angular.isFunction(callback) && callback(input.val());
                             return false;
                         }
                     });
 
-                    input.bind('blur',function(){
+                    input.bind('blur', function () {
                         //angular.isFunction(callback) && callback(input.val());
                     })
                 })
@@ -428,11 +369,11 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 新建文件结束
                  */
-                $scope.$on('fileNewFolderEnd', function (event,newFileData,newFilePath) {
+                $scope.$on('fileNewFolderEnd', function (event, newFileData, newFilePath) {
                     $element.find('.file_item_edit').remove();
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-                    angular.forEach($scope.fileData,function(value,key){
-                        if(value.path === newFilePath){
+                    angular.forEach($scope.fileData, function (value, key) {
+                        if (value.path === newFilePath) {
                             selectFile(key);
                         }
                     });
@@ -441,19 +382,19 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 重命名开始
                  */
-                $scope.$on('fileEditNameStart', function (event, file,callback) {
-                   var fileItem = $element.find('.file_item[data-path="'+file.path+'"]');
-                    var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="'+file.file_name+'" class="new_file_name form-control" />');
+                $scope.$on('fileEditNameStart', function (event, file, callback) {
+                    var fileItem = $element.find('.file_item[data-path="' + file.path + '"]');
+                    var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="' + file.file_name + '" class="new_file_name form-control" />');
                     fileItem.addClass('file_item_edit');
                     fileItem.find('.name').hide().after(input);
                     input.focus();
-                    input.bind('keydown',function(e){
-                        if(e.keyCode==13){
+                    input.bind('keydown', function (e) {
+                        if (e.keyCode == 13) {
                             angular.isFunction(callback) && callback(input.val());
                             return false;
                         }
                     });
-                    input.bind('blur',function(){
+                    input.bind('blur', function () {
                         angular.isFunction(callback) && callback(input.val());
                     })
                 })
@@ -471,7 +412,7 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * ctrlV结束
                  */
-                $scope.$on('ctrlVEnd', function (event,newFileData) {
+                $scope.$on('ctrlVEnd', function (event, newFileData) {
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
                 })
             }
@@ -500,13 +441,13 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('ngRightClick', function($parse) {
-        return function($scope, $elemesnt, $attrs) {
+    .directive('ngRightClick', function ($parse) {
+        return function ($scope, $elemesnt, $attrs) {
             var fn = $parse($attrs.ngRightClick);
-            $elemesnt.bind('contextmenu', function(event) {
-                $scope.$apply(function() {
+            $elemesnt.bind('contextmenu', function (event) {
+                $scope.$apply(function () {
                     event.preventDefault();
-                    fn($scope, {$events:event});
+                    fn($scope, {$events: event});
                 });
             });
         };

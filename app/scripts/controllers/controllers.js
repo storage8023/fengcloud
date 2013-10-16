@@ -77,7 +77,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
         $scope.partition = pathArr[1]; //当前的分区
         $scope.view = $routeParams ? $routeParams.view || '' : ''; //当前的视图模式
-
+        $scope.order = '+file_name';
         /**
          * 文件列表数据
          */
@@ -169,6 +169,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.view = view;
         }
 
+        /**
+         *  设置排序
+         * @param type
+         */
+        var setOrder = function (type,asc) {
+            var orderAsc = $scope.order.slice(0, 1);
+            if(asc === undefined){
+                asc = orderAsc =='+' ? '-' : '+';
+            }
+            $scope.order = asc + type;
+        };
+
+        $scope.$on('setOrder',function(event,order){
+            setOrder(order);
+        })
+
         var openFile = function (mount_id, webpath) {
             GK.open({
                 mount_id: mount_id,
@@ -178,7 +194,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var allOpts = {
             'add': {
-                uuid: 'add',
                 name: '添加',
                 callback: function () {
                     var addFiles = gkClientInterface.addFileDialog();
@@ -198,7 +213,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'new_folder': {
-                uuid: 'new_folder',
                 name: '新建',
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
@@ -217,7 +231,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'lock': {
-                uuid: 'lock',
                 name: '锁定',
                 callback: function () {
                     var file = $scope.selectedFile[0];
@@ -233,7 +246,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'unlock': {
-                uuid: 'unlock',
                 name: '解锁',
                 callback: function () {
                     var file = $scope.selectedFile[0];
@@ -253,7 +265,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'save': {
-                uuid: 'save',
                 name: '另存为',
                 callback: function () {
                     var files = [];
@@ -277,7 +288,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'del': {
-                uuid: 'del',
                 name: '删除',
                 callback: function () {
                     var files = [];
@@ -308,7 +318,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'rename': {
-                uuid: 'rename',
                 name: '重命名',
                 callback: function () {
                     var file = $scope.selectedFile[0];
@@ -328,6 +337,49 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             });
                     });
                 }
+            },
+            'order_by': {
+                name: '排序方式',
+                items: {
+                    'order_by_file_name': {
+                        name: '文件名',
+                        className: $scope.order.indexOf('file_name') >= 0 ? 'current' : '',
+                        callback: function () {
+                            $scope.$apply(function(){
+                                setOrder('file_name');
+                            });
+
+                        }
+                    },
+                    'order_by_file_size': {
+                        name: '大小',
+                        className: $scope.order.indexOf('file_size') >= 0 ? 'current' : '',
+                        callback: function () {
+                            $scope.$apply(function(){
+                                setOrder('file_size');
+                            });
+                        }
+                    },
+                    'order_by_file_type': {
+                        name: '类型',
+                        className: $scope.order.indexOf('file_type') >= 0 ? 'current' : '',
+                        callback: function () {
+                            $scope.$apply(function(){
+                                setOrder('file_type');
+                            });
+                        }
+                    },
+                    'order_by_last_edit_time': {
+                        name: '最后修改时间',
+                        className: $scope.order.indexOf('last_edit_time') >= 0 ? 'current' : '',
+                        callback: function () {
+                            $scope.$apply(function () {
+                                setOrder('last_edit_time');
+                            })
+
+                        }
+                    }
+                }
             }
         };
 
@@ -337,13 +389,37 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$watch('selectedFile', function () {
             var optKeys = GKOpt.getOpts(GKSession.File, $scope.selectedFile);
-            $scope.opts = [];
+            $scope.opts = {};
             $scope.rightOpts = {};
             angular.forEach(optKeys, function (value) {
-                $scope.opts.push(allOpts[value]);
+                $scope.opts[value] = allOpts[value];
+
+            });
+            var rightOptKeys = [];
+            if(!$scope.selectedFile || !$scope.selectedFile.length){
+                rightOptKeys =  GKOpt.getCurrentOpts(GKSession.File);
+            }else if($scope.selectedFile.length == 1){
+                rightOptKeys =  GKOpt.getSingleSelectOpts($scope.selectedFile);
+            }else{
+                rightOptKeys =  GKOpt.getMultiSelectOpts($scope.selectedFile);
+            }
+
+            angular.forEach(rightOptKeys, function (value) {
                 $scope.rightOpts[value] = allOpts[value];
             });
+
         }, true);
+
+        $scope.$watch('order', function () {
+            angular.forEach($scope.rightOpts['order_by']['items'],function(value,key){
+                if(key == 'order_by_'+$scope.order.slice(1)){
+                    value['className'] = 'current';
+                }else{
+                    value['className'] = '';
+                }
+            });
+
+        })
 
         /**
          * 已选中的文件

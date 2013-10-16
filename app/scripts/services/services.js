@@ -283,7 +283,7 @@ angular.module('gkClientIndex.services', [])
                 return optKey;
             },
             getCurrentOpts: function (currentFile) {
-                return ['add','new_folder'];
+                return ['add','new_folder','order_by'];
             },
             getMultiSelectOpts: function (files) {
                 return ['add','new_folder','del'];

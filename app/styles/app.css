@@ -247,6 +247,8 @@ footer{
     height:42px;
     line-height: 32px;
     border-bottom: 1px solid #e8eaed;
+    background-color: transparent;
+    -webkit-transition:background-color linear 0.1s;
 }
 
 .list_view .file_item:nth-child(even){
@@ -270,7 +272,7 @@ footer{
     background: url(../images/icon.png) no-repeat -2px -282px;
 }
 .file_list_wrapper .file_item.selected{
-    background: #4d8bd8;
+    background-color: #4d8bd8;
 }
 .file_list_wrapper .file_item.selected span{
     color:#fff;
