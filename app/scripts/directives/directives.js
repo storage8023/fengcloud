@@ -35,6 +35,7 @@ angular.module('gkClientIndex.directives', [])
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $scope.selectedFile = selectedFile;
+                    //$element.find('.list_body').focus();
                 };
 
                 unSelectFile = function (index) {
@@ -288,7 +289,9 @@ angular.module('gkClientIndex.directives', [])
                     $scope.$apply(function () {
                         switch ($event.keyCode) {
                             case 13: //enter
-                                $scope.enterPress();
+                               if(['INPUT','TEXTAREA'].indexOf($event.target.nodeName())<0){
+                                   $scope.enterPress();
+                               }
                                 break;
                             case 37: //up
                             case 38: //left
@@ -364,7 +367,7 @@ angular.module('gkClientIndex.directives', [])
                     });
 
                     input.bind('blur', function () {
-                        //angular.isFunction(callback) && callback(input.val());
+                        angular.isFunction(callback) && callback(input.val());
                     })
                 });
 
@@ -452,14 +455,25 @@ angular.module('gkClientIndex.directives', [])
         }
     }])
     .directive('ngRightClick', function ($parse) {
-        return function ($scope, $elemesnt, $attrs) {
+        return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngRightClick);
-            $elemesnt.bind('contextmenu', function (event) {
+            $element.bind('contextmenu', function (event) {
                 $scope.$apply(function () {
                     event.preventDefault();
                     fn($scope, {$events: event});
                 });
             });
         };
-    });
+    })
+.directive('tagInput', [function () {
+    return {
+        restrict: 'A',
+        link: function ($scope, $element, $attrs) {
+            jQuery($element).tagsInput();
+            jQuery($element).bind('keydown',function(e){
+                e.stopPropagation();
+            })
+        }
+    }
+}])
 ;

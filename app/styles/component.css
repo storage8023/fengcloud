@@ -85,3 +85,11 @@
     border:4px solid transparent;
     border-right-color: #7f8999;
 }
+
+/*按钮*/
+.btn-gk{
+    padding: 3px 12px;
+    border:1px solid #c2cbd3;
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#f7f7f7),to(#dbdee1));
+    box-shadow: inset 0 1px 1px rgba(255,255,255,1), 0 1px 1px rgba(255,255,255,1);
+}

@@ -1,0 +1,46 @@
+<div ng-show= "!selectedFile || !selectedFile.length">
+    <div>我的文件夹</div>
+    <div>已使用{{GKSession.User.size|bitSize}}</div>
+    <p>将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接</p>
+</div>
+<div ng-show="selectedFile.length==1">
+    <div class="file_info_wrapper">
+        <div class="section_title">
+            详细
+        </div>
+        <div class="file_icon">
+            <img ng-src="{{file.thumb}}" alt="" />
+        </div>
+        <div class="file_attrs">
+            <div class="file_name">{{file.file_name}}</div>
+            <div ng-show="file.dir==0">{{file.file_size}}</div>
+            <div>{{file.last_edit_time | date:'yyyy/M/d H:m'}}</div>
+            <div class="opts">
+                <button class="btn btn-gk">发送</button>
+                <button class="btn btn-gk">链接</button>
+            </div>
+        </div>
+
+        <div class="tags">
+            <div ng-show="!file.tag || !file.tag.length">没有注释</div>
+            <input value="a,b,c" name="file_tag" id="file_tag" tag-input />
+            <!--<ul ng-show="file.tag && file.tag.length">-->
+                <!--<li ng-repeat="value in file.tag">-->
+                   <!--value-->
+                <!--</li>-->
+            <!--</ul>-->
+        </div>
+    </div>
+</div>
+<div ng-show="selectedFile.length>1">
+    <div class="file_info_wrapper">
+        <div class="file_attrs">
+
+        </div>
+        <div class="file_icon"></div>
+        <div class="tags">
+            <div ng-if=""></div>
+            <div ng-if=""></div>
+        </div>
+    </div>
+</div>

@@ -470,6 +470,52 @@ var gkClientInterface = {
         } catch (e) {
             this._handleException(e);
         }
+    },
+    selectPath:function(){
+        try {
+            return 'C://DDDD';
+            return gkClient.gSelectPathDlg();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    checkPathIsEmpty:function(params){
+        try {
+            return gkClient.gCheckEmpty(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    setLinkPath:function(params){
+        try {
+            return gkClient.gSetLinkPaths(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    removeLinkPath:function(params){
+        try {
+            return gkClient.gRemoveLinkPaths(params);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    getRestHost:function(){
+        try {
+            return 'http://r.gokuai.com';
+            return gkClient.gRestHost();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    getAuthorization:function(ver,webpath,date){
+        var params = {
+            ver: ver,
+            webpath: webpath,
+            date: date
+        };
+        var JSONParams = JSON.stringify(params);
+        return gkClient.gGetAuthorization(JSONParams);
     }
 };
 

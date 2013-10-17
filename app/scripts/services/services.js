@@ -121,19 +121,51 @@ angular.module('gkClientIndex.services', [])
                     deferred.reject(re);
                 }
                 return deferred.promise;
+            },
+            selectPath: function () {
+                return gkClientInterface.selectPath();
+            },
+            checkPathIsEmpty: function (params) {
+                return gkClientInterface.selectPath(params);
+            },
+            setLinkPath:function(params){
+                var re = gkClientInterface.setLinkPath(params);
+                var deferred = $q.defer();
+                if (!re || re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            removeLinkPath:function(params){
+                var re = gkClientInterface.removeLinkPath(params);
+                var deferred = $q.defer();
+                if (!re || re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
+            },
+            getRestHost:function(){
+                return gkClientInterface.getRestHost();
+            },
+            getAuthorization:function(ver,webpath,date){
+                return 'd3de3b6c09d37e763815d9cebe075435:q79nbtXOaYE20ElUESgwddpSsBI=';
+                return gkClientInterface.getAuthorization(ver,webpath,date);
             }
         }
     }])
     .factory('GKSession', ['GK', function (GK) {
         return {
-            User:GK.getUser(),
-            File:{
-                webpath:''
-            }
+            User: GK.getUser(),
+            File: {
+                webpath: ''
+            },
+            selectedFiles:[]
         }
     }])
-
-
     .factory('GKFile', [function () {
         /**
          * 文件类型列表
@@ -168,7 +200,7 @@ angular.module('gkClientIndex.services', [])
                         lock: value.lock,
                         lock_member_name: value.lockname,
                         lock_member_id: value.lockid,
-                        dir:value.dir
+                        dir: value.dir
                     };
                     fileData.push(file);
                 });
@@ -273,52 +305,77 @@ angular.module('gkClientIndex.services', [])
         var GKOpt = {
             getOpts: function (currentFile, selectedFiles) {
                 var
-                currentOpts = this.getCurrentOpts(currentFile),
-                multiOpts = this.getMultiSelectOpts(selectedFiles),
-                singleOpts = this.getSingleSelectOpts(selectedFiles);
-                return this.getFinalOpts(currentOpts,multiOpts,singleOpts);
+                    currentOpts = this.getCurrentOpts(currentFile),
+                    multiOpts = this.getMultiSelectOpts(selectedFiles),
+                    singleOpts = this.getSingleSelectOpts(selectedFiles);
+                return this.getFinalOpts(currentOpts, multiOpts, singleOpts);
             },
-            getFinalOpts:function(){
+            getFinalOpts: function () {
                 var arr = Array.prototype.slice.call(arguments);
-                return Array.prototype.concat.apply([],arr);
+                return Array.prototype.concat.apply([], arr);
 
             },
             getCurrentOpts: function () {
-                return ['add','new_folder','order_by'];
+                return ['add', 'new_folder', 'order_by'];
             },
             getMultiSelectOpts: function (files) {
-                if(!files || files.length <= 1){
+                if (!files || files.length <= 1) {
                     return [];
                 }
                 return ['del'];
             },
             getSingleSelectOpts: function (files) {
-                if(!files || files.length != 1){
+                if (!files || files.length != 1) {
                     return [];
                 }
                 var file = files[0];
-                var opts = ['lock','unlock','save','del','rename'];
-                if(file.dir == 1){
-                    this.disableOpt(opts,'lock','unlock');
-                }else{
-                    if(file.lock == 1){
-                        this.disableOpt(opts,'lock');
-                    }else{
-                        this.disableOpt(opts,'unlock');
+                var opts = ['lock', 'unlock', 'save', 'del', 'rename'];
+                if (file.dir == 1) {
+                    this.disableOpt(opts, 'lock', 'unlock');
+                } else {
+                    if (file.lock == 1) {
+                        this.disableOpt(opts, 'lock');
+                    } else {
+                        this.disableOpt(opts, 'unlock');
                     }
                 }
                 return opts;
             },
-            disableOpt:function(opts){
+            disableOpt: function (opts) {
                 var disableOpts = Array.prototype.slice.call(arguments).splice(1);
                 var l = opts.length;
-                for(var i=opts.length-1;i>=0;i--){
-                    if(disableOpts.indexOf(opts[i])>=0){
-                        opts.splice(i,1);
+                for (var i = opts.length - 1; i >= 0; i--) {
+                    if (disableOpts.indexOf(opts[i]) >= 0) {
+                        opts.splice(i, 1);
                     }
                 }
             }
         };
         return GKOpt
     }])
+    .factory('RestFile', ['GK','$http',function (GK,$http) {
+
+        var restFile = {
+            get:function(mount_id,fullpath){
+                //var date = new Date().toUTCString();var date = '';
+                var date = '';
+                var method = 'GET';
+                var webpath = Util.String.encodeRequestUri(fullpath);
+                var authorization = GK.getAuthorization(method,webpath,date);
+                return $http({
+                    method: method,
+                    url: GK.getRestHost()+webpath,
+                    headers:{
+                        'x-gk-mount':mount_id,
+                        //'Date':date,
+                        'Authorization':authorization
+                    },
+                    responseType:'json'
+                })
+            }
+        };
+
+        return restFile;
+    }
+])
 ;
