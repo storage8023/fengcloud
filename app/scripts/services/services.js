@@ -151,9 +151,21 @@ angular.module('gkClientIndex.services', [])
             getRestHost:function(){
                 return gkClientInterface.getRestHost();
             },
+            getApiHost:function(){
+                return 'http://api2.gokuai.com';
+                return gkClientInterface.getRestHost();
+            },
+            getToken:function(){
+                return '1e0776dbece2cb5c6186fca0d9a696cd';
+                return gkClientInterface.getToken();
+            },
             getAuthorization:function(ver,webpath,date){
-                return 'd3de3b6c09d37e763815d9cebe075435:q79nbtXOaYE20ElUESgwddpSsBI=';
+                return '1e0776dbece2cb5c6186fca0d9a696cd:q79nbtXOaYE20ElUESgwddpSsBI=';
                 return gkClientInterface.getAuthorization(ver,webpath,date);
+            },
+            getApiAuthorization:function(params){
+                return '1e0776dbece2cb5c6186fca0d9a696cd:q79nbtXOaYE20ElUESgwddpSsBI=';
+                return gkClientInterface.getApiAuthorization(params);
             }
         }
     }])
@@ -372,10 +384,59 @@ angular.module('gkClientIndex.services', [])
                     },
                     responseType:'json'
                 })
+            },
+            remind:function(mount_id,fullpath,message){
+                //var date = new Date().toUTCString();var date = '';
+                var date = '';
+                var method = 'REMIND';
+                var webpath = Util.String.encodeRequestUri(fullpath);
+                var authorization = GK.getAuthorization(method,webpath,date);
+                return $http({
+                    method: method,
+                    url: GK.getRestHost()+webpath,
+                    headers:{
+                        'x-gk-mount':mount_id,
+                        'x-gk-bool':1,
+                        //'Date':date,
+                        'Authorization':authorization
+                    },
+                    responseType:'json',
+                    data:{
+                        message:message
+                    }
+                })
             }
         };
 
         return restFile;
     }
 ])
+    .factory('GKApi', ['GK','$http',function (GK,$http) {
+        var defaultParams = {
+            token:GK.getToken()
+        };
+        var GKApi = {
+           sideBar:function(mount_id,fullpath,type,start,date){
+               var params = {
+                   mount_id:mount_id,
+                   fullpath:fullpath,
+                   type:type,
+                   start:start,
+                   date:date
+               };
+               angular.extend(params,defaultParams);
+               var sign = GK.getApiAuthorization(params);
+               params.sign = sign;
+               return $http({
+                   method: 'GET',
+                   url: GK.getApiHost()+'/1/file/client_sidebar',
+                   params:params,
+                   responseType:'json'
+               })
+            }
+        };
+
+        return GKApi;
+    }
+    ])
 ;

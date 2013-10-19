@@ -98,13 +98,13 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  * @param file
                  */
-                $element.find('.list_body').bind('contextmenu',function($event){
-                    $scope.$apply(function(){
+                $element.find('.list_body').bind('contextmenu', function ($event) {
+                    $scope.$apply(function () {
                         var jqTarget = jQuery($event.target);
-                        var fileItem = jqTarget.hasClass('file_item')?jqTarget:jqTarget.parents('.file_item');
+                        var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
                         if (fileItem.size()) {
                             var index = fileItem.index();
-                            if(!$scope.fileData[index].selected){
+                            if (!$scope.fileData[index].selected) {
                                 selectFile(index);
                             }
                         } else {
@@ -146,8 +146,8 @@ angular.module('gkClientIndex.directives', [])
                  * 设置order
                  * @param order
                  */
-                $scope.setOrder = function(order){
-                    $scope.$emit('setOrder',order);
+                $scope.setOrder = function (order) {
+                    $scope.$emit('setOrder', order);
                 };
 
                 /**
@@ -289,9 +289,9 @@ angular.module('gkClientIndex.directives', [])
                     $scope.$apply(function () {
                         switch ($event.keyCode) {
                             case 13: //enter
-                               if(['INPUT','TEXTAREA'].indexOf($event.target.nodeName())<0){
-                                   $scope.enterPress();
-                               }
+                                if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) < 0) {
+                                    $scope.enterPress();
+                                }
                                 break;
                             case 37: //up
                             case 38: //left
@@ -334,16 +334,16 @@ angular.module('gkClientIndex.directives', [])
                         hide: "hide"
                     },
                     build: function (trigger, $event) {
-                         //return $scope.$apply(function(){
-                            var items = $scope.rightOpts;
-                            return {
-                                className: 'dropdown-menu',
-                                callback: function (key, options) {
+                        //return $scope.$apply(function(){
+                        var items = $scope.rightOpts;
+                        return {
+                            className: 'dropdown-menu',
+                            callback: function (key, options) {
 
-                                },
-                                items: items
-                            };
-                         //});
+                            },
+                            items: items
+                        };
+                        //});
 
                     }
                 });
@@ -422,9 +422,9 @@ angular.module('gkClientIndex.directives', [])
                 });
 
                 //监听mountdown时间
-                $scope.handleMouseDown = function(event){
+                $scope.handleMouseDown = function (event) {
                     var $target = jQuery(event.target);
-                    if(!$target.hasClass('.file_item') && !$target.parents('.file_item').size()){
+                    if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
                         unSelectAllFile();
                     }
                 };
@@ -465,15 +465,34 @@ angular.module('gkClientIndex.directives', [])
             });
         };
     })
-.directive('tagInput', [function () {
-    return {
-        restrict: 'A',
-        link: function ($scope, $element, $attrs) {
-            jQuery($element).tagsInput();
-            jQuery($element).bind('keydown',function(e){
-                e.stopPropagation();
-            })
+    .directive('rightTagInput', ['$parse', function ($parse) {
+        return {
+            restrict: 'A',
+            require: '?ngModel',
+            link: function ($scope, $element, $attrs, $ngModel) {
+                if (!$ngModel) {
+                    return;
+                }
+                jQuery($element).tagsInput({
+                    'height': 'auto',
+                    'width': '225px',
+                    'interactive': true,
+                    'onAddTag': function (tag) {
+                        $scope.addTag(tag);
+                    },
+                    'onRemoveTag': function (tag) {
+                        $scope.removeTag(tag);
+                    },
+                    'onChange': function (input,d,c) {
+
+                    }
+                })
+                $scope.$watch('file.formatTag', function () {
+                    jQuery($element).importTags($scope.file.formatTag||'');
+                });
+
+            }
         }
-    }
-}])
+    }])
+
 ;

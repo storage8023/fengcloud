@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession','GKFile', function ($scope, $location, GKPath, GKSession,GKFile) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession', 'GKFile', function ($scope, $location, GKPath, GKSession, GKFile) {
 
         /**
          * 对获取的树数据进行再处理
@@ -67,7 +67,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKSession', 'GKFile', 'GKCilpboard', 'GKOpt','$rootScope', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKSession, GKFile, GKCilpboard, GKOpt,$rootScope) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKSession', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKSession, GKFile, GKCilpboard, GKOpt, $rootScope) {
         /**
          * 当前的用户及文件信息
          * @type {*}
@@ -541,25 +541,84 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
     }])
-    .controller('rightSidebar',['$scope','GKSession','RestFile','$rootScope',function($scope,GKSession,RestFile,$rootScope){
+
+    .controller('rightSidebar', ['$scope', 'GKSession', 'RestFile', '$rootScope', 'GKApi', '$http', function ($scope, GKSession, RestFile, $rootScope, GKApi, $http) {
         $scope.GKSession = GKSession;
+        var gird = /[,;；，\s]/g;
+        /**
+         * 监听已选择的文件
+         */
+        $scope.file = {};
+        $scope.shareMembers = [];
+        $scope.updates = [];
+        $scope.inputingRemark = false;
+        $scope.remindMembers = [];//可@的成员列表
+        $scope.$watch('selectedFile', function () {
+            $scope.inputingRemark = false;
+            if (!$scope.selectedFile || !$scope.selectedFile.length) {
 
-        $scope.$watch('selectedFile',function(){
-            if(!$scope.selectedFile || !$scope.selectedFile.length){
-
-            }else if($scope.selectedFile.length == 1){
+            } else if ($scope.selectedFile.length == 1) {
                 $scope.file = $scope.selectedFile[0];
-                console.log($scope.file);
-                var mount_id = 175625,fullpath = '100.gif';
-                $scope.selectFile = {};
-                RestFile.get(mount_id,fullpath).success(function(data){
-                    console.log(data);
-                    $scope.selectFile = data;
+                var mount_id = 175625, fullpath = '100.gif';
+                RestFile.get(mount_id, fullpath).success(function (data) {
+                    var tag = data.tag || '';
+                    $scope.file.tag = tag;
+                    $scope.file.formatTag = tag.replace(gird, ',');
                 });
-            }else{
+
+//                GKApi.sideBar(GKSession.mount_id,$scope.file.path).success(function(data){
+                $http.get('json/test.json').success(function (data) {
+                    $scope.shareMembers = data.share_members;
+                    $scope.updates = data.history;
+                    $scope.remindMembers = data.remind_members;
+                });
+            } else {
 
             }
-        },true);
+        }, true);
+
+        /**
+         * 添加注释
+         * @param tag
+         */
+        $scope.addTag = function (tag) {
+            var newTag = $scope.file.tag + ' ' + tag;
+
+        };
+
+        /**
+         * 删除注释
+         * @param tag
+         */
+        $scope.removeTag = function (tag) {
+            var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
+        };
+
+        /**
+         * 取消发布备注
+         */
+        $scope.cancelPostRemark = function () {
+            $scope.postText = '';
+            $scope.inputingRemark = false;
+        };
+
+        /**
+         * 发布讨论
+         */
+        $scope.postRemark = function () {
+            if(!$scope.postText.length) return;
+            //RestFile.remind(GKSession.mount_id,$scope.file.path,$scope.postText).success(function(data){
+            $http.get('json/testRemind.json').success(function (data) {
+                $scope.postText = '';
+                $scope.inputingRemark = false;
+                if (data && data.length) {
+                    $scope.updates.unshift(data[0]);
+                }
+
+            }).error(function(){
+
+                });
+        };
 
 
     }])

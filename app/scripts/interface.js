@@ -508,6 +508,21 @@ var gkClientInterface = {
             this._handleException(e);
         }
     },
+    getApiHost:function(){
+        try {
+            return 'http://a.gokuai.com';
+            return gkClient.gApiHost();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    getToken:function(){
+        try {
+            return gkClient.gGetToken();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     getAuthorization:function(ver,webpath,date){
         var params = {
             ver: ver,
@@ -516,6 +531,9 @@ var gkClientInterface = {
         };
         var JSONParams = JSON.stringify(params);
         return gkClient.gGetAuthorization(JSONParams);
+    },
+    getApiAuthorization:function(params){
+        return gkClient.gGetApiAuthorization(JSON.stringify(params));
     }
 };
 
