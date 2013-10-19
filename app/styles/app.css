@@ -477,15 +477,58 @@ footer {
 }
 
 /**右侧**/
+.right_sidebar .no_file{
+    padding: 0 5%;
+    margin: 15px 0 0 0;
+}
 .right_sidebar .section_title {
     border-bottom: 1px solid #b4b6b5;
     line-height: 35px;
     height: 35px;
     padding: 0 0 0 20px;
 }
+.right_sidebar .no_file p{
+    color:#92979d;
+}
+.right_sidebar .multi_file > div{
+    position: absolute;
+    top:50%;
+    text-align: center;
+    height: 24px;
+    line-height: 24px;
+    margin: -12px 0 0 0;
+    left:5%;
+    right:5%;
 
+}
+.right_sidebar .section_title .name{
+    display: none;
+}
+.right_sidebar .section_title  span.fold{
+    margin: 10px 10px 0 0;
+    -webkit-transition:all linear 0.1s;
+}
+.right_sidebar .file_info_wrapper > section{
+    height: 160px;
+    overflow-y: auto;
+    overflow-x:hidden;
+    -webkit-transition:height linear 0.1s;
+}
+.right_sidebar .single_file.folded > .file_detail_wrapper{
+    top: 34px;
+}
+.right_sidebar .single_file.folded .section_title .name {
+   display: inline;
+}
+.right_sidebar .single_file.folded .section_title .title{
+    display: none;
+}
+.right_sidebar .single_file.folded .section_title span.fold{
+    -webkit-transform: rotate(180deg);
+    -webkit-transform-origin: 50% 75%;
+}
 .right_sidebar .file_attrs {
-    margin: -64px 10px 0 85px;
+    margin: -70px 10px 0 85px;
     color: #96979c;
 }
 
@@ -495,7 +538,7 @@ footer {
 }
 
 .right_sidebar .file_icon {
-    margin: 20px 0 0 12px;
+    margin: 15px 0 0 12px;
 }
 
 .right_sidebar .file_icon img {
@@ -630,25 +673,42 @@ footer {
     position: absolute;
     left: 0;
     right: 0;
-    top: 205px;
+    top: 195px;
     bottom: 0;
+    -webkit-transition:top linear 0.1s;
+    z-index: 2;
+    background:#fcfcfc;
+}
+.right_sidebar .file_detail_wrapper .tab-content{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 41px;
+    bottom: 0;
+    overflow: auto;
 }
 
-.right_sidebar .file_detail_wrapper .set_share {
+.right_sidebar .file_detail_wrapper .set_share{
     display: block;
     width: 90%;
-    margin: 20px auto 0;
+    margin: 10px auto 0;
 }
 
 .right_sidebar .file_detail_wrapper .share_member_list {
-    width: 90%;
-    margin: 15px auto 0;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:48px;
+    position: absolute;
+    overflow: auto;
 }
 
 .right_sidebar .file_detail_wrapper .share_member_list li {
     height: 24px;
     line-height: 24px;
     margin: 10px 0;
+    width: 90%;
+    overflow: hidden;
 }
 
 .right_sidebar .file_detail_wrapper .share_member_list li > span {
@@ -669,7 +729,7 @@ footer {
 }
 
 .right_sidebar .file_detail_wrapper .share_member_list li > span.name {
-    width: 65%;
+    width: 60%;
 }
 
 .right_sidebar .file_detail_wrapper .share_member_list li > span.role {
@@ -680,7 +740,7 @@ footer {
 
 .right_sidebar .file_detail_wrapper .update_list {
     position: absolute;
-    top: 41px;
+    top: 0;
     bottom: 45px;
     left: 0;
     right: 0;
@@ -705,7 +765,8 @@ footer {
     bottom: 0;
     left: 0;
     right: 0;
-    -webkit-transition:bottom linear 0.1s;
+    overflow: hidden;
+    -webkit-transition:height linear 0.1s;
 }
 
 .right_sidebar .file_detail_wrapper .post_wrapper textarea {
@@ -724,7 +785,7 @@ footer {
     bottom: 100px;
 }
 .right_sidebar .file_detail_wrapper .update_wrapper.editing .post_wrapper{
-    bottom: 60px;
+    height: 105px;
 }
 .right_sidebar .file_detail_wrapper .update_wrapper.editing .post_wrapper textarea{
     height: 54px;
@@ -733,7 +794,6 @@ footer {
     width: 90%;
     margin: 6px auto 0;
     opacity: 0;
-    -webkit-transition:opacity linear 0.2s;
     line-height: 28px;
 }
 .right_sidebar .file_detail_wrapper .update_wrapper .post_wrapper .post_opts .f_r{
@@ -741,10 +801,22 @@ footer {
     display: block;
 }
 .right_sidebar .file_detail_wrapper .update_wrapper.editing .post_wrapper .post_opts{
-
     opacity: 1;
 }
 
+.right_sidebar .file_detail_wrapper .history_list{
+    width: 90%;
+    margin: 0 auto;
+}
+.right_sidebar .file_detail_wrapper .history_list li{
+    margin: 10px 0;
+}
+.right_sidebar .file_detail_wrapper .history_list li span.f_l{
+
+}
+.right_sidebar .file_detail_wrapper .history_list li span.f_r{
+    margin-left:5px;
+}
 /************* news **************/
 .news-wrapper {
     width: 890px;

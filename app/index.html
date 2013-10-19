@@ -39,58 +39,65 @@
         <div ng-view></div>
     </div>
     <aside class="right_sidebar" ng-controller="rightSidebar">
-        <div ng-show="!selectedFile || !selectedFile.length">
+        <div class="no_file" ng-show="!selectedFile || !selectedFile.length">
             <div>我的文件夹</div>
             <div>已使用{{GKSession.User.size|bitSize}}</div>
             <p>将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接</p>
         </div>
-        <div ng-show="selectedFile.length==1">
+        <div class="single_file" ng-show="selectedFile.length==1" ng-class="folded?'folded':''">
             <div class="file_info_wrapper">
                 <div class="section_title">
-                    详细
-                </div>
-                <div class="file_icon">
-                    <img ng-src="{{file.thumb}}" alt=""/>
-                </div>
-                <div class="file_attrs">
-                    <div class="file_name">{{file.file_name}}</div>
-                    <div ng-show="file.dir==0">{{file.file_size}}</div>
-                    <div>{{file.last_edit_time | date:'yyyy/M/d H:m'}}</div>
-                    <div class="opts">
-                        <button class="btn btn-gk">发送</button>
-                        <button class="btn btn-gk">链接</button>
+                    <span class="name">{{file.file_name}}</span>
+                    <span class="title">
+                        详细
+                    </span>
+                    <span class="f_r fold gk_up_arrow" ng-click="toggleFileInfoWrapper()"></span></div>
+                <section>
+                    <div class="file_icon">
+                        <img ng-src="{{file.thumb}}" alt=""/>
                     </div>
-                </div>
+                    <div class="file_attrs">
+                        <div class="file_name">{{file.file_name}}</div>
+                        <div ng-show="file.dir==0">{{file.file_size}}</div>
+                        <div>{{file.last_edit_time | date:'yyyy/M/d H:m'}}</div>
+                        <div class="opts">
+                            <button class="btn btn-gk">发送</button>
+                            <button class="btn btn-gk">链接</button>
+                        </div>
+                    </div>
 
-                <div class="tags">
-                    <input type="text" ng-model="file.formatTag" class="" name="file_tag" id="file_tag"
-                           right-tag-input/>
-                </div>
+                    <div class="tags">
+                        <input type="text" ng-model="file.formatTag" class="" name="file_tag" id="file_tag"
+                               right-tag-input/>
+                    </div>
+                </section>
             </div>
             <section class="file_detail_wrapper">
                 <tabset direction="blew">
                     <tab heading="共享">
-                         <button class="btn btn-gk set_share" ng-click="showEditShareDialog()">共享设置</button>
-                         <ul class="share_member_list">
-                             <li ng-repeat="shareMember in shareMembers">
-                                 <span class="icon"><i></i></span>
-                                 <span class="name">{{shareMember.member_name}}</span>
-                                 <span class="role">{{shareMember.auth_name}}</span>
-                             </li>
-                         </ul>
+                        <button class="btn btn-gk set_share" ng-click="showEditShareDialog()">共享设置</button>
+                        <ul class="share_member_list">
+                            <li ng-repeat="shareMember in shareMembers">
+                                <span class="icon"><i></i></span>
+                                <span class="name">{{shareMember.member_name}}</span>
+                                <span class="role">{{shareMember.auth_name}}</span>
+                            </li>
+                        </ul>
                     </tab>
 
                     <tab heading="讨论">
                         <div class="update_wrapper" ng-class="inputingRemark?'editing':''">
                             <ul class="update_list">
-                                <li ng-repeat="update in updates">
-                                    <span class="update_member">{{update.member_name}}</span>
-                                    <span class="update_text" ng-bind-html="update.render_text"></span>
-                                    <span class="update_time">({{update.dateline*1000|date:'M月d日'}})</span>
+                                <li ng-repeat="remark in remarks">
+                                    <span class="update_member">{{remark.member_name}}</span>
+                                    <span class="update_text" ng-bind-html="remark.render_text"></span>
+                                    <span class="update_time">({{remark.dateline*1000|date:'M月d日'}})</span>
                                 </li>
                             </ul>
                             <div class="post_wrapper">
-                                <textarea placeholder="参与讨论" ng-focus="inputingRemark=true" ng-model="postText"></textarea>
+                                <textarea placeholder="参与讨论" ng-focus="inputingRemark=true"
+                                          ng-model="postText"></textarea>
+
                                 <div class="post_opts">
                                     <a href="javascript:void(0)" class="f_l">提醒(@)</a>
                                     <button class="btn btn-gk f_r" ng-click="cancelPostRemark()">取消</button>
@@ -101,25 +108,21 @@
 
                     </tab>
                     <tab heading='历史'>
-                         <ul class="version_list">
-                             <li ng-repeat="version in versions">
-
-                             </li>
-                         </ul>
+                        <ul class="history_list">
+                            <li class="c_f" ng-repeat="history in histories">
+                                <span class="f_l filename">{{history.fullpath|baseName}}</span>
+                                <span class="f_r member_name">{{history.member_name}}</span>
+                                <span class="f_r dateline">{{history.dateline|date:'M月d日'}}</span>
+                                <span class="f_l act act_{{history.act}}"></span>
+                            </li>
+                        </ul>
                     </tab>
                 </tabset>
             </section>
         </div>
-        <div ng-show="selectedFile.length>1">
-            <div class="file_info_wrapper">
-                <div class="file_attrs">
-
-                </div>
-                <div class="file_icon"></div>
-                <div class="tags">
-                    <div ng-if=""></div>
-                    <div ng-if=""></div>
-                </div>
+        <div class="multi_file" ng-show="selectedFile.length>1">
+            <div>
+                    已选择{{selectedFile.length}}个文件或文件夹
             </div>
         </div>
     </aside>

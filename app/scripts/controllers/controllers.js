@@ -548,9 +548,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 监听已选择的文件
          */
-        $scope.file = {};
-        $scope.shareMembers = [];
-        $scope.updates = [];
+        $scope.file = {}; //当前选择的文件
+        $scope.shareMembers = []; //共享参与人
+        $scope.remarks = []; //讨论
+        $scope.histories = []; //历史
         $scope.inputingRemark = false;
         $scope.remindMembers = [];//可@的成员列表
         $scope.$watch('selectedFile', function () {
@@ -569,7 +570,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 //                GKApi.sideBar(GKSession.mount_id,$scope.file.path).success(function(data){
                 $http.get('json/test.json').success(function (data) {
                     $scope.shareMembers = data.share_members;
-                    $scope.updates = data.history;
+                    $scope.remarks = data.remark;
+                    $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
                 });
             } else {
@@ -612,7 +614,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.postText = '';
                 $scope.inputingRemark = false;
                 if (data && data.length) {
-                    $scope.updates.unshift(data[0]);
+                    $scope.remarks.unshift(data[0]);
                 }
 
             }).error(function(){
@@ -620,6 +622,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 });
         };
 
-
+        $scope.folded = false;
+        /**
+         * 显示及缩小文件信息框
+         */
+        $scope.toggleFileInfoWrapper = function(){
+            $scope.folded = !$scope.folded;
+        };
     }])
 ;

@@ -58,7 +58,7 @@
     width: 0;
     line-height: 0;
     border:4px solid transparent;
-    border-top-color: #7f8999;
+    border-bottom-color: #7f8999;
 }
 
 .gk_down_arrow{
@@ -67,7 +67,7 @@
     width: 0;
     line-height: 0;
     border:4px solid transparent;
-    border-bottom-color: #7f8999;
+    border-top-color: #7f8999;
 }
 .gk_left_arrow{
     display: inline-block;
