@@ -14,5 +14,25 @@ angular.module('gkClientIndex.filters', [])
     .filter('baseName', function(){
         return Util.String.baseName;
     })
+    .filter('getPartitionName',function(){
+        return function(partition){
+            var partitionName = '';
+            switch (partition) {
+                case 'myfile':
+                    partitionName = '我的文件';
+                    break;
+                case 'teamfile':
+                    partitionName = '团队的文件';
+                    break;
+                case 'smartfolder':
+                    partitionName = '智能文件夹';
+                    break;
+                default :
+                    partitionName = '我的文件';
+                    break;
+            }
+            return partitionName;
+        }
+    })
 ;
 

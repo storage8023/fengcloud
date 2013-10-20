@@ -1,6 +1,8 @@
 <div class="bread">
-    <div class="bread_item" ng-repeat="bread in breads">
-        <a href="{{bread.url}}">{{bread.name}}</a>
-        <span ng-show="!$last" class="bread_grid">&gt;</span>
-    </div>
+    <ul class="bread_list">
+        <li class="bread_item" ng-repeat="bread in breads">
+            <a href="{{bread.url}}">{{bread.name}}</a>
+            <span ng-show="!$last" class="bread_grid"></span>
+        </li>
+    </ul>
 </div>

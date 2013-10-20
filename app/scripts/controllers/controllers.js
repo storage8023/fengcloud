@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession', 'GKFile', function ($scope, $location, GKPath, GKSession, GKFile) {
-
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession', 'GKFile','$rootScope', function ($scope, $location, GKPath, GKSession, GKFile,$rootScope) {
+        $rootScope.User = gkClientInterface.getUser();
         /**
          * 对获取的树数据进行再处理
          */
@@ -42,7 +42,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.treeList = [
             { "label": "我的文件", data: {path: ''}, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: 1}), 'org')},
             { "label": "团队的文件", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'org'}), 'org')},
-            { "label": "其他存储", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'other'}), 'other')},
             { "label": "智能文件夹", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'}), 'magic')}
         ];
 
@@ -116,56 +115,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             selectedFile.push(file);
         };
 
-
-        var getPartitionName = function (partition) {
-            var partitionName = '';
-            switch (partition) {
-                case 'myfile':
-                    partitionName = '我的文件';
-                    break;
-                case 'teamfile':
-                    partitionName = '团队的文件';
-                    break;
-                case 'smartfolder':
-                    partitionName = '智能文件夹';
-                    break;
-                default :
-                    partitionName = '我的文件';
-                    break;
-            }
-            return partitionName;
-        };
-
-        /**
-         * 面包屑
-         */
-        var getBreads = function () {
-            var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
-            if (path.length) {
-                var paths = path.split('/');
-                for (var i = 0; i < paths.length; i++) {
-                    bread = {
-                        name: paths[i]
-                    };
-                    var fullpath = '';
-                    for (var j = 0; j <= i; j++) {
-                        fullpath += paths[j] + '/'
-                    }
-                    fullpath = Util.String.rtrim(fullpath, '/');
-                    bread.path = fullpath;
-                    bread.url = '#' + GKPath.getPath($scope.partition, $scope.path, $scope.view);
-                    breads.push(bread);
-                }
-            }
-
-            breads.unshift({
-                name: getPartitionName($scope.partition),
-                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
-            });
-            return breads;
-        };
-
-        $scope.breads = getBreads();
 
         /**
          * 改变视图
@@ -541,7 +490,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
     }])
-
     .controller('rightSidebar', ['$scope', 'GKSession', 'RestFile', '$rootScope', 'GKApi', '$http', function ($scope, GKSession, RestFile, $rootScope, GKApi, $http) {
         $scope.GKSession = GKSession;
         var gird = /[,;；，\s]/g;
@@ -629,5 +577,52 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.toggleFileInfoWrapper = function(){
             $scope.folded = !$scope.folded;
         };
+    }])
+    .controller('header',['$scope','GKPath','$location','$filter',function($scope,GKPath,$location,$filter){
+
+        /**
+         * 面包屑
+         */
+        var getBreads = function () {
+            $scope.path = 'aaa/bbb/ccc/ddd/eee/fff/dsafdsaj/大厦交话费的撒酒疯/的撒娇合肥/dashjfjds/则大声道的萨芬';
+            //$scope.path = 'aaa/bbb/ccc/ddd';
+            var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
+            if (path.length) {
+                var paths = path.split('/');
+                for (var i = 0; i < paths.length; i++) {
+                    bread = {
+                        name: paths[i]
+                    };
+                    var fullpath = '';
+                    for (var j = 0; j <= i; j++) {
+                        fullpath += paths[j] + '/'
+                    }
+                    fullpath = Util.String.rtrim(fullpath, '/');
+                    bread.path = fullpath;
+                    bread.url = '#' + GKPath.getPath($scope.partition, $scope.path, $scope.view);
+                    breads.push(bread);
+                }
+            }
+
+            breads.unshift({
+                name: $filter('getPartitionName')($scope.partition),
+                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
+            });
+            return breads;
+        };
+
+        /**
+         * 分析路径获取参数
+         * @type {*}
+         */
+        $scope.$on('$locationChangeSuccess', function(){
+            var pathArr = $location.path().split('/');
+            $scope.partition = pathArr[1]; //当前的分区
+            $scope.path = pathArr[2]||'';  //当前的文件路径
+            $scope.view = pathArr[3] || 'list'; //当前的视图模式
+            $scope.breads = getBreads();
+        });
+
+        console.log($location);
     }])
 ;

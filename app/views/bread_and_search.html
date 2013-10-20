@@ -1,0 +1,20 @@
+<div class="c_f_after bread_and_search_wrapper" ng-class="searching?'searching':''" ng-click="showSearch()">
+    <div class="f_l dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
+        <a href="javascript:void(0)" dropdown-toggle><i class="icon-double-angle-left"></i></a>
+        <ul class="dropdown-menu">
+            <li ng-repeat="hideBread in hideBreads">
+                <a href="{{brehideBreadad.url}}">{{hideBread.name}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="bread" ng-style="breadStyle">
+        <ul class="bread_list">
+            <li class="bread_item" ng-repeat="bread in breads">
+                <a href="{{bread.url}}">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
+            </li>
+        </ul>
+    </div>
+    <i class="f_r icon-search icon-large"></i>
+    <input type="text" value="" name="keyword" id="keyword" ng-style="inputStyle" ng-blur="hideSearch()" placeholder="请输入关键字" autocomplete="off"/>
+
+</div>

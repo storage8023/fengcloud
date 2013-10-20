@@ -329,6 +329,7 @@ angular.module('gkClientIndex.directives', [])
                 jQuery.contextMenu({
                     selector: '.file_list .list_body',
                     reposition: false,
+                    zIndex:99,
                     animation: {
                         show: "show",
                         hide: "hide"
@@ -490,6 +491,67 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch('file.formatTag', function () {
                     jQuery($element).importTags($scope.file.formatTag||'');
                 });
+
+            }
+        }
+    }])
+    .directive('breadsearch', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/bread_and_search.html",
+            link: function ($scope, $element) {
+                $scope.searching = false;
+                var bread = $element.find('.bread');
+                var searchIcon = $element.find('.icon-search');
+                var eleWidth = $element.width();
+                var hideBread = $element.find('.hide_bread');
+                $scope.showSearch = function(){
+                    $scope.searching = true;
+                    var inputWidth = eleWidth-bread.outerWidth(true) - searchIcon.outerWidth(true);
+                    if(inputWidth<200){
+                        inputWidth = 200;
+                        $scope.breadStyle = {
+                            'max-width':eleWidth - inputWidth - searchIcon.outerWidth(true)-hideBread.outerWidth(true)
+                        };
+                    }
+                    $scope.inputStyle = {
+                        width: inputWidth
+                    };
+                    setTimeout(function(){
+                        $element.find('input[name="keyword"]').focus();
+                    },0)
+                };
+
+                $scope.hideSearch = function(){
+                    $scope.searching = false;
+                }
+
+                $scope.hideBreads = [];
+                var setBreadUI = function(){
+                    console.log($element.width());
+                    var breadWidth = $element.width() - searchIcon.outerWidth(true)-20;
+                    $scope.breadStyle = {
+                        'max-width':breadWidth
+                    };
+                    var breadListWidth = $element.find('.bread_list').width();
+                    var count  = 0;
+                    while(count<100 && breadListWidth>breadWidth){
+                        $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
+                        $element.find('.bread_list .bread_item').eq(0).remove();
+                        breadListWidth = $element.find('.bread_list').width();
+                        //console.log(breadListWidth);
+                        count ++;
+                    }
+                }
+                setTimeout(function(){
+                    setBreadUI();
+                    $(window).bind('resize',function(){
+                        $scope.$apply(function(){
+                            setBreadUI();
+                        })
+                    })
+                },0);
 
             }
         }

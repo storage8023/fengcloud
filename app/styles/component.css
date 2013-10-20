@@ -76,6 +76,7 @@
     line-height: 0;
     border:4px solid transparent;
     border-left-color: #7f8999;
+    border-right: 0;
 }
 .gk_right_arrow{
     display: inline-block;
