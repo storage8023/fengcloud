@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html ng-app = "gkPersonalApp">
+<head>
+    <title>personalInformation</title>
+    <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
+    <link rel = "stylesheet" href = "../styles/file.css" type = "text/css" />
+    <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
+</head>
+<body ng-controller = "personalCtrl">
+    <div id = "personal-wrapper"  class = "personal-wrapper-slide">
+        <div id = "personal-header">
+            <h1>个人信息</h1>
+        </div>
+        <div id = "personal-information" class="c_f_after">
+            <div class = "personal-picture f_l">
+                <a href = "javascript:;" title = "picture">
+                    <img src = "../images/deputy/picture.jpg" alt = "picture" />
+                </a>
+            </div>
+            <div class = "personal-message f_l">
+                <h2 class = "personal-username">
+                    <span title="{{guser_info.username}}">{{guser_info.username}}</span>
+                </h2>
+                <div class = "personal-email">
+                    <span title="{{guser_info.email}}">< {{guser_info.email}} ></span>
+                </div>
+                <ul class = "personal-contact">
+                    <li class="f_l">
+                        <span>电话: </span>
+                    </li>
+                    <li class="f_l personal-contact-phone">
+                        <span title="{{guser_info.call}}">{{guser_info.call}}</span>
+                    </li>
+                    <li class="f_l">
+                        <span>已使用: </span>
+                    </li>
+                    <li class="f_l personal-contact-stored">
+                        <span title="{{size_space}}">{{size_space}}</span>
+                    </li>
+                </ul>
+            </div>
+            <ul class = "personal-function f_r">
+                <li class="personal-function-management">
+                    <a href = "http://api.gokuai.com/account/info?token=[access_token]&sign=[请求签名]" title = "管理我的设备" >
+                        管理我的设备
+                    </a>
+                </li>
+                <li class="personal-function-software">
+                    <a href = "http://api.gokuai.com/account/info?token=[access_token]&sign=[请求签名]" title = "修改个人信息" >
+                          修改个人信息
+                    </a>
+                </li>
+                <li class="personal-function-cancellation">
+                    <a href = "javascript:;" title = "注销账号" >
+                        注销账号
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div id = "personal-title" class="c_f_after">
+            <div class = "personal-newteam f_r">
+                <a href = "#" title  = "创建一个团队">
+                    <span>创建一个团队</span>
+                </a>
+            </div>
+            <div class = "personal-myteam f_l">
+                <span>我的团队</span>
+            </div>
+        </div>
+        <div id = "personal-management" >
+            <!--noadministrator></noadministrator-->
+            <div class = "personal-management-admin scrollbar">
+                <administrator ng-repeat = "perteam in pernewgSideTreeList"></administrator>
+                <personaladd></personaladd>
+            </div>
+        </div>
+        <div id = "personal-footer">
+             <div class = "personal-close">
+                 <input type = "button" value = "关闭" class = "personal-close-button" />
+             </div>
+         </div>
+    </div>
+    <script src="../bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src="../bower_components/jquery/jquery.js" type="text/javascript"></script>
+    <script src = "../scripts/directives/directives.js" type="text/javascript"></script>
+    <script src = "../scripts/controllers/controllers.js" type="text/javascript"></script>
+    <script src = "../scripts/interface.js" type="text/javascript"></script>
+    <script src = "../scripts/app.js" type="text/javascript"></script>
+    <script src = "../scripts/services/services.js" type="text/javascript"></script>
+</body>
+</html>

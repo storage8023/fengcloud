@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html ng-app ="gkSharingsettingsApp">
+<head>
+    <title>sharingsettings</title>
+    <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
+    <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
+    <link rel = "stylesheet" href = "../styles/file.css" type = "text/css" />
+</head>
+<body ng-controller = "sharingsettingsCtrl">
+<div id = "sharing-wrapper" class = "sharing-wrapper-slide">
+    <div class = "sharing-header">
+        <h1>共享设置</h1>
+    </div>
+    <div class = "sharing-container ">
+        <div class = "sharing-content c_f_after">
+            <div class = "sharing-content-search">
+                <h3 class="f_l">共享参与人</h3>
+                <input type = "text" class= "search f_r" value = "ddd" ng-model='username' />
+            </div>
+            <div class = "sharing-content-group scrollbar ">
+                <ul class = "sharing-group" >
+                    <sharingsettings  ng-repeat = "sharing in sharingsettings | filter: username"></sharingsettings>
+                </ul>
+
+            </div>
+            <div class = "sharing-add">
+                <p>添加共享参与人</p>
+
+                <div class = "f_l">
+                    <input class= "sharing-add-frame-text" type = "text" value = "输入人名、邮箱地址或者组名" />
+                    <input class = "sharing-add-frame-competence f_l" type = "button" value = "编辑者" />
+                    <!--ul class = "sharing-add-frame-com">
+                        <li ng-click = "">拥有者</li>
+                        <li ng-click = "">编辑者</li>
+                        <li ng-click = "">查看者</li>
+                    </ul-->
+                    <input class="sharing-add-frame-cancel f_r" type = "button" value = "取消" />
+                    <input class = "sharing-add-frame-add f_r" type = "button" value = "添加" />
+                </div>
+                <span>从联系人中选择...</span>
+            </div>
+        </div>
+        <div class = "sharing-footer">
+            <div class = "sharing-footer-determine-close">
+                <input class = "sharing-footer-save" type = "button" value = "保存设置" />
+                <input class = "sharing-footer-close" type = "button" value = "取消" />
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../bower_components/angular/angular.js" type="text/javascript"></script>
+<script src = "../scripts/controllers/controllers.js" type="text/javascript"></script>
+<script src = "../scripts/directives/directives.js" type="text/javascript"></script>
+<script src = "../scripts/services/services.js" type="text/javascript"></script>
+<script src = "../scripts/interface.js" type="text/javascript"></script>
+<script src = "../scripts/app.js" type="text/javascript"></script>
+</body>
+</html>
+
+
