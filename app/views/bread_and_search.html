@@ -3,14 +3,14 @@
         <a href="javascript:void(0)" dropdown-toggle><i class="icon-double-angle-left"></i></a>
         <ul class="dropdown-menu">
             <li ng-repeat="hideBread in hideBreads">
-                <a href="{{brehideBreadad.url}}">{{hideBread.name}}</a>
+                <a href="javascript:void(0)" ng-click="selectBread(hideBread)">{{hideBread.name}}</a>
             </li>
         </ul>
     </div>
     <div class="bread" ng-style="breadStyle">
         <ul class="bread_list">
             <li class="bread_item" ng-repeat="bread in breads">
-                <a href="{{bread.url}}">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
+                <a  ng-click="selectBread(bread,$event)" href="javascript:void(0)">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
             </li>
         </ul>
     </div>

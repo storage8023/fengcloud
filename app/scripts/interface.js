@@ -20,7 +20,8 @@
      */
     getFileList: function (params) {
         try {
-            return gkClient.gGetFileList(JSON.stringify(params));
+            console.log(params);
+            return JSON.parse(gkClient.gGetFileList(JSON.stringify(params)));
         } catch (e) {
             this._handleException(e);
         }
@@ -36,7 +37,7 @@
      */
     getSideTreeList: function (params) {
         try {
-            return gkClient.gSideTreeList(JSON.stringify(params));
+            return JSON.parse(gkClient.gSideTreeList(JSON.stringify(params)));
         } catch (e) {
             this._handleException(e);
         }

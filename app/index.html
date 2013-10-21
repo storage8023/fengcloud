@@ -34,7 +34,7 @@
     <div class="account">
         <div class="account_info">
             <img class="photo" ng-src="{{User.photourl}}" alt=""/>
-            <span class="name">{{User.username}}</span>
+            <span class="name">{{User.member_name}}</span>
             <i class="icon-envelope icon-large"></i>
         </div>
     </div>
@@ -54,10 +54,9 @@
 </header>
 <div class="main">
     <div ng-include="'views/left_sidebar.html'"></div>
-
-    <!--<div class="content">-->
-        <!--<div ng-view></div>-->
-    <!--</div>-->
+    <div class="content">
+        <div ng-view></div>
+    </div>
     <aside class="right_sidebar" ng-controller="rightSidebar">
         <div class="no_file" ng-show="!selectedFile || !selectedFile.length">
             <div>我的文件夹</div>

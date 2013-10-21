@@ -89,7 +89,10 @@ angular.module('gkClientIndex.directives', [])
                  * @param file
                  */
                 $scope.handleDblClick = function ($event, file) {
-                    $location.path(GKPath.getPath($scope.partition, file.path, $scope.view));
+                    $location.search({
+                        path:file.path,
+                        view:$scope.view
+                    });
                 };
 
                 /**
@@ -154,7 +157,10 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.enterPress = function () {
                     if (selectedFile && selectedFile.length) {
-                        $location.path(GKPath.getPath($scope.partition, selectedFile[0].path, $scope.view));
+                        $location.search({
+                            path:selectedFile[0].path,
+                            view:$scope.view
+                        });
                     }
                 };
 
@@ -494,7 +500,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', [function () {
+    .directive('breadsearch', ['$location',function ($location) {
         return {
             replace: true,
             restrict: 'E',
@@ -505,11 +511,11 @@ angular.module('gkClientIndex.directives', [])
                 var searchIcon = $element.find('.icon-search');
                 var eleWidth = $element.width();
                 var hideBread = $element.find('.hide_bread');
-                $scope.showSearch = function(event){
-                    if($(event.target).hasClass('bread')
-                        || $(event.target).parents('.bread').size()
-                        || $(event.target).hasClass('searching_label')
-                        || $(event.target).parents('.searching_label').size()){
+                $scope.showSearch = function($event){
+                    if($($event.target).hasClass('bread')
+                        || $($event.target).parents('.bread').size()
+                        || $($event.target).hasClass('searching_label')
+                        || $($event.target).parents('.searching_label').size()){
                         return;
                     }
                     $scope.searching = true;
@@ -544,6 +550,14 @@ angular.module('gkClientIndex.directives', [])
                         $scope.searching = false;
                     })
                 })
+
+                $scope.selectBread = function(bread,$event){
+                    $location.search({
+                        path:bread.path,
+                        view:$scope.view
+                    });
+                    $event.stopPropagation();
+                };
             }
         }
     }]);

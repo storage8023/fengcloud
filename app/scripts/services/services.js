@@ -7,7 +7,11 @@ angular.module('gkClientIndex.services', [])
         return {
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
-                return '/' + paramArr.join('/');
+                var params = {
+                  path:paramArr[1],
+                  view:paramArr[2]
+                };
+                return '/' + paramArr[0]+'?'+jQuery.param(params);
             }
         }
     })

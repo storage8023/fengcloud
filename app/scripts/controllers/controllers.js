@@ -4,7 +4,8 @@
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile','$rootScope', function ($scope, $location, GKPath, GKFile,$rootScope) {
-        $rootScope.User = gkClientInterface.getUser();
+        $rootScope.PAGE_CONFIG = {};
+        $rootScope.PAGE_CONFIG.user = $rootScope.User = gkClientInterface.getUser();
         /**
          * 对获取的树数据进行再处理
          */
@@ -39,7 +40,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return newData;
         };
 
-        var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'});
+        var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
         var myMount = {},orgMount=[];
         angular.forEach(sideOrgList,function(value){
             if(value.orgid==0){
@@ -48,22 +49,26 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 orgMount.push(value);
             }
         });
-
-
+        $rootScope.PAGE_CONFIG.mountId = myMount.mountid;
         $scope.treeList = [
-            { "label": "我的文件", data: {path: ''}, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid}), 'org')},
-            { "label": "团队的文件", "children": dealTreeDat(orgMount)},
-            { "label": "智能文件夹", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'}), 'magic')}
+            { "label": "我的文件", data: {path: ''}, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'org')},
+            { "label": "团队的文件", "children": dealTreeData(orgMount)},
+            { "label": "智能文件夹", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'], 'magic')}
         ];
+
+        $scope.initialSelection = $scope.treeList[0];
 
         /**
          * 选中树节点的处理函数
          * @param branch
          */
         $scope.handleSelect = function (branch) {
-            $rootScope.File = GKFile.dealFileList([branch.data])[0];
-            $location.path(GKPath.getPath('myfile ', branch.data.path, 'list'));
-
+            $rootScope.PAGE_CONFIG.mountId = myMount.mountid;
+            $rootScope.PAGE_CONFIG.file =  $rootScope.File = GKFile.dealFileList([branch.data])[0];
+            $location.search({
+                path:branch.data.path,
+                view:'list'
+            });
         };
 
         /**
@@ -72,13 +77,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleExpand = function (branch) {
             if (branch.expanded) {
-                branch.children = dealFileData(gkClientInterface.getFileList({webpath: branch.data.path, dir: 1, mountid: 1}));
+                branch.children = dealFileData(gkClientInterface.getFileList({webpath: branch.data.path, dir: 1, mountid: $rootScope.PAGE_CONFIG.mountId})['list']);
             }
         };
 
     }])
     .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope) {
-
+        console.log($routeParams);
         /**
          * 分析路径获取参数
          * @type {*}
@@ -86,16 +91,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var pathArr = $location.path().split('/');
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
         $scope.partition = pathArr[1]; //当前的分区
-        $scope.view = $routeParams ? $routeParams.view || '' : ''; //当前的视图模式
+        $scope.view =  $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name';
+
+        console.log($scope.view);
         /**
          * 文件列表数据
          */
         var getFileData = function (debug) {
             var fileList = gkClientInterface.getFileList({
                 webpath: $scope.path,
-                debug: debug
-            });
+                mountid: $rootScope.PAGE_CONFIG.mountId
+            })['list'];
+
             return GKFile.dealFileList(fileList);
         };
 
@@ -588,8 +596,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 面包屑
          */
         var getBreads = function () {
-            $scope.path = 'aaa/bbb/ccc/ddd/eee/fff/宁波大师傅十大/dsadsaf/宁波大师傅十大/fff/宁波大师傅十大/fff/宁波大师傅十大';
-            //$scope.path = 'aaa/bbb/ccc/ddd';
             var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
             if (path.length) {
                 var paths = path.split('/');
@@ -603,14 +609,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                     fullpath = Util.String.rtrim(fullpath, '/');
                     bread.path = fullpath;
-                    bread.url = '#' + GKPath.getPath($scope.partition, $scope.path, $scope.view);
+                    bread.url = '#' + GKPath.getPath($scope.partition,bread.path,$scope.view);
                     breads.push(bread);
                 }
             }
 
             breads.unshift({
                 name: $filter('getPartitionName')($scope.partition),
-                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
+                url: '#' + GKPath.getPath($scope.partition, '',$scope.view)
             });
             return breads;
         };
@@ -621,9 +627,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$on('$locationChangeSuccess', function(){
             var pathArr = $location.path().split('/');
+            var params = $location.search();
             $scope.partition = pathArr[1]; //当前的分区
-            $scope.path = pathArr[2]||'';  //当前的文件路径
-            $scope.view = pathArr[3] || 'list'; //当前的视图模式
+            $scope.view = params.view||'list'; //当前的视图模式
+            $scope.path =  params.path||'';  //当前的文件路径
             $scope.breads = getBreads();
         });
 
