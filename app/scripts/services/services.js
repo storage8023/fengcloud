@@ -70,7 +70,7 @@ angular.module('gkClientIndex.services', [])
             getUser: function () {
                 return gkClientInterface.getUser();
             },
-            saveTolocal: function (params) {
+            saveToLocal: function (params) {
                 gkClientInterface.saveToLocal(params);
             },
             del: function (params) {
