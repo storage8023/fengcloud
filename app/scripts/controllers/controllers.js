@@ -39,9 +39,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return newData;
         };
 
+        var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'});
+        var myMount = {},orgMount=[];
+        angular.forEach(sideOrgList,function(value){
+            if(value.orgid==0){
+                myMount=value;
+            }else{
+                orgMount.push(value);
+            }
+        });
+
+
         $scope.treeList = [
-            { "label": "我的文件", data: {path: ''}, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: 1}), 'org')},
-            { "label": "团队的文件", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'org'}), 'org')},
+            { "label": "我的文件", data: {path: ''}, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid}), 'org')},
+            { "label": "团队的文件", "children": dealTreeDat(orgMount)},
             { "label": "智能文件夹", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'}), 'magic')}
         ];
 
