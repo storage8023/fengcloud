@@ -191,7 +191,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         GK.createFolder({
                             webpath: webpath,
                             dir: 1,
-                            mountid:$rootScope.PAGE_CONFIG.mountid
+                            mountid:$rootScope.PAGE_CONFIG.mountId
                         }).then(function () {
                                 var newFileData = getFileData();
                                 $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
@@ -209,7 +209,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var file = $scope.selectedFile[0];
                     GK.lock({
                         webpath: file.path,
-                        mountid:$rootScope.PAGE_CONFIG.mountid
+                        mountid:$rootScope.PAGE_CONFIG.mountId
                     }).then(function () {
                             file.lock = 1;
                             file.lock_member_name = $rootScope.User.username;
@@ -821,7 +821,6 @@ angular.module('gkNewsApp.controllers', [])
                         printDate.push({"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
                     }
                 }
-                console.log(yesterDate);
                 printDateNew.push(printDate);
             }else {
                 for(var j = 0;j<dates[i].length;j++){

@@ -55,13 +55,17 @@
     },
     addFile: function (params) {
         try {
-            return JSON.parse(gkClient.gAdd(JSON.stringify(params)));
+            console.log(params);
+            var re = gkClient.gAdd(JSON.stringify(params));
+            console.log(re);
+            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }
     },
     createFolder: function (params) {
         try {
+            console.log(params);
             return JSON.parse(gkClient.newFile(JSON.stringify(params)));
         } catch (e) {
             this._handleException(e);
