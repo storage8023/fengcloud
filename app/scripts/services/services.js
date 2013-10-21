@@ -18,9 +18,6 @@ angular.module('gkClientIndex.services', [])
         return {
             handleClientException: function (error) {
                 alert(error.message);
-            },
-            handleAjaxException: function () {
-
             }
         }
     }])
@@ -167,15 +164,6 @@ angular.module('gkClientIndex.services', [])
                 return '1e0776dbece2cb5c6186fca0d9a696cd:q79nbtXOaYE20ElUESgwddpSsBI=';
                 return gkClientInterface.getApiAuthorization(params);
             }
-        }
-    }])
-    .factory('GKSession', ['GK', function (GK) {
-        return {
-            User: GK.getUser(),
-            File: {
-                webpath: ''
-            },
-            selectedFiles:[]
         }
     }])
     .factory('GKFile', [function () {

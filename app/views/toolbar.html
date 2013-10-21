@@ -19,10 +19,10 @@
                ng-class="view=='thumb'?'active':''"><i></i></a>
     </span>
     <button class="f_r">
-        <a href="javascrip:void(0)" class="opt opt_sync sync_state_{{GKSession.File.status}}" ng-click="toggleSync()">
+        <a href="javascrip:void(0)" class="opt opt_sync sync_state_{{File.status}}" ng-click="toggleSync()">
             <i></i>
-            <span ng-if="GKSession.File.status!=4">同步</span>
-            <span ng-if="GKSession.File.status==4">已同步</span>
+            <span ng-if="File.status!=4">同步</span>
+            <span ng-if="File.status==4">已同步</span>
         </a>
     </button>
 </div>

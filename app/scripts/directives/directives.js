@@ -67,7 +67,6 @@ angular.module('gkClientIndex.directives', [])
                         unSelectAllFile();
                         if (index > lastIndex) {
                             for (var i = lastIndex; i <= index; i++) {
-                                console.log(i);
                                 selectFile(i, true);
                             }
                         } else if (index < lastIndex) {
@@ -525,7 +524,6 @@ angular.module('gkClientIndex.directives', [])
                         $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
                         $element.find('.bread_list .bread_item').eq(0).remove();
                         breadListWidth = $element.find('.bread_list').width();
-                        console.log(count);
                         count ++;
                     }
                 };
