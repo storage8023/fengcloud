@@ -81,7 +81,7 @@ var gkClientInterface = {
         }
     },
     getUser:function(){
-        return JSON.parse(gkClient.gUserinfo());
+        return JSON.parse(gkClient.gUserInfo());
     },
     saveToLocal:function(params){
         try {
