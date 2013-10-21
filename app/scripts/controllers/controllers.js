@@ -188,11 +188,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
-                        GK.createFolder({
-                            webpath: webpath,
-                            dir: 1,
-                            mountid:$rootScope.PAGE_CONFIG.mountId
-                        }).then(function () {
+                       var params = {
+                           webpath: webpath,
+                           dir: 1,
+                           mountid:$rootScope.PAGE_CONFIG.mountId
+                       };
+                        GK.createFolder(params).then(function () {
                                 var newFileData = getFileData();
                                 $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
 

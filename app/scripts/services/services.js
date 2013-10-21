@@ -38,9 +38,9 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
             createFolder: function (params) {
-                var re = gkClientInterface.addFile(params);
+                var re = gkClientInterface.createFolder(params);
                 var deferred = $q.defer();
-                if (re.error == 0) {
+                if (!re || re.error == 0) {
                     deferred.resolve(re);
                 } else {
                     deferred.reject(re);

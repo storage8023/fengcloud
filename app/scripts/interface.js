@@ -55,9 +55,8 @@
     },
     addFile: function (params) {
         try {
-            console.log(params);
+            //console.log(params);
             var re = gkClient.gAdd(JSON.stringify(params));
-            console.log(re);
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
@@ -65,8 +64,7 @@
     },
     createFolder: function (params) {
         try {
-            console.log(params);
-            return JSON.parse(gkClient.newFile(JSON.stringify(params)));
+            gkClient.gNewFile(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
