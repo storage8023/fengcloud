@@ -3,8 +3,8 @@
 <head>
     <title>login</title>
     <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
-    <script src="./bower_components/angular/angular.js" type = "text/javascript"></script>
-    <script src="./bower_components/angular/angular-md5.js" type = "text/javascript"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src = "bower_components/angular/angular-md5.js"></script>
     <style type = "text/css">
         #login-wrapper{
             width:300px;
@@ -22,33 +22,40 @@
 <body>
 <div id = "login-wrapper">
     <form name = "myForm"  ng-controller = "loginCtrl"  ng-submit="postData() ">
-        登录：<input type = "text" size = "25" name = "userName" ng-model = "username" /><br /><br />
-        密码：<input type = "password" size= "25" name = "userPassword" ng-model ="password" /><br /><br/>
-        <input type = "submit"  value = "确定" />
+            用户:<input type = "text" size = "25" name = "username" ng-model = "username" /><br /><br />
+            密码:<input type = "password" size= "25" name = "userpassword" ng-model ="password" /><br /><br/>
+        <input type = "submit"  value = "登录" />
     </form>
 </div>
 <script type = "text/javascript">
-    //现在已经是像服务器提交数据
-    function postData(caller,http){
-        caller.postData = function(){
-            if(typeof this.username === 'undefined' || typeof this.password === 'undefined') return false;
-            gkClient.gLogin(JSON.stringify({username: this.username,password: this.password}), function (type, error, message) {
-                if(error === 0){
-                    alert("登录成功");
-                }else {
-                    alert(message);
-                }
+    angular.module('mylogin', [
+        'angular-md5',
+        'controllers'
+    ]);
+    var app = angular.module("controllers",[]);
+    app.controller("loginCtrl",['$scope', 'md5', function($scope, md5,$http) {
+
+	    postData($scope,$http);
+        console.log($scope,$http);
+        function postData(caller,http){
+            $scope.$watch('password' ,function() {
+                $scope.userPassword = md5.createHash($scope.password || '');
+
             });
+            caller.postData = function(){
+                if(typeof this.username === 'undefined' || typeof this.password === 'undefined') return false;
+
+                gkClient.gLogin(JSON.stringify({username: this.username,password: this.userPassword}), function (type, error, message) {
+                    if(error === 0){
+                        alert("登入成功");
+                    }else {
+                        alert(message);
+                    }
+                });
+            }
         }
-    }
-    var app = angular.module("mylogin",[]);
-    app.controller("loginCtrl",function($scope,$http){
-        postData($scope,$http);
-    });
 
-    function gLoginResult(){
-
-    }
+    }]);
 </script>
 </body>
 </html>
