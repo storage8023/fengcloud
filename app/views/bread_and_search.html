@@ -1,5 +1,5 @@
-<div class="c_f_after bread_and_search_wrapper" ng-class="searching?'searching':''" ng-click="showSearch()">
-    <div class="f_l dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
+<div class="bread_and_search_wrapper" ng-class="searching?'searching':''" ng-click="showSearch($event)">
+    <div class="dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
         <a href="javascript:void(0)" dropdown-toggle><i class="icon-double-angle-left"></i></a>
         <ul class="dropdown-menu">
             <li ng-repeat="hideBread in hideBreads">
@@ -14,7 +14,17 @@
             </li>
         </ul>
     </div>
-    <i class="f_r icon-search icon-large"></i>
-    <input type="text" value="" name="keyword" id="keyword" ng-style="inputStyle" ng-blur="hideSearch()" placeholder="请输入关键字" autocomplete="off"/>
-
+    <i class="icon-search icon-large"></i>
+    <input type="text" value="" name="keyword" id="keyword" ng-style="inputStyle" autocomplete="off"/>
+    <div class="searching_label dropdown">
+        <a href="javascript:void(0)" dropdown-toggle><span>{{path|baseName}}</span><i class="gk_down_arrow"></i></a>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="javascript:void(0)">{{path|baseName}}</a>
+            </li>
+            <li>
+                <a href="javascript:void(0)">{{partition|getPartitionName}}</a>
+            </li>
+        </ul>
+    </div>
 </div>

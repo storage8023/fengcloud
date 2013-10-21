@@ -584,7 +584,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 面包屑
          */
         var getBreads = function () {
-            $scope.path = 'aaa/bbb/ccc/ddd/eee/fff/dsafdsaj/大厦交话费的撒酒疯/的撒娇合肥/dashjfjds/则大声道的萨芬';
+            $scope.path = 'aaa/bbb/ccc/ddd/eee/fff/宁波大师傅十大/dsadsaf/宁波大师傅十大/fff/宁波大师傅十大/fff/宁波大师傅十大';
             //$scope.path = 'aaa/bbb/ccc/ddd';
             var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
             if (path.length) {

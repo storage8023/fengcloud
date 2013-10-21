@@ -77,7 +77,6 @@ textarea {
     height:16px;
     overflow:visible;
     width:12px;
-
 }
 .scrollbar::-webkit-scrollbar-button {
     height:0;
@@ -111,7 +110,6 @@ textarea {
     min-height:28px;
     padding:100px 0 0;
     box-shadow:inset 1px 1px 0 rgba(0,0,0,.1),inset 0 -1px 0 rgba(0,0,0,.07);
-    -webkit-border-radius: 6px;
 }
 .scrollbar::-webkit-scrollbar-thumb:horizontal {
     border-width:6px 1px 1px;

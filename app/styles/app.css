@@ -92,51 +92,74 @@ header .bread_and_search_wrapper{
     border-radius: 4px;
     background: #fff;
     height: 32px;
+    position: relative;
+}
+header .bread_and_search_wrapper .searching_label{
+    position: absolute;
+    left:0;
+    line-height: 30px;
+    background-color: #ecf0f5;
+    border-radius: 4px 0 0 4px;
+    width: 110px;
+    border-right: 1px solid #c6cacb;
+    display: none;
+    padding: 0 5px;
+}
+header .bread_and_search_wrapper .searching_label > a {
+
+}
+header .bread_and_search_wrapper .searching_label > a > span{
+    width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+}
+header .bread_and_search_wrapper .searching_label > a > i{
+
 }
 header .bread_and_search_wrapper .bread{
-    float: left;
     border-right: 1px solid transparent;
     border-radius: 4px 0 0 4px;
-;
+    position: absolute;
+    left:10px;
+    right: 220px;
 }
 header .bread_and_search_wrapper input{
-    display: none;
-    float: right;
+    position: absolute;
+    right: 24px;
     height: 24px;
     border: 0 none;
     margin: 4px 0 0 0;
     padding: 0 5px;
-    width: 0;
-    -webkit-transition:width linear 0.1s;
+    width: 200px;
+}
+header .bread_and_search_wrapper .icon-search{
+    position: absolute;
+    right: 5px;
+    top:5px;
 }
 header .bread_and_search_wrapper .hide_bread{
-    margin: 0 0 0 3px;
+   position: absolute;
+   left:3px;
 }
 header .bread_and_search_wrapper .hide_bread > a {
     display: inline-block;
     line-height: 30px;
 }
-header .bread_and_search_wrapper.searching input{
-    display: block;
 
-}
 header .bread_and_search_wrapper .bread_list{
-    float: left;
+ float: left;
+}
 
+header .bread_and_search_wrapper .bread_item{
+    border-right: 1px solid transparent;
+    -webkit-transition:border-color linear 0.1s;
 }
-header .bread_and_search_wrapper.searching .bread{
+header .bread_and_search_wrapper:hover .bread_item
+{
     border-right-color: #c6cacb;
-    background-color: #f3f4f6;
 }
-/*header .bread_and_search_wrapper .bread_item{*/
-    /*border-right: 1px solid transparent;*/
-    /*-webkit-transition:border-color linear 0.1s;*/
-/*}*/
-/*header .bread_and_search_wrapper:hover .bread_item,*/
-/*header .bread_and_search_wrapper.searching .bread_item*/
-/*{*/
-    /*border-right-color: #c6cacb;*/
-/*}*/
 
 /*header .bread_and_search_wrapper .bread_item > *{*/
     /*border-right: 1px solid transparent;*/
@@ -146,9 +169,17 @@ header .bread_and_search_wrapper.searching .bread{
 /*header .bread_and_search_wrapper.searching .bread_item > *{*/
     /*border-right-color: #c6cacb;*/
 /*}*/
+header .bread_and_search_wrapper.searching .bread{
+display: none;
+}
 
-header .bread_and_search_wrapper .icon-search{
-    margin: 5px 5px 0 0;
+header .bread_and_search_wrapper.searching input{
+    width:auto;
+    left:110px;
+}
+header .bread_and_search_wrapper.searching .searching_label{
+display: block;
+    z-index: 99;
 }
 header .back_forward{
     margin: -55px 0 0 7px;

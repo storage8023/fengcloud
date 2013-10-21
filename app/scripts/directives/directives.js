@@ -506,44 +506,29 @@ angular.module('gkClientIndex.directives', [])
                 var searchIcon = $element.find('.icon-search');
                 var eleWidth = $element.width();
                 var hideBread = $element.find('.hide_bread');
-                $scope.showSearch = function(){
-                    $scope.searching = true;
-                    var inputWidth = eleWidth-bread.outerWidth(true) - searchIcon.outerWidth(true);
-                    if(inputWidth<200){
-                        inputWidth = 200;
-                        $scope.breadStyle = {
-                            'max-width':eleWidth - inputWidth - searchIcon.outerWidth(true)-hideBread.outerWidth(true)
-                        };
+                $scope.showSearch = function(event){
+                    if($(event.target).hasClass('bread')
+                        || $(event.target).parents('.bread').size()
+                        || $(event.target).hasClass('searching_label')
+                        || $(event.target).parents('.searching_label').size()){
+                        return;
                     }
-                    $scope.inputStyle = {
-                        width: inputWidth
-                    };
-                    setTimeout(function(){
-                        $element.find('input[name="keyword"]').focus();
-                    },0)
+                    $scope.searching = true;
                 };
-
-                $scope.hideSearch = function(){
-                    $scope.searching = false;
-                }
 
                 $scope.hideBreads = [];
                 var setBreadUI = function(){
-                    console.log($element.width());
-                    var breadWidth = $element.width() - searchIcon.outerWidth(true)-20;
-                    $scope.breadStyle = {
-                        'max-width':breadWidth
-                    };
+                    var breadWidth = $element.find('.bread').width();
                     var breadListWidth = $element.find('.bread_list').width();
                     var count  = 0;
                     while(count<100 && breadListWidth>breadWidth){
                         $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
                         $element.find('.bread_list .bread_item').eq(0).remove();
                         breadListWidth = $element.find('.bread_list').width();
-                        //console.log(breadListWidth);
+                        console.log(count);
                         count ++;
                     }
-                }
+                };
                 setTimeout(function(){
                     setBreadUI();
                     $(window).bind('resize',function(){
@@ -553,6 +538,14 @@ angular.module('gkClientIndex.directives', [])
                     })
                 },0);
 
+                $('body').bind('mousedown',function(event){
+                    $scope.$apply(function(){
+                        if($(event.target).hasClass('bread_and_search_wrapper') || $(event.target).parents('.bread_and_search_wrapper').size()){
+                            return;
+                        }
+                        $scope.searching = false;
+                    })
+                })
             }
         }
     }])
