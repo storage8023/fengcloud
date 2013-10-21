@@ -1,4 +1,4 @@
-var gkClientInterface = {
+﻿var gkClientInterface = {
 
     /**
      * 处理异常
@@ -534,6 +534,34 @@ var gkClientInterface = {
     },
     getApiAuthorization:function(params){
         return gkClient.gGetApiAuthorization(JSON.stringify(params));
+    },
+    getMessage:function(){
+        return gkClient.gGetMessage();
+    },
+    setSettings:function(){
+        gkClient.gSettings();
+    },
+    setClose:function(){
+        gkClient.gClose();
+    },
+    getUserInfo:function(){
+        return gkClient.gUserInfo();
+    },
+    setClearCache:function(){
+        gkClient.gClearChache();
+    },
+    setLogoff:function(){
+        gkClient.gLogoff();
+    },
+    getGetClientInfo:function(){
+        return gkClient.gkClientInfo();
     }
+  //  setClientInfo:function(params){
+ //       return gkClient.gSetClientInfo(JSON.stringify(params));
+ //   }.
+ //   getChangeLanguage:function(){
+ //       return gkClient.gChangeLanguage();
+ //   }
+
 };
 

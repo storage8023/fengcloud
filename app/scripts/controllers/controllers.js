@@ -621,5 +621,489 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
 
-    }])
-;
+    }]);
+angular.module('gkNewsApp.controllers', [])
+    .controller("newsCtrl",function($scope,$filter){
+
+        function gGetMessage(){
+            var updates=[
+                {
+                    "date":"2013-10-18",
+                    "dateline":1382101200,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
+                },
+                {
+                    "date":"2013-10-17",
+                    "dateline":1381889522,
+                    "render_text":"杨飞 在 常用图标"
+                },
+                {
+                    "date":"2013-10-17",
+                    "dateline":1381889532,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons."
+                },
+                {
+                    "date":"2013-10-15",
+                    "dateline":1381809662,
+                    "render_text":"杨飞 在 常用图标 下新增了 "
+                },
+                {
+                    "date":"2013-10-15",
+                    "dateline":1381810082,
+                    "render_text":"杨飞 在 常用图标 下新增了aaaaaaaaaaaaaaaaaaa 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
+                },
+                {
+                    "date":"2013-10-15",
+                    "dateline":1381788482,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
+                },
+                {
+                    "date":"2013-10-14",
+                    "dateline":1381702082,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件d"
+                },
+                {
+                    "date":"2013-10-14",
+                    "dateline":1381702082,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件d"
+                },
+                {
+                    "date":"2013-10-14",
+                    "dateline":1381702082,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件d"
+                },
+                {
+                    "date":"2013-10-14",
+                    "dateline":1381702502,
+                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
+                }
+            ];
+            return updates;
+        }
+    /**
+     * 过滤出相同日期
+     * 新消息news
+     * @compare()
+     */
+
+    function compare(dateObj) {
+        var results = []
+            ,i = 0
+            ,j = 0
+            ,len = dateObj.length;
+        results[0] = new Array();
+        results[0].push( dateObj[0] );
+        for(;i<len - 1;i++){
+            var next = dateObj[i+1],k = 0,klen = results[j].length;
+            var value = results[j][results[j].length - 1];
+            if(value.date === next.date){
+                results[j].push(next);
+            }
+            else{
+                j++;
+                results[j] = new Array();
+                results[j].push(next);
+            }
+        }
+        return results;
+    }
+
+    /**
+     * 返回日期的时间戳
+     * 新消息news
+     * @fetchDateline()
+     */
+    function fetchDateline(date) {
+        var year = date.getFullYear()
+            ,month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() + 1 : date.getMonth() + 1
+            ,day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        return year+'/'+month+'/'+ day;
+    }
+
+    /**
+     *   日期按yyyy-MM-dd格式输出
+     *   新消息news
+     *   @filterDay()
+     */
+    Date.prototype.format =function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(), //day
+            "h+" : this.getHours(), //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+            "S" : this.getMilliseconds() //millisecond
+        };
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4- RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    };
+
+    Date.prototype.yesterformat =function(yesterformat)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate()-1, //day
+            "h+" : this.getHours(), //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3), //quarter
+            "S" : this.getMilliseconds() //millisecond
+        };
+        if(/(y+)/.test(yesterformat)) yesterformat=yesterformat.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4- RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(yesterformat))
+            yesterformat = yesterformat.replace(RegExp.$1,
+                RegExp.$1.length==1? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return yesterformat;
+    };
+
+    /**
+     * 过滤今天，昨天或者以前
+     * 新消息news
+     * @filterDay()
+     */
+    function filterDay(filter,dates) {
+        var date = filter('date');
+        var printDateNew = [];
+        var d = new Date();
+        var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() /1000- d.getTimezoneOffset();
+        var yesterDate = nowDate -  3600 * 24;
+        for(var i = 0;i<dates.length;i++){
+            var printDate = [];
+            var currentDate = dates[i][0].dateline;
+            if( currentDate >= nowDate ){
+                for(var j = 0;j<dates[i].length;j++){
+                    if(j === 0){
+                        var newsDay = new Date().format('MM-dd');
+                        printDate.push({'date':'今天， '+newsDay, "dateline":dates[i][j]['dateline'],render_text: dates[i][j]['render_text']});
+                    }else{
+                        printDate.push({"dateline":dates[i][j]['dateline'],render_text: dates[i][j]['render_text']});
+                    }
+                }
+                printDateNew.push(printDate);
+            }
+            else if( currentDate >= yesterDate ){
+                for(var j = 0;j<dates[i].length;j++){
+                    if(j === 0){
+                        var yesterDay = new Date().yesterformat('MM-dd');
+                        printDate.push({"date":'昨天， '+yesterDay,"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                    }else{
+                        printDate.push({"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                    }
+                }
+                console.log(yesterDate);
+                printDateNew.push(printDate);
+            }else {
+                for(var j = 0;j<dates[i].length;j++){
+                    if(j === 0){
+                        printDate.push({'date': dates[i][j]['date'],"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
+                    }else{
+                        printDate.push({"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
+                    }
+                }
+                printDateNew.push(printDate);
+            }
+        }
+        return printDateNew;
+    }
+
+    /**
+     * 单击向上向下滑动按钮
+     * 新消息news
+     * button - #newsbtn
+     */
+    var newsControls = function(){
+        jQuery("#newsbtn").click(function(){
+            var data = gGetMessage()
+                ,filterData = compare(data) //过滤出相同日期
+                ,equalData = filterDay($filter, filterData);
+            $scope.equalDataNew = equalData;
+            $scope.newsbtn = 'SideUp';
+            jQuery(".news-wrapper").slideToggle(500);
+        });
+        jQuery("#newsPackUp").click(function(){
+            jQuery(".news-wrapper").slideUp(500);
+        });
+    };
+    newsControls();
+});
+
+
+angular.module("gkPersonalApp.controllers",[])
+    .controller("personalCtrl",function($scope){
+    var gUserInfo = [
+        {
+            "org_id":1,
+            "id":2,
+            "email":"xugetest1@126.com",
+            "username":"海浩",
+            "org_username":"123",
+            "photourl":"http://oss.aliyuncs.com/gkavatar2/39/398fd1f3fb5f3f7b1077d623c5ade70b1c63b50b.jpg",
+            "mount_id":2,
+            "capacity":0,
+            "size":59321948,
+            "org_name":"web开发组",
+            "org_size":108209585,
+            "call":88888888
+        }
+    ];
+    $scope.gSideTreeList = [
+        {
+            "sidetype":0,
+            "name":"够快科技"
+        },
+        {
+            "sidetype":1,
+            "name":"够快科技"
+        },
+        {
+            "sidetype":2,
+            "name":"够快科技"
+        }
+    ];
+
+    function bitSize(num,  decimal) {
+        if (typeof(num) != 'number') {
+            num = Number(num);
+        }
+        if (typeof(decimal) != 'number'){
+            decimal = 2;
+        }
+        if (num < 0) {
+            return '';
+        }
+        var type = new Array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        var j = 0;
+        while (num >= 1024) {
+            if (j >= 5)
+                return num + type[j];
+            num = num / 1024;
+            j++;
+        }
+        if (num == 0) {
+            return num;
+        } else {
+            var dec = 1;
+            for (var i = 0; i < decimal; i++) {
+                dec = dec * 10;
+            }
+            return Math.round(num * dec) / dec + type[j];
+        }
+    }
+
+    function perside(data){
+        var newData = [];
+        for(var i = 0, len = data.length;i<len;i++){
+            if(data[i].sidetype === 0){
+                newData.push({ "name":"够快科技","admin":"超级管理员","management":"管理"});
+            }else if(data[i].sidetype === 1){
+                newData.push({ "name":"够快科技","admin":"管理员","management":"管理"});
+            }else{
+                newData.push(data[i]);
+            }
+        }
+        return newData;
+    }
+    //个人信息
+    $scope.guser_info = gUserInfo[0];
+    $scope.size_space = bitSize($scope.guser_info.size);
+    //团队信息
+    $scope.per_gSideTreeList = $scope.gSideTreeList;
+    $scope.pernewgSideTreeList = perside($scope.per_gSideTreeList);
+    //团队信息再处理
+    console.log($scope.pernewgSideTreeList);
+});
+
+angular.module("gkSiteApp.controllers",[])
+    .controller("siteCtrl",function($scope) {
+        $scope.userInfo = {
+            'auto': 1,
+            'prompt': 1,
+            'recycle': 1,
+            'syncicon': 1,
+            'classic': 0
+        };
+        $scope.postUserInfo = function() {
+            var userInfo = {
+                auto: (typeof $scope.userInfo.auto !== 'number' ) ? $scope.userInfo.auto === true ? 1 : 0 : $scope.userInfo.auto,
+                prompt: (typeof $scope.userInfo.prompt !== 'number') ? $scope.userInfo.prompt === true ? 1 : 0 : $scope.userInfo.prompt,
+                recycle: (typeof $scope.userInfo.recycle !== 'number') ? $scope.userInfo.recycle === true ? 1 : 0 : $scope.userInfo.recycle,
+                syncicon: (typeof $scope.userInfo.syncicon !== 'number') ? $scope.userInfo.syncicon === true ? 1 : 0 : $scope.userInfo.syncicon,
+                classic: (typeof $scope.userInfo.classic !== 'number') ? $scope.userInfo.classic === true ? 1 : 0 : $scope.userInfo.classic
+            };
+            //gkClientInterface.sSetClientInfo(userInfo);
+            console.log(userInfo);
+        }
+    });
+
+angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
+    .controller('contactCtrl', function($scope) {
+        $scope.groups = [
+            {
+                group_name: '够快科技',
+                group_id:222,
+                children: [
+                    {
+
+                        data:111,
+                        label: '人事部'
+                    }
+                ]
+            },
+            {
+                group_name: '牛逼哄哄',
+                group_id:222,
+                children: [
+                    {
+                        group_name: '书生部',
+                        group_id:111
+                    }
+                ]
+            }
+        ];
+
+        $scope.group = [
+            {
+                name:'海浩',
+                email:'123456@qq.com',
+                id:123
+            },
+            {
+                name:'xx',
+                email:'123456@qq.com'
+            }
+        ];
+        $scope.contactTree = function(branch) {
+            $scope.output = branch.data;
+        };
+
+        function fetchData(serverData) {
+            var i = 0
+                ,len = serverData.length
+                ,item = '';
+            for(;i<len;i++){
+                item = JSON.stringify(serverData[i]).replace(/group_name/gi,'label').replace(/group_id/gi, 'data');
+                serverData.splice(i,1,JSON.parse(item));
+            }
+            return serverData;
+        }
+        //点击选择分组按钮
+        jQuery('.selectGroup').click ( function() {
+            var selectGroupButton =  jQuery('.contact-content-team').find('.contact-content-normal');
+            if(jQuery(this).data('group') === '选择') {
+                selectGroupButton.text('选择');
+                jQuery(this).data('group','确定');
+            }else{
+                selectGroupButton.text('确定');
+                jQuery(this).data('group','选择');
+            }
+
+        });
+        //点击单选选择和确定按钮
+        jQuery('.contact-content-group').click( function(e) {
+            if(jQuery('.selectGroup').data('group') === "选择") return;
+            if(e.target.className === "contact-content-normal") {
+                (jQuery(e.target).text() === "选择") ? jQuery(e.target).text('确定') : jQuery(e.target).text('选择');
+            }
+        });
+        //点击确定提交按钮
+        $scope.perPostShare = function() {
+            var shareData = [];
+            $.each(jQuery('.contact-content-team'), function() {
+                if(jQuery(this).find('.contact-content-normal').text() === '确定') {
+                    shareData.push(
+                        {
+                            name: $scope.group[jQuery(this).index()].name,
+                            email: $scope.group[jQuery(this).index()].email,
+                            id: $scope.group[jQuery(this).index()].id
+                        }
+                    )
+                }
+            });
+            // console.log(shareData);
+        };
+        $scope.example_treedata = fetchData($scope.groups);
+    });
+
+angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
+    .controller('viewmemberCtrl', function($scope) {
+        $scope.groups = [
+            {
+                group_name: '够快科技',
+                group_id:222,
+                children: [
+                    {
+
+                        data:111,
+                        label: '人事部'
+                    }
+                ]
+            },
+            {
+                group_name: '牛逼哄哄',
+                group_id:222,
+                children: [
+                    {
+                        group_name: '书生部',
+                        group_id:111
+                    }
+                ]
+            }
+        ];
+        $scope.group = [
+            {
+                name:'海浩',
+                email:'123456@qq.com',
+                id:123
+            },
+            {
+                name:'xx',
+                email:'123456@qq.com'
+            }
+        ];
+        $scope.contactTree = function(branch) {
+            $scope.output = branch.data;
+        };
+
+        function fetchData(serverData) {
+            var i = 0
+                ,len = serverData.length
+                ,item = '';
+            for(;i<len;i++){
+                item = JSON.stringify(serverData[i]).replace(/group_name/gi,'label').replace(/group_id/gi, 'data');
+                serverData.splice(i,1,JSON.parse(item));
+            }
+            return serverData;
+        }
+        $scope.example_treedata = fetchData($scope.groups);
+    });
+
+angular.module("gkSharingsettingsApp.controllers",[])
+    .controller('sharingsettingsCtrl', function($scope) {
+        $scope.sharingsettings = [
+            {
+                name:'大哥',
+                email:'123456@qq.com',
+                id:123
+            },
+            {
+                name:'小弟',
+                email:'123456@qq.com',
+                id:123
+            }
+        ]
+        console.log($scope.sharingsettings);
+    });
+
+
+
+
+
