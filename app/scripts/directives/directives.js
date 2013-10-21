@@ -329,6 +329,7 @@ angular.module('gkClientIndex.directives', [])
                 jQuery.contextMenu({
                     selector: '.file_list .list_body',
                     reposition: false,
+                    zIndex:99,
                     animation: {
                         show: "show",
                         hide: "hide"
@@ -494,8 +495,64 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-;
+    .directive('breadsearch', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/bread_and_search.html",
+            link: function ($scope, $element) {
+                $scope.searching = false;
+                var bread = $element.find('.bread');
+                var searchIcon = $element.find('.icon-search');
+                var eleWidth = $element.width();
+                var hideBread = $element.find('.hide_bread');
+                $scope.showSearch = function(event){
+                    if($(event.target).hasClass('bread')
+                        || $(event.target).parents('.bread').size()
+                        || $(event.target).hasClass('searching_label')
+                        || $(event.target).parents('.searching_label').size()){
+                        return;
+                    }
+                    $scope.searching = true;
+                };
 
+                $scope.hideBreads = [];
+                var setBreadUI = function(){
+                    var breadWidth = $element.find('.bread').width();
+                    var breadListWidth = $element.find('.bread_list').width();
+                    var count  = 0;
+                    while(count<100 && breadListWidth>breadWidth){
+                        $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
+                        $element.find('.bread_list .bread_item').eq(0).remove();
+                        breadListWidth = $element.find('.bread_list').width();
+                        console.log(count);
+                        count ++;
+                    }
+                };
+                setTimeout(function(){
+                    setBreadUI();
+                    $(window).bind('resize',function(){
+                        $scope.$apply(function(){
+                            setBreadUI();
+                        })
+                    })
+                },0);
+
+                $('body').bind('mousedown',function(event){
+                    $scope.$apply(function(){
+                        if($(event.target).hasClass('bread_and_search_wrapper') || $(event.target).parents('.bread_and_search_wrapper').size()){
+                            return;
+                        }
+                        $scope.searching = false;
+                    })
+                })
+            }
+        }
+    }]);
+
+    /**
+     * news
+     */
 angular.module('gkNewsApp.directives', [])
     .directive('update', function() {
         return {
@@ -507,7 +564,9 @@ angular.module('gkNewsApp.directives', [])
             }
         }
     });
-
+/**
+ *  personal
+ */
 angular.module('gkPersonalApp.directives', [])
     .directive('administrator', function() {
         return {
@@ -540,7 +599,9 @@ angular.module('gkPersonalApp.directives', [])
              }
         }
     });
-
+    /**
+     * site
+     */
 angular.module('gkSiteApp.directives', [])
     .directive('contentdevice', function() {
         return {
@@ -593,7 +654,9 @@ angular.module('gkSiteApp.directives', [])
             }
         }
     });
-
+    /**
+     * viewmember
+     */
 angular.module('gkViewmemberApp.directives', [])
     .directive('viewmenmbermembers', function() {
         return {
@@ -606,6 +669,9 @@ angular.module('gkViewmemberApp.directives', [])
             }
         }
     });
+    /**
+     * sharingsettings
+     */
 angular.module('gkSharingsettingsApp.directives', [])
     .directive('sharingsettings', function() {
         return {
@@ -617,7 +683,9 @@ angular.module('gkSharingsettingsApp.directives', [])
             }
         }
     });
-
+    /**
+     * contact
+     */
 angular.module('gkContactApp.directives', [])
     .directive('contactGroupMembers', function() {
         return {

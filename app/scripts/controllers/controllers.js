@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession', 'GKFile', function ($scope, $location, GKPath, GKSession, GKFile) {
-
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKSession', 'GKFile','$rootScope', function ($scope, $location, GKPath, GKSession, GKFile,$rootScope) {
+        $rootScope.User = gkClientInterface.getUser();
         /**
          * 对获取的树数据进行再处理
          */
@@ -42,7 +42,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.treeList = [
             { "label": "我的文件", data: {path: ''}, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: 1}), 'org')},
             { "label": "团队的文件", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'org'}), 'org')},
-            { "label": "其他存储", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'other'}), 'other')},
             { "label": "智能文件夹", "children": dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'}), 'magic')}
         ];
 
@@ -116,56 +115,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             selectedFile.push(file);
         };
 
-
-        var getPartitionName = function (partition) {
-            var partitionName = '';
-            switch (partition) {
-                case 'myfile':
-                    partitionName = '我的文件';
-                    break;
-                case 'teamfile':
-                    partitionName = '团队的文件';
-                    break;
-                case 'smartfolder':
-                    partitionName = '智能文件夹';
-                    break;
-                default :
-                    partitionName = '我的文件';
-                    break;
-            }
-            return partitionName;
-        };
-
-        /**
-         * 面包屑
-         */
-        var getBreads = function () {
-            var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
-            if (path.length) {
-                var paths = path.split('/');
-                for (var i = 0; i < paths.length; i++) {
-                    bread = {
-                        name: paths[i]
-                    };
-                    var fullpath = '';
-                    for (var j = 0; j <= i; j++) {
-                        fullpath += paths[j] + '/'
-                    }
-                    fullpath = Util.String.rtrim(fullpath, '/');
-                    bread.path = fullpath;
-                    bread.url = '#' + GKPath.getPath($scope.partition, $scope.path, $scope.view);
-                    breads.push(bread);
-                }
-            }
-
-            breads.unshift({
-                name: getPartitionName($scope.partition),
-                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
-            });
-            return breads;
-        };
-
-        $scope.breads = getBreads();
 
         /**
          * 改变视图
@@ -541,16 +490,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
     }])
-
     .controller('rightSidebar', ['$scope', 'GKSession', 'RestFile', '$rootScope', 'GKApi', '$http', function ($scope, GKSession, RestFile, $rootScope, GKApi, $http) {
         $scope.GKSession = GKSession;
         var gird = /[,;；，\s]/g;
         /**
          * 监听已选择的文件
          */
-        $scope.file = {};
-        $scope.shareMembers = [];
-        $scope.updates = [];
+        $scope.file = {}; //当前选择的文件
+        $scope.shareMembers = []; //共享参与人
+        $scope.remarks = []; //讨论
+        $scope.histories = []; //历史
         $scope.inputingRemark = false;
         $scope.remindMembers = [];//可@的成员列表
         $scope.$watch('selectedFile', function () {
@@ -569,7 +518,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 //                GKApi.sideBar(GKSession.mount_id,$scope.file.path).success(function(data){
                 $http.get('json/test.json').success(function (data) {
                     $scope.shareMembers = data.share_members;
-                    $scope.updates = data.history;
+                    $scope.remarks = data.remark;
+                    $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
                 });
             } else {
@@ -612,7 +562,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.postText = '';
                 $scope.inputingRemark = false;
                 if (data && data.length) {
-                    $scope.updates.unshift(data[0]);
+                    $scope.remarks.unshift(data[0]);
                 }
 
             }).error(function(){
@@ -620,8 +570,65 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 });
         };
 
+        $scope.folded = false;
+        /**
+         * 显示及缩小文件信息框
+         */
+        $scope.toggleFileInfoWrapper = function(){
+            $scope.folded = !$scope.folded;
+        };
+    }])
+    .controller('header',['$scope','GKPath','$location','$filter',function($scope,GKPath,$location,$filter){
+
+        /**
+         * 面包屑
+         */
+        var getBreads = function () {
+            $scope.path = 'aaa/bbb/ccc/ddd/eee/fff/宁波大师傅十大/dsadsaf/宁波大师傅十大/fff/宁波大师傅十大/fff/宁波大师傅十大';
+            //$scope.path = 'aaa/bbb/ccc/ddd';
+            var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
+            if (path.length) {
+                var paths = path.split('/');
+                for (var i = 0; i < paths.length; i++) {
+                    bread = {
+                        name: paths[i]
+                    };
+                    var fullpath = '';
+                    for (var j = 0; j <= i; j++) {
+                        fullpath += paths[j] + '/'
+                    }
+                    fullpath = Util.String.rtrim(fullpath, '/');
+                    bread.path = fullpath;
+                    bread.url = '#' + GKPath.getPath($scope.partition, $scope.path, $scope.view);
+                    breads.push(bread);
+                }
+            }
+
+            breads.unshift({
+                name: $filter('getPartitionName')($scope.partition),
+                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
+            });
+            return breads;
+        };
+
+        /**
+         * 分析路径获取参数
+         * @type {*}
+         */
+        $scope.$on('$locationChangeSuccess', function(){
+            var pathArr = $location.path().split('/');
+            $scope.partition = pathArr[1]; //当前的分区
+            $scope.path = pathArr[2]||'';  //当前的文件路径
+            $scope.view = pathArr[3] || 'list'; //当前的视图模式
+            $scope.breads = getBreads();
+        });
+
 
     }]);
+
+    /**
+     * news
+     */
 angular.module('gkNewsApp.controllers', [])
     .controller("newsCtrl",function($scope,$filter){
 
@@ -822,11 +829,20 @@ angular.module('gkNewsApp.controllers', [])
      */
     var newsControls = function(){
         jQuery("#newsbtn").click(function(){
-            var data = gGetMessage()
-                ,filterData = compare(data) //过滤出相同日期
-                ,equalData = filterDay($filter, filterData);
+        // var getMessageData = JSON.parse(gkClientInterface.getMessage());
+        //      data = getMessageData.updates;
+        //  if(getMessageData.update_count>0){
+         //     var data = gGetMessage()
+                    ,filterData = compare(data)
+                    ,equalData = filterDay($filter, filterData);
             $scope.equalDataNew = equalData;
-            $scope.newsbtn = 'SideUp';
+         //  }else{
+
+        //    }
+            var data = gGetMessage()
+                ,filterData = compare(data)
+                ,equalData = filterDay($filter, filterData);
+             $scope.equalDataNew = equalData;
             jQuery(".news-wrapper").slideToggle(500);
         });
         jQuery("#newsPackUp").click(function(){
@@ -836,7 +852,9 @@ angular.module('gkNewsApp.controllers', [])
     newsControls();
 });
 
-
+    /**
+     * personal
+     */
 angular.module("gkPersonalApp.controllers",[])
     .controller("personalCtrl",function($scope){
     var gUserInfo = [
@@ -922,6 +940,9 @@ angular.module("gkPersonalApp.controllers",[])
     console.log($scope.pernewgSideTreeList);
 });
 
+    /**
+     * site
+     */
 angular.module("gkSiteApp.controllers",[])
     .controller("siteCtrl",function($scope) {
         $scope.userInfo = {
@@ -944,6 +965,9 @@ angular.module("gkSiteApp.controllers",[])
         }
     });
 
+    /**
+     * contact
+     */
 angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
     .controller('contactCtrl', function($scope) {
         $scope.groups = [
@@ -1033,6 +1057,9 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
         $scope.example_treedata = fetchData($scope.groups);
     });
 
+    /**
+     * viewmember
+     */
 angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
     .controller('viewmemberCtrl', function($scope) {
         $scope.groups = [
@@ -1086,12 +1113,15 @@ angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
         $scope.example_treedata = fetchData($scope.groups);
     });
 
+    /**
+ * sharingseggings
+ */
 angular.module("gkSharingsettingsApp.controllers",[])
     .controller('sharingsettingsCtrl', function($scope) {
         $scope.sharingsettings = [
             {
                 name:'大哥',
-                email:'123456@qq.com',
+                email:'123456qq.com',
                 id:123
             },
             {
@@ -1102,8 +1132,5 @@ angular.module("gkSharingsettingsApp.controllers",[])
         ]
         console.log($scope.sharingsettings);
     });
-
-
-
 
 
