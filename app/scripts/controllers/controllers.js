@@ -170,10 +170,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         return;
                     }
                     var params = {
-                        webpath: $scope.path,
-                        list: addFiles.list
+                        parent: $scope.path,
+                        type:'save',
+                        list: addFiles.list,
+                        mountid:$rootScope.PAGE_CONFIG.mountId
                     };
-
                     GK.addFile(params).then(function () {
 
                     }, function (error) {
@@ -189,7 +190,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
                         GK.createFolder({
                             webpath: webpath,
-                            dir: 1
+                            dir: 1,
+                            mountid:$rootScope.PAGE_CONFIG.mountid
                         }).then(function () {
                                 var newFileData = getFileData();
                                 $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
@@ -206,7 +208,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
-                        webpath: file.path
+                        webpath: file.path,
+                        mountid:$rootScope.PAGE_CONFIG.mountid
                     }).then(function () {
                             file.lock = 1;
                             file.lock_member_name = $rootScope.User.username;
@@ -226,7 +229,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         return;
                     }
                     GK.unlock({
-                        webpath: file.path
+                        webpath: file.path,
+                        mountid:$rootScope.PAGE_CONFIG.mountid
                     }).then(function () {
                             file.lock = 0;
                             file.lock_member_name = 0;
@@ -248,7 +252,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mount_id: $rootScope.User.mount_id
+                        mountid: $rootScope.PAGE_CONFIG.mountId
                     };
 
                     GK.saveToLocal(params).then(function () {
@@ -272,7 +276,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mount_id: $rootScope.User.mount_id
+                        mountid:  $rootScope.PAGE_CONFIG.mountId
                     };
                     var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].file_name + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
                     if (!confirm(confirmMsg)) {
@@ -301,7 +305,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         GK.rename({
                             oldpath: file.path,
                             newpath: newpath,
-                            mount_id: $rootScope.User.mount_id
+                            mountid: $rootScope.PAGE_CONFIG.mountId
                         }).then(function () {
                                 file.path = newpath;
                                 file.file_name = Util.String.baseName(file.path);
