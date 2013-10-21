@@ -825,7 +825,7 @@ angular.module('gkNewsApp.controllers', [])
         // var getMessageData = JSON.parse(gkClientInterface.getMessage());
         //      data = getMessageData.updates;
         //  if(getMessageData.update_count>0){
-         //     var data = gGetMessage()
+              var data = gGetMessage()
                     ,filterData = compare(data)
                     ,equalData = filterDay($filter, filterData);
             $scope.equalDataNew = equalData;
