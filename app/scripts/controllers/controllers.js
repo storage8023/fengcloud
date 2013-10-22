@@ -203,12 +203,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setOrder(order);
         });
 
-        var openFile = function (mount_id, webpath) {
-            GK.open({
-                mount_id: mount_id,
-                webpath: webpath
-            });
-        };
 
         /**
          * 所有操作
@@ -559,6 +553,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GK.removeLinkPath(params);
             }
         };
+
+        /**
+         * 打开文件
+         */
+        $scope.$on('openFile',function($event,file){
+            GK.open({
+                mountid: $location.search().mountid,
+                webpath: file.path
+            });
+        })
     }])
     .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', function ($scope, RestFile, $rootScope, GKApi, $http) {
         var gird = /[,;；，\s]/g;
@@ -647,7 +651,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.folded = !$scope.folded;
         };
     }])
-    .controller('header',['$scope','GKPath','$location','$filter',function($scope,GKPath,$location,$filter){
+    .controller('header',['$scope','GKPath','$location','$filter','GKMounts',function($scope,GKPath,$location,$filter,GKMounts){
 
         /**
          * 面包屑
@@ -670,9 +674,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     breads.push(bread);
                 }
             }
-
+            var name = '',currentMountId = $location.search().mountid;
+            if(currentMountId){
+                name = GKMounts[currentMountId]['name'];
+            }
             breads.unshift({
-                name: $filter('getPartitionName')($scope.partition),
+                name: name,
                 url: '#' + GKPath.getPath($scope.partition, '',$scope.view)
             });
             return breads;

@@ -90,13 +90,20 @@ angular.module('gkClientIndex.directives', [])
                  * @param file
                  */
                 $scope.handleDblClick = function ($event, file) {
-                    var params =  $location.search();
-                    $location.search({
-                        path:file.path,
-                        view:$scope.view,
-                        partition:params.partition,
-                        mountid:params.mountid
-                    });
+                    /**
+                     * 文件夹
+                     */
+                    if(file.dir ==1){
+                        var params =  $location.search();
+                        $location.search({
+                            path:file.path,
+                            view:$scope.view,
+                            partition:params.partition,
+                            mountid:params.mountid
+                        });
+                    }else{
+                        $scope.$emit('openFile',file);
+                    }
                 };
 
                 /**
