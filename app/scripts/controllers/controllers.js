@@ -631,70 +631,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.breads = getBreads();
         });
 
-
     }]);
 
     /**
      * news
      */
-angular.module('gkNewsApp.controllers', [])
-    .controller("newsCtrl",function($scope,$filter){
+angular.module('gkNewsApp.controllers',['gkClientIndex.services'])
+    .controller("newsCtrl",['$filter','$scope', '$rootScope','GKApi','$location','$http','GK',function($filter,$scope ,$rootScope,GKApi,$location,$http,GK){
 
-        function gGetMessage(){
-            var updates=[
-                {
-                    "date":"2013-10-18",
-                    "dateline":1382101200,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
-                },
-                {
-                    "date":"2013-10-17",
-                    "dateline":1381889522,
-                    "render_text":"杨飞 在 常用图标"
-                },
-                {
-                    "date":"2013-10-17",
-                    "dateline":1381889532,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons."
-                },
-                {
-                    "date":"2013-10-15",
-                    "dateline":1381809662,
-                    "render_text":"杨飞 在 常用图标 下新增了 "
-                },
-                {
-                    "date":"2013-10-15",
-                    "dateline":1381810082,
-                    "render_text":"杨飞 在 常用图标 下新增了aaaaaaaaaaaaaaaaaaa 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
-                },
-                {
-                    "date":"2013-10-15",
-                    "dateline":1381788482,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
-                },
-                {
-                    "date":"2013-10-14",
-                    "dateline":1381702082,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件d"
-                },
-                {
-                    "date":"2013-10-14",
-                    "dateline":1381702082,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件d"
-                },
-                {
-                    "date":"2013-10-14",
-                    "dateline":1381702082,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件d"
-                },
-                {
-                    "date":"2013-10-14",
-                    "dateline":1381702502,
-                    "render_text":"杨飞 在 常用图标 下新增了 16-Free-Flat-Icons...tyle-Vol1.psd 等 4 个文件/文件夹"
-                }
-            ];
-            return updates;
-        }
+        GKApi.upda(function(data){
+            $scope.foo = data;
+            $scope.haide = $scope.foo.array[0].dateline;
+            alert($scope.haide);
+        });
+
+
     /**
      * 过滤出相同日期
      * 新消息news
@@ -829,35 +780,119 @@ angular.module('gkNewsApp.controllers', [])
         return printDateNew;
     }
 
-    /**
+        /**
+         * 再次加载消息
+         */
+
+        var  againNew = function(filter,dates) {
+            var date = filter('date');
+            var printDateNew = [];
+            var d = new Date();
+            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() /1000- d.getTimezoneOffset();
+            var yesterDate = nowDate -  3600 * 24;
+            for(var i = 0;i<dates.length;i++){
+                var printDate = [];
+                var currentDate = dates[i][0].dateline;
+                if(lastime === dates[0][0].date){
+                    for(var j = 0;j<dates[i].length;j++){
+                        printDate.push({"dateline":dates[i][j]['dateline'],render_text: dates[i][j]['render_text']});
+                    }
+                    printDateNew.push(printDate);
+                } else if( currentDate >= yesterDate ){
+                    for(var j = 0;j<dates[i].length;j++){
+                        if(j === 0){
+                            var yesterDay = new Date().yesterformat('MM-dd');
+                            printDate.push({"date":'昨天， '+yesterDay,"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        }else{
+                            printDate.push({"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        }
+                    }
+                    console.log(yesterDate);
+                    printDateNew.push(printDate);
+                }else {
+                    for(var j = 0;j<dates[i].length;j++){
+                        if(j === 0){
+                            printDate.push({'date': dates[i][j]['date'],"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
+                        }else{
+                            printDate.push({"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
+                        }
+                    }
+                    printDateNew.push(printDate);
+                }
+            }
+            return printDateNew;
+        };
+
+        /**
+         * 最后一条消息的时间戳
+         * @param filter
+         * @param dates
+         */
+        var lasttime = function(filter,dates){
+            var last = [];
+            for(var i = 0;i<dates.length;i++){
+                if(i = dates.length-1){
+                    for(var j = 0;j<dates[i].length;j++){
+                        if(j === dates[i].length-1 ){
+                            last.push({"dateline":dates[i][j].dateline,"date":dates[i][j].date});
+                        }
+                    }
+                }
+            }
+            return last;
+        };
+
+        /**
+         * 消息再处理
+         */
+    var newMessage = function($scope){
+        var newGetMessageData = JSON.parse(GKUpdates())
+       ,data = newGetMessageData.updates
+       ,filterData = compare(data);
+        $scope.equalDataNew = filterDay($filter, filterData);
+         $scope.lasttimelabel = lasttime(data);
+         if(newGetMessageData.update_count>0){
+                $scope.newsShow = 'yesNews';
+         }else{
+                $scope.newsShow = 'noNews';
+         }
+    };
+
+
+     /**
      * 单击向上向下滑动按钮
      * 新消息news
      * button - #newsbtn
      */
-    var newsControls = function(){
-        jQuery("#newsbtn").click(function(){
-        // var getMessageData = JSON.parse(gkClientInterface.getMessage());
-        //      data = getMessageData.updates;
-        //  if(getMessageData.update_count>0){
-              var data = gGetMessage()
-                    ,filterData = compare(data)
-                    ,equalData = filterDay($filter, filterData);
-            $scope.equalDataNew = equalData;
-         //  }else{
+     var newsControls = function(){
+     jQuery("#newsbtn").click(function(){
+     //      newMessage();
+           jQuery(".news-wrapper").slideToggle(500);
+     });
+     jQuery("#newsPackUp").click(function(){
+         jQuery(".news-wrapper").slideUp(500);
+     });
+     };
+     newsControls();
 
-        //    }
-            var data = gGetMessage()
-                ,filterData = compare(data)
+     $scope.newsScroll = function(){
+
+     }
+ /* var newsControls = function(){
+        jQuery("#newsbtn").click(function(){
+            var data = 0 // gGetMessage()
+                ,filterData = compare(data) //过滤出相同日期
                 ,equalData = filterDay($filter, filterData);
-             $scope.equalDataNew = equalData;
+            $scope.equalDataNew = equalData;
+            $scope.newsbtn = 'SideUp';
             jQuery(".news-wrapper").slideToggle(500);
         });
         jQuery("#newsPackUp").click(function(){
             jQuery(".news-wrapper").slideUp(500);
         });
     };
-    newsControls();
-});
+    newsControls();*/
+}]);
 
     /**
      * personal

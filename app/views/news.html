@@ -6,8 +6,8 @@
     <link rel = "stylesheet" href = "../styles/file.css" type = "text/css" />
     <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
 </head>
-<body ng-controller = "newsCtrl">
-<input type = "button" id = "newsbtn"  value = "btn" ng-click = "newsbtn = 'SideUp'"  />
+<body ng-controller = "newsCtrl" ng-show = "newsbtn ='newsbutton'" >
+<input type = "button" id = "newsbtn"  value = "btn" ng-click = "newsbtn == 'SideUp'"  />
 <div class = "news-wrapper news-charge" >
     <div class = "news-container ">
         <div class = "news-content-scroll scrollbar">
