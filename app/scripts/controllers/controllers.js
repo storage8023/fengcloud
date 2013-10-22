@@ -83,7 +83,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }])
     .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope) {
-        console.log($routeParams);
         /**
          * 分析路径获取参数
          * @type {*}
@@ -94,7 +93,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.view =  $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name';
 
-        console.log($scope.view);
         /**
          * 文件列表数据
          */
@@ -103,12 +101,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 webpath: $scope.path,
                 mountid: $rootScope.PAGE_CONFIG.mountId
             })['list'];
-
             return GKFile.dealFileList(fileList);
         };
 
         $scope.fileData = getFileData();
-
 
         /**
          * 当击文件
@@ -129,13 +125,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             selectedFile.push(file);
         };
 
-
         /**
          * 改变视图
          */
         $scope.changeView = function (view) {
             $scope.view = view;
-        }
+        };
 
         /**
          *  设置排序
@@ -151,7 +146,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('setOrder', function (event, order) {
             setOrder(order);
-        })
+        });
 
         var openFile = function (mount_id, webpath) {
             GK.open({
@@ -160,6 +155,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         };
 
+        /**
+         * 所有操作
+         * @type {{add: {name: string, index: number, callback: Function}, new_folder: {name: string, index: number, callback: Function}, lock: {name: string, index: number, callback: Function}, unlock: {name: string, index: number, callback: Function}, save: {name: string, index: number, callback: Function}, del: {name: string, index: number, callback: Function}, rename: {name: string, index: number, callback: Function}, order_by: {name: string, index: number, items: {order_by_file_name: {name: string, className: string, callback: Function}, order_by_file_size: {name: string, className: string, callback: Function}, order_by_file_type: {name: string, className: string, callback: Function}, order_by_last_edit_time: {name: string, className: string, callback: Function}}}}}
+         */
         var allOpts = {
             'add': {
                 name: '添加',
@@ -256,13 +255,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         mountid: $rootScope.PAGE_CONFIG.mountId
                     };
 
-                    GK.saveToLocal(params).then(function () {
-                        file.lock = 0;
-                        file.lock_member_name = 0;
-                        file.lock_member_id = 0;
-                    }, function () {
-                        GKException.handleClientException(error);
-                    });
+                    GK.saveToLocal(params);
                 }
             },
             'del': {
@@ -329,7 +322,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             $scope.$apply(function () {
                                 setOrder('file_name');
                             });
-
                         }
                     },
                     'order_by_file_size': {
@@ -365,6 +357,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         /**
+         * 已选中的文件
+         * @type {Array}
+         */
+        $scope.selectedFile = [];
+        $scope.rightOpts = [];
+        /**
          * 操作
          * @type {Array}
          */
@@ -388,7 +386,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else {
                 rightOptKeys = GKOpt.getMultiSelectOpts($scope.selectedFile);
             }
-
             angular.forEach(rightOptKeys, function (value) {
                 if (excludeRightOpts.indexOf(value) < 0) {
                     $scope.rightOpts[value] = allOpts[value];
@@ -405,14 +402,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     value['className'] = '';
                 }
             });
-
         })
 
-        /**
-         * 已选中的文件
-         * @type {Array}
-         */
-        $scope.selectedFile = [];
 
         /**
          * ctrl-C的 处理函数

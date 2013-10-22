@@ -20,7 +20,7 @@
             <i ng-class="order=='-file_size'?'gk_down_arrow':'gk_up_arrow'"></i>
         </div>
     </div>
-    <div class="list_body" ng-mousedown="handleMouseDown($event)">
+    <div class="list_body" ng-mousedown="handleMouseDown($event)" ng-right-click = "showContextMenu($event)">
         <div class="file_item"
              ng-class="file.selected?'selected':''"
              ng-repeat="file in fileData"

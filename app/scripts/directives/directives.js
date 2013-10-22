@@ -55,6 +55,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.handleClick = function ($event, index) {
+                    console.log($scope.rightOpts);
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
@@ -100,8 +101,7 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  * @param file
                  */
-                $element.find('.list_body').bind('contextmenu', function ($event) {
-                    $scope.$apply(function () {
+                $scope.showContextMenu = function($event){
                         var jqTarget = jQuery($event.target);
                         var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
                         if (fileItem.size()) {
@@ -112,9 +112,22 @@ angular.module('gkClientIndex.directives', [])
                         } else {
                             unSelectAllFile();
                         }
-                    });
+                };
 
-                });
+//                    $element.find('.list_body').bind('contextmenu', function ($event) {
+//                        $scope.$apply(function () {
+//                            var jqTarget = jQuery($event.target);
+//                            var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
+//                            if (fileItem.size()) {
+//                                var index = fileItem.index();
+//                                if (!$scope.fileData[index].selected) {
+//                                    selectFile(index);
+//                                }
+//                            } else {
+//                                unSelectAllFile();
+//                            }
+//                        });
+//                    });
 
                 /**
                  * 重新索引文件
@@ -328,31 +341,34 @@ angular.module('gkClientIndex.directives', [])
 
                 });
 
-                /**
-                 * 右键
-                 */
-                jQuery.contextMenu({
-                    selector: '.file_list .list_body',
-                    reposition: false,
-                    zIndex:99,
-                    animation: {
-                        show: "show",
-                        hide: "hide"
-                    },
-                    build: function (trigger, $event) {
-                        //return $scope.$apply(function(){
-                        var items = $scope.rightOpts;
-                        return {
-                            className: 'dropdown-menu',
-                            callback: function (key, options) {
+                setTimeout(function(){
+                    /**
+                     * 右键
+                     */
+                    jQuery.contextMenu({
+                        selector: '.file_list .list_body',
+                        reposition: false,
+                        zIndex:99,
+                        animation: {
+                            show: "show",
+                            hide: "hide"
+                        },
+                        build: function (trigger, $event) {
+                            //return $scope.$apply(function(){
+                            var items = $scope.rightOpts;
+                            console.log(items);
+                            return {
+                                className: 'dropdown-menu',
+                                callback: function (key, options) {
 
-                            },
-                            items: items
-                        };
-                        //});
+                                },
+                                items: items
+                            };
+                            //});
+                        }
+                    });
 
-                    }
-                });
+                },0);
 
                 /**
                  * 新建文件开始

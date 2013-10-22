@@ -88,21 +88,24 @@
     },
     saveToLocal:function(params){
         try {
-            return gkClient.gSaveToLocal(params);
+            console.log(params);
+           gkClient.gSaveToLocal(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
     },
     del:function(params){
         try {
-            return gkClient.gDel(params);
+            var re = gkClient.gDelete(JSON.stringify(params));
+            return re?JSON.parse(re):'';
         } catch (e) {
             this._handleException(e);
         }
     },
     rename:function(params){
         try {
-            return gkClient.gRename(params);
+            var re = gkClient.gRename(JSON.stringify(params));
+            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }

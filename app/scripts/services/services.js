@@ -74,7 +74,9 @@ angular.module('gkClientIndex.services', [])
                 gkClientInterface.saveToLocal(params);
             },
             del: function (params) {
-                var re = gkClientInterface.unlock(params);
+                console.log(params);
+                var re = gkClientInterface.del(params);
+                console.log(re);
                 var deferred = $q.defer();
                 if (!re || re.error == 0) {
                     deferred.resolve(re);
