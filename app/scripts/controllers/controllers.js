@@ -61,7 +61,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 初始化全局变量
          * @type {*|number}
          */
-        $rootScope.PAGE_CONFIG.mountId = myMount.mountid;
         $rootScope.PAGE_CONFIG.partition = 'myfile';
         $scope.treeList = [
             { "label": "我的资料库", data: {path: '',mountid: myMount.mountid},"isParent":true, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'],myMount.mountid)}
@@ -90,20 +89,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 初始选中
          * @type {*}
          */
-        $scope.selectedMyBranch = $scope.treeList[0];
+        $scope.selectedMyBranch = null;
         $scope.selectedOrgBranch = null;
         $scope.selectedSmartBranch = null;
-
-        var unSelectAllBranch = function(){
-            if($scope.selectedMyBranch){
+        $scope.initSelectedBranch =  $scope.treeList[0];
+        var unSelectAllBranch = function(partition){
+            if(partition!='myfile'&&$scope.selectedMyBranch){
                 $scope.selectedMyBranch.selected = false;
                 $scope.selectedMyBranch = null;
             }
-            if($scope.selectedOrgBranch){
+            if(partition!='teamfile' && $scope.selectedOrgBranch){
                 $scope.selectedOrgBranch.selected = false;
                 $scope.selectedOrgBranch = null;
             }
-            if($scope.selectedSmartBranch){
+            if(partition!='smartfolder'&&$scope.selectedSmartBranch){
                 $scope.selectedSmartBranch.selected = false;
                 $scope.selectedSmartBranch = null;
             }
@@ -115,24 +114,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleSelect = function (branch,partition) {
             if(partition !=$rootScope.PAGE_CONFIG.partition){
-                unSelectAllBranch();
+                unSelectAllBranch(partition);
             }
+            console.log(arguments);
 
-            $rootScope.PAGE_CONFIG.mountId = branch.data.mountid||0;
-//            if(partition == 'myfile'){
-//                $rootScope.PAGE_CONFIG.mountId = myMount.mountid;
-//            }else if(partition == 'smartfolder'){
-//                $rootScope.PAGE_CONFIG.mountId = 0;
-//            }else{
-//                $rootScope.PAGE_CONFIG.mountId = myMount.mountid;
-//            }
-
+            $rootScope.PAGE_CONFIG.partition = partition;
             $rootScope.PAGE_CONFIG.file =  $rootScope.File = GKFile.dealFileList([branch.data])[0];
             $location.search({
                 path:branch.data.path,
                 view:'list',
                 partition:partition,
-                mountid: $rootScope.PAGE_CONFIG.mountId
+                mountid: branch.data.mountid || 0
             });
         };
 
@@ -142,7 +134,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleExpand = function (branch) {
             if (branch.expanded) {
-                branch.children = dealFileData(gkClientInterface.getFileList({webpath: branch.data.path, dir: 1, mountid: $rootScope.PAGE_CONFIG.mountId})['list'],branch.data.mountid||0);
+                branch.children = dealFileData(gkClientInterface.getFileList({webpath: branch.data.path, dir: 1, mountid: branch.data.mountid||0})['list'],branch.data.mountid||0);
             }
         };
 
@@ -156,15 +148,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.partition =$routeParams.partition || 'myfile'; //当前的分区
         $scope.view =  $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name';
-
-        console.log($routeParams);
         /**
          * 文件列表数据
          */
-        var getFileData = function (debug) {
+        var getFileData = function () {
             var fileList = gkClientInterface.getFileList({
                 webpath: $scope.path,
-                mountid: $rootScope.PAGE_CONFIG.mountId
+                mountid: $routeParams.mountid
             })['list'];
             return GKFile.dealFileList(fileList);
         };
@@ -237,7 +227,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         parent: $scope.path,
                         type:'save',
                         list: addFiles.list,
-                        mountid:$rootScope.PAGE_CONFIG.mountId
+                        mountid:$routeParams.mountid
                     };
                     GK.addFile(params).then(function () {
                         var newFileData = getFileData();
@@ -256,7 +246,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                        var params = {
                            webpath: webpath,
                            dir: 1,
-                           mountid:$rootScope.PAGE_CONFIG.mountId
+                           mountid: $routeParams.mountid
                        };
                         GK.createFolder(params).then(function () {
                                 var newFileData = getFileData();
@@ -275,7 +265,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var file = $scope.selectedFile[0];
                     GK.lock({
                         webpath: file.path,
-                        mountid:$rootScope.PAGE_CONFIG.mountId
+                        mountid: $routeParams.mountid
                     }).then(function () {
                             file.lock = 1;
                             file.lock_member_name = $rootScope.User.username;
@@ -296,7 +286,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                     GK.unlock({
                         webpath: file.path,
-                        mountid:$rootScope.PAGE_CONFIG.mountid
+                        mountid: $routeParams.mountid
                     }).then(function () {
                             file.lock = 0;
                             file.lock_member_name = 0;
@@ -318,7 +308,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mountid: $rootScope.PAGE_CONFIG.mountId
+                        mountid:  $routeParams.mountid
                     };
 
                     GK.saveToLocal(params);
@@ -336,7 +326,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mountid:  $rootScope.PAGE_CONFIG.mountId
+                        mountid:   $routeParams.mountid
                     };
                     var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].file_name + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
                     if (!confirm(confirmMsg)) {
@@ -368,7 +358,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             GK.rename({
                                 oldpath: file.path,
                                 newpath: newpath,
-                                mountid: $rootScope.PAGE_CONFIG.mountId
+                                mountid:  $routeParams.mountid
                             }).then(function () {
                                     file.path = newpath;
                                     file.file_name = Util.String.baseName(file.path);
@@ -695,7 +685,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('$locationChangeSuccess', function(){
             var pathArr = $location.path().split('/');
             var params = $location.search();
-            $scope.partition = pathArr[1]; //当前的分区
+            $scope.partition = params.partition; //当前的分区
             $scope.view = params.view||'list'; //当前的视图模式
             $scope.path =  params.path||'';  //当前的文件路径
             $scope.breads = getBreads();

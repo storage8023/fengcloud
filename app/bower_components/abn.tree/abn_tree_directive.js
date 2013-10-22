@@ -11,7 +11,8 @@ module.directive('abnTree', function($timeout) {
       onSelect: '&',
       initialSelection: '=',
       selectedBranch:'=',
-      onExpand: '&'
+      onExpand: '&',
+      initSelectedBranch:'='
     },
     link: function(scope, element, attrs) {
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
@@ -76,7 +77,6 @@ module.directive('abnTree', function($timeout) {
          * @type {null}
          */
       selected_branch = null;
-      scope.selectedBranch = selected_branch;
 
          /**
          * 选择节点
@@ -84,13 +84,12 @@ module.directive('abnTree', function($timeout) {
          * @returns {*}
          */
       select_branch = function(branch) {
-        if (branch !== selected_branch) {
-          if (selected_branch != null) {
-            selected_branch.selected = false;
+        if (branch !== scope.selectedBranch) {
+          if (scope.selectedBranch != null) {
+              scope.selectedBranch.selected = false;
           }
           branch.selected = true;
-          selected_branch = branch;
-            scope.selectedBranch = selected_branch;
+            scope.selectedBranch = branch;
           if (branch.onSelect != null) {
             return $timeout(function() {
               return branch.onSelect(branch);
@@ -137,7 +136,7 @@ module.directive('abnTree', function($timeout) {
          */
       scope.user_clicks_branch = function($event,branch) {
         if(!angular.element($event.target).hasClass('tree-icon')){
-            if (branch !== selected_branch) {
+            if (branch !== scope.selectedBranch) {
                 return select_branch(branch);
             }
         }else{
@@ -230,9 +229,10 @@ module.directive('abnTree', function($timeout) {
         /**
          * 初始选择
           */
-      if (scope.selectedBranch != null) {
+      if (scope.initSelectedBranch != null) {
+          console.log(scope.initSelectedBranch);
         for_each_branch(function(b) {
-          if (b == scope.selectedBranch) {
+          if (b == scope.initSelectedBranch) {
             return select_branch(b);
           }
         });

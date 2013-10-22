@@ -20,7 +20,7 @@
      */
     getFileList: function (params) {
         try {
-            console.log(params);
+            //console.log(params);
             return JSON.parse(gkClient.gGetFileList(JSON.stringify(params)));
         } catch (e) {
             this._handleException(e);
@@ -90,7 +90,7 @@
     },
     saveToLocal:function(params){
         try {
-            console.log(params);
+            //console.log(params);
            gkClient.gSaveToLocal(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
