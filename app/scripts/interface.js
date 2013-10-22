@@ -71,14 +71,16 @@
     },
     lock: function (params) {
         try {
-            return JSON.parse(gkClient.lock(JSON.stringify(params)));
+            params.status = 1;
+           gkClient.glock(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
     },
     unlock: function (params) {
         try {
-            return JSON.parse(gkClient.unlock(JSON.stringify(params)));
+            params.status = 0;
+            gkClient.glock(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }

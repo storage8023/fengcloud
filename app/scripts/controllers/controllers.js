@@ -175,7 +175,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         mountid:$rootScope.PAGE_CONFIG.mountId
                     };
                     GK.addFile(params).then(function () {
-
+                        var newFileData = getFileData();
+                        $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
                     }, function (error) {
                         GKException.handleClientException(error);
                     })

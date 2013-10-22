@@ -48,24 +48,10 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
             lock: function (params) {
-                var re = gkClientInterface.lock(params);
-                var deferred = $q.defer();
-                if (re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
-                return deferred.promise;
+                gkClientInterface.lock(params);
             },
             unlock: function (params) {
-                var re = gkClientInterface.unlock(params);
-                var deferred = $q.defer();
-                if (re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
-                return deferred.promise;
+               gkClientInterface.unlock(params);
             },
             getUser: function () {
                 return gkClientInterface.getUser();
