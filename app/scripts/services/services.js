@@ -101,15 +101,9 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            open: function () {
-                var re = gkClientInterface.open(params);
-                var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
-                return deferred.promise;
+            open: function (params) {
+              gkClientInterface.open(params);
+
             },
             selectPath: function () {
                 return gkClientInterface.selectPath();
@@ -437,6 +431,25 @@ angular.module('gkClientIndex.services', [])
 
 
         return GKApi;
+<<<<<<< HEAD
   }]);
 
 
+=======
+    }
+    ])
+
+    .factory('GKMounts', ['$filter',function ($filter) {
+        var GKMounts = [];
+        var mounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
+        angular.forEach(mounts,function(value){
+            if(!value.name){
+                value.name =$filter('getPartitionName')('myfile');
+            }
+            GKMounts[value.mountid] = value;
+        });
+        return GKMounts;
+    }
+    ])
+;
+>>>>>>> 36402568bc417981b76ed003f92d7e7eb9c04091

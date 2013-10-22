@@ -90,10 +90,20 @@ angular.module('gkClientIndex.directives', [])
                  * @param file
                  */
                 $scope.handleDblClick = function ($event, file) {
-                    $location.search({
-                        path:file.path,
-                        view:$scope.view
-                    });
+                    /**
+                     * 文件夹
+                     */
+                    if(file.dir ==1){
+                        var params =  $location.search();
+                        $location.search({
+                            path:file.path,
+                            view:$scope.view,
+                            partition:params.partition,
+                            mountid:params.mountid
+                        });
+                    }else{
+                        $scope.$emit('openFile',file);
+                    }
                 };
 
                 /**
@@ -101,33 +111,21 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  * @param file
                  */
-                $scope.showContextMenu = function($event){
-                        var jqTarget = jQuery($event.target);
-                        var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
-                        if (fileItem.size()) {
-                            var index = fileItem.index();
-                            if (!$scope.fileData[index].selected) {
-                                selectFile(index);
-                            }
-                        } else {
-                            unSelectAllFile();
-                        }
-                };
 
-//                    $element.find('.list_body').bind('contextmenu', function ($event) {
-//                        $scope.$apply(function () {
-//                            var jqTarget = jQuery($event.target);
-//                            var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
-//                            if (fileItem.size()) {
-//                                var index = fileItem.index();
-//                                if (!$scope.fileData[index].selected) {
-//                                    selectFile(index);
-//                                }
-//                            } else {
-//                                unSelectAllFile();
-//                            }
-//                        });
-//                    });
+                    $element.find('.list_body').bind('contextmenu', function ($event) {
+                        $scope.$apply(function () {
+                            var jqTarget = jQuery($event.target);
+                            var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
+                            if (fileItem.size()) {
+                                var index = fileItem.index();
+                                if (!$scope.fileData[index].selected) {
+                                    selectFile(index);
+                                }
+                            } else {
+                                unSelectAllFile();
+                            }
+                        });
+                    });
 
                 /**
                  * 重新索引文件
@@ -170,9 +168,12 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.enterPress = function () {
                     if (selectedFile && selectedFile.length) {
+                        var params = $location.search();
                         $location.search({
                             path:selectedFile[0].path,
-                            view:$scope.view
+                            view:$scope.view,
+                            partition:params.partition,
+                            mountid:params.mountid
                         });
                     }
                 };
@@ -568,9 +569,12 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $scope.selectBread = function(bread,$event){
+                    var params =  $location.search();
                     $location.search({
                         path:bread.path,
-                        view:$scope.view
+                        view:$scope.view,
+                        mountid:params.mountid,
+                        partition:params.partition
                     });
                     $event.stopPropagation();
                 };

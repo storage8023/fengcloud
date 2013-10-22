@@ -15,7 +15,13 @@ ul.nav.nav-list.abn-tree .tree-icon{
     vertical-align: middle;
     margin: 0 6px 0 0;
 }
-
+ul.nav.nav-list.abn-tree .node_icon{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 6px 0 0;
+}
 ul.nav.nav-list.abn-tree .tree-icon.icon-minus{
     background-position: -20px -20px;
 }
@@ -44,47 +50,9 @@ ul.nav.nav-list.abn-tree i.indented {
   max-height: 0px;
   opacity: 0;
 }
-ul.nav.nav-list.abn-tree .level-1{
-    font-weight: bold;
-}
-ul.nav.nav-list.abn-tree .level-1 .indented {
-  position: relative;
-  left: 0px;
-}
-ul.nav.nav-list.abn-tree .level-2 .indented {
-  position: relative;
-  left: 20px;
-}
-ul.nav.nav-list.abn-tree .level-3 .indented {
-  position: relative;
-  left: 40px;
-}
-ul.nav.nav-list.abn-tree .level-4 .indented {
-  position: relative;
-  left: 60px;
-}
-ul.nav.nav-list.abn-tree .level-5 .indented {
-  position: relative;
-  left: 80px;
-}
-ul.nav.nav-list.abn-tree .level-6 .indented {
-  position: relative;
-  left: 80px;
-}
-ul.nav.nav-list.abn-tree .level-7 .indented {
-  position: relative;
-  left: 100px;
-}
-ul.nav.nav-list.abn-tree .level-8 .indented {
-  position: relative;
-  left: 120px;
-}
-ul.nav.nav-list.abn-tree .level-9 .indented {
-  position: relative;
-  left: 140px;
-}
+
 ul.nav.nav-list.abn-tree > li{
-    margin-top: 5px;
+   white-space: nowrap;
 }
 
 ul.nav.abn-tree > li > a:hover,

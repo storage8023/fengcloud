@@ -19,7 +19,7 @@ angular.module('gkClientIndex.filters', [])
             var partitionName = '';
             switch (partition) {
                 case 'myfile':
-                    partitionName = '我的文件';
+                    partitionName = '我的资料库';
                     break;
                 case 'teamfile':
                     partitionName = '团队的文件';

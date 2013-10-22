@@ -3,12 +3,12 @@
 angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.bootstrap','ngSanitize'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
-            when('/myfile', {
+            when('/file', {
                 templateUrl: 'views/file_browser.html',
                 controller: 'fileBrowser'
             }).
             otherwise({
-                redirectTo: '/myfile'
+                redirectTo: '/file'
             });
     }]);
 
