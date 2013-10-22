@@ -1,7 +1,38 @@
 <!-- 左侧边栏 -->
-
 <aside class="scrollbar left_sidebar" ng-controller="leftSidebar">
     <abn-tree tree-data="treeList"
-              icon-leaf="icon-file" on-select="handleSelect(branch)" on-expand="handleExpand(branch)" initial-selection="initialSelection">
+              header="我的空间"
+              icon-leaf="icon_file"
+              icon-expand="icon_fold"
+              icon-collapse="icon_unfold"
+              icon-node-expand="icon_folder"
+              icon-node-collapse="icon_folder"
+              selected-branch="selectedMyBranch"
+              on-select="handleSelect(branch,'myfile')"
+              on-expand="handleExpand(branch,'myfile')"
+            >
+    </abn-tree>
+    <abn-tree tree-data="orgTreeList"
+              header="我的团队"
+              icon-leaf="icon_file"
+              icon-expand="icon_fold"
+              icon-collapse="icon_unfold"
+              icon-node-expand="icon_folder"
+              icon-node-collapse="icon_folder"
+              selected-branch="selectededOrgBranch"
+              on-select="handleSelect(branch,'teamfile')"
+              on-expand="handleExpand(branch,'teamfile')"
+              >
+    </abn-tree>
+    <abn-tree tree-data="smartTreeList"
+              header="智能文件夹"
+              icon-leaf="icon_file"
+              icon-expand="icon_fold"
+              icon-collapse="icon_unfold"
+              icon-node-expand="icon_folder"
+              icon-node-collapse="icon_folder"
+              selected-branch="selectedSmartBranch"
+              on-select="handleSelect(branch,'smartfolder')"
+              on-expand="handleExpand(branch,'smartfolder')">
     </abn-tree>
 </aside>

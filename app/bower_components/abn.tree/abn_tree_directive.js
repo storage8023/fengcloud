@@ -10,16 +10,19 @@ module.directive('abnTree', function($timeout) {
       treeData: '=',
       onSelect: '&',
       initialSelection: '=',
+      selectedBranch:'=',
       onExpand: '&'
     },
     link: function(scope, element, attrs) {
-      var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch;
+      var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
+       index  = 20;
       if (attrs.iconExpand == null) {
         attrs.iconExpand = 'icon-plus';
       }
       if (attrs.iconCollapse == null) {
         attrs.iconCollapse = 'icon-minus';
       }
+
       if (attrs.iconLeaf == null) {
         attrs.iconLeaf = 'icon-chevron-right';
       }
@@ -29,7 +32,7 @@ module.directive('abnTree', function($timeout) {
       expand_level = parseInt(attrs.expandLevel, 10);
       scope.header = attrs.header;
       if (!scope.treeData) {
-        alert('no treeData defined for the tree!');
+          scope.treeData = [];
       }
       if (scope.treeData.length == null) {
         if (treeData.label != null) {
@@ -61,12 +64,25 @@ module.directive('abnTree', function($timeout) {
         }
         return _results;
       };
+
       for_each_branch(function(b, level) {
         b.level = level;
         //return b.expanded = b.level < expand_level;
           return b.expanded = b.children !== undefined;
       });
+
+        /**
+         * 已选择的节点
+         * @type {null}
+         */
       selected_branch = null;
+      scope.selectedBranch = selected_branch;
+
+         /**
+         * 选择节点
+         * @param branch
+         * @returns {*}
+         */
       select_branch = function(branch) {
         if (branch !== selected_branch) {
           if (selected_branch != null) {
@@ -74,6 +90,7 @@ module.directive('abnTree', function($timeout) {
           }
           branch.selected = true;
           selected_branch = branch;
+            scope.selectedBranch = selected_branch;
           if (branch.onSelect != null) {
             return $timeout(function() {
               return branch.onSelect(branch);
@@ -89,6 +106,12 @@ module.directive('abnTree', function($timeout) {
           }
         }
       };
+
+        /**
+         * 展开节点
+         * @param branch
+         * @returns {*}
+         */
       expand_branch = function(branch){
           //console.log(branch);return;
           branch.expanded = !branch.expanded;
@@ -106,6 +129,12 @@ module.directive('abnTree', function($timeout) {
               }
           }
       }
+        /**
+         * 点击节点
+         * @param $event
+         * @param branch
+         * @returns {*}
+         */
       scope.user_clicks_branch = function($event,branch) {
         if(!angular.element($event.target).hasClass('tree-icon')){
             if (branch !== selected_branch) {
@@ -116,11 +145,19 @@ module.directive('abnTree', function($timeout) {
         }
 
       };
+        /**
+         * 双击节点
+         * @param branch
+         */
       scope.user_dblclicks_branch = function(branch){
           expand_branch(branch);
           select_branch(branch);
       }
       scope.tree_rows = [];
+        /**
+         * 树数据改变后的回调
+         * @returns {Array}
+         */
       on_treeData_change = function() {
         var add_branch_to_list, root_branch, _i, _len, _ref, _results;
         scope.tree_rows = [];
@@ -148,17 +185,19 @@ module.directive('abnTree', function($timeout) {
           }
         });
         add_branch_to_list = function(level, branch, visible) {
-          var child, child_visible, tree_icon, _i, _len, _ref, _results;
+          var child, child_visible, tree_icon, _i, _len, _ref, _results,node_icon;
           if (branch.expanded == null) {
             branch.expanded = false;
           }
-          if (!branch.children || branch.children.length === 0) {
+          if (!branch.isParent) {
             tree_icon = attrs.iconLeaf;
           } else {
             if (branch.expanded) {
               tree_icon = attrs.iconCollapse;
+              node_icon =branch.iconNodeCollapse?branch.iconNodeCollapse: attrs.iconNodeCollapse;
             } else {
               tree_icon = attrs.iconExpand;
+              node_icon =branch.iconNodeExpand?branch.iconNodeExpand: attrs.iconNodeExpand;
             }
           }
           scope.tree_rows.push({
@@ -166,7 +205,8 @@ module.directive('abnTree', function($timeout) {
             branch: branch,
             label: branch.label,
             tree_icon: tree_icon,
-            visible: visible
+            visible: visible,
+            node_icon:node_icon
           });
           if (branch.children != null) {
             _ref = branch.children;
@@ -187,9 +227,12 @@ module.directive('abnTree', function($timeout) {
         }
         return _results;
       };
-      if (scope.initialSelection != null) {
+        /**
+         * 初始选择
+          */
+      if (scope.selectedBranch != null) {
         for_each_branch(function(b) {
-          if (b == scope.initialSelection) {
+          if (b == scope.selectedBranch) {
             return select_branch(b);
           }
         });
