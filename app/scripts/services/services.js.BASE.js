@@ -101,9 +101,15 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            open: function (params) {
-              gkClientInterface.open(params);
-
+            open: function () {
+                var re = gkClientInterface.open(params);
+                var deferred = $q.defer();
+                if (!re || re.error == 0) {
+                    deferred.resolve(re);
+                } else {
+                    deferred.reject(re);
+                }
+                return deferred.promise;
             },
             selectPath: function () {
                 return gkClientInterface.selectPath();
@@ -388,7 +394,7 @@ angular.module('gkClientIndex.services', [])
     .factory('GKApi', ['GK','$http',function (GK,$http) {
         var defaultParams = {
             token:GK.getToken()
-        }
+        };
         var GKApi = {
            sideBar:function(mount_id,fullpath,type,start,date){
                var params = {
@@ -403,42 +409,14 @@ angular.module('gkClientIndex.services', [])
                params.sign = sign;
                return $http({
                    method: 'GET',
-                   url: GK.getApiHost()+'/1/updates/client_updates',
+                   url: GK.getApiHost()+'/1/file/client_sidebar',
                    params:params,
                    responseType:'json'
-               });
-           },
-
-           upda:function(){
-                var params = {
-                    dateline:1382491568,
-                    update_count:5
-                };
-               angular.extend(params,defaultParams);
-                var sign = GK.getApiAuthorization(params);
-                params.sign = sign;
-                return $http({
-                    method: 'GET',
-                    url: GK.getApiHost()+'/1/updates/ls',
-                    params:params,
-
-                });
-           }
-        }
-        return GKApi;
-  }])
-    .factory('GKMounts', ['$filter',function ($filter) {
-        var GKMounts = [];
-        var mounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
-        angular.forEach(mounts,function(value){
-            if(!value.name){
-                value.name =$filter('getPartitionName')('myfile');
+               })
             }
-            GKMounts[value.mountid] = value;
-        });
-        return GKMounts;
+        };
+
+        return GKApi;
     }
     ])
-
 ;
-
