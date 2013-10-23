@@ -700,16 +700,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     /**
      * news
      */
-angular.module('gkNewsApp.controllers',['gkClientIndex.services'])
+angular.module('gkNewsApp.controllers',[])
     .controller("newsCtrl",['$filter','$scope', '$rootScope','GKApi','$location','$http','GK',function($filter,$scope ,$rootScope,GKApi,$location,$http,GK){
-
-        GKApi.upda(function(data){
-            $scope.foo = data;
-            $scope.haide = $scope.foo.array[0].dateline;
-            alert($scope.haide);
+        GKApi.upda().success(function(data){
+            $http.get('json/test.json').success(function (data) {
+                $scope.foo = data;
+            });
+         consoloe.log($scope.foo);
         });
-
-
     /**
      * 过滤出相同日期
      * 新消息news
@@ -930,8 +928,13 @@ angular.module('gkNewsApp.controllers',['gkClientIndex.services'])
      */
      var newsControls = function(){
      jQuery("#newsbtn").click(function(){
-     //      newMessage();
-           jQuery(".news-wrapper").slideToggle(500);
+         GKApi.upda().success(function(data){
+             $http.get('json/test.json').success(function (data) {
+                 $scope.foo = data;
+             });
+             consoloe.log($scope.foo);
+         });
+         jQuery(".news-wrapper").slideToggle(500);
      });
      jQuery("#newsPackUp").click(function(){
          jQuery(".news-wrapper").slideUp(500);
@@ -939,23 +942,23 @@ angular.module('gkNewsApp.controllers',['gkClientIndex.services'])
      };
      newsControls();
 
-     $scope.newsScroll = function(){
+            /*  $scope.newsScroll = function(){
 
-     }
- /* var newsControls = function(){
-        jQuery("#newsbtn").click(function(){
-            var data = 0 // gGetMessage()
-                ,filterData = compare(data) //过滤出相同日期
-                ,equalData = filterDay($filter, filterData);
-            $scope.equalDataNew = equalData;
-            $scope.newsbtn = 'SideUp';
-            jQuery(".news-wrapper").slideToggle(500);
-        });
-        jQuery("#newsPackUp").click(function(){
-            jQuery(".news-wrapper").slideUp(500);
-        });
-    };
-    newsControls();*/
+     }    
+    var newsControls = function(){
+            jQuery("#newsbtn").click(function(){
+                var data = 0 // gGetMessage()
+                    ,filterData = compare(data) //过滤出相同日期
+                    ,equalData = filterDay($filter, filterData);
+                $scope.equalDataNew = equalData;
+                $scope.newsbtn = 'SideUp';
+                jQuery(".news-wrapper").slideToggle(500);
+            });
+            jQuery("#newsPackUp").click(function(){
+                jQuery(".news-wrapper").slideUp(500);
+            });
+        };
+        newsControls();*/
 }]);
 
     /**
@@ -963,22 +966,6 @@ angular.module('gkNewsApp.controllers',['gkClientIndex.services'])
      */
 angular.module("gkPersonalApp.controllers",[])
     .controller("personalCtrl",function($scope){
-    var gUserInfo = [
-        {
-            "org_id":1,
-            "id":2,
-            "email":"xugetest1@126.com",
-            "username":"海浩",
-            "org_username":"123",
-            "photourl":"http://oss.aliyuncs.com/gkavatar2/39/398fd1f3fb5f3f7b1077d623c5ade70b1c63b50b.jpg",
-            "mount_id":2,
-            "capacity":0,
-            "size":59321948,
-            "org_name":"web开发组",
-            "org_size":108209585,
-            "call":88888888
-        }
-    ];
     $scope.gSideTreeList = [
         {
             "sidetype":0,
@@ -1037,13 +1024,16 @@ angular.module("gkPersonalApp.controllers",[])
         return newData;
     }
     //个人信息
-    $scope.guser_info = gUserInfo[0];
+    $scope.guser_info = JSON.parse(gkClientInterface.getUserInfo());
     $scope.size_space = bitSize($scope.guser_info.size);
     //团队信息
-    $scope.per_gSideTreeList = $scope.gSideTreeList;
-    $scope.pernewgSideTreeList = perside($scope.per_gSideTreeList);
+ //   $scope.per_gSideTreeList = $scope.gSideTreeList;
+//    $scope.per_gSideTreeList =  gkClientInterface.getSideTreeList.org();
+
+ //   $scope.pernewgSideTreeList = perside($scope.per_gSideTreeList);
     //团队信息再处理
-    console.log($scope.pernewgSideTreeList);
+        $scope.per_gSideTreeList = gkClientInterface.getSideTreeList();
+    console.log($scope.per_gSideTreeList);
 });
 
     /**

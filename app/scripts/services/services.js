@@ -410,25 +410,22 @@ angular.module('gkClientIndex.services', [])
            },
 
            upda:function(){
-                var params = [{
-
-                    dateline:1382461707,
+                var params = {
+                    dateline:1382491568,
                     update_count:5
-                }];
-               angular.extend(JSON.stringify(params),defaultParams);
+                };
+               angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'GET',
                     url: GK.getApiHost()+'/1/updates/ls',
-                    params:params
+                    params:params,
 
                 });
-
            }
         }
         return GKApi;
-
   }])
     .factory('GKMounts', ['$filter',function ($filter) {
         var GKMounts = [];
@@ -442,5 +439,6 @@ angular.module('gkClientIndex.services', [])
         return GKMounts;
     }
     ])
+
 ;
 
