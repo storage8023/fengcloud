@@ -135,19 +135,15 @@ angular.module('gkClientIndex.services', [])
                 return gkClientInterface.getRestHost();
             },
             getApiHost:function(){
-                return 'http://api2.gokuai.com';
-                return gkClientInterface.getRestHost();
+                return gkClientInterface.getApiHost();
             },
             getToken:function(){
-                return '1e0776dbece2cb5c6186fca0d9a696cd';
                 return gkClientInterface.getToken();
             },
             getAuthorization:function(ver,webpath,date){
-                return '1e0776dbece2cb5c6186fca0d9a696cd:q79nbtXOaYE20ElUESgwddpSsBI=';
                 return gkClientInterface.getAuthorization(ver,webpath,date);
             },
             getApiAuthorization:function(params){
-                return '1e0776dbece2cb5c6186fca0d9a696cd:q79nbtXOaYE20ElUESgwddpSsBI=';
                 return gkClientInterface.getApiAuthorization(params);
             }
         }
@@ -412,16 +408,15 @@ angular.module('gkClientIndex.services', [])
            upda:function(){
                 var params = {
                     dateline:1382491568,
-                    update_count:5
+                    size:5
                 };
                angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
-                    method: 'GET',
+                    method: 'POST',
                     url: GK.getApiHost()+'/1/updates/ls',
-                    params:params,
-
+                    params:params
                 });
            }
         }

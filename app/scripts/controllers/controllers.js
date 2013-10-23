@@ -916,14 +916,14 @@ angular.module('gkNewsApp.controllers',[])
      */
      var newsControls = function(){
      jQuery("#newsbtn").click(function(){
-         GKApi.upda().success(function(data){
-             $http.get('json/test.json').success(function (data) {
-                 $scope.foo = data;
+         GKApi.upda().success(function(){
+             $http.get('json/text.json').success(function (data) {
+                $scope.yy = data;
              });
-             consoloe.log($scope.foo);
          });
          jQuery(".news-wrapper").slideToggle(500);
      });
+         console.log($scope.yy);
      jQuery("#newsPackUp").click(function(){
          jQuery(".news-wrapper").slideUp(500);
      });
@@ -1020,8 +1020,8 @@ angular.module("gkPersonalApp.controllers",[])
 
  //   $scope.pernewgSideTreeList = perside($scope.per_gSideTreeList);
     //团队信息再处理
-        $scope.per_gSideTreeList = gkClientInterface.getSideTreeList();
-    console.log($scope.per_gSideTreeList);
+    //    $scope.per_gSideTreeList = gkClientInterface.getSideTreeList();
+     //   console.log($scope.per_gSideTreeList.rog);
 });
 
     /**
