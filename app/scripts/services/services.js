@@ -388,7 +388,7 @@ angular.module('gkClientIndex.services', [])
     .factory('GKApi', ['GK','$http',function (GK,$http) {
         var defaultParams = {
             token:GK.getToken()
-        };
+        }
         var GKApi = {
            sideBar:function(mount_id,fullpath,type,start,date){
                var params = {
@@ -403,14 +403,39 @@ angular.module('gkClientIndex.services', [])
                params.sign = sign;
                return $http({
                    method: 'GET',
-                   url: GK.getApiHost()+'/1/file/client_sidebar',
+                   url: GK.getApiHost()+'/1/updates/client_updates',
                    params:params,
                    responseType:'json'
-               })
-            }
-        };
+               });
+           },
+
+           upda:function(){
+                var params = [{
+
+                    dateline:1382461707,
+                    update_count:5
+                }];
+               angular.extend(JSON.stringify(params),defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost()+'/1/updates/ls',
+                    params:params
+
+                });
+
+           }
+        }
+
+
 
         return GKApi;
+<<<<<<< HEAD
+  }]);
+
+
+=======
     }
     ])
 
@@ -427,3 +452,4 @@ angular.module('gkClientIndex.services', [])
     }
     ])
 ;
+>>>>>>> 36402568bc417981b76ed003f92d7e7eb9c04091
