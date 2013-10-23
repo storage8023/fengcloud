@@ -230,7 +230,6 @@ module.directive('abnTree', function($timeout) {
          * 初始选择
           */
       if (scope.initSelectedBranch != null) {
-          console.log(scope.initSelectedBranch);
         for_each_branch(function(b) {
           if (b == scope.initSelectedBranch) {
             return select_branch(b);

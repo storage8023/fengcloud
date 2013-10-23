@@ -116,8 +116,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(partition !=$rootScope.PAGE_CONFIG.partition){
                 unSelectAllBranch(partition);
             }
-            console.log(arguments);
-
             $rootScope.PAGE_CONFIG.partition = partition;
             $rootScope.PAGE_CONFIG.file =  $rootScope.File = GKFile.dealFileList([branch.data])[0];
             $location.search({
@@ -446,7 +444,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.rightOpts[value] = allOpts[value];
                 }
             });
-
         }, true);
 
         $scope.$watch('order', function () {
@@ -582,19 +579,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else if ($scope.selectedFile.length == 1) {
                 $scope.file = $scope.selectedFile[0];
                 var mount_id = 175625, fullpath = '100.gif';
-                RestFile.get(mount_id, fullpath).success(function (data) {
-                    var tag = data.tag || '';
-                    $scope.file.tag = tag;
-                    $scope.file.formatTag = tag.replace(gird, ',');
-                });
+//                RestFile.get(mount_id, fullpath).success(function (data) {
+//                    var tag = data.tag || '';
+//                    $scope.file.tag = tag;
+//                    $scope.file.formatTag = tag.replace(gird, ',');
+//                });
 
 //                GKApi.sideBar(GKSession.mount_id,$scope.file.path).success(function(data){
-                $http.get('json/test.json').success(function (data) {
-                    $scope.shareMembers = data.share_members;
-                    $scope.remarks = data.remark;
-                    $scope.histories = data.history;
-                    $scope.remindMembers = data.remind_members;
-                });
+//                $http.get('json/test.json').success(function (data) {
+//                    $scope.shareMembers = data.share_members;
+//                    $scope.remarks = data.remark;
+//                    $scope.histories = data.history;
+//                    $scope.remindMembers = data.remind_members;
+//                });
             } else {
 
             }
