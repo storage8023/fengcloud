@@ -258,13 +258,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GK.lock({
                         webpath: file.path,
                         mountid: $routeParams.mountid
-                    }).then(function () {
-                            file.lock = 1;
-                            file.lock_member_name = $rootScope.User.username;
-                            file.lock_member_id = $rootScope.User.id;
-                        }, function () {
-                            GKException.handleClientException(error);
-                        });
+                    })
                 }
             },
             'unlock': {
@@ -279,13 +273,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GK.unlock({
                         webpath: file.path,
                         mountid: $routeParams.mountid
-                    }).then(function () {
-                            file.lock = 0;
-                            file.lock_member_name = 0;
-                            file.lock_member_id = 0;
-                        }, function () {
-                            GKException.handleClientException(error);
-                        });
+                    })
                 }
             },
             'save': {

@@ -72,7 +72,7 @@
     lock: function (params) {
         try {
             params.status = 1;
-           gkClient.glock(JSON.stringify(params));
+           gkClient.gLock(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
@@ -80,7 +80,7 @@
     unlock: function (params) {
         try {
             params.status = 0;
-            gkClient.glock(JSON.stringify(params));
+            gkClient.gLock(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
