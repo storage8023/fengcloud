@@ -427,18 +427,9 @@ angular.module('gkClientIndex.services', [])
 
            }
         }
-
-
-
         return GKApi;
-<<<<<<< HEAD
-  }]);
 
-
-=======
-    }
-    ])
-
+  }])
     .factory('GKMounts', ['$filter',function ($filter) {
         var GKMounts = [];
         var mounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
@@ -452,4 +443,4 @@ angular.module('gkClientIndex.services', [])
     }
     ])
 ;
->>>>>>> 36402568bc417981b76ed003f92d7e7eb9c04091
+
