@@ -4,7 +4,7 @@
 
 
 angular.module('gkClientIndex.directives', [])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', function ($location, GKPath, $filter, $templateCache, $compile) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile','$parse', function ($location, GKPath, $filter, $templateCache, $compile,$parse) {
         return {
             replace: true,
             restrict: 'E',
@@ -26,6 +26,11 @@ angular.module('gkClientIndex.directives', [])
                     shiftLastIndex = 0 //shift键盘的起始点
                     ;
 
+                /**
+                 * 选中文件
+                 * @param index
+                 * @param multiSelect
+                 */
                 selectFile = function (index, multiSelect) {
                     multiSelect = arguments[1] === undefined ? false : true;
                     if (!multiSelect && selectedFile && selectedFile.length) {
@@ -37,7 +42,10 @@ angular.module('gkClientIndex.directives', [])
                     $scope.selectedFile = selectedFile;
                     //$element.find('.list_body').focus();
                 };
-
+                /**
+                 * 取消选中
+                 * @param index
+                 */
                 unSelectFile = function (index) {
                     $scope.fileData[index].selected = false;
                     var i = selectedIndex.indexOf(index);
@@ -46,16 +54,22 @@ angular.module('gkClientIndex.directives', [])
                         selectedFile.splice(i, 1);
                     }
                 };
-
+                /**
+                 * 取消所有选中
+                 */
                 unSelectAllFile = function () {
                     for (var i = selectedIndex.length - 1; i >= 0; i--) {
                         unSelectFile(selectedIndex[i]);
                     }
 
                 };
-
+                /**
+                 * 处理点击
+                 * @param $event
+                 * @param index
+                 */
                 $scope.handleClick = function ($event, index) {
-                    console.log($scope.rightOpts);
+                   // console.log($scope.rightOpts);
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
@@ -93,39 +107,58 @@ angular.module('gkClientIndex.directives', [])
                     /**
                      * 文件夹
                      */
-                    if(file.dir ==1){
-                        var params =  $location.search();
+                    if (file.dir == 1) {
+                        var params = $location.search();
                         $location.search({
-                            path:file.path,
-                            view:$scope.view,
-                            partition:params.partition,
-                            mountid:params.mountid
+                            path: file.path,
+                            view: $scope.view,
+                            partition: params.partition,
+                            mountid: params.mountid
                         });
-                    }else{
-                        $scope.$emit('openFile',file);
+                    } else {
+                        $scope.$emit('openFile', file);
                     }
                 };
+
+                /**
+                 * 根据rightOpts的变化重置右键
+                 */
+                $scope.$watch('rightOpts',function(){
+                    jQuery.contextMenu('destroy','.file_list .list_body');
+                    /**
+                     * 设置右键菜单
+                     */
+                    jQuery.contextMenu({
+                        selector: '.file_list .list_body',
+                        reposition: false,
+                        zIndex: 99,
+                        scope:$scope,
+                        animation: {
+                            show: "show",
+                            hide: "hide"
+                        },
+                        items: $scope.rightOpts
+                    });
+                });
 
                 /**
                  * 右键文件
                  * @param $event
                  * @param file
                  */
+                $scope.handleRightClick = function($event){
+                    var jqTarget = jQuery($event.target);
+                    var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
+                    if (fileItem.size()) {
+                        var index = fileItem.index();
+                        if (!$scope.fileData[index].selected) {
+                            selectFile(index);
+                        }
+                    } else {
+                        unSelectAllFile();
+                    }
+                };
 
-                    $element.find('.list_body').bind('contextmenu', function ($event) {
-                        $scope.$apply(function () {
-                            var jqTarget = jQuery($event.target);
-                            var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
-                            if (fileItem.size()) {
-                                var index = fileItem.index();
-                                if (!$scope.fileData[index].selected) {
-                                    selectFile(index);
-                                }
-                            } else {
-                                unSelectAllFile();
-                            }
-                        });
-                    });
 
                 /**
                  * 重新索引文件
@@ -170,14 +203,18 @@ angular.module('gkClientIndex.directives', [])
                     if (selectedFile && selectedFile.length) {
                         var params = $location.search();
                         $location.search({
-                            path:selectedFile[0].path,
-                            view:$scope.view,
-                            partition:params.partition,
-                            mountid:params.mountid
+                            path: selectedFile[0].path,
+                            view: $scope.view,
+                            partition: params.partition,
+                            mountid: params.mountid
                         });
                     }
                 };
-
+                /**
+                 * 根据滚动条是否出现调整UI
+                 * @param elem
+                 * @returns {boolean}
+                 */
                 var checkScroll = function (elem) {
                     var scrollY = false;
                     var st = elem.scrollTop();
@@ -342,35 +379,6 @@ angular.module('gkClientIndex.directives', [])
 
                 });
 
-                setTimeout(function(){
-                    /**
-                     * 右键
-                     */
-                    jQuery.contextMenu({
-                        selector: '.file_list .list_body',
-                        reposition: false,
-                        zIndex:99,
-                        animation: {
-                            show: "show",
-                            hide: "hide"
-                        },
-                        build: function (trigger, $event) {
-                            //return $scope.$apply(function(){
-                            var items = $scope.rightOpts;
-                            console.log(items);
-                            return {
-                                className: 'dropdown-menu',
-                                callback: function (key, options) {
-
-                                },
-                                items: items
-                            };
-                            //});
-                        }
-                    });
-
-                },0);
-
                 /**
                  * 新建文件开始
                  */
@@ -444,7 +452,10 @@ angular.module('gkClientIndex.directives', [])
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
                 });
 
-                //监听mountdown时间
+                /**
+                 * 监听mousedown事件
+                 * @param event
+                 */
                 $scope.handleMouseDown = function (event) {
                     var $target = jQuery(event.target);
                     if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
@@ -477,17 +488,17 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('ngRightClick', function ($parse) {
+    .directive('ngRightClick', ['$parse',function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngRightClick);
             $element.bind('contextmenu', function (event) {
                 $scope.$apply(function () {
                     event.preventDefault();
-                    fn($scope, {$events: event});
+                    fn($scope, {$event: event});
                 });
             });
         };
-    })
+    }])
     .directive('rightTagInput', ['$parse', function ($parse) {
         return {
             restrict: 'A',
@@ -506,18 +517,18 @@ angular.module('gkClientIndex.directives', [])
                     'onRemoveTag': function (tag) {
                         $scope.removeTag(tag);
                     },
-                    'onChange': function (input,d,c) {
+                    'onChange': function (input, d, c) {
 
                     }
                 })
                 $scope.$watch('file.formatTag', function () {
-                    jQuery($element).importTags($scope.file.formatTag||'');
+                    jQuery($element).importTags($scope.file.formatTag || '');
                 });
 
             }
         }
     }])
-    .directive('breadsearch', ['$location',function ($location) {
+    .directive('breadsearch', ['$location', function ($location) {
         return {
             replace: true,
             restrict: 'E',
@@ -528,53 +539,53 @@ angular.module('gkClientIndex.directives', [])
                 var searchIcon = $element.find('.icon-search');
                 var eleWidth = $element.width();
                 var hideBread = $element.find('.hide_bread');
-                $scope.showSearch = function($event){
-                    if($($event.target).hasClass('bread')
+                $scope.showSearch = function ($event) {
+                    if ($($event.target).hasClass('bread')
                         || $($event.target).parents('.bread').size()
                         || $($event.target).hasClass('searching_label')
-                        || $($event.target).parents('.searching_label').size()){
+                        || $($event.target).parents('.searching_label').size()) {
                         return;
                     }
                     $scope.searching = true;
                 };
 
                 $scope.hideBreads = [];
-                var setBreadUI = function(){
+                var setBreadUI = function () {
                     var breadWidth = $element.find('.bread').width();
                     var breadListWidth = $element.find('.bread_list').width();
-                    var count  = 0;
-                    while(count<100 && breadListWidth>breadWidth){
+                    var count = 0;
+                    while (count < 100 && breadListWidth > breadWidth) {
                         $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
                         $element.find('.bread_list .bread_item').eq(0).remove();
                         breadListWidth = $element.find('.bread_list').width();
-                        count ++;
+                        count++;
                     }
                 };
-                setTimeout(function(){
+                setTimeout(function () {
                     setBreadUI();
-                    $(window).bind('resize',function(){
-                        $scope.$apply(function(){
+                    $(window).bind('resize', function () {
+                        $scope.$apply(function () {
                             setBreadUI();
                         })
                     })
-                },0);
+                }, 0);
 
-                $('body').bind('mousedown',function(event){
-                    $scope.$apply(function(){
-                        if($(event.target).hasClass('bread_and_search_wrapper') || $(event.target).parents('.bread_and_search_wrapper').size()){
+                $('body').bind('mousedown', function (event) {
+                    $scope.$apply(function () {
+                        if ($(event.target).hasClass('bread_and_search_wrapper') || $(event.target).parents('.bread_and_search_wrapper').size()) {
                             return;
                         }
                         $scope.searching = false;
                     })
                 })
 
-                $scope.selectBread = function(bread,$event){
-                    var params =  $location.search();
+                $scope.selectBread = function (bread, $event) {
+                    var params = $location.search();
                     $location.search({
-                        path:bread.path,
-                        view:$scope.view,
-                        mountid:params.mountid,
-                        partition:params.partition
+                        path: bread.path,
+                        view: $scope.view,
+                        mountid: params.mountid,
+                        partition: params.partition
                     });
                     $event.stopPropagation();
                 };
@@ -582,16 +593,16 @@ angular.module('gkClientIndex.directives', [])
         }
     }]);
 
-    /**
-     * news
-     */
+/**
+ * news
+ */
 angular.module('gkNewsApp.directives', [])
-    .directive('update', function() {
+    .directive('update', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl : "news_update.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "news_update.html",
+            link: function (scope, element, attrs) {
 
             }
         }
@@ -600,131 +611,131 @@ angular.module('gkNewsApp.directives', [])
  *  personal
  */
 angular.module('gkPersonalApp.directives', [])
-    .directive('administrator', function() {
+    .directive('administrator', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl :"personal_administrator.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "personal_administrator.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     })
-    .directive('noadministrator', function() {
+    .directive('noadministrator', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            transclude : true,
-            templateUrl :"personal_noteam.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            templateUrl: "personal_noteam.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     })
-    .directive('personaladd', function() {
+    .directive('personaladd', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl :"personal_noteam.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "personal_noteam.html",
+            link: function (scope, element, attrs) {
 
-             }
+            }
         }
     });
-    /**
-     * site
-     */
+/**
+ * site
+ */
 angular.module('gkSiteApp.directives', [])
-    .directive('contentdevice', function() {
+    .directive('contentdevice', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl :"site_contentdevice.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "site_contentdevice.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     })
-    .directive('contentuniversal', function() {
+    .directive('contentuniversal', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl :"site_contentuniversal.html",
-            link : function(scope, element,attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "site_contentuniversal.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     })
-    .directive('contentsynchronous', function() {
+    .directive('contentsynchronous', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl :"site_contentsynchronous.html",
-            link : function(scope, element,attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "site_contentsynchronous.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     })
-    .directive('contentnetwork', function() {
+    .directive('contentnetwork', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            transclude : true,
-            templateUrl :"site_contentnework.html",
-            link : function(scope, element,attrs) {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            templateUrl: "site_contentnework.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     })
-    .directive('contentadvanced', function() {
+    .directive('contentadvanced', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl :"site_contentadvanced.html",
-            link : function(scope, element,attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "site_contentadvanced.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     });
-    /**
-     * viewmember
-     */
+/**
+ * viewmember
+ */
 angular.module('gkViewmemberApp.directives', [])
-    .directive('viewmenmbermembers', function() {
+    .directive('viewmenmbermembers', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            transclude : true,
-            templateUrl :"viewmember_content.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            templateUrl: "viewmember_content.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     });
-    /**
-     * sharingsettings
-     */
+/**
+ * sharingsettings
+ */
 angular.module('gkSharingsettingsApp.directives', [])
-    .directive('sharingsettings', function() {
+    .directive('sharingsettings', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl : "sharing_settings.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "sharing_settings.html",
+            link: function (scope, element, attrs) {
 
             }
         }
     });
-    /**
-     * contact
-     */
+/**
+ * contact
+ */
 angular.module('gkContactApp.directives', [])
-    .directive('contactGroupMembers', function() {
+    .directive('contactGroupMembers', function () {
         return {
-            restrict : 'E',
-            replace : true,
-            templateUrl : "contact_groupmembers.html",
-            link:function(scope, element, attrs) {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "contact_groupmembers.html",
+            link: function (scope, element, attrs) {
 
             }
         }
