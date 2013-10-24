@@ -97,8 +97,9 @@
 #personal-wrapper{
     width:672px;
     height:428px;
-    margin:50px auto;
+    margin:0 auto;
     background: #FCFCFC;
+    display:none;
 }
 .personal-wrapper-slide{
     background: #F8F9FB;
@@ -184,20 +185,27 @@
     height:55px;
     border-top: 1px solid #8B779C;
 }
-.personal-newteam{
-    padding:25px 50px 10px 0;
-}
-#personal-title .personal-newteam a{
-    line-height: 20px;
-    color: #666B6F;
-}
 #personal-title .personal-myteam{
-    padding: 22px 0 0 20px;
+    margin: 22px 100px 0 20px;
+
 }
 #personal-title .personal-myteam span{
     font-size: 24px;
     color: #43576F;
     line-height: 24px;
+}
+.personal-newteam{
+    padding:25px 50px 10px 0;
+}
+.perdisplayNone{
+    display:none;
+}
+.perdisplayBlock{
+    display: block;
+}
+#personal-title .personal-newteam a{
+    line-height: 20px;
+    color: #666B6F;
 }
 /* personal-mangement */
 #personal-management{
@@ -860,6 +868,32 @@
 .site-content-network ul li{
     padding-bottom: 20px;
     font-size: 15px;
+}
+.site-footer-determine-close{
+    float: right;
+    margin-top: 5px;
+}
+.site-footer-close{
+    width:82px;
+    height:25px;
+    line-height: 25px;
+    border:1px solid #C2CBD3;
+    background:#E9EAEC;
+    color:#738295;
+    border-radius: 3px 3px 3px 3px;
+    cursor:pointer;
+    margin-right: 10px;
+}
+.site-footer-save{
+    width:82px;
+    height:25px;
+    line-height: 25px;
+    border:1px solid #C2CBD3;
+    color:#FFF;
+    background: #4883CB;
+    border-radius: 3px 3px 3px 3px;
+    cursor:pointer;
+    margin-right: 5px;
 }
 /**
 *   site.html
