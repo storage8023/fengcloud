@@ -729,13 +729,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
      * news
      */
 angular.module('gkNewsApp.controllers',[])
-    .controller("newsCtrl",['$filter','$scope', '$rootScope','GKApi','$location','$http','GK',function($filter,$scope ,$rootScope,GKApi,$location,$http,GK){
-        GKApi.upda().success(function(data){
-            $http.get('json/test.json').success(function (data) {
-                $scope.foo = data;
-            });
-         consoloe.log($scope.foo);
-        });
+    .controller("newsCtrl",['$filter','$scope','GKApi','$http',function($filter,$scope ,GKApi,$http){
+
     /**
      * 过滤出相同日期
      * 新消息news
@@ -935,7 +930,7 @@ angular.module('gkNewsApp.controllers',[])
         /**
          * 消息再处理
          */
-    var newMessage = function($scope){
+/*    var newMessage = function($scope){
         var newGetMessageData = JSON.parse(GKUpdates())
        ,data = newGetMessageData.updates
        ,filterData = compare(data);
@@ -946,27 +941,33 @@ angular.module('gkNewsApp.controllers',[])
          }else{
                 $scope.newsShow = 'noNews';
          }
-    };
-
+    };  */
+    /**
+     * 服务器过来的数据处理
+     */
+    var updateHttp = function(){
+        GKApi.update().success(function($http,data){
+            $scope.yy = data.updates;
+            $scope.xx = data.update_count;
+            console.log($scope.yy);
+            console.log($scope.xx);
+            console.log($http);
+        });
+    }
 
      /**
      * 单击向上向下滑动按钮
      * 新消息news
      * button - #newsbtn
      */
-     var newsControls = function(){
-     jQuery("#newsbtn").click(function(){
-         GKApi.upda().success(function(){
-             $http.get('json/text.json').success(function (data) {
-                $scope.yy = data;
-             });
+     var newsControls = function($scope){
+         jQuery("#newsbtn").click(function($scope){
+             updateHttp();
+             jQuery(".news-wrapper").slideToggle(500);
          });
-         jQuery(".news-wrapper").slideToggle(500);
-     });
-         console.log($scope.yy);
-     jQuery("#newsPackUp").click(function(){
-         jQuery(".news-wrapper").slideUp(500);
-     });
+         jQuery("#newsPackUp").click(function(){
+             jQuery(".news-wrapper").slideUp(500);
+         });
      };
      newsControls();
 
@@ -993,23 +994,14 @@ angular.module('gkNewsApp.controllers',[])
      * personal
      */
 angular.module("gkPersonalApp.controllers",[])
-    .controller("personalCtrl",function($scope){
-    $scope.gSideTreeList = [
-        {
-            "sidetype":0,
-            "name":"够快科技"
-        },
-        {
-            "sidetype":1,
-            "name":"够快科技"
-        },
-        {
-            "sidetype":2,
-            "name":"够快科技"
-        }
-    ];
-
-    function bitSize(num,  decimal) {
+    .controller("personalCtrl",['$scope','GKApi','$http',function($scope ,GKApi,$http){
+    /**
+     * B,KB,MB,GB,TB,PB
+     * @param num
+     * @param decimal
+     * @returns {*}
+     */
+      function bitSize(num,  decimal) {
         if (typeof(num) != 'number') {
             num = Number(num);
         }
@@ -1038,54 +1030,203 @@ angular.module("gkPersonalApp.controllers",[])
         }
     }
 
-    function perside(data){
-        var newData = [];
+    var invitePendingHttp = function(){
+        GKApi.teamInvitePending().success(function($http,data){
+            console.log($http);
+            $scope.createTeamData = data.invite_pending;
+        });
+    }
+
+    /**
+     *  团队信息处理
+     */
+    var perside = function(data){
+        var newData = []
         for(var i = 0, len = data.length;i<len;i++){
-            if(data[i].sidetype === 0){
-                newData.push({ "name":"够快科技","admin":"超级管理员","management":"管理"});
-            }else if(data[i].sidetype === 1){
-                newData.push({ "name":"够快科技","admin":"管理员","management":"管理"});
-            }else{
-                newData.push(data[i]);
+            if(data[i].orgid > 0){
+                if(data[i].type === 0){
+                    newData.push({ "name":data[i].name,"admin":"超级管理员","management":"管理","org_id":data[i].orgid});
+                }else if(data[i].type === 1){
+                    newData.push({ "name":data[i].name,"admin":"管理员","management":"管理","quit":"退出"});
+                }else{
+                    newData.push({ "name":data[i].name,"quit":"退出"});
+                }
             }
         }
         return newData;
     }
-    //个人信息
-    $scope.guser_info = JSON.parse(gkClientInterface.getUserInfo());
-    $scope.size_space = bitSize($scope.guser_info.size);
-    //团队信息
- //   $scope.per_gSideTreeList = $scope.gSideTreeList;
-//    $scope.per_gSideTreeList =  gkClientInterface.getSideTreeList.org();
+    /**
+     * 个人硬盘已使用处理
+     * @param data
+     * @returns {Array}
+     */
+    var useBitSize = function(data){
+        var usesize = [];
+        for(var i = 0,len = data.length;i<len;i++){
+            if(data[i].orgid === 0){
+                usesize.push({"use":data[i].use});
+            }
+        }
+        return usesize;
+    }
+    /**
+     * 个人信息处理
+     *  @type {*}
+     */
+    var guserInformation = function(data){
+        var guserData = []
+            ,oldData = data;
+        if(data.member_phone == ''){
+            guserData.push({"member_email":data.member_email,"member_name":data.member_name,"member_id":data.member_id,"photourl":data.photourl});
+        }else{
+            guserData.push({"member_email":data.member_email,"member_name":data.member_name,"member_id":data.member_id,"member_phone":'电话：'+data.member_phone,"photourl":data.photourl});
+        }
+        return guserData;
+    }
+    var perHavaNoteam = function(scope,havajoin,nojoin){
+        if(havajoin.length === 0 && nojoin.length === 0){
+            scope.haveNoTeam = 'noTeam';
+        }else{
+            scope.haveNoTeam = 'haveTeam';
+        }
+    }
+    $scope.permanagement = function(data){;
+        GKApi.teamManage(data).success(function($http){
 
- //   $scope.pernewgSideTreeList = perside($scope.per_gSideTreeList);
-    //团队信息再处理
-    //    $scope.per_gSideTreeList = gkClientInterface.getSideTreeList();
-     //   console.log($scope.per_gSideTreeList.rog);
-});
+        });
+    }
+    $scope.perquit = function(data){
+        GKApi.teamQuit(data).success(function($http){
+
+        });
+    }
+    $scope.perinvitereject = function(data,code){
+        GKApi.teamInviteReject(data,code).success(function($http){
+
+        });
+    }
+    $scope.perjoin = function(data,code){
+        GKApi.teamInviteJoin(data,code).success(function($http){
+
+        });
+    }
+
+   $scope.setupteam = function($scope){
+       var data = {
+           url:'/mount/create_team',
+           sso:1
+       }
+       var params = {
+           url:dataUrl,
+           type:"child",
+           width:500,
+           height:500
+       }
+       var dataUrl = gkClientInterface.setGetUrl(data);
+       gkClientInterface.setMain(params);
+    }
+    $scope.sitOpen = function($scope){
+
+        var data = {
+            url:"file:///F:/fengcloud/app/views/site.html",
+            type:"child",
+            width:800,
+            height:500
+        }
+        gkClientInterface.setMain(data);
+    }
+    var perCtrl = function(){
+        //个人信息
+        $scope.guser_info = guserInformation(JSON.parse(gkClientInterface.getUserInfo()))[0];
+        //团队信息
+        $scope.per_gSideTreeList = gkClientInterface.getSideTreeList({"sidetype":"org"}).list;
+        console.log($scope.per_gSideTreeList);
+        $scope.perNewgSideTreeList = perside($scope.per_gSideTreeList);
+        $scope.perUseBitSize = useBitSize($scope.per_gSideTreeList);
+        $scope.size_space = bitSize($scope.perUseBitSize[0].use);
+        //打开窗口
+        jQuery("#personbutton").click(function(){
+            invitePendingHttp();
+            perHavaNoteam($scope, $scope.guser_info, $scope.createTeamData);
+            jQuery("#personal-wrapper").slideToggle(500);
+        })
+        //关闭窗口
+        jQuery(".personal-close-button").click(function(){
+            jQuery("#personal-wrapper").slideUp(500);
+        })
+    }
+    perCtrl();
+}]);
 
     /**
      * site
      */
 angular.module("gkSiteApp.controllers",[])
     .controller("siteCtrl",function($scope) {
-        $scope.userInfo = {
-            'auto': 1,
-            'prompt': 1,
-            'recycle': 1,
-            'syncicon': 1,
-            'classic': 0
-        };
+
+        /**
+         * 选择语言处理
+         */
+        $scope.siteChangeLanguage  = function(){
+            $scope.items= [
+                {name:'默认', type: 0 },
+                {name:'中文', type: 1 },
+                {name:'英文', type: 2 }
+            ];
+            //$scope.changeLanguage =  JSON.prase(gkClientInterface.getChangeLanguage());
+            var type = 1;
+            $scope.item = $scope.items[type];
+        }
+        $scope.siteChangeLanguage();
+        /**
+         * 打开设置
+         * 数据处理
+         */
+        $scope.SiteOpen = function(){
+            $scope.siteSidebar ='contentUniversal';
+            $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
+            $scope.configpath = $scope.getsitedata.configpath;
+            $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
+            $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
+            $scope.recycle = (typeof $scope.getsitedata.recycle === 'number') ? $scope.getsitedata.recycle === 1 ? true : false : $scope.getsitedata.recycle;
+
+        }
+        $scope.SiteOpen();
+        /**
+         *设置代理
+         */
+        $scope.siteagent = function(){
+            gkClientInterface.setSettings();
+        }
+
+        /**
+         * 清除缓存
+         */
+        $scope.siteClearCache = function(){
+            gkClientInterface.setClearCache();
+        }
+
+        /**
+         * 按确定保存数据，关闭窗口，
+         */
         $scope.postUserInfo = function() {
+            $scope.item = $scope.item.type;
+            var language = {type:$scope.item};
             var userInfo = {
-                auto: (typeof $scope.userInfo.auto !== 'number' ) ? $scope.userInfo.auto === true ? 1 : 0 : $scope.userInfo.auto,
-                prompt: (typeof $scope.userInfo.prompt !== 'number') ? $scope.userInfo.prompt === true ? 1 : 0 : $scope.userInfo.prompt,
-                recycle: (typeof $scope.userInfo.recycle !== 'number') ? $scope.userInfo.recycle === true ? 1 : 0 : $scope.userInfo.recycle,
-                syncicon: (typeof $scope.userInfo.syncicon !== 'number') ? $scope.userInfo.syncicon === true ? 1 : 0 : $scope.userInfo.syncicon,
-                classic: (typeof $scope.userInfo.classic !== 'number') ? $scope.userInfo.classic === true ? 1 : 0 : $scope.userInfo.classic
+                auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
+                prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 :$scope.prompt,
+                recycle: (typeof  $scope.recycle !== 'number') ? $scope.recycle === true ? 1 : 0 : $scope.recycle,
+                configpath: $scope.configpath
             };
-            //gkClientInterface.sSetClientInfo(userInfo);
-            console.log(userInfo);
+            gkClientInterface.setClientInfo(userInfo);
+         //   gkClientInterface.setChangeLanguage(language);
+            gkClientInterface.setClose();
+        }
+        /**
+         *   按取消不保存数据，关闭窗口
+         */
+        $scope.closeUserInfo = function(){
+            gkClientInterface.setClose();
         }
     });
 

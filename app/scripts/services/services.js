@@ -419,18 +419,81 @@ angular.module('gkClientIndex.services', [])
             },
             upda: function () {
                 var params = {
-                    dateline: 1382491568,
-                    size: 5
+                    dateline:1370016000,
+                    size:5
                 };
-                angular.extend(params, defaultParams);
+               angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost() + '/1/updates/ls',
-                    params: params
+                    url: GK.getApiHost()+'/1/updates/ls',
+                    params:params
                 });
-            }
+           },
+           teamInvitePending:function(){
+                var sign = GK.getApiAuthorization(defaultParams);
+                defaultParams.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost()+'/1/team/invite_pending',
+                    params:defaultParams
+                });
+           },
+            teamManage:function(data){
+                var params = {
+                   org_id:data
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/updates/ls',
+                    params:params
+                });
+            },
+            teamQuit:function(data){
+                var params = {
+                    org_id:data
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/team/quit',
+                    params:params
+                });
+            },
+            teamInviteReject:function(data,code){
+                var params = {
+                    org_id:data,
+                    code:code
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/team/invite_reject',
+                    params:params
+                });
+            },
+            teamInviteJoin:function(data,code){
+                var params = {
+                    org_id:data,
+                    code:code
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/team/invite_accept',
+                    params:params
+                });
+            },
         }
         return GKApi;
     }])

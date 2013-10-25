@@ -13,7 +13,7 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
     }]);
 
 angular.module('gkNewsApp', ['gkNewsApp.controllers','gkNewsApp.directives','gkClientIndex.services']);
-angular.module('gkPersonalApp', ['gkPersonalApp.controllers','gkPersonalApp.directives']);
+angular.module('gkPersonalApp', ['gkPersonalApp.controllers','gkPersonalApp.directives','gkClientIndex.services']);
 angular.module('gkSiteApp', ['gkSiteApp.controllers','gkSiteApp.directives']);
 angular.module('gkviewmemberApp', ['gkviewmemberApp.controllers','gkviewmemberApp.directives']);
 angular.module('gkSharingsettingsApp', ['gkSharingsettingsApp.controllers','gkSharingsettingsApp.directives']);

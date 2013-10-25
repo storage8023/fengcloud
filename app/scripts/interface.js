@@ -43,6 +43,7 @@
         } catch (e) {
             this._handleException(e);
         }
+        console.log(params);
     },
     /**
      * 显示添加文件的对话框
@@ -205,10 +206,10 @@
         return gkClient.gGetAuthorization(JSONParams);
     },
     getApiAuthorization:function(params){
+        for(var key in params){
+            params[key] = String(params[key]);
+        }
         return gkClient.gGetApiAuthorization(JSON.stringify(params));
-    },
-    getMessage:function(){
-        return gkClient.gGetMessage();
     },
     setSettings:function(){
         gkClient.gSettings();
@@ -225,15 +226,26 @@
     setLogoff:function(){
         gkClient.gLogoff();
     },
-    getGetClientInfo:function(){
-        return gkClient.gkClientInfo();
+     setClientInfo:function(params){
+        return gkClient.gSetClientInfo(JSON.stringify(params));
+    },
+    getChangeLanguage:function(){
+       return gkClient.gChangeLanguage();
+    },
+    setChangeLanguage:function(){
+        return gkClient.gChangeLanguage(JSON.stringify(params));
+    },
+    setGetUrl:function(params){
+        return gkClient.gGetUrl(JSON.stringify(params));
+    },
+    setMain:function(data){
+        return gkClient.gMain(JSON.stringify(data));
+    },
+    getUIPath: function(){
+        return gkClient.gGetUIPath();
+    },
+    getClientInfo: function(){
+        return gkClient.gGetClientInfo();
     }
-  //  setClientInfo:function(params){
- //       return gkClient.gSetClientInfo(JSON.stringify(params));
- //   }.
- //   getChangeLanguage:function(){
- //       return gkClient.gChangeLanguage();
- //   }
-
 };
 

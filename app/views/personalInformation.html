@@ -7,6 +7,7 @@
     <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
 </head>
 <body ng-controller = "personalCtrl">
+<input type = "button" value="button" id = "personbutton" />
     <div id = "personal-wrapper"  class = "personal-wrapper-slide">
         <div id = "personal-header">
             <h1>个人信息</h1>
@@ -14,7 +15,7 @@
         <div id = "personal-information" class="c_f_after">
             <div class = "personal-picture f_l">
                 <a href = "javascript:;" title = "picture">
-                    <img src = "{{guser_info.photourl}}" alt = "picture" />
+                    <img src = "../images/deputy/picture.jpg" alt = "picture" />
                 </a>
             </div>
             <div class = "personal-message f_l">
@@ -22,14 +23,11 @@
             <span title="{{guser_info.member_name}}">{{guser_info.member_name}}</span>
                 </h2>
                 <div class = "personal-email">
-                    <span title="{{guser_info.member_email}}">< {{guser_info.member_email}} ></span>
+                    <span title="{{guser_info.member_email}}">{{guser_info.member_email}}</span>
                 </div>
                 <ul class = "personal-contact">
-                    <li class="f_l">
-                        <span>电话: </span>
-                    </li>
                     <li class="f_l personal-contact-phone">
-                        <span title="{{guser_info.call}}">8888888{{guser_info.call}}</span>
+                        <span title="{{guser_info.member_phone}}">{{guser_info.member_phone}}</span>
                     </li>
                     <li class="f_l">
                         <span>已使用: </span>
@@ -41,7 +39,7 @@
             </div>
             <ul class = "personal-function f_r">
                 <li class="personal-function-management">
-                    <a href = "http://api.gokuai.com/account/info?token=[access_token]&sign=[请求签名]" title = "管理我的设备" >
+                    <a href = "javascript:void(0);" ng-click = "sitOpen()" title = "管理我的设备" >
                         管理我的设备
                     </a>
                 </li>
@@ -51,27 +49,27 @@
                     </a>
                 </li>
                 <li class="personal-function-cancellation">
-                    <a href = "javascript:;" title = "注销账号" >
+                    <a href = "javascript:;" title = "注销账号" ng-click = "gkClientInterface.setLogoff()" >
                         注销账号
                     </a>
                 </li>
             </ul>
         </div>
         <div id = "personal-title" class="c_f_after">
-            <div class = "personal-newteam f_r">
-                <a href = "#" title  = "创建一个团队">
-                    <span>创建一个团队</span>
-                </a>
-            </div>
             <div class = "personal-myteam f_l">
                 <span>我的团队</span>
             </div>
+            <div class = "personal-newteam f_r">
+                <a href = "javascript:;" ng-click = "setupteam()" title  = "创建一个团队">
+                    <span>创建一个团队</span>
+                </a>
+            </div>
         </div>
         <div id = "personal-management" >
-            <!--noadministrator></noadministrator-->
+            <noadministrator></noadministrator>
             <div class = "personal-management-admin scrollbar">
-                <administrator ng-repeat = "perteam in pernewgSideTreeList"></administrator>
-                <!--personaladd></personaladd-->
+                <administrator ng-repeat = "perteam in perNewgSideTreeList"></administrator>
+                <personaladd ng-repeat = "createTeam in createTeamData"></personaladd>
             </div>
         </div>
         <div id = "personal-footer">

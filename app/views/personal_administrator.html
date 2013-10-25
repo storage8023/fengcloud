@@ -1,4 +1,4 @@
-<div class = "personal-management-team">
+<div class = "personal-management-team" ng-show = "haveNoTeam == 'haveTeam' ">
     <div class = "personal-team-picture f_l">
         <a href = "javascript:;" title = "teampicture">
              <img src = "../images/deputy/picture.jpg" alt = "teampicture" />
@@ -14,10 +14,10 @@
         </ul>
      <ul class="personal-team-management-show c_f_after">
         <li class = "personal-float-management f_l">
-             <a href = "" title = "{{perteam.management}}">{{perteam.management}}</a>
+             <a href = "javascript:void(0);" ng-click = "permanagement({{perteam.org_id}})" title = "{{perteam.management}}">{{perteam.management}}</a>
             </li>
          <li class = "personal-float-quit f_r">
-             <a href = "#" title = "退出"> 退出</a>
+             <a href = "javascript:void(0);" ng-click = "perquit({{perteam.org_id}})" title = "{{perteam.quit}}">{{perteam.quit}}</a>
           </li>
      </ul>
 </div>
