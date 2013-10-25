@@ -772,12 +772,12 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  */
                 $scope.showSearch = function ($event) {
-                    if ($($event.target).hasClass('bread')
-                        || $($event.target).parents('.bread').size()
-                        || $($event.target).hasClass('searching_label')
-                        || $($event.target).parents('.searching_label').size()
-                        || $($event.target).hasClass('hide_bread')
-                        || $($event.target).parents('.hide_bread').size()) {
+                    if (jQuery($event.target).hasClass('bread')
+                        || jQuery($event.target).parents('.bread').size()
+                        || jQuery($event.target).hasClass('searching_label')
+                        || jQuery($event.target).parents('.searching_label').size()
+                        || jQuery($event.target).hasClass('hide_bread')
+                        || jQuery($event.target).parents('.hide_bread').size()) {
                         return;
                     }
                     $scope.searching = true;
@@ -847,7 +847,7 @@ angular.module('gkClientIndex.directives', [])
                  * @param bread
                  * @param $event
                  */
-                $scope.selectBread = function (bread, $event) {
+                $scope.selectBread = function (bread) {
                     var params = $location.search();
                     $location.search({
                         path: bread.path,
@@ -855,7 +855,6 @@ angular.module('gkClientIndex.directives', [])
                         mountid: params.mountid,
                         partition: params.partition
                     });
-                    $event.stopPropagation();
                 };
             }
         }
