@@ -141,11 +141,13 @@ header .bread_and_search_wrapper .icon-search{
 }
 header .bread_and_search_wrapper .hide_bread{
    position: absolute;
-   left:3px;
+   left:0;
 }
 header .bread_and_search_wrapper .hide_bread > a {
     display: inline-block;
     line-height: 30px;
+    padding: 0 3px;
+    margin-top: 3px;
 }
 
 header .bread_and_search_wrapper .bread_list{
@@ -155,6 +157,11 @@ header .bread_and_search_wrapper .bread_list{
 header .bread_and_search_wrapper .bread_item{
     border-right: 1px solid transparent;
     -webkit-transition:border-color linear 0.1s;
+}
+header .bread_and_search_wrapper .bread_item > a{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 header .bread_and_search_wrapper:hover .bread_item
 {
@@ -458,6 +465,9 @@ footer {
 .file_list_wrapper .list_view .file_name {
     margin-right: 340px;
     height: 32px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .file_list_wrapper .file_list_header i:first-child {

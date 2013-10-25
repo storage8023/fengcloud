@@ -471,19 +471,6 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('bread', [function () {
-        return {
-            replace: true,
-            restrict: 'E',
-            templateUrl: "views/bread.html",
-            scope: {
-                breads: '='
-            },
-            link: function () {
-
-            }
-        }
-    }])
     .directive('toolbar', [function () {
         return {
             replace: true,
@@ -596,7 +583,7 @@ angular.module('gkClientIndex.directives', [])
                 inputtip.css({ top: 0, left: 0, display: 'block','max-height':'200px','overflow':'auto' });
                 if (appendToBody) {
                     $body = $body || $document.find('body');
-                    console.log($body);
+                    //console.log($body);
                     $body.append(inputtip);
 
                 } else {
@@ -769,7 +756,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', function ($location) {
+    .directive('breadsearch', ['$location','$timeout',function ($location,$timeout) {
         return {
             replace: true,
             restrict: 'E',
@@ -780,37 +767,72 @@ angular.module('gkClientIndex.directives', [])
                 var searchIcon = $element.find('.icon-search');
                 var eleWidth = $element.width();
                 var hideBread = $element.find('.hide_bread');
+                /**
+                 * 显示搜索模式
+                 * @param $event
+                 */
                 $scope.showSearch = function ($event) {
                     if ($($event.target).hasClass('bread')
                         || $($event.target).parents('.bread').size()
                         || $($event.target).hasClass('searching_label')
-                        || $($event.target).parents('.searching_label').size()) {
+                        || $($event.target).parents('.searching_label').size()
+                        || $($event.target).hasClass('hide_bread')
+                        || $($event.target).parents('.hide_bread').size()) {
                         return;
                     }
                     $scope.searching = true;
                 };
 
                 $scope.hideBreads = [];
-                var setBreadUI = function () {
-                    var breadWidth = $element.find('.bread').width();
-                    var breadListWidth = $element.find('.bread_list').width();
-                    var count = 0;
-                    while (count < 100 && breadListWidth > breadWidth) {
-                        $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
-                        $element.find('.bread_list .bread_item').eq(0).remove();
-                        breadListWidth = $element.find('.bread_list').width();
-                        count++;
-                    }
-                };
-                setTimeout(function () {
-                    setBreadUI();
-                    $(window).bind('resize', function () {
-                        $scope.$apply(function () {
-                            setBreadUI();
-                        })
-                    })
-                }, 0);
 
+                var setBreadUI = function () {
+                        var breadWidth = $element.find('.bread').width();
+                    $element.find('.bread_list .bread_item a').css({'max-width':breadWidth});
+                        var breadListWidth = $element.find('.bread_list').width();
+                        while ( breadListWidth > breadWidth) {
+                            if( $element.find('.bread_list .bread_item:visible').size()==1){
+                               break;
+                            }
+                            var hideBread = $scope.breads[$scope.hideBreads.length];
+                            if(hideBread){
+                                $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
+                                $element.find('.bread_list .bread_item:visible').eq(0).hide();
+                                breadListWidth = $element.find('.bread_list').width();
+                            }
+                        }
+                };
+
+                $scope.$watch('breads',function(){
+                    $scope.hideBreads = [];
+                    $element.find('.bread_list .bread_item:hidden').show();
+                    $timeout(function(){
+                        setBreadUI();
+                    },0);
+                })
+                var oldBreadWidth = $element.find('.bread').width();
+                jQuery(window).bind('resize', function () {
+                    $scope.$apply(function () {
+                        var grid = $element.find('.bread').width() - oldBreadWidth;
+                        if(grid>0){
+                            var lastHideBread = $element.find('.bread_list .bread_item:hidden').last();
+                            if(lastHideBread.size()){
+                                if(grid>=lastHideBread.outerWidth()){
+                                    $scope.hideBreads.splice(0,1);
+                                    lastHideBread.show();
+                                }
+                            }
+                        }else{
+                            $timeout(function(){
+                                setBreadUI();
+                            },0)
+                        }
+                    })
+                })
+
+
+                /**
+                 * 监听mousedown 取消搜索模式
+                 */
                 $('body').bind('mousedown', function (event) {
                     $scope.$apply(function () {
                         if ($(event.target).hasClass('bread_and_search_wrapper') || $(event.target).parents('.bread_and_search_wrapper').size()) {
@@ -820,6 +842,11 @@ angular.module('gkClientIndex.directives', [])
                     })
                 })
 
+                /**
+                 * 点击面包屑后的跳转
+                 * @param bread
+                 * @param $event
+                 */
                 $scope.selectBread = function (bread, $event) {
                     var params = $location.search();
                     $location.search({

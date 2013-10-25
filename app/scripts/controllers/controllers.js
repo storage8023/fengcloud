@@ -698,6 +698,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
             return breads;
         };
+
         $scope.canBack  = false;
         $scope.canForward  = false;
         /**
@@ -715,6 +716,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.canForward  = GKHistory.canForward();
         });
 
+        /**
+         * 前进 后退
+         * @param forward
+         */
         $scope.handleNav = function(forward){
            if(!forward){
                GKHistory.back();
