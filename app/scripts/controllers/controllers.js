@@ -549,8 +549,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', function ($scope, RestFile, $rootScope, GKApi, $http) {
+    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http','$location', function ($scope, RestFile, $rootScope, GKApi, $http,$location) {
         var gird = /[,;；，\s]/g;
+
         /**
          * 监听已选择的文件
          */
@@ -565,21 +566,40 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!$scope.selectedFile || !$scope.selectedFile.length) {
 
             } else if ($scope.selectedFile.length == 1) {
+                var searchParams = $location.search();
                 $scope.file = $scope.selectedFile[0];
-                var mount_id = 175625, fullpath = '100.gif';
-//                RestFile.get(mount_id, fullpath).success(function (data) {
-//                    var tag = data.tag || '';
-//                    $scope.file.tag = tag;
-//                    $scope.file.formatTag = tag.replace(gird, ',');
-//                });
+                RestFile.get(searchParams.mountid, $scope.file.path).success(function (data) {
+                    var tag = data.tag || '';
+                    $scope.file.tag = tag;
+                    $scope.file.formatTag = tag.replace(gird, ',');
+                });
 
-//                GKApi.sideBar(GKSession.mount_id,$scope.file.path).success(function(data){
-//                $http.get('json/test.json').success(function (data) {
-//                    $scope.shareMembers = data.share_members;
-//                    $scope.remarks = data.remark;
-//                    $scope.histories = data.history;
-//                    $scope.remindMembers = data.remind_members;
-//                });
+                GKApi.sideBar(searchParams.mountid,$scope.file.path).success(function(data){
+                    $scope.shareMembers = data.share_members;
+                    $scope.remarks = data.remark;
+                    $scope.histories = data.history;
+                    $scope.remindMembers = data.remind_members;
+                    $scope.remindMembers =[{
+                        'id':1,
+                        'name':'测试1'
+                    },
+                        {
+                            'id':2,
+                            'name':'测试2'
+                        },
+                        {
+                            'id':3,
+                            'name':'测试3'
+                        },
+                        {
+                            'id':4,
+                            'name':'测试4'
+                        },
+                        {
+                            'id':5,
+                            'name':'测试5'
+                        }];
+                });
             } else {
 
             }
@@ -591,7 +611,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.addTag = function (tag) {
             var newTag = $scope.file.tag + ' ' + tag;
+            GKApi.setTag(searchParams.mountid,$scope.file.path,newTag).success(function(){
 
+            }).error(function(){
+
+            });
         };
 
         /**
@@ -600,6 +624,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.removeTag = function (tag) {
             var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
+
+            GKApi.setTag(searchParams.mountid,$scope.file.path,newTag).success(function(){
+
+            }).error(function(){
+
+                });
         };
 
         /**
@@ -615,8 +645,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.postRemark = function () {
             if(!$scope.postText.length) return;
-            //RestFile.remind(GKSession.mount_id,$scope.file.path,$scope.postText).success(function(data){
-            $http.get('json/testRemind.json').success(function (data) {
+            RestFile.remind($location.search().mountid,$scope.file.path,$scope.postText).success(function(data){
                 $scope.postText = '';
                 $scope.inputingRemark = false;
                 if (data && data.length) {
@@ -636,7 +665,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.folded = !$scope.folded;
         };
     }])
-    .controller('header',['$scope','GKPath','$location','$filter','GKMounts',function($scope,GKPath,$location,$filter,GKMounts){
+    .controller('header',['$scope','GKPath','$location','$filter','GKMounts','GKHistory',function($scope,GKPath,$location,$filter,GKMounts,GKHistory){
 
         /**
          * 面包屑
@@ -669,7 +698,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
             return breads;
         };
-
+        $scope.canBack  = false;
+        $scope.canForward  = false;
         /**
          * 分析路径获取参数
          * @type {*}
@@ -681,7 +711,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.view = params.view||'list'; //当前的视图模式
             $scope.path =  params.path||'';  //当前的文件路径
             $scope.breads = getBreads();
+            $scope.canBack  = GKHistory.canBack();
+            $scope.canForward  = GKHistory.canForward();
         });
+
+        $scope.handleNav = function(forward){
+           if(!forward){
+               GKHistory.back();
+           }else{
+               GKHistory.forward();
+           }
+        };
 
     }]);
 

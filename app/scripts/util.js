@@ -25,11 +25,11 @@ Util.String = {
         return ext;
     },
     baseName: function(path) {
-        path = path.toString();
+        path = String(path);
         return path.replace(/\\/g, '/').replace(/.*\//, '');
     },
     dirName: function(path) {
-        path = path.toString();
+        path = String(path);
         return path.indexOf('/') < 0 ? '' : path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
     },
     ltrim: function(str, charlist) {

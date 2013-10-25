@@ -4,7 +4,7 @@
 
 
 angular.module('gkClientIndex.directives', [])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile','$parse', function ($location, GKPath, $filter, $templateCache, $compile,$parse) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', function ($location, GKPath, $filter, $templateCache, $compile) {
         return {
             replace: true,
             restrict: 'E',
@@ -17,7 +17,7 @@ angular.module('gkClientIndex.directives', [])
                 selectedFile: '=',
                 rightOpts: '='
             },
-            link: function ($scope, $element, $attrs) {
+            link: function ($scope, $element) {
                 var selectedFile = [], //当前已选中的条目
                     selectedIndex = [], //已选中文件的索引
                     unSelectFile, //取消选中的函数
@@ -69,7 +69,7 @@ angular.module('gkClientIndex.directives', [])
                  * @param index
                  */
                 $scope.handleClick = function ($event, index) {
-                   // console.log($scope.rightOpts);
+                    // console.log($scope.rightOpts);
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
@@ -123,8 +123,8 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 根据rightOpts的变化重置右键
                  */
-                $scope.$watch('rightOpts',function(){
-                    jQuery.contextMenu('destroy','.file_list .list_body');
+                $scope.$watch('rightOpts', function () {
+                    jQuery.contextMenu('destroy', '.file_list .list_body');
                     /**
                      * 设置右键菜单
                      */
@@ -132,7 +132,7 @@ angular.module('gkClientIndex.directives', [])
                         selector: '.file_list .list_body',
                         reposition: false,
                         zIndex: 99,
-                        scope:$scope,
+                        scope: $scope,
                         animation: {
                             show: "show",
                             hide: "hide"
@@ -146,7 +146,7 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  * @param file
                  */
-                $scope.handleRightClick = function($event){
+                $scope.handleRightClick = function ($event) {
                     var jqTarget = jQuery($event.target);
                     var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
                     if (fileItem.size()) {
@@ -257,6 +257,9 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  */
                 $scope.upLeftPress = function ($event) {
+                    if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
+                        return;
+                    }
                     /**
                      * 非所缩略图模式不激活左右键
                      */
@@ -299,6 +302,9 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  */
                 $scope.downRightPress = function ($event) {
+                    if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
+                        return;
+                    }
                     /**
                      * 非所缩略图模式不激活左右键
                      */
@@ -488,7 +494,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('ngRightClick', ['$parse',function ($parse) {
+    .directive('ngRightClick', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngRightClick);
             $element.bind('contextmenu', function (event) {
@@ -498,6 +504,241 @@ angular.module('gkClientIndex.directives', [])
                 });
             });
         };
+    }])
+    .directive('inputTipPopup', ['$document','$parse','$timeout',function ($document,$parse,$timeout) {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: { list: '=',onSelect:'&'},
+            template: '<ul class="dropdown-menu input_tip_list">'+'<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
+                + '</ul>',
+            link:function($scope, $element, $attrs){
+                var index = 0;
+                $scope.$watch('list',function(){
+                    if( $scope.list && $scope.list.length){
+                        preSelectItem(index);
+                    }
+                })
+                var selectItem = function(){
+                    if ($scope.onSelect != null) {
+                        $scope.onSelect({item:$scope.list[index]})
+                    }
+                };
+                var preSelectItem = function(newIndex){
+                    $scope.list[index].selected = false;
+                    $scope.list[newIndex].selected= true;
+                    index = newIndex;
+                };
+
+                $scope.handleMouseEnter = function(key){
+                    preSelectItem(key);
+                };
+                $scope.handleClick = function(key){
+                    preSelectItem(key);
+                    selectItem();
+                };
+                $document.bind('keydown',function(e){
+                    $scope.$apply(function(){
+                        var key_code = e.keyCode;
+                        if(!$scope.list || !$scope.list) return;
+                        var listLength = $scope.list.length;
+                        var step = 1;
+                        if (key_code == 38) { //up
+                            step = -1;
+                        }else if(key_code == 40){
+
+                        } else if (key_code == 13 || key_code == 32){
+                            selectItem();
+                            return;
+                        }
+                        var newIndex = index+step;
+                        if(newIndex<0){
+                            newIndex = listLength -1;
+                        }else if(newIndex>listLength -1){
+                            newIndex = 0;
+                        }
+                        preSelectItem(newIndex);
+                    });
+                })
+            }
+        };
+    }])
+    .directive('inputTip', [ '$compile', '$parse', '$document', '$position', function ($compile, $parse, $document, $position) {
+        var template =
+            '<input-tip-popup ' +
+                'list="it_list" ' +
+                'on-select="it_onSelect(item)"' +
+                '>' +
+                '</input-tip-popup>';
+        return {
+            restrict: 'A',
+            require : '?ngModel',
+            link: function ($scope, $element, $attrs,$ngModel) {
+                if(!$ngModel){
+                    return $ngModel;
+                }
+                var watchStr = $attrs.inputTip;
+                var placementArr = $attrs.inputTipPlacement.split(' ');
+                var placement = {
+                    v:placementArr[0],
+                    h:placementArr[1]
+                };
+                var inputtip = $compile(template)($scope);
+                var elem = $element[0];
+                /**
+                 * 是否appendToBody
+                 * @TODO 可定制
+                 */
+                var appendToBody = true;
+                $scope.it_isOpen = false;
+                var $body;
+
+                inputtip.css({ top: 0, left: 0, display: 'block','max-height':'200px','overflow':'auto' });
+                if (appendToBody) {
+                    $body = $body || $document.find('body');
+                    console.log($body);
+                    $body.append(inputtip);
+
+                } else {
+                    //TODO
+                }
+
+                var setPosition = function(jqTextarea, hintWrapper){
+                    var position,
+                        ttWidth,
+                        ttHeight,
+                        ttPosition;
+
+                   //获取textarea的相对位置
+                    //position = appendToBody ? $position.offset($element) : $position.position($element);
+
+                    ttWidth = inputtip.outerWidth();
+                    ttHeight =  inputtip.outerHeight();
+
+                    /**
+                     * 获取光标在输入框的位置
+                     * @type {*}
+                     */
+                    var lineHeight = 4;
+                    var cursorPosition = Util.Input.getInputPositon(elem);
+                    var ttPosition = {
+                        top:cursorPosition.top+lineHeight,
+                        left:cursorPosition.left
+                    }
+
+                    if(ttPosition.top+ttHeight>jQuery(window).height()){
+                        ttPosition.top = ttPosition.top - ttHeight- lineHeight-parseInt($element.css('line-height').replace('px'));
+                    }
+
+                    if(ttPosition.left+ttWidth>jQuery(window).width()){
+                        ttPosition.left = ttPosition.left - ttWidth;
+                    }
+
+                    ttPosition.top += 'px';
+                    ttPosition.left += 'px';
+                    inputtip.css(ttPosition);
+                };
+                /**
+                 * 显示提示框
+                 */
+                var show = function () {
+                    if (!$scope.it_list) {
+                        return;
+                    }
+
+                    /**
+                     * 设置位置
+                     */
+                    $scope.it_isOpen = true;
+                    setTimeout(function(){
+                        setPosition();
+                    },0);
+                };
+
+                /**
+                 * 隐藏提示框
+                 */
+                var hide = function () {
+                    $scope.it_isOpen = false;
+                    inputtip.remove();
+                };
+
+                    $scope.$on('$locationChangeSuccess', function () {
+                        if ($scope.it_isOpen) {
+                            hide();
+                        }
+                    });
+
+                $scope.$on('$destroy', function () {
+                    if ($scope.it_isOpen) {
+                        hide();
+                    } else {
+                        inputtip.remove();
+                    }
+                });
+                var inputPos,val,lastIndex;
+
+                var modelValue = $parse($attrs.ngModel);
+                $scope.it_list = [];
+                $scope.$watch(modelValue, function (newValue) {
+                    setTimeout(function(){
+                        val = newValue || '';
+                        var cursor = Util.Input.getCurSor($element[0]);
+                        console.log(cursor);
+                        inputPos = cursor.split('|');
+                        var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
+                        lastIndex = leftStr.lastIndexOf(watchStr); //获取光标左边字符最后一个@字符的位置
+                        if (lastIndex < 0) {
+                            hide();
+                            return;
+                        }
+                        var q = leftStr.slice(lastIndex + 1, leftStr.length); //获取@与光标位置之间的字符
+
+                        //如果@与光标之间有空格，隐藏提示框
+                        if ($.trim(q).length != q.length) {
+                            hide();
+                            return;
+                        }
+
+                        if (!q.length) {
+                            $scope.it_list = $scope.remindMembers;
+                        } else {
+                            var resultList = [];
+                            if ($scope.remindMembers &&  $scope.remindMembers.length) {
+                                angular.forEach($scope.remindMembers,function(value){
+                                    if (value.short_name && value.short_name.indexOf(q) === 0) {
+                                        resultList.unshift(value);
+                                    } else if (value.name.indexOf(q) != -1) {
+                                        resultList.push(value);
+                                    }
+                                });
+                                $scope.it_list = resultList;
+                            }
+                        }
+                        show();
+                    },0);
+
+                })
+
+                var insertChar = function(input) {
+                    input += ' ';
+                    var isInsert = inputPos[1] != val.length;
+                    val = val.substr(0, lastIndex + 1) + input + val.substr(inputPos[1], val.length);
+                    $ngModel.$setViewValue(val);
+                    $ngModel.$render();
+                    if (isInsert) {
+                        Util.Input.moveCur(elem, parseInt(inputPos[0]) + (input).length);
+                    } else {
+                        Util.Input.moveCur(elem, val.length);
+                    }
+                };
+               $scope.it_onSelect = function(item){
+                   insertChar(item.name);
+               };
+
+
+            }
+        }
     }])
     .directive('rightTagInput', ['$parse', function ($parse) {
         return {

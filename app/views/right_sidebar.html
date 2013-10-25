@@ -1,0 +1,101 @@
+<aside class="right_sidebar" ng-controller="rightSidebar">
+    <div class="no_file" ng-show="!selectedFile || !selectedFile.length">
+        <div>我的文件夹</div>
+        <div>已使用{{User.size|bitSize}}</div>
+        <p>将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接</p>
+    </div>
+    <div class="single_file" ng-show="selectedFile.length==1" ng-class="folded?'folded':''">
+        <div class="file_info_wrapper">
+            <div class="section_title">
+                <span class="name">{{file.file_name}}</span>
+                    <span class="title">
+                        详细
+                    </span>
+                <span class="f_r fold gk_up_arrow" ng-click="toggleFileInfoWrapper()"></span></div>
+            <section class="scrollbar">
+                <div class="file_icon">
+                    <img ng-src="{{file.thumb}}" alt=""/>
+                </div>
+                <div class="file_attrs">
+                    <div class="file_name" title="{{file.file_name}}">{{file.file_name}}</div>
+                    <div title="创建人：{{file.creator}}">创建人：{{file.creator}}</div>
+                    <div title="最后修改人：{{file.last_member_name}}">最后修改人：{{file.last_member_name}}</div>
+
+                </div>
+                <div class="opts">
+                    <button class="btn btn-gk">发送</button>
+                    <button class="btn btn-gk">链接</button>
+                </div>
+                <div class="tags">
+                    <input type="text" ng-model="file.formatTag" class="" name="file_tag" id="file_tag"
+                           right-tag-input/>
+                </div>
+            </section>
+        </div>
+        <section class="file_detail_wrapper">
+            <tabset direction="blew">
+                <tab heading="共享">
+                    <button class="btn btn-gk set_share" ng-click="showEditShareDialog()">共享设置</button>
+                    <ul class="scrollbar share_member_list">
+                        <li ng-repeat="shareMember in shareMembers">
+                            <span class="icon"><i></i></span>
+                            <span class="name">{{shareMember.member_name}}</span>
+                            <span class="role">{{shareMember.auth_name}}</span>
+                        </li>
+                    </ul>
+                </tab>
+
+                <tab heading="讨论">
+                    <div class="update_wrapper" ng-class="inputingRemark?'editing':''">
+                        <ul class="scrollbar update_list">
+                            <li ng-repeat="remark in remarks">
+                                <span class="update_member">{{remark.member_name}}</span>
+                                 <span class="update_text">
+                                    <span ng-bind-html="remark.render_text"></span>
+                                     <span class="update_time">({{remark.dateline*1000|date:'M月d日'}})</span>
+                                </span>
+                            </li>
+                        </ul>
+                        <div class="post_wrapper">
+                            <textarea placeholder="参与讨论" ng-focus="inputingRemark=true"
+                                      ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
+
+                            <div class="post_opts">
+                                <a href="javascript:void(0)" class="f_l">提醒(@)</a>
+                                <button class="btn btn-gk f_r" ng-click="cancelPostRemark()">取消</button>
+                                <button class="btn btn-gk f_r" ng-click="postRemark()">确定</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </tab>
+                <tab heading='历史'>
+                    <ul class="scrollbar history_list">
+                        <li ng-repeat="history in histories">
+                            <div class="act_info">
+                                <div> <span class="filename">{{history.fullpath|baseName}}</span></div>
+                                <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span class="act_dateline">{{history.dateline*1000 | date:'yyyy/M/d H:m'}}</span></div>
+                            </div>
+                            <div class="act_name"><span>重命名</span></div>
+                            <div class="act_opts dropdown">
+                                <a dropdown-toggle href="javascript:void(0);">
+                                    <i class="gk_down_arrow"></i>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="javascript:;" ng-click="openVersion()">打开</a>
+                                        <a href="javascript:;" ng-click="saveVersion()">另存为</a>
+                                        <a href="javascript:;" ng-click="recoveryVersion()">恢复</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </tab>
+            </tabset>
+        </section>
+    </div>
+    <div class="multi_file" ng-show="selectedFile.length>1">
+        <div>已选择{{selectedFile.length}}个文件或文件夹</div>
+    </div>
+</aside>

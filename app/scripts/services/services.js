@@ -8,10 +8,10 @@ angular.module('gkClientIndex.services', [])
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
                 var params = {
-                  path:paramArr[1],
-                  view:paramArr[2]
+                    path: paramArr[1],
+                    view: paramArr[2]
                 };
-                return '/' + paramArr[0]+'?'+jQuery.param(params);
+                return '/' + paramArr[0] + '?' + jQuery.param(params);
             }
         }
     })
@@ -51,7 +51,7 @@ angular.module('gkClientIndex.services', [])
                 gkClientInterface.lock(params);
             },
             unlock: function (params) {
-               gkClientInterface.unlock(params);
+                gkClientInterface.unlock(params);
             },
             getUser: function () {
                 return gkClientInterface.getUser();
@@ -102,7 +102,7 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
             open: function (params) {
-              gkClientInterface.open(params);
+                gkClientInterface.open(params);
 
             },
             selectPath: function () {
@@ -111,7 +111,7 @@ angular.module('gkClientIndex.services', [])
             checkPathIsEmpty: function (params) {
                 return gkClientInterface.selectPath(params);
             },
-            setLinkPath:function(params){
+            setLinkPath: function (params) {
                 var re = gkClientInterface.setLinkPath(params);
                 var deferred = $q.defer();
                 if (!re || re.error == 0) {
@@ -121,7 +121,7 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            removeLinkPath:function(params){
+            removeLinkPath: function (params) {
                 var re = gkClientInterface.removeLinkPath(params);
                 var deferred = $q.defer();
                 if (!re || re.error == 0) {
@@ -131,19 +131,19 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            getRestHost:function(){
+            getRestHost: function () {
                 return gkClientInterface.getRestHost();
             },
-            getApiHost:function(){
+            getApiHost: function () {
                 return gkClientInterface.getApiHost();
             },
-            getToken:function(){
+            getToken: function () {
                 return gkClientInterface.getToken();
             },
-            getAuthorization:function(ver,webpath,date){
-                return gkClientInterface.getAuthorization(ver,webpath,date);
+            getAuthorization: function (ver, webpath, date, mountid) {
+                return gkClientInterface.getAuthorization(ver, webpath, date, mountid);
             },
-            getApiAuthorization:function(params){
+            getApiAuthorization: function (params) {
                 return gkClientInterface.getApiAuthorization(params);
             }
         }
@@ -182,7 +182,9 @@ angular.module('gkClientIndex.services', [])
                         lock: value.lock,
                         lock_member_name: value.lockname,
                         lock_member_id: value.lockid,
-                        dir: value.dir
+                        dir: value.dir,
+                        last_member_name: value.lastname,
+                        creator: value.creatorname
                     };
                     fileData.push(file);
                 });
@@ -335,105 +337,166 @@ angular.module('gkClientIndex.services', [])
         };
         return GKOpt
     }])
-    .factory('RestFile', ['GK','$http',function (GK,$http) {
-
+    .factory('RestFile', ['GK', '$http', function (GK, $http) {
         var restFile = {
-            get:function(mount_id,fullpath){
-                //var date = new Date().toUTCString();var date = '';
-                var date = '';
+            get: function (mount_id, fullpath) {
+                var date = new Date().toUTCString();
                 var method = 'GET';
                 var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method,webpath,date);
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
                 return $http({
                     method: method,
-                    url: GK.getRestHost()+webpath,
-                    headers:{
-                        'x-gk-mount':mount_id,
-                        //'Date':date,
-                        'Authorization':authorization
-                    },
-                    responseType:'json'
+                    url: GK.getRestHost() + webpath,
+                    headers: {
+                        'x-gk-mount': mount_id,
+                        'Date': date,
+                        'Authorization': authorization
+                    }
                 })
             },
-            remind:function(mount_id,fullpath,message){
-                //var date = new Date().toUTCString();var date = '';
-                var date = '';
+            remind: function (mount_id, fullpath, message) {
+                var date = new Date().toUTCString();
                 var method = 'REMIND';
                 var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method,webpath,date);
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
                 return $http({
                     method: method,
-                    url: GK.getRestHost()+webpath,
-                    headers:{
-                        'x-gk-mount':mount_id,
-                        'x-gk-bool':1,
-                        //'Date':date,
-                        'Authorization':authorization
+                    url: GK.getRestHost() + webpath,
+                    headers: {
+                        'x-gk-mount': mount_id,
+                        'x-gk-bool': 1,
+                        'Date': date,
+                        'Authorization': authorization,
+                        'Content-Type': "application/x-www-form-urlencoded"
                     },
-                    responseType:'json',
-                    data:{
-                        message:message
-                    }
+                    data: jQuery.param({
+                        message: message
+                    })
                 })
             }
         };
 
         return restFile;
     }
-])
-    .factory('GKApi', ['GK','$http',function (GK,$http) {
+    ])
+    .factory('GKApi', ['GK', '$http', function (GK, $http) {
+        $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {
-            token:GK.getToken()
+            token: GK.getToken()
         }
         var GKApi = {
-           sideBar:function(mount_id,fullpath,type,start,date){
-               var params = {
-                   mount_id:mount_id,
-                   fullpath:fullpath,
-                   type:type,
-                   start:start,
-                   date:date
-               };
-               angular.extend(params,defaultParams);
-               var sign = GK.getApiAuthorization(params);
-               params.sign = sign;
-               return $http({
-                   method: 'GET',
-                   url: GK.getApiHost()+'/1/updates/client_updates',
-                   params:params,
-                   responseType:'json'
-               });
-           },
-
-           upda:function(){
+            sideBar: function (mount_id, fullpath, type, start, date) {
                 var params = {
-                    dateline:1382491568,
-                    size:5
+                    mount_id: mount_id,
+                    fullpath: fullpath,
+                    type: type,
+                    start: start,
+                    date: date
                 };
-               angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost() + '/1/file/client_sidebar',
+                    params: params
+                });
+            },
+            setTag: function (mount_id, fullpath, keyword) {
+                var params = {
+                    mount_id: mount_id,
+                    fullpath: fullpath,
+                    keywords: keyword
+                };
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost()+'/1/updates/ls',
-                    params:params
+                    url: GK.getApiHost() + '/1/file/keyword',
+                    data: jQuery.param(params)
                 });
-           }
+            },
+            upda: function () {
+                var params = {
+                    dateline: 1382491568,
+                    size: 5
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/updates/ls',
+                    params: params
+                });
+            }
         }
         return GKApi;
-  }])
-    .factory('GKMounts', ['$filter',function ($filter) {
+    }])
+    .factory('GKMounts', ['$filter', function ($filter) {
         var GKMounts = [];
         var mounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
-        angular.forEach(mounts,function(value){
-            if(!value.name){
-                value.name =$filter('getPartitionName')('myfile');
+        angular.forEach(mounts, function (value) {
+            if (!value.name) {
+                value.name = $filter('getPartitionName')('myfile');
             }
             GKMounts[value.mountid] = value;
         });
         return GKMounts;
     }
     ])
-
+/**
+ * 记录浏览历史，提供前进,后退功能
+ */
+    .factory('GKHistory', ['$q','$location','$rootScope',function ($q,$location,$rootScope) {
+        return new GKHistory($q,$location,$rootScope);
+    }])
 ;
+function GKHistory($q,$location,$rootScope){
+    var self = this,
+        update = true,
+        history = [],
+        current,
+        reset = function () {
+            history = [$location.search()];
+            current = 0;
+            update = true;
+        },
+        go = function (fwd) {
+            var deferred = $q.defer();
+            if ((fwd && self.canForward()) || (!fwd && self.canBack())) {
+                update = false;
+                $location.search(history[fwd ? ++current : --current]);
+                return  deferred.resolve();
+            }
+            return deferred.reject();
+        };
+    this.canForward = function () {
+        return current < history.length - 1;
+    };
+    this.canBack = function(){
+        return current > 0;
+    }
+    this.back = function(){
+        return go();
+    }
+    this.forward = function(){
+        return go(true);
+    }
+
+    $rootScope.$on('$routeChangeSuccess', function ($s,$current) {
+        var params = $current.params;
+        if(jQuery.isEmptyObject(params)) return;
+        var l = history.length,
+            cwd =params;
+        if (update) {
+            current >= 0 && l > current + 1 && history.splice(current+1);
+            history[history.length-1] != cwd && history.push(cwd);
+            current = history.length - 1;
+        }
+        update = true;
+    });
+    reset();
+}
 
