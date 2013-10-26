@@ -7,18 +7,18 @@
     <div class="single_file" ng-show="selectedFile.length==1" ng-class="folded?'folded':''">
         <div class="file_info_wrapper">
             <div class="section_title">
-                <span class="name">{{file.file_name}}</span>
+                <span class="name">{{file.filename}}</span>
                     <span class="title">
                         详细
                     </span>
                 <span class="f_r fold gk_up_arrow" ng-click="toggleFileInfoWrapper()"></span></div>
             <section class="scrollbar">
                 <div class="file_icon">
-                    <img ng-src="{{file.thumb}}" alt=""/>
+                    <img ng-src="{{file.filename | getFileThumb:file.dir}}" alt=""/>
                 </div>
                 <div class="file_attrs">
-                    <div class="file_name" title="{{file.file_name}}">{{file.file_name}}</div>
-                    <div title="创建人：{{file.creator}}">创建人：{{file.creator}}</div>
+                    <div class="file_name" title="{{file.filename}}">{{file.filename}}</div>
+                    <div title="创建人：{{file.creator_member_name}}">创建人：{{file.creator_member_name}}</div>
                     <div title="最后修改人：{{file.last_member_name}}">最后修改人：{{file.last_member_name}}</div>
 
                 </div>

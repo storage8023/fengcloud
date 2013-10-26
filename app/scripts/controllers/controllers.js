@@ -256,9 +256,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
-                        webpath: file.path,
+                        webpath: file.fullpath,
                         mountid: $routeParams.mountid
                     })
+                    file.lock=1;
+                    file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
                 }
             },
             'unlock': {
@@ -271,9 +273,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         return;
                     }
                     GK.unlock({
-                        webpath: file.path,
+                        webpath: file.fullpath,
                         mountid: $routeParams.mountid
                     })
+                    file.lock=0;
+                    file.lock_member_name = '';
                 }
             },
             'save': {
@@ -283,7 +287,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath: value.path
+                            webpath: value.fullpath
                         })
                     });
                     var params = {
@@ -301,14 +305,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath: value.path
+                            webpath: value.fullpath
                         })
                     });
                     var params = {
                         list: files,
                         mountid:   $routeParams.mountid
                     };
-                    var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].file_name + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
+                    var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].filename + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
                     if (!confirm(confirmMsg)) {
                         return;
                     }
@@ -320,7 +324,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 }
                             })
                         });
-                    }, function () {
+                    }, function (error) {
                         GKException.handleClientException(error);
                     });
                 }
@@ -331,17 +335,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {
-                        if(new_file_name === file.file_name){
+                        if(new_file_name === file.filename){
                             $scope.$broadcast('fileEditNameEnd');
                         }else{
-                            var newpath = Util.String.ltrim(('/' + file.path).replace('/' + file.file_name, '/' + new_file_name), '/');
+                            var newpath = Util.String.ltrim(('/' + file.fullpath).replace('/' + file.filename, '/' + new_file_name), '/');
                             GK.rename({
-                                oldpath: file.path,
+                                oldpath: file.fullpath,
                                 newpath: newpath,
                                 mountid:  $routeParams.mountid
                             }).then(function () {
-                                    file.path = newpath;
-                                    file.file_name = Util.String.baseName(file.path);
+                                    file.fullpath = newpath;
+                                    file.filename = Util.String.baseName(file.fullpath);
+                                    file.ext = Util.String.getExt(file.filename);
                                     $scope.$broadcast('fileEditNameEnd');
                                 }, function (error) {
                                     $scope.$broadcast('fileEditNameEnd');
@@ -361,7 +366,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: $scope.order.indexOf('file_name') >= 0 ? 'current' : '',
                         callback: function () {
                             $scope.$apply(function () {
-                                setOrder('file_name');
+                                setOrder('filename');
                             });
                         }
                     },
@@ -370,7 +375,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: $scope.order.indexOf('file_size') >= 0 ? 'current' : '',
                         callback: function () {
                             $scope.$apply(function () {
-                                setOrder('file_size');
+                                setOrder('filesize');
                             });
                         }
                     },
@@ -379,7 +384,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: $scope.order.indexOf('file_type') >= 0 ? 'current' : '',
                         callback: function () {
                             $scope.$apply(function () {
-                                setOrder('file_type');
+                                setOrder('ext');
                             });
                         }
                     },
@@ -545,7 +550,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('openFile',function($event,file){
             GK.open({
                 mountid: $location.search().mountid,
-                webpath: file.path
+                webpath: file.fullpath
             });
         })
     }])
@@ -568,13 +573,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else if ($scope.selectedFile.length == 1) {
                 var searchParams = $location.search();
                 $scope.file = $scope.selectedFile[0];
-                RestFile.get(searchParams.mountid, $scope.file.path).success(function (data) {
+                RestFile.get(searchParams.mountid, $scope.file.fullpath).success(function (data) {
                     var tag = data.tag || '';
                     $scope.file.tag = tag;
                     $scope.file.formatTag = tag.replace(gird, ',');
                 });
 
-                GKApi.sideBar(searchParams.mountid,$scope.file.path).success(function(data){
+                GKApi.sideBar(searchParams.mountid,$scope.file.fullpath).success(function(data){
                     $scope.shareMembers = data.share_members;
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
@@ -611,7 +616,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.addTag = function (tag) {
             var newTag = $scope.file.tag + ' ' + tag;
-            GKApi.setTag(searchParams.mountid,$scope.file.path,newTag).success(function(){
+            GKApi.setTag(searchParams.mountid,$scope.file.fullpath,newTag).success(function(){
 
             }).error(function(){
 
@@ -625,7 +630,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.removeTag = function (tag) {
             var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
 
-            GKApi.setTag(searchParams.mountid,$scope.file.path,newTag).success(function(){
+            GKApi.setTag(searchParams.mountid,$scope.file.fullpath,newTag).success(function(){
 
             }).error(function(){
 
@@ -645,7 +650,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.postRemark = function () {
             if(!$scope.postText.length) return;
-            RestFile.remind($location.search().mountid,$scope.file.path,$scope.postText).success(function(data){
+            RestFile.remind($location.search().mountid,$scope.fullfile.path,$scope.postText).success(function(data){
                 $scope.postText = '';
                 $scope.inputingRemark = false;
                 if (data && data.length) {
@@ -665,7 +670,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.folded = !$scope.folded;
         };
     }])
-    .controller('header',['$scope','GKPath','$location','$filter','GKMounts','GKHistory',function($scope,GKPath,$location,$filter,GKMounts,GKHistory){
+    .controller('header',['$scope','GKPath','$location','$filter','GKMounts','GKHistory','GKApi',function($scope,GKPath,$location,$filter,GKMounts,GKHistory,GKApi){
 
         /**
          * 面包屑
@@ -701,6 +706,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.canBack  = false;
         $scope.canForward  = false;
+        $scope.path = '';
+        $scope.view = '';
+        $scope.partition = '';
+        $scope.mount_id = 0;
         /**
          * 分析路径获取参数
          * @type {*}
@@ -711,6 +720,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.partition = params.partition; //当前的分区
             $scope.view = params.view||'list'; //当前的视图模式
             $scope.path =  params.path||'';  //当前的文件路径
+            $scope.mount_id =  params.mountid;  //当前的文件路径
             $scope.breads = getBreads();
             $scope.canBack  = GKHistory.canBack();
             $scope.canForward  = GKHistory.canForward();
@@ -728,6 +738,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
            }
         };
 
+        $scope.searchScope = 'path';
+        $scope.setSearchScope = function(searchScope){
+            $scope.searchScope = searchScope;
+        }
+
+        $scope.searchFile = function(){
+            if(!$scope.keyword || !$scope.keyword.length){
+                return;
+            }
+            GKApi.searchFile($scope.keyword,$scope.searchScope=='path'? $scope.path:'',$scope.mount_id).success(function(data){
+                console.log(data);
+            }).error(function(){
+
+                });
+        };
     }]);
 
     /**

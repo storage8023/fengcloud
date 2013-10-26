@@ -1,29 +1,29 @@
-<div class="bread_and_search_wrapper" ng-class="searching?'searching':''" ng-click="showSearch()">
+<div class="bread_and_search_wrapper" ng-class="searching?'searching':''" ng-click="showSearch($event)">
     <div class="dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
         <a href="javascript:void(0)" dropdown-toggle><i class="gk_down_arrow"></i></a>
         <ul class="dropdown-menu">
             <li ng-repeat="hideBread in hideBreads">
-                <a href="javascript:void(0)" ng-click="selectBread(hideBread)">{{hideBread.name}}</a>
+                <a href="javascript:void(0)" ng-click="selectBread($event,hideBread)">{{hideBread.name}}</a>
             </li>
         </ul>
     </div>
     <div class="bread" ng-style="breadStyle">
         <ul class="bread_list">
             <li class="bread_item" ng-repeat="bread in breads">
-                <a  ng-click="selectBread(bread,$event)" href="javascript:void(0)">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
+                <a  ng-click="selectBread($event,bread)" href="javascript:void(0)">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
             </li>
         </ul>
     </div>
-    <i class="icon-search icon-large"></i>
-    <input type="text" value="" name="keyword" id="keyword" ng-style="inputStyle" autocomplete="off"/>
+    <i class="icon-search icon-large" ng-click="searchFile()">xxx</i>
+    <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"/>
     <div class="searching_label dropdown">
-        <a href="javascript:void(0)" dropdown-toggle><span>{{path|baseName}}</span><i class="gk_down_arrow"></i></a>
+        <a href="javascript:void(0)" dropdown-toggle><span>{{searchScope=='partition'?(partition|getPartitionName):(path|baseName)}}</span><i class="gk_down_arrow"></i></a>
         <ul class="dropdown-menu">
             <li>
-                <a href="javascript:void(0)">{{path|baseName}}</a>
+                <a href="javascript:void(0)" ng-click="setSearchScope('path')">{{path|baseName}}</a>
             </li>
             <li>
-                <a href="javascript:void(0)">{{partition|getPartitionName}}</a>
+                <a href="javascript:void(0)" ng-click="setSearchScope('partition')">{{partition|getPartitionName}}</a>
             </li>
         </ul>
     </div>

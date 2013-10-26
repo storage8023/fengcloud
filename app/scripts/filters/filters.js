@@ -14,7 +14,7 @@ angular.module('gkClientIndex.filters', [])
     .filter('baseName', function(){
         return Util.String.baseName;
     })
-    .filter('getPartitionName',function(){
+    .filter('getPartitionName',[function(){
         return function(partition){
             var partitionName = '';
             switch (partition) {
@@ -33,6 +33,22 @@ angular.module('gkClientIndex.filters', [])
             }
             return partitionName;
         }
-    })
+    }])
+    .filter('getFileIcon',['GKFile',function(GKFile){
+          return function(filename,dir){
+              return'icon_'+GKFile.getFileIconSuffix(filename,dir);
+          }
+    }])
+    .filter('getFileThumb',['GKFile',function(GKFile){
+        return function(filename,dir){
+            return  'images/icon/' + GKFile.getFileIconSuffix(filename,dir) + '128x128.png';
+        }
+    }])
+    .filter('getFileType',['GKFile',function(GKFile){
+        return function(filename,dir,ext){
+            var type =  GKFile.getFileIconSuffix(filename,dir);
+            return dir==1 ? '文件夹' : ext+GKFile.getFileTypeName(type);
+        }
+    }])
 ;
 

@@ -148,43 +148,35 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKFile', [function () {
-        /**
-         * 文件类型列表
-         * @type {{SORT_SPEC: Array, SORT_MOVIE: Array, SORT_MUSIC: Array, SORT_IMAGE: Array, SORT_DOCUMENT: Array, SORT_CODE: Array, SORT_ZIP: Array, SORT_EXE: Array}}
-         */
-        var FILE_SORTS = {
-            'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'],
-            'SORT_MOVIE': ['mp4', 'mkv', 'rm', 'rmvb', 'avi', '3gp', 'flv', 'wmv', 'asf', 'mpeg', 'mpg', 'mov', 'ts', 'm4v'],
-            'SORT_MUSIC': ['mp3', 'wma', 'wav', 'flac', 'ape', 'ogg', 'aac', 'm4a'],
-            'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd'],
-            'SORT_DOCUMENT': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'odt', 'rtf', 'ods', 'csv', 'odp', 'txt'],
-            'SORT_CODE': ['js', 'c', 'cpp', 'h', 'cs', 'vb', 'vbs', 'java', 'sql', 'ruby', 'php', 'asp', 'aspx', 'html', 'htm', 'py', 'jsp', 'pl', 'rb', 'm', 'css', 'go', 'xml', 'erl', 'lua', 'md'],
-            'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
-            'SORT_EXE': ['exe', 'bat', 'com']
-        };
-
+    .constant('FILE_SORTS',{
+        'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'],
+        'SORT_MOVIE': ['mp4', 'mkv', 'rm', 'rmvb', 'avi', '3gp', 'flv', 'wmv', 'asf', 'mpeg', 'mpg', 'mov', 'ts', 'm4v'],
+        'SORT_MUSIC': ['mp3', 'wma', 'wav', 'flac', 'ape', 'ogg', 'aac', 'm4a'],
+        'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd'],
+        'SORT_DOCUMENT': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'odt', 'rtf', 'ods', 'csv', 'odp', 'txt'],
+        'SORT_CODE': ['js', 'c', 'cpp', 'h', 'cs', 'vb', 'vbs', 'java', 'sql', 'ruby', 'php', 'asp', 'aspx', 'html', 'htm', 'py', 'jsp', 'pl', 'rb', 'm', 'css', 'go', 'xml', 'erl', 'lua', 'md'],
+        'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
+        'SORT_EXE': ['exe', 'bat', 'com']
+    })
+    .factory('GKFile', ['FILE_SORTS',function (FILE_SORTS) {
         var GKFile = {
             dealFileList: function (fileList) {
                 var fileData = [], file;
                 angular.forEach(fileList, function (value) {
                     var fileName = Util.String.baseName(value.path);
-                    var type = GKFile.getFileIconSuffix(fileName, value.dir);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
                     file = {
-                        file_name: fileName,
-                        file_size: value.dir == 1 ? '-' : Util.Number.bitSize(value.filesize),
-                        file_type: ext + GKFile.getFileType(type, value.dir),
-                        last_edit_time: value.lasttime * 1000,
-                        file_icon: 'icon_' + type,
-                        thumb: 'images/icon/' + type + '128x128.png',
-                        path: value.path,
+                        filename: fileName,
+                        filesize: parseInt(value.filesize),
+                        ext:ext,
+                        last_edit_time: parseInt(value.lasttime),
+                        fullpath: value.path,
                         lock: value.lock,
                         lock_member_name: value.lockname,
                         lock_member_id: value.lockid,
                         dir: value.dir,
                         last_member_name: value.lastname,
-                        creator: value.creatorname
+                        creator_member_name: value.creatorname
                     };
                     fileData.push(file);
                 });
@@ -220,7 +212,7 @@ angular.module('gkClientIndex.services', [])
                         typeName = '可执行文件';
                         break;
                     default:
-                        typeName = '未知文件';
+                        typeName = '文件';
                         break;
                 }
                 return typeName;
@@ -385,6 +377,29 @@ angular.module('gkClientIndex.services', [])
             token: GK.getToken()
         }
         var GKApi = {
+            searchFile:function(keyword,path,mount_id){
+                var buildCondition = function(){
+                    var condition = {
+                        'include':{
+                            'path':['prefix',path],
+                            'keywords' : ['text', keyword]
+                        }
+                    };
+                    return JSON.stringify(condition);
+                }
+                var params = {
+                    mount_id: mount_id,
+                    condition: buildCondition()
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/file/search',
+                    params: params
+                });
+            },
             sideBar: function (mount_id, fullpath, type, start, date) {
                 var params = {
                     mount_id: mount_id,

@@ -103,14 +103,14 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  * @param file
                  */
-                $scope.handleDblClick = function ($event, file) {
+                $scope.handleDblClick = function (file) {
                     /**
                      * 文件夹
                      */
                     if (file.dir == 1) {
                         var params = $location.search();
                         $location.search({
-                            path: file.path,
+                            path: file.fullpath,
                             view: $scope.view,
                             partition: params.partition,
                             mountid: params.mountid
@@ -201,13 +201,7 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.enterPress = function () {
                     if (selectedFile && selectedFile.length) {
-                        var params = $location.search();
-                        $location.search({
-                            path: selectedFile[0].path,
-                            view: $scope.view,
-                            partition: params.partition,
-                            mountid: params.mountid
-                        });
+                        $scope.handleDblClick(selectedFile[0]);
                     }
                 };
                 /**
@@ -367,7 +361,6 @@ angular.module('gkClientIndex.directives', [])
                                 if (ctrlKeyOn) {
                                     $scope.$emit('ctrlC');
                                 }
-                                $scope.view = 'thumb';
                                 break;
 
                             case 86: //v
@@ -415,7 +408,7 @@ angular.module('gkClientIndex.directives', [])
                     $element.find('.file_item_edit').remove();
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
                     angular.forEach($scope.fileData, function (value, key) {
-                        if (value.path === newFilePath) {
+                        if (value.fullpath === newFilePath) {
                             selectFile(key);
                         }
                     });
@@ -425,8 +418,9 @@ angular.module('gkClientIndex.directives', [])
                  * 重命名开始
                  */
                 $scope.$on('fileEditNameStart', function (event, file, callback) {
-                    var fileItem = $element.find('.file_item[data-path="' + file.path + '"]');
-                    var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="' + file.file_name + '" class="new_file_name form-control" />');
+                    console.log(file);
+                    var fileItem = $element.find('.file_item[data-fullpath="' + file.fullpath + '"]');
+                    var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="' + file.filename + '" class="new_file_name form-control" />');
                     fileItem.addClass('file_item_edit');
                     fileItem.find('.name').hide().after(input);
                     input.focus();
@@ -809,6 +803,7 @@ angular.module('gkClientIndex.directives', [])
                         setBreadUI();
                     },0);
                 })
+
                 var oldBreadWidth = $element.find('.bread').width();
                 jQuery(window).bind('resize', function () {
                     $scope.$apply(function () {
@@ -847,7 +842,7 @@ angular.module('gkClientIndex.directives', [])
                  * @param bread
                  * @param $event
                  */
-                $scope.selectBread = function (bread) {
+                $scope.selectBread = function ($event,bread) {
                     var params = $location.search();
                     $location.search({
                         path: bread.path,
@@ -855,6 +850,7 @@ angular.module('gkClientIndex.directives', [])
                         mountid: params.mountid,
                         partition: params.partition
                     });
+                    $event.stopPropagation();
                 };
             }
         }

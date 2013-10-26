@@ -133,6 +133,7 @@ header .bread_and_search_wrapper input{
     margin: 4px 0 0 0;
     padding: 0 5px;
     width: 200px;
+    -webkit-transition:all linear 0.3s;
 }
 header .bread_and_search_wrapper .icon-search{
     position: absolute;
