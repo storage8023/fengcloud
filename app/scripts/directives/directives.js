@@ -4,7 +4,7 @@
 
 
 angular.module('gkClientIndex.directives', [])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', function ($location, GKPath, $filter, $templateCache, $compile) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile','$rootScope', function ($location, GKPath, $filter, $templateCache, $compile,$rootScope) {
         return {
             replace: true,
             restrict: 'E',
@@ -116,6 +116,7 @@ angular.module('gkClientIndex.directives', [])
                             partition: params.partition,
                             mountid: params.mountid
                         });
+                        $rootScope.PAGE_CONFIG.file = file;
                     } else {
                         $scope.$emit('openFile', file);
                     }
@@ -417,7 +418,6 @@ angular.module('gkClientIndex.directives', [])
                  * 重命名开始
                  */
                 $scope.$on('fileEditNameStart', function (event, file, callback) {
-                    console.log(file);
                     var fileItem = $element.find('.file_item[data-fullpath="' + file.fullpath + '"]');
                     var input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="' + file.filename + '" class="new_file_name form-control" />');
                     fileItem.addClass('file_item_edit');
@@ -665,7 +665,7 @@ angular.module('gkClientIndex.directives', [])
                     setTimeout(function(){
                         val = newValue || '';
                         var cursor = Util.Input.getCurSor($element[0]);
-                        console.log(cursor);
+                        //console.log(cursor);
                         inputPos = cursor.split('|');
                         var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
                         lastIndex = leftStr.lastIndexOf(watchStr); //获取光标左边字符最后一个@字符的位置

@@ -158,9 +158,54 @@ angular.module('gkClientIndex.services', [])
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
-    .factory('GKFile', ['FILE_SORTS',function (FILE_SORTS) {
+    .factory('GKFile', ['FILE_SORTS','GKMounts',function (FILE_SORTS,GKMounts) {
         var GKFile = {
+            getMountById:function(mountID){
+                return GKMounts[mountID];
+            },
+            dealTreeData:function(data,type,mountId){
+                var newData = [],
+                    item,
+                    label,
+                    context = this;
+                        angular.forEach(data,function(value){
+                    if(!value.path){
+                        value = context.formatMountItem(value);
+
+                        label = value.name;
+                    }else{
+                        value = context.formatFileItem(value);
+                        label = value.filename;
+                        mountId && angular.extend(value,{
+                            mount_id:mountId
+                        });
+                    }
+                    item = {
+                        label: label,
+                        isParent:true,
+                        data: value
+                    };
+
+                    newData.push(item);
+                });
+                return newData;
+            },
+            formatMountItem:function(mount){
+                var newMount = {
+                    mount_id: mount.mountid,
+                    name: mount.name?mount.name:'我的资料库',
+                    org_id:  mount.orgid,
+                    capacity:mount.total,
+                    size:mount.use,
+                    org_capacity:  mount.orgtotal,
+                    org_size: mount.orguse,
+                    type:  mount.type,
+                    fullpath:''
+                };
+                return newMount;
+            },
             formatFileItem:function(value,source){
+              //console.log(value);
               var file;
               if(source == 'api'){
                   var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
@@ -191,7 +236,8 @@ angular.module('gkClientIndex.services', [])
                       lock_member_id: value.lockid,
                       dir: value.dir,
                       last_member_name: value.lastname,
-                      creator_member_name: value.creatorname
+                      creator_member_name: value.creatorname,
+                      status: value.status
                   };
               }
              return file;
