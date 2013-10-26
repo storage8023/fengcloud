@@ -15,7 +15,8 @@ angular.module('gkClientIndex.directives', [])
                 partition: '=',
                 order: '=',
                 selectedFile: '=',
-                rightOpts: '='
+                rightOpts: '=',
+                keyword:'@'
             },
             link: function ($scope, $element) {
                 var selectedFile = [], //当前已选中的条目
@@ -204,10 +205,9 @@ angular.module('gkClientIndex.directives', [])
                         $scope.handleDblClick(selectedFile[0]);
                     }
                 };
+
                 /**
-                 * 根据滚动条是否出现调整UI
-                 * @param elem
-                 * @returns {boolean}
+                 * fix列表出现滚动条后列表头部对不齐的问题
                  */
                 var checkScroll = function (elem) {
                     var scrollY = false;
@@ -226,18 +226,17 @@ angular.module('gkClientIndex.directives', [])
                         $element.find('.file_list_header').css('right', 0);
                     }
                 };
-
                 jQuery(window).bind('resize', function () {
                     setListHeaderWidth();
                 });
-
-                /**
-                 * fix列表出现滚动条后列表头部对不齐的问题
-                 */
                 setTimeout(function () {
                     setListHeaderWidth();
                 }, 0);
 
+                /**
+                 * 获取缩略图模式下每行的列数
+                 * @returns {number}
+                 */
                 var getColCount = function () {
                     var colCount = 4;
                     if ($scope.view == 'thumb' && $element.find('.file_item').size()) {
@@ -506,6 +505,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                 };
                 var preSelectItem = function(newIndex){
+                    if(! $scope.list || !$scope.list.length) return;
                     $scope.list[index].selected = false;
                     $scope.list[newIndex].selected= true;
                     index = newIndex;
@@ -756,7 +756,6 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             templateUrl: "views/bread_and_search.html",
             link: function ($scope, $element) {
-                $scope.searching = false;
                 var bread = $element.find('.bread');
                 var searchIcon = $element.find('.icon-search');
                 var eleWidth = $element.width();
@@ -766,15 +765,16 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  */
                 $scope.showSearch = function ($event) {
-                    if (jQuery($event.target).hasClass('bread')
-                        || jQuery($event.target).parents('.bread').size()
+                    if (jQuery($event.target).hasClass('bread_list')
+                        || jQuery($event.target).parents('.bread_list').size()
                         || jQuery($event.target).hasClass('searching_label')
                         || jQuery($event.target).parents('.searching_label').size()
                         || jQuery($event.target).hasClass('hide_bread')
                         || jQuery($event.target).parents('.hide_bread').size()) {
                         return;
                     }
-                    $scope.searching = true;
+                    $scope.searchState = 'start';
+                    $element.find('input[name="keyword"]').focus();
                 };
 
                 $scope.hideBreads = [];
@@ -825,17 +825,6 @@ angular.module('gkClientIndex.directives', [])
                 })
 
 
-                /**
-                 * 监听mousedown 取消搜索模式
-                 */
-                $('body').bind('mousedown', function (event) {
-                    $scope.$apply(function () {
-                        if ($(event.target).hasClass('bread_and_search_wrapper') || $(event.target).parents('.bread_and_search_wrapper').size()) {
-                            return;
-                        }
-                        $scope.searching = false;
-                    })
-                })
 
                 /**
                  * 点击面包屑后的跳转
@@ -852,6 +841,31 @@ angular.module('gkClientIndex.directives', [])
                     });
                     $event.stopPropagation();
                 };
+
+                var resetSearch = function(){
+                    $scope.searchState = '';
+                    $scope.keyword = '';
+                };
+                /**
+                 * 监听mousedown 取消搜索模式
+                 */
+                $('body').bind('mousedown', function (event) {
+                    $scope.$apply(function () {
+                        if (
+                            $(event.target).hasClass('bread_and_search_wrapper')
+                                || $(event.target).parents('.bread_and_search_wrapper').size()
+                                || $scope.searchState =='loading'
+                                || $scope.searchState =='end'
+                            ) {
+                            return;
+                        }
+                        resetSearch();
+                    })
+                })
+
+                $scope.$on('$locationChangeSuccess',function(){
+                    resetSearch();
+                });
             }
         }
     }]);

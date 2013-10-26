@@ -160,24 +160,46 @@ angular.module('gkClientIndex.services', [])
     })
     .factory('GKFile', ['FILE_SORTS',function (FILE_SORTS) {
         var GKFile = {
-            dealFileList: function (fileList) {
-                var fileData = [], file;
+            formatFileItem:function(value,source){
+              var file;
+              if(source == 'api'){
+                  var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
+                  file = {
+                      filename: value.filename,
+                      filesize: parseInt(value.filesize),
+                      ext:ext,
+                      last_edit_time: parseInt(value.last_dateline),
+                      fullpath: Util.String.rtrim(value.fullpath,'/'),
+                      lock: value.lock || 0,
+                      lock_member_name: value.lock_member_name || '',
+                      lock_member_id: value.lock_member_id || 0,
+                      dir: value.dir,
+                      last_member_name: value.last_member_name || '',
+                      creator_member_name: value.creator_member_name || ''
+                  };
+              }else{
+                  var fileName = Util.String.baseName(value.path);
+                  var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
+                  file = {
+                      filename: fileName,
+                      filesize: parseInt(value.filesize),
+                      ext:ext,
+                      last_edit_time: parseInt(value.lasttime),
+                      fullpath: value.path,
+                      lock: value.lock,
+                      lock_member_name: value.lockname,
+                      lock_member_id: value.lockid,
+                      dir: value.dir,
+                      last_member_name: value.lastname,
+                      creator_member_name: value.creatorname
+                  };
+              }
+             return file;
+            },
+            dealFileList: function (fileList,source) {
+                var fileData = [], file,context = this;
                 angular.forEach(fileList, function (value) {
-                    var fileName = Util.String.baseName(value.path);
-                    var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
-                    file = {
-                        filename: fileName,
-                        filesize: parseInt(value.filesize),
-                        ext:ext,
-                        last_edit_time: parseInt(value.lasttime),
-                        fullpath: value.path,
-                        lock: value.lock,
-                        lock_member_name: value.lockname,
-                        lock_member_id: value.lockid,
-                        dir: value.dir,
-                        last_member_name: value.lastname,
-                        creator_member_name: value.creatorname
-                    };
+                    file = context.formatFileItem(value,source);
                     fileData.push(file);
                 });
                 return fileData;
@@ -279,9 +301,9 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKOpt', [function () {
         var GKOpt = {
-            getOpts: function (currentFile, selectedFiles) {
+            getOpts: function (currentFile, selectedFiles,partition,search) {
                 var
-                    currentOpts = this.getCurrentOpts(currentFile),
+                    currentOpts = this.getCurrentOpts(currentFile,partition,search),
                     multiOpts = this.getMultiSelectOpts(selectedFiles),
                     singleOpts = this.getSingleSelectOpts(selectedFiles);
                 return this.getFinalOpts(currentOpts, multiOpts, singleOpts);
@@ -291,8 +313,12 @@ angular.module('gkClientIndex.services', [])
                 return Array.prototype.concat.apply([], arr);
 
             },
-            getCurrentOpts: function () {
-                return ['add', 'new_folder', 'order_by'];
+            getCurrentOpts: function (currentFile,partition,search) {
+                if(search){
+                    return [];
+                }else{
+                    return ['add', 'new_folder', 'order_by'];
+                }
             },
             getMultiSelectOpts: function (files) {
                 if (!files || files.length <= 1) {
@@ -522,6 +548,16 @@ angular.module('gkClientIndex.services', [])
             GKMounts[value.mountid] = value;
         });
         return GKMounts;
+    }
+    ])
+    .factory('GKMyMount', ['GKMounts',function ($filter,GKMounts) {
+        var GKMyMount = null;
+        angular.forEach(GKMounts, function (value) {
+            if (value.orgid==0) {
+                GKMyMount = value;
+            }
+        });
+        return GKMyMount;
     }
     ])
 /**

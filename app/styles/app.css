@@ -133,12 +133,13 @@ header .bread_and_search_wrapper input{
     margin: 4px 0 0 0;
     padding: 0 5px;
     width: 200px;
-    -webkit-transition:all linear 0.3s;
 }
-header .bread_and_search_wrapper .icon-search{
+header .bread_and_search_wrapper .icon-search,
+header .bread_and_search_wrapper .icon-cancel{
     position: absolute;
     right: 5px;
     top:5px;
+    font-size: 18px;
 }
 header .bread_and_search_wrapper .hide_bread{
    position: absolute;
@@ -189,6 +190,44 @@ header .bread_and_search_wrapper.searching .searching_label{
 display: block;
     z-index: 99;
 }
+header .bread_and_search_wrapper .keyword_label{
+    display: none;
+}
+header .bread_and_search_wrapper.searching.end .keyword_label{
+    position: absolute;
+    left:110px;
+    top:4px;
+    display: block;
+}
+header .bread_and_search_wrapper.searching.end .keyword_label .label{
+    display: inline-block;
+    max-width: 90px;
+    padding: 0 4px;
+    margin: 0 3px;
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    font-weight: normal;
+}
+header .bread_and_search_wrapper .keyword_label .label .remove_label{
+    color:#fff;
+    font-size: 12px;
+    font-weight: normal;
+    margin: 0 3px;
+}
+header .bread_and_search_wrapper.searching.loading .icon-search{
+    background: url(../images/icon/loading16x16.gif) no-repeat 50%;
+}
+header .bread_and_search_wrapper.searching.end .icon-search{
+    display: none;
+}
+header .bread_and_search_wrapper .icon-cancel{
+display: none;
+}
+header .bread_and_search_wrapper.searching.end .icon-cancel{
+    display: block;
+}
+
 header .back_forward{
     margin: -55px 0 0 7px;
 }
@@ -470,7 +509,11 @@ footer {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-
+.file_list_wrapper .thumb_view .file_name {
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .file_list_wrapper .file_list_header i:first-child {
     float: left;
     height: 30px;

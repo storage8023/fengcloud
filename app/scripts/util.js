@@ -21,6 +21,7 @@ var Util = {
 
 Util.String = {
     getExt: function(filename) {
+        filename =  String(filename);
         var ext = filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
         return ext;
     },

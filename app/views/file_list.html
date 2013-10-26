@@ -35,7 +35,8 @@
                 <i class="file_icon {{file.filename | getFileIcon:file.dir}}" ng-show="view=='list'">
                     <s class="locked" ng-show="file.lock==1"></s>
                 </i>
-                <span class="name">{{file.filename}}</span>
+                <span title="{{file.fullpath}}" class="name" ng-if="!keyword.length" ng-bind="file.filename"></span>
+                <span title="{{file.fullpath}}" class="name" ng-if="keyword.length" ng-bind-html="file.filename|highlight:keyword"></span>
             </div>
             <div class="last_edit_time" ng-show="view=='list'"><span>{{file.last_edit_time*1000 | date:'yyyy/M/d H:m'}}</span></div>
             <div class="file_type" ng-show="view=='list'"><span>{{file.filename | getFileType:file.dir:file.ext}}</span></div>
