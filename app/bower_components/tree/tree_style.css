@@ -1,0 +1,120 @@
+.sildetree{
+    font-size: 14px;
+}
+.sildetree *{
+    color:inherit;
+    cursor: pointer;
+}
+.sildetree .tree-icon{
+    width: 16px;
+    height: 16px;
+    background-image: url(../../images/icon.png);
+    background-repeat: no-repeat;
+    background-position: 0 -640px;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 2px 0 0;
+}
+
+.sildetree .tree-icon.icon-minus{
+    background-position: -20px -20px;
+}
+.sildetree i.indented {
+    padding: 2px;
+}
+.contree-animate-enter {
+    transition: 150ms linear all;
+    position: relative;
+    display: block;
+    opacity: 0;
+    max-height: 0px;
+}
+.contree-animate-enter.contree-animate-enter-active {
+    opacity: 1;
+    max-height: 30px;
+}
+.contree-animate-leave {
+    transition: 150ms linear all;
+    position: relative;
+    display: block;
+    max-height: 30px;
+    opacity: 1;
+}
+.contree-animate-leave.contree-animate-leave-active {
+    max-height: 0px;
+    opacity: 0;
+}
+.sildetree .level-1{
+    font-weight: bold;
+}
+.sildetree .level-1 .indented {
+    position: relative;
+    left: 0px;
+}
+.sildetree .level-2 .indented {
+    position: relative;
+    left: 20px;
+}
+.sildetree .level-3 .indented {
+    position: relative;
+    left: 40px;
+}
+.sildetree .level-4 .indented {
+    position: relative;
+    left: 60px;
+}
+.sildetree .level-5 .indented {
+    position: relative;
+    left: 80px;
+}
+.sildetree .level-6 .indented {
+    position: relative;
+    left: 80px;
+}
+.sildetree .level-7 .indented {
+    position: relative;
+    left: 100px;
+}
+.sildetree .level-8 .indented {
+    position: relative;
+    left: 120px;
+}
+.sildetree .level-9 .indented {
+    position: relative;
+    left: 140px;
+}
+.sildetree > li{
+    margin-top: 5px;
+}
+
+.sildetree > li > a:hover,
+.sildetree > li > a:focus{
+    background-color: transparent;
+
+}
+/*.sildetree > li > a:hover,*/
+/*.sildetree > li > a:focus,*/
+.sildetree>.active>a,
+.sildetree>a:hover,
+.sildetree>a:focus{
+    text-decoration: none;
+
+    color:#fff;
+}
+/*.sildetree > li > a:hover .tree-icon,*/
+/*.sildetree > li > a:focus .tree-icon,*/
+.sildetree>.active>a .tree-icon,
+.sildetree>a:hover .tree-icon,
+.sildetree>a:focus .tree-icon
+{
+    background-position: 0 -40px;
+}
+
+/*.sildetree > li > a:hover .icon-minus,*/
+/*.sildetree > li > a:focus .icon-minus,*/
+.sildetree>.active>a .icon-minus,
+.sildetree>a:hover .icon-minus,
+.sildetree>a:focus .icon-minus{
+    background-position: 0 -20px;
+}
+

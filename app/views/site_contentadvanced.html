@@ -1,14 +1,14 @@
 <div class = "site-content-advanced" ng-show="siteSidebar== 'contentAdvanced'" >
     <ul>
-        <li><span>配置文件位置</span></li>
+        <li class = "siteadvancedseat"><span>配置文件位置</span></li>
         <li>
-            <input type = "text" size = "35" value = "{{configpath}}" />
-            <input type = "button" value = "移动" />
+            <input class = "siteadvancepath" type = "text"  value = "{{configpath}}" />
+            <input type = "button" class = "siteadvancepathdlg" ng-click = "gkClientInterface.setSelectPathDlg()" value = "移动" />
             </li>
-        <li>
+        <li class = "siteadvancerestart" >
             <span>软件重启生效</span>
         </li>
-        <li>
+        <li class = "siteadvancechche">
             <input type = "button" ng-click = "siteClearCache()" value = "清除缓存"/><span>删除缓存可以换区您的硬盘空间，但可能会导致您的同步效率下降</span>
         </li>
     </ul>

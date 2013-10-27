@@ -235,11 +235,11 @@
      setClientInfo:function(params){
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
-    getChangeLanguage:function(){
-       return gkClient.gChangeLanguage();
+    setChangeLanguage:function(params){
+       return gkClient.gGetLanguage(JSON.stringify(params));
     },
-    setChangeLanguage:function(){
-        return gkClient.gChangeLanguage(JSON.stringify(params));
+    getLanguage:function(){
+       return gkClient.gGetLanguage();
     },
     setGetUrl:function(params){
         return gkClient.gGetUrl(JSON.stringify(params));
@@ -256,6 +256,15 @@
     getLocalSyncURI: function(param){
         var re =  gkClient.gGetNormalPath(JSON.stringify(param));
         return re;
+    },
+    setClientInfo: function(params){
+        return gkClient.gSetClientInfo(JSON.stringify(params));
+    },
+    setSelectPathDlg: function(){
+        return gkClient.gSelectPathDlg();
+    },
+    getGetlinkPaths: function(){
+        return gkClient.gGetlinkPaths();
     }
 };
 

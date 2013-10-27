@@ -15,17 +15,16 @@
         <div class = "sharing-content c_f_after">
             <div class = "sharing-content-search">
                 <h3 class="f_l">共享参与人</h3>
-                <input type = "text" class= "search f_r" value = "ddd" ng-model='username' />
+                <input type = "text" class= "search f_r" value = "ddd" />
             </div>
             <div class = "sharing-content-group scrollbar ">
                 <ul class = "sharing-group" >
-                    <sharingsettings  ng-repeat = "sharing in sharingsettings | filter: username"></sharingsettings>
+                    <sharingsettings  ng-repeat = "sharing in sharingsettings"></sharingsettings>
                 </ul>
 
             </div>
             <div class = "sharing-add">
                 <p>添加共享参与人</p>
-
                 <div class = "f_l">
                     <input class= "sharing-add-frame-text" type = "text" value = "输入人名、邮箱地址或者组名" />
                     <input class = "sharing-add-frame-competence f_l" type = "button" value = "编辑者" />
