@@ -20,8 +20,9 @@
      */
     getFileList: function (params) {
         try {
-            //console.log(params);
-            return JSON.parse(gkClient.gGetFileList(JSON.stringify(params)));
+           var re = gkClient.gGetFileList(JSON.stringify(params));
+            //console.log(JSON.parse(re));
+            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }
@@ -37,7 +38,8 @@
      */
     getSideTreeList: function (params) {
         try {
-            return JSON.parse(gkClient.gSideTreeList(JSON.stringify(params)));
+            var re = gkClient.gSideTreeList(JSON.stringify(params));
+            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }
@@ -130,7 +132,6 @@
     open:function(params){
         try {
             params.opentype = 'open';
-            console.log(params);
             gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
@@ -193,12 +194,14 @@
             this._handleException(e);
         }
     },
-    getAuthorization:function(ver,webpath,date){
+    getAuthorization:function(ver,webpath,date,mountid){
         var params = {
-            ver: ver,
-            webpath: webpath,
-            date: date
+            ver: String(ver),
+            webpath: String(webpath),
+            date: String(date),
+            mountid:parseInt(mountid)
         };
+
         var JSONParams = JSON.stringify(params);
         return gkClient.gGetAuthorization(JSONParams);
     },

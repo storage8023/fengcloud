@@ -3,48 +3,10 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
+
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile','$rootScope', function ($scope, $location, GKPath, GKFile,$rootScope) {
         $rootScope.PAGE_CONFIG = {};
-        $rootScope.PAGE_CONFIG.user = $rootScope.User = gkClientInterface.getUser();
-        /**
-         * 对获取的树数据进行再处理
-         */
-        var dealTreeData = function (data, type) {
-            var newData = [], item, dataItem;
-            for (var i = 0; i < data.length || 0; i++) {
-                dataItem = data[i];
-                item = {
-                    label: dataItem.name,
-                    isParent:true,
-                    data: dataItem
-                };
-                newData.push(item);
-            }
-            return newData;
-        };
-
-        /**
-         * 对获取的文件数据进行再处理
-         * @param fileData
-         */
-        var dealFileData = function (fileData, mountId) {
-            mountId = typeof mountId === 'undefined'?0:mountId;
-            var newData = [], item, dataItem;
-            for (var i = 0; i < fileData.length || 0; i++) {
-                dataItem = fileData[i];
-                angular.extend(dataItem,{
-                    mountid:mountId
-                })
-                item = {
-                    label: Util.String.baseName(dataItem.path),
-                    data: dataItem,
-                    expanded: false,
-                    isParent:true
-                };
-                newData.push(item);
-            }
-            return newData;
-        };
+        $rootScope.PAGE_CONFIG.user = $rootScope.user = gkClientInterface.getUser();
 
         var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
         var myMount = {}, //我的空间
@@ -53,37 +15,40 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(value.orgid==0){
                 myMount=value;
             }else{
-                value.path = value.webpath ||'';
                 orgMount.push(value);
             }
         });
+
         /**
-         * 初始化全局变量
-         * @type {*|number}
+         * 个人的文件
+         * @type {*}
          */
-        $rootScope.PAGE_CONFIG.partition = 'myfile';
-        $scope.treeList = [
-            { "label": "我的资料库", data: {path: '',mountid: myMount.mountid},"isParent":true, "children": dealFileData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'],myMount.mountid)}
-        ];
-        $scope.treeList.push(
-            {
-                "label": "回收站",
-                data: {
-                    path: '',
-                    'mountid': myMount.mountid
-                },
-                "isParent":true,
-                "iconNodeExpand":'icon_trash',
-                "iconNodeCollapse":'icon_trash'
-            }
-        );
-        $scope.orgTreeList = dealTreeData(orgMount);
+        var myTreeData = GKFile.dealTreeData([myMount],'myfile');
+        myTreeData[0]['children'] =  GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'],'myfile',myMount.mountid);
+        $scope.treeList = myTreeData;
+//        $scope.treeList.push(
+//            {
+//                "label": "回收站",
+//                data: {
+//                    path: '',
+//                    'mountid': myMount.mountid
+//                },
+//                "isParent":true,
+//                "iconNodeExpand":'icon_trash',
+//                "iconNodeCollapse":'icon_trash'
+//            }
+//        );
+
+        /**
+         * 团队的文件
+         */
+        $scope.orgTreeList = GKFile.dealTreeData(orgMount,'teamfile');
 
         /**
          * 智能文件夹
          * @type {*}
          */
-        $scope.smartTreeList = dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'], 'magic');
+        $scope.smartTreeList = GKFile.dealTreeData(gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'], 'magic');
 
         /**
          * 初始选中
@@ -113,17 +78,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleSelect = function (branch,partition) {
-            if(partition !=$rootScope.PAGE_CONFIG.partition){
+            if(partition !=$location.search().partition){
                 unSelectAllBranch(partition);
             }
-            $rootScope.PAGE_CONFIG.partition = partition;
-            $rootScope.PAGE_CONFIG.file =  $rootScope.File = GKFile.dealFileList([branch.data])[0];
             $location.search({
-                path:branch.data.path,
+                path:branch.data.fullpath,
                 view:'list',
                 partition:partition,
-                mountid: branch.data.mountid || 0
+                mountid: branch.data.mount_id
             });
+            $rootScope.PAGE_CONFIG.file = branch.data;
+            $rootScope.PAGE_CONFIG.mount = GKFile.getMountById(branch.data.mount_id);
         };
 
         /**
@@ -132,12 +97,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleExpand = function (branch) {
             if (branch.expanded) {
-                branch.children = dealFileData(gkClientInterface.getFileList({webpath: branch.data.path, dir: 1, mountid: branch.data.mountid||0})['list'],branch.data.mountid||0);
+                console.log(branch.data);
+                var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id||0})['list'];
+                branch.children = GKFile.dealTreeData(list,$location.search().partition,branch.data.mount_id);
             }
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope,$modal) {
         /**
          * 分析路径获取参数
          * @type {*}
@@ -201,6 +168,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setOrder(order);
         });
 
+        var refreahData = function(){
+            var newFileData = getFileData();
+            $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
+        };
 
         /**
          * 所有操作
@@ -222,8 +193,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         mountid:$routeParams.mountid
                     };
                     GK.addFile(params).then(function () {
-                        var newFileData = getFileData();
-                        $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
+                        refreahData();
                     }, function (error) {
                         GKException.handleClientException(error);
                     })
@@ -256,9 +226,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
-                        webpath: file.path,
+                        webpath: file.fullpath,
                         mountid: $routeParams.mountid
                     })
+                    file.lock=1;
+                    file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
                 }
             },
             'unlock': {
@@ -266,14 +238,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 index: 3,
                 callback: function () {
                     var file = $scope.selectedFile[0];
-                    if (file.lock_member_id != $rootScope.User.id) {
+                    if (file.lock_member_id != $rootScope.PAGE_CONFIG.member_id) {
                         alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
                         return;
                     }
                     GK.unlock({
-                        webpath: file.path,
+                        webpath: file.fullpath,
                         mountid: $routeParams.mountid
                     })
+                    file.lock=0;
+                    file.lock_member_name = '';
                 }
             },
             'save': {
@@ -283,7 +257,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath: value.path
+                            webpath: value.fullpath
                         })
                     });
                     var params = {
@@ -301,14 +275,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath: value.path
+                            webpath: value.fullpath
                         })
                     });
                     var params = {
                         list: files,
                         mountid:   $routeParams.mountid
                     };
-                    var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].file_name + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
+                    var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].filename + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
                     if (!confirm(confirmMsg)) {
                         return;
                     }
@@ -320,7 +294,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 }
                             })
                         });
-                    }, function () {
+                    }, function (error) {
                         GKException.handleClientException(error);
                     });
                 }
@@ -331,17 +305,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {
-                        if(new_file_name === file.file_name){
+                        if(new_file_name === file.filename){
                             $scope.$broadcast('fileEditNameEnd');
                         }else{
-                            var newpath = Util.String.ltrim(('/' + file.path).replace('/' + file.file_name, '/' + new_file_name), '/');
+                            var newpath = Util.String.ltrim(('/' + file.fullpath).replace('/' + file.filename, '/' + new_file_name), '/');
                             GK.rename({
-                                oldpath: file.path,
+                                oldpath: file.fullpath,
                                 newpath: newpath,
                                 mountid:  $routeParams.mountid
                             }).then(function () {
-                                    file.path = newpath;
-                                    file.file_name = Util.String.baseName(file.path);
+                                    file.fullpath = newpath;
+                                    file.filename = Util.String.baseName(file.fullpath);
+                                    file.ext = Util.String.getExt(file.filename);
                                     $scope.$broadcast('fileEditNameEnd');
                                 }, function (error) {
                                     $scope.$broadcast('fileEditNameEnd');
@@ -361,7 +336,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: $scope.order.indexOf('file_name') >= 0 ? 'current' : '',
                         callback: function () {
                             $scope.$apply(function () {
-                                setOrder('file_name');
+                                setOrder('filename');
                             });
                         }
                     },
@@ -370,7 +345,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: $scope.order.indexOf('file_size') >= 0 ? 'current' : '',
                         callback: function () {
                             $scope.$apply(function () {
-                                setOrder('file_size');
+                                setOrder('filesize');
                             });
                         }
                     },
@@ -379,7 +354,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: $scope.order.indexOf('file_type') >= 0 ? 'current' : '',
                         callback: function () {
                             $scope.$apply(function () {
-                                setOrder('file_type');
+                                setOrder('ext');
                             });
                         }
                     },
@@ -403,13 +378,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.selectedFile = [];
         $scope.rightOpts = [];
-        /**
-         * 操作
-         * @type {Array}
-         */
-        $scope.$watch('selectedFile', function () {
+
+        var setOpts = function(){
             $rootScope.selectedFile = $scope.selectedFile;
-            var optKeys = GKOpt.getOpts($rootScope.File, $scope.selectedFile);
+            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile,$scope.partition,$scope.keyword.length?true:false);
             $scope.opts = [];
             $scope.rightOpts = {};
             var excludeRightOpts = ['add']; //右键要排除的操作
@@ -421,7 +393,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
             var rightOptKeys = [];
             if (!$scope.selectedFile || !$scope.selectedFile.length) {
-                rightOptKeys = GKOpt.getCurrentOpts($rootScope.File);
+                rightOptKeys = GKOpt.getCurrentOpts($rootScope.PAGE_CONFIG.file);
             } else if ($scope.selectedFile.length == 1) {
                 rightOptKeys = GKOpt.getSingleSelectOpts($scope.selectedFile);
             } else {
@@ -432,9 +404,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.rightOpts[value] = allOpts[value];
                 }
             });
-        }, true);
-
+        }
+        /**
+         * 操作
+         * @type {Array}
+         */
+        $scope.$watch('selectedFile', setOpts, true);
+        $scope.$watch('keyword', setOpts, true);
         $scope.$watch('order', function () {
+            if(!$scope.rightOpts || !$scope.rightOpts['order_by']){
+                return;
+            }
             angular.forEach($scope.rightOpts['order_by']['items'], function (value, key) {
                 if (key == 'order_by_' + $scope.order.slice(1)) {
                     value['className'] = 'current';
@@ -451,7 +431,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('ctrlC', function () {
             var data = {
                 code: 'ctrlC',
-                mount_id: $rootScope.User.mount_id,
+                mount_id: $rootScope.user.mount_id,
                 files: $rootScope.selectedFile
             };
             GKCilpboard.setData(data);
@@ -463,7 +443,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('ctrlX', function () {
             var data = {
                 code: 'ctrlX',
-                mount_id: $rootScope.User.mount_id,
+                mount_id: $rootScope.user.mount_id,
                 files: $scope.selectedFile
             }
             GKCilpboard.setData(data);
@@ -476,7 +456,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var data = GKCilpboard.getData();
             var params = {
                 target: $scope.path,
-                targetmountid: $rootScope.User.mount_id,
+                targetmountid: $rootScope.user.mount_id,
                 from_mountid: data.mount_id,
                 from_list: data.files
             };
@@ -497,46 +477,81 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         });
 
+        console.log($rootScope.PAGE_CONFIG);
         /**
          * 设置同步状态
          */
         $scope.toggleSync = function () {
-            var sync = 1;
-            var new_local_uri = GK.selectPath();
-            var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
-            var currentFilename = Util.String.baseName($rootScope.File.path);
-            if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行绑定')) {
-                return;
-            }
+            var params,
+                isSync = $rootScope.PAGE_CONFIG.status == 4;
 
-            var params = {};
-            /**
-             * 检测选择呢的文件夹是否为空
-             */
-            var isNotEmpty = GK.checkPathIsEmpty({
-                path: new_local_uri,
-                type: 'fullpath',
-                dir: 1,
-                mountid: 0
-            });
-            if (isNotEmpty == 1) {
-
-            }
-            if (sync) {
+            if(isSync){ //取消同步
+                if (!confirm('确定取消同步"'+$rootScope.PAGE_CONFIG.file.filename+'" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
+                    return;
+                }
                 params = {
-                    webpath: $rootScope.File.path,
-                    fullpath: new_local_uri,
-                    mount_id: $rootScope.mountId,
-                    overwrite: 1
-                };
-                GK.setLinkPath(params);
-            } else {
-                params = {
-                    webpath: $rootScope.File.path,
-                    mount_id: $rootScope.mountId
+                    webpath: $rootScope.PAGE_CONFIG.file.fullpath,
+                    mount_id: $rootScope.PAGE_CONFIG.mount.mount_id
                 }
                 GK.removeLinkPath(params);
+            }else{
+
+                var syncDialog = $modal.open({
+                    templateUrl: 'views/set_sync.html',
+                    backdrop:false,
+                    controller:function($scope, $modalInstance){
+
+                        $scope.ok = function () {
+                            $modalInstance.close($scope.selected.item);
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+
+                    }
+                });
+
+                syncDialog.result.then(function (selectedItem) {
+                    var sync = 1;
+                    var new_local_uri = GK.selectPath();
+                    var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
+                    var currentFilename = Util.String.baseName($rootScope.PAGE_CONFIG.file.fullpath);
+                    if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行绑定')) {
+                        return;
+                    }
+
+                    var params = {};
+                    /**
+                     * 检测选择呢的文件夹是否为空
+                     */
+                    var isNotEmpty = GK.checkPathIsEmpty({
+                        path: new_local_uri,
+                        type: 'fullpath',
+                        dir: 1,
+                        mountid: 0
+                    });
+                    if (isNotEmpty == 1) {
+
+                    }
+                    if (sync) {
+                        params = {
+                            webpath: $rootScope.PAGE_CONFIG.file.path,
+                            fullpath: new_local_uri,
+                            mount_id: $rootScope.PAGE_CONFIG.mountId,
+                            overwrite: 1
+                        };
+                        GK.setLinkPath(params);
+                    }
+                }, function () {
+
+                });
+
+
             }
+
         };
 
         /**
@@ -545,12 +560,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('openFile',function($event,file){
             GK.open({
                 mountid: $location.search().mountid,
-                webpath: file.path
+                webpath: file.fullpath
             });
         })
+        $scope.keyword = '';
+        $scope.$on('searchFileSuccess',function($event,resultList,keyword){
+            $scope.fileData = GKFile.dealFileList(resultList,'api');
+            $scope.keyword  = keyword;
+            console.log( $scope.keyword);
+        })
+
+        $scope.$on('searchFileCancel',function($event){
+            $scope.keyword = '';
+            refreahData();
+        })
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', function ($scope, RestFile, $rootScope, GKApi, $http) {
+    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http','$location', function ($scope, RestFile, $rootScope, GKApi, $http,$location) {
         var gird = /[,;；，\s]/g;
+
         /**
          * 监听已选择的文件
          */
@@ -565,21 +592,40 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!$scope.selectedFile || !$scope.selectedFile.length) {
 
             } else if ($scope.selectedFile.length == 1) {
+                var searchParams = $location.search();
                 $scope.file = $scope.selectedFile[0];
-                var mount_id = 175625, fullpath = '100.gif';
-//                RestFile.get(mount_id, fullpath).success(function (data) {
-//                    var tag = data.tag || '';
-//                    $scope.file.tag = tag;
-//                    $scope.file.formatTag = tag.replace(gird, ',');
-//                });
+                RestFile.get(searchParams.mountid, $scope.file.fullpath).success(function (data) {
+                    var tag = data.tag || '';
+                    $scope.file.tag = tag;
+                    $scope.file.formatTag = tag.replace(gird, ',');
+                });
 
-//                GKApi.sideBar(GKSession.mount_id,$scope.file.path).success(function(data){
-//                $http.get('json/test.json').success(function (data) {
-//                    $scope.shareMembers = data.share_members;
-//                    $scope.remarks = data.remark;
-//                    $scope.histories = data.history;
-//                    $scope.remindMembers = data.remind_members;
-//                });
+                GKApi.sideBar(searchParams.mountid,$scope.file.fullpath).success(function(data){
+                    $scope.shareMembers = data.share_members;
+                    $scope.remarks = data.remark;
+                    $scope.histories = data.history;
+                    $scope.remindMembers = data.remind_members;
+                    $scope.remindMembers =[{
+                        'id':1,
+                        'name':'测试1'
+                    },
+                        {
+                            'id':2,
+                            'name':'测试2'
+                        },
+                        {
+                            'id':3,
+                            'name':'测试3'
+                        },
+                        {
+                            'id':4,
+                            'name':'测试4'
+                        },
+                        {
+                            'id':5,
+                            'name':'测试5'
+                        }];
+                });
             } else {
 
             }
@@ -591,7 +637,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.addTag = function (tag) {
             var newTag = $scope.file.tag + ' ' + tag;
+            GKApi.setTag(searchParams.mountid,$scope.file.fullpath,newTag).success(function(){
 
+            }).error(function(){
+
+            });
         };
 
         /**
@@ -600,6 +650,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.removeTag = function (tag) {
             var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
+
+            GKApi.setTag(searchParams.mountid,$scope.file.fullpath,newTag).success(function(){
+
+            }).error(function(){
+
+                });
         };
 
         /**
@@ -615,8 +671,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.postRemark = function () {
             if(!$scope.postText.length) return;
-            //RestFile.remind(GKSession.mount_id,$scope.file.path,$scope.postText).success(function(data){
-            $http.get('json/testRemind.json').success(function (data) {
+            RestFile.remind($location.search().mountid,$scope.fullfile.path,$scope.postText).success(function(data){
                 $scope.postText = '';
                 $scope.inputingRemark = false;
                 if (data && data.length) {
@@ -636,7 +691,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.folded = !$scope.folded;
         };
     }])
-    .controller('header',['$scope','GKPath','$location','$filter','GKMounts',function($scope,GKPath,$location,$filter,GKMounts){
+    .controller('header',['$scope','GKPath','$location','$filter','GKMounts','GKHistory','GKApi','$rootScope',function($scope,GKPath,$location,$filter,GKMounts,GKHistory,GKApi,$rootScope){
 
         /**
          * 面包屑
@@ -660,7 +715,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
             var name = '',currentMountId = $location.search().mountid;
-            if(currentMountId){
+            if(currentMountId && GKMounts[currentMountId]){
                 name = GKMounts[currentMountId]['name'];
             }
             breads.unshift({
@@ -670,6 +725,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return breads;
         };
 
+        $scope.canBack  = false;
+        $scope.canForward  = false;
+        $scope.path = '';
+        $scope.view = '';
+        $scope.partition = '';
+        $scope.mount_id = 0;
         /**
          * 分析路径获取参数
          * @type {*}
@@ -680,9 +741,48 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.partition = params.partition; //当前的分区
             $scope.view = params.view||'list'; //当前的视图模式
             $scope.path =  params.path||'';  //当前的文件路径
+            $scope.mount_id =  params.mountid;  //当前的文件路径
             $scope.breads = getBreads();
+            $scope.canBack  = GKHistory.canBack();
+            $scope.canForward  = GKHistory.canForward();
         });
 
+        /**
+         * 前进 后退
+         * @param forward
+         */
+        $scope.handleNav = function(forward){
+           if(!forward){
+               GKHistory.back();
+           }else{
+               GKHistory.forward();
+           }
+        };
+        $scope.searchState = '';
+        $scope.searchScope = 'path';
+        $scope.setSearchScope = function(searchScope){
+            $scope.searchScope = searchScope;
+        }
+        $scope.searchFile = function(){
+            if(!$scope.keyword || !$scope.keyword.length ||  $scope.searchState =='loading'){
+                return;
+            }
+
+            $scope.searchState = 'loading';
+            GKApi.searchFile($scope.keyword,$scope.searchScope=='path'? $scope.path:'',$scope.mount_id).success(function(data){
+                $scope.searchState = 'end';
+              data &&data.list&& $rootScope.$broadcast('searchFileSuccess',data.list,$scope.keyword);
+            }).error(function(){
+                 $scope.searchState = 'end';
+                });
+        };
+
+        $scope.cancelSearch = function($event){
+            $scope.searchState = '';
+            $scope.keyword = '';
+            $rootScope.$broadcast('searchFileCancel');
+            $event.stopPropagation();
+        };
     }]);
 
     /**

@@ -21,15 +21,16 @@ var Util = {
 
 Util.String = {
     getExt: function(filename) {
+        filename =  String(filename);
         var ext = filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
         return ext;
     },
     baseName: function(path) {
-        path = path.toString();
+        path = String(path);
         return path.replace(/\\/g, '/').replace(/.*\//, '');
     },
     dirName: function(path) {
-        path = path.toString();
+        path = String(path);
         return path.indexOf('/') < 0 ? '' : path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
     },
     ltrim: function(str, charlist) {
