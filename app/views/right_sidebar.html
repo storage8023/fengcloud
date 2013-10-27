@@ -1,10 +1,10 @@
 <aside class="right_sidebar" ng-controller="rightSidebar">
-    <div class="no_file" ng-show="!selectedFile || !selectedFile.length">
+    <div class="no_file" ng-if="!selectedFile || !selectedFile.length">
         <div>我的文件夹</div>
         <div>已使用{{User.size|bitSize}}</div>
         <p>将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接</p>
     </div>
-    <div class="single_file" ng-show="selectedFile.length==1" ng-class="folded?'folded':''">
+    <div class="single_file" ng-if="selectedFile.length==1" ng-class="folded?'folded':''">
         <div class="file_info_wrapper">
             <div class="section_title">
                 <span class="name">{{file.filename}}</span>
@@ -95,7 +95,8 @@
             </tabset>
         </section>
     </div>
-    <div class="multi_file" ng-show="selectedFile.length>1">
+    <div class="multi_file" ng-if="selectedFile.length>1">
         <div>已选择{{selectedFile.length}}个文件或文件夹</div>
     </div>
+    <search-right-sidebar ng-if="searching"></search-right-sidebar>
 </aside>

@@ -4,7 +4,7 @@
 
 
 angular.module('gkClientIndex.directives', [])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile','$rootScope', function ($location, GKPath, $filter, $templateCache, $compile,$rootScope) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', function ($location, GKPath, $filter, $templateCache, $compile, $rootScope) {
         return {
             replace: true,
             restrict: 'E',
@@ -16,7 +16,7 @@ angular.module('gkClientIndex.directives', [])
                 order: '=',
                 selectedFile: '=',
                 rightOpts: '=',
-                keyword:'@'
+                keyword: '@'
             },
             link: function ($scope, $element) {
                 var selectedFile = [], //当前已选中的条目
@@ -485,57 +485,57 @@ angular.module('gkClientIndex.directives', [])
             });
         };
     }])
-    .directive('inputTipPopup', ['$document','$parse','$timeout',function ($document,$parse,$timeout) {
+    .directive('inputTipPopup', ['$document', '$parse', '$timeout', function ($document, $parse, $timeout) {
         return {
             restrict: 'E',
             replace: true,
-            scope: { list: '=',onSelect:'&'},
-            template: '<ul class="dropdown-menu input_tip_list">'+'<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
+            scope: { list: '=', onSelect: '&'},
+            template: '<ul class="dropdown-menu input_tip_list">' + '<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
                 + '</ul>',
-            link:function($scope, $element, $attrs){
+            link: function ($scope, $element, $attrs) {
                 var index = 0;
-                $scope.$watch('list',function(){
-                    if( $scope.list && $scope.list.length){
+                $scope.$watch('list', function () {
+                    if ($scope.list && $scope.list.length) {
                         preSelectItem(index);
                     }
                 })
-                var selectItem = function(){
+                var selectItem = function () {
                     if ($scope.onSelect != null) {
-                        $scope.onSelect({item:$scope.list[index]})
+                        $scope.onSelect({item: $scope.list[index]})
                     }
                 };
-                var preSelectItem = function(newIndex){
-                    if(! $scope.list || !$scope.list.length) return;
+                var preSelectItem = function (newIndex) {
+                    if (!$scope.list || !$scope.list.length) return;
                     $scope.list[index].selected = false;
-                    $scope.list[newIndex].selected= true;
+                    $scope.list[newIndex].selected = true;
                     index = newIndex;
                 };
 
-                $scope.handleMouseEnter = function(key){
+                $scope.handleMouseEnter = function (key) {
                     preSelectItem(key);
                 };
-                $scope.handleClick = function(key){
+                $scope.handleClick = function (key) {
                     preSelectItem(key);
                     selectItem();
                 };
-                $document.bind('keydown',function(e){
-                    $scope.$apply(function(){
+                $document.bind('keydown', function (e) {
+                    $scope.$apply(function () {
                         var key_code = e.keyCode;
-                        if(!$scope.list || !$scope.list) return;
+                        if (!$scope.list || !$scope.list) return;
                         var listLength = $scope.list.length;
                         var step = 1;
                         if (key_code == 38) { //up
                             step = -1;
-                        }else if(key_code == 40){
+                        } else if (key_code == 40) {
 
-                        } else if (key_code == 13 || key_code == 32){
+                        } else if (key_code == 13 || key_code == 32) {
                             selectItem();
                             return;
                         }
-                        var newIndex = index+step;
-                        if(newIndex<0){
-                            newIndex = listLength -1;
-                        }else if(newIndex>listLength -1){
+                        var newIndex = index + step;
+                        if (newIndex < 0) {
+                            newIndex = listLength - 1;
+                        } else if (newIndex > listLength - 1) {
                             newIndex = 0;
                         }
                         preSelectItem(newIndex);
@@ -553,16 +553,16 @@ angular.module('gkClientIndex.directives', [])
                 '</input-tip-popup>';
         return {
             restrict: 'A',
-            require : '?ngModel',
-            link: function ($scope, $element, $attrs,$ngModel) {
-                if(!$ngModel){
+            require: '?ngModel',
+            link: function ($scope, $element, $attrs, $ngModel) {
+                if (!$ngModel) {
                     return $ngModel;
                 }
                 var watchStr = $attrs.inputTip;
                 var placementArr = $attrs.inputTipPlacement.split(' ');
                 var placement = {
-                    v:placementArr[0],
-                    h:placementArr[1]
+                    v: placementArr[0],
+                    h: placementArr[1]
                 };
                 var inputtip = $compile(template)($scope);
                 var elem = $element[0];
@@ -574,7 +574,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.it_isOpen = false;
                 var $body;
 
-                inputtip.css({ top: 0, left: 0, display: 'block','max-height':'200px','overflow':'auto' });
+                inputtip.css({ top: 0, left: 0, display: 'block', 'max-height': '200px', 'overflow': 'auto' });
                 if (appendToBody) {
                     $body = $body || $document.find('body');
                     //console.log($body);
@@ -584,17 +584,17 @@ angular.module('gkClientIndex.directives', [])
                     //TODO
                 }
 
-                var setPosition = function(jqTextarea, hintWrapper){
+                var setPosition = function (jqTextarea, hintWrapper) {
                     var position,
                         ttWidth,
                         ttHeight,
                         ttPosition;
 
-                   //获取textarea的相对位置
+                    //获取textarea的相对位置
                     //position = appendToBody ? $position.offset($element) : $position.position($element);
 
                     ttWidth = inputtip.outerWidth();
-                    ttHeight =  inputtip.outerHeight();
+                    ttHeight = inputtip.outerHeight();
 
                     /**
                      * 获取光标在输入框的位置
@@ -603,15 +603,15 @@ angular.module('gkClientIndex.directives', [])
                     var lineHeight = 4;
                     var cursorPosition = Util.Input.getInputPositon(elem);
                     var ttPosition = {
-                        top:cursorPosition.top+lineHeight,
-                        left:cursorPosition.left
+                        top: cursorPosition.top + lineHeight,
+                        left: cursorPosition.left
                     }
 
-                    if(ttPosition.top+ttHeight>jQuery(window).height()){
-                        ttPosition.top = ttPosition.top - ttHeight- lineHeight-parseInt($element.css('line-height').replace('px'));
+                    if (ttPosition.top + ttHeight > jQuery(window).height()) {
+                        ttPosition.top = ttPosition.top - ttHeight - lineHeight - parseInt($element.css('line-height').replace('px'));
                     }
 
-                    if(ttPosition.left+ttWidth>jQuery(window).width()){
+                    if (ttPosition.left + ttWidth > jQuery(window).width()) {
                         ttPosition.left = ttPosition.left - ttWidth;
                     }
 
@@ -631,9 +631,9 @@ angular.module('gkClientIndex.directives', [])
                      * 设置位置
                      */
                     $scope.it_isOpen = true;
-                    setTimeout(function(){
+                    setTimeout(function () {
                         setPosition();
-                    },0);
+                    }, 0);
                 };
 
                 /**
@@ -644,11 +644,11 @@ angular.module('gkClientIndex.directives', [])
                     inputtip.remove();
                 };
 
-                    $scope.$on('$locationChangeSuccess', function () {
-                        if ($scope.it_isOpen) {
-                            hide();
-                        }
-                    });
+                $scope.$on('$locationChangeSuccess', function () {
+                    if ($scope.it_isOpen) {
+                        hide();
+                    }
+                });
 
                 $scope.$on('$destroy', function () {
                     if ($scope.it_isOpen) {
@@ -657,12 +657,12 @@ angular.module('gkClientIndex.directives', [])
                         inputtip.remove();
                     }
                 });
-                var inputPos,val,lastIndex;
+                var inputPos, val, lastIndex;
 
                 var modelValue = $parse($attrs.ngModel);
                 $scope.it_list = [];
                 $scope.$watch(modelValue, function (newValue) {
-                    setTimeout(function(){
+                    setTimeout(function () {
                         val = newValue || '';
                         var cursor = Util.Input.getCurSor($element[0]);
                         //console.log(cursor);
@@ -685,8 +685,8 @@ angular.module('gkClientIndex.directives', [])
                             $scope.it_list = $scope.remindMembers;
                         } else {
                             var resultList = [];
-                            if ($scope.remindMembers &&  $scope.remindMembers.length) {
-                                angular.forEach($scope.remindMembers,function(value){
+                            if ($scope.remindMembers && $scope.remindMembers.length) {
+                                angular.forEach($scope.remindMembers, function (value) {
                                     if (value.short_name && value.short_name.indexOf(q) === 0) {
                                         resultList.unshift(value);
                                     } else if (value.name.indexOf(q) != -1) {
@@ -697,11 +697,11 @@ angular.module('gkClientIndex.directives', [])
                             }
                         }
                         show();
-                    },0);
+                    }, 0);
 
                 })
 
-                var insertChar = function(input) {
+                var insertChar = function (input) {
                     input += ' ';
                     var isInsert = inputPos[1] != val.length;
                     val = val.substr(0, lastIndex + 1) + input + val.substr(inputPos[1], val.length);
@@ -713,9 +713,9 @@ angular.module('gkClientIndex.directives', [])
                         Util.Input.moveCur(elem, val.length);
                     }
                 };
-               $scope.it_onSelect = function(item){
-                   insertChar(item.name);
-               };
+                $scope.it_onSelect = function (item) {
+                    insertChar(item.name);
+                };
 
 
             }
@@ -750,7 +750,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location','$timeout',function ($location,$timeout) {
+    .directive('breadsearch', ['$location', '$timeout', function ($location, $timeout) {
         return {
             replace: true,
             restrict: 'E',
@@ -780,50 +780,49 @@ angular.module('gkClientIndex.directives', [])
                 $scope.hideBreads = [];
 
                 var setBreadUI = function () {
-                        var breadWidth = $element.find('.bread').width();
-                    $element.find('.bread_list .bread_item a').css({'max-width':breadWidth});
-                        var breadListWidth = $element.find('.bread_list').width();
-                        while ( breadListWidth > breadWidth) {
-                            if( $element.find('.bread_list .bread_item:visible').size()==1){
-                               break;
-                            }
-                            var hideBread = $scope.breads[$scope.hideBreads.length];
-                            if(hideBread){
-                                $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
-                                $element.find('.bread_list .bread_item:visible').eq(0).hide();
-                                breadListWidth = $element.find('.bread_list').width();
-                            }
+                    var breadWidth = $element.find('.bread').width();
+                    $element.find('.bread_list .bread_item a').css({'max-width': breadWidth});
+                    var breadListWidth = $element.find('.bread_list').width();
+                    while (breadListWidth > breadWidth) {
+                        if ($element.find('.bread_list .bread_item:visible').size() == 1) {
+                            break;
                         }
+                        var hideBread = $scope.breads[$scope.hideBreads.length];
+                        if (hideBread) {
+                            $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
+                            $element.find('.bread_list .bread_item:visible').eq(0).hide();
+                            breadListWidth = $element.find('.bread_list').width();
+                        }
+                    }
                 };
 
-                $scope.$watch('breads',function(){
+                $scope.$watch('breads', function () {
                     $scope.hideBreads = [];
                     $element.find('.bread_list .bread_item:hidden').show();
-                    $timeout(function(){
+                    $timeout(function () {
                         setBreadUI();
-                    },0);
+                    }, 0);
                 })
 
                 var oldBreadWidth = $element.find('.bread').width();
                 jQuery(window).bind('resize', function () {
                     $scope.$apply(function () {
                         var grid = $element.find('.bread').width() - oldBreadWidth;
-                        if(grid>0){
+                        if (grid > 0) {
                             var lastHideBread = $element.find('.bread_list .bread_item:hidden').last();
-                            if(lastHideBread.size()){
-                                if(grid>=lastHideBread.outerWidth()){
-                                    $scope.hideBreads.splice(0,1);
+                            if (lastHideBread.size()) {
+                                if (grid >= lastHideBread.outerWidth()) {
+                                    $scope.hideBreads.splice(0, 1);
                                     lastHideBread.show();
                                 }
                             }
-                        }else{
-                            $timeout(function(){
+                        } else {
+                            $timeout(function () {
                                 setBreadUI();
-                            },0)
+                            }, 0)
                         }
                     })
                 })
-
 
 
                 /**
@@ -831,7 +830,7 @@ angular.module('gkClientIndex.directives', [])
                  * @param bread
                  * @param $event
                  */
-                $scope.selectBread = function ($event,bread) {
+                $scope.selectBread = function ($event, bread) {
                     var params = $location.search();
                     $location.search({
                         path: bread.path,
@@ -842,7 +841,7 @@ angular.module('gkClientIndex.directives', [])
                     $event.stopPropagation();
                 };
 
-                var resetSearch = function(){
+                var resetSearch = function () {
                     $scope.searchState = '';
                     $scope.keyword = '';
                 };
@@ -854,8 +853,8 @@ angular.module('gkClientIndex.directives', [])
                         if (
                             $(event.target).hasClass('bread_and_search_wrapper')
                                 || $(event.target).parents('.bread_and_search_wrapper').size()
-                                || $scope.searchState =='loading'
-                                || $scope.searchState =='end'
+                                || $scope.searchState == 'loading'
+                                || $scope.searchState == 'end'
                             ) {
                             return;
                         }
@@ -863,12 +862,68 @@ angular.module('gkClientIndex.directives', [])
                     })
                 })
 
-                $scope.$on('$locationChangeSuccess',function(){
+                $scope.$on('$locationChangeSuccess', function () {
                     resetSearch();
                 });
             }
         }
-    }]);
+    }])
+/**
+ * 搜索的侧边栏
+ */
+    .directive('searchRightSidebar', ['GKApi', '$rootScope',function (GKApi,$rootScope) {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "views/search_right_sidebar.html",
+            link: function (scope, element, attrs) {
+                setTimeout(function(){
+                    var fileSearch = new GKFileSearch();
+                    fileSearch.conditionIncludeKeyword('新建文件夹');
+                    var condition = fileSearch.getCondition();
+                    console.log($rootScope);
+                    GKApi.createSmartFolder(263677, 'test', condition);
+                },0);
+
+            }
+        }
+    }])
+/**
+ * 搜索条件设置
+ */
+    .directive('searchCondition', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope:{
+
+            },
+            templateUrl: "views/search_condition.html",
+            link: function (scope, element, attrs) {
+
+
+            }
+        }
+    }])
+/**
+ * 选中人的输入框
+ */
+    .directive('inputMember', ['GKApi',function (GKApi) {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope:{
+
+            },
+            templateUrl: "views/search_condition.html",
+            link: function (scope, element, attrs) {
+                $scope.$watch('tags',function(newValue,oldValue){
+                    GKApi.searchMember();
+                });
+            }
+        }
+    }])
+;
 
 /**
  * news

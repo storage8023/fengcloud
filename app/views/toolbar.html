@@ -20,9 +20,9 @@
     </span>
     <button class="f_r">
         <a href="javascript:void(0)" ng-show="!keyword.length" class="opt opt_sync sync_state_{{PAGE_CONFIG.file.status}}" ng-click="toggleSync()">
-            <i></i>
-            <span ng-if="File.status!=4">同步</span>
-            <span ng-if="File.status==4">已同步</span>
+            <span ng-if="PAGE_CONFIG.file.status!=4"><i></i>同步</span>
+            <span class="synced" ng-if="PAGE_CONFIG.file.status==4"><i></i>已同步</span>
+            <span class="cancel_sync" ng-if="PAGE_CONFIG.file.status==4"><i></i>取消同步</span>
         </a>
     </button>
 </div>

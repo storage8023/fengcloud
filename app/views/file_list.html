@@ -20,7 +20,7 @@
             <i ng-class="order=='-filesize'?'gk_down_arrow':'gk_up_arrow'"></i>
         </div>
     </div>
-    <div class="list_body" ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)">
+    <div class="scrollbar list_body" ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)">
         <div class="file_item"
              ng-class="file.selected?'selected':''"
              ng-repeat="file in fileData"

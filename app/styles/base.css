@@ -1,6 +1,9 @@
 /* css reset 样式 */
 @charset "utf-8";
 /*CSS RESET*/
+*, *:before, *:after{
+    box-sizing: border-box;
+}
 html,body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, form, fieldset, legend, button, input,select, textarea, th, td{
     margin: 0;
     padding: 0;

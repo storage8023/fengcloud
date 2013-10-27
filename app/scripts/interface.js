@@ -145,30 +145,36 @@
             this._handleException(e);
         }
     },
-    selectPath:function(){
+    selectPath:function(params){
         try {
-            return gkClient.gSelectPathDlg();
+            if(typeof params === 'undefined'){
+                return gkClient.gSelectPathDlg();
+            }else{
+                return gkClient.gSelectPathDlg(JSON.stringify(params));
+            }
+
         } catch (e) {
             this._handleException(e);
         }
     },
     checkPathIsEmpty:function(params){
         try {
-            return gkClient.gCheckEmpty(params);
+            return gkClient.gCheckEmpty(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
     },
     setLinkPath:function(params){
         try {
-            return gkClient.gSetLinkPaths(params);
+            console.log(params);
+            return gkClient.gSetLinkPaths(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
     },
     removeLinkPath:function(params){
         try {
-            return gkClient.gRemoveLinkPaths(params);
+            return gkClient.gRemoveLinkPaths(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }
@@ -246,6 +252,10 @@
     },
     getClientInfo: function(){
         return gkClient.gGetClientInfo();
+    },
+    getLocalSyncURI: function(param){
+        var re =  gkClient.gGetNormalPath(JSON.stringify(param));
+        return re;
     }
 };
 

@@ -4,17 +4,17 @@
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile','$rootScope', function ($scope, $location, GKPath, GKFile,$rootScope) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', function ($scope, $location, GKPath, GKFile, $rootScope) {
         $rootScope.PAGE_CONFIG = {};
         $rootScope.PAGE_CONFIG.user = $rootScope.user = gkClientInterface.getUser();
 
         var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
         var myMount = {}, //我的空间
-            orgMount=[]; //团队的空间
-        angular.forEach(sideOrgList,function(value){
-            if(value.orgid==0){
-                myMount=value;
-            }else{
+            orgMount = []; //团队的空间
+        angular.forEach(sideOrgList, function (value) {
+            if (value.orgid == 0) {
+                myMount = value;
+            } else {
                 orgMount.push(value);
             }
         });
@@ -23,8 +23,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 个人的文件
          * @type {*}
          */
-        var myTreeData = GKFile.dealTreeData([myMount],'myfile');
-        myTreeData[0]['children'] =  GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'],'myfile',myMount.mountid);
+        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
+        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
         $scope.treeList = myTreeData;
 //        $scope.treeList.push(
 //            {
@@ -42,7 +42,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 团队的文件
          */
-        $scope.orgTreeList = GKFile.dealTreeData(orgMount,'teamfile');
+        $scope.orgTreeList = GKFile.dealTreeData(orgMount, 'teamfile');
 
         /**
          * 智能文件夹
@@ -57,17 +57,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedMyBranch = null;
         $scope.selectedOrgBranch = null;
         $scope.selectedSmartBranch = null;
-        $scope.initSelectedBranch =  $scope.treeList[0];
-        var unSelectAllBranch = function(partition){
-            if(partition!='myfile'&&$scope.selectedMyBranch){
+        $scope.initSelectedBranch = $scope.treeList[0];
+        var unSelectAllBranch = function (partition) {
+            if (partition != 'myfile' && $scope.selectedMyBranch) {
                 $scope.selectedMyBranch.selected = false;
                 $scope.selectedMyBranch = null;
             }
-            if(partition!='teamfile' && $scope.selectedOrgBranch){
+            if (partition != 'teamfile' && $scope.selectedOrgBranch) {
                 $scope.selectedOrgBranch.selected = false;
                 $scope.selectedOrgBranch = null;
             }
-            if(partition!='smartfolder'&&$scope.selectedSmartBranch){
+            if (partition != 'smartfolder' && $scope.selectedSmartBranch) {
                 $scope.selectedSmartBranch.selected = false;
                 $scope.selectedSmartBranch = null;
             }
@@ -77,14 +77,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 选中树节点的处理函数
          * @param branch
          */
-        $scope.handleSelect = function (branch,partition) {
-            if(partition !=$location.search().partition){
+        $scope.handleSelect = function (branch, partition) {
+            if (partition != $location.search().partition) {
                 unSelectAllBranch(partition);
             }
             $location.search({
-                path:branch.data.fullpath,
-                view:'list',
-                partition:partition,
+                path: branch.data.fullpath,
+                view: 'list',
+                partition: partition,
                 mountid: branch.data.mount_id
             });
             $rootScope.PAGE_CONFIG.file = branch.data;
@@ -98,20 +98,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleExpand = function (branch) {
             if (branch.expanded) {
                 console.log(branch.data);
-                var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id||0})['list'];
-                branch.children = GKFile.dealTreeData(list,$location.search().partition,branch.data.mount_id);
+                var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id || 0})['list'];
+                branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
             }
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope,$modal) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal) {
         /**
          * 分析路径获取参数
          * @type {*}
          */
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
-        $scope.partition =$routeParams.partition || 'myfile'; //当前的分区
-        $scope.view =  $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
+        $scope.partition = $routeParams.partition || 'myfile'; //当前的分区
+        $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name';
         /**
          * 文件列表数据
@@ -168,7 +168,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setOrder(order);
         });
 
-        var refreahData = function(){
+        var refreahData = function () {
             var newFileData = getFileData();
             $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
         };
@@ -188,9 +188,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                     var params = {
                         parent: $scope.path,
-                        type:'save',
+                        type: 'save',
                         list: addFiles.list,
-                        mountid:$routeParams.mountid
+                        mountid: $routeParams.mountid
                     };
                     GK.addFile(params).then(function () {
                         refreahData();
@@ -205,18 +205,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
-                       var params = {
-                           webpath: webpath,
-                           dir: 1,
-                           mountid: $routeParams.mountid
-                       };
+                        var params = {
+                            webpath: webpath,
+                            dir: 1,
+                            mountid: $routeParams.mountid
+                        };
                         GK.createFolder(params).then(function () {
-                                var newFileData = getFileData();
-                                $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
+                            var newFileData = getFileData();
+                            $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
 
-                            }, function (error) {
-                                GKException.handleClientException(error);
-                            });
+                        }, function (error) {
+                            GKException.handleClientException(error);
+                        });
                     });
                 }
             },
@@ -229,7 +229,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         webpath: file.fullpath,
                         mountid: $routeParams.mountid
                     })
-                    file.lock=1;
+                    file.lock = 1;
                     file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
                 }
             },
@@ -246,7 +246,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         webpath: file.fullpath,
                         mountid: $routeParams.mountid
                     })
-                    file.lock=0;
+                    file.lock = 0;
                     file.lock_member_name = '';
                 }
             },
@@ -262,7 +262,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mountid:  $routeParams.mountid
+                        mountid: $routeParams.mountid
                     };
 
                     GK.saveToLocal(params);
@@ -280,7 +280,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mountid:   $routeParams.mountid
+                        mountid: $routeParams.mountid
                     };
                     var confirmMsg = '确定要删除' + ($scope.selectedFile.length == 1 ? '“' + $scope.selectedFile[0].filename + '”' : '这' + $scope.selectedFile.length + '个文件（夹）') + '吗?';
                     if (!confirm(confirmMsg)) {
@@ -305,14 +305,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {
-                        if(new_file_name === file.filename){
+                        if (new_file_name === file.filename) {
                             $scope.$broadcast('fileEditNameEnd');
-                        }else{
+                        } else {
                             var newpath = Util.String.ltrim(('/' + file.fullpath).replace('/' + file.filename, '/' + new_file_name), '/');
                             GK.rename({
                                 oldpath: file.fullpath,
                                 newpath: newpath,
-                                mountid:  $routeParams.mountid
+                                mountid: $routeParams.mountid
                             }).then(function () {
                                     file.fullpath = newpath;
                                     file.filename = Util.String.baseName(file.fullpath);
@@ -379,9 +379,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedFile = [];
         $scope.rightOpts = [];
 
-        var setOpts = function(){
+        var setOpts = function () {
             $rootScope.selectedFile = $scope.selectedFile;
-            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile,$scope.partition,$scope.keyword.length?true:false);
+            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.keyword.length ? true : false);
             $scope.opts = [];
             $scope.rightOpts = {};
             var excludeRightOpts = ['add']; //右键要排除的操作
@@ -412,7 +412,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$watch('selectedFile', setOpts, true);
         $scope.$watch('keyword', setOpts, true);
         $scope.$watch('order', function () {
-            if(!$scope.rightOpts || !$scope.rightOpts['order_by']){
+            if (!$scope.rightOpts || !$scope.rightOpts['order_by']) {
                 return;
             }
             angular.forEach($scope.rightOpts['order_by']['items'], function (value, key) {
@@ -477,32 +477,47 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         });
 
-        console.log($rootScope.PAGE_CONFIG);
         /**
          * 设置同步状态
          */
         $scope.toggleSync = function () {
             var params,
-                isSync = $rootScope.PAGE_CONFIG.status == 4;
+                isSync = $rootScope.PAGE_CONFIG.file.status == 4;
 
-            if(isSync){ //取消同步
-                if (!confirm('确定取消同步"'+$rootScope.PAGE_CONFIG.file.filename+'" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
+            if (isSync) { //取消同步
+                if (!confirm('确定取消同步"' + $rootScope.PAGE_CONFIG.file.filename + '" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
                     return;
                 }
                 params = {
                     webpath: $rootScope.PAGE_CONFIG.file.fullpath,
                     mount_id: $rootScope.PAGE_CONFIG.mount.mount_id
                 }
-                GK.removeLinkPath(params);
-            }else{
-
+                GK.removeLinkPath(params).then(function(){
+                    $rootScope.PAGE_CONFIG.file.status = 1;
+                });
+            } else {
                 var syncDialog = $modal.open({
                     templateUrl: 'views/set_sync.html',
-                    backdrop:false,
-                    controller:function($scope, $modalInstance){
-
+                    backdrop: false,
+                    windowClass: 'sync_settiong_dialog',
+                    controller: function ($scope, $modalInstance) {
+                        console.log($rootScope.PAGE_CONFIG);
+                        $scope.filename = $rootScope.PAGE_CONFIG.file.filename || $rootScope.PAGE_CONFIG.file.name;
+                        $scope.localURI = GK.getLocalSyncURI({
+                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
+                            webpath: $rootScope.PAGE_CONFIG.file.fullpath
+                        });
+                        $scope.reSetLocalPath = function () {
+                            var newPath = GK.selectPath({
+                                path: $scope.localURI,
+                                disable_root: true
+                            });
+                            if (newPath) {
+                                $scope.localURI = newPath;
+                            }
+                        };
                         $scope.ok = function () {
-                            $modalInstance.close($scope.selected.item);
+                            $modalInstance.close($scope.localURI);
                         };
 
                         $scope.cancel = function () {
@@ -514,15 +529,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                 });
 
-                syncDialog.result.then(function (selectedItem) {
-                    var sync = 1;
-                    var new_local_uri = GK.selectPath();
+                syncDialog.result.then(function (new_local_uri) {
                     var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
                     var currentFilename = Util.String.baseName($rootScope.PAGE_CONFIG.file.fullpath);
-                    if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行绑定')) {
+                    if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行同步？')) {
                         return;
                     }
-
                     var params = {};
                     /**
                      * 检测选择呢的文件夹是否为空
@@ -531,20 +543,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         path: new_local_uri,
                         type: 'fullpath',
                         dir: 1,
-                        mountid: 0
+                        mountid: $rootScope.PAGE_CONFIG.mount.mount_id
                     });
-                    if (isNotEmpty == 1) {
 
-                    }
-                    if (sync) {
+                    if (isNotEmpty == 1) { //文件夹为空
                         params = {
-                            webpath: $rootScope.PAGE_CONFIG.file.path,
+                            webpath: $rootScope.PAGE_CONFIG.file.fullpath,
                             fullpath: new_local_uri,
-                            mount_id: $rootScope.PAGE_CONFIG.mountId,
+                            mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
                             overwrite: 1
                         };
                         GK.setLinkPath(params);
+                    }else{ ////文件夹不为空
+
                     }
+                    $rootScope.PAGE_CONFIG.file.status = 4;
                 }, function () {
 
                 });
@@ -557,25 +570,25 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 打开文件
          */
-        $scope.$on('openFile',function($event,file){
+        $scope.$on('openFile', function ($event, file) {
             GK.open({
                 mountid: $location.search().mountid,
                 webpath: file.fullpath
             });
         })
         $scope.keyword = '';
-        $scope.$on('searchFileSuccess',function($event,resultList,keyword){
-            $scope.fileData = GKFile.dealFileList(resultList,'api');
-            $scope.keyword  = keyword;
-            console.log( $scope.keyword);
+        $scope.$on('searchFileSuccess', function ($event, resultList, keyword) {
+            $scope.fileData = GKFile.dealFileList(resultList, 'api');
+            $scope.keyword = keyword;
+            console.log($scope.keyword);
         })
 
-        $scope.$on('searchFileCancel',function($event){
+        $scope.$on('searchFileCancel', function ($event) {
             $scope.keyword = '';
             refreahData();
         })
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http','$location', function ($scope, RestFile, $rootScope, GKApi, $http,$location) {
+    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
         var gird = /[,;；，\s]/g;
 
         /**
@@ -600,31 +613,33 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.file.formatTag = tag.replace(gird, ',');
                 });
 
-                GKApi.sideBar(searchParams.mountid,$scope.file.fullpath).success(function(data){
+                GKApi.sideBar(searchParams.mountid, $scope.file.fullpath).success(function (data) {
                     $scope.shareMembers = data.share_members;
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-                    $scope.remindMembers =[{
-                        'id':1,
-                        'name':'测试1'
-                    },
+                    $scope.remindMembers = [
                         {
-                            'id':2,
-                            'name':'测试2'
+                            'id': 1,
+                            'name': '测试1'
                         },
                         {
-                            'id':3,
-                            'name':'测试3'
+                            'id': 2,
+                            'name': '测试2'
                         },
                         {
-                            'id':4,
-                            'name':'测试4'
+                            'id': 3,
+                            'name': '测试3'
                         },
                         {
-                            'id':5,
-                            'name':'测试5'
-                        }];
+                            'id': 4,
+                            'name': '测试4'
+                        },
+                        {
+                            'id': 5,
+                            'name': '测试5'
+                        }
+                    ];
                 });
             } else {
 
@@ -637,11 +652,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.addTag = function (tag) {
             var newTag = $scope.file.tag + ' ' + tag;
-            GKApi.setTag(searchParams.mountid,$scope.file.fullpath,newTag).success(function(){
+            GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
 
-            }).error(function(){
+            }).error(function () {
 
-            });
+                });
         };
 
         /**
@@ -651,9 +666,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.removeTag = function (tag) {
             var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
 
-            GKApi.setTag(searchParams.mountid,$scope.file.fullpath,newTag).success(function(){
+            GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
 
-            }).error(function(){
+            }).error(function () {
 
                 });
         };
@@ -670,15 +685,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 发布讨论
          */
         $scope.postRemark = function () {
-            if(!$scope.postText.length) return;
-            RestFile.remind($location.search().mountid,$scope.fullfile.path,$scope.postText).success(function(data){
+            if (!$scope.postText.length) return;
+            RestFile.remind($location.search().mountid, $scope.fullfile.path, $scope.postText).success(function (data) {
                 $scope.postText = '';
                 $scope.inputingRemark = false;
                 if (data && data.length) {
                     $scope.remarks.unshift(data[0]);
                 }
 
-            }).error(function(){
+            }).error(function () {
 
                 });
         };
@@ -687,11 +702,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 显示及缩小文件信息框
          */
-        $scope.toggleFileInfoWrapper = function(){
+        $scope.toggleFileInfoWrapper = function () {
             $scope.folded = !$scope.folded;
         };
     }])
-    .controller('header',['$scope','GKPath','$location','$filter','GKMounts','GKHistory','GKApi','$rootScope',function($scope,GKPath,$location,$filter,GKMounts,GKHistory,GKApi,$rootScope){
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope', function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope) {
 
         /**
          * 面包屑
@@ -710,23 +725,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                     fullpath = Util.String.rtrim(fullpath, '/');
                     bread.path = fullpath;
-                    bread.url = '#' + GKPath.getPath($scope.partition,bread.path,$scope.view);
+                    bread.url = '#' + GKPath.getPath($scope.partition, bread.path, $scope.view);
                     breads.push(bread);
                 }
             }
-            var name = '',currentMountId = $location.search().mountid;
-            if(currentMountId && GKMounts[currentMountId]){
+            var name = '', currentMountId = $location.search().mountid;
+            if (currentMountId && GKMounts[currentMountId]) {
                 name = GKMounts[currentMountId]['name'];
             }
             breads.unshift({
                 name: name,
-                url: '#' + GKPath.getPath($scope.partition, '',$scope.view)
+                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
             });
             return breads;
         };
 
-        $scope.canBack  = false;
-        $scope.canForward  = false;
+        $scope.canBack = false;
+        $scope.canForward = false;
         $scope.path = '';
         $scope.view = '';
         $scope.partition = '';
@@ -735,49 +750,49 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 分析路径获取参数
          * @type {*}
          */
-        $scope.$on('$locationChangeSuccess', function(){
+        $scope.$on('$locationChangeSuccess', function () {
             var pathArr = $location.path().split('/');
             var params = $location.search();
             $scope.partition = params.partition; //当前的分区
-            $scope.view = params.view||'list'; //当前的视图模式
-            $scope.path =  params.path||'';  //当前的文件路径
-            $scope.mount_id =  params.mountid;  //当前的文件路径
+            $scope.view = params.view || 'list'; //当前的视图模式
+            $scope.path = params.path || '';  //当前的文件路径
+            $scope.mount_id = params.mountid;  //当前的文件路径
             $scope.breads = getBreads();
-            $scope.canBack  = GKHistory.canBack();
-            $scope.canForward  = GKHistory.canForward();
+            $scope.canBack = GKHistory.canBack();
+            $scope.canForward = GKHistory.canForward();
         });
 
         /**
          * 前进 后退
          * @param forward
          */
-        $scope.handleNav = function(forward){
-           if(!forward){
-               GKHistory.back();
-           }else{
-               GKHistory.forward();
-           }
+        $scope.handleNav = function (forward) {
+            if (!forward) {
+                GKHistory.back();
+            } else {
+                GKHistory.forward();
+            }
         };
         $scope.searchState = '';
         $scope.searchScope = 'path';
-        $scope.setSearchScope = function(searchScope){
+        $scope.setSearchScope = function (searchScope) {
             $scope.searchScope = searchScope;
         }
-        $scope.searchFile = function(){
-            if(!$scope.keyword || !$scope.keyword.length ||  $scope.searchState =='loading'){
+        $scope.searchFile = function () {
+            if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                 return;
             }
 
             $scope.searchState = 'loading';
-            GKApi.searchFile($scope.keyword,$scope.searchScope=='path'? $scope.path:'',$scope.mount_id).success(function(data){
+            GKApi.searchFile($scope.keyword, $scope.searchScope == 'path' ? $scope.path : '', $scope.mount_id).success(function (data) {
                 $scope.searchState = 'end';
-              data &&data.list&& $rootScope.$broadcast('searchFileSuccess',data.list,$scope.keyword);
-            }).error(function(){
-                 $scope.searchState = 'end';
+                data && data.list && $rootScope.$broadcast('searchFileSuccess', data.list, $scope.keyword);
+            }).error(function () {
+                    $scope.searchState = 'end';
                 });
         };
 
-        $scope.cancelSearch = function($event){
+        $scope.cancelSearch = function ($event) {
             $scope.searchState = '';
             $scope.keyword = '';
             $rootScope.$broadcast('searchFileCancel');
@@ -785,181 +800,179 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
     }]);
 
-    /**
-     * news
-     */
-angular.module('gkNewsApp.controllers',[])
-    .controller("newsCtrl",['$filter','$scope','GKApi','$http',function($filter,$scope ,GKApi,$http){
+/**
+ * news
+ */
+angular.module('gkNewsApp.controllers', [])
+    .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http', function ($filter, $scope, GKApi, $http) {
 
-    /**
-     * 过滤出相同日期
-     * 新消息news
-     * @compare()
-     */
+        /**
+         * 过滤出相同日期
+         * 新消息news
+         * @compare()
+         */
 
-    function compare(dateObj) {
-        var results = []
-            ,i = 0
-            ,j = 0
-            ,len = dateObj.length;
-        results[0] = new Array();
-        results[0].push( dateObj[0] );
-        for(;i<len - 1;i++){
-            var next = dateObj[i+1],k = 0,klen = results[j].length;
-            var value = results[j][results[j].length - 1];
-            if(value.date === next.date){
-                results[j].push(next);
+        function compare(dateObj) {
+            var results = []
+                , i = 0
+                , j = 0
+                , len = dateObj.length;
+            results[0] = new Array();
+            results[0].push(dateObj[0]);
+            for (; i < len - 1; i++) {
+                var next = dateObj[i + 1], k = 0, klen = results[j].length;
+                var value = results[j][results[j].length - 1];
+                if (value.date === next.date) {
+                    results[j].push(next);
+                }
+                else {
+                    j++;
+                    results[j] = new Array();
+                    results[j].push(next);
+                }
             }
-            else{
-                j++;
-                results[j] = new Array();
-                results[j].push(next);
-            }
+            return results;
         }
-        return results;
-    }
 
-    /**
-     * 返回日期的时间戳
-     * 新消息news
-     * @fetchDateline()
-     */
-    function fetchDateline(date) {
-        var year = date.getFullYear()
-            ,month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() + 1 : date.getMonth() + 1
-            ,day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-        return year+'/'+month+'/'+ day;
-    }
-
-    /**
-     *   日期按yyyy-MM-dd格式输出
-     *   新消息news
-     *   @filterDay()
-     */
-    Date.prototype.format =function(format)
-    {
-        var o = {
-            "M+" : this.getMonth()+1, //month
-            "d+" : this.getDate(), //day
-            "h+" : this.getHours(), //hour
-            "m+" : this.getMinutes(), //minute
-            "s+" : this.getSeconds(), //second
-            "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-            "S" : this.getMilliseconds() //millisecond
-        };
-        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
-            (this.getFullYear()+"").substr(4- RegExp.$1.length));
-        for(var k in o)if(new RegExp("("+ k +")").test(format))
-            format = format.replace(RegExp.$1,
-                RegExp.$1.length==1? o[k] :
-                    ("00"+ o[k]).substr((""+ o[k]).length));
-        return format;
-    };
-
-    Date.prototype.yesterformat =function(yesterformat)
-    {
-        var o = {
-            "M+" : this.getMonth()+1, //month
-            "d+" : this.getDate()-1, //day
-            "h+" : this.getHours(), //hour
-            "m+" : this.getMinutes(), //minute
-            "s+" : this.getSeconds(), //second
-            "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-            "S" : this.getMilliseconds() //millisecond
-        };
-        if(/(y+)/.test(yesterformat)) yesterformat=yesterformat.replace(RegExp.$1,
-            (this.getFullYear()+"").substr(4- RegExp.$1.length));
-        for(var k in o)if(new RegExp("("+ k +")").test(yesterformat))
-            yesterformat = yesterformat.replace(RegExp.$1,
-                RegExp.$1.length==1? o[k] :
-                    ("00"+ o[k]).substr((""+ o[k]).length));
-        return yesterformat;
-    };
-
-    /**
-     * 过滤今天，昨天或者以前
-     * 新消息news
-     * @filterDay()
-     */
-    function filterDay(filter,dates) {
-        var date = filter('date');
-        var printDateNew = [];
-        var d = new Date();
-        var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() /1000- d.getTimezoneOffset();
-        var yesterDate = nowDate -  3600 * 24;
-        for(var i = 0;i<dates.length;i++){
-            var printDate = [];
-            var currentDate = dates[i][0].dateline;
-            if( currentDate >= nowDate ){
-                for(var j = 0;j<dates[i].length;j++){
-                    if(j === 0){
-                        var newsDay = new Date().format('MM-dd');
-                        printDate.push({'date':'今天， '+newsDay, "dateline":dates[i][j]['dateline'],render_text: dates[i][j]['render_text']});
-                    }else{
-                        printDate.push({"dateline":dates[i][j]['dateline'],render_text: dates[i][j]['render_text']});
-                    }
-                }
-                printDateNew.push(printDate);
-            }
-            else if( currentDate >= yesterDate ){
-                for(var j = 0;j<dates[i].length;j++){
-                    if(j === 0){
-                        var yesterDay = new Date().yesterformat('MM-dd');
-                        printDate.push({"date":'昨天， '+yesterDay,"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                    }else{
-                        printDate.push({"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                    }
-                }
-                printDateNew.push(printDate);
-            }else {
-                for(var j = 0;j<dates[i].length;j++){
-                    if(j === 0){
-                        printDate.push({'date': dates[i][j]['date'],"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
-                    }else{
-                        printDate.push({"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
-                    }
-                }
-                printDateNew.push(printDate);
-            }
+        /**
+         * 返回日期的时间戳
+         * 新消息news
+         * @fetchDateline()
+         */
+        function fetchDateline(date) {
+            var year = date.getFullYear()
+                , month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() + 1 : date.getMonth() + 1
+                , day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            return year + '/' + month + '/' + day;
         }
-        return printDateNew;
-    }
+
+        /**
+         *   日期按yyyy-MM-dd格式输出
+         *   新消息news
+         *   @filterDay()
+         */
+        Date.prototype.format = function (format) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate(), //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            };
+            if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
+                (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)if (new RegExp("(" + k + ")").test(format))
+                format = format.replace(RegExp.$1,
+                    RegExp.$1.length == 1 ? o[k] :
+                        ("00" + o[k]).substr(("" + o[k]).length));
+            return format;
+        };
+
+        Date.prototype.yesterformat = function (yesterformat) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate() - 1, //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            };
+            if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
+                (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
+                yesterformat = yesterformat.replace(RegExp.$1,
+                    RegExp.$1.length == 1 ? o[k] :
+                        ("00" + o[k]).substr(("" + o[k]).length));
+            return yesterformat;
+        };
+
+        /**
+         * 过滤今天，昨天或者以前
+         * 新消息news
+         * @filterDay()
+         */
+        function filterDay(filter, dates) {
+            var date = filter('date');
+            var printDateNew = [];
+            var d = new Date();
+            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+            var yesterDate = nowDate - 3600 * 24;
+            for (var i = 0; i < dates.length; i++) {
+                var printDate = [];
+                var currentDate = dates[i][0].dateline;
+                if (currentDate >= nowDate) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            var newsDay = new Date().format('MM-dd');
+                            printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        }
+                    }
+                    printDateNew.push(printDate);
+                }
+                else if (currentDate >= yesterDate) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            var yesterDay = new Date().yesterformat('MM-dd');
+                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        }
+                    }
+                    printDateNew.push(printDate);
+                } else {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        }
+                    }
+                    printDateNew.push(printDate);
+                }
+            }
+            return printDateNew;
+        }
 
         /**
          * 再次加载消息
          */
 
-        var  againNew = function(filter,dates) {
+        var againNew = function (filter, dates) {
             var date = filter('date');
             var printDateNew = [];
             var d = new Date();
-            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() /1000- d.getTimezoneOffset();
-            var yesterDate = nowDate -  3600 * 24;
-            for(var i = 0;i<dates.length;i++){
+            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+            var yesterDate = nowDate - 3600 * 24;
+            for (var i = 0; i < dates.length; i++) {
                 var printDate = [];
                 var currentDate = dates[i][0].dateline;
-                if(lastime === dates[0][0].date){
-                    for(var j = 0;j<dates[i].length;j++){
-                        printDate.push({"dateline":dates[i][j]['dateline'],render_text: dates[i][j]['render_text']});
+                if (lastime === dates[0][0].date) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
                     }
                     printDateNew.push(printDate);
-                } else if( currentDate >= yesterDate ){
-                    for(var j = 0;j<dates[i].length;j++){
-                        if(j === 0){
+                } else if (currentDate >= yesterDate) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
                             var yesterDay = new Date().yesterformat('MM-dd');
-                            printDate.push({"date":'昨天， '+yesterDay,"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        }else{
-                            printDate.push({"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
                         }
                     }
                     console.log(yesterDate);
                     printDateNew.push(printDate);
-                }else {
-                    for(var j = 0;j<dates[i].length;j++){
-                        if(j === 0){
-                            printDate.push({'date': dates[i][j]['date'],"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
-                        }else{
-                            printDate.push({"dateline":dates[i][j]['dateline'],  render_text: dates[i][j]['render_text']});
+                } else {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
                         }
                     }
                     printDateNew.push(printDate);
@@ -973,13 +986,13 @@ angular.module('gkNewsApp.controllers',[])
          * @param filter
          * @param dates
          */
-        var lasttime = function(filter,dates){
+        var lasttime = function (filter, dates) {
             var last = [];
-            for(var i = 0;i<dates.length;i++){
-                if(i = dates.length-1){
-                    for(var j = 0;j<dates[i].length;j++){
-                        if(j === dates[i].length-1 ){
-                            last.push({"dateline":dates[i][j].dateline,"date":dates[i][j].date});
+            for (var i = 0; i < dates.length; i++) {
+                if (i = dates.length - 1) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === dates[i].length - 1) {
+                            last.push({"dateline": dates[i][j].dateline, "date": dates[i][j].date});
                         }
                     }
                 }
@@ -990,248 +1003,249 @@ angular.module('gkNewsApp.controllers',[])
         /**
          * 消息再处理
          */
-/*    var newMessage = function($scope){
-        var newGetMessageData = JSON.parse(GKUpdates())
-       ,data = newGetMessageData.updates
-       ,filterData = compare(data);
-        $scope.equalDataNew = filterDay($filter, filterData);
+        /*    var newMessage = function($scope){
+         var newGetMessageData = JSON.parse(GKUpdates())
+         ,data = newGetMessageData.updates
+         ,filterData = compare(data);
+         $scope.equalDataNew = filterDay($filter, filterData);
          $scope.lasttimelabel = lasttime(data);
          if(newGetMessageData.update_count>0){
-                $scope.newsShow = 'yesNews';
+         $scope.newsShow = 'yesNews';
          }else{
-                $scope.newsShow = 'noNews';
+         $scope.newsShow = 'noNews';
          }
-    };  */
-    /**
-     * 服务器过来的数据处理
-     */
-    var updateHttp = function(){
-        GKApi.update().success(function($http,data){
-            $scope.yy = data.updates;
-            $scope.xx = data.update_count;
-            console.log($scope.yy);
-            console.log($scope.xx);
-            console.log($http);
-        });
-    }
+         };  */
+        /**
+         * 服务器过来的数据处理
+         */
+        var updateHttp = function () {
+            GKApi.update().success(function ($http, data) {
+                $scope.yy = data.updates;
+                $scope.xx = data.update_count;
+                console.log($scope.yy);
+                console.log($scope.xx);
+                console.log($http);
+            });
+        }
 
-     /**
-     * 单击向上向下滑动按钮
-     * 新消息news
-     * button - #newsbtn
-     */
-     var newsControls = function($scope){
-         jQuery("#newsbtn").click(function($scope){
-             updateHttp();
-             jQuery(".news-wrapper").slideToggle(500);
-         });
-         jQuery("#newsPackUp").click(function(){
-             jQuery(".news-wrapper").slideUp(500);
-         });
-     };
-     newsControls();
-
-            /*  $scope.newsScroll = function(){
-
-     }    
-    var newsControls = function(){
-            jQuery("#newsbtn").click(function(){
-                var data = 0 // gGetMessage()
-                    ,filterData = compare(data) //过滤出相同日期
-                    ,equalData = filterDay($filter, filterData);
-                $scope.equalDataNew = equalData;
-                $scope.newsbtn = 'SideUp';
+        /**
+         * 单击向上向下滑动按钮
+         * 新消息news
+         * button - #newsbtn
+         */
+        var newsControls = function ($scope) {
+            jQuery("#newsbtn").click(function ($scope) {
+                updateHttp();
                 jQuery(".news-wrapper").slideToggle(500);
             });
-            jQuery("#newsPackUp").click(function(){
+            jQuery("#newsPackUp").click(function () {
                 jQuery(".news-wrapper").slideUp(500);
             });
         };
-        newsControls();*/
-}]);
+        newsControls();
 
-    /**
-     * personal
-     */
-angular.module("gkPersonalApp.controllers",[])
-    .controller("personalCtrl",['$scope','GKApi','$http',function($scope ,GKApi,$http){
-    /**
-     * B,KB,MB,GB,TB,PB
-     * @param num
-     * @param decimal
-     * @returns {*}
-     */
-      function bitSize(num,  decimal) {
-        if (typeof(num) != 'number') {
-            num = Number(num);
-        }
-        if (typeof(decimal) != 'number'){
-            decimal = 2;
-        }
-        if (num < 0) {
-            return '';
-        }
-        var type = new Array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-        var j = 0;
-        while (num >= 1024) {
-            if (j >= 5)
-                return num + type[j];
-            num = num / 1024;
-            j++;
-        }
-        if (num == 0) {
-            return num;
-        } else {
-            var dec = 1;
-            for (var i = 0; i < decimal; i++) {
-                dec = dec * 10;
+        /*  $scope.newsScroll = function(){
+
+         }
+         var newsControls = function(){
+         jQuery("#newsbtn").click(function(){
+         var data = 0 // gGetMessage()
+         ,filterData = compare(data) //过滤出相同日期
+         ,equalData = filterDay($filter, filterData);
+         $scope.equalDataNew = equalData;
+         $scope.newsbtn = 'SideUp';
+         jQuery(".news-wrapper").slideToggle(500);
+         });
+         jQuery("#newsPackUp").click(function(){
+         jQuery(".news-wrapper").slideUp(500);
+         });
+         };
+         newsControls();*/
+    }]);
+
+/**
+ * personal
+ */
+angular.module("gkPersonalApp.controllers", [])
+    .controller("personalCtrl", ['$scope', 'GKApi', '$http', function ($scope, GKApi, $http) {
+        /**
+         * B,KB,MB,GB,TB,PB
+         * @param num
+         * @param decimal
+         * @returns {*}
+         */
+        function bitSize(num, decimal) {
+            if (typeof(num) != 'number') {
+                num = Number(num);
             }
-            return Math.round(num * dec) / dec + type[j];
+            if (typeof(decimal) != 'number') {
+                decimal = 2;
+            }
+            if (num < 0) {
+                return '';
+            }
+            var type = new Array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+            var j = 0;
+            while (num >= 1024) {
+                if (j >= 5)
+                    return num + type[j];
+                num = num / 1024;
+                j++;
+            }
+            if (num == 0) {
+                return num;
+            } else {
+                var dec = 1;
+                for (var i = 0; i < decimal; i++) {
+                    dec = dec * 10;
+                }
+                return Math.round(num * dec) / dec + type[j];
+            }
         }
-    }
 
-    var invitePendingHttp = function(){
-        GKApi.teamInvitePending().success(function($http,data){
-            console.log($http);
-            $scope.createTeamData = data.invite_pending;
-        });
-    }
+        var invitePendingHttp = function () {
+            GKApi.teamInvitePending().success(function ($http, data) {
+                console.log($http);
+                $scope.createTeamData = data.invite_pending;
+            });
+        }
 
-    /**
-     *  团队信息处理
-     */
-    var perside = function(data){
-        var newData = []
-        for(var i = 0, len = data.length;i<len;i++){
-            if(data[i].orgid > 0){
-                if(data[i].type === 0){
-                    newData.push({ "name":data[i].name,"admin":"超级管理员","management":"管理","org_id":data[i].orgid});
-                }else if(data[i].type === 1){
-                    newData.push({ "name":data[i].name,"admin":"管理员","management":"管理","quit":"退出"});
-                }else{
-                    newData.push({ "name":data[i].name,"quit":"退出"});
+        /**
+         *  团队信息处理
+         */
+        var perside = function (data) {
+            var newData = []
+            for (var i = 0, len = data.length; i < len; i++) {
+                if (data[i].orgid > 0) {
+                    if (data[i].type === 0) {
+                        newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid});
+                    } else if (data[i].type === 1) {
+                        newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出"});
+                    } else {
+                        newData.push({ "name": data[i].name, "quit": "退出"});
+                    }
                 }
             }
+            return newData;
         }
-        return newData;
-    }
-    /**
-     * 个人硬盘已使用处理
-     * @param data
-     * @returns {Array}
-     */
-    var useBitSize = function(data){
-        var usesize = [];
-        for(var i = 0,len = data.length;i<len;i++){
-            if(data[i].orgid === 0){
-                usesize.push({"use":data[i].use});
+        /**
+         * 个人硬盘已使用处理
+         * @param data
+         * @returns {Array}
+         */
+        var useBitSize = function (data) {
+            var usesize = [];
+            for (var i = 0, len = data.length; i < len; i++) {
+                if (data[i].orgid === 0) {
+                    usesize.push({"use": data[i].use});
+                }
+            }
+            return usesize;
+        }
+        /**
+         * 个人信息处理
+         *  @type {*}
+         */
+        var guserInformation = function (data) {
+            var guserData = []
+                , oldData = data;
+            if (data.member_phone == '') {
+                guserData.push({"member_email": data.member_email, "member_name": data.member_name, "member_id": data.member_id, "photourl": data.photourl});
+            } else {
+                guserData.push({"member_email": data.member_email, "member_name": data.member_name, "member_id": data.member_id, "member_phone": '电话：' + data.member_phone, "photourl": data.photourl});
+            }
+            return guserData;
+        }
+        var perHavaNoteam = function (scope, havajoin, nojoin) {
+            if (havajoin.length === 0 && nojoin.length === 0) {
+                scope.haveNoTeam = 'noTeam';
+            } else {
+                scope.haveNoTeam = 'haveTeam';
             }
         }
-        return usesize;
-    }
-    /**
-     * 个人信息处理
-     *  @type {*}
-     */
-    var guserInformation = function(data){
-        var guserData = []
-            ,oldData = data;
-        if(data.member_phone == ''){
-            guserData.push({"member_email":data.member_email,"member_name":data.member_name,"member_id":data.member_id,"photourl":data.photourl});
-        }else{
-            guserData.push({"member_email":data.member_email,"member_name":data.member_name,"member_id":data.member_id,"member_phone":'电话：'+data.member_phone,"photourl":data.photourl});
+        $scope.permanagement = function (data) {
+            ;
+            GKApi.teamManage(data).success(function ($http) {
+
+            });
         }
-        return guserData;
-    }
-    var perHavaNoteam = function(scope,havajoin,nojoin){
-        if(havajoin.length === 0 && nojoin.length === 0){
-            scope.haveNoTeam = 'noTeam';
-        }else{
-            scope.haveNoTeam = 'haveTeam';
+        $scope.perquit = function (data) {
+            GKApi.teamQuit(data).success(function ($http) {
+
+            });
         }
-    }
-    $scope.permanagement = function(data){;
-        GKApi.teamManage(data).success(function($http){
+        $scope.perinvitereject = function (data, code) {
+            GKApi.teamInviteReject(data, code).success(function ($http) {
 
-        });
-    }
-    $scope.perquit = function(data){
-        GKApi.teamQuit(data).success(function($http){
-
-        });
-    }
-    $scope.perinvitereject = function(data,code){
-        GKApi.teamInviteReject(data,code).success(function($http){
-
-        });
-    }
-    $scope.perjoin = function(data,code){
-        GKApi.teamInviteJoin(data,code).success(function($http){
-
-        });
-    }
-
-   $scope.setupteam = function($scope){
-       var data = {
-           url:'/mount/create_team',
-           sso:1
-       }
-       var params = {
-           url:dataUrl,
-           type:"child",
-           width:500,
-           height:500
-       }
-       var dataUrl = gkClientInterface.setGetUrl(data);
-       gkClientInterface.setMain(params);
-    }
-    $scope.sitOpen = function($scope){
-
-        var data = {
-            url:"file:///F:/fengcloud/app/views/site.html",
-            type:"child",
-            width:800,
-            height:500
+            });
         }
-        gkClientInterface.setMain(data);
-    }
-    var perCtrl = function(){
-        //个人信息
-        $scope.guser_info = guserInformation(JSON.parse(gkClientInterface.getUserInfo()))[0];
-        //团队信息
-        $scope.per_gSideTreeList = gkClientInterface.getSideTreeList({"sidetype":"org"}).list;
-        console.log($scope.per_gSideTreeList);
-        $scope.perNewgSideTreeList = perside($scope.per_gSideTreeList);
-        $scope.perUseBitSize = useBitSize($scope.per_gSideTreeList);
-        $scope.size_space = bitSize($scope.perUseBitSize[0].use);
-        //打开窗口
-        jQuery("#personbutton").click(function(){
-            invitePendingHttp();
-            perHavaNoteam($scope, $scope.guser_info, $scope.createTeamData);
-            jQuery("#personal-wrapper").slideToggle(500);
-        })
-        //关闭窗口
-        jQuery(".personal-close-button").click(function(){
-            jQuery("#personal-wrapper").slideUp(500);
-        })
-    }
-    perCtrl();
-}]);
+        $scope.perjoin = function (data, code) {
+            GKApi.teamInviteJoin(data, code).success(function ($http) {
 
-    /**
-     * site
-     */
-angular.module("gkSiteApp.controllers",[])
-    .controller("siteCtrl",function($scope) {
+            });
+        }
+
+        $scope.setupteam = function ($scope) {
+            var data = {
+                url: '/mount/create_team',
+                sso: 1
+            }
+            var params = {
+                url: dataUrl,
+                type: "child",
+                width: 500,
+                height: 500
+            }
+            var dataUrl = gkClientInterface.setGetUrl(data);
+            gkClientInterface.setMain(params);
+        }
+        $scope.sitOpen = function ($scope) {
+
+            var data = {
+                url: "file:///F:/fengcloud/app/views/site.html",
+                type: "child",
+                width: 800,
+                height: 500
+            }
+            gkClientInterface.setMain(data);
+        }
+        var perCtrl = function () {
+            //个人信息
+            $scope.guser_info = guserInformation(JSON.parse(gkClientInterface.getUserInfo()))[0];
+            //团队信息
+            $scope.per_gSideTreeList = gkClientInterface.getSideTreeList({"sidetype": "org"}).list;
+            console.log($scope.per_gSideTreeList);
+            $scope.perNewgSideTreeList = perside($scope.per_gSideTreeList);
+            $scope.perUseBitSize = useBitSize($scope.per_gSideTreeList);
+            $scope.size_space = bitSize($scope.perUseBitSize[0].use);
+            //打开窗口
+            jQuery("#personbutton").click(function () {
+                invitePendingHttp();
+                perHavaNoteam($scope, $scope.guser_info, $scope.createTeamData);
+                jQuery("#personal-wrapper").slideToggle(500);
+            })
+            //关闭窗口
+            jQuery(".personal-close-button").click(function () {
+                jQuery("#personal-wrapper").slideUp(500);
+            })
+        }
+        perCtrl();
+    }]);
+
+/**
+ * site
+ */
+angular.module("gkSiteApp.controllers", [])
+    .controller("siteCtrl", function ($scope) {
 
         /**
          * 选择语言处理
          */
-        $scope.siteChangeLanguage  = function(){
-            $scope.items= [
-                {name:'默认', type: 0 },
-                {name:'中文', type: 1 },
-                {name:'英文', type: 2 }
+        $scope.siteChangeLanguage = function () {
+            $scope.items = [
+                {name: '默认', type: 0 },
+                {name: '中文', type: 1 },
+                {name: '英文', type: 2 }
             ];
             //$scope.changeLanguage =  JSON.prase(gkClientInterface.getChangeLanguage());
             var type = 1;
@@ -1242,8 +1256,8 @@ angular.module("gkSiteApp.controllers",[])
          * 打开设置
          * 数据处理
          */
-        $scope.SiteOpen = function(){
-            $scope.siteSidebar ='contentUniversal';
+        $scope.SiteOpen = function () {
+            $scope.siteSidebar = 'contentUniversal';
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
             $scope.configpath = $scope.getsitedata.configpath;
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
@@ -1255,65 +1269,65 @@ angular.module("gkSiteApp.controllers",[])
         /**
          *设置代理
          */
-        $scope.siteagent = function(){
+        $scope.siteagent = function () {
             gkClientInterface.setSettings();
         }
 
         /**
          * 清除缓存
          */
-        $scope.siteClearCache = function(){
+        $scope.siteClearCache = function () {
             gkClientInterface.setClearCache();
         }
 
         /**
          * 按确定保存数据，关闭窗口，
          */
-        $scope.postUserInfo = function() {
+        $scope.postUserInfo = function () {
             $scope.item = $scope.item.type;
-            var language = {type:$scope.item};
+            var language = {type: $scope.item};
             var userInfo = {
                 auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
-                prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 :$scope.prompt,
+                prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 : $scope.prompt,
                 recycle: (typeof  $scope.recycle !== 'number') ? $scope.recycle === true ? 1 : 0 : $scope.recycle,
                 configpath: $scope.configpath
             };
             gkClientInterface.setClientInfo(userInfo);
-         //   gkClientInterface.setChangeLanguage(language);
+            //   gkClientInterface.setChangeLanguage(language);
             gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
          */
-        $scope.closeUserInfo = function(){
+        $scope.closeUserInfo = function () {
             gkClientInterface.setClose();
         }
     });
 
-    /**
-     * contact
-     */
-angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
-    .controller('contactCtrl', function($scope) {
+/**
+ * contact
+ */
+angular.module("gkContactApp.controllers", ['angularBootstrapNavTree'])
+    .controller('contactCtrl', function ($scope) {
         $scope.groups = [
             {
                 group_name: '够快科技',
-                group_id:222,
+                group_id: 222,
                 children: [
                     {
 
-                        data:111,
+                        data: 111,
                         label: '人事部'
                     }
                 ]
             },
             {
                 group_name: '牛逼哄哄',
-                group_id:222,
+                group_id: 222,
                 children: [
                     {
                         group_name: '书生部',
-                        group_id:111
+                        group_id: 111
                     }
                 ]
             }
@@ -1321,53 +1335,54 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
 
         $scope.group = [
             {
-                name:'海浩',
-                email:'123456@qq.com',
-                id:123
+                name: '海浩',
+                email: '123456@qq.com',
+                id: 123
             },
             {
-                name:'xx',
-                email:'123456@qq.com'
+                name: 'xx',
+                email: '123456@qq.com'
             }
         ];
-        $scope.contactTree = function(branch) {
+        $scope.contactTree = function (branch) {
             $scope.output = branch.data;
         };
 
         function fetchData(serverData) {
             var i = 0
-                ,len = serverData.length
-                ,item = '';
-            for(;i<len;i++){
-                item = JSON.stringify(serverData[i]).replace(/group_name/gi,'label').replace(/group_id/gi, 'data');
-                serverData.splice(i,1,JSON.parse(item));
+                , len = serverData.length
+                , item = '';
+            for (; i < len; i++) {
+                item = JSON.stringify(serverData[i]).replace(/group_name/gi, 'label').replace(/group_id/gi, 'data');
+                serverData.splice(i, 1, JSON.parse(item));
             }
             return serverData;
         }
+
         //点击选择分组按钮
-        jQuery('.selectGroup').click ( function() {
-            var selectGroupButton =  jQuery('.contact-content-team').find('.contact-content-normal');
-            if(jQuery(this).data('group') === '选择') {
+        jQuery('.selectGroup').click(function () {
+            var selectGroupButton = jQuery('.contact-content-team').find('.contact-content-normal');
+            if (jQuery(this).data('group') === '选择') {
                 selectGroupButton.text('选择');
-                jQuery(this).data('group','确定');
-            }else{
+                jQuery(this).data('group', '确定');
+            } else {
                 selectGroupButton.text('确定');
-                jQuery(this).data('group','选择');
+                jQuery(this).data('group', '选择');
             }
 
         });
         //点击单选选择和确定按钮
-        jQuery('.contact-content-group').click( function(e) {
-            if(jQuery('.selectGroup').data('group') === "选择") return;
-            if(e.target.className === "contact-content-normal") {
+        jQuery('.contact-content-group').click(function (e) {
+            if (jQuery('.selectGroup').data('group') === "选择") return;
+            if (e.target.className === "contact-content-normal") {
                 (jQuery(e.target).text() === "选择") ? jQuery(e.target).text('确定') : jQuery(e.target).text('选择');
             }
         });
         //点击确定提交按钮
-        $scope.perPostShare = function() {
+        $scope.perPostShare = function () {
             var shareData = [];
-            $.each(jQuery('.contact-content-team'), function() {
-                if(jQuery(this).find('.contact-content-normal').text() === '确定') {
+            $.each(jQuery('.contact-content-team'), function () {
+                if (jQuery(this).find('.contact-content-normal').text() === '确定') {
                     shareData.push(
                         {
                             name: $scope.group[jQuery(this).index()].name,
@@ -1382,77 +1397,78 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
         $scope.example_treedata = fetchData($scope.groups);
     });
 
-    /**
-     * viewmember
-     */
-angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
-    .controller('viewmemberCtrl', function($scope) {
+/**
+ * viewmember
+ */
+angular.module("gkViewmemberApp.controllers", ['angularBootstrapNavTree'])
+    .controller('viewmemberCtrl', function ($scope) {
         $scope.groups = [
             {
                 group_name: '够快科技',
-                group_id:222,
+                group_id: 222,
                 children: [
                     {
 
-                        data:111,
+                        data: 111,
                         label: '人事部'
                     }
                 ]
             },
             {
                 group_name: '牛逼哄哄',
-                group_id:222,
+                group_id: 222,
                 children: [
                     {
                         group_name: '书生部',
-                        group_id:111
+                        group_id: 111
                     }
                 ]
             }
         ];
         $scope.group = [
             {
-                name:'海浩',
-                email:'123456@qq.com',
-                id:123
+                name: '海浩',
+                email: '123456@qq.com',
+                id: 123
             },
             {
-                name:'xx',
-                email:'123456@qq.com'
+                name: 'xx',
+                email: '123456@qq.com'
             }
         ];
-        $scope.contactTree = function(branch) {
+        $scope.contactTree = function (branch) {
             $scope.output = branch.data;
         };
 
         function fetchData(serverData) {
             var i = 0
-                ,len = serverData.length
-                ,item = '';
-            for(;i<len;i++){
-                item = JSON.stringify(serverData[i]).replace(/group_name/gi,'label').replace(/group_id/gi, 'data');
-                serverData.splice(i,1,JSON.parse(item));
+                , len = serverData.length
+                , item = '';
+            for (; i < len; i++) {
+                item = JSON.stringify(serverData[i]).replace(/group_name/gi, 'label').replace(/group_id/gi, 'data');
+                serverData.splice(i, 1, JSON.parse(item));
             }
             return serverData;
         }
+
         $scope.example_treedata = fetchData($scope.groups);
     });
 
-    /**
+/**
  * sharingseggings
  */
-angular.module("gkSharingsettingsApp.controllers",[])
-    .controller('sharingsettingsCtrl', function($scope) {
+angular.module("gkSharingsettingsApp.controllers", [])
+    .controller('sharingsettingsCtrl', function ($scope) {
         $scope.sharingsettings = [
             {
-                name:'大哥',
-                email:'123456qq.com',
-                id:123
+                name: '大哥',
+                email: '123456qq.com',
+                id: 123
             },
             {
-                name:'小弟',
-                email:'123456@qq.com',
-                id:123
+                name: '小弟',
+                email: '123456@qq.com',
+                id: 123
             }
         ]
         console.log($scope.sharingsettings);

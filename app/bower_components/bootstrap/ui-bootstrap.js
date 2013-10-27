@@ -1465,7 +1465,7 @@ angular.module('ui.bootstrap.modal', [])
 
         //remove backdrop if no longer needed
         if (backdropIndex() == -1) {
-          backdropDomEl.remove();
+          backdropDomEl&&backdropDomEl.remove();
           backdropDomEl = undefined;
         }
 
@@ -2734,12 +2734,15 @@ function($parse, $http, $templateCache, $compile) {
       if (!scope.$eval(attrs.tabsetTitles)) {
         elm.remove();
       } else {
-          //setTimeout(function() {
+          setTimeout(function() {
               //now that tabs location has been decided, transclude the tab titles in
+              /**
+               * 为修复bug 改为 setTimeout By GeorgeXu 2013.10.27
+               */
               tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function(node) {
                   elm.append(node);
               });
-          //},0);
+          },0);
 
       }
     }

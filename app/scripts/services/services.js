@@ -105,11 +105,11 @@ angular.module('gkClientIndex.services', [])
                 gkClientInterface.open(params);
 
             },
-            selectPath: function () {
-                return gkClientInterface.selectPath();
+            selectPath: function (params) {
+                return gkClientInterface.selectPath(params);
             },
             checkPathIsEmpty: function (params) {
-                return gkClientInterface.selectPath(params);
+                return gkClientInterface.checkPathIsEmpty(params);
             },
             setLinkPath: function (params) {
                 var re = gkClientInterface.setLinkPath(params);
@@ -145,10 +145,13 @@ angular.module('gkClientIndex.services', [])
             },
             getApiAuthorization: function (params) {
                 return gkClientInterface.getApiAuthorization(params);
+            },
+            getLocalSyncURI: function (params) {
+                return gkClientInterface.getLocalSyncURI(params);
             }
         }
     }])
-    .constant('FILE_SORTS',{
+    .constant('FILE_SORTS', {
         'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'],
         'SORT_MOVIE': ['mp4', 'mkv', 'rm', 'rmvb', 'avi', '3gp', 'flv', 'wmv', 'asf', 'mpeg', 'mpg', 'mov', 'ts', 'm4v'],
         'SORT_MUSIC': ['mp3', 'wma', 'wav', 'flac', 'ape', 'ogg', 'aac', 'm4a'],
@@ -158,31 +161,32 @@ angular.module('gkClientIndex.services', [])
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
-    .factory('GKFile', ['FILE_SORTS','GKMounts',function (FILE_SORTS,GKMounts) {
+    .factory('GKFile', ['FILE_SORTS', 'GKMounts', function (FILE_SORTS, GKMounts) {
         var GKFile = {
-            getMountById:function(mountID){
-                return GKMounts[mountID];
+            getMountById: function (mountID) {
+                var context = this;
+                return context.formatMountItem(GKMounts[mountID]);
             },
-            dealTreeData:function(data,type,mountId){
+            dealTreeData: function (data, type, mountId) {
                 var newData = [],
                     item,
                     label,
                     context = this;
-                        angular.forEach(data,function(value){
-                    if(!value.path){
+                angular.forEach(data, function (value) {
+                    if (!value.path) {
                         value = context.formatMountItem(value);
 
                         label = value.name;
-                    }else{
+                    } else {
                         value = context.formatFileItem(value);
                         label = value.filename;
-                        mountId && angular.extend(value,{
-                            mount_id:mountId
+                        mountId && angular.extend(value, {
+                            mount_id: mountId
                         });
                     }
                     item = {
                         label: label,
-                        isParent:true,
+                        isParent: true,
                         data: value
                     };
 
@@ -190,62 +194,62 @@ angular.module('gkClientIndex.services', [])
                 });
                 return newData;
             },
-            formatMountItem:function(mount){
+            formatMountItem: function (mount) {
                 var newMount = {
                     mount_id: mount.mountid,
-                    name: mount.name?mount.name:'我的资料库',
-                    org_id:  mount.orgid,
-                    capacity:mount.total,
-                    size:mount.use,
-                    org_capacity:  mount.orgtotal,
+                    name: mount.name ? mount.name : '我的资料库',
+                    org_id: mount.orgid,
+                    capacity: mount.total,
+                    size: mount.use,
+                    org_capacity: mount.orgtotal,
                     org_size: mount.orguse,
-                    type:  mount.type,
-                    fullpath:''
+                    type: mount.type,
+                    fullpath: ''
                 };
                 return newMount;
             },
-            formatFileItem:function(value,source){
-              //console.log(value);
-              var file;
-              if(source == 'api'){
-                  var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
-                  file = {
-                      filename: value.filename,
-                      filesize: parseInt(value.filesize),
-                      ext:ext,
-                      last_edit_time: parseInt(value.last_dateline),
-                      fullpath: Util.String.rtrim(value.fullpath,'/'),
-                      lock: value.lock || 0,
-                      lock_member_name: value.lock_member_name || '',
-                      lock_member_id: value.lock_member_id || 0,
-                      dir: value.dir,
-                      last_member_name: value.last_member_name || '',
-                      creator_member_name: value.creator_member_name || ''
-                  };
-              }else{
-                  var fileName = Util.String.baseName(value.path);
-                  var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
-                  file = {
-                      filename: fileName,
-                      filesize: parseInt(value.filesize),
-                      ext:ext,
-                      last_edit_time: parseInt(value.lasttime),
-                      fullpath: value.path,
-                      lock: value.lock,
-                      lock_member_name: value.lockname,
-                      lock_member_id: value.lockid,
-                      dir: value.dir,
-                      last_member_name: value.lastname,
-                      creator_member_name: value.creatorname,
-                      status: value.status
-                  };
-              }
-             return file;
+            formatFileItem: function (value, source) {
+                //console.log(value);
+                var file;
+                if (source == 'api') {
+                    var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
+                    file = {
+                        filename: value.filename,
+                        filesize: parseInt(value.filesize),
+                        ext: ext,
+                        last_edit_time: parseInt(value.last_dateline),
+                        fullpath: Util.String.rtrim(value.fullpath, '/'),
+                        lock: value.lock || 0,
+                        lock_member_name: value.lock_member_name || '',
+                        lock_member_id: value.lock_member_id || 0,
+                        dir: value.dir,
+                        last_member_name: value.last_member_name || '',
+                        creator_member_name: value.creator_member_name || ''
+                    };
+                } else {
+                    var fileName = Util.String.baseName(value.path);
+                    var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
+                    file = {
+                        filename: fileName,
+                        filesize: parseInt(value.filesize),
+                        ext: ext,
+                        last_edit_time: parseInt(value.lasttime),
+                        fullpath: value.path,
+                        lock: value.lock,
+                        lock_member_name: value.lockname,
+                        lock_member_id: value.lockid,
+                        dir: value.dir,
+                        last_member_name: value.lastname,
+                        creator_member_name: value.creatorname,
+                        status: value.status
+                    };
+                }
+                return file;
             },
-            dealFileList: function (fileList,source) {
-                var fileData = [], file,context = this;
+            dealFileList: function (fileList, source) {
+                var fileData = [], file, context = this;
                 angular.forEach(fileList, function (value) {
-                    file = context.formatFileItem(value,source);
+                    file = context.formatFileItem(value, source);
                     fileData.push(file);
                 });
                 return fileData;
@@ -347,9 +351,9 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKOpt', [function () {
         var GKOpt = {
-            getOpts: function (currentFile, selectedFiles,partition,search) {
+            getOpts: function (currentFile, selectedFiles, partition, search) {
                 var
-                    currentOpts = this.getCurrentOpts(currentFile,partition,search),
+                    currentOpts = this.getCurrentOpts(currentFile, partition, search),
                     multiOpts = this.getMultiSelectOpts(selectedFiles),
                     singleOpts = this.getSingleSelectOpts(selectedFiles);
                 return this.getFinalOpts(currentOpts, multiOpts, singleOpts);
@@ -359,10 +363,10 @@ angular.module('gkClientIndex.services', [])
                 return Array.prototype.concat.apply([], arr);
 
             },
-            getCurrentOpts: function (currentFile,partition,search) {
-                if(search){
+            getCurrentOpts: function (currentFile, partition, search) {
+                if (search) {
                     return [];
-                }else{
+                } else {
                     return ['add', 'new_folder', 'order_by'];
                 }
             },
@@ -449,19 +453,29 @@ angular.module('gkClientIndex.services', [])
             token: GK.getToken()
         }
         var GKApi = {
-            searchFile:function(keyword,path,mount_id){
-                var buildCondition = function(){
-                    var condition = {
-                        'include':{
-                            'path':['prefix',path],
-                            'keywords' : ['text', keyword]
-                        }
-                    };
-                    return JSON.stringify(condition);
-                }
+            createSmartFolder: function (mount_id, name, condition, description) {
                 var params = {
                     mount_id: mount_id,
-                    condition: buildCondition()
+                    name: name,
+                    condition: condition,
+                    description: description||''
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/file/save_search',
+                    data:jQuery.param(params)
+                });
+            },
+            searchFile: function (keyword, path, mount_id) {
+                var fileSearch = new GKFileSearch();
+                fileSearch.conditionIncludeKeyword(keyword);
+                fileSearch.conditionIncludePath(path);
+                var params = {
+                    mount_id: mount_id,
+                    condition: fileSearch.getCondition()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -506,79 +520,79 @@ angular.module('gkClientIndex.services', [])
             },
             upda: function () {
                 var params = {
-                    dateline:1370016000,
-                    size:5
+                    dateline: 1370016000,
+                    size: 5
                 };
-               angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost()+'/1/updates/ls',
-                    params:params
+                    url: GK.getApiHost() + '/1/updates/ls',
+                    params: params
                 });
-           },
-           teamInvitePending:function(){
+            },
+            teamInvitePending: function () {
                 var sign = GK.getApiAuthorization(defaultParams);
                 defaultParams.sign = sign;
                 return $http({
                     method: 'GET',
-                    url: GK.getApiHost()+'/1/team/invite_pending',
-                    params:defaultParams
-                });
-           },
-            teamManage:function(data){
-                var params = {
-                   org_id:data
-                };
-                angular.extend(params,defaultParams);
-                var sign = GK.getApiAuthorization(params);
-                params.sign = sign;
-                return $http({
-                    method: 'POST',
-                    url: GK.getApiHost()+'/1/updates/ls',
-                    params:params
+                    url: GK.getApiHost() + '/1/team/invite_pending',
+                    params: defaultParams
                 });
             },
-            teamQuit:function(data){
+            teamManage: function (data) {
                 var params = {
-                    org_id:data
+                    org_id: data
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost()+'/1/team/quit',
-                    params:params
+                    url: GK.getApiHost() + '/1/updates/ls',
+                    params: params
                 });
             },
-            teamInviteReject:function(data,code){
+            teamQuit: function (data) {
                 var params = {
-                    org_id:data,
-                    code:code
+                    org_id: data
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost()+'/1/team/invite_reject',
-                    params:params
+                    url: GK.getApiHost() + '/1/team/quit',
+                    params: params
                 });
             },
-            teamInviteJoin:function(data,code){
+            teamInviteReject: function (data, code) {
                 var params = {
-                    org_id:data,
-                    code:code
+                    org_id: data,
+                    code: code
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost()+'/1/team/invite_accept',
-                    params:params
+                    url: GK.getApiHost() + '/1/team/invite_reject',
+                    params: params
+                });
+            },
+            teamInviteJoin: function (data, code) {
+                var params = {
+                    org_id: data,
+                    code: code
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/team/invite_accept',
+                    params: params
                 });
             },
         }
@@ -596,10 +610,10 @@ angular.module('gkClientIndex.services', [])
         return GKMounts;
     }
     ])
-    .factory('GKMyMount', ['GKMounts',function ($filter,GKMounts) {
+    .factory('GKMyMount', ['GKMounts', function ($filter, GKMounts) {
         var GKMyMount = null;
         angular.forEach(GKMounts, function (value) {
-            if (value.orgid==0) {
+            if (value.orgid == 0) {
                 GKMyMount = value;
             }
         });
@@ -609,11 +623,91 @@ angular.module('gkClientIndex.services', [])
 /**
  * 记录浏览历史，提供前进,后退功能
  */
-    .factory('GKHistory', ['$q','$location','$rootScope',function ($q,$location,$rootScope) {
-        return new GKHistory($q,$location,$rootScope);
+    .factory('GKHistory', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
+        return new GKHistory($q, $location, $rootScope);
     }])
 ;
-function GKHistory($q,$location,$rootScope){
+
+function GKFileSearch() {
+}
+GKFileSearch.prototype = {
+    includeCondition: {},
+    excludeCondition: {},
+    condition: {},
+    order: {},
+    limit: {}
+};
+GKFileSearch.prototype.getCondition = function () {
+    if (this.includeCondition) {
+        this.condition['include'] = this.includeCondition;
+    }
+    if (this.excludeCondition) {
+        this.condition['exclude'] = this.excludeCondition;
+    }
+    if (this.order) {
+        this.condition['order'] = this.order;
+    }
+    if (this.limit) {
+        this.condition['limit'] = this.limit;
+    }
+    return JSON.stringify(this.condition);
+}
+GKFileSearch.prototype.conditionIncludeKeyword = function (keyword) {
+    this.includeCondition['keywords'] = ['text', keyword];
+};
+GKFileSearch.prototype.conditionIncludePath = function (path) {
+    this.includeCondition['path'] = ['prefix', path];
+};
+GKFileSearch.prototype.conditionIncludeCreator = function (creator) {
+    if (angular.isArray(creator)) {
+        this.includeCondition['creator'] = ['in', creator];
+    } else if (angular.isNumber(creator)) {
+        this.includeCondition['creator'] = ['eq', creator];
+    }
+};
+GKFileSearch.prototype.conditionIncludeDateline = function (dataline, pre) {
+    pre = angular.isDefined(pre) ? pre : 'gt';
+    if (angular.isArray(dataline)) {
+        pre = 'between'
+    }
+    this.includeCondition['dateline'] = [pre, dataline];
+};
+GKFileSearch.prototype.conditionIncludeFilesize = function (filesize, pre) {
+    pre = angular.isDefined(pre) ? pre : 'gt';
+    if (angular.isArray(dataline)) {
+        pre = 'between'
+    }
+    this.includeCondition['filesize'] = [pre, filesize];
+};
+GKFileSearch.prototype.conditionExcludeCreator = function (creator) {
+    if (!angular.isArray(creator)) {
+        creator = [creator];
+    }
+    this.excludeCondition['creator'] = ['in', creator];
+};
+GKFileSearch.prototype.conditionExcludeModifier = function (modifier) {
+    if (!angular.isArray(modifier)) {
+        modifier = [modifier];
+    }
+    this.excludeCondition['modifier'] = ['in', modifier];
+};
+GKFileSearch.prototype.conditionExcludeKeywords = function (keyword) {
+    this.excludeCondition['keywords'] = ['text', keyword];
+};
+GKFileSearch.prototype.conditionExcludeExtension = function (ext) {
+    if (!angular.isArray(ext)) {
+        ext = [ext];
+    }
+    this.excludeCondition['extension'] = ['in', ext];
+};
+GKFileSearch.prototype.conditionSetOrder = function (orderField, orderType) {
+    this.order[orderField] = angular.isDefined(orderType) ? orderType : 'asc';
+};
+GKFileSearch.prototype.conditionSetLimit = function () {
+    this.limit = [].slice.call(arguments);
+};
+
+function GKHistory($q, $location, $rootScope) {
     var self = this,
         update = true,
         history = [],
@@ -635,24 +729,24 @@ function GKHistory($q,$location,$rootScope){
     this.canForward = function () {
         return current < history.length - 1;
     };
-    this.canBack = function(){
+    this.canBack = function () {
         return current > 0;
     }
-    this.back = function(){
+    this.back = function () {
         return go();
     }
-    this.forward = function(){
+    this.forward = function () {
         return go(true);
     }
 
-    $rootScope.$on('$routeChangeSuccess', function ($s,$current) {
+    $rootScope.$on('$routeChangeSuccess', function ($s, $current) {
         var params = $current.params;
-        if(jQuery.isEmptyObject(params)) return;
+        if (jQuery.isEmptyObject(params)) return;
         var l = history.length,
-            cwd =params;
+            cwd = params;
         if (update) {
-            current >= 0 && l > current + 1 && history.splice(current+1);
-            history[history.length-1] != cwd && history.push(cwd);
+            current >= 0 && l > current + 1 && history.splice(current + 1);
+            history[history.length - 1] != cwd && history.push(cwd);
             current = history.length - 1;
         }
         update = true;
