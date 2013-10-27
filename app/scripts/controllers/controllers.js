@@ -852,7 +852,6 @@ angular.module('gkNewsApp.controllers',[])
                             printDate.push({"dateline":dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
                         }
                     }
-                    console.log(yesterDate);
                     printDateNew.push(printDate);
                 }else {
                     for(var j = 0;j<dates[i].length;j++){
@@ -992,7 +991,6 @@ angular.module("gkPersonalApp.controllers",[])
 
     var invitePendingHttp = function(){
         GKApi.teamInvitePending().success(function($http,data){
-            console.log($http);
             $scope.createTeamData = data.invite_pending;
         });
     }
@@ -1005,11 +1003,11 @@ angular.module("gkPersonalApp.controllers",[])
         for(var i = 0, len = data.length;i<len;i++){
             if(data[i].orgid > 0){
                 if(data[i].type === 0){
-                    newData.push({ "name":data[i].name,"admin":"超级管理员","management":"管理","org_id":data[i].orgid});
+                    newData.push({ "name":data[i].name,"admin":"超级管理员","management":"管理","org_id":data[i].orgid," orgphoto": data[i].orgphoto});
                 }else if(data[i].type === 1){
-                    newData.push({ "name":data[i].name,"admin":"管理员","management":"管理","quit":"退出"});
+                    newData.push({ "name":data[i].name,"admin":"管理员","management":"管理","quit":"退出"," orgphoto": data[i].orgphoto});
                 }else{
-                    newData.push({ "name":data[i].name,"quit":"退出"});
+                    newData.push({ "name":data[i].name,"quit":"退出"," orgphoto": data[i].orgphoto});
                 }
             }
         }
@@ -1083,18 +1081,20 @@ angular.module("gkPersonalApp.controllers",[])
            height:500
        }
        var dataUrl = gkClientInterface.setGetUrl(data);
-       gkClientInterface.setMain(params);
-    }
+           gkClientInterface.setMain(params);
+   }
+
     $scope.sitOpen = function($scope){
 
         var data = {
             url:"file:///F:/fengcloud/app/views/site.html",
             type:"child",
-            width:800,
-            height:500
+            width:755,
+            height:440
         }
         gkClientInterface.setMain(data);
     }
+
     var perCtrl = function(){
         //个人信息
         $scope.guser_info = guserInformation(JSON.parse(gkClientInterface.getUserInfo()))[0];
@@ -1133,23 +1133,24 @@ angular.module("gkSiteApp.controllers",[])
                 {name:'中文', type: 1 },
                 {name:'英文', type: 2 }
             ];
-            //$scope.changeLanguage =  JSON.prase(gkClientInterface.getChangeLanguage());
-            var type = 1;
+       //     $scope.changeLanguage = gkClientInterface.getLanguage();
+            var type = 0;
             $scope.item = $scope.items[type];
         }
-        $scope.siteChangeLanguage();
+
         /**
          * 打开设置
          * 数据处理
          */
         $scope.SiteOpen = function(){
             $scope.siteSidebar ='contentUniversal';
+            $scope.siteChangeLanguage();
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
             $scope.configpath = $scope.getsitedata.configpath;
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
             $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
             $scope.recycle = (typeof $scope.getsitedata.recycle === 'number') ? $scope.getsitedata.recycle === 1 ? true : false : $scope.getsitedata.recycle;
-
+            $scope.proxy = (typeof $scope.getsitedata.proxy === 'number') ? $scope.getsitedata.proxy === 1 ? true : false : $scope.getsitedata.proxy
         }
         $scope.SiteOpen();
         /**
@@ -1176,11 +1177,14 @@ angular.module("gkSiteApp.controllers",[])
                 auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
                 prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 :$scope.prompt,
                 recycle: (typeof  $scope.recycle !== 'number') ? $scope.recycle === true ? 1 : 0 : $scope.recycle,
-                configpath: $scope.configpath
+                proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy
             };
+            var setClientInfo = {
+                configpath: $scope.configpath
+            }
             gkClientInterface.setClientInfo(userInfo);
-         //   gkClientInterface.setChangeLanguage(language);
-            gkClientInterface.setClose();
+       //     gkClientInterface.setChangeLanguage(language);
+       //     gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
@@ -1188,29 +1192,76 @@ angular.module("gkSiteApp.controllers",[])
         $scope.closeUserInfo = function(){
             gkClientInterface.setClose();
         }
+        /**
+         * 左侧栏单击事件
+         */
+        $scope.siteuniversal = function(){
+            $scope.siteSidebar = 'contentUniversal';
+            $scope.universal = true;
+            $scope.device = "";
+            $scope.synchronous = "";
+            $scope.network = "";
+            $scope.advanced = "";
+        }
+        $scope.sitedevice = function(){
+            $scope.siteSidebar = 'contentdevice';
+            $scope.device = true;
+            $scope.universal = "";
+            $scope.synchronous = "";
+            $scope.network = "";
+            $scope.advanced = "";
+        }
+        $scope.sitesynchronous = function(){
+            $scope.siteSidebar = 'contentSynchronous';
+            $scope.synchronous = true;
+            $scope.universal = "";
+            $scope.device = "";
+            $scope.network = "";
+            $scope.advanced = "";
+        }
+        $scope.sitenetwork = function(){
+            $scope.siteSidebar = 'contentNetwork';
+            $scope.network = true;
+            $scope.universal = "";
+            $scope.device = "";
+            $scope.synchronous = "";
+            $scope.advanced = "";
+        }
+        $scope.siteadvanced = function(){
+            $scope.siteSidebar = 'contentAdvanced';
+            $scope.advanced = true;
+            $scope.universal = "";
+            $scope.device = "";
+            $scope.synchronous = "";
+            $scope.network = "";
+        }
+        $scope.synChronousRegain = function(){
+
+        }
+        $scope.synChronousRemove = function(){
+
+        }
     });
 
     /**
      * contact
      */
-angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
-    .controller('contactCtrl', function($scope) {
+angular.module("gkContactApp.controllers",['contactSlideTree'])
+    .controller('contactCtrl',['$filter','$scope','GKApi','$http', function($filter,$scope ,GKApi,$http) {
         $scope.groups = [
-            {
-                group_name: '够快科技',
-                group_id:222,
-                children: [
-                    {
 
-                        data:111,
-                        label: '人事部'
-                    }
-                ]
-            },
             {
                 group_name: '牛逼哄哄',
                 group_id:222,
                 children: [
+                    {
+                        group_name: '书生部',
+                        group_id:111
+                    },
+                    {
+                        group_name: '书生部',
+                        group_id:111
+                    },
                     {
                         group_name: '书生部',
                         group_id:111
@@ -1219,21 +1270,51 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
             }
         ];
 
-        $scope.group = [
+        $scope.conteamMembers = [
             {
-                name:'海浩',
-                email:'123456@qq.com',
+                member_name:'海浩',
+                member_email:'12345@qq.com',
                 id:123
             },
             {
-                name:'xx',
-                email:'123456@qq.com'
+                member_name:'x',
+                member_email:'123456@qq.com',
+                id:124
             }
         ];
-        $scope.contactTree = function(branch) {
-            $scope.output = branch.data;
-        };
+        /**
+         * 获取团队id并处理
+         *  @param branch
+         */
+        $scope.conteam = function(){
+            //团队id.....
+           $scope.example_treedata = fetchData( $scope.groups);     //($scope.conteamgroups);
 
+        }
+        /**
+         * 向服务器获取左侧栏所有分组和成员
+         *
+        var teamGroupsHttp = function(){
+                GKApi.teamGroupsMembers().success(function($http,data){
+                    $scope.conteamgroups = data.groups;
+                 //   $scope.conteamMembers = data.member;
+                });
+        }
+        $scope.conteam();
+        /**
+         *  单机分组，向服务器获取成员
+         *  @param branch
+         *
+        $scope.contactTree = function(branch) {
+            GKApi.groupmember(branch.org_id).success(function($http,data){
+              // $scope.conteamMembers = data;
+            });
+        };
+        /**
+         *团队数据处理
+         */
+
+        $scope.conteam();
         function fetchData(serverData) {
             var i = 0
                 ,len = serverData.length
@@ -1244,6 +1325,30 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
             }
             return serverData;
         }
+        $scope.conkeyup = function($event){
+            if($event.keyCode === 13){
+                //团队id/ var =
+                GKApi.teamsearch(ord_id,$scope.context).success(function($http,data){
+                    $scope.getkeytext = data;
+                });
+            }
+        }
+        /**
+         * 搜索数据处理
+
+       var conKeyUpData = function(data){
+            var newData = [];
+            for(var i = 0,len = data.length;i<len;i++){
+                if(data[i].member_id !== 0){
+                    newData.push(data[i]);
+                }
+            }
+            return newData;
+        }
+        $scope.conteamMembers = conKeyUpData($scope.getkeytext);
+        /**
+         * 单机选择确定按钮
+         */
         //点击选择分组按钮
         jQuery('.selectGroup').click ( function() {
             var selectGroupButton =  jQuery('.contact-content-team').find('.contact-content-normal');
@@ -1254,16 +1359,34 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
                 selectGroupButton.text('确定');
                 jQuery(this).data('group','选择');
             }
-
         });
-        //点击单选选择和确定按钮
+        /**
+         * 点击单选选择和确定按钮
+         */
         jQuery('.contact-content-group').click( function(e) {
             if(jQuery('.selectGroup').data('group') === "选择") return;
             if(e.target.className === "contact-content-normal") {
-                (jQuery(e.target).text() === "选择") ? jQuery(e.target).text('确定') : jQuery(e.target).text('选择');
+                if(jQuery(e.target).text() === "选择"){
+                    jQuery(e.target).text('确定');
+
+                }else{
+                    jQuery(e.target).text('选择');
+                }
             }
         });
-        //点击确定提交按钮
+
+        $scope.myVar = 1;
+
+        $scope.$watch('myVar', function() {
+            alert($scope.myVar);
+        });
+
+        $scope.buttonClicked = function() {
+            $scope.myVar = 2; // This will trigger $watch expression to kick in
+        };
+        /**
+         *  点击确定提交按钮
+         */
         $scope.perPostShare = function() {
             var shareData = [];
             $.each(jQuery('.contact-content-team'), function() {
@@ -1277,28 +1400,16 @@ angular.module("gkContactApp.controllers",['angularBootstrapNavTree'])
                     )
                 }
             });
-            // console.log(shareData);
         };
-        $scope.example_treedata = fetchData($scope.groups);
-    });
+    }]);
 
     /**
      * viewmember
      */
-angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
-    .controller('viewmemberCtrl', function($scope) {
+angular.module("gkviewmemberApp.controllers",['contactSlideTree'])
+    .controller('viewmemberCtrl',['$filter','$scope','GKApi','$http', function($filter,$scope ,GKApi,$http) {
         $scope.groups = [
-            {
-                group_name: '够快科技',
-                group_id:222,
-                children: [
-                    {
 
-                        data:111,
-                        label: '人事部'
-                    }
-                ]
-            },
             {
                 group_name: '牛逼哄哄',
                 group_id:222,
@@ -1306,25 +1417,64 @@ angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
                     {
                         group_name: '书生部',
                         group_id:111
+                    },
+                    {
+                        group_name: '书生部',
+                        group_id:111
+                    },
+                    {
+                        group_name: '书生部',
+                        group_id:111
                     }
                 ]
             }
         ];
-        $scope.group = [
+
+        $scope.conteamMembers = [
             {
-                name:'海浩',
-                email:'123456@qq.com',
+                member_name:'海浩',
+                member_email:'12345@qq.com',
                 id:123
             },
             {
-                name:'xx',
-                email:'123456@qq.com'
+                member_name:'x',
+                member_email:'123456@qq.com',
+                id:124
             }
         ];
-        $scope.contactTree = function(branch) {
-            $scope.output = branch.data;
-        };
+        /**
+         * 获取团队id并处理
+         *  @param branch
+         */
+        $scope.conteam = function(){
+            //团队id.....
+            $scope.example_treedata = fetchData( $scope.groups);     //($scope.conteamgroups);
 
+        }
+        /**
+         * 向服务器获取左侧栏所有分组和成员
+         *
+         var teamGroupsHttp = function(){
+                GKApi.teamGroupsMembers().success(function($http,data){
+                    $scope.conteamgroups = data.groups;
+                 //   $scope.conteamMembers = data.member;
+                });
+        }
+         $scope.conteam();
+         /**
+         *  单机分组，向服务器获取成员
+         *  @param branch
+         *
+         $scope.contactTree = function(branch) {
+            GKApi.groupmember(branch.org_id).success(function($http,data){
+              // $scope.conteamMembers = data;
+            });
+        };
+         /**
+         *团队数据处理
+         */
+
+        $scope.conteam();
         function fetchData(serverData) {
             var i = 0
                 ,len = serverData.length
@@ -1335,10 +1485,75 @@ angular.module("gkViewmemberApp.controllers",['angularBootstrapNavTree'])
             }
             return serverData;
         }
-        $scope.example_treedata = fetchData($scope.groups);
-    });
+        $scope.conkeyup = function($event){
+            if($event.keyCode === 13){
+                //团队id/ var =
+                GKApi.teamsearch(ord_id,$scope.context).success(function($http,data){
+                    $scope.getkeytext = data;
+                });
+            }
+        }
+        /**
+         * 搜索数据处理
 
-    /**
+         var conKeyUpData = function(data){
+            var newData = [];
+            for(var i = 0,len = data.length;i<len;i++){
+                if(data[i].member_id !== 0){
+                    newData.push(data[i]);
+                }
+            }
+            return newData;
+        }
+         $scope.conteamMembers = conKeyUpData($scope.getkeytext);
+         /**
+         * 单机选择确定按钮
+         */
+            //点击选择分组按钮
+        jQuery('.selectGroup').click ( function() {
+            var selectGroupButton =  jQuery('.contact-content-team').find('.contact-content-normal');
+            if(jQuery(this).data('group') === '选择') {
+                selectGroupButton.text('选择');
+                jQuery(this).data('group','确定');
+            }else{
+                selectGroupButton.text('确定');
+                jQuery(this).data('group','选择');
+            }
+        });
+        /**
+         * 点击单选选择和确定按钮
+         */
+        jQuery('.contact-content-group').click( function(e) {
+            if(jQuery('.selectGroup').data('group') === "选择") return;
+            if(e.target.className === "contact-content-normal") {
+                if(jQuery(e.target).text() === "选择"){
+                    jQuery(e.target).text('确定');
+
+                }else{
+                    jQuery(e.target).text('选择');
+                }
+            }
+        });
+
+        /**
+         *  点击确定提交按钮
+         */
+        $scope.perPostShare = function() {
+            var shareData = [];
+            $.each(jQuery('.contact-content-team'), function() {
+                if(jQuery(this).find('.contact-content-normal').text() === '确定') {
+                    shareData.push(
+                        {
+                            name: $scope.group[jQuery(this).index()].name,
+                            email: $scope.group[jQuery(this).index()].email,
+                            id: $scope.group[jQuery(this).index()].id
+                        }
+                    )
+                }
+            });
+        };
+    }]);
+ /**
  * sharingseggings
  */
 angular.module("gkSharingsettingsApp.controllers",[])
@@ -1356,6 +1571,10 @@ angular.module("gkSharingsettingsApp.controllers",[])
             }
         ]
         console.log($scope.sharingsettings);
+        $scope.list = [
+            {"name": "Item 1", "isSelected": "active"},
+            {"name": "Item 2", "isSelected": ""}
+        ]
     });
 
 

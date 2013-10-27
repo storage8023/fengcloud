@@ -1,9 +1,11 @@
 <div class = "site-content-network" ng-show="siteSidebar== 'contentNetwork'" >
     <ul>
         <li>
-            <input type = "checkbox" ng-model = "auto" /> 系统启动时运行够快 </li>
+            <input type = "checkbox" ng-model = "auto" /> 系统启动时运行够快
+        </li>
         <li><input type = "checkbox"  ng-model ="prompt" /> 显示桌面通知</li>
-        <li><a href = "javascript:void(0);" ng-click = "siteagent()" title = "设置代理">设置代理 </a>
-            <input type = "checkbox" checked="checked" value = "开启IE代理（软件下次启动时生效）" /> 开启IE代理（软件下次启动时生效） </li>
+        <li class = "sitenetworkagentproxy"><input class="sitenetworkagent" ng-click = "siteagent()" value = "设置代理" />
+            <input type = "checkbox" ng-model ="proxy" /> 开启IE代理（软件下次启动时生效）
+        </li>
         </ul>
 </div>

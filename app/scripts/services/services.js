@@ -407,12 +407,13 @@ angular.module('gkClientIndex.services', [])
 
            update:function(){
                 var params = {
-                    dateline:1370016000,
+                    dateline:1382683932,
                     size:5
                 };
                angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
+               console.log(params);
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/updates/ls',
@@ -437,7 +438,7 @@ angular.module('gkClientIndex.services', [])
                 params.sign = sign;
                 return $http({
                     method: 'POST',
-                    url: GK.getApiHost()+'/1/updates/ls',
+                    url: GK.getApiHost()+'/1/updates/',
                     params:params
                 });
             },
@@ -479,6 +480,46 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/team/invite_accept',
+                    params:params
+                });
+            },
+            teamGroupsMembers:function(){
+                var params = {
+                    org_id:4444
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost()+'/1/team/groups_and_members',
+                    params:params
+                });
+            },
+            groupmember:function(data){
+                var params = {
+                    org_id:data
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost()+'/1/team/group_member',
+                    params:params
+                });
+            },
+            teamsearch:function(org_id,keyword){
+                var params = {
+                    org_id:org_id,
+                    key:keyword
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost()+'/1/team/search',
                     params:params
                 });
             },

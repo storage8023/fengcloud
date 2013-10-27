@@ -1,45 +1,45 @@
 <!DOCTYPE html>
-<html ng-app = "gkViewmemberApp">
+<html ng-app = "gkviewmemberApp">
 <head>
     <title>viewmember</title>
     <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
     <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
     <link rel = "stylesheet" href = "../styles/file.css" type = "text/css" />
-    <link rel="stylesheet" href="../bower_components/abn.tree/abn_tree_style.css">
-</head><body ng-controller = "viewmemberCtrl">
-<div id = "contact-wrapper" class = "contact-wrapper-slide">
-    <div class = "contact-header">
+    <link rel="stylesheet" href="../bower_components/tree/tree_style.css" type = "text/css">
+</head>
+<body ng-controller = "viewmemberCtrl">
+<div id = "viewmember-wrapper" class = "viewmember-wrapper-slide">
+    <div class = "viewmember-header">
         <h1>从联系人中选择</h1>
     </div>
-    <div class = "contact-container c_f_after">
-        <div class = "contact-sidebar f_l">
-            <div class ="contact-sidebar-tree">
-                <abn-tree header="This is the example tree" tree-data="example_treedata" icon-leaf="icon-file" on-select="contactTree(branch)" expand-level="2" initial-selection="Vegetable"></abn-tree>
+    <div class = "viewmember-container c_f_after">
+        <div class = "viewmember-sidebar f_l">
+            <div class ="viewmember-sidebar-tree">
+                <contactslide-tree tree-data="example_treedata" on-select="contactTree(branch)"></contactslide-tree>
             </div>
         </div>
-        <div class = "contact-content f_l">
-            <div class = " biewmember-search">
-                <input type = "text" class= "search" value = "ddd" ng-model='username' />
+        <div class = "viewmember-content f_l">
+            <div class = "viewmember-content-search">
+                <input type = "text" class= "search" ng-keyup = "conkeyup($event)" ng-model = "context"/>
             </div>
-            <div class = "contact-content-group scrollbar ">
-                <viewmenmbermembers ng-repeat = "groupnew in group"></viewmenmbermembers>
+            <div class = "viewmember-content-group scrollbar ">
+                <viewmenmbermembers ng-repeat = "groupnew in conteamMembers"></viewmenmbermembers>
             </div>
         </div>
     </div>
-    <div class = "contact-footer">
-        <div class = "contact-footer-determine-close">
-            <input class = "contact-footer-close" type = "button" ng-click = "gkClientInterface.setClose()" value = "关闭" />
+    <div class = "viewmember-footer">
+        <div class = "viewmember-footer-determine-close">
+            <input class = "viewmember-footer-close" type = "button" value = "关闭" />
         </div>
     </div>
 </div>
-<div class="alert">{{ output }}</div>
 <script src="../bower_components/angular/angular.js" type="text/javascript"></script>
 <script src="../bower_components/jquery/jquery.js" type="text/javascript"></script>
-<script src="../bower_components/abn.tree/abn_tree_directive.js"></script>
+<script src="../bower_components/tree/tree_directive.js"></script>
 <script src = "../scripts/controllers/controllers.js" type="text/javascript"></script>
 <script src = "../scripts/directives/directives.js" type="text/javascript"></script>
+<script src = "../scripts/services/services.js" type="text/javascript"></script>
 <script src = "../scripts/interface.js" type="text/javascript"></script>
 <script src = "../scripts/app.js" type="text/javascript"></script>
-<script src = "../scripts/services/services.js" type="text/javascript"></script>
 </body>
 </html>

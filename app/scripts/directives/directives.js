@@ -593,150 +593,150 @@ angular.module('gkClientIndex.directives', [])
         }
     }]);
 
-/**
- * news
- */
-angular.module('gkNewsApp.directives', [])
-    .directive('update', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "news_update.html",
-            link: function (scope, element, attrs) {
+    /**
+     * news
+     */
+    angular.module('gkNewsApp.directives', [])
+        .directive('update', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "news_update.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    });
-/**
- *  personal
- */
-angular.module('gkPersonalApp.directives', [])
-    .directive('administrator', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "personal_administrator.html",
-            link: function (scope, element, attrs) {
+        });
+    /**
+     *  personal
+     */
+    angular.module('gkPersonalApp.directives', [])
+        .directive('administrator', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "personal_administrator.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('noadministrator', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            templateUrl: "personal_noteam.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('noadministrator', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: "personal_noteam.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('personaladd', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "personal_noteam.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('personaladd', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "personal_noteam.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    });
-/**
- * site
- */
-angular.module('gkSiteApp.directives', [])
-    .directive('contentdevice', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "site_contentdevice.html",
-            link: function (scope, element, attrs) {
+        });
+    /**
+     * site
+     */
+    angular.module('gkSiteApp.directives', [])
+        .directive('contentdevice', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "site_contentdevice.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('contentuniversal', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "site_contentuniversal.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('contentuniversal', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "site_contentuniversal.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('contentsynchronous', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "site_contentsynchronous.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('contentsynchronous', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "site_contentsynchronous.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('contentnetwork', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            templateUrl: "site_contentnework.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('contentnetwork', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: "site_contentnework.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('contentadvanced', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "site_contentadvanced.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('contentadvanced', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "site_contentadvanced.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    });
-/**
- * viewmember
- */
-angular.module('gkViewmemberApp.directives', [])
-    .directive('viewmenmbermembers', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            templateUrl: "viewmember_content.html",
-            link: function (scope, element, attrs) {
+        });
+    /**
+     * viewmember
+     */
+    angular.module('gkviewmemberApp.directives', [])
+        .directive('viewmenmbermembers', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: "viewmember_content.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    });
-/**
- * sharingsettings
- */
-angular.module('gkSharingsettingsApp.directives', [])
-    .directive('sharingsettings', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "sharing_settings.html",
-            link: function (scope, element, attrs) {
+        });
+    /**
+     * sharingsettings
+     */
+    angular.module('gkSharingsettingsApp.directives', [])
+        .directive('sharingsettings', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "sharing_settings.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    });
-/**
- * contact
- */
-angular.module('gkContactApp.directives', [])
-    .directive('contactGroupMembers', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "contact_groupmembers.html",
-            link: function (scope, element, attrs) {
+        });
+    /**
+     * contact
+     */
+    angular.module('gkContactApp.directives', [])
+        .directive('contactGroupMembers', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "contact_groupmembers.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    });
+        });

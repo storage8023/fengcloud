@@ -1,5 +1,5 @@
  <div  class="site-content-synchronous" ng-show="siteSidebar=='contentSynchronous'"  >
-        <p>同步文件夹管理</p>'
+        <p class = "sitesynchronousmanage">同步文件夹管理</p>
         <ul class = "site-content-synchronous-menu c_f_after">
             <li  class = "site-content-synchronous-file f_l"> 同步目录</li>
             <li  class = "site-content-synchronous-file f_l"> 同步状态</li>
@@ -14,5 +14,6 @@
                 <li  class = "site-synchronous-file f_l">取消同步</li>
             </ul>
         </div>
-        <a href = "javascript:;" title = "恢复所有同步">恢复所有同步</a>
+        <a class = "sitesynchronousregain" ng-class = "{true: 'site-sidebar-color'}[synchronousregain]" ng-click = "synChronousRegain()" href = "javascript:void(0);" title = "恢复所有同步">恢复所有同步</a>
+        <a class = "sitesynchronousremove" ng-class = "{true: 'site-sidebar-color'}[synchronousremove]" ng-click = "synChronousRemove()" href = "javascript:void(0);" title = "取消所有同步">恢复所有同步</a>
  </div>
