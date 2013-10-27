@@ -1,8 +1,8 @@
 <div>
     <tags-input ng-model="tags"></tags-input>
-    <ul class="dropdown-menu">
+    <ul class="dropdown-menu" ng-show="members &&member．">
         <li ng-repeat="member in members">
-            <a href="javascript:void(0)" ></a>
+            <a href="javascript:void(0)" >{{member.member_name}}</a>
         </li>
     </ul>
 </div>
