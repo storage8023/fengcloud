@@ -918,7 +918,12 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/search_condition.html",
             link: function (scope, element, attrs) {
                 $scope.$watch('tags',function(newValue,oldValue){
-                    GKApi.searchMember();
+                    if(newValue === oldValue){
+                        return;
+                    }
+                    GKApi.teamSearch().then(function(data){
+
+                    });
                 });
             }
         }
