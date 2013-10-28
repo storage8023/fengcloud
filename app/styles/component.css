@@ -112,3 +112,26 @@
 .ui-match {
     background: yellow;
 }
+
+/**日期选择组件**/
+.input-datepicker{
+    border:1px solid #ccc;
+    display: inline-block;
+    width: auto;
+    padding:0;
+    height: 30px;
+}
+.input-datepicker i{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    background: url(../images/icon.png) no-repeat 0 0;
+
+}
+.input-datepicker input{
+    border:0 none;
+    height: 100%;
+    padding: 3px;
+    border-radius: 4px 0 4px 0;
+}

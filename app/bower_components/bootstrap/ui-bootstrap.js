@@ -1080,8 +1080,12 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.position'])
 }])
 
 .constant('datepickerPopupConfig', {
-  dateFormat: 'yyyy-MM-dd',
-  closeOnDateSelection: true
+        dateFormat: 'yyyy-MM-dd',
+       currentText: 'Today',
+     toggleWeeksText: 'Weeks',
+    clearText: 'Clear',
+     closeText: 'Done',
+    closeOnDateSelection: true
 })
 
 .directive('datepickerPopup', ['$compile', '$parse', '$document', '$position', 'dateFilter', 'datepickerPopupConfig',
@@ -1099,6 +1103,19 @@ function ($compile, $parse, $document, $position, dateFilter, datepickerPopupCon
       originalScope.$on('$destroy', function() {
         scope.$destroy();
       });
+
+        attrs.$observe('currentText', function(text) {
+          scope.currentText = angular.isDefined(text) ? text : datepickerPopupConfig.currentText;
+            });
+        attrs.$observe('toggleWeeksText', function(text) {
+            scope.toggleWeeksText = angular.isDefined(text) ? text : datepickerPopupConfig.toggleWeeksText;
+         });
+        attrs.$observe('clearText', function(text) {
+            scope.clearText = angular.isDefined(text) ? text : datepickerPopupConfig.clearText;
+            });
+       attrs.$observe('closeText', function(text) {
+        scope.closeText = angular.isDefined(text) ? text : datepickerPopupConfig.closeText;
+               });
 
       var getIsOpen, setIsOpen;
       if ( attrs.isOpen ) {
@@ -1465,7 +1482,7 @@ angular.module('ui.bootstrap.modal', [])
 
         //remove backdrop if no longer needed
         if (backdropIndex() == -1) {
-          backdropDomEl&&backdropDomEl.remove();
+          backdropDomEl.remove();
           backdropDomEl = undefined;
         }
 
@@ -2734,15 +2751,12 @@ function($parse, $http, $templateCache, $compile) {
       if (!scope.$eval(attrs.tabsetTitles)) {
         elm.remove();
       } else {
-          setTimeout(function() {
-              //now that tabs location has been decided, transclude the tab titles in
-              /**
-               * 为修复bug 改为 setTimeout By GeorgeXu 2013.10.27
-               */
-              tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function(node) {
-                  elm.append(node);
-              });
-          },0);
+        //now that tabs location has been decided, transclude the tab titles in
+        setTimeout(function(){
+            tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function(node) {
+                elm.append(node);
+            });
+        },0);
 
       }
     }
