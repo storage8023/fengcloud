@@ -876,14 +876,19 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             replace: true,
             templateUrl: "views/search_right_sidebar.html",
-            link: function (scope, element, attrs) {
-                setTimeout(function(){
-                    var fileSearch = new GKFileSearch();
-                    fileSearch.conditionIncludeKeyword('新建文件夹');
-                    var condition = fileSearch.getCondition();
-                    console.log($rootScope);
-                    GKApi.createSmartFolder(263677, 'test', condition);
-                },0);
+            link: function ($scope, $element, $attrs) {
+//                setTimeout(function(){
+//                    var fileSearch = new GKFileSearch();
+//                    fileSearch.conditionIncludeKeyword('新建文件夹');
+//                    var condition = fileSearch.getCondition();
+//                    console.log($rootScope);
+//                    GKApi.createSmartFolder(263677, 'test', condition);
+//                },0);
+                $scope.conditions = [
+                    {
+                        selectedOption:'extension'
+                    }
+                ];
 
             }
         }
@@ -896,19 +901,87 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             replace: true,
             scope:{
-
+                selectedOption:'='
             },
             templateUrl: "views/search_condition.html",
-            link: function (scope, element, attrs) {
+            link: function ($scope, $element, $attrs) {
+                $scope.options = [
+                    {
+                        name:'文件类型',
+                        value:'extension'
+                    },
+                    {
+                        name:'添加时间',
+                        value:'create_dateline'
+                    },
+                    {
+                        name:'最后修改时间',
+                        value:'last_dateline'
+                    },
+                    {
+                        name:'添加人',
+                        value:'creator'
+                    },
+                    {
+                        name:'最后修改人',
+                        value:'modifier'
+                    }
+                 ];
+                $scope.condition = $scope.options[0];
 
+                $scope.fileTypes = [
+                    {
+                        name:'任意',
+                        value:''
+                    },
+                    {
+                        name:'文件夹',
+                        value:''
+                    },
+                    {
+                        name:'文件',
+                        value:''
+                    },
+                    {
+                        name:'图片',
+                        value:''
+                    },
+                    {
+                        name:'视频',
+                        value:''
+                    },
+                    {
+                        name:'音频',
+                        value:''
+                    },
+                    {
+                        name:'PDF',
+                        value:''
+                    },
+                    {
+                        name:'Word文档',
+                        value:''
+                    },
+                    {
+                        name:'Excel表格',
+                        value:''
+                    },
+                    {
+                        name:'PowerPoint演示文档',
+                        value:''
+                    }
+                ];
+
+                $scope.fileType = $scope.fileTypes[0];
 
             }
         }
     }])
+
 /**
  * 选中人的输入框
  */
-    .directive('inputMember', ['GKApi',function (GKApi) {
+    .directive('inputMember', ['GKApi','$rootScope',function (GKApi,$rootScope) {
         return {
             restrict: 'E',
             replace: true,
@@ -921,10 +994,26 @@ angular.module('gkClientIndex.directives', [])
                     if(newValue === oldValue){
                         return;
                     }
-                    GKApi.teamSearch().then(function(data){
+                    GKApi.teamsearch($rootScope.PAGE_CONFIG.mount.org_id,'test').then(function(data){
 
                     });
                 });
+            }
+        }
+    }])
+    .directive('inputDatepicker', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope:{
+               isOpen:"@",
+               ngModel:'='
+            },
+            template: '<div>'
+                +'<input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="ngModel" is-open="isOpen" />'
+                +'</div>',
+            link: function ($scope, $element, $attrs) {
+
             }
         }
     }])

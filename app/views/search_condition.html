@@ -1,32 +1,16 @@
 <div>
-    <select>
-        <option ng-repeat="option in options" value="option.value">{{option.name}}</option>
-    </select>
+    <select ng-model="condition" ng-options="option.name for option in options"></select>
     <div>
         <div class="file_type_layer">
-            <select name="file_type" ng-model="fileType">
-                <option ng-repeat="fileType in fileTypes" value="{{fileType.value}}">{{fileType.name}}</option>
-            </select>
+            <select name="file_type" ng-model="fileType" ng-options="fileType.name for fileType in fileTypes"></select>
         </div>
         <div class="create_date_layer">
-           <div>
-               <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="fromCreateDate" is-open="fromCreateDateIsOpen" />
-              <i class="icon-calendar"></i>
-           </div>
-          <div>
-              <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="toCreateDate" is-open="toCreateDateIsOpen" />
-              <i class="icon-calendar"></i>
-          </div>
+           <input-datepicker ng-model="fromCreateDate"></input-datepicker>
+           <input-datepicker ng-model="toCreateDate"></input-datepicker>
         </div>
         <div class="edit_dateline_layer">
-            <div>
-                <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="fromEditDate" is-open="fromEditDateIsOpen" />
-                <i class="icon-calendar"></i>
-            </div>
-            <div>
-                <input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="toEditDate" is-open="toEditDateIsOpen" />
-                <i class="icon-calendar"></i>
-            </div>
+            <input-datepicker ng-model="fromEditDate"></input-datepicker>
+            <input-datepicker ng-model="toEditDate"></input-datepicker>
         </div>
     </div>
 </div>

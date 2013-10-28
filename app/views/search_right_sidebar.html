@@ -1,7 +1,7 @@
 <div class="search_file">
     <div class=section_title>更多搜索条件<a href="javascrpt:void(0)" class="more_search_condition"><i></i></a></div>
     <section>
-        <search-condition ng-repeat="condition in conditions"></search-condition>
+        <search-condition ng-repeat="condition in conditions" selectedOption="condition.selectedOption"></search-condition>
     </section>
     <div>
         <button class='btn gk-btn save_search'>保存</button>

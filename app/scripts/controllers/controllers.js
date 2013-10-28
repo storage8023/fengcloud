@@ -550,7 +550,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         params = {
                             webpath: $rootScope.PAGE_CONFIG.file.fullpath,
                             fullpath: new_local_uri,
-                            mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
                             overwrite: 1
                         };
                         GK.setLinkPath(params);
