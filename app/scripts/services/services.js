@@ -194,7 +194,9 @@ angular.module('gkClientIndex.services', [])
                         item = {
                             label: value.name,
                             isParent: false,
-                            data: value
+                            data: value,
+                            iconNodeExpand:value.icon,
+                            iconNodeCollapse:value.icon
                         };
                     }
                     newData.push(item);

@@ -51,16 +51,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if (!smartFolders) smartFolders = [];
         smartFolders.unshift({
             name: '我接收的文件',
-            condition: 'inbox'
+            condition: 'inbox',
+            icon:'icon_inbox'
         });
         smartFolders.unshift({
             name: '星标文件',
-            condition: 'star'
+            condition: 'star',
+            icon:'icon_star'
         });
 
         smartFolders.unshift({
-            name: '24小时内修改的文件',
-            condition: 'recent'
+            name: '最近修改的文件',
+            condition: 'recent',
+            icon:'icon_recent'
         });
 
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders, 'magic');
@@ -658,6 +661,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
         var gird = /[,;；，\s]/g;
 
+        $scope.$on('$locationChangeSuccess',function(){
+            $scope.partition = $location.search().partition;
+        })
+        console.log($rootScope.PAGE_CONFIG);
+        console.log( $scope.partition);
         /**
          * 监听已选择的文件
          */
