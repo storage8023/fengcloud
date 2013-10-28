@@ -877,18 +877,14 @@ angular.module('gkClientIndex.directives', [])
             replace: true,
             templateUrl: "views/search_right_sidebar.html",
             link: function ($scope, $element, $attrs) {
-//                setTimeout(function(){
-//                    var fileSearch = new GKFileSearch();
-//                    fileSearch.conditionIncludeKeyword('新建文件夹');
-//                    var condition = fileSearch.getCondition();
-//                    console.log($rootScope);
-//                    GKApi.createSmartFolder(263677, 'test', condition);
-//                },0);
+
                 $scope.conditions = [
                     {
                         selectedOption:'extension'
                     }
                 ];
+
+                $scope.tags = ['test1','test2'];
 
             }
         }
@@ -988,7 +984,7 @@ angular.module('gkClientIndex.directives', [])
             scope:{
 
             },
-            templateUrl: "views/search_condition.html",
+            templateUrl: "views/input_member.html",
             link: function (scope, element, attrs) {
                 $scope.$watch('tags',function(newValue,oldValue){
                     if(newValue === oldValue){
@@ -1009,8 +1005,9 @@ angular.module('gkClientIndex.directives', [])
                isOpen:"@",
                ngModel:'='
             },
-            template: '<div>'
-                +'<input type="text" datepicker-popup="dd-MMMM-yyyy" ng-model="ngModel" is-open="isOpen" />'
+            template: '<div class="form-control input-datepicker">'
+                +'<input type="text" datepicker-popup="yyyy年M月d日" ng-model="ngModel" is-open="isOpen" current-text="今天" toggle-weeks-text="周" clear-text="清空" close-text="关闭"/>'
+                +'<i class="calendar" ng-class="isOpen=true"></i>'
                 +'</div>',
             link: function ($scope, $element, $attrs) {
 

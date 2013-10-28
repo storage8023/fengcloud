@@ -173,23 +173,30 @@ angular.module('gkClientIndex.services', [])
                     label,
                     context = this;
                 angular.forEach(data, function (value) {
-                    if (!value.path) {
-                        value = context.formatMountItem(value);
+                    if(type=='myfile' || type=='teamfile'){
+                        if (!value.path) {
+                            value = context.formatMountItem(value);
 
-                        label = value.name;
-                    } else {
-                        value = context.formatFileItem(value);
-                        label = value.filename;
-                        mountId && angular.extend(value, {
-                            mount_id: mountId
-                        });
+                            label = value.name;
+                        } else {
+                            value = context.formatFileItem(value);
+                            label = value.filename;
+                            mountId && angular.extend(value, {
+                                mount_id: mountId
+                            });
+                        }
+                        item = {
+                            label: label,
+                            isParent: true,
+                            data: value
+                        };
+                    }else{
+                        item = {
+                            label: value.name,
+                            isParent: false,
+                            data: value
+                        };
                     }
-                    item = {
-                        label: label,
-                        isParent: true,
-                        data: value
-                    };
-
                     newData.push(item);
                 });
                 return newData;
@@ -364,7 +371,7 @@ angular.module('gkClientIndex.services', [])
 
             },
             getCurrentOpts: function (currentFile, partition, search) {
-                if (search) {
+                if (search || partition =='smartfolder') {
                     return [];
                 } else {
                     return ['add', 'new_folder', 'order_by'];
@@ -483,6 +490,52 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost() + '/1/file/search',
+                    params: params
+                });
+            },
+            smartFolderList:function(code){
+                var params = {
+                    code: code
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/file/search',
+                    params: params
+                });
+            },
+            starFileList:function(){
+                var params = {};
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost() + '/1/file/favorites',
+                    params: params
+                });
+            },
+            recentFileList:function(){
+                var params = {};
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost() + '/1/file/recent_modified',
+                    params: params
+                });
+            },
+            inboxFileList:function(){
+                var params = {};
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost() + '/1/file/inbox',
                     params: params
                 });
             },

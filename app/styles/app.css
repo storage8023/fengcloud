@@ -58,7 +58,7 @@ header .account .name{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 20px;
+    font-size: 18px;
 }
 header .menu{
     position: absolute;
