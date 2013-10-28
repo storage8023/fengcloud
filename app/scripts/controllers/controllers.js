@@ -1313,7 +1313,7 @@ angular.module("gkPersonalApp.controllers", [])
             }
             gkClientInterface.setMain(params);
         }
-<<<<<<< HEAD
+
     var perCtrl = function(){
         //个人信息
         $scope.guser_info = guserInformation(JSON.parse(gkClientInterface.getUserInfo()))[0];
@@ -1334,8 +1334,8 @@ angular.module("gkPersonalApp.controllers", [])
     perCtrl();
 
 }]);
-=======
-        $scope.sitOpen = function ($scope) {
+
+   /*     $scope.sitOpen = function ($scope) {
 
             var data = {
                 url: "file:///F:/fengcloud/app/views/site.html",
@@ -1345,7 +1345,7 @@ angular.module("gkPersonalApp.controllers", [])
             }
             gkClientInterface.setMain(data);
         }
->>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
+
 
         var perCtrl = function () {
             //个人信息
@@ -1487,7 +1487,7 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
-<<<<<<< HEAD
+
         $scope.synChronousRegain = function(){
             $scope.synchronousregain = "true";
             $scope.synchronousremove = "true";
@@ -1495,13 +1495,12 @@ angular.module("gkSiteApp.controllers", [])
         $scope.synChronousRemove = function(){
             $scope.synchronousregain = "";
             $scope.synchronousremove = "";
-=======
+        }
         $scope.synChronousRegain = function () {
 
         }
         $scope.synChronousRemove = function () {
 
->>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
         }
     });
 
@@ -1565,13 +1564,8 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
          /**
          *  单机分组，向服务器获取成员
          *  @param branch
-<<<<<<< HEAD
          */
-        $scope.contactTree = function(branch) {
-=======
-         *
          $scope.contactTree = function(branch) {
->>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
             GKApi.groupmember(branch.org_id).success(function($http,data){
               // $scope.conteamMembers = data;
             });
@@ -1616,7 +1610,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
          /**
          * 单机选择确定按钮
          */
-<<<<<<< HEAD
+
         $scope.myVar = 0;
         $scope.myvar = 0;
         //点击选择分组按钮
@@ -1632,8 +1626,9 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
                 jQuery(this).data('group','选择');
                 ++($scope.myVar);
                 alert($scope.myVar);
-        }
-=======
+            }
+        })
+
             //点击选择分组按钮
         jQuery('.selectGroup').click(function () {
             var selectGroupButton = jQuery('.contact-content-team').find('.contact-content-normal');
@@ -1644,30 +1639,17 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
                 selectGroupButton.text('确定');
                 jQuery(this).data('group', '选择');
             }
->>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
+
         });
         /**
          * 点击单选选择和确定按钮
          */
-<<<<<<< HEAD
-
-        jQuery('.contact-content-group').click( function(e) {
-            if(jQuery('.selectGroup').data('group') === "选择") return;
-            if(e.target.className === "contact-content-normal") {
-                if(jQuery(e.target).text() === "选择"){
-                    jQuery(e.target).text('确定');
-                    ++($scope.myvar);
-                    alert($scope.myvar);
-                }else{
-=======
         jQuery('.contact-content-group').click(function (e) {
             if (jQuery('.selectGroup').data('group') === "选择") return;
             if (e.target.className === "contact-content-normal") {
                 if (jQuery(e.target).text() === "选择") {
-                    jQuery(e.target).text('确定');
-
+                   jQuery(e.target).text('确定');
                 } else {
->>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
                     jQuery(e.target).text('选择');
                     --($scope.myvar);
                     alert($scope.myvar);
@@ -1677,14 +1659,14 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
         });
 
 
-<<<<<<< HEAD
+
 
       //  $scope.myvar = $scope.myVar;
 
-   //     $scope.buttonClicked = function() {
+        //     $scope.buttonClicked = function() {
      //       $scope.myVar = 2; // This will trigger $watch expression to kick in
        // };
-=======
+
         $scope.$watch('myVar', function () {
             alert($scope.myVar);
         });
@@ -1692,7 +1674,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
         $scope.buttonClicked = function () {
             $scope.myVar = 2; // This will trigger $watch expression to kick in
         };
->>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
+
         /**
          *  点击确定提交按钮
          */
