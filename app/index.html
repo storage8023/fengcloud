@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>够快文档协作云平台</title>
+    <link rel = "stylesheet" href = "../styles/file.css" type = "text/css" />
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="styles/base.css"/>
     <link rel="stylesheet" href="styles/component.css"/>
@@ -33,7 +34,7 @@
     <script src="scripts/services/services.js"></script>
     <script src="scripts/app.js"></script>
 </head>
-<body>
+<body  id = "newindex">
 <div  ng-include="'views/header.html'"></div>
 <div class="main">
     <div ng-include="'views/left_sidebar.html'"></div>
@@ -41,7 +42,6 @@
         <div ng-view></div>
     </div>
     <div  ng-include="'views/right_sidebar.html'"></div>
-
 </div>
 <script type="text/ng-template" id="newFileItem.html">
     <div class="file_item file_item_edit">

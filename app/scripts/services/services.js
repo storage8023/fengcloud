@@ -573,7 +573,7 @@ angular.module('gkClientIndex.services', [])
                     data: jQuery.param(params)
                 });
             },
-            upda: function () {
+            update: function () {
                 var params = {
                     dateline:1382683932,
                     size:5
@@ -688,6 +688,54 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'GET',
                     url: GK.getApiHost()+'/1/team/search',
+                    params:params
+                });
+            },
+            /**
+             * 获取设备列表
+             * @returns {*}
+             */
+            devicelist:function(){
+                var sign = GK.getApiAuthorization(defaultParams);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/account/device_list',
+                    params:params
+                });
+            },
+            /**
+             * 启用禁止设备
+             * @returns {*}
+             */
+            toggledevice:function(device_id,state){
+                var params = {
+                    device_id:device_id,
+                    state:state
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/account/toggle_device',
+                    params:params
+                });
+            },
+            /**
+             * 删除设备
+             * @returns {*}
+             */
+            deldevice:function(org_id,keyword){
+                var params = {
+                    device_id:device_id,
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/account/del_device',
                     params:params
                 });
             },

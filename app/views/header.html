@@ -1,9 +1,9 @@
 <header ng-controller="header">
     <div class="account" >
-        <div class="account_info">
-            <img class="photo" ng-src="{{user.photourl}}" alt=""/>
-            <span class="name">{{user.member_name}}</span>
-            <i class="icon-envelope icon-large" ></i>
+        <div  class="account_info">
+            <img class="photo" ng-click = "personalOpen()" ng-src="{{user.photourl}}" alt=""/>
+            <span ng-click = "personalOpen()" class="name">{{user.member_name}}</span>
+            <i ng-click = "newsbtn()" class="icon-envelope icon-large" >消息</i>
         </div>
     </div>
     <breadsearch></breadsearch>
@@ -12,11 +12,21 @@
         <button type="button" class="btn btn-gk" ng-click="handleNav(true)" ng-disabled="!canForward"><i>&gt;</i></button>
     </div>
     <div class="menu">
-        <a class="gk_drop" href="./views/personalInformation.html">
+        <a class="gk_drop" href="javascript:void(0);">
             <i class="icon-group"></i>
         </a>
-        <a class="more_menu" href="./views/news.html">
+        <!--a class="more_menu" href="javascript:void(0);">
             <i class="icon-align-justify icon-large" ></i>
-        </a>
+        </a-->
+        <div class="dropdown f_l">
+            <a class="dropdown-toggle">
+                功能
+            </a>
+            <ul class="dropdown-menu dropdown_menu_ul">
+                <li ng-repeat="menuchoice in items" class = "dropdown_menu_menu f_l" >
+                    <a ng-click = "{{menuchoice.menuclick}}()">{{menuchoice.item}}</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </header>

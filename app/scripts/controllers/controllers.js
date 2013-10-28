@@ -883,6 +883,67 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $rootScope.$broadcast('searchFileCancel');
             $event.stopPropagation();
         };
+        $scope.personalOpen = function ($scope) {
+            var data = {
+                url:"file:///F:/fengcloud/app/views/personalInformation.html",
+                type:"child",
+                width:664,
+                height:385
+            }
+            gkClientInterface.setMain(data);
+        }
+        $scope.sitOpen = function ($scope) {
+            var data = {
+                url:"file:///F:/fengcloud/app/views/site.html",
+                type:"child",
+                width:755,
+                height:440
+            }
+            gkClientInterface.setMain(data);
+        }
+        $scope.newsbtn = function(){
+            jQuery("#newindex").append("<newsindex></newsindex>");
+            alert("haod");
+        }
+
+          /*  jQuery("#newsbutton").append(" <news_index></news_index>");
+            $scope.newsShow = 'yesNews';
+            var data = [];
+            data = $scope.getmessage.updates;
+            console.log(data);
+            if(data.length === 0){
+                $scope.newsShow = 'noNews';
+            }else{
+                $scope.newsShow = 'yesNews';
+                var filterData = compare(data) //过滤出相同日期
+                    ,equalData = filterDay($filter, filterData);
+                $scope.equalDataNew = equalData;
+            }
+            alert("haodde");
+        //    jQuery(".news-wrapper").slideToggle(500);*/
+
+        $scope.items = [
+            {
+               item: "访问网站",
+                menuclick:'siteOpen'
+            },{
+                item:"设置",
+                menuclick:'sitOpen'
+            },{
+                item:"帮助",
+                menuclick:'siteOpen'
+            },{
+                item:"关于",
+                menuclick:'siteOpen'
+            },{
+                item:"注销",
+                menuclick:'siteOpen'
+            },{
+                item:"退出",
+                menuclick:'siteOpen'
+            }
+        ];
+
     }]);
 
 /**
@@ -1064,7 +1125,6 @@ angular.module('gkNewsApp.controllers', [])
             }
             return printDateNew;
         };
-
         /**
          * 最后一条消息的时间戳
          * @param filter
@@ -1087,64 +1147,43 @@ angular.module('gkNewsApp.controllers', [])
         /**
          * 消息再处理
          */
-        /*    var newMessage = function($scope){
-         var newGetMessageData = JSON.parse(GKUpdates())
-         ,data = newGetMessageData.updates
-         ,filterData = compare(data);
-         $scope.equalDataNew = filterDay($filter, filterData);
-         $scope.lasttimelabel = lasttime(data);
-         if(newGetMessageData.update_count>0){
-         $scope.newsShow = 'yesNews';
-         }else{
-         $scope.newsShow = 'noNews';
-         }
-         };  */
+         var newMessage = function($scope){
+             var newGetMessageData = JSON.parse(GKUpdates())
+                 ,data = newGetMessageData.updates
+                 ,filterData = compare(data);
+             $scope.equalDataNew = filterDay($filter, filterData);
+             $scope.lasttimelabel = lasttime(data);
+             if(newGetMessageData.update_count>0){
+                 $scope.newsShow = 'yesNews';
+             }else{
+                 $scope.newsShow = 'noNews';
+             }
+         };
         /**
          * 服务器过来的数据处理
          */
+
         var updateHttp = function () {
-            GKApi.update().success(function ($http, data) {
-                $scope.yy = data.updates;
-                $scope.xx = data.update_count;
-                console.log($scope.yy);
-                console.log($scope.xx);
-                console.log($http);
+             GKApi.update().success(function ($http) {
+                $scope.getmessage =  $http;
             });
         }
+        updateHttp();
 
         /**
          * 单击向上向下滑动按钮
-         * 新消息news
+         * 新消息new
          * button - #newsbtn
          */
-        var newsControls = function ($scope) {
-            jQuery("#newsbtn").click(function ($scope) {
-                updateHttp();
-                jQuery(".news-wrapper").slideToggle(500);
-            });
-            jQuery("#newsPackUp").click(function () {
-                jQuery(".news-wrapper").slideUp(500);
-            });
-        };
-        newsControls();
-
-        /*  $scope.newsScroll = function(){
+         $scope.newsScroll = function(){
 
          }
          var newsControls = function(){
-         jQuery("#newsbtn").click(function(){
-         var data = 0 // gGetMessage()
-         ,filterData = compare(data) //过滤出相同日期
-         ,equalData = filterDay($filter, filterData);
-         $scope.equalDataNew = equalData;
-         $scope.newsbtn = 'SideUp';
-         jQuery(".news-wrapper").slideToggle(500);
-         });
-         jQuery("#newsPackUp").click(function(){
-         jQuery(".news-wrapper").slideUp(500);
-         });
+             jQuery("#newsPackUp").click(function(){
+                 jQuery(".news-wrapper").slideUp(500);
+             });
          };
-         newsControls();*/
+        newsControls();
     }]);
 
 /**
@@ -1267,21 +1306,43 @@ angular.module("gkPersonalApp.controllers", [])
 
             });
         }
-
         $scope.setupteam = function ($scope) {
             var data = {
                 url: '/mount/create_team',
                 sso: 1
             }
+            var dataUrl = gkClientInterface.setGetUrl(data);
+            //console.log(daptaUrl);
             var params = {
                 url: dataUrl,
                 type: "child",
                 width: 500,
                 height: 500
             }
-            var dataUrl = gkClientInterface.setGetUrl(data);
             gkClientInterface.setMain(params);
         }
+<<<<<<< HEAD
+    var perCtrl = function(){
+        //个人信息
+        $scope.guser_info = guserInformation(JSON.parse(gkClientInterface.getUserInfo()))[0];
+        //团队信息
+        $scope.per_gSideTreeList = gkClientInterface.getSideTreeList({"sidetype":"org"}).list;
+        console.log($scope.per_gSideTreeList);
+        $scope.perNewgSideTreeList = perside($scope.per_gSideTreeList);
+        $scope.perUseBitSize = useBitSize($scope.per_gSideTreeList);
+        $scope.size_space = bitSize($scope.perUseBitSize[0].use);
+        //打开窗口
+        invitePendingHttp();
+        perHavaNoteam($scope, $scope.guser_info, $scope.createTeamData);
+        //关闭窗口
+        jQuery(".personal-close-button").click(function(){
+            jQuery("#personal-wrapper").slideUp(500);
+        })
+    }
+    perCtrl();
+
+}]);
+=======
         $scope.sitOpen = function ($scope) {
 
             var data = {
@@ -1292,6 +1353,7 @@ angular.module("gkPersonalApp.controllers", [])
             }
             gkClientInterface.setMain(data);
         }
+>>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
 
         var perCtrl = function () {
             //个人信息
@@ -1335,7 +1397,7 @@ angular.module("gkSiteApp.controllers", [])
             var type = 0;
             $scope.item = $scope.items[type];
         }
-
+        alert("haoddddddddddddddddddde");
         /**
          * 打开设置
          * 数据处理
@@ -1433,11 +1495,21 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
+<<<<<<< HEAD
+        $scope.synChronousRegain = function(){
+            $scope.synchronousregain = "true";
+            $scope.synchronousremove = "true";
+        }
+        $scope.synChronousRemove = function(){
+            $scope.synchronousregain = "";
+            $scope.synchronousremove = "";
+=======
         $scope.synChronousRegain = function () {
 
         }
         $scope.synChronousRemove = function () {
 
+>>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
         }
     });
 
@@ -1447,7 +1519,6 @@ angular.module("gkSiteApp.controllers", [])
 angular.module("gkContactApp.controllers", ['contactSlideTree'])
     .controller('contactCtrl', ['$filter', '$scope', 'GKApi', '$http', function ($filter, $scope, GKApi, $http) {
         $scope.groups = [
-
             {
                 group_name: '牛逼哄哄',
                 group_id: 222,
@@ -1502,8 +1573,13 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
          /**
          *  单机分组，向服务器获取成员
          *  @param branch
+<<<<<<< HEAD
+         */
+        $scope.contactTree = function(branch) {
+=======
          *
          $scope.contactTree = function(branch) {
+>>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
             GKApi.groupmember(branch.org_id).success(function($http,data){
               // $scope.conteamMembers = data;
             });
@@ -1548,6 +1624,24 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
          /**
          * 单机选择确定按钮
          */
+<<<<<<< HEAD
+        $scope.myVar = 0;
+        $scope.myvar = 0;
+        //点击选择分组按钮
+        jQuery('.selectGroup').click ( function() {
+            var selectGroupButton =  jQuery('.contact-content-team').find('.contact-content-normal');
+            if(jQuery(this).data('group') === '选择') {
+                selectGroupButton.text('选择');
+                jQuery(this).data('group','确定');
+                --($scope.myVar);
+                alert($scope.myVar);
+            }else{
+                selectGroupButton.text('确定');
+                jQuery(this).data('group','选择');
+                ++($scope.myVar);
+                alert($scope.myVar);
+        }
+=======
             //点击选择分组按钮
         jQuery('.selectGroup').click(function () {
             var selectGroupButton = jQuery('.contact-content-team').find('.contact-content-normal');
@@ -1558,10 +1652,22 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
                 selectGroupButton.text('确定');
                 jQuery(this).data('group', '选择');
             }
+>>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
         });
         /**
          * 点击单选选择和确定按钮
          */
+<<<<<<< HEAD
+
+        jQuery('.contact-content-group').click( function(e) {
+            if(jQuery('.selectGroup').data('group') === "选择") return;
+            if(e.target.className === "contact-content-normal") {
+                if(jQuery(e.target).text() === "选择"){
+                    jQuery(e.target).text('确定');
+                    ++($scope.myvar);
+                    alert($scope.myvar);
+                }else{
+=======
         jQuery('.contact-content-group').click(function (e) {
             if (jQuery('.selectGroup').data('group') === "选择") return;
             if (e.target.className === "contact-content-normal") {
@@ -1569,13 +1675,24 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
                     jQuery(e.target).text('确定');
 
                 } else {
+>>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
                     jQuery(e.target).text('选择');
+                    --($scope.myvar);
+                    alert($scope.myvar);
                 }
             }
+
         });
 
-        $scope.myVar = 1;
 
+<<<<<<< HEAD
+
+      //  $scope.myvar = $scope.myVar;
+
+   //     $scope.buttonClicked = function() {
+     //       $scope.myVar = 2; // This will trigger $watch expression to kick in
+       // };
+=======
         $scope.$watch('myVar', function () {
             alert($scope.myVar);
         });
@@ -1583,6 +1700,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
         $scope.buttonClicked = function () {
             $scope.myVar = 2; // This will trigger $watch expression to kick in
         };
+>>>>>>> 77ed0eaee4611f64071f02d42a424f4903cabc2c
         /**
          *  点击确定提交按钮
          */

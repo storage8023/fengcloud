@@ -229,6 +229,9 @@
     setClearCache:function(){
         gkClient.gClearChache();
     },
+    getUpdateLinkPaths: function(param){
+        gkClient.gUpdateLinkPaths(JSON.stringify(param));
+    },
     setLogoff:function(){
         gkClient.gLogoff();
     },
@@ -245,6 +248,7 @@
         return gkClient.gGetUrl(JSON.stringify(params));
     },
     setMain:function(data){
+        console.log(data);
         return gkClient.gMain(JSON.stringify(data));
     },
     getUIPath: function(){
@@ -257,6 +261,7 @@
         var re =  gkClient.gGetNormalPath(JSON.stringify(param));
         return re;
     },
+
     setClientInfo: function(params){
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
