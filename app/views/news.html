@@ -7,7 +7,6 @@
     <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
 </head>
 <body ng-controller = "newsCtrl" ng-show = "newsbtn ='newsbutton'" >
-<input type = "button" id = "newsbtn"  value = "btn" ng-click = "newsbtn == 'SideUp'"  />
 <div class = "news-wrapper news-charge" >
     <div class = "news-container ">
         <div class = "news-content-scroll scrollbar">
@@ -16,16 +15,22 @@
                     消息
                  </h1>
             </div>
-            <div class = "news-content" ng-repeat = "equalDataNewsTo in equalDataNew" >
-                <update ng-repeat = "equalDataNewTo in equalDataNewsTo"></update>
+            <div class = "news-content"  >
                 <div class = "news-line"></div>
+                <noupdate ng-show = "newsShow == 'noNews'"></noupdate>
+                <div ng-show = "newsShow = 'yesNews'" ng-repeat = "equalDataNewsTo in equalDataNew">
+                    <update ng-repeat = "equalDataNewTo in equalDataNewsTo"></update>
+                    <div class = "news-line"></div>
+                </div>
             </div>
         </div>
     </div>
     <div class = "news-packup" >
         <img id = "newsPackUp" src = "../images/deputy/packup.png" alt = "packup" ng-click = "newsPackUp"/>
     </div>
+
 </div>
+<input type = "button" id = "newsbtn"  value = "bttonn" ng-click = "newsbtn == 'SideUp'"  />
     <script src ="../bower_components/jquery/jquery.js" type="text/javascript"></script>
     <script src="../bower_components/angular/angular.js" type="text/javascript"></script>
     <script src="../scripts/controllers/controllers.js" type="text/javascript"></script>

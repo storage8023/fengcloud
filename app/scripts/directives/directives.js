@@ -884,7 +884,6 @@ angular.module('gkClientIndex.directives', [])
                     console.log($rootScope);
                     GKApi.createSmartFolder(263677, 'test', condition);
                 },0);
-
             }
         }
     }])
@@ -900,7 +899,6 @@ angular.module('gkClientIndex.directives', [])
             },
             templateUrl: "views/search_condition.html",
             link: function (scope, element, attrs) {
-
 
             }
         }
@@ -943,7 +941,27 @@ angular.module('gkClientIndex.directives', [])
 
                 }
             }
-        });
+            })
+        .directive('noupdate', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                template: '<span>暂时还没有与你有关的消息</span>',
+                link: function (scope, element, attrs) {
+
+                }
+            }
+        })
+        .directive('newsindex', function (){
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "views/news_index.html",
+                link: function (scope, element, attrs) {
+
+                }
+            }
+        })
     /**
      *  personal
      */

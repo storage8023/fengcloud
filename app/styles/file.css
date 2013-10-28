@@ -5,8 +5,8 @@
     height:470px;
     margin:0 auto;
     color: #949494;
-    display:none;
 }
+
 .news-container{
     background: #F8F9FB;
     border:1px solid #AEBCD4;
@@ -19,22 +19,21 @@
 }
 /* news-header */
 .news-header{
-
     height: 35px;
     text-align: center;
     width:625px;
-    padding-left: 132px;
+    margin-left: 130px;
 }
 .news-header h1{
     font-size:20px;
-    line-height: 35px;
+    line-height: 40px;
     font-weight: bold;
-}
+    }
 
 /* news-content */
 .news-content{
     width:625px;
-    padding-left: 132px;
+    margin-left:130px;
 }
 .news-content-scroll{
     overflow-y: auto;
@@ -59,7 +58,6 @@
     width: 540px;
     line-height: 30px;
 }
-
 .news-time{
     padding-right: 15px;
 }
@@ -96,16 +94,13 @@
 /******* Personal Information ********/
 #personal-wrapper{
     width:672px;
-    height:428px;
-    margin:0 auto;
+    height:393px;
     background: #FCFCFC;
-    display:none;
+
 }
 .personal-wrapper-slide{
     background: #F8F9FB;
-    border:1px solid #929FB0;
-    border-radius: 6px 6px 6px 6px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+
 }
 /* personal-header */
 #personal-header{
@@ -113,10 +108,9 @@
     height:35px;
     background: #E7EAEF;
     text-align: center;
-    border-radius: 6px 6px 0 0;
 }
 #personal-header h1{
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
     color: #79808A;
     line-height: 35px;
@@ -178,6 +172,7 @@
     font-size: 13px;
     color: #FFF;
     padding-left: 22px;
+    cursor: pointer;
 }
 /* personal-title */
 #personal-title{
@@ -197,6 +192,10 @@
 .personal-newteam{
     padding:25px 50px 10px 0;
 }
+.personal-newteam a{
+    cursor: pointer;
+}
+
 .perdisplayNone{
     display:none;
 }
@@ -210,11 +209,11 @@
 /* personal-mangement */
 #personal-management{
     width: 672px;
-    height:175px;
+    height:180px;
 }
 .personal-management-admin{
-    width: 620px;
-    height:158px;
+    width: 650px;
+    height:175px;
     margin: 5px 10px;
     border: 1px solid  #BEBFC4;
     padding: 10px 0 0 30px;
@@ -815,8 +814,9 @@
     margin-top: 20px;
 }
 .site-sidebar ul li{
-    height:25px;
-    width:130px;
+    height:30px;
+    width:148px;
+    line-height: 30px;
     margin-bottom: 10px;
     padding-left: 20px;
     padding-top: 5px;
@@ -922,14 +922,14 @@
     background:#F2F2F2;
 }
 .site-content-synchronous-file{
-    width:140px;
+    width:138px;
     height:30px;
     text-align: center;
     line-height: 30px;
     font: 16px;
 }
 .site-synchronous-file{
-    width:140px;
+    width:138px;
     height:45px;
     text-align: center;
     line-height: 45px;
@@ -1049,12 +1049,23 @@
     font-size: 14px;
     margin-bottom: 10px;
 }
-.sitesynchronousregain,.sitesynchronousremove{
+.sitesynchronousregain{
     color:#9900FF;
+}
+.sitesynchronousremove{
+    color:#9900FF;
+    display: none;
 }
 .sitesynchronousdisplay{
     display:none;
 }
+.sitesynchronourdisplay{
+    display: block;
+}
+.odd{
+
+}
+
 .site-footer-determine-close{
     float: right;
     margin-top: 5px;
