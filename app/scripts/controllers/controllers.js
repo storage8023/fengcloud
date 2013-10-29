@@ -829,8 +829,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $event.stopPropagation();
         };
         $scope.personalOpen = function ($scope) {
+            var UIPath = gkClientInterface.getUIPath();
             var data = {
-                url:"file:///F:/fengcloud/app/views/personalInformation.html",
+                url:"file:///"+UIPath+"/views/personalInformation.html",
                 type:"child",
                 width:664,
                 height:385
