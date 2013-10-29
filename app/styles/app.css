@@ -75,7 +75,7 @@ header .account .account_info .icon_mail{
     vertical-align: middle;
     display: inline-block;
     background: url(../images/icon/icon_other.png) no-repeat -7px -6px;
-    margin: 0 6px 0 0;
+    margin: 0 5px 0 0;
 }
 header .account .photo{
     width: 32px;
