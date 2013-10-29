@@ -914,22 +914,54 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.items = [
             {
                item: "访问网站",
-                menuclick:'sharingindex'
+                menuclick:function(){
+                    var url = gkClientInterface.setGetUrl({
+                        sso:1,
+                        url:'/storage'
+                    });
+                    gkClientInterface.openUrl(url);
+                }
             },{
                 item:"设置",
-                menuclick:'sitOpen'
+                menuclick:function(){
+                    var UIPath = gkClientInterface.getUIPath();
+                    var url = 'file:///'+UIPath+'/views/personalInformation.html';
+                    var data = {
+                        url:url,
+                        type:"child",
+                        width:664,
+                        height:385
+                    }
+                    gkClientInterface.setMain(data);
+                }
             },{
                 item:"帮助",
-                menuclick:'siteOpen'
+                menuclick:function(){
+                    var url = gkClientInterface.setGetUrl({
+                        sso:1,
+                        url:'/help'
+                    });
+                    gkClientInterface.openUrl(url);
+                }
             },{
                 item:"关于",
-                menuclick:'siteOpen'
+                menuclick:function(){
+                    var url = gkClientInterface.setGetUrl({
+                        sso:1,
+                        url:'/about'
+                    });
+                    gkClientInterface.openUrl(url);
+                }
             },{
                 item:"注销",
-                menuclick:'siteOpen'
+                menuclick:function(){
+                    return;
+                }
             },{
                 item:"退出",
-                menuclick:'siteOpen'
+                menuclick:function(){
+                    return;
+                }
             }
         ];
 

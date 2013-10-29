@@ -69,6 +69,14 @@ header .account .account_info > *{
     display: inline-block;
     vertical-align: middle;
 }
+header .account .account_info .icon_mail{
+    width: 24px;
+    height: 32px;
+    vertical-align: middle;
+    display: inline-block;
+    background: url(../images/icon/icon_other.png) no-repeat -7px -6px;
+    margin: 0 6px 0 0;
+}
 header .account .photo{
     width: 32px;
     height: 32px;
@@ -91,30 +99,29 @@ header .menu{
     width: 250px;
     text-align: right;
 }
-/*.dropdown{*/
-    /*width: 40px;*/
-/*}*/
-.dropdown_menu_ul{
-    min-width: 120px;
-    position:absolute;
-    top:100%;
-    left:0;
-    z-index:1000;
-    float:left;
-    margin:2px 0 0;
-    font-size: 14px;
-    list-style: none;
-    background-color:#FFF;
-    border:1px solid #797979;
-    display: none;
-    padding:0;
+header .menu > span,
+header .menu > a{
+    margin: 0 10px 0 0;
 }
-.dropdown_menu_menu{
-    width:120px;
-    line-height: 30px;
-    text-align: center;
-    border-bottom: 1px solid #797979;
+header .more_menu{
+    display: inline-block;
+
 }
+header .more_menu i{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: url(../images/icon/icon_other.png) no-repeat -40px -4px;
+}
+header .more_menu .dropdown-menu{
+    left: auto;
+    right: 0;
+    min-width:120px;
+}
+header .more_menu .dropdown-menu > li > a{
+    text-align: left;
+}
+
 header .menu > a{
     display: inline-block;
     margin-right:12px;

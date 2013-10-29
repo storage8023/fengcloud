@@ -27,7 +27,22 @@
             this._handleException(e);
         }
     },
-
+    /**
+     * 通过浏览器打开链接
+     * @param url
+     */
+    openUrl:function(url){
+        try {
+           gkClient.gOpenUrl(JSON.stringify({
+               url:url
+           }));
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    getUIPath:function(){
+        return gkClient.gGetUIPath();
+    },
     /**
      * 获取左侧树数据
      * @param params
