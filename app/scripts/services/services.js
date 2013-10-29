@@ -194,7 +194,9 @@ angular.module('gkClientIndex.services', [])
                         item = {
                             label: value.name,
                             isParent: false,
-                            data: value
+                            data: value,
+                            iconNodeExpand:value.icon,
+                            iconNodeCollapse:value.icon
                         };
                     }
                     newData.push(item);
@@ -573,13 +575,12 @@ angular.module('gkClientIndex.services', [])
             },
             update: function () {
                 var params = {
-                    dateline:1382683932,
-                    size:5
+                    dateline:Date.parse(new Date())/1000,
+                    size:20
                 };
                angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
-               console.log(params);
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost() + '/1/updates/ls',
@@ -651,7 +652,7 @@ angular.module('gkClientIndex.services', [])
             },
             teamGroupsMembers:function(){
                 var params = {
-                    org_id:4444
+                    org_id:7305
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);

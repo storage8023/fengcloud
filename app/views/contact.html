@@ -8,14 +8,14 @@
 <link rel="stylesheet" href="../bower_components/tree/tree_style.css">
 </head>
 <body ng-controller = "contactCtrl">
-<div id = "contact-wrapper" class = "contact-wrapper-slide">
+<div  ng-app = "gkContactApp" ng-controller = "contactCtrl" id = "contact-wrapper" class = "contact-wrapper-slide">
     <div class = "contact-header">
         <h1>从联系人中选择</h1>
     </div>
     <div class = "contact-container c_f_after">
         <div class = "contact-sidebar f_l">
             <div class = "contact-sidebar-selected">
-                <span>已选{{myvar}}个</span>
+                <span>已选0个</span>
             </div>
             <div class ="contact-sidebar-tree">
                 <contactslide-tree tree-data="example_treedata" on-select="contactTree(branch)"></contactslide-tree>
@@ -38,7 +38,6 @@
         </div>
     </div>
 </div>
-<a href = "news.html">haode</a>
 <a href = "sharingsettings.html">haode</a>
 <div class="alert">{{ output }}</div>
 <script src="../bower_components/angular/angular.js" type="text/javascript"></script>

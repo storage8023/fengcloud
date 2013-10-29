@@ -9,7 +9,9 @@
 
 .news-container{
     background: #F8F9FB;
-    border:1px solid #AEBCD4;
+    border-left:1px solid #AEBCD4;
+    border-bottom:1px solid #AEBCD4;
+    border-right:1px solid #AEBCD4;
     border-radius: 0 0 6px 6px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1),
     3px 0 10px rgba(0, 0, 0, 0.1),
@@ -366,6 +368,7 @@
     border-bottom:1px solid #AEBCD4;
     margin: 0 auto;
     overflow: auto;
+    display: none;
 }
 .contact-sidebar,
 .viewmember-sidebar{
@@ -565,7 +568,8 @@
 /* sharing-wrapper */
 #sharing-wrapper{
     width:671px;
-    margin:20px auto;
+    margin:0 auto;
+    background: #F8F9FB;
 }
 .sharing-wrapper-slide{
     border:1px solid #8A9EBE;
@@ -580,6 +584,7 @@
     background: #E8ECF1;
     border-bottom:1px solid #AEBCD4;
     border-radius: 6px 6px 0 0 ;
+
 }
 .sharing-header h1{
     font-size: 18px;
@@ -606,6 +611,7 @@
     line-height: 24px;
     width:82px;
     color:#738295;
+    font-size: 16px;
 }
 .sharing-content-search .search{
     width: 368px;
@@ -736,6 +742,7 @@
     color:#738295;
     border-radius: 3px 3px 3px 3px;
     cursor:pointer;
+    text-align: center;
 }
 .sharing-add-frame-com{
     width:70px;
@@ -785,6 +792,13 @@
     text-align: center;
     display: none;
 }
+.retransmission{
+    background: url(../images/icon.png) no-repeat -20px -120px;
+}
+.delete{
+    background: url(../images/icon.png) no-repeat -20px -60px;
+}
+
 /**
   *
 *   sharingsettings.html
@@ -922,13 +936,27 @@
     background:#F2F2F2;
 }
 .site-content-synchronous-file{
-    width:138px;
+    width:185px;
     height:30px;
     text-align: center;
     line-height: 30px;
     font: 16px;
 }
 .site-synchronous-file{
+    width:185px;
+    height:45px;
+    text-align: center;
+    line-height: 45px;
+    font: 16px;
+}
+.site-content-device-file{
+    width:138px;
+    height:30px;
+    text-align: center;
+    line-height: 30px;
+    font: 16px;
+}
+.site-device-file{
     width:138px;
     height:45px;
     text-align: center;

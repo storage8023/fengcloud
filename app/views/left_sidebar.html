@@ -1,4 +1,4 @@
-t<!-- 左侧边栏 -->
+<!-- 左侧边栏 -->
 <aside class="scrollbar left_sidebar" ng-controller="leftSidebar">
     <abn-tree tree-data="treeList"
               header="我的空间"
@@ -34,6 +34,8 @@ t<!-- 左侧边栏 -->
               icon-node-collapse="icon_folder"
               selected-branch="selectedSmartBranch"
               on-select="handleSelect(branch,'smartfolder')"
-              on-expand="handleExpand(branch,'smartfolder')">
+              on-expand="handleExpand(branch,'smartfolder')"
+              class="smart_tree_list"
+            >
     </abn-tree>
 </aside>

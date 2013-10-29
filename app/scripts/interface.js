@@ -223,6 +223,9 @@
     setClose:function(){
         gkClient.gClose();
     },
+    getMessage:function(){
+        gkClient.gGetMessage();
+    },
     getUserInfo:function(){
         return gkClient.gUserInfo();
     },

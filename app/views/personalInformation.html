@@ -16,7 +16,7 @@
         <div id = "personal-information" class="c_f_after">
             <div class = "personal-picture f_l">
                 <a href = "javascript:;" title = "picture">
-                    <img src = "../images/deputy/picture.jpg" alt = "picture" />
+                    <img src = "{{guser_info.photourl}}" alt = "picture" />
                 </a>
             </div>
             <div class = "personal-message f_l">
@@ -40,17 +40,17 @@
             </div>
             <ul class = "personal-function f_r">
                 <li class="personal-function-management">
-                    <a href = "javascript:void(0);" ng-click = "sitOpen()" title = "管理我的设备" >
+                    <a href = "javascript:void(0);" ng-click = "sitOpen();siteSidebar = 'contentdevice'" title = "管理我的设备" >
                         管理我的设备
                     </a>
                 </li>
                 <li class="personal-function-software">
-                    <a href = "contact.html" ng-click  = "sharingOpen()" title = "修改个人信息" >
+                    <a href = "contact.html"  title = "修改个人信息" >
                           修改个人信息
                     </a>
                 </li>
                 <li class="personal-function-cancellation">
-                    <a href = "javascript:void(0);" title = "注销账号" ng-click = "gkClientInterface.setLogoff()" >
+                    <a href = "contact.html" title = "注销账号" ng-click  = "sharingopen()" >
                         注销账号
                     </a>
                 </li>
@@ -67,8 +67,8 @@
             </div>
         </div>
         <div id = "personal-management" >
-            <noadministrator></noadministrator>
             <div class = "personal-management-admin scrollbar">
+                <noadministrator></noadministrator>
                 <administrator ng-repeat = "perteam in perNewgSideTreeList"></administrator>
                 <personaladd ng-repeat = "createTeam in createTeamData"></personaladd>
             </div>

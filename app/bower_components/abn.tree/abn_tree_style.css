@@ -13,14 +13,15 @@ ul.nav.nav-list.abn-tree .tree-icon{
     background-position: -20px -40px;
     display: inline-block;
     vertical-align: middle;
-    margin: 0 6px 0 0;
+    margin: -2px 0 0 0;
 }
 ul.nav.nav-list.abn-tree .node_icon{
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     display: inline-block;
     vertical-align: middle;
-    margin: 0 6px 0 0;
+    margin: -3px 2px 0 0;
+
 }
 ul.nav.nav-list.abn-tree .tree-icon.icon-minus{
     background-position: -20px -20px;
@@ -75,6 +76,7 @@ ul.nav.nav-list.abn-tree>a:hover .tree-icon,
 ul.nav.nav-list.abn-tree>a:focus .tree-icon
 {
     background-position: 0 -40px;
+
 }
 
 /*ul.nav.nav-list.abn-tree > li > a:hover .icon-minus,*/

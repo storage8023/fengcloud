@@ -1149,12 +1149,24 @@ angular.module('gkClientIndex.directives', [])
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                templateUrl: "viewmember_content.html",
+                templateUrl: "views/viewmember_content.html",
+                link: function (scope, element, attrs) {
+
+                }
+            }
+        })
+        .directive('viewmenmberindex', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: "views/viewmember_content.html",
                 link: function (scope, element, attrs) {
 
                 }
             }
         });
+
     /**
      * sharingsettings
      */
@@ -1163,7 +1175,17 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "sharing_settings.html",
+                templateUrl: "views/sharing_settings.html",
+                link: function (scope, element, attrs) {
+
+                }
+            }
+        })
+        .directive('sharingsettingsindex', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "views/sharing_setting_index.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1177,9 +1199,19 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "contact_groupmembers.html",
+                templateUrl: "views/contact_groupmembers.html",
                 link: function (scope, element, attrs) {
 
                 }
             }
-        });
+     })
+    .directive('contactindex', function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "views/contact_index.html",
+            link: function (scope, element, attrs) {
+
+            }
+        }
+    });

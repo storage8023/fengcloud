@@ -189,16 +189,19 @@ module.directive('abnTree', function($timeout) {
             branch.expanded = false;
           }
           if (!branch.isParent) {
-            tree_icon = attrs.iconLeaf;
+            tree_icon = '';
           } else {
             if (branch.expanded) {
               tree_icon = attrs.iconCollapse;
-              node_icon =branch.iconNodeCollapse?branch.iconNodeCollapse: attrs.iconNodeCollapse;
             } else {
               tree_icon = attrs.iconExpand;
-              node_icon =branch.iconNodeExpand?branch.iconNodeExpand: attrs.iconNodeExpand;
             }
           }
+            if(branch.expanded){
+                node_icon =branch.iconNodeCollapse?branch.iconNodeCollapse: attrs.iconNodeCollapse;
+            }else{
+                node_icon =branch.iconNodeExpand?branch.iconNodeExpand: attrs.iconNodeExpand;
+            }
           scope.tree_rows.push({
             level: level,
             branch: branch,

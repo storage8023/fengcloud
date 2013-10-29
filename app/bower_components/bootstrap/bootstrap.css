@@ -328,11 +328,6 @@ a {
   text-decoration: none;
 }
 
-a:hover,
-a:focus {
-  color: #2a6496;
-  text-decoration: underline;
-}
 
 a:focus {
   outline: thin dotted #333;
@@ -462,7 +457,7 @@ h6,
 .h4,
 .h5,
 .h6 {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "hiragino sans gb",'微软雅黑',"Helvetica Neue","Helvetica","Arial",'Yahei',"宋体", "simsun","sans-serif";
   font-weight: 500;
   line-height: 1.1;
 }

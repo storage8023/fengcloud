@@ -5,7 +5,7 @@ module = angular.module('contactSlideTree', []);
 module.directive('contactslideTree', function($timeout) {
     return {
         restrict: 'E',
-        templateUrl: 'tree_template.html',
+        templateUrl: 'app/tree_template.html',
         scope: {
             treeData: '=',
             onSelect: '&',
