@@ -368,6 +368,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 }
                             })
                         });
+                        $scope.selectedFile = [];
+                        $scope.selectedIndex = [];
                     }, function (error) {
                         GKException.handleClientException(error);
                     });
