@@ -3,7 +3,7 @@
     <section>
         <div class="teamfile_layer" ng-if="partition =='teamfile'">
             <h3>{{PAGE_CONFIG.mount.name}}</h3>
-            <button class="btn btn-gk"><i></i>管理团队</button>
+            <button class="btn btn-gk" ng-show="PAGE_CONFIG.mount.type<2"><i></i>管理团队</button>
             <button class="btn btn-gk"><i></i>团队成员</button>
         </div>
         <div class="myfile_layer">

@@ -664,7 +664,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
         var gird = /[,;；，\s]/g;
-
         $scope.$on('$locationChangeSuccess',function(){
             $scope.partition = $location.search().partition;
         })
