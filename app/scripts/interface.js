@@ -257,6 +257,7 @@
     getUIPath: function(){
         return gkClient.gGetUIPath();
     },
+
     getClientInfo: function(){
         return gkClient.gGetClientInfo();
     },

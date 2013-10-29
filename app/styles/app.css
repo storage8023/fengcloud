@@ -37,11 +37,23 @@ body {
     z-index: 99999;
 }
 #newindex{
-    display: none;
-    position: relative;
-    top: 0;
+    position:absolute;
+    top: -500px;
     z-index: 9999;
 }
+
+.newsopen .ng-hide-add{
+    -webkit-transition:all linear 1s;
+    transition:all linear 1s;
+    display:block!important;
+}
+.newsopen .ng-hide-remove {
+    top:-500px;
+}
+.newsopen .ng-hide-remove.ng-hide-remove-active {
+    top:0;
+}
+
 header {
     height: 50px;
     border-bottom: 1px solid #B4B4B4;

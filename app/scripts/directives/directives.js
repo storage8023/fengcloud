@@ -1199,19 +1199,10 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "views/contact_groupmembers.html",
+                templateUrl: "contact_groupmembers.html",
                 link: function (scope, element, attrs) {
 
                 }
             }
      })
-    .directive('contactindex', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "views/contact_index.html",
-            link: function (scope, element, attrs) {
-
-            }
-        }
-    });
+   ;
