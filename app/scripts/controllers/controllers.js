@@ -668,7 +668,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('$locationChangeSuccess',function(){
             $scope.partition = $location.search().partition;
         })
-        //console.log($rootScope.PAGE_CONFIG.mount);
+
         /**
          * 监听已选择的文件
          */
@@ -685,104 +685,47 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else if ($scope.selectedFile.length == 1) {
                 var searchParams = $location.search();
                 $scope.file = $scope.selectedFile[0];
-                RestFile.get(searchParams.mountid, $scope.file.fullpath).success(function (data) {
+                var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                RestFile.get(searchParams.mountid, fullpath).success(function (data) {
                     var tag = data.tag || '';
                     $scope.file.tag = tag;
                     $scope.file.formatTag = tag.replace(gird, ',');
                 });
 
-                GKApi.sideBar(searchParams.mountid, $scope.file.fullpath).success(function (data) {
+                GKApi.sideBar(searchParams.mountid, fullpath).success(function (data) {
                     $scope.shareMembers = data.share_members;
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-                    $scope.remindMembers = [
-                        {
-                            'id': 1,
-                            'name': '测试1'
-                        },
-                        {
-                            'id': 2,
-                            'name': '测试2'
-                        },
-                        {
-                            'id': 3,
-                            'name': '测试3'
-                        },
-                        {
-                            'id': 4,
-                            'name': '测试4'
-                        },
-                        {
-                            'id': 5,
-                            'name': '测试5'
-                        }
-                    ];
+//                    $scope.remindMembers = [
+//                        {
+//                            'id': 1,
+//                            'name': '测试1'
+//                        },
+//                        {
+//                            'id': 2,
+//                            'name': '测试2'
+//                        },
+//                        {
+//                            'id': 3,
+//                            'name': '测试3'
+//                        },
+//                        {
+//                            'id': 4,
+//                            'name': '测试4'
+//                        },
+//                        {
+//                            'id': 5,
+//                            'name': '测试5'
+//                        }
+//                    ];
                 });
             } else {
 
             }
         }, true);
 
-        /**
-         * 添加注释
-         * @param tag
-         */
-        $scope.addTag = function (tag) {
-            var newTag = $scope.file.tag + ' ' + tag;
-            GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
 
-            }).error(function () {
-
-                });
-        };
-
-        /**
-         * 删除注释
-         * @param tag
-         */
-        $scope.removeTag = function (tag) {
-            var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
-
-            GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
-
-            }).error(function () {
-
-                });
-        };
-
-        /**
-         * 取消发布备注
-         */
-        $scope.cancelPostRemark = function () {
-            $scope.postText = '';
-            $scope.inputingRemark = false;
-        };
-
-        /**
-         * 发布讨论
-         */
-        $scope.postRemark = function () {
-            if (!$scope.postText.length) return;
-            RestFile.remind($location.search().mountid, $scope.fullfile.path, $scope.postText).success(function (data) {
-                $scope.postText = '';
-                $scope.inputingRemark = false;
-                if (data && data.length) {
-                    $scope.remarks.unshift(data[0]);
-                }
-
-            }).error(function () {
-
-                });
-        };
-
-        $scope.folded = false;
-        /**
-         * 显示及缩小文件信息框
-         */
-        $scope.toggleFileInfoWrapper = function () {
-            $scope.folded = !$scope.folded;
-        };
 
 //        setTimeout(function () {
 //            var fileSearch = new GKFileSearch();

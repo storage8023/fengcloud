@@ -545,9 +545,9 @@ angular.module('gkClientIndex.services', [])
                 var params = {
                     mount_id: mount_id,
                     fullpath: fullpath,
-                    type: type,
-                    start: start,
-                    date: date
+                    type: type || '',
+                    start: start || '',
+                    date: date || ''
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);

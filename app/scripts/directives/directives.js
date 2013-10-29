@@ -4,6 +4,96 @@
 
 
 angular.module('gkClientIndex.directives', [])
+    .directive('nofileRightSidebar', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/nofile_right_sidebar.html",
+            link: function ($scope, $element) {
+
+            }
+        }
+    }])
+    .directive('singlefileRightSidebar', ['RestFile','$location',function (RestFile,$location) {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/singlefile_right_sidebar.html",
+            link: function ($scope, $element) {
+                /**
+                 * 添加注释
+                 * @param tag
+                 */
+                $scope.addTag = function (tag) {
+                    var newTag = $scope.file.tag + ' ' + tag;
+                    GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
+
+                    }).error(function () {
+
+                        });
+                };
+
+                /**
+                 * 删除注释
+                 * @param tag
+                 */
+                $scope.removeTag = function (tag) {
+                    var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
+
+                    GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
+
+                    }).error(function () {
+
+                        });
+                };
+                $scope.postText = '';
+                /**
+                 * 取消发布备注
+                 */
+                $scope.cancelPostRemark = function () {
+                    $scope.postText = '';
+                    $scope.inputingRemark = false;
+                };
+
+                /**
+                 * 发布讨论
+                 */
+                $scope.postRemark = function (postText) {
+                   console.log(postText);
+                    if (!postText || !postText.length) return;
+                    var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                    RestFile.remind($location.search().mountid, fullpath, postText).success(function (data) {
+                        $scope.postText = '';
+                        $scope.inputingRemark = false;
+                        if (data && data.length) {
+                            $scope.remarks.unshift(data[0]);
+                        }
+
+                    }).error(function () {
+
+                        });
+                };
+
+                $scope.folded = false;
+                /**
+                 * 显示及缩小文件信息框
+                 */
+                $scope.toggleFileInfoWrapper = function () {
+                    $scope.folded = !$scope.folded;
+                };
+            }
+        }
+    }])
+    .directive('multifileRightSidebar', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/multifile_right_sidebar.html",
+            link: function ($scope, $element) {
+
+            }
+        }
+    }])
     .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', function ($location, GKPath, $filter, $templateCache, $compile, $rootScope) {
         return {
             replace: true,
