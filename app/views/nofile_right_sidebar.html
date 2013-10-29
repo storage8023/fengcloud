@@ -1,0 +1,13 @@
+<div class="no_file">
+    <div class="section_title">{{partition|getPartitionName}}</div>
+    <section>
+        <div class="teamfile_layer" ng-if="partition =='teamfile'">
+            <h3>{{PAGE_CONFIG.mount.name}}</h3>
+            <button class="btn btn-gk" ng-show="PAGE_CONFIG.mount.type<2"><i></i>管理团队</button>
+            <button class="btn btn-gk"><i></i>团队成员</button>
+        </div>
+        <div class="myfile_layer">
+            <p ng-if="partition !='teamfile'">将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接</p>
+        </div>
+    </section>
+</div>

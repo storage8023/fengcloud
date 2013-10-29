@@ -2532,14 +2532,17 @@ function TabsetCtrl($scope, $element) {
     controller: 'TabsetController',
     templateUrl: 'template/tabs/tabset.html',
     compile: function(elm, attrs, transclude) {
-      return function(scope, element, attrs, tabsetCtrl) {
-        scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
-        scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
-        scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
-        scope.tabsAbove = (scope.direction != 'below');
-        tabsetCtrl.$scope = scope;
-        tabsetCtrl.$transcludeFn = transclude;
-      };
+      return {
+          pre:function(scope, element, attrs, tabsetCtrl) {
+              scope.vertical = angular.isDefined(attrs.vertical) ? scope.$parent.$eval(attrs.vertical) : false;
+              scope.type = angular.isDefined(attrs.type) ? scope.$parent.$eval(attrs.type) : 'tabs';
+              scope.direction = angular.isDefined(attrs.direction) ? scope.$parent.$eval(attrs.direction) : 'top';
+              scope.tabsAbove = (scope.direction != 'below');
+              tabsetCtrl.$scope = scope;
+              tabsetCtrl.$transcludeFn = transclude;
+          }
+      }
+
     }
   };
 })
@@ -2752,11 +2755,14 @@ function($parse, $http, $templateCache, $compile) {
         elm.remove();
       } else {
         //now that tabs location has been decided, transclude the tab titles in
-        setTimeout(function(){
-            tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function(node) {
-                elm.append(node);
-            });
-        },0);
+        //setTimeout(function(){
+            //scope.$apply(function(){
+                tabsetCtrl.$transcludeFn(tabsetCtrl.$scope.$parent, function(node) {
+                    elm.append(node);
+                });
+            //})
+
+        //},0);
 
       }
     }

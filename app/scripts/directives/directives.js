@@ -4,6 +4,128 @@
 
 
 angular.module('gkClientIndex.directives', [])
+    .directive('nofileRightSidebar', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/nofile_right_sidebar.html",
+            link: function ($scope, $element) {
+
+            }
+        }
+    }])
+    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout','selectMemberModal',function (RestFile,$location,$timeout,selectMemberModal) {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/singlefile_right_sidebar.html",
+            link: function ($scope, $element) {
+                /**
+                 * 添加注释
+                 * @param tag
+                 */
+                $scope.addTag = function (tag) {
+                    var newTag = $scope.file.tag + ' ' + tag;
+                    GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
+
+                    }).error(function () {
+
+                        });
+                };
+
+                /**
+                 * 删除注释
+                 * @param tag
+                 */
+                $scope.removeTag = function (tag) {
+                    var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
+
+                    GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
+
+                    }).error(function () {
+
+                        });
+                };
+                $scope.inputingRemark = false;
+                $scope.postText = '';
+
+                /**
+                 * 取消发布备注
+                 */
+                $scope.cancelPostRemark = function () {
+
+                    $scope.postText = '';
+                    $scope.inputingRemark = false;
+                };
+
+                /**
+                 * 发布讨论
+                 */
+                $scope.postRemark = function (postText) {
+
+                    if (!postText || !postText.length) return;
+                    var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                    RestFile.remind($location.search().mountid, fullpath, postText).success(function (data) {
+                        $scope.postText = '';
+                        $scope.inputingRemark = false;
+                        if (data && data.length) {
+                            $scope.remarks.unshift(data[0]);
+                        }
+
+                    }).error(function () {
+
+                        });
+                };
+
+                $scope.folded = false;
+                /**
+                 * 显示及缩小文件信息框
+                 */
+                $scope.toggleFileInfoWrapper = function () {
+                    $scope.folded = !$scope.folded;
+                };
+
+                $scope.insertAt = function(){
+                    var input = '@';
+                    var val = $scope.postText;
+                    var jqTextarea = $element.find('.post_wrapper textarea');
+                    var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');
+                    var is_insert = input_pos[1] != val.length ? 1 : 0;
+                    var l = val.substr(0, input_pos[0]);
+                    var r = val.substr(input_pos[1], val.length);
+                    val = l + input + r;
+                    $scope.postText = val;
+                    $timeout(function(){
+                        if (is_insert) {
+                            Util.Input.moveCur(jqTextarea[0], parseInt(input_pos[0]) + (input).length);
+                        } else {
+                            Util.Input.moveCur(jqTextarea[0], val.length);
+                        }
+                    },0);
+
+                }
+
+                $scope.showEditShareDialog = function(){
+                  var selectModal = selectMemberModal.open(PAGE_CONFIG.mount.org_id);
+                    selectModal.result.then(function(selectedMembers,selectedGroups){
+
+                    },function(){
+
+                    })
+                };
+            }
+        }
+    }])
+    .directive('multifileRightSidebar', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/multifile_right_sidebar.html",
+            link: function ($scope, $element) {
+
+            }
+        }
+    }])
     .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', function ($location, GKPath, $filter, $templateCache, $compile, $rootScope) {
         return {
             replace: true,
@@ -489,8 +611,9 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'E',
             replace: true,
-            scope: { list: '=', onSelect: '&'},
-            template: '<ul class="dropdown-menu input_tip_list">' + '<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
+            scope: { list: '&', onSelect: '&'},
+            template: '<ul class="dropdown-menu input_tip_list">'
+                + '<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
                 + '</ul>',
             link: function ($scope, $element, $attrs) {
                 var index = 0;
@@ -506,7 +629,11 @@ angular.module('gkClientIndex.directives', [])
                 };
                 var preSelectItem = function (newIndex) {
                     if (!$scope.list || !$scope.list.length) return;
-                    $scope.list[index].selected = false;
+                    angular.forEach($scope.list,function(value){
+                        if(value.selected){
+                            value.selected = false;
+                        }
+                    });
                     $scope.list[newIndex].selected = true;
                     index = newIndex;
                 };
@@ -515,7 +642,7 @@ angular.module('gkClientIndex.directives', [])
                     preSelectItem(key);
                 };
                 $scope.handleClick = function (key) {
-                    preSelectItem(key);
+                    //preSelectItem(key);
                     selectItem();
                 };
                 $document.bind('keydown', function (e) {
@@ -524,27 +651,28 @@ angular.module('gkClientIndex.directives', [])
                         if (!$scope.list || !$scope.list) return;
                         var listLength = $scope.list.length;
                         var step = 1;
-                        if (key_code == 38) { //up
-                            step = -1;
-                        } else if (key_code == 40) {
-
+                        if (key_code == 38 || key_code == 40) { //up
+                            if(key_code == 38){
+                                step = -1;
+                            }
+                            var newIndex = index + step;
+                            if (newIndex < 0) {
+                                newIndex = listLength - 1;
+                            } else if (newIndex > listLength - 1) {
+                                newIndex = 0;
+                            }
+                            preSelectItem(newIndex);
+                            e.preventDefault();
                         } else if (key_code == 13 || key_code == 32) {
                             selectItem();
-                            return;
+                            e.preventDefault();
                         }
-                        var newIndex = index + step;
-                        if (newIndex < 0) {
-                            newIndex = listLength - 1;
-                        } else if (newIndex > listLength - 1) {
-                            newIndex = 0;
-                        }
-                        preSelectItem(newIndex);
                     });
                 })
             }
         };
     }])
-    .directive('inputTip', [ '$compile', '$parse', '$document', '$position', function ($compile, $parse, $document, $position) {
+    .directive('inputTip', [ '$compile', '$parse', '$document', '$position', '$timeout',function ($compile, $parse, $document, $position,$timeout) {
         var template =
             '<input-tip-popup ' +
                 'list="it_list" ' +
@@ -553,11 +681,8 @@ angular.module('gkClientIndex.directives', [])
                 '</input-tip-popup>';
         return {
             restrict: 'A',
-            require: '?ngModel',
-            link: function ($scope, $element, $attrs, $ngModel) {
-                if (!$ngModel) {
-                    return $ngModel;
-                }
+            link: function ($scope, $element, $attrs) {
+
                 var watchStr = $attrs.inputTip;
                 var placementArr = $attrs.inputTipPlacement.split(' ');
                 var placement = {
@@ -574,15 +699,6 @@ angular.module('gkClientIndex.directives', [])
                 $scope.it_isOpen = false;
                 var $body;
 
-                inputtip.css({ top: 0, left: 0, display: 'block', 'max-height': '200px', 'overflow': 'auto' });
-                if (appendToBody) {
-                    $body = $body || $document.find('body');
-                    //console.log($body);
-                    $body.append(inputtip);
-
-                } else {
-                    //TODO
-                }
 
                 var setPosition = function (jqTextarea, hintWrapper) {
                     var position,
@@ -619,12 +735,18 @@ angular.module('gkClientIndex.directives', [])
                     ttPosition.left += 'px';
                     inputtip.css(ttPosition);
                 };
+
                 /**
                  * 显示提示框
                  */
                 var show = function () {
-                    if (!$scope.it_list) {
-                        return;
+                    if (appendToBody) {
+                        $body = $body || $document.find('body');
+                        //console.log(inputtip);
+                        $body.append(inputtip);
+
+                    } else {
+                        //TODO
                     }
 
                     /**
@@ -633,6 +755,7 @@ angular.module('gkClientIndex.directives', [])
                     $scope.it_isOpen = true;
                     setTimeout(function () {
                         setPosition();
+                        inputtip.css('display','block');
                     }, 0);
                 };
 
@@ -659,13 +782,10 @@ angular.module('gkClientIndex.directives', [])
                 });
                 var inputPos, val, lastIndex;
 
-                var modelValue = $parse($attrs.ngModel);
-                $scope.it_list = [];
-                $scope.$watch(modelValue, function (newValue) {
-                    setTimeout(function () {
-                        val = newValue || '';
+                var checkAt = function(){
+                    $scope.$apply(function(){
+                        val = $scope.postText;
                         var cursor = Util.Input.getCurSor($element[0]);
-                        //console.log(cursor);
                         inputPos = cursor.split('|');
                         var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
                         lastIndex = leftStr.lastIndexOf(watchStr); //获取光标左边字符最后一个@字符的位置
@@ -680,11 +800,10 @@ angular.module('gkClientIndex.directives', [])
                             hide();
                             return;
                         }
-
+                        var resultList = [];
                         if (!q.length) {
-                            $scope.it_list = $scope.remindMembers;
+                            resultList = $scope.remindMembers;
                         } else {
-                            var resultList = [];
                             if ($scope.remindMembers && $scope.remindMembers.length) {
                                 angular.forEach($scope.remindMembers, function (value) {
                                     if (value.short_name && value.short_name.indexOf(q) === 0) {
@@ -693,25 +812,47 @@ angular.module('gkClientIndex.directives', [])
                                         resultList.push(value);
                                     }
                                 });
-                                $scope.it_list = resultList;
+
                             }
                         }
-                        show();
-                    }, 0);
+                        if(!resultList || !resultList.length){
+                            hide();
+                        }else{
+                            $scope.it_list = resultList;
+                            show();
+                        }
+                    });
+                };
 
-                })
+                $scope.it_list = [];
+                var timer;
+                $element.bind('focus',function(){
+                    if(timer){
+                        clearInterval(timer);
+                    }
+                    timer  =  setInterval(checkAt,200);
+                }).bind('blur',function(){
+                        if(timer){
+                            clearInterval(timer);
+                        }
+                    })
+
 
                 var insertChar = function (input) {
                     input += ' ';
-                    var isInsert = inputPos[1] != val.length;
-                    val = val.substr(0, lastIndex + 1) + input + val.substr(inputPos[1], val.length);
-                    $ngModel.$setViewValue(val);
-                    $ngModel.$render();
-                    if (isInsert) {
-                        Util.Input.moveCur(elem, parseInt(inputPos[0]) + (input).length);
-                    } else {
-                        Util.Input.moveCur(elem, val.length);
-                    }
+                    var newVal = $scope.postText;
+                    var newInputPos = inputPos;
+                    var isInsert = newInputPos[1] != newVal.length;
+                    newVal = newVal.substr(0, lastIndex + 1) + input + newVal.substr(inputPos[1], newVal.length);
+                    $scope.postText = newVal;
+                    $timeout(function(){
+                        if (isInsert) {
+                            Util.Input.moveCur(elem, parseInt(inputPos[0]) + (input).length);
+                        } else {
+                            Util.Input.moveCur(elem, $scope.postText.length);
+                        }
+                    },0)
+
                 };
                 $scope.it_onSelect = function (item) {
                     insertChar(item.name);
@@ -1024,7 +1165,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "news_update.html",
+                templateUrl: "views/news_update.html",
                 link: function (scope, element, attrs) {
 
                 }

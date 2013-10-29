@@ -545,9 +545,9 @@ angular.module('gkClientIndex.services', [])
                 var params = {
                     mount_id: mount_id,
                     fullpath: fullpath,
-                    type: type,
-                    start: start,
-                    date: date
+                    type: type || '',
+                    start: start || '',
+                    date: date || ''
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -763,6 +763,33 @@ angular.module('gkClientIndex.services', [])
         return GKMyMount;
     }
     ])
+    .factory('selectMemberModal',['$modal',function($modal){
+        return {
+            open:function(orgId){
+                return $modal.open({
+                    templateUrl: 'myModalContent.html',
+                    controller: function($scope, $modalInstance,orgId){
+                        $scope.orgId = orgId;
+                        $scope.selectedMembers = [];
+                        $scope.selectedGroups = [];
+                        $scope.ok = function () {
+                            $modalInstance.close(scope.selectedMembers, $scope.selectedGroups);
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                    },
+                    resolve: {
+                        orgId: function () {
+                            return orgId;
+                        }
+                    }
+                });
+            }
+        }
+    }])
 /**
  * 记录浏览历史，提供前进,后退功能
  */
