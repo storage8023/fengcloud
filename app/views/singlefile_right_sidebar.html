@@ -26,7 +26,7 @@
             </div>
         </section>
     </div>
-    <section class="file_detail_wrapper" ng-if="PAGE_CONFIG.mount.org_id!=0">
+    <section class="file_detail_wrapper" ng-show="PAGE_CONFIG.mount.org_id!=0">
         <tabset direction="blew">
             <tab heading="共享">
                 <button class="btn btn-gk set_share" ng-dbclick = "sharingindex()" ng-click="showEditShareDialog()">共享设置</button>
@@ -53,8 +53,7 @@
                     <div class="post_wrapper">
                         <!--<textarea placeholder="参与讨论" ng-focus="inputingRemark=true"-->
                                   <!--ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>-->
-                        <textarea placeholder="参与讨论" ng-focus="inputingRemark=true"
-                                  ng-model="postText"></textarea>
+                        <textarea placeholder="参与讨论" ng-focus="inputingRemark=true" ng-model="postText"></textarea>
                         <div class="post_opts">
                             <a href="javascript:void(0)" class="f_l">提醒(@)</a>
                             <button class="btn btn-gk f_r" ng-click="cancelPostRemark()">取消</button>

@@ -675,7 +675,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.shareMembers = []; //共享参与人
         $scope.remarks = []; //讨论
         $scope.histories = []; //历史
-        $scope.inputingRemark = false;
         $scope.remindMembers = [];//可@的成员列表
         $scope.$watch('selectedFile', function () {
             $scope.inputingRemark = false;
@@ -1622,14 +1621,6 @@ angular.module("gkSharingsettingsApp.controllers", [])
             {"name": "Item 2", "isSelected": ""}
         ]
 
-
-        function DropdownCtrl($scope) {
-            $scope.sharingitems = [
-                "拥有者",
-                "编辑者",
-                "查看者"
-            ];
-        }
     });
 
 

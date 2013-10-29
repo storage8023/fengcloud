@@ -46,20 +46,25 @@ angular.module('gkClientIndex.directives', [])
 
                         });
                 };
+                $scope.inputingRemark = false;
                 $scope.postText = '';
+
                 /**
                  * 取消发布备注
                  */
                 $scope.cancelPostRemark = function () {
+
                     $scope.postText = '';
                     $scope.inputingRemark = false;
                 };
-
+                $scope.$watch('postText',function(newValue,oldValue){
+                    console.log(arguments);
+                });
                 /**
                  * 发布讨论
                  */
                 $scope.postRemark = function (postText) {
-                   console.log(postText);
+
                     if (!postText || !postText.length) return;
                     var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
                     RestFile.remind($location.search().mountid, fullpath, postText).success(function (data) {
@@ -1114,7 +1119,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "news_update.html",
+                templateUrl: "views/news_update.html",
                 link: function (scope, element, attrs) {
 
                 }
