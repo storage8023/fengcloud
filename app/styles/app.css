@@ -10,7 +10,9 @@
 div, p, span, a {
     cursor: default;
 }
-
+html,body{
+    overflow: hidden;
+}
 body {
     background: #fff;
     color: #3d4f69;
@@ -354,6 +356,10 @@ footer {
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_folder{
     background: url(../images/icon/icon16x16.png) no-repeat -4px -4px;
 }
+.left_sidebar  ul.nav.nav-list.abn-tree .icon_trash{
+    background: url(../images/icon/icon16x16.png) no-repeat -24px -4px;
+    margin-left: 11px;
+}
 .left_sidebar ul.nav.nav-list.abn-tree > li{
     margin: 0;
     font-weight: normal;
@@ -367,7 +373,9 @@ footer {
 .left_sidebar ul.nav.nav-list.abn-tree > .active .icon_fold{
     border-left-color:#fff;
 }
-
+.left_sidebar ul.nav.nav-list.abn-tree > .active .icon_trash{
+    background-position: -24px -24px;
+}
 .left_sidebar ul.nav.nav-list.abn-tree > .active > a,
 .left_sidebar ul.nav.nav-list.abn-tree > a:hover,
 .left_sidebar ul.nav.nav-list.abn-tree > a:focus{

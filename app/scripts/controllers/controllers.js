@@ -26,18 +26,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
         myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
         $scope.treeList = myTreeData;
-//        $scope.treeList.push(
-//            {
-//                "label": "回收站",
-//                data: {
-//                    path: '',
-//                    'mountid': myMount.mountid
-//                },
-//                "isParent":true,
-//                "iconNodeExpand":'icon_trash',
-//                "iconNodeCollapse":'icon_trash'
-//            }
-//        );
+        $scope.treeList.push(
+            {
+                label: "回收站",
+                isParent:false,
+                data: {
+                    path: '',
+                    mount_id: myMount.mountid
+                },
+                iconNodeExpand:'icon_trash',
+                iconNodeCollapse:'icon_trash'
+            }
+        );
 
         /**
          * 团队的文件
@@ -108,8 +108,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['path'] = branch.data.fullpath;
                 pararm['mountid'] = branch.data.mount_id;
                 $rootScope.PAGE_CONFIG.mount = GKFile.getMountById(branch.data.mount_id);
-                console.log($rootScope.PAGE_CONFIG.mount);
-
             } else if (partition == 'smartfolder') {
                 pararm['condition'] = branch.data.condition;
                 $rootScope.PAGE_CONFIG.condition = branch.data.condition;
@@ -127,7 +125,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleExpand = function (branch) {
             if (branch.expanded) {
-                console.log(branch.data);
                 var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id || 0})['list'];
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
             }
@@ -577,7 +574,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     backdrop: false,
                     windowClass: 'sync_settiong_dialog',
                     controller: function ($scope, $modalInstance) {
-                        console.log($rootScope.PAGE_CONFIG);
+
                         $scope.filename = $rootScope.PAGE_CONFIG.file.filename || $rootScope.PAGE_CONFIG.file.name;
                         $scope.localURI = GK.getLocalSyncURI({
                             mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -654,7 +651,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('searchFileSuccess', function ($event, resultList, keyword) {
             $scope.fileData = GKFile.dealFileList(resultList, 'api');
             $scope.keyword = keyword;
-            console.log($scope.keyword);
+            //console.log($scope.keyword);
         })
 
         $scope.$on('searchFileCancel', function ($event) {
@@ -662,7 +659,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             refreahData();
         })
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
+    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location',function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
         var gird = /[,;；，\s]/g;
         $scope.$on('$locationChangeSuccess',function(){
             $scope.partition = $location.search().partition;
@@ -695,28 +692,32 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-//                    $scope.remindMembers = [
-//                        {
-//                            'id': 1,
-//                            'name': '测试1'
-//                        },
-//                        {
-//                            'id': 2,
-//                            'name': '测试2'
-//                        },
-//                        {
-//                            'id': 3,
-//                            'name': '测试3'
-//                        },
-//                        {
-//                            'id': 4,
-//                            'name': '测试4'
-//                        },
-//                        {
-//                            'id': 5,
-//                            'name': '测试5'
-//                        }
-//                    ];
+                    $scope.remindMembers = [
+                        {
+                            'id': 1,
+                            'name': '测试1'
+                        },
+                        {
+                            'id': 2,
+                            'name': '测试2'
+                        },
+                        {
+                            'id': 3,
+                            'name': '测试3'
+                        },
+                        {
+                            'id': 4,
+                            'name': '测试4'
+                        },
+                        {
+                            'id': 5,
+                            'name': '测试5'
+                        },
+                        {
+                            'id': 6,
+                            'name': 'xugetest1'
+                        }
+                    ];
                 });
             } else {
 

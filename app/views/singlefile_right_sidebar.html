@@ -51,11 +51,11 @@
                         </li>
                     </ul>
                     <div class="post_wrapper">
-                        <!--<textarea placeholder="参与讨论" ng-focus="inputingRemark=true"-->
-                                  <!--ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>-->
-                        <textarea placeholder="参与讨论" ng-focus="inputingRemark=true" ng-model="postText"></textarea>
+                        <textarea placeholder="参与讨论" ng-focus="inputingRemark=true"
+                                  ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
+
                         <div class="post_opts">
-                            <a href="javascript:void(0)" class="f_l">提醒(@)</a>
+                            <a href="javascript:void(0)" ng-click="insertAt()" class="f_l">提醒(@)</a>
                             <button class="btn btn-gk f_r" ng-click="cancelPostRemark()">取消</button>
                             <button class="btn btn-gk f_r" ng-click="postRemark(postText)">确定</button>
                         </div>
