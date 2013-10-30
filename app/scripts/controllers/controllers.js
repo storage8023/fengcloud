@@ -274,7 +274,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         GK.move(params).then(function () {
                             refreahData();
                             //$scope.$broadcast('ctrlVEnd', getFileData('test123456'));
-                            //GKCilpboard.clearData();
+                            GKCilpboard.clearData();
                         }, function (error) {
                             GKException.handleClientException(error);
                         });
@@ -515,7 +515,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.opts = [];
             $scope.rightOpts = {};
             var excludeRightOpts = ['add']; //右键要排除的操作
-            var excludeOpts = ['order_by']; // 顶部要排除的操作
+            var excludeOpts = ['order_by','paste','copy','cut']; // 顶部要排除的操作
             angular.forEach(optKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     $scope.opts.push(angular.extend(allOpts[value], {key: value}));

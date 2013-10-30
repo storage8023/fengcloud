@@ -355,11 +355,14 @@ angular.module('gkClientIndex.services', [])
             },
             clearData: function () {
                 this.data = null;
+            },
+            isEmpty:function(){
+                return !this.data;
             }
         };
         return GKClipboard
     }])
-    .factory('GKOpt', [function () {
+    .factory('GKOpt', ['GKCilpboard',function (GKCilpboard) {
         var GKOpt = {
             getOpts: function (currentFile, selectedFiles, partition, search) {
                 var
@@ -374,10 +377,15 @@ angular.module('gkClientIndex.services', [])
 
             },
             getCurrentOpts: function (currentFile, partition, search) {
+                var context = this;
                 if (search || partition =='smartfolder') {
                     return [];
                 } else {
-                    return ['add', 'new_folder', 'order_by','paste'];
+                    var opts =  ['add', 'new_folder', 'order_by','paste'];
+                    if(GKCilpboard.isEmpty()){
+                        context.disableOpt(opts,'paste');
+                    }
+                    return opts;
                 }
             },
             getMultiSelectOpts: function (files) {
