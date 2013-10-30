@@ -104,6 +104,8 @@
     max-width: 120px;
     max-height: 200px;
     overflow: auto;
+    top:-9999px;
+    left:0;
     /*display: block;*/
 }
 .input_tip_list.dropdown-menu > li >a.active{

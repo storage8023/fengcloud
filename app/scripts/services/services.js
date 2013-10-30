@@ -93,6 +93,7 @@ angular.module('gkClientIndex.services', [])
             },
             move: function (params) {
                 var re = gkClientInterface.move(params);
+                console.log(re);
                 var deferred = $q.defer();
                 if (!re || re.error == 0) {
                     deferred.resolve(re);

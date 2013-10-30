@@ -239,6 +239,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var refreahData = function () {
             getFileData().then(function(newFileData){
+                //console.log(newFileData);
                 $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
             })
 
@@ -497,16 +498,27 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
+        var getCilpFileData = function(){
+            var files = [];
+            angular.forEach($rootScope.selectedFile,function(value){
+                files.push({
+                    webpath:value.fullpath
+                })
+            });
+            return files;
+        };
 
         /**
          * ctrl-C的 处理函数
          */
         $scope.$on('ctrlC', function () {
+
             var data = {
                 code: 'ctrlC',
-                mount_id: $rootScope.user.mount_id,
-                files: $rootScope.selectedFile
+                mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                files: getCilpFileData()
             };
+
             GKCilpboard.setData(data);
         });
 
@@ -516,8 +528,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('ctrlX', function () {
             var data = {
                 code: 'ctrlX',
-                mount_id: $rootScope.user.mount_id,
-                files: $scope.selectedFile
+                mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                files: getCilpFileData()
             }
             GKCilpboard.setData(data);
         });
@@ -527,14 +539,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$on('ctrlV', function () {
             var data = GKCilpboard.getData();
+            if(!data || !data.files || !data.mount_id) return;
             var params = {
-                target: $scope.path,
-                targetmountid: $rootScope.user.mount_id,
+                target: $rootScope.PAGE_CONFIG.file.fullpath,
+                targetmountid: $rootScope.PAGE_CONFIG.mount.mount_id,
                 from_mountid: data.mount_id,
                 from_list: data.files
             };
             if (data.code == 'ctrlC') {
                 GK.copy(params).then(function () {
+                    refreahData();
                     //$scope.$broadcast('ctrlVEnd', getFileData('test12345'));
                     //GKCilpboard.clearData();
                 }, function (error) {
@@ -542,6 +556,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 });
             } else if (data.code == 'ctrlX') {
                 GK.move(params).then(function () {
+                    refreahData();
                     //$scope.$broadcast('ctrlVEnd', getFileData('test123456'));
                     //GKCilpboard.clearData();
                 }, function (error) {
