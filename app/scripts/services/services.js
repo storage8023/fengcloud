@@ -377,21 +377,21 @@ angular.module('gkClientIndex.services', [])
                 if (search || partition =='smartfolder') {
                     return [];
                 } else {
-                    return ['add', 'new_folder', 'order_by'];
+                    return ['add', 'new_folder', 'order_by','paste'];
                 }
             },
             getMultiSelectOpts: function (files) {
                 if (!files || files.length <= 1) {
                     return [];
                 }
-                return ['del'];
+                return ['del','cut','copy'];
             },
             getSingleSelectOpts: function (files) {
                 if (!files || files.length != 1) {
                     return [];
                 }
                 var file = files[0];
-                var opts = ['lock', 'unlock', 'save', 'del', 'rename'];
+                var opts = ['lock', 'unlock', 'save', 'del', 'rename','cut','copy'];
                 if (file.dir == 1) {
                     this.disableOpt(opts, 'lock', 'unlock');
                 } else {
