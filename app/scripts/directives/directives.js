@@ -14,7 +14,20 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout',function (RestFile,$location,$timeout) {
+    .directive('member',[function(){
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/member.html",
+            scope:{
+                user:'='
+            },
+            link: function ($scope, $element) {
+                
+            }
+        }
+    }])
+    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout','selectMemberModal',function (RestFile,$location,$timeout,selectMemberModal) {
         return {
             replace: true,
             restrict: 'E',
@@ -907,7 +920,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', function ($location, $timeout) {
+    .directive('breadsearch', ['$location', '$timeout',function ($location, $timeout) {
         return {
             replace: true,
             restrict: 'E',
@@ -1028,104 +1041,172 @@ angular.module('gkClientIndex.directives', [])
 /**
  * 搜索的侧边栏
  */
-    .directive('searchRightSidebar', ['GKApi', '$rootScope',function (GKApi,$rootScope) {
+    .directive('searchRightSidebar', ['GKApi', '$rootScope','$modal','GKSearch','FILE_SORTS',function (GKApi,$rootScope,$modal,GKSearch,FILE_SORTS) {
         return {
             restrict: 'E',
             replace: true,
             templateUrl: "views/search_right_sidebar.html",
             link: function ($scope, $element, $attrs) {
 
-                $scope.conditions = [
-                    {
-                        selectedOption:'extension'
+                var getTimeStamp = function(date){
+                    return Date.parse(date)/1000;
+                };
+
+                var getCondition = function(){
+                    var fileSearch = new GKFileSearch();
+                    fileSearch.conditionIncludeKeyword(GKSearch.getKeyWord());
+                    fileSearch.conditionIncludePath($rootScope.PAGE_CONFIG.file.fullpath||'');
+                    if($scope.extension.value){
+                        var tem = $scope.extension.value.split('=');
+                        if(tem[0]=='dir'){
+                            fileSearch.conditionIncludeDir(tem[1]);
+                        }else if(tem[0]=='extensions'){
+                            fileSearch.conditionIncludeExtension(tem[1].split('|'));
+                        }
                     }
-                ];
-
-                $scope.tags = ['test1','test2'];
-
-            }
-        }
-    }])
-/**
- * 搜索条件设置
- */
-    .directive('searchCondition', [function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope:{
-                selectedOption:'='
-            },
-            templateUrl: "views/search_condition.html",
-            link: function ($scope, $element, $attrs) {
-                $scope.options = [
-                    {
-                        name:'文件类型',
-                        value:'extension'
-                    },
-                    {
-                        name:'添加时间',
-                        value:'create_dateline'
-                    },
-                    {
-                        name:'最后修改时间',
-                        value:'last_dateline'
-                    },
-                    {
-                        name:'添加人',
-                        value:'creator'
-                    },
-                    {
-                        name:'最后修改人',
-                        value:'modifier'
+                    var fromCreateDateline = 0,
+                        toCreateDateline= 0,
+                        toEditDateline = 0,
+                        fromEditDateline=0;
+                    if($scope.fromCreateDate){
+                        fromCreateDateline = getTimeStamp($scope.fromCreateDate);
                     }
-                 ];
-                $scope.condition = $scope.options[0];
+                    if($scope.toCreateDate){
+                        toCreateDateline = getTimeStamp($scope.toCreateDate);
+                    }
+                    if(fromCreateDateline && toCreateDateline){
+                        fileSearch.conditionIncludeDateline([fromCreateDateline,toCreateDateline]);
+                    }else if(fromCreateDateline){
+                        fileSearch.conditionIncludeDateline(fromCreateDateline,'gt');
+                    }else if(toCreateDateline){
+                        fileSearch.conditionIncludeDateline(toCreateDateline,'lt');
+                    }
 
-                $scope.fileTypes = [
+                    if($scope.fromEditDate){
+                        fromEditDateline = getTimeStamp($scope.fromEditDate);
+                    }
+                    if($scope.toEditDate){
+                        toEditDateline = getTimeStamp($scope.toEditDate);
+                    }
+                    if(fromEditDateline && toEditDateline){
+                        fileSearch.conditionIncludeLastDateline([fromEditDateline,toEditDateline]);
+                    }else if(fromEditDateline){
+                        fileSearch.conditionIncludeLastDateline(fromEditDateline,'gt');
+                    }else if(toEditDateline){
+                        fileSearch.conditionIncludeLastDateline(toEditDateline,'lt');
+                    }
+                    if($scope.creator){
+                        fileSearch.conditionIncludeCreator($scope.creator.split(','));
+                    }
+                    if($scope.modifier){
+                        fileSearch.conditionIncludeModifier($scope.modifier.split(','));
+                    }
+                    var condition = fileSearch.getCondition();
+                    return condition;
+                };
+
+                $scope.$watch('creator',function(newValue,oldValue){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.$watch('modifier',function(){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.$watch('fromCreateDate',function(){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.$watch('toCreateDate',function(){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.$watch('fromEditDate',function(){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.$watch('toEditDate',function(){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.$watch('extension',function(){
+                    $rootScope.$broadcast('invokeSearch',getCondition());
+                });
+
+                $scope.saveSearch = function(){
+                    var saveSearchDialog = $modal.open({
+                        templateUrl: 'views/save_search.html',
+                        backdrop: false,
+                        windowClass: 'save_search_dialog',
+                        controller: function ($scope, $modalInstance) {
+                            //确定后
+                            $scope.ok = function (smartFolderName) {
+                                $modalInstance.close(smartFolderName);
+                            };
+
+                            //取消后
+                            $scope.cancel = function () {
+                                $modalInstance.dismiss('cancel');
+                            };
+                        }
+                    })
+                    saveSearchDialog.result.then(function(smartFolderName){
+                        var condition = getCondition();
+                        GKApi.createSmartFolder($rootScope.PAGE_CONFIG.mount.mount_id, smartFolderName, condition).success(function(data){
+                            console.log(data);
+                        });
+                    })
+                };
+
+
+                /**
+                 * 文件扩展名列表
+                 * @type {Array}
+                 */
+                $scope.extensions = [
                     {
                         name:'任意',
                         value:''
                     },
                     {
                         name:'文件夹',
-                        value:''
+                        value:'dir=1'
                     },
                     {
                         name:'文件',
-                        value:''
+                        value:'dir=0'
                     },
                     {
                         name:'图片',
-                        value:''
+                        value:'extensions='+FILE_SORTS['SORT_IMAGE'].join('|')
                     },
                     {
                         name:'视频',
-                        value:''
+                        value:'extensions='+FILE_SORTS['SORT_MOVIE'].join('|')
                     },
                     {
                         name:'音频',
-                        value:''
+                        value:'extensions='+FILE_SORTS['SORT_MUSIC'].join('|')
                     },
                     {
                         name:'PDF',
-                        value:''
+                        value:'extensions=pdf'
                     },
                     {
                         name:'Word文档',
-                        value:''
+                        value:'extensions=doc|docx'
                     },
                     {
                         name:'Excel表格',
-                        value:''
+                        value:'extensions=xls|xlsx'
                     },
                     {
                         name:'PowerPoint演示文档',
-                        value:''
+                        value:'extensions=ppt|pptx'
                     }
                 ];
+                $scope.extension = $scope.extensions[0];
 
-                $scope.fileType = $scope.fileTypes[0];
 
             }
         }
@@ -1163,15 +1244,14 @@ angular.module('gkClientIndex.directives', [])
                ngModel:'='
             },
             template: '<div class="form-control input-datepicker">'
-                +'<input type="text" datepicker-popup="yyyy年M月d日" ng-model="ngModel" is-open="isOpen" current-text="今天" toggle-weeks-text="周" clear-text="清空" close-text="关闭"/>'
-                +'<i class="calendar" ng-class="isOpen=true"></i>'
+                +'<input type="text" datepicker-popup="yyyy年M月d日" show-weeks="false" ng-model="ngModel" is-open="false" current-text="今天" toggle-weeks-text="周" clear-text="清空" close-text="关闭"/>'
+                //+'<i class="calendar" ng-class="isOpen=true"></i>'
                 +'</div>',
             link: function ($scope, $element, $attrs) {
-
+                $scope.isOpen = false;
             }
         }
     }])
-
 ;
 angular.module('gkNewsApp.directives', [])
 /**
@@ -1184,30 +1264,29 @@ angular.module('gkNewsApp.directives', [])
             templateUrl: "views/news_update.html",
             link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('noupdate', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            template: '<span>暂时还没有与你有关的消息</span>',
-            link: function (scope, element, attrs) {
+            })
+        .directive('noupdate', function () {
+            return {
+                restrict: 'E',
+                replace: true,
+                template: '<span>暂时还没有与你有关的消息</span>',
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-    .directive('newsindex', function (){
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "views/news_index.html",
-            link: function (scope, element, attrs) {
+        })
+        .directive('newsindex', function (){
+            return {
+                restrict: 'E',
+                replace: true,
+                templateUrl: "views/news_index.html",
+                link: function (scope, element, attrs) {
 
+                }
             }
-        }
-    })
-
+        })
     /**
      *  personal
      */

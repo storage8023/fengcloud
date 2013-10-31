@@ -1235,8 +1235,13 @@ function ($compile, $parse, $document, $position, dateFilter, datepickerPopupCon
       }
 
       function updatePosition() {
+
         scope.position = $position.position(element);
         scope.position.top = scope.position.top + element.prop('offsetHeight');
+        var grid = scope.position.left +  popupEl.outerWidth() - element.offsetParent().prop('offsetWidth');
+        if(grid>0){
+            scope.position.left = scope.position.left - grid- 10;
+        }
       }
 
       var documentBindingInitialized = false, elementFocusInitialized = false;
@@ -1482,7 +1487,7 @@ angular.module('ui.bootstrap.modal', [])
 
         //remove backdrop if no longer needed
         if (backdropIndex() == -1) {
-          backdropDomEl.remove();
+          backdropDomEl&&backdropDomEl.remove();
           backdropDomEl = undefined;
         }
 

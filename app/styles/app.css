@@ -29,55 +29,17 @@ body {
     height: 80%;
 }
 header {
-    height: 50px;
-    border-bottom: 1px solid #B4B4B4;
-    background: -webkit-gradient(linear,0 0,0 100%,from(#FCFCFC),to(#E6E7E8));
-    padding-left: 200px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-header .account{
-    width: 200px;
-    border-right: 1px solid #202427;
-    background: #40464D;
     position: absolute;
     left:0;
     top:0;
-    height:72px;
-    color:#fff;
+    right: 0;
+    height: 50px;
+    border-bottom: 1px solid #B4B4B4;
+    background: -webkit-gradient(linear,0 0,0 100%,from(#FCFCFC),to(#E6E7E8));
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
-header .account .account_info{
-    height: 32px;
-    margin: 20px 0 0 0;
-    line-height: 32px;
-}
-header .account .account_info > *{
-    display: inline-block;
-    vertical-align: middle;
-}
-header .account .account_info .icon_mail{
-    width: 24px;
-    height: 32px;
-    vertical-align: middle;
-    display: inline-block;
-    background: url(../images/icon/icon_other.png) no-repeat -7px -6px;
-    margin: 0 5px 0 0;
-}
-header .account .photo{
-    width: 32px;
-    height: 32px;
-    border-radius: 32px;
-    margin: 0 0 0 10px;
 
-}
-header .account .name{
-    width: 100px;
-    margin: 0 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 18px;
-}
 header .menu{
     position: absolute;
     right: 0;
@@ -287,8 +249,8 @@ footer {
 
 .main {
     position: absolute;
-    top: 50px;
-    left: 0;
+    top: 0;
+    left: 200px;
     right: 0;
     bottom:0;
 }
@@ -306,8 +268,56 @@ footer {
     overflow: auto;
     background: #2a2e33;
     color:#fff;
-    top:22px;
+    top:0;
     box-shadow:inset -4px 0 6px rgb(38,40,35);
+}
+
+.left_sidebar .account{
+    border-right: 1px solid #202427;
+    background: #40464D;
+    height:50px;
+    color:#fff;
+    overflow: hidden;
+}
+.left_sidebar  .account .account_info{
+    height: 32px;
+    margin: 9px 0 0 0;
+    line-height: 32px;
+}
+.left_sidebar  .account .account_info > *{
+    display: inline-block;
+    vertical-align: middle;
+}
+.left_sidebar  .account .account_info .icon_mail{
+    width: 24px;
+    height: 32px;
+    vertical-align: middle;
+    display: inline-block;
+    background: url(../images/icon/icon_other.png) no-repeat -7px -6px;
+    margin: 0 5px 0 0;
+}
+.left_sidebar  .account .photo{
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    margin: 0 0 0 10px;
+
+}
+.left_sidebar  .account .name{
+    width: 100px;
+    margin: 0 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 18px;
+}
+.left_sidebar .tree_wrapper{
+    position: absolute;
+    top:50px;
+    left:0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
 }
 .left_sidebar ul.nav.nav-list{
     padding: 0;
@@ -415,13 +425,14 @@ footer {
     border-left: 1px solid #CDCED0;
     width: 250px;
     background: #F1F1F2;
+    top:50px;
 }
 
 .main .content {
     position: absolute;
-    top: 0;
+    top: 50px;
     bottom: 0;
-    left: 200px;
+    left: 0;
     right: 250px;
 }
 
@@ -868,6 +879,7 @@ footer {
     height: 35px;
     padding: 0 0 0 20px;
     background: #f1f1f2;
+    position: relative;
 }
 .right_sidebar .no_file p{
     color:#92979d;
@@ -1335,7 +1347,54 @@ position: absolute;
 .right_sidebar .file_detail_wrapper .history_list > li span.f_r{
     margin-left:5px;
 }
+.right_sidebar .search_file > section,
+.right_sidebar .search_file > .btn_wrapper{
+    margin: 0 5px;
+}
 
+.right_sidebar .search_condition{
+    margin-bottom: 8px;
+    padding:5px 5px 5px 5px;
+}
+.right_sidebar .search_condition .remove_condition{
+    position: absolute;
+    top:0px;
+    right: 5px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: url(../images/icon/icon16x16.png) -4px -4px;
+    vertical-align: middle;
+}
+
+.right_sidebar .search_condition .input-datepicker input{
+    width: 90px;
+    font-size: 12px;
+}
+.right_sidebar .search_condition .condition_list > div{
+    margin-top: 8px;
+}
+.right_sidebar .search_condition .condition_list > div label{
+    display: block;
+    font-weight: normal;
+}
+.right_sidebar .more_search_condition {
+    top:0;
+    right: 4px;
+    position: absolute;
+}
+.right_sidebar .more_search_condition i{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    background: url(../images/icon/icon16x16.png) -4px -4px;
+    margin: -2px 0 0 0;
+}
+
+.right_sidebar .search_file .btn_wrapper{
+    margin-top:8px;
+}
 /**同步设置窗口**/
 .sync_settiong_dialog #local_uri{
 

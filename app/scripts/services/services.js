@@ -487,13 +487,11 @@ angular.module('gkClientIndex.services', [])
                     data:jQuery.param(params)
                 });
             },
-            searchFile: function (keyword, path, mount_id) {
-                var fileSearch = new GKFileSearch();
-                fileSearch.conditionIncludeKeyword(keyword);
-                fileSearch.conditionIncludePath(path);
+            searchFile: function (condition, mount_id) {
+
                 var params = {
                     mount_id: mount_id,
-                    condition: fileSearch.getCondition()
+                    condition: condition
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -501,7 +499,7 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost() + '/1/file/search',
-                    params: params
+                    data: jQuery.param(params)
                 });
             },
             smartFolderList:function(code){
@@ -890,6 +888,27 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
+    .factory('GKSearch', [function () {
+        return {
+            showSearchSidebar:false,
+            keyword:'',
+            isShowSearchSidebar:function(){
+                return this.showSearchSidebar;
+            },
+            getKeyWord:function(){
+                return this.keyword;
+            },
+            setKeyWord:function(keyword){
+                this.keyword = keyword;
+            }
+        }
+    }])
+/**
+ * 客户端的回调函数
+ */
+    .factory('GKClientCallback',[function(){
+        return GKClientCallback;
+    }])
 /**
  * 记录浏览历史，提供前进,后退功能
  */
@@ -897,6 +916,10 @@ angular.module('gkClientIndex.services', [])
         return new GKHistory($q, $location, $rootScope);
     }])
 ;
+
+var GKClientCallback = function(){
+
+};
 
 function GKFileSearch() {
 }
@@ -925,6 +948,10 @@ GKFileSearch.prototype.getCondition = function () {
 GKFileSearch.prototype.conditionIncludeKeyword = function (keyword) {
     this.includeCondition['keywords'] = ['text', keyword];
 };
+GKFileSearch.prototype.conditionIncludeDir = function (dir) {
+    this.includeCondition['dir'] = ['eq',dir];
+};
+
 GKFileSearch.prototype.conditionIncludePath = function (path) {
     this.includeCondition['path'] = ['prefix', path];
 };
@@ -935,12 +962,32 @@ GKFileSearch.prototype.conditionIncludeCreator = function (creator) {
         this.includeCondition['creator'] = ['eq', creator];
     }
 };
-GKFileSearch.prototype.conditionIncludeDateline = function (dataline, pre) {
+GKFileSearch.prototype.conditionIncludeModifier = function (modifier) {
+    if (angular.isArray(modifier)) {
+        this.includeCondition['modifier'] = ['in', modifier];
+    } else if (angular.isNumber(creator)) {
+        this.includeCondition['modifier'] = ['eq', modifier];
+    }
+};
+GKFileSearch.prototype.conditionIncludeDateline = function (dateline, pre) {
     pre = angular.isDefined(pre) ? pre : 'gt';
-    if (angular.isArray(dataline)) {
+    if (angular.isArray(dateline)) {
         pre = 'between'
     }
-    this.includeCondition['dateline'] = [pre, dataline];
+    this.includeCondition['dateline'] = [pre, dateline];
+};
+GKFileSearch.prototype.conditionIncludeLastDateline = function (lastDateline, pre) {
+    pre = angular.isDefined(pre) ? pre : 'gt';
+    if (angular.isArray(lastDateline)) {
+        pre = 'between'
+    }
+    this.includeCondition['last_dateline'] = [pre, lastDateline];
+};
+GKFileSearch.prototype.conditionIncludeExtension = function (ext) {
+    if (!angular.isArray(ext)) {
+        ext = [ext];
+    }
+    this.includeCondition['extension'] = ['in', ext];
 };
 GKFileSearch.prototype.conditionIncludeFilesize = function (filesize, pre) {
     pre = angular.isDefined(pre) ? pre : 'gt';

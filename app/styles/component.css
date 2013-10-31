@@ -122,21 +122,53 @@
     border:1px solid #ccc;
     display: inline-block;
     width: auto;
-    padding:0;
-    height: 30px;
+    height: 34px;
+    background: #fff;
+    padding: 6px;
 }
-.input-datepicker i{
+.input-datepicker i.calendar{
     display: inline-block;
     width: 16px;
     height: 16px;
     vertical-align: middle;
-    background: url(../images/icon.png) no-repeat 0 0;
+    background: url(../images/icon/icon16x16.png) no-repeat -4px -4px;
 
 }
 .input-datepicker input{
     border:0 none;
     height: 100%;
-    padding: 3px;
-    border-radius: 4px 0 4px 0;
+    padding: 0;
+    border-radius: 0;
+    font-size: 13px;
+}
+/**重写bootstarp的datepicker样式**/
+
+.gk_datepicker{
+    /*max-width: 240px;*/
+    padding: 5px;
+    border:1px solid #E5E5E5;
+    box-shadow: none;
+    border-radius: 0;
+}
+.gk_datepicker *{
+   font-size: 12px;
+}
+.gk_datepicker td{
+    border: 1px solid #E5E5E5;
+}
+.gk_datepicker table .btn{
+    border:0 none;
+    padding: 4px 7px;
+}
+.gk_datepicker table .btn{
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
 }
 
+.gk_datepicker table .btn.btn-info,
+.gk_datepicker table .btn:hover,
+.gk_datepicker table .btn:active{
+    background:#eaeaea;
+    color:#333;
+}

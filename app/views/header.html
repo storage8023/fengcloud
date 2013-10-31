@@ -1,20 +1,14 @@
 <header ng-controller="header">
-    <div class="account" >
-        <div  class="account_info">
-            <img class="photo" ng-click = "personalOpen()" ng-src="{{user.photourl}}" alt=""/>
-            <span ng-click = "personalOpen()" class="name">{{user.member_name}}</span>
-            <i  ng-click = "newsOpen()" class="icon_mail" ></i>
-        </div>
-    </div>
+
     <breadsearch></breadsearch>
     <div class="back_forward btn-group">
         <button type="button" class="btn btn-gk" ng-click="handleNav()" ng-disabled="!canBack"><i>&lt;</i></button>
         <button type="button" class="btn btn-gk" ng-click="handleNav(true)" ng-disabled="!canForward"><i>&gt;</i></button>
     </div>
     <div class="menu">
-        <a class="gk_drop" href="javascript:void(0);" ng-click = "queueOpen()">
-            <i class="icon-group"></i>
-        </a>
+        <!--<a class="gk_drop" href="javascript:void(0);">-->
+            <!--<i class="icon-group"></i>-->
+        <!--</a>-->
         <span class="more_menu dropdown">
             <a href="javascript:void(0);" dropdown-toggle><i class="" ></i></a>
             <ul class="dropdown-menu">

@@ -5,7 +5,7 @@
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', function ($scope, $location, GKPath, GKFile, $rootScope) {
         $rootScope.PAGE_CONFIG = {};
-        $rootScope.PAGE_CONFIG.user = $rootScope.user = gkClientInterface.getUser();
+        $rootScope.PAGE_CONFIG.user = gkClientInterface.getUser();
 
         var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
 
@@ -131,7 +131,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch) {
         /**
          * 分析路径获取参数
          * @type {*}
@@ -696,7 +696,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             refreahData();
         })
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location',function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
+    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location','GKSearch',function ($scope, RestFile, $rootScope, GKApi, $http, $location,GKSearch) {
         var gird = /[,;；，\s]/g;
         $scope.$on('$locationChangeSuccess',function(){
             $scope.partition = $location.search().partition;
@@ -729,50 +729,47 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-                    $scope.remindMembers = [
-                        {
-                            'id': 1,
-                            'name': '测试1'
-                        },
-                        {
-                            'id': 2,
-                            'name': '测试2'
-                        },
-                        {
-                            'id': 3,
-                            'name': '测试3'
-                        },
-                        {
-                            'id': 4,
-                            'name': '测试4'
-                        },
-                        {
-                            'id': 5,
-                            'name': '测试5'
-                        },
-                        {
-                            'id': 6,
-                            'name': 'xugetest1'
-                        }
-                    ];
+//                    $scope.remindMembers = [
+//                        {
+//                            'id': 1,
+//                            'name': '测试1'
+//                        },
+//                        {
+//                            'id': 2,
+//                            'name': '测试2'
+//                        },
+//                        {
+//                            'id': 3,
+//                            'name': '测试3'
+//                        },
+//                        {
+//                            'id': 4,
+//                            'name': '测试4'
+//                        },
+//                        {
+//                            'id': 5,
+//                            'name': '测试5'
+//                        },
+//                        {
+//                            'id': 6,
+//                            'name': 'xugetest1'
+//                        }
+//                    ];
                 });
             } else {
 
             }
         }, true);
 
-
-
-//        setTimeout(function () {
-//            var fileSearch = new GKFileSearch();
-//            fileSearch.conditionIncludeKeyword('ws');
-//            var condition = fileSearch.getCondition();
-//            console.log($rootScope);
-//            GKApi.createSmartFolder(263677, 'test', condition);
-//        }, 0);
+        $scope.showSearch = false;
+        $scope.$watch(function(){
+            return GKSearch.isShowSearchSidebar();
+        },function(newValue){
+            $scope.showSearch = newValue;
+        });
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', 'GKSearch',function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout,GKSearch) {
 
         /**
          * 面包屑
@@ -841,27 +838,54 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
         $scope.searchState = '';
         $scope.searchScope = 'path';
-        $scope.setSearchScope = function (searchScope) {
+        $scope.setSearchScope = function (searchScope,success,error) {
             $scope.searchScope = searchScope;
         }
+
+        var invokeSearchFile = function(condition,success,error){
+            $scope.searchState = 'loading';
+            GKApi.searchFile(condition,$scope.mount_id).success(function (data) {
+                $scope.searchState = 'end';
+                data && data.list && $rootScope.$broadcast('searchFileSuccess', data.list, $scope.keyword);
+                if(angular.isFunction(success)){
+                    success();
+                }
+            }).error(function () {
+                    $scope.searchState = 'end';
+                    if(angular.isFunction(error)){
+                        error();
+                    }
+                });
+        };
+
         $scope.searchFile = function () {
             if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                 return;
             }
-            $scope.searchState = 'loading';
-            GKApi.searchFile($scope.keyword, $scope.searchScope == 'path' ? $scope.path : '', $scope.mount_id).success(function (data) {
-                $scope.searchState = 'end';
-                data && data.list && $rootScope.$broadcast('searchFileSuccess', data.list, $scope.keyword);
-            }).error(function () {
-                    $scope.searchState = 'end';
-                });
+            var fileSearch = new GKFileSearch();
+            fileSearch.conditionIncludeKeyword($scope.keyword);
+            fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
+            var condition = fileSearch.getCondition()
+            invokeSearchFile(condition,function(){
+                GKSearch.setKeyWord($scope.keyword);
+                GKSearch.showSearchSidebar = true;
+            });
         };
+
+
+        $scope.$on('invokeSearch',function($event,condition){
+            console.log(condition);
+            invokeSearchFile(condition);
+        })
+
         $scope.cancelSearch = function ($event) {
             $scope.searchState = '';
             $scope.keyword = '';
+            GKSearch.showSearchSidebar = false;
             $rootScope.$broadcast('searchFileCancel');
             $event.stopPropagation();
         };
+
         $scope.personalOpen = function ($scope) {
             var UIPath = gkClientInterface.getUIPath();
             var data = {
@@ -872,8 +896,26 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             gkClientInterface.setMain(data);
         }
+        $scope.sitOpen = function ($scope) {
+            var data = {
+                url:"file:///F:/fengcloud/app/views/site.html",
+                type:"child",
+                width:755,
+                height:440
+            }
+            gkClientInterface.setMain(data);
+        }
+        $scope.newsbtn = function(){
+            $scope.newsScroll();
+            jQuery("#newindex").slideToggle(500);
 
-        $scope.queueOpen = function(){
+        }
+
+        $scope.sharingindex = function(){
+            jQuery(".sharingindex").slideToggle(500);
+
+        }
+	 $scope.queueOpen = function(){
             var UIPath = gkClientInterface.getUIPath();
             var url = 'file:///'+UIPath+'/views/queue.html';
             var data = {
@@ -882,8 +924,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 width:800,
                 height:500
             }
-            gkClientInterface.setMain(data);
-        }
+            gkClientInterface.setMain(data);        
+	    }
         $scope.items = [
             {
                item: "访问网站",
@@ -1117,118 +1159,118 @@ angular.module('gkNewsApp.controllers', [])
                     return format;
                 };
 
-                Date.prototype.yesterformat = function (yesterformat) {
-                    var o = {
-                        "M+": this.getMonth() + 1, //month
-                        "d+": this.getDate() - 1, //day
-                        "h+": this.getHours(), //hour
-                        "m+": this.getMinutes(), //minute
-                        "s+": this.getSeconds(), //second
-                        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-                        "S": this.getMilliseconds() //millisecond
-                    };
-                    if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
-                        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-                    for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
-                        yesterformat = yesterformat.replace(RegExp.$1,
-                            RegExp.$1.length == 1 ? o[k] :
-                                ("00" + o[k]).substr(("" + o[k]).length));
-                    return yesterformat;
-                };
+        Date.prototype.yesterformat = function (yesterformat) {
+            var o = {
+                "M+": this.getMonth() + 1, //month
+                "d+": this.getDate() - 1, //day
+                "h+": this.getHours(), //hour
+                "m+": this.getMinutes(), //minute
+                "s+": this.getSeconds(), //second
+                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                "S": this.getMilliseconds() //millisecond
+            };
+            if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
+                (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
+                yesterformat = yesterformat.replace(RegExp.$1,
+                    RegExp.$1.length == 1 ? o[k] :
+                        ("00" + o[k]).substr(("" + o[k]).length));
+            return yesterformat;
+        };
 
-                /**
-                 * 过滤今天，昨天或者以前
-                 * 新消息news
-                 * @filterDay()
-                 */
-                function filterDay(filter, dates) {
-                    var date = filter('date');
-                    var printDateNew = [];
-                    var d = new Date();
-                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-                    var yesterDate = nowDate - 3600 * 24;
-                    for (var i = 0; i < dates.length; i++) {
-                        var printDate = [];
-                        var currentDate = dates[i][0].dateline;
-                        if (currentDate >= nowDate) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    var newsDay = new Date().format('MM-dd');
-                                    printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                }
-                            }
-                            printDateNew.push(printDate);
-                        }
-                        else if (currentDate >= yesterDate) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    var yesterDay = new Date().yesterformat('MM-dd');
-                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                }
-                            }
-                            printDateNew.push(printDate);
+        /**
+         * 过滤今天，昨天或者以前
+         * 新消息news
+         * @filterDay()
+         */
+        function filterDay(filter, dates) {
+            var date = filter('date');
+            var printDateNew = [];
+            var d = new Date();
+            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+            var yesterDate = nowDate - 3600 * 24;
+            for (var i = 0; i < dates.length; i++) {
+                var printDate = [];
+                var currentDate = dates[i][0].dateline;
+                if (currentDate >= nowDate) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            var newsDay = new Date().format('MM-dd');
+                            printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
                         } else {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                }
-                            }
-                            printDateNew.push(printDate);
+                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
                         }
                     }
-                    return printDateNew;
+                    printDateNew.push(printDate);
                 }
-                /**
-                 * 再次加载消息
-                 */
-                var againNew = function (filter, dates) {
-                    var date = filter('date');
-                    var printDateNew = [];
-                    var d = new Date();
-                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-                    var yesterDate = nowDate - 3600 * 24;
-                    for (var i = 0; i < dates.length; i++) {
-                        var printDate = [];
-                        var currentDate = dates[i][0].dateline;
-                        if (lastime === dates[0][0].date) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                            }
-                            printDateNew.push(printDate);
-                        } else if (currentDate >= yesterDate) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    var yesterDay = new Date().yesterformat('MM-dd');
-                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                }
-                            }
-                            printDateNew.push(printDate);
+                else if (currentDate >= yesterDate) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            var yesterDay = new Date().yesterformat('MM-dd');
+                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
                         } else {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                }
-                            }
-                            printDateNew.push(printDate);
+                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
                         }
                     }
-                    return printDateNew;
-                };
-                /**
-                 * 最后一条消息的时间戳
-                 * @param filter
-                 * @param dates
-                 */
+                    printDateNew.push(printDate);
+                } else {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        }
+                    }
+                    printDateNew.push(printDate);
+                }
+            }
+            return printDateNew;
+        }
+        /**
+         * 再次加载消息
+         */
+        var againNew = function (filter, dates) {
+            var date = filter('date');
+            var printDateNew = [];
+            var d = new Date();
+            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+            var yesterDate = nowDate - 3600 * 24;
+            for (var i = 0; i < dates.length; i++) {
+                var printDate = [];
+                var currentDate = dates[i][0].dateline;
+                if (lastime === dates[0][0].date) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                    }
+                    printDateNew.push(printDate);
+                } else if (currentDate >= yesterDate) {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            var yesterDay = new Date().yesterformat('MM-dd');
+                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                        }
+                    }
+                    printDateNew.push(printDate);
+                } else {
+                    for (var j = 0; j < dates[i].length; j++) {
+                        if (j === 0) {
+                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        } else {
+                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                        }
+                    }
+                    printDateNew.push(printDate);
+                }
+            }
+            return printDateNew;
+        };
+        /**
+         * 最后一条消息的时间戳
+         * @param filter
+         * @param dates
+         */
                 var lasttime = function (dates) {
                     var last = [];
                     for (var i = 0; i < dates.length; i++) {
@@ -1688,7 +1730,6 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
                 }
             });
         };
-
     }]);
 */
 
@@ -1861,3 +1902,5 @@ angular.module("gkQueueApp.controllers", [])
         }
 
     });
+
+
