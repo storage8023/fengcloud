@@ -181,7 +181,7 @@ header .bread_and_search_wrapper .bread_item > a{
 }
 header .bread_and_search_wrapper:hover .bread_item
 {
-    border-right-color: #c6cacb;
+    /*border-right-color: #c6cacb;*/
 }
 
 /*header .bread_and_search_wrapper .bread_item > *{*/
@@ -1427,4 +1427,15 @@ position: absolute;
 /**同步设置窗口**/
 .sync_settiong_dialog #local_uri{
 
+}
+
+/*resize*/
+.resize{
+    position: absolute;
+    width: 20px;
+    top: 0;
+    bottom: 0;
+    left: 197px;
+    cursor: e-resize;
+    z-index: 50;
 }
