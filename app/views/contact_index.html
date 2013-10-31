@@ -1,31 +1,36 @@
-<script src="bower_components/tree/tree_directive.js"></script>
-<div  ng-app = "gkContactApp" ng-controller = "contactCtrl" id = "contact-wrapper" class = "contact-wrapper-slide">
-    <div class = "contact-header">
-        <h1>从联系人中选择</h1>
-    </div>
-    <div class = "contact-container c_f_after">
-        <div class = "contact-sidebar f_l">
-            <div class = "contact-sidebar-selected">
-                <span>已选0个</span>
-            </div>
-            <div class ="contact-sidebar-tree">
-                <contactslide-tree tree-data="example_treedata" on-select="contactTree(branch)"></contactslide-tree>
+<div ng-app = "gkContactApp" ng-controller = "contactCtrl" >
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3>从联系人中选择</h3>
+        </div>
+        <div class="modal-body">
+            <div class = "contact-container c_f_after">
+                <div class = "contact-sidebar f_l">
+                    <div class = "contact-sidebar-selected">
+                        <span>已选0个</span>
+                    </div>
+                    <div class ="contact-sidebar-tree" >
+                        <!--contactslide-tree tree-data="example_treedata" on-select="contactTree(branch)"></contactslide-tree-->
+                        <contactslide-tree header="This is the example tree" tree-data="example_treedata" icon-leaf="icon-file" on-select="my_default_handler(branch)" expand-level="2" initial-selection="Vegetable"></contactslide-tree>
+                    </div>
+                </div>
+                <div class = "contact-content f_l">
+                    <div class = "contact-content-search">
+                        <input class = "button selectGroup" type = "button"  data-group="确定"  value="选择此组" />
+                        <input type = "text" class= "search" ng-keyup = "conkeyup($event,orgId)" ng-model = "context"/>
+                    </div>
+                    <div class = "contact-content-group scrollbar ">
+                        <contact-group-members ng-repeat = "groupnew in conteamMembers"></contact-group-members>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class = "contact-content f_l">
-            <div class = "contact-content-search">
-                <input class = "button selectGroup" type = "button"  data-group="确定"  value="选择此组" />
-                <input type = "text" class= "search" ng-keyup = "conkeyup($event)" ng-model = "context"/>
-            </div>
-            <div class = "contact-content-group scrollbar ">
-                <contact-group-members ng-repeat = "groupnew in conteamMembers"></contact-group-members>
-            </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
         </div>
-    </div>
-    <div class = "contact-footer">
-        <div class = "contact-footer-determine-close">
-            <input class = "contact-footer-determine" type = "button" value = "确定" ng-click="perPostShare()" />
-            <input class = "contact-footer-close" type = "button" ng-click = "buttonClicked()" value = "关闭" />
-        </div>
-    </div>
+    </script>
+
+    <button class="btn" ng-click="open()">Open me!</button>
+    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
 </div>

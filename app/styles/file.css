@@ -184,7 +184,6 @@
 }
 #personal-title .personal-myteam{
     margin: 22px 100px 0 20px;
-
 }
 #personal-title .personal-myteam span{
     font-size: 24px;
@@ -197,7 +196,6 @@
 .personal-newteam a{
     cursor: pointer;
 }
-
 .perdisplayNone{
     display:none;
 }
@@ -368,7 +366,6 @@
     border-bottom:1px solid #AEBCD4;
     margin: 0 auto;
     overflow: auto;
-    display: none;
 }
 .contact-sidebar,
 .viewmember-sidebar{
@@ -1124,4 +1121,182 @@
 *   site.html
 *   footer
 **/
+/**
+*queue.html
+*/
+.queue-sildbar{
+    width:150px;
+    border-right: 1px solid#BBBCC1;
+   position: absolute;
+    top:0;
+    bottom: 35px;
+    left:0;
+    background:#F0F4F7 ;
+}
+.queue-sildbar-ul{
+    padding-top: 30px;
+}
+.queue-sildbar-ul li{
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 14px;
+    margin-bottom: 20px;
+    cursor:pointer ;
+}
+.blue {
+    background:#86B7F2;
+}
+.none {
+    background: none;
+}
+.queue-content{
+   position: absolute;
+   top:0;
+   left:150px;
+   right: 0;
+   bottom:0;
+}
+.queue-con-upload,
+.queue-con-download{
+    font-size: 14px;
+}
+.queue-con-upload .queue-con-top,
+.queue-con-download .queue-con-top{
+    width: 100%;
+    height: 30px;
+    background: #F1F1F1;
+    border-bottom:1px solid #CFCFCF;
+}
+.queue-con-top-title{
+    width: 60%;
+    margin-left: 10%;
+    line-height: 25px;
+}
+.queue-con-up{
+    top:30px;
+    left:0;
+    right: 0;
+}
+.queue-con-up li{
+    height: 45px;
+    position: relative;
+    margin-top: 1px;
+}
+.queue-con-font{
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 45px;
+    top:0;
+    line-height: 45px;
+}
+.queue-con-back{
+    height: 45px;
+    position:absolute;
+    top:0;
+    width: 10%;
+}
+.queue-con-file{
+    width: 45%;
+    margin-left: 5%;
+}
+.queue-con-use{
+    width: 10%;
+}
+.queue-con-speed{
+    width: 10%;
+}
+.queue-con-time{
+    width: 30%;
+}
+.queue-con-synch{
+    font-size: 14px;
+}
+.queue-con-synch .queue-con-synch-top{
+    height: 30px;
+    background: #F1F1F1;
+    border-bottom:1px solid #CFCFCF;
+}
+.queue-con-top-synch-title{
+    width:30%;
+    margin-left: 10%;
+    line-height: 25px;
+}
+.queue-con-top-synch-status{
+    width: 30%;
+}
+.queue-con-top-synch-time{
+    width: 30%;
+}
+.queue-con-synch-up{
+    top:30px;
+    left:0;
+    right: 0;
+}
+.queue-con-synch-up li{
+    height: 45px;
+    position: relative;
+    margin-top: 1px;
+}
+.queue-con-synch-font{
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 45px;
+    top:0;
+    line-height: 45px;
+}
+.queue-con-synch-file{
+    width: 33%;
+    margin-left: 7%;
+}
+.queue-con-synch-status{
+    width: 30%;
+}
+.queue-con-synch-time{
+    width: 30%;
+}
+.queue-footer{
+    height: 35px;
+    border-top:2px solid #B6BCCA;
+    bottom: 0;
+    position: absolute;
+    line-height: 30px;
+    font-size: 14px;
+    background: #E8EBF0;
+    left:0;
+    right: 0;
+}
+.queue-footer-UploadDownload{
+    margin-left: 10px;
+}
+.queue-footer-Upload,
+.queue-footer-Download{
+    display: inline;
+}
+.queue-footer-Upload .uploadimage{
+    background: url('../images/icon.png') no-repeat 0 -280px;
+}
+.queue-footer-Download .downloadimage{
+    background: url('../images/icon.png') no-repeat 0 -280px;
+}
+.queue-footer-UploadDownload span{
+    padding-right:10px;
+    padding-left:6px;
+}
+.queue-footer-Close{
+    width:65px;
+    height:25px;
+    line-height: 25px;
+    border:1px solid #325E94;
+    color:#FFF;
+    background: #467DC2;
+    border-radius: 3px 3px 3px 3px;
+    margin-right: 20px;
+    margin-top: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
 

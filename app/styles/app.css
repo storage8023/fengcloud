@@ -19,31 +19,21 @@ body {
     -webkit-user-select: none;
     user-select: none;
 }
-.sharingindex{
-    display:none;
-    position: absolute;
-    top:8%;
-    left: 100px;
-    z-index: 9999;
+.newstyle{
+    position:absolute;
+    top:-500px;
+    transition-property:height 0s linear 2s;
+    /* Firefox 4 */
+    -moz-transition:height 1s linear 2s;
+    /* Safari and Chrome */
+    -webkit-transition:height 3s linear 0s;
+    /* Opera */
+    -o-transition:height 1s linear 2s;
 }
-#contactindex{
-    display: none;
-    position: absolute;
-    top: 0;
-    z-index: 9999;
+.newstylehover{
+    top:0;
 }
-.ewmenmberindex{
 
-    position: relative;
-    top: 0;
-    z-index: 99999;
-}
-#newindex{
-    display: none;
-    position: relative;
-    top: 0;
-    z-index: 9999;
-}
 header {
     position: absolute;
     left:0;

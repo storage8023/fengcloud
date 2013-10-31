@@ -1,11 +1,9 @@
 ﻿var module;
-
 module = angular.module('contactSlideTree', []);
-
 module.directive('contactslideTree', function($timeout) {
     return {
         restrict: 'E',
-        templateUrl: 'app/tree_template.html',
+        templateUrl: 'tree_template.html',
         scope: {
             treeData: '=',
             onSelect: '&',
@@ -29,7 +27,7 @@ module.directive('contactslideTree', function($timeout) {
             expand_level = parseInt(attrs.expandLevel, 10);
             scope.header = attrs.header;
             if (!scope.treeData) {
-                alert('no treeData defined for the tree!');
+                scope.treeData = [];
             }
             if (scope.treeData.length == null) {
                 if (treeData.label != null) {
