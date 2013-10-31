@@ -34,9 +34,9 @@
     <script src="scripts/services/services.js"></script>
     <script src="scripts/app.js"></script>
 </head>
-<body >
+<body id = "newindex">
+<newsindex  class="newstyle"></newsindex>
 <div  ng-include="'views/header.html'"></div>
-<newsindex  class="newstyle" ng-class="{true: 'newstyle',false: 'newstylehover'}[newsUpdates]" ></newsindex>
 <div class="main">
     <div ng-include="'views/left_sidebar.html'"></div>
     <div class="content">

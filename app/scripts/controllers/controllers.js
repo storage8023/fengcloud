@@ -856,7 +856,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.searchState = 'end';
                 });
         };
-
         $scope.cancelSearch = function ($event) {
             $scope.searchState = '';
             $scope.keyword = '';
@@ -873,9 +872,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             gkClientInterface.setMain(data);
         }
-        $scope.newsOpen =function(){
-            $scope.newsUpdates = "newstylehover";
-        }
+
         $scope.queueOpen = function(){
             var UIPath = gkClientInterface.getUIPath();
             var url = 'file:///'+UIPath+'/views/queue.html';

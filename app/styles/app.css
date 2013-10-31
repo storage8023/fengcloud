@@ -21,19 +21,15 @@ body {
 }
 .newstyle{
     position:absolute;
-    top:-500px;
-    transition-property:height 0s linear 2s;
-    /* Firefox 4 */
-    -moz-transition:height 1s linear 2s;
-    /* Safari and Chrome */
-    -webkit-transition:height 3s linear 0s;
-    /* Opera */
-    -o-transition:height 1s linear 2s;
+    top:5%;
+    left:10%;
+    -webkit-transition:height 3s linear 3s;
+    z-index:9999;
 }
 .newstylehover{
+    position:absolute;
     top:0;
 }
-
 header {
     height: 50px;
     border-bottom: 1px solid #B4B4B4;

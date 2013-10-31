@@ -14,7 +14,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout','selectMemberModal',function (RestFile,$location,$timeout,selectMemberModal) {
+    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout',function (RestFile,$location,$timeout) {
         return {
             replace: true,
             restrict: 'E',
@@ -1171,42 +1171,43 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
+/**
+ * news
+ */
+    .directive('update', function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "views/news_update.html",
+            link: function (scope, element, attrs) {
+
+            }
+        }
+    })
+    .directive('noupdate', function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            template: '<span>暂时还没有与你有关的消息</span>',
+            link: function (scope, element, attrs) {
+
+            }
+        }
+    })
+    .directive('newsindex', function (){
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: "views/news_index.html",
+            link: function (scope, element, attrs) {
+
+            }
+        }
+    })
 ;
 
-    /**
-     * news
-     */
-    angular.module('gkNewsApp.directives', [])
-        .directive('update', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                templateUrl: "views/news_update.html",
-                link: function (scope, element, attrs) {
 
-                }
-            }
-            })
-        .directive('noupdate', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                template: '<span>暂时还没有与你有关的消息</span>',
-                link: function (scope, element, attrs) {
 
-                }
-            }
-        })
-        .directive('newsindex', function (){
-            return {
-                restrict: 'E',
-                replace: true,
-                templateUrl: "views/news_index.html",
-                link: function (scope, element, attrs) {
-
-                }
-            }
-        })
     /**
      *  personal
      */
