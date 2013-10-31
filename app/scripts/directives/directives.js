@@ -1273,6 +1273,74 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
+    .directive('resize', ['$document','$window',function ($document,$window) {
+        return {
+            restrict: 'E',
+            replace: true,
+            template: '<div class="resize" ng-style="style" ng-class="moving?\'moving\':\'\'"></div>',
+            link: function ($scope, $element, $attrs) {
+                $scope.moving = false;
+
+                $element.bind('mousedown',function(e){
+                    $scope.$apply(function(){
+                        $scope.moving = true;
+                        $document.find('body').addClass('resizing');
+                        $document.bind('mousemove.resize',function(e){
+                            $scope.$apply(function(){
+                                if(e.pageX<80){
+                                    return false;
+                                }
+                                if($scope.moving){
+                                    $scope.style = {
+                                        left:e.pageX-1
+                                    }
+                                }
+
+                            })
+
+                        })
+                    });
+                })
+
+                var setPosition = function(width){
+                    if(width<80){
+                        width=80;
+                    }
+                    if($document.width()-width<650){
+                        width = $document.width() - 650;
+                    }
+                    $document.find('.left_sidebar').css('width', width);
+                    $document.find('.main').css('left', width);
+                    $scope.style = {
+                        left:width-1
+                    }
+                };
+
+                $document.bind('mouseup',function(e){
+                    $scope.$apply(function(){
+                        if($scope.moving){
+                            setPosition(e.pageX);
+                        }
+                        $document.find('body').removeClass('resizing');
+                        $scope.moving = false;
+                        $document.unbind('mouseup.resize');
+                    });
+                })
+
+                jQuery($window).bind('resize',function(){
+                   var max =  $document.width() - 650;
+                   console.log(max);
+                   if($document.find('.left_sidebar').width()>max){
+                       $scope.style = {
+                           left:max-1
+                       }
+                       setPosition(max);
+                   }
+                })
+
+            }
+        }
+    }])
 ;
 angular.module('gkNewsApp.directives', [])
 /**

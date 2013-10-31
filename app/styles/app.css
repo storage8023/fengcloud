@@ -307,6 +307,10 @@ footer {
     height:50px;
     color:#fff;
     overflow: hidden;
+    position: absolute;
+    top:0;
+    left:0;
+    right: 0;
 }
 .left_sidebar  .account .account_info{
     height: 32px;
@@ -323,22 +327,25 @@ footer {
     vertical-align: middle;
     display: inline-block;
     background: url(../images/icon/icon_other.png) no-repeat -7px -6px;
-    margin: 0 5px 0 0;
+    position: absolute;
+    right:5px;
 }
 .left_sidebar  .account .photo{
     width: 32px;
     height: 32px;
     border-radius: 32px;
-    margin: 0 0 0 10px;
+    position: absolute;
+    left:10px;
 
 }
 .left_sidebar  .account .name{
-    width: 100px;
-    margin: 0 10px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 18px;
+    position: absolute;
+    left:50px;
+    right:30px;
 }
 .left_sidebar .tree_wrapper{
     position: absolute;
@@ -1432,10 +1439,20 @@ position: absolute;
 /*resize*/
 .resize{
     position: absolute;
-    width: 20px;
+    width: 0;
     top: 0;
     bottom: 0;
-    left: 197px;
+    left: 199px;
+    border-left: 1px dotted transparent;
+    border-right: 1px dotted transparent;
     cursor: e-resize;
-    z-index: 50;
+    z-index: 1004;
+}
+.resize.moving{
+  border-left-color: #111;
+    border-right-color: #111;
+}
+
+body.resizing *{
+    cursor: e-resize !important;
 }
