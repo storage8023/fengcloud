@@ -45,6 +45,10 @@ body {
     z-index: 9999;
 }
 header {
+    position: absolute;
+    left:0;
+    top:0;
+    right: 0;
     height: 50px;
     border-bottom: 1px solid #B4B4B4;
     background: -webkit-gradient(linear,0 0,0 100%,from(#FCFCFC),to(#E6E7E8));
@@ -884,6 +888,7 @@ footer {
     height: 35px;
     padding: 0 0 0 20px;
     background: #f1f1f2;
+    position: relative;
 }
 .right_sidebar .no_file p{
     color:#92979d;
@@ -1351,7 +1356,54 @@ position: absolute;
 .right_sidebar .file_detail_wrapper .history_list > li span.f_r{
     margin-left:5px;
 }
+.right_sidebar .search_file > section,
+.right_sidebar .search_file > .btn_wrapper{
+    margin: 0 5px;
+}
 
+.right_sidebar .search_condition{
+    margin-bottom: 8px;
+    padding:5px 5px 5px 5px;
+}
+.right_sidebar .search_condition .remove_condition{
+    position: absolute;
+    top:0px;
+    right: 5px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: url(../images/icon/icon16x16.png) -4px -4px;
+    vertical-align: middle;
+}
+
+.right_sidebar .search_condition .input-datepicker input{
+    width: 90px;
+    font-size: 12px;
+}
+.right_sidebar .search_condition .condition_list > div{
+    margin-top: 8px;
+}
+.right_sidebar .search_condition .condition_list > div label{
+    display: block;
+    font-weight: normal;
+}
+.right_sidebar .more_search_condition {
+    top:0;
+    right: 4px;
+    position: absolute;
+}
+.right_sidebar .more_search_condition i{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    background: url(../images/icon/icon16x16.png) -4px -4px;
+    margin: -2px 0 0 0;
+}
+
+.right_sidebar .search_file .btn_wrapper{
+    margin-top:8px;
+}
 /**同步设置窗口**/
 .sync_settiong_dialog #local_uri{
 

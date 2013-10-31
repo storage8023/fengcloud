@@ -131,7 +131,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch) {
         /**
          * 分析路径获取参数
          * @type {*}
@@ -696,7 +696,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             refreahData();
         })
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location',function ($scope, RestFile, $rootScope, GKApi, $http, $location) {
+    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location','GKSearch',function ($scope, RestFile, $rootScope, GKApi, $http, $location,GKSearch) {
         var gird = /[,;；，\s]/g;
         $scope.$on('$locationChangeSuccess',function(){
             $scope.partition = $location.search().partition;
@@ -729,50 +729,47 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-                    $scope.remindMembers = [
-                        {
-                            'id': 1,
-                            'name': '测试1'
-                        },
-                        {
-                            'id': 2,
-                            'name': '测试2'
-                        },
-                        {
-                            'id': 3,
-                            'name': '测试3'
-                        },
-                        {
-                            'id': 4,
-                            'name': '测试4'
-                        },
-                        {
-                            'id': 5,
-                            'name': '测试5'
-                        },
-                        {
-                            'id': 6,
-                            'name': 'xugetest1'
-                        }
-                    ];
+//                    $scope.remindMembers = [
+//                        {
+//                            'id': 1,
+//                            'name': '测试1'
+//                        },
+//                        {
+//                            'id': 2,
+//                            'name': '测试2'
+//                        },
+//                        {
+//                            'id': 3,
+//                            'name': '测试3'
+//                        },
+//                        {
+//                            'id': 4,
+//                            'name': '测试4'
+//                        },
+//                        {
+//                            'id': 5,
+//                            'name': '测试5'
+//                        },
+//                        {
+//                            'id': 6,
+//                            'name': 'xugetest1'
+//                        }
+//                    ];
                 });
             } else {
 
             }
         }, true);
 
-
-
-//        setTimeout(function () {
-//            var fileSearch = new GKFileSearch();
-//            fileSearch.conditionIncludeKeyword('ws');
-//            var condition = fileSearch.getCondition();
-//            console.log($rootScope);
-//            GKApi.createSmartFolder(263677, 'test', condition);
-//        }, 0);
+        $scope.showSearch = false;
+        $scope.$watch(function(){
+            return GKSearch.isShowSearchSidebar();
+        },function(newValue){
+            $scope.showSearch = newValue;
+        });
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope', function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','GKSearch', function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,GKSearch) {
 
         /**
          * 面包屑
@@ -841,29 +838,54 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
         $scope.searchState = '';
         $scope.searchScope = 'path';
-        $scope.setSearchScope = function (searchScope) {
+        $scope.setSearchScope = function (searchScope,success,error) {
             $scope.searchScope = searchScope;
         }
+
+        var invokeSearchFile = function(condition,success,error){
+            $scope.searchState = 'loading';
+            GKApi.searchFile(condition,$scope.mount_id).success(function (data) {
+                $scope.searchState = 'end';
+                data && data.list && $rootScope.$broadcast('searchFileSuccess', data.list, $scope.keyword);
+                if(angular.isFunction(success)){
+                    success();
+                }
+            }).error(function () {
+                    $scope.searchState = 'end';
+                    if(angular.isFunction(error)){
+                        error();
+                    }
+                });
+        };
+
         $scope.searchFile = function () {
             if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                 return;
             }
-
-            $scope.searchState = 'loading';
-            GKApi.searchFile($scope.keyword, $scope.searchScope == 'path' ? $scope.path : '', $scope.mount_id).success(function (data) {
-                $scope.searchState = 'end';
-                data && data.list && $rootScope.$broadcast('searchFileSuccess', data.list, $scope.keyword);
-            }).error(function () {
-                    $scope.searchState = 'end';
-                });
+            var fileSearch = new GKFileSearch();
+            fileSearch.conditionIncludeKeyword($scope.keyword);
+            fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
+            var condition = fileSearch.getCondition()
+            invokeSearchFile(condition,function(){
+                GKSearch.setKeyWord($scope.keyword);
+                GKSearch.showSearchSidebar = true;
+            });
         };
+
+
+        $scope.$on('invokeSearch',function($event,condition){
+            console.log(condition);
+            invokeSearchFile(condition);
+        })
 
         $scope.cancelSearch = function ($event) {
             $scope.searchState = '';
             $scope.keyword = '';
+            GKSearch.showSearchSidebar = false;
             $rootScope.$broadcast('searchFileCancel');
             $event.stopPropagation();
         };
+
         $scope.personalOpen = function ($scope) {
             var UIPath = gkClientInterface.getUIPath();
             var data = {

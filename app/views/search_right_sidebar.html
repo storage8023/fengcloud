@@ -1,9 +1,34 @@
 <div class="search_file">
-    <div class=section_title>更多搜索条件<a href="javascrpt:void(0)" class="more_search_condition"><i></i></a></div>
-    <section>
-        <search-condition ng-repeat="condition in conditions" selectedOption="condition.selectedOption"></search-condition>
+    <div class=section_title>更多搜索条件<a href="javascript:void(0)" class="more_search_condition" ng-click="addCondition()"><i></i></a></div>
+    <section class="search_condition">
+            <div class="condition_list">
+                <div class="file_type_layer">
+                    <label>文件类型</label>
+                    <select class="form-control" name="extension" ng-model="extension" ng-options="ext.name for ext in extensions"></select>
+                </div>
+                <div class="create_date_layer">
+                    <label>添加时间</label>
+                    <input-datepicker ng-model="fromCreateDate"></input-datepicker>
+                    <span>至</span>
+                    <input-datepicker ng-model="toCreateDate"></input-datepicker>
+                </div>
+                <div class="edit_dateline_layer">
+                    <label>最后修改时间</label>
+                    <input-datepicker ng-model="fromEditDate" class=""></input-datepicker>
+                    <span>至</span>
+                    <input-datepicker ng-model="toEditDate" class=""></input-datepicker>
+                </div>
+                <div class="creator_layer">
+                    <label>创建人</label>
+                    <input class="form-control" name="creator" ng-model="creator" />
+                </div>
+                <div class="editor_layer">
+                    <label>最后修改人</label>
+                    <input class="form-control" name="modifier" ng-model="modifier" />
+                </div>
+            </div>
     </section>
-    <div>
-        <button class='btn gk-btn save_search'>保存</button>
+    <div class="btn_wrapper">
+        <button class='btn btn-gk save_search' ng-click="saveSearch()">保存</button>
     </div>
 </div>
