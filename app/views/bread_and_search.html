@@ -14,15 +14,15 @@
             </li>
         </ul>
     </div>
-    <i class="icon-search glyphicon glyphicon-search" ng-click="searchFile()"></i>
-    <i class="icon-cancel glyphicon glyphicon-remove" ng-click="cancelSearch($event)"></i>
+    <i class="icon-search" ng-click="searchFile()"></i>
+    <i class="icon-cancel" ng-click="cancelSearch($event)"></i>
     <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"  ui-keydown="{'enter':'searchFile()'}"/>
     <!--<div class="keyword_label">-->
         <!--<span class="label label-primary"><span>{{keyword}}</span><i class="glyphicon glyphicon-remove remove_label"></i></span>-->
     <!--</div>-->
     <div class="searching_label dropdown">
-        <a href="javascript:void(0)" dropdown-toggle>
-            <span>{{searchScope=='partition' || !path.length?(partition|getPartitionName):(path|baseName)}}</span><i ng-if="path.length" class="gk_down_arrow"></i>
+        <a href="javascript:void(0)" dropdown-toggle title="在 {{searchScope=='partition' || !path.length?(partition|getPartitionName):(path|baseName)}} 中搜索：">
+            <span>在 {{searchScope=='partition' || !path.length?(partition|getPartitionName):(path|baseName)}} 中搜索：</span><i ng-if="path.length" class="gk_down_arrow"></i>
         </a>
         <ul class="dropdown-menu" ng-if="path.length">
             <li>

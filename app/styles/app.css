@@ -33,11 +33,11 @@ header {
     left:0;
     top:0;
     right: 0;
-    height: 50px;
     border-bottom: 1px solid #B4B4B4;
     background: -webkit-gradient(linear,0 0,0 100%,from(#FCFCFC),to(#E6E7E8));
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    height: 50px;
 }
 
 header .menu{
@@ -89,51 +89,54 @@ header .menu > .gk_drop{
 
 }
 header .bread_and_search_wrapper{
-    margin: 0 250px 0 70px;
+    margin: 0 250px 0 80px;
     border:1px solid #c6cacb;
-    border-radius: 4px;
+    border-radius: 14px;
     background: #fff;
-    height: 32px;
+    height: 28px;
     position: relative;
 }
 header .bread_and_search_wrapper .searching_label{
     position: absolute;
-    left:0;
-    line-height: 30px;
-    background-color: #ecf0f5;
-    border-radius: 4px 0 0 4px;
-    width: 110px;
-    border-right: 1px solid #c6cacb;
+    left:1px;
+    line-height: 22px;
+    background-color: #B5D4FF;
+    border-radius: 14px;
+    width: 140px;
+    border: 1px solid #9AC3EB;
     display: none;
     padding: 0 5px;
-}
-header .bread_and_search_wrapper .searching_label > a {
+    margin: 1px 0;
 
 }
-header .bread_and_search_wrapper .searching_label > a > span{
-    width: 90px;
+header .bread_and_search_wrapper .searching_label > a {
+    color: #333;
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    display: inline-block;
+    padding-right: 7px;
 }
-header .bread_and_search_wrapper .searching_label > a > i{
 
+header .bread_and_search_wrapper .searching_label > a > .gk_down_arrow{
+    border-top-color: #333;
+    position: absolute;
+    top:9px;
+    right: 8px;
 }
 header .bread_and_search_wrapper .bread{
     border-right: 1px solid transparent;
     border-radius: 4px 0 0 4px;
     position: absolute;
-    left:10px;
+    left:13px;
     right: 220px;
 }
 header .bread_and_search_wrapper input{
     position: absolute;
     right: 24px;
-    height: 24px;
+    height: 26px;
     border: 0 none;
-    margin: 4px 0 0 0;
-    padding: 0 5px;
+    padding: 2px 5px;
     width: 200px;
 }
 header .bread_and_search_wrapper .icon-search,
@@ -141,15 +144,24 @@ header .bread_and_search_wrapper .icon-cancel{
     position: absolute;
     right: 5px;
     top:5px;
-    font-size: 18px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+}
+header .bread_and_search_wrapper .icon-search{
+    background: url(../images/icon/icon16x16.png) no-repeat -464px -4px;
+}
+header .bread_and_search_wrapper .icon-cancel{
+    background: url(../images/icon/icon16x16.png) no-repeat -664px -4px;
 }
 header .bread_and_search_wrapper .hide_bread{
    position: absolute;
-   left:0;
+   left:2px;
 }
 header .bread_and_search_wrapper .hide_bread > a {
     display: inline-block;
-    line-height: 30px;
+    line-height: 26px;
     padding: 0 3px;
     margin-top: 3px;
 }
@@ -186,7 +198,7 @@ display: none;
 
 header .bread_and_search_wrapper.searching input{
     width:auto;
-    left:110px;
+    left:140px;
 }
 header .bread_and_search_wrapper.searching .searching_label{
 display: block;
@@ -231,11 +243,28 @@ header .bread_and_search_wrapper.searching.end .icon-cancel{
 }
 
 header .back_forward{
-    margin: -55px 0 0 7px;
+    margin: -48px 0 0 11px;
 }
 header .back_forward .btn{
-    line-height: 24px;
-    padding: 3px 9px;
+    padding: 4px 6px;
+    border-radius: 14px;
+}
+header .back_forward .btn i{
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    background: url(../images/icon/icon16x16.png) no-repeat -624px -4px;
+    display: inline-block;
+    margin: -3px 0 0 0;
+}
+header .back_forward .btn.forward i{
+     background-position: -644px -4px;
+}
+header .back_forward .btn.forward[disabled] i{
+    background-position: -644px -24px;
+}
+header .back_forward .btn.back[disabled] i{
+    background-position: -624px -24px;
 }
 footer {
     position: absolute;
@@ -568,8 +597,8 @@ footer {
 }
 
 .bread {
-    height: 30px;
-    line-height: 30px;
+    height: 26px;
+    line-height: 26px;
     overflow: hidden;
 }
 .bread .bread_list{

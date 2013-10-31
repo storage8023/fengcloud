@@ -172,3 +172,6 @@
     background:#eaeaea;
     color:#333;
 }
+.dropdown-menu a{
+    font-size: 13px;
+}
