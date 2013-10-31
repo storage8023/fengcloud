@@ -19,16 +19,14 @@ body {
     -webkit-user-select: none;
     user-select: none;
 }
-.newstyle{
-    position:absolute;
-    top:5%;
-    left:10%;
-    -webkit-transition:height 3s linear 3s;
-    z-index:9999;
-}
-.newstylehover{
-    position:absolute;
-    top:0;
+.news-index-class{
+    z-index: 9999;
+    position: absolute;
+    top:-500px;
+    -webkit-transition:top 1s ease 0.5s;
+    width: 70%;
+    margin-left: 15%;
+    height: 80%;
 }
 header {
     height: 50px;

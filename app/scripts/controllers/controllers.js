@@ -772,7 +772,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 //        }, 0);
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope', function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout) {
 
         /**
          * 面包屑
@@ -937,6 +937,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
+        $scope.newsOpen = function(){
+            var newsTmpl = '<newsindex class = "news-index-class" ng-style="newsStyle"></newsindex>';
+            var news = $compile(newsTmpl)($scope);
+            $document.find('body').append(news);
+            $timeout(function(){
+                $scope.newsStyle = {
+                    top:50
+                }
+            },100)
+
+
+        }
 
     }]);
 
@@ -948,7 +960,7 @@ angular.module('gkNewsApp.controllers', [])
         /**
          * 服务器过来的数据处理
          */
-        var upDate = function(){
+        $scope.upDate = function(){
             var updateHttp = function(data) {
                 var deferred = $q.defer();
                 GKApi.update(data).success(function ($http){
@@ -969,6 +981,56 @@ angular.module('gkNewsApp.controllers', [])
                                 date:"2013-12-20",
                                 render_text:"这订单扯淡吗?"
                             },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
                                {
                                    dateline:1371108616,
                                    date:"2013-12-20",
@@ -1188,14 +1250,14 @@ angular.module('gkNewsApp.controllers', [])
                 }else{
                     var filterData = compare(newdata) //过滤出相同日期
                         ,equalData = filterDay($filter, filterData);
-                    $scope.equalDataNe = equalData;
+                    $scope.equalDataNew = equalData;
                     $scope.newsShow = 'yesNews';
                     $scope.lasttimelabel = lasttime(newdata);
-                    console.log(  $scope.lasttimelabel);
+
                 }
               })
         }
-        upDate();
+        $scope.upDate();
         /**
          *   按footer收取
          */
@@ -1205,7 +1267,6 @@ angular.module('gkNewsApp.controllers', [])
              });
          };
          newsControls();
-
     }]);
 
 /**

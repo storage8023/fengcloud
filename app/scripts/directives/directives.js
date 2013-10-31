@@ -1171,6 +1171,9 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
+
+;
+angular.module('gkNewsApp.directives', [])
 /**
  * news
  */
@@ -1204,9 +1207,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     })
-;
-
-
 
     /**
      *  personal
