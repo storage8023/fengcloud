@@ -770,124 +770,10 @@ angular.module('gkClientIndex.services', [])
         return GKMyMount;
     }
     ])
-  /*  .factory('selectMemberModal',['$modal',function($modal){
-        return {
-            open:function(orgId){
-                return $modal.open({
-                    templateUrl: 'contact_index.html',
-                    controller: function($scope, $modalInstance,orgId){
-                        $scope.orgId = orgId;
-                        $scope.selectedMembers = [];
-                        $scope.selectedGroups = [];
-                        $scope.ok = function () {
-                            $modalInstance.close(scope.selectedMembers, $scope.selectedGroups);
-                        };
 
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-                        /**
-                         * 获取组和成员
-                         *
-                        var temagroupsmember = function(){
-                            var teamGroupsHttp = function(data) {
-                                var deferred = $q.defer();
-                                GKApi.teamGroupsMembers(data).success(function($http){
-                                    var groupsAndMembers;
-                                    groupsAndMembers = $http;
-                                    deferred.resolve(groupsAndMembers);
-                                })
-                                return deferred.promise;
-                            }
-                            var promise = teamGroupsHttp($scope.orgId);
-                            promise.then(function(data){
-                                var groupsItem = []
-                                    ,groupsItems = []
-                                    ,conteamgroups = []
-                                    ,conteamMembers = [];
-                                conteamgroups = data.groups;
-                                conteamMembers = data.members;
-                                for(var key in groups){
-                                    item.push(groups[key]);
-                                }
-                                for(var i = 0,len = item.length;i<len;i++){
-                                    var data = [];
-                                    data ={
-                                        label:item[i].group_name,
-                                        data:item[i].group_id
-                                    }
-                                    items.push(data);
-                                }
-                                $scope.conteamMembers = conteamMembers;
-                                $scope.example =  items;
-                                $scope.example_treedata =  $scope.example;
-                            })
-                        }
-                        /**
-                         * 获取成员
-                         *
-                        var temamember = function(){
-                            $scope.contactTree = function(branch){
-                                $scope.memberOrg = branch.group_name;
-                            }
-                            var groupMemberHttp = function(data) {
-                                var deferred = $q.defer();
-                                GKApi.groupMember(data).success(function($http){
-                                    var member;
-                                    member = $http;
-                                    deferred.resolve(member);
-                                })
-                                return deferred.promise;
-                            }
-                            var promiseMember = teamGroupsHttp($scope.memberOrg);
-                            promiseMember.then(function(data){
-                                var conteamMembers = [];
-                                conteamMembers = data.members;
-                                $scope.conteamMembers = conteamMembers;
-                            })
-                        }
-                        /**
-                         * 搜索功能
-                         *
-                        var membersearch = function(){
-                            $scope.conkeyup = function ($event,orgId) {
-                                if ($event.keyCode === 13) {
-                                    var keySearch = function(data,id) {
-                                        var deferred = $q.defer();
-                                        GKApi.teamsearch(data,id).success(function($http){
-                                            var search;
-                                            search = $http;
-                                            deferred.resolve(search);
-                                        })
-                                        return deferred.promise;
-                                    }
-                                    var searchMember = keySearch($scope.context,$scope.orgId);
-                                    searchMember.then(function(data){
-                                        var newData = []
-                                            ,sear = [];
-                                        sear = data.search;
-                                        for(var i = 0,len = sear.length;i<len;i++){
-                                            if(sear[i].type !== "member"){
-                                                newData.push(sear[i]);
-                                            }
-                                        }
-                                        $scope.getkeytext =  newData;
-                                        $scope.conteamMembers = $scope.getkeytext;
-                                    })
-                                }
-                            }
-                        }
-
-                    },
-                    resolve: {
-                        orgId: function () {
-                            return orgId;
-                        }
-                    }
-                });
-            }
-        }
-    }])
+/**
+ * 客户端的回调函数
+ */
     .factory('GKSearch', [function () {
         return {
             showSearchSidebar:false,
@@ -903,9 +789,6 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-/**
- * 客户端的回调函数
- */
     .factory('GKClientCallback',[function(){
         return GKClientCallback;
     }])

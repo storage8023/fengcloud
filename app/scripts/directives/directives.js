@@ -14,7 +14,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('member',[function(){
+    .directive('member',['$compile','$document','$timeout',function($compile,$document,$timeout){
         return {
             replace: true,
             restrict: 'E',
@@ -23,11 +23,32 @@ angular.module('gkClientIndex.directives', [])
                 user:'='
             },
             link: function ($scope, $element) {
-                
+                $scope.newsOpen = function(){
+                    console.log(1);
+                    var newsTmpl = '<newsindex class = "news-index-class" ng-style="newsStyle"></newsindex>';
+                    var news = $compile(newsTmpl)($scope);
+                    $document.find('body').append(news);
+                    $timeout(function(){
+                        $scope.newsStyle = {
+                            top:50
+                        }
+                    },100)
+                };
+
+                $scope.personalOpen = function ($scope) {
+                    var UIPath = gkClientInterface.getUIPath();
+                    var data = {
+                        url:"file:///"+UIPath+"/views/personalInformation.html",
+                        type:"child",
+                        width:664,
+                        height:385
+                    }
+                    gkClientInterface.setMain(data);
+                };
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout','selectMemberModal',function (RestFile,$location,$timeout,selectMemberModal) {
+    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout',function (RestFile,$location,$timeout) {
         return {
             replace: true,
             restrict: 'E',

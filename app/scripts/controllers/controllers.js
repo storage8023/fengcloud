@@ -886,16 +886,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $event.stopPropagation();
         };
 
-        $scope.personalOpen = function ($scope) {
-            var UIPath = gkClientInterface.getUIPath();
-            var data = {
-                url:"file:///"+UIPath+"/views/personalInformation.html",
-                type:"child",
-                width:664,
-                height:385
-            }
-            gkClientInterface.setMain(data);
-        }
         $scope.sitOpen = function ($scope) {
             var data = {
                 url:"file:///F:/fengcloud/app/views/site.html",
@@ -979,18 +969,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-        $scope.newsOpen = function(){
-            var newsTmpl = '<newsindex class = "news-index-class" ng-style="newsStyle"></newsindex>';
-            var news = $compile(newsTmpl)($scope);
-            $document.find('body').append(news);
-            $timeout(function(){
-                $scope.newsStyle = {
-                    top:50
-                }
-            },100)
 
-
-        }
 
     }]);
 
