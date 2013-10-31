@@ -17,7 +17,7 @@
                 <div class = "contact-content f_l">
                     <div class = "contact-content-search">
                         <input class = "button selectGroup" type = "button"  data-group="确定"  value="选择此组" />
-                        <input type = "text" class= "search" ng-keyup = "conkeyup($event)" ng-model = "context"/>
+                        <input type = "text" class= "search" ng-keyup = "conkeyup($event,orgId)" ng-model = "context"/>
                     </div>
                     <div class = "contact-content-group scrollbar ">
                         <contact-group-members ng-repeat = "groupnew in conteamMembers"></contact-group-members>

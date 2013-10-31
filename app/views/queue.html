@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html ng-app  = "gkQueueApp">
+<head>
+    <title>传输队列</title>
+    <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
+    <link rel = "stylesheet" href = "../styles/file.css" type = "text/css" />
+    <link rel = "stylesheet" href = "../styles/base.css" type = "text/css" />
+</head>
+<body ng-controller = "queueCtrl">
+    <div class = "queue-wrapper">
+        <div class = "queue-sildbar">
+            <ul class = "queue-sildbar-ul">
+                <li class = "queue-sildbar-upload blue"  ng-class="{true: 'blue',false: 'none'}[showUploadBg]" ng-click = "queusSildbarUpload(); open('上传')">上传</li>
+                <li class = "queue-sildbar-download" ng-class="{true: 'blue',false: 'none'}[showDownloadBg]"  ng-click = "queusSildbarDownload(); open('下载')" >下载</li>
+                <li class = "queue-sildbar-synch"  ng-class="{true: 'blue',false: 'none'}[showSyncBg]"  ng-click = "queusSildbarSync(); open('同步')">同步</li>
+            </ul>
+        </div>
+        <div class = "queue-content" ng-switch on="openContent">
+            <div class = "queue-con-upload" ng-switch-when="上传">
+                <div class = "queue-con-top">
+                    <div class = "queue-con-top-title f_l">文件</div>
+                    <div class = "queue-con-top-time f_l">剩余时间</div>
+                </div>
+                <ul class = "queue-con-up">
+                    <li ng-repeat = "viewdownload in upload" ng-hide="hide">
+                        <div class = "queue-con-back" ></div>
+                        <div class = "queue-con-font">
+                            <div class = "queue-con-file f_l">
+                                <!--img src = "{{viewupload.webpath | getFileIcon:viewupload.dir}}" alt = "" /-->
+                                <span title = {{viewupload.webpath}}>{{viewupload.webpath}}</span>
+                            </div>
+                            <div class="queue-con-use f_l">
+                                <span></span>
+                                <span title = {{viewupload.possize}}>{{viewupload.possize}}</span>
+                            </div>
+                            <div class="queue-con-speed f_l">
+                                <span></span>
+                                <span title = {{viewupload.filesizepos}}>{{viewupload.filesizepos}}</span>
+                            </div>
+                            <div class="queue-con-time f_l">
+
+                                <span title = "{{viewupload.time}}">{{viewupload.time}}</span>
+                            </div>
+                            <div  ng-click = "hide =! hide;queueDelete('{{viewupload.webpath}}');">
+
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+            <div class = "queue-con-download" ng-switch-when="下载">
+                <div class = "queue-con-top">
+                    <div class = "queue-con-top-title f_l">文件</div>
+                    <div class = "queue-con-top-time f_l">剩余时间</div>
+                </div>
+                <ul class = "queue-con-up">
+                    <li ng-repeat = "viewdownload in download" ng-hide="hide">
+                        <div class = "queue-con-back" ></div>
+                        <div class = "queue-con-font">
+                            <div class = "queue-con-file f_l">
+                                <!--img src = "{{viewupload.webpath | getFileIcon:viewupload.dir}}" alt = "" /-->
+                                <span title = {{viewdownload.webpath}}>{{viewdownload.webpath}}</span>
+                            </div>
+                            <div class="queue-con-use f_l">
+                                <span></span>
+                                <span title = {{viewdownload.possize}}>{{viewdownload.possize}}</span>
+                            </div>
+                            <div class="queue-con-speed f_l">
+                                <span></span>
+                                <span title = {{viewdownload.filesizepos}}>{{viewdownload.filesizepos}}</span>
+                            </div>
+                            <div class="queue-con-time f_l">
+                                <span title = "{{viewdownload.time}}">{{viewdownload.time}}</span>
+                            </div>
+                            <div  ng-click = "hide =! hide;queueDelete('{{viewdownload.webpath}}');">
+
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class = "queue-con-synch" ng-switch-when="同步">
+                <div class = "queue-con-synch-top">
+                    <div class = "queue-con-top-synch-title f_l">同步目录</div>
+                    <div class = "queue-con-top-synch-status f_l">同步状态</div>
+                    <div class = "queue-con-top-synch-time f_l">剩余时间</div>
+                </div>
+                <ul class = "queue-con-synch-up" >
+                    <li ng-repeat = "viewsync in sync">
+                        <div class = "queue-con-synch-font">
+                            <div class = "queue-con-synch-file f_l">
+                                <span title = "{{sync.webpath}}">{{sync.webpath}}</span>
+                            </div>
+                            <div class="queue-con-synch-status f_l">
+                                <span title = "{{sync.status}}">{{sync.status}}</span>
+                            </div>
+                            <div class="queue-con-synch-time f_l">
+                                <span title = "{{sync.time}}">{{sync.time}}</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class = "queue-footer">
+            <div class = "queue-footer-UploadDownload f_l">
+                <div class = "queue-footer-Upload">
+                    <span class = "uploadimage"></span>
+                    <span title = "上传总速度：{{uploadspeek}} Kb/s">上传总速度：{{uploadspeek}} Kb/s</span>
+                </div>
+                <div class = "queue-footer-Download">
+                    <span class = "downloadimage"></span>
+                    <span title = "下载总速度：{{downloadspeek}} Kb/s">下载总速度：{{downloadspeek}} Kb/s</span>
+                </div>
+            </div>
+            <div class = "queue-footer-Close f_r" ng-click = "queueClose()" ><span>关闭</span></div>
+        </div>
+    </div>
+    <script src="../bower_components/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src = "../scripts/directives/directives.js" type="text/javascript"></script>
+    <script src = "../scripts/services/services.js" type="text/javascript"></script>
+    <script src = "../scripts/interface.js" type="text/javascript"></script>
+    <script src = "../scripts/app.js" type="text/javascript"></script>
+    <script src = "../scripts/controllers/controllers.js" type="text/javascript"></script>
+</body>
+</html>

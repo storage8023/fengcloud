@@ -250,6 +250,9 @@
     getUpdateLinkPaths: function(param){
         gkClient.gUpdateLinkPaths(JSON.stringify(param));
     },
+    getTransList: function(param){
+        return gkClient.gTransList(JSON.stringify(param));
+    },
     setLogoff:function(){
         gkClient.gLogoff();
     },

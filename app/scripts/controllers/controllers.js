@@ -836,24 +836,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             gkClientInterface.setMain(data);
         }
-        $scope.sitOpen = function ($scope) {
+        $scope.newsOpen =function(){
+            $scope.newsUpdates = "newstylehover";
+        }
+        $scope.queueOpen = function(){
+            var UIPath = gkClientInterface.getUIPath();
+            var url = 'file:///'+UIPath+'/views/queue.html';
             var data = {
-                url:"file:///F:/fengcloud/app/views/site.html",
+                url:url,
                 type:"child",
-                width:755,
-                height:440
+                width:800,
+                height:500
             }
             gkClientInterface.setMain(data);
-        }
-        $scope.newsbtn = function(){
-            $scope.newsScroll();
-         //   jQuery("#newindex").slideToggle(500);
-
-        }
-
-        $scope.sharingindex = function(){
-            jQuery(".sharingindex").slideToggle(500);
-
         }
         $scope.items = [
             {
@@ -869,7 +864,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 item:"设置",
                 menuclick:function(){
                     var UIPath = gkClientInterface.getUIPath();
-                    var url = 'file:///'+UIPath+'/views/personalInformation.html';
+                    var url = 'file:///'+UIPath+'/views/site.html';
                     var data = {
                         url:url,
                         type:"child",
@@ -915,243 +910,258 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
  * news
  */
 angular.module('gkNewsApp.controllers', [])
-    .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http', function ($filter, $scope, GKApi, $http) {
-        /**
-         * 过滤出相同日期
-         * 新消息news
-         * @compare()
-         */
-        function compare(dateObj) {
-            var results = []
-                , i = 0
-                , j = 0
-                , len = dateObj.length;
-            results[0] = new Array();
-            results[0].push(dateObj[0]);
-            for (; i < len - 1; i++) {
-                var next = dateObj[i + 1], k = 0, klen = results[j].length;
-                var value = results[j][results[j].length - 1];
-                if (value.date === next.date) {
-                    results[j].push(next);
-                }
-                else {
-                    j++;
-                    results[j] = new Array();
-                    results[j].push(next);
-                }
-            }
-            return results;
-        }
-        /**
-         * 返回日期的时间戳
-         * 新消息news
-         * @fetchDateline()
-         */
-        function fetchDateline(date) {
-            var year = date.getFullYear()
-                , month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() + 1 : date.getMonth() + 1
-                , day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-            return year + '/' + month + '/' + day;
-        }
-        /**
-         *   日期按yyyy-MM-dd格式输出
-         *   新消息news
-         *   @filterDay()
-         */
-        Date.prototype.format = function (format) {
-            var o = {
-                "M+": this.getMonth() + 1, //month
-                "d+": this.getDate(), //day
-                "h+": this.getHours(), //hour
-                "m+": this.getMinutes(), //minute
-                "s+": this.getSeconds(), //second
-                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-                "S": this.getMilliseconds() //millisecond
-            };
-            if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
-                (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)if (new RegExp("(" + k + ")").test(format))
-                format = format.replace(RegExp.$1,
-                    RegExp.$1.length == 1 ? o[k] :
-                        ("00" + o[k]).substr(("" + o[k]).length));
-            return format;
-        };
-
-        Date.prototype.yesterformat = function (yesterformat) {
-            var o = {
-                "M+": this.getMonth() + 1, //month
-                "d+": this.getDate() - 1, //day
-                "h+": this.getHours(), //hour
-                "m+": this.getMinutes(), //minute
-                "s+": this.getSeconds(), //second
-                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-                "S": this.getMilliseconds() //millisecond
-            };
-            if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
-                (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
-                yesterformat = yesterformat.replace(RegExp.$1,
-                    RegExp.$1.length == 1 ? o[k] :
-                        ("00" + o[k]).substr(("" + o[k]).length));
-            return yesterformat;
-        };
-
-        /**
-         * 过滤今天，昨天或者以前
-         * 新消息news
-         * @filterDay()
-         */
-        function filterDay(filter, dates) {
-            var date = filter('date');
-            var printDateNew = [];
-            var d = new Date();
-            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-            var yesterDate = nowDate - 3600 * 24;
-            for (var i = 0; i < dates.length; i++) {
-                var printDate = [];
-                var currentDate = dates[i][0].dateline;
-                if (currentDate >= nowDate) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            var newsDay = new Date().format('MM-dd');
-                            printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        }
-                    }
-                    printDateNew.push(printDate);
-                }
-                else if (currentDate >= yesterDate) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            var yesterDay = new Date().yesterformat('MM-dd');
-                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        }
-                    }
-                    printDateNew.push(printDate);
-                } else {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        }
-                    }
-                    printDateNew.push(printDate);
-                }
-            }
-            return printDateNew;
-        }
-        /**
-         * 再次加载消息
-         */
-        var againNew = function (filter, dates) {
-            var date = filter('date');
-            var printDateNew = [];
-            var d = new Date();
-            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-            var yesterDate = nowDate - 3600 * 24;
-            for (var i = 0; i < dates.length; i++) {
-                var printDate = [];
-                var currentDate = dates[i][0].dateline;
-                if (lastime === dates[0][0].date) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                    }
-                    printDateNew.push(printDate);
-                } else if (currentDate >= yesterDate) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            var yesterDay = new Date().yesterformat('MM-dd');
-                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        }
-                    }
-                    printDateNew.push(printDate);
-                } else {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        }
-                    }
-                    printDateNew.push(printDate);
-                }
-            }
-            return printDateNew;
-        };
-        /**
-         * 最后一条消息的时间戳
-         * @param filter
-         * @param dates
-         */
-        var lasttime = function (filter, dates) {
-            var last = [];
-            for (var i = 0; i < dates.length; i++) {
-                if (i = dates.length - 1) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === dates[i].length - 1) {
-                            last.push({"dateline": dates[i][j].dateline, "date": dates[i][j].date});
-                        }
-                    }
-                }
-            }
-            return last;
-        };
-
-        /**s
-         * 消息再处理
-         *
-         $scope.newMessage = function($scope){
-
-
-            $scope.d = gkClientInterface.getMessage;
-          //   $scope.filterData = compare(data);
-            console.log( $scope.d);
-             alert("haode");
-             $scope.equalDataNew = filterDay($filter, filterData);
-             $scope.lasttimelabel = lasttime(data);
-             if(newGetMessageData.update_count>0){
-                 $scope.newsShow = 'yesNews';
-             }else{
-                 $scope.newsShow = 'noNews';
-             }
-         };
-
+    .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
         /**
          * 服务器过来的数据处理
          */
+        var upDate = function(){
+            var updateHttp = function(data) {
+                var deferred = $q.defer();
+                GKApi.update(data).success(function ($http){
+                    var message = [];
+                    message = $http;
+                    deferred.resolve(message);
+                })
+                return deferred.promise;
+            }
+            var promiseMember = updateHttp();
+            promiseMember.then(function(data){
+                var newdata = [];
+                    var message =
+                        {  dateline: 1371108616,
+                           updates:[
+                            {
+                                dateline:1371108616,
+                                date:"2013-12-20",
+                                render_text:"这订单扯淡吗?"
+                            },
+                               {
+                                   dateline:1371108616,
+                                   date:"2013-12-20",
+                                   render_text:"这订单扯淡吗?"
+                               },
+                            {
+                                dateline:1371108616,
+                                date:"2013-12-14",
+                                render_text:"这订单扯淡吗?"
+                            },
+                            {
+                                dateline:1371108616,
+                                date:"2013-12-4",
+                                render_text:"这订单扯淡吗?"
+                            },
+                               {
+                                   dateline:1371108615,
+                                   date:"2013-12-4",
+                                   render_text:"这订单扯淡吗?"
+                               }
 
-        var updateHttp = function () {
-             GKApi.update().success(function ($http) {
-                $scope.getmessage =  $http;
-            });
+                        ]}
+
+                newdata = message.updates;    //data.updates;
+                console.log(newdata);
+                /**
+                 * 过滤出相同日期
+                 * 新消息news
+                 * @compare()
+                 */
+                function compare(dateObj) {
+                    var results = []
+                        , i = 0
+                        , j = 0
+                        , len = dateObj.length;
+                    results[0] = new Array();
+                    results[0].push(dateObj[0]);
+                    for (; i < len - 1; i++) {
+                        var next = dateObj[i + 1], k = 0, klen = results[j].length;
+                        var value = results[j][results[j].length - 1];
+                        if (value.date === next.date) {
+                            results[j].push(next);
+                        }
+                        else {
+                            j++;
+                            results[j] = new Array();
+                            results[j].push(next);
+                        }
+                    }
+                    return results;
+                }
+                /**
+                 * 返回日期的时间戳
+                 * 新消息news
+                 * @fetchDateline()
+                 */
+                function fetchDateline(date) {
+                    var year = date.getFullYear()
+                        , month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() + 1 : date.getMonth() + 1
+                        , day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                    return year + '/' + month + '/' + day;
+                }
+                /**
+                 *   日期按yyyy-MM-dd格式输出
+                 *   新消息news
+                 *   @filterDay()
+                 */
+                Date.prototype.format = function (format) {
+                    var o = {
+                        "M+": this.getMonth() + 1, //month
+                        "d+": this.getDate(), //day
+                        "h+": this.getHours(), //hour
+                        "m+": this.getMinutes(), //minute
+                        "s+": this.getSeconds(), //second
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                        "S": this.getMilliseconds() //millisecond
+                    };
+                    if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
+                        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)if (new RegExp("(" + k + ")").test(format))
+                        format = format.replace(RegExp.$1,
+                            RegExp.$1.length == 1 ? o[k] :
+                                ("00" + o[k]).substr(("" + o[k]).length));
+                    return format;
+                };
+
+                Date.prototype.yesterformat = function (yesterformat) {
+                    var o = {
+                        "M+": this.getMonth() + 1, //month
+                        "d+": this.getDate() - 1, //day
+                        "h+": this.getHours(), //hour
+                        "m+": this.getMinutes(), //minute
+                        "s+": this.getSeconds(), //second
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                        "S": this.getMilliseconds() //millisecond
+                    };
+                    if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
+                        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
+                        yesterformat = yesterformat.replace(RegExp.$1,
+                            RegExp.$1.length == 1 ? o[k] :
+                                ("00" + o[k]).substr(("" + o[k]).length));
+                    return yesterformat;
+                };
+
+                /**
+                 * 过滤今天，昨天或者以前
+                 * 新消息news
+                 * @filterDay()
+                 */
+                function filterDay(filter, dates) {
+                    var date = filter('date');
+                    var printDateNew = [];
+                    var d = new Date();
+                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+                    var yesterDate = nowDate - 3600 * 24;
+                    for (var i = 0; i < dates.length; i++) {
+                        var printDate = [];
+                        var currentDate = dates[i][0].dateline;
+                        if (currentDate >= nowDate) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    var newsDay = new Date().format('MM-dd');
+                                    printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                }
+                            }
+                            printDateNew.push(printDate);
+                        }
+                        else if (currentDate >= yesterDate) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    var yesterDay = new Date().yesterformat('MM-dd');
+                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                }
+                            }
+                            printDateNew.push(printDate);
+                        } else {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                }
+                            }
+                            printDateNew.push(printDate);
+                        }
+                    }
+                    return printDateNew;
+                }
+                /**
+                 * 再次加载消息
+                 */
+                var againNew = function (filter, dates) {
+                    var date = filter('date');
+                    var printDateNew = [];
+                    var d = new Date();
+                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+                    var yesterDate = nowDate - 3600 * 24;
+                    for (var i = 0; i < dates.length; i++) {
+                        var printDate = [];
+                        var currentDate = dates[i][0].dateline;
+                        if (lastime === dates[0][0].date) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                            }
+                            printDateNew.push(printDate);
+                        } else if (currentDate >= yesterDate) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    var yesterDay = new Date().yesterformat('MM-dd');
+                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                }
+                            }
+                            printDateNew.push(printDate);
+                        } else {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                }
+                            }
+                            printDateNew.push(printDate);
+                        }
+                    }
+                    return printDateNew;
+                };
+                /**
+                 * 最后一条消息的时间戳
+                 * @param filter
+                 * @param dates
+                 */
+                var lasttime = function (dates) {
+                    var last = [];
+                    for (var i = 0; i < dates.length; i++) {
+                        if (i = dates.length - 1) {
+
+                                    last.push({"dateline": dates[i].dateline, "date": dates[i].date});
+
+                        }
+                    }
+                    return last;
+                };
+                 /**
+                 * 单击向上向下滑动按钮
+                 * 新消息new
+                 * button - #newsbtn
+                 */
+                if(newdata.length === 0){
+                    $scope.newsShow = 'noNews';
+                }else{
+                    var filterData = compare(newdata) //过滤出相同日期
+                        ,equalData = filterDay($filter, filterData);
+                    $scope.equalDataNe = equalData;
+                    $scope.newsShow = 'yesNews';
+                    $scope.lasttimelabel = lasttime(newdata);
+                    console.log(  $scope.lasttimelabel);
+                }
+              })
         }
-        updateHttp();
-
-        /**
-         * 单击向上向下滑动按钮
-         * 新消息new
-         * button - #newsbtn
-         */
-         $scope.newsScroll = function(){
-
-             var data = [];
-             data = $scope.getmessage.updates;
-             if(data.length === 0){
-                 $scope.newsShow = 'noNews';
-             }else{
-                 var filterData = compare(data) //过滤出相同日期
-                     ,equalData = filterDay($filter, filterData);
-                 $scope.lasttimelabel = lasttime(data);
-                 $scope.equalDataNew = equalData;
-                 $scope.newsShow = 'yesNews';
-             }
-         }
+        upDate();
         /**
          *   按footer收取
          */
@@ -1161,6 +1171,7 @@ angular.module('gkNewsApp.controllers', [])
              });
          };
          newsControls();
+
     }]);
 
 /**
@@ -1460,42 +1471,23 @@ angular.module("gkSiteApp.controllers", [])
 
 /**
  * contact
- */
+ *
 angular.module("gkContactApp.controllers", ['contactSlideTree'])
     .controller('contactCtrl', ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
-        /**
-         * 向服务器获取左侧栏所有分组和成员
-         *
-         var teamGroupsHttp = function(){
-                GKApi.teamGroupsMembers().success(function($http){
-                    var conteamgroups = [],
-                        conteamMembers,
-                        item = '';
-                    conteamgroups = $http.groups;
-                    console.log( $http);
-                    conteamMembers = $http.members;
-                    var fetchData = function(data){
-                       for (var i = 0,len = data.length; i < len; i++) {
-                            item = JSON.stringify(data[i]).replace(/group_name/gi, 'label').replace(/group_id/gi, 'data');
-                            data.splice(i, 1, JSON.parse(item));
-                        }
-                    }
-                    $scope.example_treedata = fetchData(conteamgroups);
-
-                });
-        }*/
 
         var datas = 1255;
         var teamGroupsHttp = function(data) {
             var deferred = $q.defer();
             GKApi.teamGroupsMembers(data).success(function($http){
-                var conteamgroups = [];
+                var conteamgroups = [],
+                    conteamMembers = [];
                 conteamgroups = $http.groups;
-                deferred.resolve(conteamgroups);
+                conteamMembers = $http.members;
+                console.log(conteamMembers);
+                deferred.resolve(conteamgroups,conteamMembers);
             })
             return deferred.promise;
         }
-        teamGroupsHttp();
         var promise = teamGroupsHttp(datas);
         promise.then(function(groups){
             var item = [],
@@ -1523,12 +1515,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
         /**
          *  单机分组，向服务器获取成员
          *  @param branch
-         */
-         $scope.contactTree = function(branch) {
-            GKApi.groupmember(branch.org_id).success(function($http,data){
-              // $scope.conteamMembers = data;  7305
-            });
-        };
+         *
         $scope.conkeyup = function ($event) {
             if ($event.keyCode === 13) {
                 //团队id/ var =
@@ -1552,7 +1539,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
          $scope.conteamMembers = conKeyUpData($scope.getkeytext);
          /**
          * 单机选择确定按钮
-         */
+         *
 
         //点击选择分组按钮
         jQuery('.selectGroup').click ( function() {
@@ -1578,7 +1565,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
         });
         /**
          * 点击单选选择和确定按钮
-         */
+         *
         jQuery('.contact-content-group').click(function (e) {
             if (jQuery('.selectGroup').data('group') === "选择") return;
             if (e.target.className === "contact-content-normal") {
@@ -1591,7 +1578,7 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
         });
         /**
          *  点击确定提交按钮
-         */
+         *
         $scope.perPostShare = function () {
             var shareData = [];
             $.each(jQuery('.contact-content-team'), function () {
@@ -1606,71 +1593,176 @@ angular.module("gkContactApp.controllers", ['contactSlideTree'])
                 }
             });
         };
-        $scope.name = "100";
-    }]);
-
-/**
- * viewmember
- */
-angular.module("gkviewmemberApp.controllers", ['contactSlideTree'])
-    .controller('viewmemberCtrl', ['$filter', '$scope', 'GKApi', '$http', function ($filter, $scope, GKApi, $http) {
 
     }]);
-/**
- * sharingseggings
- */
-angular.module("gkSharingsettingsApp.controllers", [])
-    .controller('sharingsettingsCtrl', function ($scope) {
-        $scope.sharingsettings = [
-            {
-                name: '大哥',
-                email: '123456qq.com',
-                id: 123
-            },
-            {
-                name: '小弟',
-                email: '123456@qq.com',
-                id: 123
+*/
+
+angular.module("gkQueueApp.controllers", [])
+    .controller('queueCtrl', function ($scope) {
+        var  time1 = null
+            , time2 = null
+            , time3 = null;
+        $scope.openContent = "上传";
+        $scope.open = function(value) {
+            if (value === "上传") {
+                this.openContent = "上传";
+                $scope.showUploadBg = true;
+                $scope.showDownloadBg = false;
+                $scope.showSyncBg = false;
+            } else if (value === "下载") {
+                this.openContent = "下载";
+                $scope.showDownloadBg = true;
+                $scope.showUploadBg = false;
+                $scope.showSyncBg = false;
+            }else  if (value === "同步"){
+                this.openContent = "同步";
+                $scope.showDownloadBg = false;
+                $scope.showUploadBg = false;
+                $scope.showSyncBg = true;
             }
-        ]
-        console.log($scope.sharingsettings);
-        $scope.list = [
-            {"name": "Item 1", "isSelected": "active"},
-            {"name": "Item 2", "isSelected": ""}
-        ]
+        }
+        function bitSize(num, decimal) {
+            if (typeof(num) != 'number') {
+                num = Number(num);
+            }
+            if (typeof(decimal) != 'number') {
+                decimal = 2;
+            }
+            if (num < 0) {
+                return '';
+            }
+            var type = new Array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+            var j = 0;
+            while (num >= 1024) {
+                if (j >= 5)
+                    return num + type[j];
+                num = num / 1024;
+                j++;
+            }
+            if (num == 0) {
+                return num;
+            } else {
+                var dec = 1;
+                for (var i = 0; i < decimal; i++) {
+                    dec = dec * 10;
+                }
+                return Math.round(num * dec) / dec + type[j];
+            }
+        }
+
+        /**
+         * 上传下载处理数据
+         * * @param data
+         * @returns {Array}
+         */
+        var queusData = function(data){
+            var newdata = []
+                ,yesdata = [];
+            for(var i = 0,len = data.length; i<len;i++){
+                if(data[i].status === 3){
+                    var filesizePos = (data[i].pos/data[i].filesize)*100 + '%'
+                        ,posSize = bitSize(data[i].pos);
+                    yesdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
+                }else{
+                    var filesizePos = (data[i].pos/data[i].filesize)*100 + '%'
+                        ,posSize = bitSize(data[i].pos);
+                    newdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
+                }
+            }
+            newdata.push(yesdata);
+            return newdata;
+        }
+        /**
+         * 同步
+         * @param data
+         * @returns {Array}
+         */
+        var queusSync = function(data){
+            var newdata = []
+            for(var i = 0,len = data.length; i<len;i++){
+                if(data[i].num === 0){
+                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num});
+                }else{
+                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
+                }
+            }
+            return newdata;
+        }
+        /**
+         * 上传
+         */
+        $scope.queusSildbarUpload = function(){
+            var sildbarUploadData = [];
+            clearTimeout(time2);
+            clearTimeout(time3);
+            time1 = setTimeout(function() {
+                var data;
+                data = {
+                    type:"upload"
+                }
+                $scope.sildbarUpload = JSON.parse(gkClientInterface.getTransList(data));
+                sildbarUploadData =  $scope.sildbarUpload.list;
+                if($scope.sildbarUpload.download === 0){
+                    $scope.downloadspeek = 0;
+                }else{
+                    $scope.downloadspeek = $scope.sildbarUpload.download;
+                }
+                if( $scope.sildbarUpload.upload === 0 ){
+                    $scope.uploadspeek = 0;
+                }else{
+                    $scope.uploadspeek = $scope.sildbarUpload.upload;
+                }
+                $scope.upload = queusData(sildbarUploadData);
+            }, 3000);
+        }
+        /**
+         *下载
+         */
+        $scope.queusSildbarDownload = function(){
+            var sildbarDownloadData = [];
+            clearTimeout(time1);
+            clearTimeout(time3);
+            time1 = setTimeout(function() {
+                var data;
+                data = {
+                    type:"download"
+                }
+                $scope.sildbarDownload = JSON.parse(gkClientInterface.getTransList(data));
+                sildbarDownloadData =  $scope.sildbarDownload.list;
+                if($scope.sildbarDownload.download === 0){
+                    $scope.downloadspeek = 0;
+                }else{
+                    $scope.downloadspeek = $scope.sildbarDownload.download;
+                }
+                if( $scope.sildbarDownload.upload === 0 ){
+                    $scope.uploadspeek = 0;
+                }else{
+                    $scope.uploadspeek = $scope.sildbarDownload.upload;
+                }
+                $scope.download = queusData(sildbarDownloadData);
+            }, 3000);
+        }
+        /**
+         * 同步
+         */
+        $scope.queusSildbarSync = function(){
+            var sildbarSyncData = [];
+            clearTimeout(time2);
+            clearTimeout(time1);
+            time1 = setTimeout(function() {
+                var data;
+                data = {
+                    type:"sync"
+                }
+                $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+                sildbarSyncData =  $scope.sildbarSync.list;
+                $scope.downloadspeek = $scope.sildbarSync.download;
+                $scope.uploadspeek = $scope.sildbarSync.upload;
+                $scope.sync = queusSync(sildbarSyncData);
+            }, 3000);
+        }
+        $scope.queueClose = function(){
+            gkClientInterface.setClose();
+        }
 
     });
-
-var ModalDemoCtrl = function ($scope, $modal, $log) {
-
-    $scope.open = function () {
-        var modalInstance = $modal.open({
-            templateUrl: 'contact_index.html',
-            controller: contactCtrl,
-
-        });
-        modalInstance.result.then(function (selectedItem) {
-            $scope.selected = selectedItem;
-        }, function () {
-            $log.info('Modal dismissed at: ' + new Date());
-        });
-    };
-};
-
-var contactCtrl = function ($scope, $modalInstance, items) {
-
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
-
-    $scope.ok = function () {
-        $modalInstance.close($scope.selected.item);
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-};
-
-

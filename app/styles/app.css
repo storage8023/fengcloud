@@ -19,40 +19,18 @@ body {
     -webkit-user-select: none;
     user-select: none;
 }
-.sharingindex{
-    display:none;
-    position: absolute;
-    top:8%;
-    left: 100px;
-    z-index: 9999;
-}
-#contactindex{
-    display: none;
-    position: absolute;
-    top: 0;
-    z-index: 9999;
-}
-.ewmenmberindex{
-
-    position: relative;
-    top: 0;
-    z-index: 99999;
-}
-#newindex{
+.newstyle{
     position:absolute;
-    top: -500px;
-    z-index: 9999;
-}
-
-.newsopen .ng-hide-add{
-    -webkit-transition:all linear 1s;
-    transition:all linear 1s;
-    display:block!important;
-}
-.newsopen .ng-hide-remove {
     top:-500px;
+    transition-property:height 0s linear 2s;
+    /* Firefox 4 */
+    -moz-transition:height 1s linear 2s;
+    /* Safari and Chrome */
+    -webkit-transition:height 3s linear 0s;
+    /* Opera */
+    -o-transition:height 1s linear 2s;
 }
-.newsopen .ng-hide-remove.ng-hide-remove-active {
+.newstylehover{
     top:0;
 }
 

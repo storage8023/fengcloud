@@ -33,14 +33,10 @@
     <script src="scripts/directives/directives.js"></script>
     <script src="scripts/services/services.js"></script>
     <script src="scripts/app.js"></script>
-
 </head>
 <body >
-<sharingsettingsindex class ="sharingindex"></sharingsettingsindex>
-<contactindex id = "contactindex"></contactindex>
-<viewmenmberindex class = "ewmenmberindex"></viewmenmberindex>
 <div  ng-include="'views/header.html'"></div>
-<newsindex  ng-click = "newsopen = !newsopen " ng-model = "newsopen" ng-show = "newsopen"></newsindex>
+<newsindex  class="newstyle" ng-class="{true: 'newstyle',false: 'newstylehover'}[newsUpdates]" ></newsindex>
 <div class="main">
     <div ng-include="'views/left_sidebar.html'"></div>
     <div class="content">
