@@ -5,7 +5,7 @@
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', function ($scope, $location, GKPath, GKFile, $rootScope) {
         $rootScope.PAGE_CONFIG = {};
-        $rootScope.PAGE_CONFIG.user = $rootScope.user = gkClientInterface.getUser();
+        $rootScope.PAGE_CONFIG.user = gkClientInterface.getUser();
 
         var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
 

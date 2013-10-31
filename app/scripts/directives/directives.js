@@ -14,6 +14,19 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
+    .directive('member',[function(){
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/member.html",
+            scope:{
+                user:'='
+            },
+            link: function ($scope, $element) {
+                
+            }
+        }
+    }])
     .directive('singlefileRightSidebar', ['RestFile','$location','$timeout','selectMemberModal',function (RestFile,$location,$timeout,selectMemberModal) {
         return {
             replace: true,
