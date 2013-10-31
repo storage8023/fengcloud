@@ -239,6 +239,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var refreahData = function () {
             getFileData().then(function(newFileData){
+                //console.log(newFileData);
                 $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
             })
 
@@ -249,6 +250,62 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {{add: {name: string, index: number, callback: Function}, new_folder: {name: string, index: number, callback: Function}, lock: {name: string, index: number, callback: Function}, unlock: {name: string, index: number, callback: Function}, save: {name: string, index: number, callback: Function}, del: {name: string, index: number, callback: Function}, rename: {name: string, index: number, callback: Function}, order_by: {name: string, index: number, items: {order_by_file_name: {name: string, className: string, callback: Function}, order_by_file_size: {name: string, className: string, callback: Function}, order_by_file_type: {name: string, className: string, callback: Function}, order_by_last_edit_time: {name: string, className: string, callback: Function}}}}}
          */
         var allOpts = {
+            'paste': {
+                name: '粘贴',
+                index: 0,
+                callback: function () {
+                    var data = GKCilpboard.getData();
+                    if(!data || !data.files || !data.mount_id) return;
+                    var params = {
+                        target: $rootScope.PAGE_CONFIG.file.fullpath,
+                        targetmountid: $rootScope.PAGE_CONFIG.mount.mount_id,
+                        from_mountid: data.mount_id,
+                        from_list: data.files
+                    };
+                    if (data.code == 'ctrlC') {
+                        GK.copy(params).then(function () {
+                            refreahData();
+                            //$scope.$broadcast('ctrlVEnd', getFileData('test12345'));
+                            //GKCilpboard.clearData();
+                        }, function (error) {
+                            GKException.handleClientException(error);
+                        });
+                    } else if (data.code == 'ctrlX') {
+                        GK.move(params).then(function () {
+                            refreahData();
+                            //$scope.$broadcast('ctrlVEnd', getFileData('test123456'));
+                            GKCilpboard.clearData();
+                        }, function (error) {
+                            GKException.handleClientException(error);
+                        });
+                    }
+                }
+            },
+            'cut': {
+                name: '剪切',
+                index: 0,
+                callback: function () {
+                    var data = {
+                        code: 'ctrlX',
+                        mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                        files: getCilpFileData()
+                    }
+                    GKCilpboard.setData(data);
+                }
+            },
+            'copy': {
+                name: '复制',
+                index: 0,
+                callback: function () {
+                    var data = {
+                        code: 'ctrlC',
+                        mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                        files: getCilpFileData()
+                    };
+
+                    GKCilpboard.setData(data);
+                }
+            },
             'add': {
                 name: '添加',
                 index: 0,
@@ -458,7 +515,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.opts = [];
             $scope.rightOpts = {};
             var excludeRightOpts = ['add']; //右键要排除的操作
-            var excludeOpts = ['order_by']; // 顶部要排除的操作
+            var excludeOpts = ['order_by','paste','copy','cut']; // 顶部要排除的操作
             angular.forEach(optKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     $scope.opts.push(angular.extend(allOpts[value], {key: value}));
@@ -497,57 +554,37 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
+        var getCilpFileData = function(){
+            var files = [];
+            angular.forEach($rootScope.selectedFile,function(value){
+                files.push({
+                    webpath:value.fullpath
+                })
+            });
+            return files;
+        };
 
         /**
          * ctrl-C的 处理函数
          */
         $scope.$on('ctrlC', function () {
-            var data = {
-                code: 'ctrlC',
-                mount_id: $rootScope.user.mount_id,
-                files: $rootScope.selectedFile
-            };
-            GKCilpboard.setData(data);
+            allOpts['copy']['callback']();
         });
 
         /**
          * ctrl-X的 处理函数
          */
         $scope.$on('ctrlX', function () {
-            var data = {
-                code: 'ctrlX',
-                mount_id: $rootScope.user.mount_id,
-                files: $scope.selectedFile
-            }
-            GKCilpboard.setData(data);
+
+            allOpts['cut']['callback']();
         });
 
         /**
          * ctrl-V的 处理函数
          */
         $scope.$on('ctrlV', function () {
-            var data = GKCilpboard.getData();
-            var params = {
-                target: $scope.path,
-                targetmountid: $rootScope.user.mount_id,
-                from_mountid: data.mount_id,
-                from_list: data.files
-            };
-            if (data.code == 'ctrlC') {
-                GK.copy(params).then(function () {
-                    //$scope.$broadcast('ctrlVEnd', getFileData('test12345'));
-                    //GKCilpboard.clearData();
-                }, function (error) {
-                    GKException.handleClientException(error);
-                });
-            } else if (data.code == 'ctrlX') {
-                GK.move(params).then(function () {
-                    //$scope.$broadcast('ctrlVEnd', getFileData('test123456'));
-                    //GKCilpboard.clearData();
-                }, function (error) {
-                    GKException.handleClientException(error);
-                });
-            }
+            allOpts['paste']['callback']();
+
         });
 
         /**

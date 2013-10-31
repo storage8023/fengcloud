@@ -132,14 +132,18 @@
     },
     copy:function(params){
         try {
-            return gkClient.gCopy(params);
+            console.log(params);
+            var re = gkClient.gCopy(JSON.stringify(params));
+            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }
     },
     move:function(params){
         try {
-            return gkClient.gMove(params);
+            console.log(params);
+            var re = gkClient.gMove(JSON.stringify(params));
+            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }

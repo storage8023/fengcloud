@@ -113,6 +113,12 @@ angular.module('gkClientIndex.directives', [])
 
                     })
                 };
+
+                $scope.handleKeyDown = function(e){
+                        if(e.keyCode == 13 & (e.ctrlKey || e.metaKey)){
+                            $scope.postRemark($scope.postText);
+                        }
+                };
             }
         }
     }])
@@ -461,10 +467,9 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 监听键盘事件
                  */
-                jQuery(document).bind('keydown', function ($event) {
-                    var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
-                    //console.log($event.keyCode);
+                jQuery(document).off('keydown.shortcut').on('keydown.shortcut', function ($event) {
                     $scope.$apply(function () {
+                        var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
                         switch ($event.keyCode) {
                             case 13: //enter
                                 if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) < 0) {
@@ -484,7 +489,6 @@ angular.module('gkClientIndex.directives', [])
                                     $scope.$emit('ctrlC');
                                 }
                                 break;
-
                             case 86: //v
                                 if (ctrlKeyOn) {
                                     $scope.$emit('ctrlV');
@@ -611,24 +615,26 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'E',
             replace: true,
-            scope: { list: '&', onSelect: '&'},
+            scope: { list: '=', onSelect: '&'},
             template: '<ul class="dropdown-menu input_tip_list">'
                 + '<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
                 + '</ul>',
             link: function ($scope, $element, $attrs) {
                 var index = 0;
-                $scope.$watch('list', function () {
-                    if ($scope.list && $scope.list.length) {
-                        preSelectItem(index);
-                    }
-                })
                 var selectItem = function () {
+                    if(!$scope.list[index]) return;
                     if ($scope.onSelect != null) {
                         $scope.onSelect({item: $scope.list[index]})
+                    }
+
+                    if($scope.list[index]){
+                        $scope.list[index].selected = false;
+                        index = 0;
                     }
                 };
                 var preSelectItem = function (newIndex) {
                     if (!$scope.list || !$scope.list.length) return;
+                    console.log(newIndex);
                     angular.forEach($scope.list,function(value){
                         if(value.selected){
                             value.selected = false;
@@ -639,6 +645,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.handleMouseEnter = function (key) {
+
                     preSelectItem(key);
                 };
                 $scope.handleClick = function (key) {
@@ -669,6 +676,7 @@ angular.module('gkClientIndex.directives', [])
                         }
                     });
                 })
+
             }
         };
     }])
@@ -740,11 +748,18 @@ angular.module('gkClientIndex.directives', [])
                  * 显示提示框
                  */
                 var show = function () {
+                    var selected = false;
+                    angular.forEach($scope.it_list,function(value){
+                        if(value.selected){
+                            selected = true;
+                        }
+                    });
+                    if(!selected && $scope.it_list){
+                        $scope.it_list[0].selected = true;
+                    }
                     if (appendToBody) {
                         $body = $body || $document.find('body');
-                        //console.log(inputtip);
                         $body.append(inputtip);
-
                     } else {
                         //TODO
                     }
@@ -812,9 +827,9 @@ angular.module('gkClientIndex.directives', [])
                                         resultList.push(value);
                                     }
                                 });
-
                             }
                         }
+                        //console.log(resultList);
                         if(!resultList || !resultList.length){
                             hide();
                         }else{
@@ -825,6 +840,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.it_list = [];
+                $scope.it_index = 0;
                 var timer;
                 $element.bind('focus',function(){
                     if(timer){

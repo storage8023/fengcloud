@@ -51,7 +51,7 @@
                         </li>
                     </ul>
                     <div class="post_wrapper">
-                        <textarea placeholder="参与讨论" ng-focus="inputingRemark=true"
+                        <textarea ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="inputingRemark=true"
                                   ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
 
                         <div class="post_opts">
