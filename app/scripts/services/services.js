@@ -686,7 +686,6 @@ angular.module('gkClientIndex.services', [])
             },
             update: function () {
                 var params = {
-                    dateline:Date.parse(new Date())/1000,
                     size:20
                 };
                angular.extend(params,defaultParams);

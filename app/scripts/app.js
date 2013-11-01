@@ -22,9 +22,7 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
 
 angular.module('gkNewsApp', ['gkNewsApp.controllers','gkNewsApp.directives','gkClientIndex.services']);
 angular.module('gkPersonalApp', ['gkPersonalApp.controllers','gkPersonalApp.directives','gkClientIndex.services']);
-angular.module('gkSiteApp', ['gkSiteApp.controllers','gkSiteApp.directives','gkSharingsettingsApp.directives']);
+angular.module('gkSiteApp', ['gkSiteApp.controllers','gkSiteApp.directives']);
 angular.module('gkQueueApp', ['gkQueueApp.controllers']);
-//angular.module('gkviewmemberApp', ['gkviewmemberApp.controllers','gkviewmemberApp.directives','gkClientIndex.services']);
-//angular.module('gkSharingsettingsApp', ['gkSharingsettingsApp.controllers','gkSharingsettingsApp.directives','gkClientIndex.services','gkContactApp']);
-//angular.module('gkContactApp', ['gkContactApp.controllers','gkContactApp.directives','gkClientIndex.services']);
+
 

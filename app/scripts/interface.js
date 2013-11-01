@@ -243,7 +243,7 @@
         gkClient.gClose();
     },
     getMessage:function(){
-        gkClient.gGetMessage();
+        return gkClient.gGetMessage();
     },
     getUserInfo:function(){
         return gkClient.gUserInfo();
@@ -264,7 +264,7 @@
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
     setChangeLanguage:function(params){
-       return gkClient.gGetLanguage(JSON.stringify(params));
+       return gkClient.gChangeLanguage(JSON.stringify(params));
     },
     getLanguage:function(){
        return gkClient.gGetLanguage();
@@ -273,13 +273,11 @@
         return gkClient.gGetUrl(JSON.stringify(params));
     },
     setMain:function(data){
-        console.log(data);
         return gkClient.gMain(JSON.stringify(data));
     },
     getUIPath: function(){
         return gkClient.gGetUIPath();
     },
-
     getClientInfo: function(){
         return gkClient.gGetClientInfo();
     },
@@ -287,15 +285,14 @@
         var re =  gkClient.gGetNormalPath(JSON.stringify(param));
         return re;
     },
-
     setClientInfo: function(params){
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
-    setSelectPathDlg: function(){
-        return gkClient.gSelectPathDlg();
-    },
     getGetlinkPaths: function(){
         return gkClient.gGetlinkPaths();
+    },
+    setSyncStatus: function(){
+        return gkClient.gSetSyncStatus();
     }
 };
 

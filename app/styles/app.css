@@ -24,9 +24,10 @@ body {
     position: absolute;
     top:-500px;
     -webkit-transition:top 1s ease 0.5s;
-    width: 70%;
-    margin-left: 15%;
-    height: 80%;
+    width: 80%;
+    margin-left: 10%;
+    min-height: 70%;
+    max-height: 80%;
 }
 header {
     position: absolute;
