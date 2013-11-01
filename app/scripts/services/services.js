@@ -248,7 +248,7 @@ angular.module('gkClientIndex.services', [])
             formatMountItem: function (mount) {
                 var newMount = {
                     mount_id: mount.mountid,
-                    name: mount.name ? mount.name : '我的资料库',
+                    name: mount.name ? mount.name : '我的文件',
                     org_id: mount.orgid,
                     capacity: mount.total,
                     size: mount.use,
@@ -404,7 +404,6 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-
     .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition',function (GKCilpboard,GKFile,GKPartition) {
         var GKOpt = {
             setSyncOpt:function(opts,parentFile,file){
@@ -418,7 +417,7 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
             },
-            getOpts: function (currentFile, selectedFiles, partition, search) {
+            getOpts: function (currentFile, selectedFiles, partition, filter) {
                 var opts,
                     partitionOpts,
                     multiOpts,
@@ -426,7 +425,7 @@ angular.module('gkClientIndex.services', [])
                     currentOpts,
                     authOpts;
 
-                partitionOpts =  this.getPartitionOpts(partition,search);
+                partitionOpts =  this.getPartitionOpts(partition,filter);
                 authOpts = this.getAuthOpts();
                 if(!selectedFiles || !selectedFiles.length){
                     currentOpts =  this.getCurrentOpts(currentFile);
@@ -439,20 +438,20 @@ angular.module('gkClientIndex.services', [])
                 return opts;
             },
             getDefaultOpts:function(){
-               return ["add","new_folder","sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock", "order_by"];
+               return ["add","new_folder",'clear_trash',"sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock", 'del_completely','revert',"order_by"];
             },
 
             getFinalOpts: function () {
                 var optsArr = Array.prototype.slice.call(arguments);
-
                 var opts = this.getDefaultOpts();
                 var optLen = opts.length;
                 var optsArrLen = optsArr.length;
                 for (var i = optLen - 1; i >= 0; i--) {
                     var value = opts[i];
                     for (var j = 0; j < optsArrLen; j++) {
-                        if(optsArr[j].indexOf(value) < 0){
-                            opts.splice(i, 1);
+                        var index = opts.indexOf(value);
+                        if(optsArr[j].indexOf(value) < 0 && index>=0){
+                            opts.splice(index, 1);
                         }
                     }
                 }
@@ -460,19 +459,25 @@ angular.module('gkClientIndex.services', [])
                 return opts;
 
             },
-            getPartitionOpts:function(partition,search){
+            getPartitionOpts:function(partition,filter){
                 var opts = this.getDefaultOpts();
                 switch (partition){
                     case GKPartition.myFile:
-
-                        break;
                     case GKPartition.teamFile:
+                        if(filter =='trash'){
+                            this.disableOpt(opts,"add","new_folder","sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock","order_by");
+                        }else{
+                            this.disableOpt(opts,"clear_trash","revert","del_completely");
+                        }
+                        break;
+
 
                         break;
-                    case GKPartition.smartFolder || search:
-                        this.disableOpt(opts,'add','new_folder','sync','unsync','paste','copy','cut')
+                    case (GKPartition.smartFolder || filter =='search'):
+                        this.disableOpt(opts,'add','new_folder','sync','unsync','paste','copy','cut');
                         break;
                 }
+
                 return opts;
             },
             getAuthOpts:function(){
@@ -482,7 +487,7 @@ angular.module('gkClientIndex.services', [])
 
             getCurrentOpts: function (currentFile) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, "rename", "save", "cut", "copy","lock", "unlock", "del");
+                this.disableOpt(opts, "rename", "save", "cut", "copy","lock", "unlock", "del",'revert','del_completely');
                 if(GKCilpboard.isEmpty()){
                     this.disableOpt(opts,'paste');
                 }
@@ -500,7 +505,7 @@ angular.module('gkClientIndex.services', [])
                 var opts = this.getDefaultOpts();
                 var context = this;
                 angular.forEach(files,function(file){
-                    context.disableOpt(opts,"add","new_folder","paste","order_by");
+                    context.disableOpt(opts,"add","new_folder","paste","order_by",'clear_trash');
                     if (file.dir == 1) {
                         context.disableOpt(opts, 'lock', 'unlock');
                         context.setSyncOpt(opts,currentFile,file);
@@ -563,6 +568,107 @@ angular.module('gkClientIndex.services', [])
                         message: message
                     })
                 })
+            },
+            recycle:function(mount_id, fullpath,order,start,size){
+                var date = new Date().toUTCString();
+                var method = 'RECYCLE';
+                var webpath = Util.String.encodeRequestUri(fullpath);
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                var headers = {
+                        'x-gk-mount': mount_id,
+                        'Date': date,
+                        'Authorization': authorization,
+                        'Content-Type': "application/x-www-form-urlencoded"
+                    };
+                if(angular.isDefined(order)){
+                    headers['x-gk-order'] = order;
+                }
+                if(angular.isDefined(start)){
+                    headers['x-gk-start'] = start;
+                }
+                if(angular.isDefined(size)){
+                    headers['x-gk-size'] = size;
+                }
+                return $http({
+                    method: method,
+                    url: GK.getRestHost() + webpath,
+                    headers: headers
+                })
+            },
+            clear:function(mount_id){
+                var date = new Date().toUTCString();
+                var method = 'CLEAR';
+                var webpath = Util.String.encodeRequestUri('');
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                var headers = {
+                    'x-gk-mount': mount_id,
+                    'Date': date,
+                    'Authorization': authorization,
+                    'Content-Type': "application/x-www-form-urlencoded",
+                    'Accept': '*/*'
+                };
+                return jQuery.ajax({
+                    url:GK.getRestHost() + webpath,
+                    dataType:'text',
+                    type:method,
+                    headers:headers
+                });
+//                return $http({
+//                    method: method,
+//                    url: GK.getRestHost() + webpath,
+//                    headers: headers,
+//                    responseType:'text'
+//                })
+            },
+            delCompletely:function(mount_id,fullpaths){
+                var date = new Date().toUTCString();
+                var method = 'DELETECOMPLETELY';
+                var webpath = Util.String.encodeRequestUri('');
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                if(angular.isArray(fullpaths)){
+                    fullpaths = fullpaths.join('|');
+                }
+                var headers = {
+                    'x-gk-mount': mount_id,
+                    'Date': date,
+                    'x-gk-fullpaths':encodeURIComponent(fullpaths),
+                    'Authorization': authorization,
+                    'Content-Type': "application/x-www-form-urlencoded"
+                };
+
+                return $http({
+                    method: method,
+                    url: GK.getRestHost() + webpath,
+                    headers: headers
+                })
+            },
+            recover:function(mount_id,fullpaths,machine){
+                var date = new Date().toUTCString();
+                var method = 'RECOVER';
+                var webpath = Util.String.encodeRequestUri('');
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                if(angular.isArray(fullpaths)){
+                    fullpaths = fullpaths.join('|');
+                }
+                var headers = {
+                    'x-gk-mount': mount_id,
+                    'Date': date,
+                    'x-gk-machine':machine,
+                    'x-gk-fullpaths':encodeURIComponent(fullpaths),
+                    'Authorization': authorization,
+                    'Content-Type': "application/x-www-form-urlencoded"
+                };
+                return jQuery.ajax({
+                    url:GK.getRestHost() + webpath,
+                    dataType:'text',
+                    type:method,
+                    headers:headers
+                });
+//                return $http({
+//                    method: method,
+//                    url: GK.getRestHost() + webpath,
+//                    headers: headers
+//                })
             }
         };
 
@@ -641,6 +747,7 @@ angular.module('gkClientIndex.services', [])
                     params: params
                 });
             },
+
             inboxFileList:function(){
                 var params = {};
                 angular.extend(params, defaultParams);

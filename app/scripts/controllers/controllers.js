@@ -31,23 +31,32 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
         myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
         $scope.treeList = myTreeData;
-        $scope.treeList.push(
-            {
+
+        var getTrashNode = function(mount_id){
+            var node = {
                 label: "回收站",
                 isParent:false,
                 data: {
-                    path: '',
-                    mount_id: myMount.mountid
+                    fullpath: '',
+                    filter:'trash',
+                    mount_id: mount_id
                 },
                 iconNodeExpand:'icon_trash',
                 iconNodeCollapse:'icon_trash'
-            }
-        );
+            };
+            return node;
+        };
+        $scope.treeList.push(getTrashNode(myMount.mountid));
 
         /**
          * 团队的文件
          */
-        $scope.orgTreeList = GKFile.dealTreeData(orgMount, 'teamfile');
+
+        $scope.orgTreeList = [];
+        angular.forEach(GKFile.dealTreeData(orgMount, 'teamfile'),function(value){
+            $scope.orgTreeList.push(value);
+            $scope.orgTreeList.push(getTrashNode(value.data.mount_id));
+        })
 
         /**
          * 智能文件夹
@@ -112,6 +121,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (partition == 'myfile' || partition == 'teamfile') {
                 pararm['path'] = branch.data.fullpath;
                 pararm['mountid'] = branch.data.mount_id;
+                pararm['filter'] = branch.data.filter||'';
                 $rootScope.PAGE_CONFIG.mount = GKFile.getMountById(branch.data.mount_id);
             } else if (partition == 'smartfolder') {
                 pararm['condition'] = branch.data.condition;
@@ -136,7 +146,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch','RestFile',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch,RestFile) {
 
 
         /**
@@ -148,6 +158,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.partition = $routeParams.partition || 'myfile'; //当前的分区
         $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name';
+        $scope.filter = $routeParams.filter || '';
         /**
          * 文件列表数据
          */
@@ -156,20 +167,32 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 source = 'client',
                 deferred = $q.defer();;
             if ($scope.partition == 'myfile' || $scope.partition == 'teamfile') {
-                var re = gkClientInterface.getFileList({
-                    webpath: $scope.path,
-                    mountid: $routeParams.mountid
-                });
+                if($scope.filter == 'trash'){
+                    source = 'api';
+                    RestFile.recycle($routeParams.mountid, '').success(function(data){
+                        fileList = data['list'];
+                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                    }).error(function(){
 
-                fileList = re['list'];
-                angular.extend($rootScope.PAGE_CONFIG.file,{
-                    sharepath:re['sharepath']||'',
-                    syncpath:re['syncpath']||''
-                })
+                    })
+                }else{
+                    var re = gkClientInterface.getFileList({
+                        webpath: $scope.path,
+                        mountid: $routeParams.mountid
+                    });
 
-                deferred.resolve(GKFile.dealFileList(fileList, source));
+                    fileList = re['list'];
+                    angular.extend($rootScope.PAGE_CONFIG.file,{
+                        sharepath:re['sharepath']||'',
+                        syncpath:re['syncpath']||''
+                    })
+
+                    deferred.resolve(GKFile.dealFileList(fileList, source));
+                }
+
             } else {
                 source = 'api';
+
                 if ($scope.condition == 'inbox') {
                     GKApi.inboxFileList($scope.condition).success(function (data) {
                         fileList = data['list'];
@@ -367,6 +390,61 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {{add: {name: string, index: number, callback: Function}, new_folder: {name: string, index: number, callback: Function}, lock: {name: string, index: number, callback: Function}, unlock: {name: string, index: number, callback: Function}, save: {name: string, index: number, callback: Function}, del: {name: string, index: number, callback: Function}, rename: {name: string, index: number, callback: Function}, order_by: {name: string, index: number, items: {order_by_file_name: {name: string, className: string, callback: Function}, order_by_file_size: {name: string, className: string, callback: Function}, order_by_file_type: {name: string, className: string, callback: Function}, order_by_last_edit_time: {name: string, className: string, callback: Function}}}}}
          */
         var allOpts = {
+            'clear_trash':{
+                name: '清空回收站',
+                callback: function () {
+                    RestFile.clear($rootScope.PAGE_CONFIG.mount.mount_id).success(function(){
+                        refreahData();
+                    }).error(function(){
+                            console.log(2);
+                        });
+                }
+            },
+            'revert':{
+                name: '还原',
+                callback: function () {
+                    var fullpaths = [];
+                    angular.forEach($scope.selectedFile, function (value) {
+                        fullpaths.push(value.dir==1?value.fullpath+'/':value.fullpath);
+                    });
+                    RestFile.recover($rootScope.PAGE_CONFIG.mount.mount_id,fullpaths,'').success(function(){
+                        console.log(1);
+                        angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach($scope.fileData, function (file, key) {
+                                if (value == file) {
+                                    $scope.fileData.splice(key, 1);
+                                }
+                            })
+                        });
+                        $scope.selectedFile = [];
+                        $scope.selectedIndex = [];
+                    }).error(function(){
+
+                        });
+                }
+            },
+            'del_completely':{
+                name: '彻底删除',
+                callback: function () {
+                    var fullpaths = [];
+                    angular.forEach($scope.selectedFile, function (value) {
+                        fullpaths.push(value.dir==1?value.fullpath+'/':value.fullpath);
+                    });
+                    RestFile.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id,fullpaths).success(function(){
+                        angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach($scope.fileData, function (file, key) {
+                                if (value == file) {
+                                    $scope.fileData.splice(key, 1);
+                                }
+                            })
+                        });
+                        $scope.selectedFile = [];
+                        $scope.selectedIndex = [];
+                    }).error(function(){
+
+                        });
+                }
+            },
             'sync': {
                 name: '同步',
                 callback: function () {
@@ -633,28 +711,38 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setOpts = function () {
             $rootScope.selectedFile = $scope.selectedFile;
             var isSearch = $scope.keyword.length ? true : false;
-            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, isSearch);
+            if(isSearch){
+                $scope.filter = 'search';
+            }
+            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter);
             $scope.opts = [];
             $scope.rightOpts = {};
+            var topOptKeys=[];
             var excludeRightOpts = ['add','sync','unsync']; //右键要排除的操作
             var excludeOpts = ['order_by','paste','copy','cut']; // 顶部要排除的操作
-            var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, isSearch);
+
+
             /**
-             * 如果选择了文件，那么把currentOpts中得“同步”，“取消同步” 去掉
+             * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
              */
             if($scope.selectedFile.length){
+                var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter);
                 angular.forEach(['sync','unsync'],function(value){
                     var index = currentOpts.indexOf(value);
                     if(index>=0){
                         currentOpts.splice(index,1);
                     }
                 })
+                topOptKeys = jQuery.unique(currentOpts.concat(optKeys)).reverse();
+            }else{
+                topOptKeys = optKeys;
             }
+
             /**
              * unique后会顺序会反转，所以要reverse
              * @type {*}
              */
-            var topOptKeys = jQuery.unique(currentOpts.concat(optKeys)).reverse();
+
             angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     $scope.opts.push(angular.extend(allOpts[value], {key: value}));
@@ -848,6 +936,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 name: name,
                 url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
             });
+
             return breads;
         };
 

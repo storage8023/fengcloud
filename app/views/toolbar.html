@@ -1,5 +1,5 @@
 <div class="toolbar">
-    <button ng-repeat="opt in opts " class="f_l dropdown">
+    <button ng-repeat="opt in opts" class="f_l dropdown">
         <a dropdown-toggle class="opt" href="javascript:void(0);" ng-class="opt.className?opt.className:'opt_'+opt.key" ng-click="opt.callback($event)">
             <i></i><span>{{opt.name}}</span>
         </a>
