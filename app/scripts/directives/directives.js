@@ -296,7 +296,6 @@ angular.module('gkClientIndex.directives', [])
                         selector: '.file_list .list_body',
                         reposition: false,
                         zIndex: 99,
-                        scope: $scope,
                         animation: {
                             show: "show",
                             hide: "hide"

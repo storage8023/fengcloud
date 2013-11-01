@@ -3,12 +3,17 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
+    .controller('initClient',['$rootScope',function($rootScope){
+        $rootScope.PAGE_CONFIG = {
+            user:gkClientInterface.getUser(),
+            file:{},
+            mount:{},
+            condition:''
+        };
+
+    }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', function ($scope, $location, GKPath, GKFile, $rootScope) {
-        $rootScope.PAGE_CONFIG = {};
-        $rootScope.PAGE_CONFIG.user = gkClientInterface.getUser();
-
         var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
-
         var myMount = {}, //我的空间
             orgMount = []; //团队的空间
         angular.forEach(sideOrgList, function (value) {
@@ -132,6 +137,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }])
     .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch) {
+
+
         /**
          * 分析路径获取参数
          * @type {*}
@@ -149,10 +156,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 source = 'client',
                 deferred = $q.defer();;
             if ($scope.partition == 'myfile' || $scope.partition == 'teamfile') {
-                fileList = gkClientInterface.getFileList({
+                var re = gkClientInterface.getFileList({
                     webpath: $scope.path,
                     mountid: $routeParams.mountid
-                })['list'];
+                });
+
+                fileList = re['list'];
+                angular.extend($rootScope.PAGE_CONFIG.file,{
+                    sharepath:re['sharepath']||'',
+                    syncpath:re['syncpath']||''
+                })
+
                 deferred.resolve(GKFile.dealFileList(fileList, source));
             } else {
                 source = 'api';
@@ -215,6 +229,109 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         /**
+         * 设置同步状态
+         */
+        var toggleSync = function (isSync) {
+            var params,
+                setParentFile = true,
+                file;
+            if($scope.selectedFile&&$scope.selectedFile.length==1){
+                setParentFile = false;
+                file = $scope.selectedFile[0];
+            }else{
+                file = $rootScope.PAGE_CONFIG.file;
+            }
+            if (isSync) { //取消同步
+                if (!confirm('确定取消同步"' + file.filename + '" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
+                    return;
+                }
+                params = {
+                    webpath: file.fullpath,
+                    mount_id: $rootScope.PAGE_CONFIG.mount.mount_id
+                }
+                GK.removeLinkPath(params).then(function () {
+                    if(setParentFile){
+                        file.syncpath = '';
+                    }else{
+                        file.sync = 0;
+                    }
+
+                });
+            } else {
+                var syncDialog = $modal.open({
+                    templateUrl: 'views/set_sync.html',
+                    backdrop: false,
+                    windowClass: 'sync_settiong_dialog',
+                    controller: function ($scope, $modalInstance) {
+
+                        $scope.filename = file.filename || file.name;
+                        $scope.localURI = GK.getLocalSyncURI({
+                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
+                            webpath: file.fullpath
+                        });
+                        $scope.reSetLocalPath = function () {
+                            var newPath = GK.selectPath({
+                                path: $scope.localURI,
+                                disable_root: true
+                            });
+                            if (newPath) {
+                                $scope.localURI = newPath;
+                            }
+                        };
+                        $scope.ok = function () {
+                            $modalInstance.close($scope.localURI);
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+
+                    }
+                });
+
+                syncDialog.result.then(function (new_local_uri) {
+                    var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
+                    var currentFilename = Util.String.baseName(file.fullpath);
+                    if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行同步？')) {
+                        return;
+                    }
+                    var params = {};
+                    /**
+                     * 检测选择呢的文件夹是否为空
+                     */
+                    var isNotEmpty = GK.checkPathIsEmpty({
+                        path: new_local_uri,
+                        type: 'fullpath',
+                        dir: 1,
+                        mountid: $rootScope.PAGE_CONFIG.mount.mount_id
+                    });
+
+                    if (isNotEmpty == 1) { //文件夹为空
+                        params = {
+                            webpath: file.fullpath,
+                            fullpath: new_local_uri,
+                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
+                            overwrite: 1
+                        };
+                        GK.setLinkPath(params);
+                    } else { ////文件夹不为空
+
+                    }
+                    if(setParentFile){
+                        file.syncpath = file.fullpath;
+                    }else{
+                        file.sync = 1;
+                    }
+                }, function () {
+
+                });
+            }
+
+        };
+
+        /**
          * 改变视图
          */
         $scope.changeView = function (view) {
@@ -250,9 +367,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {{add: {name: string, index: number, callback: Function}, new_folder: {name: string, index: number, callback: Function}, lock: {name: string, index: number, callback: Function}, unlock: {name: string, index: number, callback: Function}, save: {name: string, index: number, callback: Function}, del: {name: string, index: number, callback: Function}, rename: {name: string, index: number, callback: Function}, order_by: {name: string, index: number, items: {order_by_file_name: {name: string, className: string, callback: Function}, order_by_file_size: {name: string, className: string, callback: Function}, order_by_file_type: {name: string, className: string, callback: Function}, order_by_last_edit_time: {name: string, className: string, callback: Function}}}}}
          */
         var allOpts = {
+            'sync': {
+                name: '同步',
+                callback: function () {
+                    toggleSync(0);
+                }
+            },
+            'unsync': {
+                name: '取消同步',
+                callback: function () {
+                    toggleSync(1);
+                }
+            },
             'paste': {
                 name: '粘贴',
-                index: 0,
                 callback: function () {
                     var data = GKCilpboard.getData();
                     if(!data || !data.files || !data.mount_id) return;
@@ -283,7 +411,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'cut': {
                 name: '剪切',
-                index: 0,
                 callback: function () {
                     var data = {
                         code: 'ctrlX',
@@ -295,7 +422,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'copy': {
                 name: '复制',
-                index: 0,
                 callback: function () {
                     var data = {
                         code: 'ctrlC',
@@ -308,7 +434,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'add': {
                 name: '添加',
-                index: 0,
                 callback: function () {
                     var addFiles = gkClientInterface.addFileDialog();
                     if (!addFiles || !addFiles.list || !addFiles.list.length) {
@@ -329,7 +454,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'new_folder': {
                 name: '新建',
-                index: 1,
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
@@ -350,7 +474,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'lock': {
                 name: '锁定',
-                index: 2,
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
@@ -363,7 +486,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'unlock': {
                 name: '解锁',
-                index: 3,
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     if (file.lock_member_id != $rootScope.PAGE_CONFIG.member_id) {
@@ -380,7 +502,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'save': {
                 name: '另存为',
-                index: 4,
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -511,35 +632,48 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var setOpts = function () {
             $rootScope.selectedFile = $scope.selectedFile;
-            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.keyword.length ? true : false);
+            var isSearch = $scope.keyword.length ? true : false;
+            var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, isSearch);
             $scope.opts = [];
             $scope.rightOpts = {};
-            var excludeRightOpts = ['add']; //右键要排除的操作
+            var excludeRightOpts = ['add','sync','unsync']; //右键要排除的操作
             var excludeOpts = ['order_by','paste','copy','cut']; // 顶部要排除的操作
-            angular.forEach(optKeys, function (value) {
+            var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, isSearch);
+            /**
+             * 如果选择了文件，那么把currentOpts中得“同步”，“取消同步” 去掉
+             */
+            if($scope.selectedFile.length){
+                angular.forEach(['sync','unsync'],function(value){
+                    var index = currentOpts.indexOf(value);
+                    if(index>=0){
+                        currentOpts.splice(index,1);
+                    }
+                })
+            }
+            /**
+             * unique后会顺序会反转，所以要reverse
+             * @type {*}
+             */
+            var topOptKeys = jQuery.unique(currentOpts.concat(optKeys)).reverse();
+            angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     $scope.opts.push(angular.extend(allOpts[value], {key: value}));
                 }
             });
-            var rightOptKeys = [];
-            if (!$scope.selectedFile || !$scope.selectedFile.length) {
-                rightOptKeys = GKOpt.getCurrentOpts($rootScope.PAGE_CONFIG.file);
-            } else if ($scope.selectedFile.length == 1) {
-                rightOptKeys = GKOpt.getSingleSelectOpts($scope.selectedFile);
-            } else {
-                rightOptKeys = GKOpt.getMultiSelectOpts($scope.selectedFile);
-            }
-            angular.forEach(rightOptKeys, function (value) {
+
+            angular.forEach(optKeys, function (value) {
                 if (excludeRightOpts.indexOf(value) < 0) {
                     $scope.rightOpts[value] = allOpts[value];
                 }
             });
+
         }
         /**
          * 操作
          * @type {Array}
          */
         $scope.$watch('selectedFile', setOpts, true);
+        $scope.$watch('PAGE_CONFIG.file', setOpts, true);
         $scope.$watch('keyword', setOpts, true);
         $scope.$watch('order', function () {
             if (!$scope.rightOpts || !$scope.rightOpts['order_by']) {
@@ -587,93 +721,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         });
 
-        /**
-         * 设置同步状态
-         */
-        $scope.toggleSync = function () {
-            var params,
-                isSync = $rootScope.PAGE_CONFIG.file.status == 4;
 
-            if (isSync) { //取消同步
-                if (!confirm('确定取消同步"' + $rootScope.PAGE_CONFIG.file.filename + '" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
-                    return;
-                }
-                params = {
-                    webpath: $rootScope.PAGE_CONFIG.file.fullpath,
-                    mount_id: $rootScope.PAGE_CONFIG.mount.mount_id
-                }
-                GK.removeLinkPath(params).then(function () {
-                    $rootScope.PAGE_CONFIG.file.status = 1;
-                });
-            } else {
-                var syncDialog = $modal.open({
-                    templateUrl: 'views/set_sync.html',
-                    backdrop: false,
-                    windowClass: 'sync_settiong_dialog',
-                    controller: function ($scope, $modalInstance) {
-
-                        $scope.filename = $rootScope.PAGE_CONFIG.file.filename || $rootScope.PAGE_CONFIG.file.name;
-                        $scope.localURI = GK.getLocalSyncURI({
-                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
-                            webpath: $rootScope.PAGE_CONFIG.file.fullpath
-                        });
-                        $scope.reSetLocalPath = function () {
-                            var newPath = GK.selectPath({
-                                path: $scope.localURI,
-                                disable_root: true
-                            });
-                            if (newPath) {
-                                $scope.localURI = newPath;
-                            }
-                        };
-                        $scope.ok = function () {
-                            $modalInstance.close($scope.localURI);
-                        };
-
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-                    },
-                    resolve: {
-
-                    }
-                });
-
-                syncDialog.result.then(function (new_local_uri) {
-                    var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
-                    var currentFilename = Util.String.baseName($rootScope.PAGE_CONFIG.file.fullpath);
-                    if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行同步？')) {
-                        return;
-                    }
-                    var params = {};
-                    /**
-                     * 检测选择呢的文件夹是否为空
-                     */
-                    var isNotEmpty = GK.checkPathIsEmpty({
-                        path: new_local_uri,
-                        type: 'fullpath',
-                        dir: 1,
-                        mountid: $rootScope.PAGE_CONFIG.mount.mount_id
-                    });
-
-                    if (isNotEmpty == 1) { //文件夹为空
-                        params = {
-                            webpath: $rootScope.PAGE_CONFIG.file.fullpath,
-                            fullpath: new_local_uri,
-                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
-                            overwrite: 1
-                        };
-                        GK.setLinkPath(params);
-                    } else { ////文件夹不为空
-
-                    }
-                    $rootScope.PAGE_CONFIG.file.status = 4;
-                }, function () {
-
-                });
-            }
-
-        };
 
         /**
          * 打开文件
@@ -972,6 +1020,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
     }]);
+
 
 /**
  * news

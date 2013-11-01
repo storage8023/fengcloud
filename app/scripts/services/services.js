@@ -162,11 +162,52 @@ angular.module('gkClientIndex.services', [])
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
+    .constant('GKPartition', {
+        myFile:'myfile',
+        teamFile:'teamfile',
+        smartFolder:'smartfolder'
+    })
     .factory('GKFile', ['FILE_SORTS', 'GKMounts', function (FILE_SORTS, GKMounts) {
         var GKFile = {
+            /**
+             * 是否已同步
+             * @param parentFile
+             * @param file
+             * @returns {boolean}
+             */
+            isSynced:function(parentFile,file){
+                 if(!parentFile){
+                     return false;
+                 }
+                if(parentFile.syncpath){
+                    return true;
+                }
+                if(file && file.sync==1){
+                    return true;
+                }
+                return false;
+            },
+            /**
+             * 是否可对同步进行设置
+             * @param parentFile
+             * @param file
+             * @returns {boolean}
+             */
+            isSyncable:function(parentFile,file){
+                if(!this.isSynced(parentFile,file)){
+                    return true;
+                }
+                if((parentFile.syncpath==='/'&&!file.fullpath)||parentFile.syncpath === file.fullpath || file.sync==1){
+                    return true;
+                }
+                return false;
+            },
             getMountById: function (mountID) {
                 var context = this;
-                return context.formatMountItem(GKMounts[mountID]);
+                if(GKMounts && GKMounts.length){
+                    return context.formatMountItem(GKMounts[mountID]);
+                }
+                return null;
             },
             dealTreeData: function (data, type, mountId) {
                 var newData = [],
@@ -251,7 +292,8 @@ angular.module('gkClientIndex.services', [])
                         dir: value.dir,
                         last_member_name: value.lastname,
                         creator_member_name: value.creatorname,
-                        status: value.status
+                        status: value.status,
+                        sync:value.sync
                     };
                 }
                 return file;
@@ -362,53 +404,115 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKCilpboard',function (GKCilpboard) {
+
+    .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition',function (GKCilpboard,GKFile,GKPartition) {
         var GKOpt = {
-            getOpts: function (currentFile, selectedFiles, partition, search) {
-                var
-                    currentOpts = this.getCurrentOpts(currentFile, partition, search),
-                    multiOpts = this.getMultiSelectOpts(selectedFiles),
-                    singleOpts = this.getSingleSelectOpts(selectedFiles);
-                return this.getFinalOpts(currentOpts, multiOpts, singleOpts);
+            setSyncOpt:function(opts,parentFile,file){
+                if(!GKFile.isSyncable(parentFile,file)){
+                    this.disableOpt(opts,'sync','unsync');
+                }else{
+                    if(GKFile.isSynced(parentFile,file)){
+                        this.disableOpt(opts,'sync');
+                    }else{
+                        this.disableOpt(opts,'unsync');
+                    }
+                }
             },
+            getOpts: function (currentFile, selectedFiles, partition, search) {
+                var opts,
+                    partitionOpts,
+                    multiOpts,
+                    singleOpts,
+                    currentOpts,
+                    authOpts;
+
+                partitionOpts =  this.getPartitionOpts(partition,search);
+                authOpts = this.getAuthOpts();
+                if(!selectedFiles || !selectedFiles.length){
+                    currentOpts =  this.getCurrentOpts(currentFile);
+                    opts =  this.getFinalOpts(partitionOpts, currentOpts, authOpts);
+                }else{
+                        multiOpts = this.getMultiSelectOpts(selectedFiles);
+                        singleOpts = this.getSelectOpts(currentFile,selectedFiles);
+                       opts =  this.getFinalOpts(partitionOpts, multiOpts, singleOpts,authOpts);
+               }
+                return opts;
+            },
+            getDefaultOpts:function(){
+               return ["add","new_folder","sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock", "order_by"];
+            },
+
             getFinalOpts: function () {
-                var arr = Array.prototype.slice.call(arguments);
-                return Array.prototype.concat.apply([], arr);
+                var optsArr = Array.prototype.slice.call(arguments);
+
+                var opts = this.getDefaultOpts();
+                var optLen = opts.length;
+                var optsArrLen = optsArr.length;
+                for (var i = optLen - 1; i >= 0; i--) {
+                    var value = opts[i];
+                    for (var j = 0; j < optsArrLen; j++) {
+                        if(optsArr[j].indexOf(value) < 0){
+                            opts.splice(i, 1);
+                        }
+                    }
+                }
+
+                return opts;
 
             },
-            getCurrentOpts: function (currentFile, partition, search) {
-                var context = this;
-                if (search || partition =='smartfolder') {
-                    return [];
-                } else {
-                    var opts =  ['add', 'new_folder', 'order_by','paste'];
-                    if(GKCilpboard.isEmpty()){
-                        context.disableOpt(opts,'paste');
-                    }
-                    return opts;
+            getPartitionOpts:function(partition,search){
+                var opts = this.getDefaultOpts();
+                switch (partition){
+                    case GKPartition.myFile:
+
+                        break;
+                    case GKPartition.teamFile:
+
+                        break;
+                    case GKPartition.smartFolder || search:
+                        this.disableOpt(opts,'add','new_folder','sync','unsync','paste','copy','cut')
+                        break;
                 }
+                return opts;
+            },
+            getAuthOpts:function(){
+                var opts = this.getDefaultOpts();
+                return opts;
+            },
+
+            getCurrentOpts: function (currentFile) {
+                var opts = this.getDefaultOpts();
+                this.disableOpt(opts, "rename", "save", "cut", "copy","lock", "unlock", "del");
+                if(GKCilpboard.isEmpty()){
+                    this.disableOpt(opts,'paste');
+                }
+                this.setSyncOpt(opts,currentFile,currentFile);
+                return opts;
             },
             getMultiSelectOpts: function (files) {
-                if (!files || files.length <= 1) {
-                    return [];
+                var opts = this.getDefaultOpts();
+                if (files && files.length > 1) {
+                    this.disableOpt(opts,"save","sync","unsync", "rename" ,"lock", "unlock");
                 }
-                return ['del','cut','copy'];
+                return opts;
             },
-            getSingleSelectOpts: function (files) {
-                if (!files || files.length != 1) {
-                    return [];
-                }
-                var file = files[0];
-                var opts = ['lock', 'unlock', 'save', 'del', 'rename','cut','copy'];
-                if (file.dir == 1) {
-                    this.disableOpt(opts, 'lock', 'unlock');
-                } else {
-                    if (file.lock == 1) {
-                        this.disableOpt(opts, 'lock');
+            getSelectOpts: function (currentFile,files) {
+                var opts = this.getDefaultOpts();
+                var context = this;
+                angular.forEach(files,function(file){
+                    context.disableOpt(opts,"add","new_folder","paste","order_by");
+                    if (file.dir == 1) {
+                        context.disableOpt(opts, 'lock', 'unlock');
+                        context.setSyncOpt(opts,currentFile,file);
                     } else {
-                        this.disableOpt(opts, 'unlock');
+                        context.disableOpt(opts, 'sync','unsync');
+                        if (file.lock == 1) {
+                            context.disableOpt(opts, 'lock');
+                        } else {
+                            context.disableOpt(opts, 'unlock');
+                        }
                     }
-                }
+                });
                 return opts;
             },
             disableOpt: function (opts) {
