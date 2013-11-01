@@ -264,7 +264,7 @@
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
     setChangeLanguage:function(params){
-       return gkClient.gGetLanguage(JSON.stringify(params));
+       return gkClient.gChangeLanguage(JSON.stringify(params));
     },
     getLanguage:function(){
        return gkClient.gGetLanguage();
