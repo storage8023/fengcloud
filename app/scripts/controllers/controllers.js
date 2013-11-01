@@ -1455,7 +1455,7 @@ angular.module("gkSiteApp.controllers", [])
             };
              gkClientInterface.setClientInfo(userInfo);
              gkClientInterface.setChangeLanguage(language);
-         //    gkClientInterface.setClose();
+             gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
