@@ -1410,6 +1410,8 @@ angular.module("gkSiteApp.controllers", [])
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
             $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
             $scope.recycle = (typeof $scope.getsitedata.recycle === 'number') ? $scope.getsitedata.recycle === 1 ? true : false : $scope.getsitedata.recycle;
+            $scope.local = (typeof $scope.getsitedata.local === 'number') ? $scope.getsitedata.local === 1 ? true : false : $scope.getsitedata.local;
+            $scope.https = (typeof $scope.getsitedata.https === 'number') ? $scope.getsitedata.https === 1 ? true : false : $scope.getsitedata.https;
             $scope.proxy = (typeof $scope.getsitedata.proxy === 'number') ? $scope.getsitedata.proxy === 1 ? true : false : $scope.getsitedata.proxy
         }
         $scope.SiteOpen();
@@ -1430,7 +1432,11 @@ angular.module("gkSiteApp.controllers", [])
             }
         }
         $scope.siteadvancepathdlg = function(){
-            $scope.configpath= gkClientInterface.selectPath(true);
+            var configPath = gkClientInterface.selectPath(true);
+            if(configPath !== ''){
+                $scope.configpath= configPath;
+                $scope.configPathInter = configPath;
+            }
         }
         /**
          * 按确定保存数据，关闭窗口，
@@ -1442,14 +1448,14 @@ angular.module("gkSiteApp.controllers", [])
                 auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
                 prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 : $scope.prompt,
                 recycle: (typeof  $scope.recycle !== 'number') ? $scope.recycle === true ? 1 : 0 : $scope.recycle,
-                proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy
+                local: (typeof $scope.local !== 'number') ? $scope.local === true ? 1 : 0 : $scope.local,
+                https: (typeof $scope.https !== 'number') ? $scope.https === true ? 1 : 0 : $scope.https,
+                proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy,
+                configpath: $scope.configPathInter
             };
-            var setClientInfo = {
-                configpath: $scope.configpath
-            }
              gkClientInterface.setClientInfo(userInfo);
              gkClientInterface.setChangeLanguage(language);
-             gkClientInterface.setClose();
+         //    gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
