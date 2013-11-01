@@ -24,7 +24,6 @@ angular.module('gkClientIndex.directives', [])
             },
             link: function ($scope, $element) {
                 $scope.newsOpen = function(){
-                    console.log(1);
                     var newsTmpl = '<newsindex class = "news-index-class" ng-style="newsStyle"></newsindex>';
                     var news = $compile(newsTmpl)($scope);
                     $document.find('body').append(news);
@@ -39,9 +38,10 @@ angular.module('gkClientIndex.directives', [])
                     var UIPath = gkClientInterface.getUIPath();
                     var data = {
                         url:"file:///"+UIPath+"/views/personalInformation.html",
-                        type:"child",
-                        width:664,
-                        height:385
+                        type:"normal",
+                        width:680,
+                        height:460,
+                        resize:1
                     }
                     gkClientInterface.setMain(data);
                 };
@@ -1398,69 +1398,5 @@ angular.module('gkNewsApp.directives', [])
                 }
             }
         });
-    /**
-     * viewmember
-     */
-    angular.module('gkviewmemberApp.directives', [])
-        .directive('viewmenmbermembers', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                transclude: true,
-                templateUrl: "views/viewmember_content.html",
-                link: function (scope, element, attrs) {
 
-                }
-            }
-        })
-        .directive('viewmenmberindex', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                transclude: true,
-                templateUrl: "views/viewmember_content.html",
-                link: function (scope, element, attrs) {
-
-                }
-            }
-        });
-
-    /**
-     * sharingsettings
-     */
-    angular.module('gkSharingsettingsApp.directives', [])
-        .directive('sharingsettings', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                templateUrl: "views/sharing_settings.html",
-                link: function (scope, element, attrs) {
-
-                }
-            }
-        })
-        .directive('sharingsettingsindex', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                templateUrl: "views/sharing_setting_index.html",
-                link: function (scope, element, attrs) {
-
-                }
-            }
-        });
-    /**
-     * contact
-     */
-    angular.module('gkContactApp.directives', [])
-        .directive('contactGroupMembers', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                templateUrl: "contact_groupmembers.html",
-                link: function (scope, element, attrs) {
-
-                }
-            }
-     })
    ;

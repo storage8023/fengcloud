@@ -886,33 +886,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $event.stopPropagation();
         };
 
-        $scope.sitOpen = function ($scope) {
-            var data = {
-                url:"file:///F:/fengcloud/app/views/site.html",
-                type:"child",
-                width:755,
-                height:440
-            }
-            gkClientInterface.setMain(data);
-        }
-        $scope.newsbtn = function(){
-            $scope.newsScroll();
-            jQuery("#newindex").slideToggle(500);
-
-        }
-
-        $scope.sharingindex = function(){
-            jQuery(".sharingindex").slideToggle(500);
-
-        }
 	 $scope.queueOpen = function(){
             var UIPath = gkClientInterface.getUIPath();
             var url = 'file:///'+UIPath+'/views/queue.html';
             var data = {
                 url:url,
-                type:"child",
+                type:"normal",
                 width:800,
-                height:500
+                height:500,
+                resize:1
             }
             gkClientInterface.setMain(data);        
 	    }
@@ -933,9 +915,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var url = 'file:///'+UIPath+'/views/site.html';
                     var data = {
                         url:url,
-                        type:"child",
-                        width:664,
-                        height:385
+                        type:"normal",
+                        width:670,
+                        resize:1,
+                        height:460
                     }
                     gkClientInterface.setMain(data);
                 }
@@ -978,15 +961,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
  */
 angular.module('gkNewsApp.controllers', [])
     .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
+
+
+
+
         /**
          * 服务器过来的数据处理
          */
         $scope.upDate = function(){
-            var updateHttp = function(data) {
+            var updateHttp = function() {
                 var deferred = $q.defer();
-                GKApi.update(data).success(function ($http){
+                GKApi.update().success(function ($http){
                     var message = [];
                     message = $http;
+                    console.log($http);
                     deferred.resolve(message);
                 })
                 return deferred.promise;
@@ -994,89 +982,8 @@ angular.module('gkNewsApp.controllers', [])
             var promiseMember = updateHttp();
             promiseMember.then(function(data){
                 var newdata = [];
-                    var message =
-                        {  dateline: 1371108616,
-                           updates:[
-                            {
-                                dateline:1371108616,
-                                date:"2013-12-20",
-                                render_text:"这订单扯淡吗?"
-                            },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                               {
-                                   dateline:1371108616,
-                                   date:"2013-12-20",
-                                   render_text:"这订单扯淡吗?"
-                               },
-                            {
-                                dateline:1371108616,
-                                date:"2013-12-14",
-                                render_text:"这订单扯淡吗?"
-                            },
-                            {
-                                dateline:1371108616,
-                                date:"2013-12-4",
-                                render_text:"这订单扯淡吗?"
-                            },
-                               {
-                                   dateline:1371108615,
-                                   date:"2013-12-4",
-                                   render_text:"这订单扯淡吗?"
-                               }
+                newdata = data.updates;
 
-                        ]}
-
-                newdata = message.updates;    //data.updates;
-                console.log(newdata);
                 /**
                  * 过滤出相同日期
                  * 新消息news
@@ -1138,118 +1045,118 @@ angular.module('gkNewsApp.controllers', [])
                     return format;
                 };
 
-        Date.prototype.yesterformat = function (yesterformat) {
-            var o = {
-                "M+": this.getMonth() + 1, //month
-                "d+": this.getDate() - 1, //day
-                "h+": this.getHours(), //hour
-                "m+": this.getMinutes(), //minute
-                "s+": this.getSeconds(), //second
-                "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-                "S": this.getMilliseconds() //millisecond
-            };
-            if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
-                (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-            for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
-                yesterformat = yesterformat.replace(RegExp.$1,
-                    RegExp.$1.length == 1 ? o[k] :
-                        ("00" + o[k]).substr(("" + o[k]).length));
-            return yesterformat;
-        };
+                Date.prototype.yesterformat = function (yesterformat) {
+                    var o = {
+                        "M+": this.getMonth() + 1, //month
+                        "d+": this.getDate() - 1, //day
+                        "h+": this.getHours(), //hour
+                        "m+": this.getMinutes(), //minute
+                        "s+": this.getSeconds(), //second
+                        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+                        "S": this.getMilliseconds() //millisecond
+                    };
+                    if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
+                        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                    for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
+                        yesterformat = yesterformat.replace(RegExp.$1,
+                            RegExp.$1.length == 1 ? o[k] :
+                                ("00" + o[k]).substr(("" + o[k]).length));
+                    return yesterformat;
+                };
 
-        /**
-         * 过滤今天，昨天或者以前
-         * 新消息news
-         * @filterDay()
-         */
-        function filterDay(filter, dates) {
-            var date = filter('date');
-            var printDateNew = [];
-            var d = new Date();
-            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-            var yesterDate = nowDate - 3600 * 24;
-            for (var i = 0; i < dates.length; i++) {
-                var printDate = [];
-                var currentDate = dates[i][0].dateline;
-                if (currentDate >= nowDate) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            var newsDay = new Date().format('MM-dd');
-                            printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                /**
+                 * 过滤今天，昨天或者以前
+                 * 新消息news
+                 * @filterDay()
+                 */
+                function filterDay(filter, dates) {
+                    var date = filter('date');
+                    var printDateNew = [];
+                    var d = new Date();
+                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+                    var yesterDate = nowDate - 3600 * 24;
+                    for (var i = 0; i < dates.length; i++) {
+                        var printDate = [];
+                        var currentDate = dates[i][0].dateline;
+                        if (currentDate >= nowDate) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    var newsDay = new Date().format('MM-dd');
+                                    printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                }
+                            }
+                            printDateNew.push(printDate);
+                        }
+                        else if (currentDate >= yesterDate) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    var yesterDay = new Date().yesterformat('MM-dd');
+                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                }
+                            }
+                            printDateNew.push(printDate);
                         } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                }
+                            }
+                            printDateNew.push(printDate);
                         }
                     }
-                    printDateNew.push(printDate);
+                    return printDateNew;
                 }
-                else if (currentDate >= yesterDate) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            var yesterDay = new Date().yesterformat('MM-dd');
-                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                /**
+                 * 再次加载消息
+                 */
+                var againNew = function (filter, dates) {
+                    var date = filter('date');
+                    var printDateNew = [];
+                    var d = new Date();
+                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
+                    var yesterDate = nowDate - 3600 * 24;
+                    for (var i = 0; i < dates.length; i++) {
+                        var printDate = [];
+                        var currentDate = dates[i][0].dateline;
+                        if (lastime === dates[0][0].date) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                            }
+                            printDateNew.push(printDate);
+                        } else if (currentDate >= yesterDate) {
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    var yesterDay = new Date().yesterformat('MM-dd');
+                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                                }
+                            }
+                            printDateNew.push(printDate);
                         } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
+                            for (var j = 0; j < dates[i].length; j++) {
+                                if (j === 0) {
+                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                } else {
+                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
+                                }
+                            }
+                            printDateNew.push(printDate);
                         }
                     }
-                    printDateNew.push(printDate);
-                } else {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        }
-                    }
-                    printDateNew.push(printDate);
-                }
-            }
-            return printDateNew;
-        }
-        /**
-         * 再次加载消息
-         */
-        var againNew = function (filter, dates) {
-            var date = filter('date');
-            var printDateNew = [];
-            var d = new Date();
-            var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-            var yesterDate = nowDate - 3600 * 24;
-            for (var i = 0; i < dates.length; i++) {
-                var printDate = [];
-                var currentDate = dates[i][0].dateline;
-                if (lastime === dates[0][0].date) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                    }
-                    printDateNew.push(printDate);
-                } else if (currentDate >= yesterDate) {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            var yesterDay = new Date().yesterformat('MM-dd');
-                            printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                        }
-                    }
-                    printDateNew.push(printDate);
-                } else {
-                    for (var j = 0; j < dates[i].length; j++) {
-                        if (j === 0) {
-                            printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        } else {
-                            printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                        }
-                    }
-                    printDateNew.push(printDate);
-                }
-            }
-            return printDateNew;
-        };
-        /**
-         * 最后一条消息的时间戳
-         * @param filter
-         * @param dates
-         */
+                    return printDateNew;
+                };
+                /**
+                 * 最后一条消息的时间戳
+                 * @param filter
+                 * @param dates
+                 */
                 var lasttime = function (dates) {
                     var last = [];
                     for (var i = 0; i < dates.length; i++) {
@@ -1276,15 +1183,32 @@ angular.module('gkNewsApp.controllers', [])
                     $scope.lasttimelabel = lasttime(newdata);
 
                 }
-              })
+             })
         }
         $scope.upDate();
+
+     /*   var getMessageInterface = function () {
+          //  var  newsGetmessage = []
+            $scope.getmess = JSON.parse(gkClientInterface.getMessage());
+         //   newsGetmessage = $scope.getmess.updates;
+          var   newsGetmessage = {
+                dateline:2222222222,
+                data:render_text
+            }
+            console.log(newsGetmessage);
+        }*/
+
+
+
+
+
+
         /**
          *   按footer收取
          */
          var newsControls = function(){
              jQuery("#newsPackUp").click(function(){
-                 jQuery("#newindex").slideUp(500);
+                 jQuery(".news-wrapper").slideUp(500);
              });
          };
          newsControls();
@@ -1454,16 +1378,13 @@ angular.module("gkPersonalApp.controllers", [])
         })
     }
     perCtrl();
-
 }]);
-
 
 /**
  * site
  */
 angular.module("gkSiteApp.controllers", [])
     .controller("siteCtrl", function ($scope) {
-
         /**
          * 选择语言处理
          */
@@ -1473,9 +1394,9 @@ angular.module("gkSiteApp.controllers", [])
                 {name: '中文', type: 1 },
                 {name: '英文', type: 2 }
             ];
-            //     $scope.changeLanguage = gkClientInterface.getLanguage();
-            var type = 0;
-            $scope.item = $scope.items[type];
+            $scope.changeLanguage = JSON.parse(gkClientInterface.getLanguage());
+            $scope.item = $scope.items[$scope.changeLanguage.type];
+
         }
         /**
          * 打开设置
@@ -1498,20 +1419,25 @@ angular.module("gkSiteApp.controllers", [])
         $scope.siteagent = function () {
             gkClientInterface.setSettings();
         }
-
         /**
          * 清除缓存
          */
         $scope.siteClearCache = function () {
-            gkClientInterface.setClearCache();
+            var r=confirm("确定要清除缓存数据？");
+            if (r==true)
+            {
+                gkClientInterface.setClearCache();
+            }
         }
-
+        $scope.siteadvancepathdlg = function(){
+            $scope.configpath= gkClientInterface.selectPath(true);
+        }
         /**
          * 按确定保存数据，关闭窗口，
          */
         $scope.postUserInfo = function () {
-          //  $scope.item = $scope.item.type;
-          //  var language = {type: $scope.item};
+            $scope.item = $scope.item.type;
+            var language = {type: $scope.item};
             var userInfo = {
                 auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
                 prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 : $scope.prompt,
@@ -1521,9 +1447,9 @@ angular.module("gkSiteApp.controllers", [])
             var setClientInfo = {
                 configpath: $scope.configpath
             }
-            gkClientInterface.setClientInfo(userInfo);
-            //     gkClientInterface.setChangeLanguage(language);
-                 gkClientInterface.setClose();
+             gkClientInterface.setClientInfo(userInfo);
+             gkClientInterface.setChangeLanguage(language);
+          //   gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
@@ -1583,134 +1509,16 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronousregain = "";
             $scope.synchronousremove = "";
         }
+
+        $scope.siteSetSyncStatus = function(){
+            var syncStatus = [];
+            syncStatus = JSON.parse(gkClientInterface.setSyncStatus());
+            for(var i = 0,len = syncStatus.length;i<len;i++){
+
+
+            }
+        }
     });
-
-/**
- * contact
- *
-angular.module("gkContactApp.controllers", ['contactSlideTree'])
-    .controller('contactCtrl', ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
-
-        var datas = 1255;
-        var teamGroupsHttp = function(data) {
-            var deferred = $q.defer();
-            GKApi.teamGroupsMembers(data).success(function($http){
-                var conteamgroups = [],
-                    conteamMembers = [];
-                conteamgroups = $http.groups;
-                conteamMembers = $http.members;
-                console.log(conteamMembers);
-                deferred.resolve(conteamgroups,conteamMembers);
-            })
-            return deferred.promise;
-        }
-        var promise = teamGroupsHttp(datas);
-        promise.then(function(groups){
-            var item = [],
-                items = [];
-            for(var key in groups){
-                item.push(groups[key]);
-            }
-            for(var i = 0,len = item.length;i<len;i++){
-                var data = [];
-                data ={
-                        label:item[i].group_name,
-                        data:item[i].group_id
-                    }
-                items.push(data);
-            }
-            $scope.example =  items;
-        })
-        $scope.contactTree = function(branch){
-            $scope.yy = branch.group_name;
-        }
-        $scope.concate = function(){
-            $scope.example_treedata =  $scope.example;
-            $scope.contrl = 'open';
-        }
-        /**
-         *  单机分组，向服务器获取成员
-         *  @param branch
-         *
-        $scope.conkeyup = function ($event) {
-            if ($event.keyCode === 13) {
-                //团队id/ var =
-                GKApi.teamsearch(ord_id, $scope.context).success(function ($http, data) {
-                    $scope.getkeytext = data;
-                });
-            }
-        }
-        /**
-         * 搜索数据处理
-         *
-         var conKeyUpData = function(data){
-            var newData = [];
-            for(var i = 0,len = data.length;i<len;i++){
-                if(data[i].member_id !== 0){
-                    newData.push(data[i]);
-                }
-            }
-            return newData;
-        }
-         $scope.conteamMembers = conKeyUpData($scope.getkeytext);
-         /**
-         * 单机选择确定按钮
-         *
-
-        //点击选择分组按钮
-        jQuery('.selectGroup').click ( function() {
-            var selectGroupButton =  jQuery('.contact-content-team').find('.contact-content-normal');
-            if(jQuery(this).data('group') === '选择') {
-                selectGroupButton.text('选择');
-                jQuery(this).data('group','确定');
-            }else{
-                selectGroupButton.text('确定');
-                jQuery(this).data('group','选择');
-            }
-        })
-            //点击选择分组按钮
-        jQuery('.selectGroup').click(function () {
-            var selectGroupButton = jQuery('.contact-content-team').find('.contact-content-normal');
-            if (jQuery(this).data('group') === '选择') {
-                selectGroupButton.text('选择');
-                jQuery(this).data('group', '确定');
-            } else {
-                selectGroupButton.text('确定');
-                jQuery(this).data('group', '选择');
-            }
-        });
-        /**
-         * 点击单选选择和确定按钮
-         *
-        jQuery('.contact-content-group').click(function (e) {
-            if (jQuery('.selectGroup').data('group') === "选择") return;
-            if (e.target.className === "contact-content-normal") {
-                if (jQuery(e.target).text() === "选择") {
-                   jQuery(e.target).text('确定');
-                } else {
-                    jQuery(e.target).text('选择');
-                }
-            }
-        });
-        /**
-         *  点击确定提交按钮
-         *
-        $scope.perPostShare = function () {
-            var shareData = [];
-            $.each(jQuery('.contact-content-team'), function () {
-                if (jQuery(this).find('.contact-content-normal').text() === '确定') {
-                    shareData.push(
-                        {
-                            name: $scope.group[jQuery(this).index()].name,
-                            email: $scope.group[jQuery(this).index()].email,
-                            id: $scope.group[jQuery(this).index()].id
-                        }
-                    )
-                }
-            });
-        };
-    }]);
-*/
 
 angular.module("gkQueueApp.controllers", [])
     .controller('queueCtrl', function ($scope) {
@@ -1879,7 +1687,6 @@ angular.module("gkQueueApp.controllers", [])
         $scope.queueClose = function(){
             gkClientInterface.setClose();
         }
-
     });
 
 
