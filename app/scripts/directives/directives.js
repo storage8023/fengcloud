@@ -1331,6 +1331,7 @@ angular.module('gkClientIndex.directives', [])
 
                 jQuery($window).bind('resize',function(){
                    var max =  jQuery($window).width() - 650;
+                    console.log(max);
                    if($document.find('.left_sidebar').width()>max){
                        $scope.style = {
                            left:max-1
