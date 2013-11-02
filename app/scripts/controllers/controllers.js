@@ -24,14 +24,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         });
 
-        /**
-         * 个人的文件
-         * @type {*}
-         */
-        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
-        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
-        $scope.treeList = myTreeData;
-
         var getTrashNode = function(mount_id){
             var node = {
                 label: "回收站",
@@ -46,17 +38,25 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             return node;
         };
-        $scope.treeList.push(getTrashNode(myMount.mountid));
+
+
+        /**
+         * 个人的文件
+         * @type {*}
+         */
+        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
+        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
+        if(!myTreeData[0]['children']) myTreeData[0]['children'] = [];
+        myTreeData[0]['children'].push(getTrashNode(myMount.mountid));
+        $scope.treeList = myTreeData;
+
 
         /**
          * 团队的文件
          */
 
-        $scope.orgTreeList = [];
-        angular.forEach(GKFile.dealTreeData(orgMount, 'teamfile'),function(value){
-            $scope.orgTreeList.push(value);
-            $scope.orgTreeList.push(getTrashNode(value.data.mount_id));
-        })
+        $scope.orgTreeList = GKFile.dealTreeData(orgMount, 'teamfile');
+
 
         /**
          * 智能文件夹
@@ -142,6 +142,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (branch.expanded) {
                 var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id || 0})['list'];
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
+               if(!branch.children)  branch.children = [];
+                console.log(branch.data.fullpath);
+               if(!branch.data.fullpath){
+                   branch.children.push(getTrashNode(branch.data.mount_id));
+               }
             }
         };
 
@@ -865,32 +870,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-//                    $scope.remindMembers = [
-//                        {
-//                            'id': 1,
-//                            'name': '测试1'
-//                        },
-//                        {
-//                            'id': 2,
-//                            'name': '测试2'
-//                        },
-//                        {
-//                            'id': 3,
-//                            'name': '测试3'
-//                        },
-//                        {
-//                            'id': 4,
-//                            'name': '测试4'
-//                        },
-//                        {
-//                            'id': 5,
-//                            'name': '测试5'
-//                        },
-//                        {
-//                            'id': 6,
-//                            'name': 'xugetest1'
-//                        }
-//                    ];
                 });
             } else {
 
@@ -907,6 +886,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', 'GKSearch',function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout,GKSearch) {
 
+        $scope.testCallback = function(){
+         gkClient.gTest(JSON.stringify({test:'1'}),function(){
+            alert(1);
+         },function(param){
+             alert(param);
+         });
+        };
         /**
          * 面包屑
          */
@@ -1099,9 +1085,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
  */
 angular.module('gkNewsApp.controllers', [])
     .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
-
-
-
 
         /**
          * 服务器过来的数据处理

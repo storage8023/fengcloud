@@ -48,7 +48,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout',function (RestFile,$location,$timeout) {
+    .directive('singlefileRightSidebar', ['RestFile','$location','$timeout','GKApi','$rootScope',function (RestFile,$location,$timeout,GKApi,$rootScope) {
         return {
             replace: true,
             restrict: 'E',
@@ -60,8 +60,8 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.addTag = function (tag) {
                     var newTag = $scope.file.tag + ' ' + tag;
-                    GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
-
+                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, newTag).success(function () {
+                        $scope.file.tag = newTag;
                     }).error(function () {
 
                         });
@@ -73,9 +73,8 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.removeTag = function (tag) {
                     var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
-
-                    GKApi.setTag(searchParams.mountid, $scope.file.fullpath, newTag).success(function () {
-
+                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, newTag).success(function () {
+                        $scope.file.tag = newTag;
                     }).error(function () {
 
                         });

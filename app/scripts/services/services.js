@@ -785,11 +785,17 @@ angular.module('gkClientIndex.services', [])
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
-                return $http({
-                    method: 'POST',
+                return jQuery.ajax({
+                    type: 'POST',
                     url: GK.getApiHost() + '/1/file/keyword',
-                    data: jQuery.param(params)
+                    data: params,
+                    dataType:'text'
                 });
+//                return $http({
+//                    method: 'POST',
+//                    url: GK.getApiHost() + '/1/file/keyword',
+//                    data: jQuery.param(params)
+//                });
             },
             update: function () {
                 var params = {
