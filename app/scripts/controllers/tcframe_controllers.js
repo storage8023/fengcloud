@@ -10,11 +10,11 @@ angular.module('gkClientFrame.controllers',[])
         });
 
         $scope.handleHeaderClick = function(){
-              gkClientInterface.lanchpad();
+              gkClientInterface.launchpad();
         };
 
         $scope.showMessage = function(){
-            gkClientInterface.lanchpad({type:'message'});
+            gkClientInterface.launchpad({type:'message'});
         };
 
     }])

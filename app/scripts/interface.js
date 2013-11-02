@@ -7,11 +7,11 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
-    lanchpad:function(params){
+    launchpad:function(params){
         if(typeof params ==='undefined'){
-            gkClient.gLanchpad();
+            gkClient.gLaunchpad();
         }else{
-            gkClient.gLanchpad(JSON.stringify(params));
+            gkClient.gLaunchpad(JSON.stringify(params));
         }
 
     },

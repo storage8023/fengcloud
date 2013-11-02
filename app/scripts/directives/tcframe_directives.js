@@ -14,14 +14,14 @@ angular.module('gkClientFrame.directives',[])
                         classes:'message',
                         name:'消息',
                         handleClick:function(){
-                            gkClientInterface.lanchpad({type:'message'});
+                            gkClientInterface.launchpad({type:'message'});
                         }
                     },
                     {
                         classes:'nearby',
                         name:'附近',
                         handleClick:function(){
-                            gkClientInterface.lanchpad({type:'find'});
+                            gkClientInterface.launchpad({type:'find'});
                         }
                     },
                     {
