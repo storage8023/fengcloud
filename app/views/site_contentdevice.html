@@ -7,39 +7,16 @@
         <li  class = "site-content-device-file f_l"> 操作</li>
     </ul>
     <div class = "site-content-form scrollbar">
-      <ul ng-class-odd="'odd'" ng-class-even="'even'" class = "c_f_after" >
-          <li>
-              <div  class = "site-device-file f_l">够快网页版</div>
-              <div  class = "site-device-file f_l">通用设备</div>
-              <div  class = "site-device-date f_l"> 2013-09-28 11:35:30</div>
-              <div  class = "site-device-file f_l">禁用</div>
+      <ul ng-class-odd="'odd'" ng-class-even="'even'"  >
+          <li ng-repeat = "divice in sitedivices"  class = "c_f_after">
+              <div  class = "site-device-file f_l">{{divice.device_name}}</div>
+              <div  class = "site-device-file f_l">{{divice.os_version}}</div>
+              <div  class = "site-device-date f_l"> {{divice.last_activity}}</div>
+              <div  class = "site-device-file f_l">
+                  <a href = "javascript:void(0);"  ng-click = "banstart = (banstart ==='禁用'? '启用':'禁用')">{{banstart}}</a> |
+                  <a href = "javascript:void(0);" ng-click = "siteSyncDelete('{{divice.device_id}}',$index)">删除</a>
+              </div>
           </li>
-          <li>
-              <div  class = "site-device-file f_l">够快网页版</div>
-              <div  class = "site-device-file f_l">通用设备</div>
-              <div  class = "site-device-date f_l"> 2013-09-28 11:35:30</div>
-              <div  class = "site-device-file f_l">禁用</div>
-          </li>
-          <li>
-              <div  class = "site-device-file f_l">够快网页版</div>
-              <div  class = "site-device-file f_l">通用设备</div>
-              <div  class = "site-device-date f_l"> 2013-09-28 11:35:30</div>
-              <div  class = "site-device-file f_l">禁用</div>
-          </li>
-          <li>
-              <div  class = "site-device-file f_l">够快网页版</div>
-              <div  class = "site-device-file f_l">通用设备</div>
-              <div  class = "site-device-date f_l"> 2013-09-28 11:35:30</div>
-              <div  class = "site-device-file f_l">禁用</div>
-          </li>
-          <li>
-              <div  class = "site-device-file f_l">够快网页版</div>
-              <div  class = "site-device-file f_l">通用设备</div>
-              <div  class = "site-device-date f_l"> 2013-09-28 11:35:30</div>
-              <div  class = "site-device-file f_l">禁用</div>
-          </li>
-
-
        </ul>
      </div>
     <input class = "sitesynchronousban" type = "checkbox" />禁止其他新设备登录

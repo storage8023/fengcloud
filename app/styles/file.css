@@ -310,6 +310,7 @@
 .site-sidebar{
     width:150px;
     border-right:1px solid #AEBCD4;
+
     background:#F1F4F7 ;
     top:0;
     left:0;
@@ -411,7 +412,7 @@
     position:absolute;
     height: 35px;
     background: #E5E9EF;
-    border-top:1px solid #AEBCD4;
+    border-top:2px solid #AEBCD4;
 }
 .site-content-agent{
     margin-right: 10px;
@@ -479,16 +480,18 @@
     line-height: 30px;
     font: 15px;
     color: #868686;
+    padding:1px;
 }
 .site-device-file{
     width:22%;
+    padding:1px;
     text-align: center;
     line-height: 30px;
     font: 15px;
     color: #868686;
 }
 .sync-color{
-    color: #9900FF;
+    color:rgb(97,133,188);
 }
 .site-content-form{
     display: block;
@@ -496,8 +499,6 @@
     border:1px solid #C2CBD3;
     margin-bottom: 10px;
     overflow: auto;
-}
-.site-content-form ul{
 }
 .site-content-form tr td{
    width:25%
@@ -569,7 +570,7 @@
 .siteadvancepath{
     width:270px;
     height: 25px;
-    color:#990099;
+    color:rgb(85,85,136);
     padding: 1px 0px 1px 0px;
     border:1px solid #ABADB3;
 }
@@ -619,17 +620,20 @@
     margin-bottom: 5px;
 }
 .sitesynchronousregain{
-    color:#9900FF;
+    color:rgb(97,133,188);
 }
 .sitesynchronousremove{
-    color:#9900FF;
+    color:rgb(97,133,188);
     display: none;
 }
 .sitesynchronousdisplay{
     display:none;
 }
+.syncline{
+    color:#BAB1C4;
+}
 .sitesynchronourdisplay{
-    display: block;
+    display: '';
 }
 .site-footer-determine-close{
     float: right;

@@ -50,7 +50,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         myTreeData[0]['children'].push(getTrashNode(myMount.mountid));
         $scope.treeList = myTreeData;
 
-
         /**
          * 团队的文件
          */
@@ -1039,9 +1038,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var data = {
                         url:url,
                         type:"normal",
-                        width:670,
+                        width:760,
                         resize:1,
-                        height:460
+                        height:450
                     }
                     gkClientInterface.setMain(data);
                 }
@@ -1075,8 +1074,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-
-
     }]);
 
 
@@ -1085,7 +1082,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
  */
 angular.module('gkNewsApp.controllers', [])
     .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
-
         /**
          * 服务器过来的数据处理
          */
@@ -1308,22 +1304,6 @@ angular.module('gkNewsApp.controllers', [])
         }
         $scope.upDate();
 
-     /*   var getMessageInterface = function () {
-          //  var  newsGetmessage = []
-            $scope.getmess = JSON.parse(gkClientInterface.getMessage());
-         //   newsGetmessage = $scope.getmess.updates;
-          var   newsGetmessage = {
-                dateline:2222222222,
-                data:render_text
-            }
-            console.log(newsGetmessage);
-        }*/
-
-
-
-
-
-
         /**
          *   按footer收取
          */
@@ -1475,8 +1455,8 @@ angular.module("gkPersonalApp.controllers", [])
             var data = {
                 url:"file:///F:/fengcloud/app/views/site.html",
                 type:"child",
-                width:755,
-                height:440
+                width:760,
+                height:450
             }
             gkClientInterface.setMain(data);
         }
@@ -1505,7 +1485,7 @@ angular.module("gkPersonalApp.controllers", [])
  * site
  */
 angular.module("gkSiteApp.controllers", [])
-    .controller("siteCtrl", function ($scope) {
+    .controller("siteCtrl",['$scope', 'GKApi', '$http','$q', function ($scope,GKApi, $http,$q) {
         /**
          * 选择语言处理
          */
@@ -1576,7 +1556,7 @@ angular.module("gkSiteApp.controllers", [])
             };
              gkClientInterface.setClientInfo(userInfo);
              gkClientInterface.setChangeLanguage(language);
-             gkClientInterface.setClose();
+          //   gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
@@ -1627,25 +1607,104 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
+        var time = setInterval(function() {
+            var sildbarSyncData = [],
+                syncData = [];
+            var data;
+            data = {
+                type:"sync"
+            }
+             $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+             syncData = $scope.sildbarSync.list;
+             $scope.sync = siteSync(syncData);
+        }, 5000);
 
+        $scope.siteSildbarSync = function(){
+            var sildbarSyncData = [],
+                syncData = [];
+                var data;
+                data = {
+                    type:"sync"
+                }
+                $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+                syncData = $scope.sildbarSync.list;
+                $scope.sync = siteSync(syncData);
+        }
+
+        var siteSync = function(data){
+            var sync = [];
+            for(var i= 0,len = data.length;i<len;i++){
+                if(!data[i].num){
+                    sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:'完成同步'});
+                }else{
+                    sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:data[i].num+'项正在同步'});
+                }
+            }
+            return sync;
+        }
+        var siteSyncStop = function(data){
+            var sync = [];
+            for(var i= 0,len = data.length;i<len;i++){
+                sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:'暂停同步'});
+            }
+            return sync;
+        }
         $scope.synChronousRegain = function(){
+            var syncData = [];
             $scope.synchronousregain = "true";
             $scope.synchronousremove = "true";
+            gkClientInterface.setStopSync();
+            syncData = $scope.sildbarSync.list;
+            $scope.sync = siteSyncStop(syncData);
         }
-        $scope.synChronousRemove = function(){
+        $scope.synChronousRemove = function(data){
+            var syncData = [];
             $scope.synchronousregain = "";
             $scope.synchronousremove = "";
+            gkClientInterface.setStartSync();
+            syncData = $scope.sildbarSync.list;
+            $scope.sync = siteSync(syncData);
         }
-
-        $scope.siteSetSyncStatus = function(){
-            var syncStatus = [];
-            syncStatus = JSON.parse(gkClientInterface.setSyncStatus());
-            for(var i = 0,len = syncStatus.length;i<len;i++){
-
-
+        $scope.syncCancel = function(index,webpath,mountid){
+            var r=confirm("取消同步的话，该同步文件夹会消失");
+            var data = {
+                webpath:webpath,
+                mountid:mountid
+            }
+            if (r==true)
+            {
+                $scope.sync.splice(index, 1);
+                gkClientInterface.setRmoveTrans(data);
             }
         }
-    });
+        var deviceListHttp = function() {
+            var deferred = $q.defer();
+            GKApi.devicelist().success(function ($http){
+                var message = [];
+                message = $http;
+                deferred.resolve(message);
+            })
+            return deferred.promise;
+        }
+        var promiseMember = deviceListHttp();
+        promiseMember.then(function(data){
+            var siteDivices = []
+                ,siteDivicesData = [];
+            $scope.divices = data;
+            siteDivices =  $scope.divices.devices;
+            for(var i = 0,len = siteDivices.length;i<len;i++){
+                siteDivicesData.push({allow_edit:siteDivices[i].allow_edit,device_id:siteDivices[i].device_id,device_name:siteDivices[i].device_name,last_activity:siteDivices[i].last_activity,os_name:siteDivices[i].os_name,os_version:siteDivices[i].os_version,startban:'禁止'});
+            }
+            $scope.sitedivices = siteDivicesData;
+        })
+        $scope.siteSyncDelete = function(device_id,index){
+            GKApi.deldevice(device_id).success(function (){
+
+            })
+            $scope.sitedivices.splice(index, 1);
+        }
+        $scope.banstart = "禁用";
+    }]);
 
 angular.module("gkQueueApp.controllers", [])
     .controller('queueCtrl', function ($scope) {
@@ -1814,6 +1873,7 @@ angular.module("gkQueueApp.controllers", [])
         $scope.queueClose = function(){
             gkClientInterface.setClose();
         }
+
     });
 
 
