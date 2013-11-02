@@ -175,6 +175,7 @@ angular.module('gkClientIndex.directives', [])
                 fileData: '=',
                 view: '=',
                 partition: '=',
+                filter: '@',
                 order: '=',
                 selectedFile: '=',
                 rightOpts: '=',
@@ -270,6 +271,9 @@ angular.module('gkClientIndex.directives', [])
                     /**
                      * 文件夹
                      */
+                    if($scope.filter=='trash'){
+                        return;
+                    }
                     if (file.dir == 1) {
                         var params = $location.search();
                         $location.search({
@@ -296,7 +300,6 @@ angular.module('gkClientIndex.directives', [])
                         selector: '.file_list .list_body',
                         reposition: false,
                         zIndex: 99,
-                        scope: $scope,
                         animation: {
                             show: "show",
                             hide: "hide"
@@ -1328,8 +1331,7 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 jQuery($window).bind('resize',function(){
-                   var max =  $document.width() - 650;
-                   console.log(max);
+                   var max =  jQuery($window).width() - 650;
                    if($document.find('.left_sidebar').width()>max){
                        $scope.style = {
                            left:max-1

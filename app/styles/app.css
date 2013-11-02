@@ -587,10 +587,13 @@ footer {
 .toolbar .opt.opt_move i {
 
 }
-
-.toolbar .opt.opt_sync i {
-    background-position: -22px -222px;
+.toolbar .opt.opt_sync i{
+    background-position: -564px -4px;
 }
+.toolbar .opt.opt_unsync i{
+    background-position: -664px -4px;
+}
+
 
 .toolbar .opt.opt_view_change > a.active {
     background: #7f8999;

@@ -1,5 +1,5 @@
 <div class="toolbar">
-    <button ng-repeat="opt in opts " class="f_l dropdown">
+    <button ng-repeat="opt in opts" class="f_l dropdown">
         <a dropdown-toggle class="opt" href="javascript:void(0);" ng-class="opt.className?opt.className:'opt_'+opt.key" ng-click="opt.callback($event)">
             <i></i><span>{{opt.name}}</span>
         </a>
@@ -18,11 +18,4 @@
             <a href="javascript:;" ng-click="changeView('thumb')" class="thumb_view"
                ng-class="view=='thumb'?'active':''"><i></i></a>
     </span>
-    <button class="f_r">
-        <a href="javascript:void(0)" ng-show="!keyword.length && partition!='smartfolder'" class="opt opt_sync sync_state_{{PAGE_CONFIG.file.status}}" ng-click="toggleSync()">
-            <span ng-if="PAGE_CONFIG.file.status!=4"><i></i>同步</span>
-            <span class="synced" ng-if="PAGE_CONFIG.file.status==4"><i></i>已同步</span>
-            <span class="cancel_sync" ng-if="PAGE_CONFIG.file.status==4"><i></i>取消同步</span>
-        </a>
-    </button>
 </div>
