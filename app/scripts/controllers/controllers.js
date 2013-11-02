@@ -1501,13 +1501,7 @@ angular.module("gkSiteApp.controllers", [])
             $scope.siteSidebar = 'contentUniversal';
             $scope.siteChangeLanguage();
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
-            console.log( $scope.getsitedata );
-            if($scope.getsitedata.startsync === 1){
-                $scope.startsync = "暂停所有同步";
-            }else{
-                $scope.startsync = "恢复所有同步";
-            }
-
+            $scope.startStop = $scope.getsitedata.startsync;
             $scope.configpath = $scope.getsitedata.configpath;
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
             $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
@@ -1540,7 +1534,6 @@ angular.module("gkSiteApp.controllers", [])
                 $scope.configPathInter = configPath;
             }
         }
-
         /**
          * 左侧栏单击事件
          */
@@ -1593,18 +1586,38 @@ angular.module("gkSiteApp.controllers", [])
             }
             $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
             syncData = $scope.sildbarSync.list;
-            $scope.sync = siteSync(syncData);
+            if( $scope.startStop ===1){
+                $scope.sync = siteSyncStart(syncData);
+                $scope.startsync = "暂停所有同步";
+            }else{
+                $scope.sync = siteSyncStop(syncData);
+                $scope.startsync = "恢复所有同步";
+            }
+            $scope.siteSyncClick = function(data){
+                if( data === "暂停所有同步" ){
+                    $scope.sync = siteSyncStart(syncData);
+                    $scope.startsync = "暂停所有同步";
+                    $scope.startStop = 1;
+                    gkClientInterface.setStartSync();
+                }else{
+                    $scope.sync = siteSyncStop(syncData);
+                    $scope.startsync = "恢复所有同步";
+                    $scope.startStop = 0;
+                    gkClientInterface.setStopSync();
+                }
+            }
         }
         $scope.siteSyncAgainData = function(){
-            var time = setInterval(function() {
+            var time = setInterval(function(){
                 $scope.siteSyncData();
             }, 3000);
         }
+        $scope.siteSyncAgainData();
         $scope.siteSildbarSync = function(){
             $scope.siteSyncData();
             $scope.siteSyncAgainData();
         }
-        var siteSync = function(data){
+        var siteSyncStart = function(data){
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
                 if(!data[i].num){
@@ -1621,24 +1634,6 @@ angular.module("gkSiteApp.controllers", [])
                 sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:'暂停同步'});
             }
             return sync;
-        }
-        $scope.synChronousRegain = function(){
-            var syncData = [];
-            $scope.synchronousregain = "true";
-            $scope.synchronousremove = "true";
-            $scope.startsync = "恢复所有同步";
-            gkClientInterface.setStopSync();
-            syncData = $scope.sildbarSync.list;
-            $scope.sync = siteSyncStop(syncData);
-        }
-        $scope.synChronousRemove = function(data){
-            var syncData = [];
-            $scope.synchronousregain = "";
-            $scope.synchronousremove = "";
-            $scope.startsync = "暂时所有同步";
-            gkClientInterface.setStartSync();
-            syncData = $scope.sildbarSync.list;
-            $scope.sync = siteSync(syncData);
         }
         $scope.syncCancel = function(index,webpath,mountid){
             var r=confirm("取消同步的话，该同步文件夹会消失");
@@ -1657,7 +1652,6 @@ angular.module("gkSiteApp.controllers", [])
             GKApi.devicelist().success(function ($http){
                 var message = [];
                 message = $http;
-                console.log($http);
                 deferred.resolve(message);
             })
             return deferred.promise;
@@ -1684,11 +1678,6 @@ angular.module("gkSiteApp.controllers", [])
          * 按确定保存数据，关闭窗口，
          */
         $scope.postUserInfo = function () {
-            if( $scope.startsync === "恢复所有同步"){
-                $scope.startsyncNum = 0;
-            }else{
-                $scope.startsyncNum = 1;
-            }
             $scope.item = $scope.item.type;
             var language = {type: $scope.item};
             var userInfo = {
@@ -1699,7 +1688,7 @@ angular.module("gkSiteApp.controllers", [])
                 https: (typeof $scope.https !== 'number') ? $scope.https === true ? 1 : 0 : $scope.https,
                 proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy,
                 configpath: $scope.configPathInter,
-                startsync: $scope.startsyncNum
+                startsync: $scope.startStop
             };
             gkClientInterface.setClientInfo(userInfo);
             gkClientInterface.setChangeLanguage(language);

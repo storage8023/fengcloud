@@ -313,10 +313,6 @@
     setRmoveTrans: function(params){
         return gkClient.gRemoveTrans(JSON.stringify(params));
     },
-<<<<<<< HEAD
-
-
-=======
     getUserAgent:function(){
         return navigator.userAgent.split(';')
     },
@@ -328,7 +324,7 @@
     },
     getClientVersion:function(){
         return this.getUserAgent()[1].toLowerCase();
-    },
->>>>>>> b52c04c05d7d4dd0700e4d6777b171c570c68017
+    }
+
 };
 
