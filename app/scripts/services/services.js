@@ -797,9 +797,10 @@ angular.module('gkClientIndex.services', [])
 //                    data: jQuery.param(params)
 //                });
             },
-            update: function () {
+            update: function (size) {
+                size = angular.isDefined(size)?size:20;
                 var params = {
-                    size:20
+                    size:size
                 };
                angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1015,6 +1016,23 @@ angular.module('gkClientIndex.services', [])
     .factory('GKHistory', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
         return new GKHistory($q, $location, $rootScope);
     }])
+    .factory('GKDialog', [function () {
+        return {
+            /**
+             * 打开设置框
+             */
+            openSetting:function(){
+
+            },
+            /**
+             * 打开传输列表
+             */
+            openTransfer:function(){
+
+            }
+        }
+    }
+    ])
 ;
 
 var GKClientCallback = function(){

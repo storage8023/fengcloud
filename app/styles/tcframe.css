@@ -1,0 +1,108 @@
+body{
+    color:#606D7F;
+    cursor: default;
+}
+header{
+   height: 40px;
+   border-bottom:1px solid #CDCED0;
+   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#F8F8F8), to(#E6E7E8));
+    box-shadow: inset 0 -1px 0 #E3E3E4;
+    text-align: center;
+}
+header i{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    margin-top: 4px;
+    background: url(../images/icon/icon_other.png) -40px -4px;
+}
+ul.quickmenu{
+    height: 60px;
+    background: #EBECED;
+    border-bottom:1px solid #CDCED0;
+    box-shadow: inset 0 2px 3px #E1E1E2;
+}
+
+ul.quickmenu li{
+    width: 25%;
+    height: 100%;
+    text-align: center;
+    float: left;
+    font-size: 13px;
+}
+
+ul.quickmenu li i,
+ul.quickmenu li span{
+    display: block;
+
+}
+ul.quickmenu li i{
+    width: 32px;
+    height: 32px;
+    background: url(../images/icon/icon_other.png);
+    margin: 4px auto 0;
+}
+ul.quickmenu li.message i{
+    background-position: -76px -4px;
+}
+ul.quickmenu li.nearby i{
+    background-position: -112px -4px;
+}
+ul.quickmenu li.trasfer i{
+    background-position: -148px -4px;
+}
+ul.quickmenu li.setting i{
+    background-position: -184px -4px;
+}
+ul.quickmenu li span{
+    font-size: 13px;
+    height: 20px;
+    line-height: 20px;
+}
+.message_wrapper{
+    position: absolute;
+    top:100px;
+    left:0;
+    right: 0;
+    bottom: 0;
+    padding-top: 8px;
+
+}
+.message_wrapper .message_tip{
+    height: 29px;
+    line-height: 29px;
+    background: #EBECED;
+    border-top:1px solid #E2E2E2;
+    border-bottom:1px solid #E2E2E2;
+    text-align: center;
+    font-size: 15px;
+
+}
+ul.message_list{
+    position: absolute;
+    top:37px;
+    left:0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+
+}
+ul.message_list li{
+    margin:18px;
+    position: relative;
+    line-height: 15px;
+}
+ul.message_list .dateline{
+    position: absolute;
+    right: 0;
+    width: 80px;
+    color:#ACB4BF;
+    top:0;
+    text-align: right;
+}
+ul.message_list .msg{
+    margin-right: 90px;
+    word-break: break-all;
+    word-wrap: break-word;
+}

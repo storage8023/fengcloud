@@ -1076,13 +1076,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         ];
     }]);
 
-//angular.module('gkClientFrame.controllers')
-//    .controller('initFrame',[function($rootScope){
-//        $rootScope.PAGE_CONFIG = {
-//            user:gkClientInterface.getUser()
-//        };
-//    }])
-
 /**
  * news
  */

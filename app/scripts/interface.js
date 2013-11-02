@@ -7,7 +7,14 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    lanchpad:function(params){
+        if(typeof params ==='undefined'){
+            gkClient.gLanchpad();
+        }else{
+            gkClient.gLanchpad(JSON.stringify(params));
+        }
 
+    },
     /**
      * 获取文件列表
      * @param params
