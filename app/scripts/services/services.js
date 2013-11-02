@@ -1022,13 +1022,31 @@ angular.module('gkClientIndex.services', [])
              * 打开设置框
              */
             openSetting:function(){
-
+                var UIPath = gkClientInterface.getUIPath();
+                var url = 'file:///'+UIPath+'/views/site.html';
+                var data = {
+                    url:url,
+                    type:"normal",
+                    width:760,
+                    resize:1,
+                    height:450
+                }
+                gkClientInterface.setMain(data);
             },
             /**
              * 打开传输列表
              */
             openTransfer:function(){
-
+                var UIPath = gkClientInterface.getUIPath();
+                var url = 'file:///'+UIPath+'/views/queue.html';
+                var data = {
+                    url:url,
+                    type:"normal",
+                    width:800,
+                    height:500,
+                    resize:1
+                }
+                gkClientInterface.setMain(data);
             }
         }
     }
