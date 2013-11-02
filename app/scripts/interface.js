@@ -249,7 +249,7 @@
         return gkClient.gUserInfo();
     },
     setClearCache:function(){
-        gkClient.gClearChache();
+        gkClient.gClearCache();
     },
     getUpdateLinkPaths: function(param){
         gkClient.gUpdateLinkPaths(JSON.stringify(param));
@@ -293,6 +293,17 @@
     },
     setSyncStatus: function(){
         return gkClient.gSetSyncStatus();
-    }
+    },
+    setStartSync: function(){
+        gkClient.gStartSync();
+    },
+    setStopSync: function(){
+        gkClient.gStopSync();
+    },
+    setRmoveTrans: function(params){
+        console.log(params);
+        return gkClient.gRemoveTrans(JSON.stringify(params));
+    },
+
 };
 

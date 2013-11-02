@@ -702,11 +702,11 @@ angular.module('gkClientIndex.services', [])
              */
             devicelist:function(){
                 var sign = GK.getApiAuthorization(defaultParams);
-                params.sign = sign;
+                defaultParams.sign = sign;
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/account/device_list',
-                    params:params
+                    params:defaultParams
                 });
             },
             /**
@@ -731,13 +731,14 @@ angular.module('gkClientIndex.services', [])
              * 删除设备
              * @returns {*}
              */
-            deldevice:function(org_id,keyword){
+            deldevice:function(device_id){
                 var params = {
                     device_id:device_id,
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
+                console.log(params);
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/account/del_device',
