@@ -16,6 +16,11 @@
     <script src="scripts/directives/tcframe_directives.js"></script>
     <script src="scripts/services/services.js"></script>
     <script src="scripts/tcframe.js"></script>
+    <script>
+        if(!gkClientInterface.isWindowsClient()){
+            document.write(unescape("%3Clink rel='stylesheet' href='styles/tcframe_mac.css' type='text/javascript' %3E%3C/link%3E"));
+        }
+    </script>
 </head>
 <body ng-controller="initFrame">
 <header ng-click="handleHeaderClick()">

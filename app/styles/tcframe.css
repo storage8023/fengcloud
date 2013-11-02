@@ -8,6 +8,10 @@ header{
    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#F8F8F8), to(#E6E7E8));
     box-shadow: inset 0 -1px 0 #E3E3E4;
     text-align: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
 }
 header i{
     display: inline-block;
@@ -22,6 +26,10 @@ ul.quickmenu{
     background: #EBECED;
     border-bottom:1px solid #CDCED0;
     box-shadow: inset 0 2px 3px #E1E1E2;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:40px;
 }
 
 ul.quickmenu li{
