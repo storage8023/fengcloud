@@ -673,21 +673,22 @@
     top:0;
     bottom: 35px;
     left:0;
-    background:#F0F4F7 ;
+    background:#F1F1F2;
 }
 .queue-sildbar-ul{
-    padding-top: 30px;
+    padding-top: 15px;
 }
 .queue-sildbar-ul li{
-    height: 30px;
     line-height: 30px;
-    text-align: center;
     font-size: 14px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     cursor:pointer ;
 }
+.queue-sildbar-ul li a{
+    padding-left: 30px;
+}
 .blue {
-    background:#86B7F2;
+    background:#8EB7F1;
 }
 .none {
     background: none;
@@ -705,13 +706,16 @@
 }
 .queue-con-upload .queue-con-top,
 .queue-con-download .queue-con-top{
-    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 30px;
     background: #F1F1F1;
     border-bottom:1px solid #CFCFCF;
 }
 .queue-con-top-title{
-    width: 60%;
+    line-height: 30px;
+    width: 30%;
     margin-left: 10%;
     line-height: 25px;
 }

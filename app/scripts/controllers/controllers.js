@@ -1,4 +1,5 @@
 
+
 'use strict';
 
 /* Controllers */
@@ -25,6 +26,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         });
 
+        /**
+         * 个人的文件
+         * @type {*}
+         */
+        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
+        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
+        $scope.treeList = myTreeData;
+
         var getTrashNode = function(mount_id){
             var node = {
                 label: "回收站",
@@ -39,24 +48,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             return node;
         };
-
-
-        /**
-         * 个人的文件
-         * @type {*}
-         */
-        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
-        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
-        if(!myTreeData[0]['children']) myTreeData[0]['children'] = [];
-        myTreeData[0]['children'].push(getTrashNode(myMount.mountid));
-        $scope.treeList = myTreeData;
+        $scope.treeList.push(getTrashNode(myMount.mountid));
 
         /**
          * 团队的文件
          */
 
-        $scope.orgTreeList = GKFile.dealTreeData(orgMount, 'teamfile');
-
+        $scope.orgTreeList = [];
+        angular.forEach(GKFile.dealTreeData(orgMount, 'teamfile'),function(value){
+            $scope.orgTreeList.push(value);
+            $scope.orgTreeList.push(getTrashNode(value.data.mount_id));
+        })
 
         /**
          * 智能文件夹
@@ -142,11 +144,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (branch.expanded) {
                 var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id || 0})['list'];
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
-               if(!branch.children)  branch.children = [];
-                console.log(branch.data.fullpath);
-               if(!branch.data.fullpath){
-                   branch.children.push(getTrashNode(branch.data.mount_id));
-               }
             }
         };
 
@@ -275,7 +272,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
                 params = {
                     webpath: file.fullpath,
-                    mountid: $rootScope.PAGE_CONFIG.mount.mount_id
+                    mount_id: $rootScope.PAGE_CONFIG.mount.mount_id
                 }
                 GK.removeLinkPath(params).then(function () {
                     if(setParentFile){
@@ -870,6 +867,32 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
+//                    $scope.remindMembers = [
+//                        {
+//                            'id': 1,
+//                            'name': '测试1'
+//                        },
+//                        {
+//                            'id': 2,
+//                            'name': '测试2'
+//                        },
+//                        {
+//                            'id': 3,
+//                            'name': '测试3'
+//                        },
+//                        {
+//                            'id': 4,
+//                            'name': '测试4'
+//                        },
+//                        {
+//                            'id': 5,
+//                            'name': '测试5'
+//                        },
+//                        {
+//                            'id': 6,
+//                            'name': 'xugetest1'
+//                        }
+//                    ];
                 });
             } else {
 
@@ -884,15 +907,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         });
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', 'GKSearch',function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout,GKSearch) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', 'GKSearch','GKDialog',function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout,GKSearch, GKDialog) {
 
-        $scope.testCallback = function(){
-         gkClient.gTest(JSON.stringify({test:'1'}),function(){
-            alert(1);
-         },function(param){
-             alert(param);
-         });
-        };
         /**
          * 面包屑
          */
@@ -1010,16 +1026,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
 	 $scope.queueOpen = function(){
-            var UIPath = gkClientInterface.getUIPath();
-            var url = 'file:///'+UIPath+'/views/queue.html';
-            var data = {
-                url:url,
-                type:"normal",
-                width:800,
-                height:500,
-                resize:1
-            }
-            gkClientInterface.setMain(data);        
+         GKDialog.openTransfer();
 	    }
         $scope.items = [
             {
@@ -1034,16 +1041,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"设置",
                 menuclick:function(){
-                    var UIPath = gkClientInterface.getUIPath();
-                    var url = 'file:///'+UIPath+'/views/site.html';
-                    var data = {
-                        url:url,
-                        type:"normal",
-                        width:760,
-                        resize:1,
-                        height:450
-                    }
-                    gkClientInterface.setMain(data);
+                    GKDialog.openSetting();
                 }
             },{
                 item:"帮助",
@@ -1076,6 +1074,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         ];
     }]);
+
 
 /**
  * news
@@ -1429,11 +1428,6 @@ angular.module("gkPersonalApp.controllers", [])
 
             });
         }
-        $scope.perjoin = function (data, code) {
-            GKApi.teamInviteJoin(data, code).success(function ($http) {
-
-            });
-        }
         $scope.setupteam = function ($scope) {
 
             var data = {
@@ -1486,6 +1480,7 @@ angular.module("gkPersonalApp.controllers", [])
  */
 angular.module("gkSiteApp.controllers", [])
     .controller("siteCtrl",['$scope', 'GKApi', '$http','$q', function ($scope,GKApi, $http,$q) {
+        var time = null;
         /**
          * 选择语言处理
          */
@@ -1497,7 +1492,6 @@ angular.module("gkSiteApp.controllers", [])
             ];
             $scope.changeLanguage = JSON.parse(gkClientInterface.getLanguage());
             $scope.item = $scope.items[$scope.changeLanguage.type];
-
         }
         /**
          * 打开设置
@@ -1507,6 +1501,7 @@ angular.module("gkSiteApp.controllers", [])
             $scope.siteSidebar = 'contentUniversal';
             $scope.siteChangeLanguage();
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
+            console.log( $scope.getsitedata );
             $scope.configpath = $scope.getsitedata.configpath;
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
             $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
@@ -1556,7 +1551,7 @@ angular.module("gkSiteApp.controllers", [])
             };
              gkClientInterface.setClientInfo(userInfo);
              gkClientInterface.setChangeLanguage(language);
-          //   gkClientInterface.setClose();
+             gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
@@ -1607,21 +1602,10 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
-   /*     var time = setInterval(function() {
-            var sildbarSyncData = [],
-                syncData = [];
-            var data;
-            data = {
-                type:"sync"
-            }
-            $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
-            syncData = $scope.sildbarSync.list;
-            $scope.sync = siteSync(syncData);
-        }, 5000);*/
-
-        $scope.siteSildbarSync = function(){
-            var sildbarSyncData = [],
-                syncData = [];
+        $scope.siteSync = function(){
+            var time = setInterval(function() {
+                var sildbarSyncData = [],
+                    syncData = [];
                 var data;
                 data = {
                     type:"sync"
@@ -1629,8 +1613,12 @@ angular.module("gkSiteApp.controllers", [])
                 $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
                 syncData = $scope.sildbarSync.list;
                 $scope.sync = siteSync(syncData);
+            }, 5000);
         }
-
+        $scope.siteSync();
+        $scope.siteSildbarSync = function(){
+            $scope.siteSync();
+        }
         var siteSync = function(data){
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
@@ -1682,6 +1670,7 @@ angular.module("gkSiteApp.controllers", [])
             GKApi.devicelist().success(function ($http){
                 var message = [];
                 message = $http;
+                console.log($http);
                 deferred.resolve(message);
             })
             return deferred.promise;
@@ -1708,6 +1697,9 @@ angular.module("gkSiteApp.controllers", [])
 
 angular.module("gkQueueApp.controllers", [])
     .controller('queueCtrl', function ($scope) {
+        var time1 = null,
+            time2 = null,
+            time3 = null;
         $scope.openContent = "上传";
         $scope.open = function(value) {
             if (value === "上传") {
@@ -1771,7 +1763,7 @@ angular.module("gkQueueApp.controllers", [])
                     yesdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
                 }else{
                     var filesizePos = (data[i].pos/data[i].filesize)*100 + '%'
-                        ,posSize = bitSize(data[i].pos);
+                        ,posSize = bitSize(data[i].filesize);
                     newdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
                 }
             }
@@ -1785,7 +1777,7 @@ angular.module("gkQueueApp.controllers", [])
         var queusSync = function(data){
             var newdata = [];
             for(var i = 0,len = data.length; i<len;i++){
-                if(data[i].time ==="" ){
+                if(data[i].time ===0 ){
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num});
                 }else{
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
@@ -1793,78 +1785,111 @@ angular.module("gkQueueApp.controllers", [])
             }
             return newdata;
         }
+
         /**
          * 上传
          */
-        $scope.queusSildbarUpload = function(){
+        $scope.getTransListtime = function() {
             var sildbarUploadData = [];
-                var data;
-                data = {
-                    type:"upload"
-                }
-                $scope.sildbarUpload = JSON.parse(gkClientInterface.getTransList(data));
-                sildbarUploadData =  $scope.sildbarUpload.list;
-                if($scope.sildbarUpload.download === 0){
-                    $scope.downloadspeek = 0;
-                }else{
-                    $scope.downloadspeek = $scope.sildbarUpload.download;
-                }
-                if( $scope.sildbarUpload.upload === 0 ){
-                    $scope.uploadspeek = 0;
-                }else{
-                    $scope.uploadspeek = $scope.sildbarUpload.upload;
-                }
-                $scope.upload = queusData(sildbarUploadData);
+            var data;
+            data = {
+                type:"upload"
+            }
+            $scope.sildbarUpload = JSON.parse(gkClientInterface.getTransList(data));
+            sildbarUploadData =  $scope.sildbarUpload.list;
+            if($scope.sildbarUpload.download === 0){
+                $scope.downloadspeek = 0;
+            }else{
+                $scope.downloadspeek = $scope.sildbarUpload.download;
+            }
+            if( $scope.sildbarUpload.upload === 0 ){
+                $scope.uploadspeek = 0;
+            }else{
+                $scope.uploadspeek = $scope.sildbarUpload.upload;
+            }
+            $scope.upload = queusData(sildbarUploadData);
         }
-
+        $scope.getTransListtime();
+        $scope.queueinterface = function(){
+            var time1 = setInterval(function() {
+                $scope.getTransListtime();
+            },3000);
+        }
+        $scope.queueinterface();
+        $scope.queusSildbarUpload = function(){
+            $scope.queueinterface();
+        }
         /**
          *下载
          */
-        $scope.queusSildbarDownload = function(){
+        $scope.downloadDataProcessing = function(){
             var sildbarDownloadData = [];
-                var data;
-                data = {
-                    type:"download"
-                }
-                $scope.sildbarDownload = JSON.parse(gkClientInterface.getTransList(data));
-                sildbarDownloadData =  $scope.sildbarDownload.list;
-                if($scope.sildbarDownload.download === 0){
-                    $scope.downloadspeek = 0;
-                }else{
-                    $scope.downloadspeek = $scope.sildbarDownload.download;
-                }
-                if( $scope.sildbarDownload.upload === 0 ){
-                    $scope.uploadspeek = 0;
-                }else{
-                    $scope.uploadspeek = $scope.sildbarDownload.upload;
-                }
-                $scope.download = queusData(sildbarDownloadData);
+            var data;
+            data = {
+                type:"download"
+            }
+            $scope.sildbarDownload = JSON.parse(gkClientInterface.getTransList(data));
+            console.log($scope.sildbarDownload);
+            sildbarDownloadData =  $scope.sildbarDownload.list;
+            if($scope.sildbarDownload.download === 0){
+                $scope.downloadspeek = 0;
+            }else{
+                $scope.downloadspeek = $scope.sildbarDownload.download;
+            }
+            if( $scope.sildbarDownload.upload === 0 ){
+                $scope.uploadspeek = 0;
+            }else{
+                $scope.uploadspeek = $scope.sildbarDownload.upload;
+            }
+            $scope.download = queusData(sildbarDownloadData);
+        }
+        $scope.queueinterfaceDownload = function(){
+            var time2 = setInterval(function() {
+                $scope.downloadDataProcessing();
+            },3000);
+        }
+        $scope.queueinterfaceDownload();
+        $scope.queusSildbarDownload = function(){
+            $scope.downloadDataProcessing();
+            $scope.queueinterfaceDownload();
         }
         /**
          * 同步
          */
-        $scope.queusSildbarSync = function(){
+        $scope.SynchronousDataProcessing = function(){
             var sildbarSyncData = [];
-                var data;
-                data = {
-                    type:"sync"
-                }
-                $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
-
-                sildbarSyncData =  $scope.sildbarSync.list;
-
+            var data;
+            data = {
+                type:"sync"
+            }
+            $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+            sildbarSyncData =  $scope.sildbarSync.list;
+            if($scope.sildbarSync.download === 0){
+                $scope.downloadspeek = 0;
+            }else{
                 $scope.downloadspeek = $scope.sildbarSync.download;
+            }
+            if( $scope.sildbarSync.upload === 0 ){
+                $scope.uploadspeek = 0;
+            }else{
                 $scope.uploadspeek = $scope.sildbarSync.upload;
-                $scope.sync = queusSync(sildbarSyncData);
-            console.log($scope.sync);
+            }
+            $scope.sync = queusSync(sildbarSyncData);
+        }
+        $scope.queueinterfaceSync = function(){
+            var time3 = setInterval(function() {
+                $scope.SynchronousDataProcessing();
+            },3000);
+        }
+        $scope.queueinterfaceSync();
+        $scope.queusSildbarSync = function(){
+            $scope.SynchronousDataProcessing();
+            $scope.queueinterfaceSync();
         }
         $scope.queueClose = function(){
             gkClientInterface.setClose();
         }
-
     });
-
-
 
 
 

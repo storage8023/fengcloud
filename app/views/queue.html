@@ -10,16 +10,17 @@
     <div class = "queue-wrapper">
         <div class = "queue-sildbar">
             <ul class = "queue-sildbar-ul">
-                <li class = "queue-sildbar-upload blue"  ng-class="{true: 'blue',false: 'none'}[showUploadBg]" ng-click = "queusSildbarUpload(); open('上传')">上传</li>
-                <li class = "queue-sildbar-download" ng-class="{true: 'blue',false: 'none'}[showDownloadBg]"  ng-click = "queusSildbarDownload(); open('下载')" >下载</li>
-                <li class = "queue-sildbar-synch"  ng-class="{true: 'blue',false: 'none'}[showSyncBg]"  ng-click = "queusSildbarSync(); open('同步')">同步</li>
+                <li class = "queue-sildbar-upload blue"  ng-class="{true: 'blue',false: 'none'}[showUploadBg]" ng-click = "queusSildbarUpload(); open('上传')"><a href = "javascript:void(0);">上传</a></li>
+                <li class = "queue-sildbar-download" ng-class="{true: 'blue',false: 'none'}[showDownloadBg]"  ng-click = "queusSildbarDownload(); open('下载')" ><a href = "javascript:void(0);">下载</a></li>
+                <li class = "queue-sildbar-synch"  ng-class="{true: 'blue',false: 'none'}[showSyncBg]"  ng-click = "queusSildbarSync(); open('同步')"><a href = "javascript:void(0);">同步</a></li>
             </ul>
         </div>
         <div class = "queue-content" ng-switch on="openContent">
             <div class = "queue-con-upload" ng-switch-when="上传">
                 <div class = "queue-con-top">
-                    <div class = "queue-con-top-title f_l">文件</div>
-                    <div class = "queue-con-top-time f_l">剩余时间</div>
+                    <div class = "queue-con-top-title f_l"><a href = "javascript:void(0);">文件</a></div>
+                    <div class = "queue-con-top-title f_l"><a href = "javascript:void(0);">状态</a></div>
+                    <div class = "queue-con-top-time f_l"><a href = "javascript:void(0);">剩余时间</a></div>
                 </div>
                 <ul class = "queue-con-up">
                     <li  ng-hide="hide" ng-repeat = "viewupload in upload">
