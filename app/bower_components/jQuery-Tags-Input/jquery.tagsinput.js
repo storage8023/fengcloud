@@ -292,17 +292,28 @@
 				}
 				// if user types a comma, create a new tag
 				$(data.fake_input).bind('keypress',data,function(event) {
-					if (event.which==event.data.delimiter.charCodeAt(0) || event.which==13 ) {
+					if (event.which==event.data.delimiter.charCodeAt(0)) {
 					    event.preventDefault();
 						if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) )
 							$(event.data.real_input).addTag($(event.data.fake_input).val(),{focus:true,unique:(settings.unique)});
-					  	$(event.data.fake_input).resetAutosize(settings);
+                        $(event.data.fake_input).resetAutosize(settings);
 						return false;
 					} else if (event.data.autosize) {
 			            $(event.data.fake_input).doAutosize(settings);
             
           			}
 				});
+
+                $(data.fake_input).bind('keydown',data,function(event) {
+                    if ( event.which==13 ) {
+                        event.preventDefault();
+                        if( (event.data.minChars <= $(event.data.fake_input).val().length) && (!event.data.maxChars || (event.data.maxChars >= $(event.data.fake_input).val().length)) )
+                            $(event.data.real_input).addTag($(event.data.fake_input).val(),{focus:true,unique:(settings.unique)});
+                        $(event.data.fake_input).resetAutosize(settings);
+                        return false;
+                    }
+                });
+
 				//Delete last tag on backspace
 				data.removeWithBackspace && $(data.fake_input).bind('keydown', function(event)
 				{
