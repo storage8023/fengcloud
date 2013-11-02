@@ -7,11 +7,11 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
-    lanchpad:function(params){
+    launchpad:function(params){
         if(typeof params ==='undefined'){
-            gkClient.gLanchpad();
+            gkClient.gLaunchpad();
         }else{
-            gkClient.gLanchpad(JSON.stringify(params));
+            gkClient.gLaunchpad(JSON.stringify(params));
         }
 
     },
@@ -313,7 +313,22 @@
     setRmoveTrans: function(params){
         return gkClient.gRemoveTrans(JSON.stringify(params));
     },
+<<<<<<< HEAD
 
 
+=======
+    getUserAgent:function(){
+        return navigator.userAgent.split(';')
+    },
+    getClientOS:function(){
+        return this.getUserAgent()[2].toLowerCase();
+    },
+    isWindowsClient:function(){
+        return this.getClientOS() == 'windows';
+    },
+    getClientVersion:function(){
+        return this.getUserAgent()[1].toLowerCase();
+    },
+>>>>>>> b52c04c05d7d4dd0700e4d6777b171c570c68017
 };
 
