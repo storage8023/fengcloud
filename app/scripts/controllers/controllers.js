@@ -274,7 +274,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
                 params = {
                     webpath: file.fullpath,
-                    mount_id: $rootScope.PAGE_CONFIG.mount.mount_id
+                    mountid: $rootScope.PAGE_CONFIG.mount.mount_id
                 }
                 GK.removeLinkPath(params).then(function () {
                     if(setParentFile){
@@ -1076,6 +1076,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         ];
     }]);
 
+angular.module('gkClientFrame.controllers')
+    .controller('initFrame',[function($rootScope){
+
+    }])
 
 /**
  * news
