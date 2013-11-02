@@ -20,7 +20,6 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
             });
     }]);
 
-//angular.module('gkClientFrame',['gkClientFrame.controllers']);
 
 angular.module('gkNewsApp', ['gkNewsApp.controllers','gkNewsApp.directives','gkClientIndex.services']);
 angular.module('gkPersonalApp', ['gkPersonalApp.controllers','gkPersonalApp.directives','gkClientIndex.services']);
