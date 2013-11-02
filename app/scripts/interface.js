@@ -307,9 +307,13 @@
     setStopSync: function(){
         gkClient.gStopSync();
     },
+    setRemoveLinkPaths: function(){
+        gkClient.gRemoveLinkPaths();
+    },
     setRmoveTrans: function(params){
         return gkClient.gRemoveTrans(JSON.stringify(params));
     },
+
 
 };
 

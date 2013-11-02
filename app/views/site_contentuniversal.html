@@ -1,8 +1,8 @@
 <div class = "site-content-universal" ng-show="siteSidebar=='contentUniversal'" >
      <ul>
-        <li><input type = "checkbox" ng-model = "auto" />系统启动时运行够快</li>
-        <li><input type = "checkbox" ng-model ="prompt" />显示桌面通知</li>
-        <li><input type = "checkbox" ng-model = "recycle" />别人删除与我共享的文件时，也进入我电脑的回收站</li>
+        <li><input type = "checkbox" ng-model = "auto" id = "auto" /><label for = "auto">系统启动时运行够快</label></li>
+        <li><input type = "checkbox" ng-model ="prompt" id = "prompt" /><label for = "prompt">显示桌面通知</label></li>
+        <li><input type = "checkbox" ng-model = "recycle" id = "recycle" /><label for = "recycle">别人删除与我共享的文件时，也进入我电脑的回收站</label></li>
         <li>语言切换 :
             <select ng-model="item" ng-options="c.name for c in items">
             </select>

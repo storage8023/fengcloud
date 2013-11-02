@@ -4,14 +4,14 @@
         <li  class = "site-content-device-file f_l">设备名称</li>
         <li  class = "site-content-device-file f_l">系统信息</li>
         <li  class = "site-content-device-date f_l">最后登录时间</li>
-        <li  class = "site-content-device-file f_l"> 操作</li>
+        <li  class = "site-content-device-file f_l">操作</li>
     </ul>
     <div class = "site-content-form scrollbar">
       <ul ng-class-odd="'odd'" ng-class-even="'even'"  >
           <li ng-repeat = "divice in sitedivices"  class = "c_f_after">
               <div  class = "site-device-file f_l">{{divice.device_name}}</div>
               <div  class = "site-device-file f_l">{{divice.os_version}}</div>
-              <div  class = "site-device-date f_l"> {{divice.last_activity}}</div>
+              <div  class = "site-device-date f_l">{{divice.last_activity}}</div>
               <div  class = "site-device-file f_l">
                   <a href = "javascript:void(0);"  ng-click = "banstart = (banstart ==='禁用'? '启用':'禁用')">{{banstart}}</a> |
                   <a href = "javascript:void(0);" ng-click = "siteSyncDelete('{{divice.device_id}}',$index)">删除</a>
@@ -19,5 +19,5 @@
           </li>
        </ul>
      </div>
-    <input class = "sitesynchronousban" type = "checkbox" />禁止其他新设备登录
+    <input class = "sitesynchronousban" type = "checkbox" id = "sitesyc"/><label for="sitesyc">禁止其他新设备登录</label>
 </div>

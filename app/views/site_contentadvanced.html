@@ -3,13 +3,13 @@
         <li class = "siteadvancedseat"><span>配置文件位置</span></li>
         <li>
             <input class = "siteadvancepath" type = "text" readonly="readonly" value = "{{configpath}}" />
-            <input type = "button" class = "siteadvancepathdlg" ng-click = "siteadvancepathdlg()" value = "移动" />
+            <button class = "siteadvancepathdlg" ng-click = "siteadvancepathdlg()" value = "移动">移动</button>
             </li>
         <li class = "siteadvancerestart" >
             <span>软件重启生效</span>
         </li>
         <li class = "siteadvancechche">
-            <input type = "button" class = "clercache" ng-click = "siteClearCache()" value = "清除缓存"/><span>删除缓存可以换区您的硬盘空间，但可能会导致您的同步效率下降</span>
+            <button class = "clercache" ng-click = "siteClearCache()" >清除缓存</button><span>删除缓存可以换区您的硬盘空间，但可能会导致您的同步效率下降</span>
         </li>
     </ul>
 </div>

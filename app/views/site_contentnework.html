@@ -1,11 +1,11 @@
 <div class = "site-content-network" ng-show="siteSidebar== 'contentNetwork'" >
     <ul>
         <li>
-            <input type = "checkbox" ng-model = "local" /> 开启局域网内高速同步
+            <input type = "checkbox" ng-model = "local" id = "local"/><label for = "local">开启局域网内高速同步</label>
         </li>
-        <li><input type = "checkbox"  ng-model ="https" />开启HTTPS安全链接</li>
-        <li class = "sitenetworkagentproxy"><input class="sitenetworkagent" ng-click = "siteagent()" value = "设置代理" />
-            <input type = "checkbox" ng-model ="proxy" /> 开启IE代理（软件下次启动时生效）
+        <li><input type = "checkbox"  ng-model ="https" id = "https"/><label for = "https">开启HTTPS安全链接</label></li>
+        <li class = "sitenetworkagentproxy"><button class="sitenetworkagent" ng-click = "siteagent()" value = "设置代理" >设置代理</button>
+            <input type = "checkbox" ng-model ="proxy" id = "proxy"/><label for = "proxy">开启IE代理（软件下次启动时生效）</label>
         </li>
         </ul>
 </div>

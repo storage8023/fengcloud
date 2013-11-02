@@ -14,6 +14,6 @@
              </li>
          </ul>
      </div>
-     <a class = "sitesynchronousregain" ng-class = "{true: 'sitesynchronousdisplay',flase:'sitesynchronousnone'}[synchronousregain]" ng-click = "synChronousRegain('{{syncData.finish}}')" href = "javascript:void(0);" title = "暂停所有同步">暂停所有同步</a>
-     <a class = "sitesynchronousremove" ng-class = "{true: 'sitesynchronourdisplay'}[synchronousremove]" ng-click = "synChronousRemove('{{syncData.finish}}')" href = "javascript:void(0);" title = "恢复所有同步">恢复所有同步</a>
+     <a class = "sitesynchronousregain" ng-class = "{true: 'sitesynchronousdisplay',flase:'sitesynchronousnone'}[synchronousregain]" ng-click = "synChronousRegain('{{syncData.finish}}')" href = "javascript:void(0);" title = "暂停所有同步">{{startsync}}</a>
+     <a class = "sitesynchronousremove" ng-class = "{true: 'sitesynchronourdisplayblock'}[synchronousremove]" ng-click = "synChronousRemove('{{syncData.finish}}')" href = "javascript:void(0);" title = "恢复所有同步">{{startsync}}</a>
  </div>

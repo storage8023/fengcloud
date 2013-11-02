@@ -635,6 +635,9 @@
 .sitesynchronourdisplay{
     display: '';
 }
+.sitesynchronourdisplayblock{
+    display: block;
+}
 .site-footer-determine-close{
     float: right;
     margin-top: 5px;

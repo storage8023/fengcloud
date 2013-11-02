@@ -52,6 +52,7 @@
             <div class = "queue-con-download" ng-switch-when="下载">
                 <div class = "queue-con-top">
                     <div class = "queue-con-top-title f_l">文件</div>
+                    <div class = "queue-con-top-time f_l">同步状态</div>
                     <div class = "queue-con-top-time f_l">剩余时间</div>
                 </div>
                 <ul class = "queue-con-up">
@@ -106,11 +107,11 @@
             <div class = "queue-footer-UploadDownload f_l">
                 <div class = "queue-footer-Upload">
                     <span class = "uploadimage"></span>
-                    <span title = "上传总速度：{{uploadspeek}} Kb/s">上传总速度：{{uploadspeek}} Kb/s</span>
+                    <span title = "上传总速度：{{uploadspeek}} Kb/s">上传总速度：{{uploadspeek}}</span>
                 </div>
                 <div class = "queue-footer-Download">
                     <span class = "downloadimage"></span>
-                    <span title = "下载总速度：{{downloadspeek}} Kb/s">下载总速度：{{downloadspeek}} Kb/s</span>
+                    <span title = "下载总速度：{{downloadspeek}} Kb/s">下载总速度：{{downloadspeek}}</span>
                 </div>
             </div>
             <div class = "queue-footer-Close f_r" ng-click = "queueClose()" ><span>关闭</span></div>

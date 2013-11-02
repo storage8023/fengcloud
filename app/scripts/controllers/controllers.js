@@ -1502,6 +1502,12 @@ angular.module("gkSiteApp.controllers", [])
             $scope.siteChangeLanguage();
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
             console.log( $scope.getsitedata );
+            if($scope.getsitedata.startsync === 1){
+                $scope.startsync = "暂停所有同步";
+            }else{
+                $scope.startsync = "恢复所有同步";
+            }
+
             $scope.configpath = $scope.getsitedata.configpath;
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
             $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
@@ -1534,31 +1540,7 @@ angular.module("gkSiteApp.controllers", [])
                 $scope.configPathInter = configPath;
             }
         }
-        /**
-         * 按确定保存数据，关闭窗口，
-         */
-        $scope.postUserInfo = function () {
-            $scope.item = $scope.item.type;
-            var language = {type: $scope.item};
-            var userInfo = {
-                auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
-                prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 : $scope.prompt,
-                recycle: (typeof  $scope.recycle !== 'number') ? $scope.recycle === true ? 1 : 0 : $scope.recycle,
-                local: (typeof $scope.local !== 'number') ? $scope.local === true ? 1 : 0 : $scope.local,
-                https: (typeof $scope.https !== 'number') ? $scope.https === true ? 1 : 0 : $scope.https,
-                proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy,
-                configpath: $scope.configPathInter
-            };
-             gkClientInterface.setClientInfo(userInfo);
-             gkClientInterface.setChangeLanguage(language);
-             gkClientInterface.setClose();
-        }
-        /**
-         *   按取消不保存数据，关闭窗口
-         */
-        $scope.closeUserInfo = function () {
-            gkClientInterface.setClose();
-        }
+
         /**
          * 左侧栏单击事件
          */
@@ -1602,22 +1584,25 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
-        $scope.siteSync = function(){
-            var time = setInterval(function() {
-                var sildbarSyncData = [],
-                    syncData = [];
-                var data;
-                data = {
-                    type:"sync"
-                }
-                $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
-                syncData = $scope.sildbarSync.list;
-                $scope.sync = siteSync(syncData);
-            }, 5000);
+        $scope.siteSyncData = function(){
+            var sildbarSyncData = [],
+                syncData = [];
+            var data;
+            data = {
+                type:"sync"
+            }
+            $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+            syncData = $scope.sildbarSync.list;
+            $scope.sync = siteSync(syncData);
         }
-        $scope.siteSync();
+        $scope.siteSyncAgainData = function(){
+            var time = setInterval(function() {
+                $scope.siteSyncData();
+            }, 3000);
+        }
         $scope.siteSildbarSync = function(){
-            $scope.siteSync();
+            $scope.siteSyncData();
+            $scope.siteSyncAgainData();
         }
         var siteSync = function(data){
             var sync = [];
@@ -1641,6 +1626,7 @@ angular.module("gkSiteApp.controllers", [])
             var syncData = [];
             $scope.synchronousregain = "true";
             $scope.synchronousremove = "true";
+            $scope.startsync = "恢复所有同步";
             gkClientInterface.setStopSync();
             syncData = $scope.sildbarSync.list;
             $scope.sync = siteSyncStop(syncData);
@@ -1649,6 +1635,7 @@ angular.module("gkSiteApp.controllers", [])
             var syncData = [];
             $scope.synchronousregain = "";
             $scope.synchronousremove = "";
+            $scope.startsync = "暂时所有同步";
             gkClientInterface.setStartSync();
             syncData = $scope.sildbarSync.list;
             $scope.sync = siteSync(syncData);
@@ -1662,7 +1649,7 @@ angular.module("gkSiteApp.controllers", [])
             if (r==true)
             {
                 $scope.sync.splice(index, 1);
-                gkClientInterface.setRmoveTrans(data);
+                gkClientInterface.setRemoveLinkPaths(data);
             }
         }
         var deviceListHttp = function() {
@@ -1693,6 +1680,37 @@ angular.module("gkSiteApp.controllers", [])
             $scope.sitedivices.splice(index, 1);
         }
         $scope.banstart = "禁用";
+        /**
+         * 按确定保存数据，关闭窗口，
+         */
+        $scope.postUserInfo = function () {
+            if( $scope.startsync === "恢复所有同步"){
+                $scope.startsyncNum = 0;
+            }else{
+                $scope.startsyncNum = 1;
+            }
+            $scope.item = $scope.item.type;
+            var language = {type: $scope.item};
+            var userInfo = {
+                auto: (typeof $scope.auto !== 'number' ) ? $scope.auto === true ? 1 : 0 : $scope.auto.auto,
+                prompt: (typeof $scope.prompt !== 'number') ? $scope.prompt === true ? 1 : 0 : $scope.prompt,
+                recycle: (typeof  $scope.recycle !== 'number') ? $scope.recycle === true ? 1 : 0 : $scope.recycle,
+                local: (typeof $scope.local !== 'number') ? $scope.local === true ? 1 : 0 : $scope.local,
+                https: (typeof $scope.https !== 'number') ? $scope.https === true ? 1 : 0 : $scope.https,
+                proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy,
+                configpath: $scope.configPathInter,
+                startsync: $scope.startsyncNum
+            };
+            gkClientInterface.setClientInfo(userInfo);
+            gkClientInterface.setChangeLanguage(language);
+            gkClientInterface.setClose();
+        }
+        /**
+         *   按取消不保存数据，关闭窗口
+         */
+        $scope.closeUserInfo = function () {
+            gkClientInterface.setClose();
+        }
     }]);
 
 angular.module("gkQueueApp.controllers", [])
@@ -1800,12 +1818,12 @@ angular.module("gkQueueApp.controllers", [])
             if($scope.sildbarUpload.download === 0){
                 $scope.downloadspeek = 0;
             }else{
-                $scope.downloadspeek = $scope.sildbarUpload.download;
+                $scope.downloadspeek = bitSize($scope.sildbarUpload.download);
             }
             if( $scope.sildbarUpload.upload === 0 ){
                 $scope.uploadspeek = 0;
             }else{
-                $scope.uploadspeek = $scope.sildbarUpload.upload;
+                $scope.uploadspeek = bitSize($scope.sildbarUpload.upload);
             }
             $scope.upload = queusData(sildbarUploadData);
         }
@@ -1813,7 +1831,7 @@ angular.module("gkQueueApp.controllers", [])
         $scope.queueinterface = function(){
             var time1 = setInterval(function() {
                 $scope.getTransListtime();
-            },3000);
+            },2000);
         }
         $scope.queueinterface();
         $scope.queusSildbarUpload = function(){
@@ -1834,19 +1852,19 @@ angular.module("gkQueueApp.controllers", [])
             if($scope.sildbarDownload.download === 0){
                 $scope.downloadspeek = 0;
             }else{
-                $scope.downloadspeek = $scope.sildbarDownload.download;
+                $scope.downloadspeek = bitSize($scope.sildbarDownload.download);
             }
             if( $scope.sildbarDownload.upload === 0 ){
                 $scope.uploadspeek = 0;
             }else{
-                $scope.uploadspeek = $scope.sildbarDownload.upload;
+                $scope.uploadspeek = bitSize($scope.sildbarDownload.upload);
             }
             $scope.download = queusData(sildbarDownloadData);
         }
         $scope.queueinterfaceDownload = function(){
             var time2 = setInterval(function() {
                 $scope.downloadDataProcessing();
-            },3000);
+            },2000);
         }
         $scope.queueinterfaceDownload();
         $scope.queusSildbarDownload = function(){
@@ -1867,19 +1885,19 @@ angular.module("gkQueueApp.controllers", [])
             if($scope.sildbarSync.download === 0){
                 $scope.downloadspeek = 0;
             }else{
-                $scope.downloadspeek = $scope.sildbarSync.download;
+                $scope.downloadspeek = bitSize($scope.sildbarSync.download);
             }
             if( $scope.sildbarSync.upload === 0 ){
                 $scope.uploadspeek = 0;
             }else{
-                $scope.uploadspeek = $scope.sildbarSync.upload;
+                $scope.uploadspeek = bitSize($scope.sildbarSync.upload);
             }
             $scope.sync = queusSync(sildbarSyncData);
         }
         $scope.queueinterfaceSync = function(){
             var time3 = setInterval(function() {
                 $scope.SynchronousDataProcessing();
-            },3000);
+            },2000);
         }
         $scope.queueinterfaceSync();
         $scope.queusSildbarSync = function(){
