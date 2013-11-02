@@ -28,7 +28,7 @@
 </header>
 <qiuckmenu></qiuckmenu>
 <div class="message_wrapper" ng-click="showMessage()">
-    <div class="message_tip">一周内有{{messageCount}}条消息</div>
+    <div class="message_tip" ng-show="messageCount>0">一周内有{{messageCount}}条消息</div>
     <ul class="scrollbar message_list">
         <li ng-repeat="message in messages">
             <div class="dateline" ng-bind="message.date_txt">
