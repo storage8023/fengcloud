@@ -301,7 +301,6 @@
         gkClient.gStopSync();
     },
     setRmoveTrans: function(params){
-        console.log(params);
         return gkClient.gRemoveTrans(JSON.stringify(params));
     },
 

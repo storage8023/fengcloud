@@ -1445,11 +1445,6 @@ angular.module("gkPersonalApp.controllers", [])
 
             });
         }
-        $scope.perjoin = function (data, code) {
-            GKApi.teamInviteJoin(data, code).success(function ($http) {
-
-            });
-        }
         $scope.setupteam = function ($scope) {
 
             var data = {
@@ -1502,6 +1497,7 @@ angular.module("gkPersonalApp.controllers", [])
  */
 angular.module("gkSiteApp.controllers", [])
     .controller("siteCtrl",['$scope', 'GKApi', '$http','$q', function ($scope,GKApi, $http,$q) {
+        var time = null;
         /**
          * 选择语言处理
          */
@@ -1513,7 +1509,6 @@ angular.module("gkSiteApp.controllers", [])
             ];
             $scope.changeLanguage = JSON.parse(gkClientInterface.getLanguage());
             $scope.item = $scope.items[$scope.changeLanguage.type];
-
         }
         /**
          * 打开设置
@@ -1523,6 +1518,7 @@ angular.module("gkSiteApp.controllers", [])
             $scope.siteSidebar = 'contentUniversal';
             $scope.siteChangeLanguage();
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
+            console.log( $scope.getsitedata );
             $scope.configpath = $scope.getsitedata.configpath;
             $scope.auto = (typeof $scope.getsitedata.auto === 'number') ? $scope.getsitedata.auto === 1 ? true : false : $scope.getsitedata.auto;
             $scope.prompt = (typeof $scope.getsitedata.prompt === 'number') ? $scope.getsitedata.prompt === 1 ? true : false : $scope.getsitedata.prompt;
@@ -1572,7 +1568,7 @@ angular.module("gkSiteApp.controllers", [])
             };
              gkClientInterface.setClientInfo(userInfo);
              gkClientInterface.setChangeLanguage(language);
-          //   gkClientInterface.setClose();
+             gkClientInterface.setClose();
         }
         /**
          *   按取消不保存数据，关闭窗口
@@ -1623,21 +1619,10 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
-   /*     var time = setInterval(function() {
-            var sildbarSyncData = [],
-                syncData = [];
-            var data;
-            data = {
-                type:"sync"
-            }
-            $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
-            syncData = $scope.sildbarSync.list;
-            $scope.sync = siteSync(syncData);
-        }, 5000);*/
-
-        $scope.siteSildbarSync = function(){
-            var sildbarSyncData = [],
-                syncData = [];
+        $scope.siteSync = function(){
+            var time = setInterval(function() {
+                var sildbarSyncData = [],
+                    syncData = [];
                 var data;
                 data = {
                     type:"sync"
@@ -1645,8 +1630,12 @@ angular.module("gkSiteApp.controllers", [])
                 $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
                 syncData = $scope.sildbarSync.list;
                 $scope.sync = siteSync(syncData);
+            }, 5000);
         }
-
+        $scope.siteSync();
+        $scope.siteSildbarSync = function(){
+            $scope.siteSync();
+        }
         var siteSync = function(data){
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
@@ -1698,6 +1687,7 @@ angular.module("gkSiteApp.controllers", [])
             GKApi.devicelist().success(function ($http){
                 var message = [];
                 message = $http;
+                console.log($http);
                 deferred.resolve(message);
             })
             return deferred.promise;
@@ -1724,6 +1714,9 @@ angular.module("gkSiteApp.controllers", [])
 
 angular.module("gkQueueApp.controllers", [])
     .controller('queueCtrl', function ($scope) {
+        var time1 = null,
+            time2 = null,
+            time3 = null;
         $scope.openContent = "上传";
         $scope.open = function(value) {
             if (value === "上传") {
@@ -1787,7 +1780,7 @@ angular.module("gkQueueApp.controllers", [])
                     yesdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
                 }else{
                     var filesizePos = (data[i].pos/data[i].filesize)*100 + '%'
-                        ,posSize = bitSize(data[i].pos);
+                        ,posSize = bitSize(data[i].filesize);
                     newdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
                 }
             }
@@ -1801,7 +1794,7 @@ angular.module("gkQueueApp.controllers", [])
         var queusSync = function(data){
             var newdata = [];
             for(var i = 0,len = data.length; i<len;i++){
-                if(data[i].time ==="" ){
+                if(data[i].time ===0 ){
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num});
                 }else{
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
@@ -1809,75 +1802,110 @@ angular.module("gkQueueApp.controllers", [])
             }
             return newdata;
         }
+
         /**
          * 上传
          */
-        $scope.queusSildbarUpload = function(){
+        $scope.getTransListtime = function() {
             var sildbarUploadData = [];
-                var data;
-                data = {
-                    type:"upload"
-                }
-                $scope.sildbarUpload = JSON.parse(gkClientInterface.getTransList(data));
-                sildbarUploadData =  $scope.sildbarUpload.list;
-                if($scope.sildbarUpload.download === 0){
-                    $scope.downloadspeek = 0;
-                }else{
-                    $scope.downloadspeek = $scope.sildbarUpload.download;
-                }
-                if( $scope.sildbarUpload.upload === 0 ){
-                    $scope.uploadspeek = 0;
-                }else{
-                    $scope.uploadspeek = $scope.sildbarUpload.upload;
-                }
-                $scope.upload = queusData(sildbarUploadData);
+            var data;
+            data = {
+                type:"upload"
+            }
+            $scope.sildbarUpload = JSON.parse(gkClientInterface.getTransList(data));
+            sildbarUploadData =  $scope.sildbarUpload.list;
+            if($scope.sildbarUpload.download === 0){
+                $scope.downloadspeek = 0;
+            }else{
+                $scope.downloadspeek = $scope.sildbarUpload.download;
+            }
+            if( $scope.sildbarUpload.upload === 0 ){
+                $scope.uploadspeek = 0;
+            }else{
+                $scope.uploadspeek = $scope.sildbarUpload.upload;
+            }
+            $scope.upload = queusData(sildbarUploadData);
         }
-
+        $scope.getTransListtime();
+        $scope.queueinterface = function(){
+            var time1 = setInterval(function() {
+                $scope.getTransListtime();
+            },3000);
+        }
+        $scope.queueinterface();
+        $scope.queusSildbarUpload = function(){
+            $scope.queueinterface();
+        }
         /**
          *下载
          */
-        $scope.queusSildbarDownload = function(){
+        $scope.downloadDataProcessing = function(){
             var sildbarDownloadData = [];
-                var data;
-                data = {
-                    type:"download"
-                }
-                $scope.sildbarDownload = JSON.parse(gkClientInterface.getTransList(data));
-                sildbarDownloadData =  $scope.sildbarDownload.list;
-                if($scope.sildbarDownload.download === 0){
-                    $scope.downloadspeek = 0;
-                }else{
-                    $scope.downloadspeek = $scope.sildbarDownload.download;
-                }
-                if( $scope.sildbarDownload.upload === 0 ){
-                    $scope.uploadspeek = 0;
-                }else{
-                    $scope.uploadspeek = $scope.sildbarDownload.upload;
-                }
-                $scope.download = queusData(sildbarDownloadData);
+            var data;
+            data = {
+                type:"download"
+            }
+            $scope.sildbarDownload = JSON.parse(gkClientInterface.getTransList(data));
+            console.log($scope.sildbarDownload);
+            sildbarDownloadData =  $scope.sildbarDownload.list;
+            if($scope.sildbarDownload.download === 0){
+                $scope.downloadspeek = 0;
+            }else{
+                $scope.downloadspeek = $scope.sildbarDownload.download;
+            }
+            if( $scope.sildbarDownload.upload === 0 ){
+                $scope.uploadspeek = 0;
+            }else{
+                $scope.uploadspeek = $scope.sildbarDownload.upload;
+            }
+            $scope.download = queusData(sildbarDownloadData);
+        }
+        $scope.queueinterfaceDownload = function(){
+            var time2 = setInterval(function() {
+                $scope.downloadDataProcessing();
+            },3000);
+        }
+        $scope.queueinterfaceDownload();
+        $scope.queusSildbarDownload = function(){
+            $scope.downloadDataProcessing();
+            $scope.queueinterfaceDownload();
         }
         /**
          * 同步
          */
-        $scope.queusSildbarSync = function(){
+        $scope.SynchronousDataProcessing = function(){
             var sildbarSyncData = [];
-                var data;
-                data = {
-                    type:"sync"
-                }
-                $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
-
-                sildbarSyncData =  $scope.sildbarSync.list;
-
+            var data;
+            data = {
+                type:"sync"
+            }
+            $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+            sildbarSyncData =  $scope.sildbarSync.list;
+            if($scope.sildbarSync.download === 0){
+                $scope.downloadspeek = 0;
+            }else{
                 $scope.downloadspeek = $scope.sildbarSync.download;
+            }
+            if( $scope.sildbarSync.upload === 0 ){
+                $scope.uploadspeek = 0;
+            }else{
                 $scope.uploadspeek = $scope.sildbarSync.upload;
-                $scope.sync = queusSync(sildbarSyncData);
-            console.log($scope.sync);
+            }
+            $scope.sync = queusSync(sildbarSyncData);
+        }
+        $scope.queueinterfaceSync = function(){
+            var time3 = setInterval(function() {
+                $scope.SynchronousDataProcessing();
+            },3000);
+        }
+        $scope.queueinterfaceSync();
+        $scope.queusSildbarSync = function(){
+            $scope.SynchronousDataProcessing();
+            $scope.queueinterfaceSync();
         }
         $scope.queueClose = function(){
             gkClientInterface.setClose();
         }
-
     });
 
 
