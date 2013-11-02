@@ -1622,17 +1622,17 @@ angular.module("gkSiteApp.controllers", [])
             $scope.synchronous = "";
             $scope.network = "";
         }
-        var time = setInterval(function() {
+   /*     var time = setInterval(function() {
             var sildbarSyncData = [],
                 syncData = [];
             var data;
             data = {
                 type:"sync"
             }
-             $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
-             syncData = $scope.sildbarSync.list;
-             $scope.sync = siteSync(syncData);
-        }, 5000);
+            $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+            syncData = $scope.sildbarSync.list;
+            $scope.sync = siteSync(syncData);
+        }, 5000);*/
 
         $scope.siteSildbarSync = function(){
             var sildbarSyncData = [],
@@ -1723,9 +1723,6 @@ angular.module("gkSiteApp.controllers", [])
 
 angular.module("gkQueueApp.controllers", [])
     .controller('queueCtrl', function ($scope) {
-        var  time1 = null
-            , time2 = null
-            , time3 = null;
         $scope.openContent = "上传";
         $scope.open = function(value) {
             if (value === "上传") {
@@ -1793,7 +1790,6 @@ angular.module("gkQueueApp.controllers", [])
                     newdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
                 }
             }
-            newdata.push(yesdata);
             return newdata;
         }
         /**
@@ -1802,9 +1798,9 @@ angular.module("gkQueueApp.controllers", [])
          * @returns {Array}
          */
         var queusSync = function(data){
-            var newdata = []
+            var newdata = [];
             for(var i = 0,len = data.length; i<len;i++){
-                if(data[i].num === 0){
+                if(data[i].time ==="" ){
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num});
                 }else{
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
@@ -1817,9 +1813,6 @@ angular.module("gkQueueApp.controllers", [])
          */
         $scope.queusSildbarUpload = function(){
             var sildbarUploadData = [];
-            clearTimeout(time2);
-            clearTimeout(time3);
-            time1 = setTimeout(function() {
                 var data;
                 data = {
                     type:"upload"
@@ -1837,16 +1830,13 @@ angular.module("gkQueueApp.controllers", [])
                     $scope.uploadspeek = $scope.sildbarUpload.upload;
                 }
                 $scope.upload = queusData(sildbarUploadData);
-            }, 3000);
         }
+
         /**
          *下载
          */
         $scope.queusSildbarDownload = function(){
             var sildbarDownloadData = [];
-            clearTimeout(time1);
-            clearTimeout(time3);
-            time1 = setTimeout(function() {
                 var data;
                 data = {
                     type:"download"
@@ -1864,26 +1854,24 @@ angular.module("gkQueueApp.controllers", [])
                     $scope.uploadspeek = $scope.sildbarDownload.upload;
                 }
                 $scope.download = queusData(sildbarDownloadData);
-            }, 3000);
         }
         /**
          * 同步
          */
         $scope.queusSildbarSync = function(){
             var sildbarSyncData = [];
-            clearTimeout(time2);
-            clearTimeout(time1);
-            time1 = setTimeout(function() {
                 var data;
                 data = {
                     type:"sync"
                 }
                 $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+
                 sildbarSyncData =  $scope.sildbarSync.list;
+
                 $scope.downloadspeek = $scope.sildbarSync.download;
                 $scope.uploadspeek = $scope.sildbarSync.upload;
                 $scope.sync = queusSync(sildbarSyncData);
-            }, 3000);
+            console.log($scope.sync);
         }
         $scope.queueClose = function(){
             gkClientInterface.setClose();

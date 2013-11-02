@@ -22,12 +22,13 @@
                     <div class = "queue-con-top-time f_l">剩余时间</div>
                 </div>
                 <ul class = "queue-con-up">
-                    <li ng-repeat = "viewdownload in upload" ng-hide="hide">
+                    <li  ng-hide="hide" ng-repeat = "viewupload in upload">
+
                         <div class = "queue-con-back" ></div>
                         <div class = "queue-con-font">
                             <div class = "queue-con-file f_l">
                                 <!--img src = "{{viewupload.webpath | getFileIcon:viewupload.dir}}" alt = "" /-->
-                                <span title = {{viewupload.webpath}}>{{viewupload.webpath}}</span>
+                                <span  title = {{viewupload.webpath}}>{{viewupload.webpath}}</span>
                             </div>
                             <div class="queue-con-use f_l">
                                 <span></span>
@@ -38,11 +39,9 @@
                                 <span title = {{viewupload.filesizepos}}>{{viewupload.filesizepos}}</span>
                             </div>
                             <div class="queue-con-time f_l">
-
                                 <span title = "{{viewupload.time}}">{{viewupload.time}}</span>
                             </div>
                             <div  ng-click = "hide =! hide;queueDelete('{{viewupload.webpath}}');">
-
                             </div>
                         </div>
                     </li>
@@ -74,7 +73,6 @@
                                 <span title = "{{viewdownload.time}}">{{viewdownload.time}}</span>
                             </div>
                             <div  ng-click = "hide =! hide;queueDelete('{{viewdownload.webpath}}');">
-
                             </div>
                         </div>
                     </li>
@@ -90,13 +88,13 @@
                     <li ng-repeat = "viewsync in sync">
                         <div class = "queue-con-synch-font">
                             <div class = "queue-con-synch-file f_l">
-                                <span title = "{{sync.webpath}}">{{sync.webpath}}</span>
+                                <span title = "{{viewsync.webpath}}">{{viewsync.webpath}}</span>
                             </div>
                             <div class="queue-con-synch-status f_l">
-                                <span title = "{{sync.status}}">{{sync.status}}</span>
+                                <span title = "{{viewsync.status}}">{{viewsync.status}}</span>
                             </div>
                             <div class="queue-con-synch-time f_l">
-                                <span title = "{{sync.time}}">{{sync.time}}</span>
+                                <span title = "{{viewsync.time}}">{{viewsync.time}}</span>
                             </div>
                         </div>
                     </li>
