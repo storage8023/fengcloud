@@ -30,9 +30,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 个人的文件
          * @type {*}
          */
-        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
-        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
-        $scope.treeList = myTreeData;
 
         var getTrashNode = function(mount_id){
             var node = {
@@ -48,17 +45,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             return node;
         };
-        $scope.treeList.push(getTrashNode(myMount.mountid));
+
+
+        /**
+         * 个人的文件
+         * @type {*}
+         */
+        var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
+        myTreeData[0]['children'] = GKFile.dealTreeData(gkClientInterface.getFileList({webpath: '', dir: 1, mountid: myMount.mountid})['list'], 'myfile', myMount.mountid);
+        if(!myTreeData[0]['children']) myTreeData[0]['children'] = [];
+        myTreeData[0]['children'].push(getTrashNode(myMount.mountid));
+        $scope.treeList = myTreeData;
 
         /**
          * 团队的文件
          */
 
-        $scope.orgTreeList = [];
-        angular.forEach(GKFile.dealTreeData(orgMount, 'teamfile'),function(value){
-            $scope.orgTreeList.push(value);
-            $scope.orgTreeList.push(getTrashNode(value.data.mount_id));
-        })
+        $scope.orgTreeList = GKFile.dealTreeData(orgMount, 'teamfile');
 
         /**
          * 智能文件夹
