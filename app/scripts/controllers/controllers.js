@@ -1080,244 +1080,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
 /**
- * news
- */
-angular.module('gkNewsApp.controllers', [])
-    .controller("newsCtrl", ['$filter', '$scope', 'GKApi', '$http','$q', function ($filter, $scope, GKApi, $http,$q) {
-        /**
-         * 服务器过来的数据处理
-         */
-        $scope.upDate = function(){
-            var updateHttp = function() {
-                var deferred = $q.defer();
-                GKApi.update().success(function ($http){
-                    var message = [];
-                    message = $http;
-                    console.log($http);
-                    deferred.resolve(message);
-                })
-                return deferred.promise;
-            }
-            var promiseMember = updateHttp();
-            promiseMember.then(function(data){
-                var newdata = [];
-                newdata = data.updates;
-
-                /**
-                 * 过滤出相同日期
-                 * 新消息news
-                 * @compare()
-                 */
-                function compare(dateObj) {
-                    var results = []
-                        , i = 0
-                        , j = 0
-                        , len = dateObj.length;
-                    results[0] = new Array();
-                    results[0].push(dateObj[0]);
-                    for (; i < len - 1; i++) {
-                        var next = dateObj[i + 1], k = 0, klen = results[j].length;
-                        var value = results[j][results[j].length - 1];
-                        if (value.date === next.date) {
-                            results[j].push(next);
-                        }
-                        else {
-                            j++;
-                            results[j] = new Array();
-                            results[j].push(next);
-                        }
-                    }
-                    return results;
-                }
-                /**
-                 * 返回日期的时间戳
-                 * 新消息news
-                 * @fetchDateline()
-                 */
-                function fetchDateline(date) {
-                    var year = date.getFullYear()
-                        , month = date.getMonth() + 1 < 10 ? "0" + date.getMonth() + 1 : date.getMonth() + 1
-                        , day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-                    return year + '/' + month + '/' + day;
-                }
-                /**
-                 *   日期按yyyy-MM-dd格式输出
-                 *   新消息news
-                 *   @filterDay()
-                 */
-                Date.prototype.format = function (format) {
-                    var o = {
-                        "M+": this.getMonth() + 1, //month
-                        "d+": this.getDate(), //day
-                        "h+": this.getHours(), //hour
-                        "m+": this.getMinutes(), //minute
-                        "s+": this.getSeconds(), //second
-                        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-                        "S": this.getMilliseconds() //millisecond
-                    };
-                    if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
-                        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-                    for (var k in o)if (new RegExp("(" + k + ")").test(format))
-                        format = format.replace(RegExp.$1,
-                            RegExp.$1.length == 1 ? o[k] :
-                                ("00" + o[k]).substr(("" + o[k]).length));
-                    return format;
-                };
-
-                Date.prototype.yesterformat = function (yesterformat) {
-                    var o = {
-                        "M+": this.getMonth() + 1, //month
-                        "d+": this.getDate() - 1, //day
-                        "h+": this.getHours(), //hour
-                        "m+": this.getMinutes(), //minute
-                        "s+": this.getSeconds(), //second
-                        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-                        "S": this.getMilliseconds() //millisecond
-                    };
-                    if (/(y+)/.test(yesterformat)) yesterformat = yesterformat.replace(RegExp.$1,
-                        (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-                    for (var k in o)if (new RegExp("(" + k + ")").test(yesterformat))
-                        yesterformat = yesterformat.replace(RegExp.$1,
-                            RegExp.$1.length == 1 ? o[k] :
-                                ("00" + o[k]).substr(("" + o[k]).length));
-                    return yesterformat;
-                };
-
-                /**
-                 * 过滤今天，昨天或者以前
-                 * 新消息news
-                 * @filterDay()
-                 */
-                function filterDay(filter, dates) {
-                    var date = filter('date');
-                    var printDateNew = [];
-                    var d = new Date();
-                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-                    var yesterDate = nowDate - 3600 * 24;
-                    for (var i = 0; i < dates.length; i++) {
-                        var printDate = [];
-                        var currentDate = dates[i][0].dateline;
-                        if (currentDate >= nowDate) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    var newsDay = new Date().format('MM-dd');
-                                    printDate.push({'date': '今天， ' + newsDay, "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                }
-                            }
-                            printDateNew.push(printDate);
-                        }
-                        else if (currentDate >= yesterDate) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    var yesterDay = new Date().yesterformat('MM-dd');
-                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                }
-                            }
-                            printDateNew.push(printDate);
-                        } else {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                }
-                            }
-                            printDateNew.push(printDate);
-                        }
-                    }
-                    return printDateNew;
-                }
-                /**
-                 * 再次加载消息
-                 */
-                var againNew = function (filter, dates) {
-                    var date = filter('date');
-                    var printDateNew = [];
-                    var d = new Date();
-                    var nowDate = new Date(Date.parse(fetchDateline(d))).getTime() / 1000 - d.getTimezoneOffset();
-                    var yesterDate = nowDate - 3600 * 24;
-                    for (var i = 0; i < dates.length; i++) {
-                        var printDate = [];
-                        var currentDate = dates[i][0].dateline;
-                        if (lastime === dates[0][0].date) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                            }
-                            printDateNew.push(printDate);
-                        } else if (currentDate >= yesterDate) {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    var yesterDay = new Date().yesterformat('MM-dd');
-                                    printDate.push({"date": '昨天， ' + yesterDay, "dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], "render_text": dates[i][j]['render_text']});//代表昨天
-                                }
-                            }
-                            printDateNew.push(printDate);
-                        } else {
-                            for (var j = 0; j < dates[i].length; j++) {
-                                if (j === 0) {
-                                    printDate.push({'date': dates[i][j]['date'], "dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                } else {
-                                    printDate.push({"dateline": dates[i][j]['dateline'], render_text: dates[i][j]['render_text']});
-                                }
-                            }
-                            printDateNew.push(printDate);
-                        }
-                    }
-                    return printDateNew;
-                };
-                /**
-                 * 最后一条消息的时间戳
-                 * @param filter
-                 * @param dates
-                 */
-                var lasttime = function (dates) {
-                    var last = [];
-                    for (var i = 0; i < dates.length; i++) {
-                        if (i = dates.length - 1) {
-
-                                    last.push({"dateline": dates[i].dateline, "date": dates[i].date});
-
-                        }
-                    }
-                    return last;
-                };
-                 /**
-                 * 单击向上向下滑动按钮
-                 * 新消息new
-                 * button - #newsbtn
-                 */
-                if(newdata.length === 0){
-                    $scope.newsShow = 'noNews';
-                }else{
-                    var filterData = compare(newdata) //过滤出相同日期
-                        ,equalData = filterDay($filter, filterData);
-                    $scope.equalDataNew = equalData;
-                    $scope.newsShow = 'yesNews';
-                    $scope.lasttimelabel = lasttime(newdata);
-
-                }
-             })
-        }
-        $scope.upDate();
-
-        /**
-         *   按footer收取
-         */
-         var newsControls = function(){
-             jQuery("#newsPackUp").click(function(){
-                 jQuery(".news-wrapper").slideUp(500);
-             });
-         };
-         newsControls();
-    }]);
-
-/**
  * personal
  */
 angular.module("gkPersonalApp.controllers", [])
@@ -1612,7 +1374,9 @@ angular.module("gkSiteApp.controllers", [])
         }
         $scope.siteSyncAgainData = function(){
             var time = setInterval(function(){
-                $scope.siteSyncData();
+                $scope.$apply(function(){
+                      $scope.siteSyncData();
+                });
             }, 3000);
         }
         $scope.siteSyncAgainData();
@@ -1765,16 +1529,60 @@ angular.module("gkQueueApp.controllers", [])
          */
         var queusData = function(data){
             var newdata = []
-                ,yesdata = [];
+                ,finishdata = []
+                ,nofinishdata = [];
             for(var i = 0,len = data.length; i<len;i++){
                 if(data[i].status === 3){
-                    var filesizePos = (data[i].pos/data[i].filesize)*100 + '%'
-                        ,posSize = bitSize(data[i].pos);
-                    yesdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
-                }else{
-                    var filesizePos = (data[i].pos/data[i].filesize)*100 + '%'
+                    var posSize = bitSize(data[i].filesize);
+                    finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"完成",possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar"});
+                }else if(data[i].status === 2){
+                    var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    newdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,possize:posSize});
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor"});
+                }else{
+                    var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
+                        ,posSize = bitSize(data[i].filesize);
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传中",filesizepos:filesizePos,possize:posSize});
+                }
+            }
+            for(var i = 0,len = nofinishdata.length;i<len;i++){
+                if(len !== 0){
+                    newdata.push(nofinishdata[i]);
+                }
+            }
+            for(var i = 0,len = finishdata.length;i<len;i++){
+                if(len !== 0){
+                    newdata.push(finishdata[i]);
+                }
+            }
+            return newdata;
+        }
+        var queusDatadown = function(data){
+            var newdata = []
+                ,finishdata = []
+                ,nofinishdata = [];
+            for(var i = 0,len = data.length; i<len;i++){
+                if(data[i].status === 3){
+                    var posSize = bitSize(data[i].filesize);
+                    finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"完成",possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar"});
+                }else if(data[i].status === 2){
+                    var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
+                        ,posSize = bitSize(data[i].filesize);
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor"});
+                }else{
+                    var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
+                        ,posSize = bitSize(data[i].filesize);
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载中",filesizepos:filesizePos,possize:posSize});
+                }
+            }
+            for(var i = 0,len = nofinishdata.length;i<len;i++){
+                if(len !== 0){
+                    newdata.push(nofinishdata[i]);
+                }
+            }
+            for(var i = 0,len = finishdata.length;i<len;i++){
+                if(len !== 0){
+                    newdata.push(finishdata[i]);
                 }
             }
             return newdata;
@@ -1785,10 +1593,10 @@ angular.module("gkQueueApp.controllers", [])
          * @returns {Array}
          */
         var queusSync = function(data){
-            var newdata = [];
+            var newdata = []
             for(var i = 0,len = data.length; i<len;i++){
-                if(data[i].time ===0 ){
-                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num});
+                if(data[i].num ===0 ){
+                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num,valuecolor:"downuploadcolor"});
                 }else{
                     newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
                 }
@@ -1818,15 +1626,19 @@ angular.module("gkQueueApp.controllers", [])
                 $scope.uploadspeek = bitSize($scope.sildbarUpload.upload);
             }
             $scope.upload = queusData(sildbarUploadData);
+            console.log($scope.upload);
         }
         $scope.getTransListtime();
         $scope.queueinterface = function(){
-            var time1 = setInterval(function() {
-                $scope.getTransListtime();
-            },2000);
+                var time1 = setInterval(function() {
+                    $scope.$apply(function(){
+                         $scope.getTransListtime();
+                    });
+                },2000);
         }
         $scope.queueinterface();
         $scope.queusSildbarUpload = function(){
+            $scope.getTransListtime();
             $scope.queueinterface();
         }
         /**
@@ -1851,11 +1663,13 @@ angular.module("gkQueueApp.controllers", [])
             }else{
                 $scope.uploadspeek = bitSize($scope.sildbarDownload.upload);
             }
-            $scope.download = queusData(sildbarDownloadData);
+            $scope.download = queusDatadown(sildbarDownloadData);
         }
         $scope.queueinterfaceDownload = function(){
             var time2 = setInterval(function() {
-                $scope.downloadDataProcessing();
+                $scope.$apply(function(){
+                     $scope.downloadDataProcessing();
+                });
             },2000);
         }
         $scope.queueinterfaceDownload();
@@ -1887,8 +1701,10 @@ angular.module("gkQueueApp.controllers", [])
             $scope.sync = queusSync(sildbarSyncData);
         }
         $scope.queueinterfaceSync = function(){
-            var time3 = setInterval(function() {
-                $scope.SynchronousDataProcessing();
+            var time3 = setInterval(function(){
+                $scope.$apply(function(){
+                   $scope.SynchronousDataProcessing();
+                });
             },2000);
         }
         $scope.queueinterfaceSync();

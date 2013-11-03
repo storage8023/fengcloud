@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','gkNewsApp','gkNewsApp.directives','gkNewsApp.controllers','gkQueueApp'])
+angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','gkQueueApp'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/file', {
@@ -20,10 +20,8 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
             });
     }]);
 
-
-angular.module('gkNewsApp', ['gkNewsApp.controllers','gkNewsApp.directives','gkClientIndex.services']);
 angular.module('gkPersonalApp', ['gkPersonalApp.controllers','gkPersonalApp.directives','gkClientIndex.services']);
 angular.module('gkSiteApp', ['gkSiteApp.controllers','gkSiteApp.directives','gkClientIndex.services']);
-angular.module('gkQueueApp', ['gkQueueApp.controllers']);
+angular.module('gkQueueApp', ['gkQueueApp.controllers','ui.bootstrap']);
 
 

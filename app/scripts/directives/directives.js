@@ -1344,40 +1344,6 @@ angular.module('gkClientIndex.directives', [])
         }
     }])
 ;
-angular.module('gkNewsApp.directives', [])
-/**
- * news
- */
-    .directive('update', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            templateUrl: "views/news_update.html",
-            link: function (scope, element, attrs) {
-
-                }
-            }
-            })
-        .directive('noupdate', function () {
-            return {
-                restrict: 'E',
-                replace: true,
-                template: '<span>暂时还没有与你有关的消息</span>',
-                link: function (scope, element, attrs) {
-
-                }
-            }
-        })
-        .directive('newsindex', function (){
-            return {
-                restrict: 'E',
-                replace: true,
-                templateUrl: "views/news_index.html",
-                link: function (scope, element, attrs) {
-
-                }
-            }
-        })
     /**
      *  personal
      */
