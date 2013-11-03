@@ -310,7 +310,6 @@
 .site-sidebar{
     width:150px;
     border-right:1px solid #AEBCD4;
-
     background:#F1F4F7 ;
     top:0;
     left:0;
@@ -327,7 +326,6 @@
     padding-left: 20px;
     cursor: pointer;
     color: #606D81;
-
 }
 .site-sidebar ul li .universalbackground{
     background: url(../images/icon.png) no-repeat -20px -80px;
@@ -705,106 +703,142 @@
 }
 .queue-con-upload,
 .queue-con-download{
-    font-size: 14px;
+    font-size: 13px;
 }
 .queue-con-upload .queue-con-top,
 .queue-con-download .queue-con-top{
     top: 0;
     left: 0;
     right: 0;
-    height: 30px;
+    height: 35px;
     background: #F1F1F1;
     border-bottom:1px solid #CFCFCF;
 }
 .queue-con-top-title{
-    line-height: 30px;
-    width: 30%;
-    margin-left: 10%;
-    line-height: 25px;
+    width: 55%;
+    padding-right: 1px;
+    margin-left: 5%;
+}
+.queue-con-top-title a,
+.queue-con-top-status a,
+.queue-con-top-time a,
+.queue-con-top-synch-title a,
+.queue-con-top-synch-status a,
+.queue-con-top-synch-time a{
+    line-height: 35px;
+    color:#8E98A8;
+}
+.queue-con-top-status{
+    width:25%;
 }
 .queue-con-up{
-    top:30px;
+    top:35px;
     left:0;
     right: 0;
 }
 .queue-con-up li{
-    height: 45px;
-    position: relative;
+    height: 35px;
     margin-top: 1px;
+    color: #8E98A8;
 }
 .queue-con-font{
-    position: absolute;
     left:0;
     right: 0;
     height: 45px;
     top:0;
     line-height: 45px;
 }
-.queue-con-back{
-    height: 45px;
-    position:absolute;
-    top:0;
-    width: 10%;
-}
 .queue-con-file{
-    width: 45%;
+    color:#2A2E33;
+    width: 36%;
     margin-left: 5%;
+    padding-right: 10px
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding-right: 10px;
 }
 .queue-con-use{
     width: 10%;
+    padding-right:1px;
+}
+.downuploadcolor{
+    color:#52AE75;
+}
+.waitcolor{
+    color:#F39C12;
 }
 .queue-con-speed{
-    width: 10%;
+    width:22%;
+    padding: 1px;
+}
+.progressbar{
+    display: none;
+}
+.queue-con-speed-per{
+    width: 90%;
+    height:12px;
+    margin-top: 16px;
+    margin-right:1 px;
+    overflow: hidden;
+    border-radius: 6px 6px 6px 6px;
+    border:1px solid #C2CBD3;
 }
 .queue-con-time{
-    width: 30%;
+    width: 10%;
+    padding: 1px;
+}
+.queue-con-finish{
+    width: 12%;
+    padding: 1px;
 }
 .queue-con-synch{
-    font-size: 14px;
+    font-size: 13px;
 }
 .queue-con-synch .queue-con-synch-top{
-    height: 30px;
+    height: 35px;
     background: #F1F1F1;
     border-bottom:1px solid #CFCFCF;
 }
+.queue-con-synch-up{
+    top:35px;
+    left:0;
+    right: 0;
+}
+.queue-con-synch-up li{
+    height: 35px;
+    position: relative;
+    margin-top: 1px;
+    line-height: 35px;
+}
+.queue-con-synch-font{
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 35px;
+    top:0;
+}
+.queue-con-synch-file{
+    width: 47%;
+    margin-left: 8%;
+}
+.queue-con-synch-status{
+    width: 30%;
+}
+.queue-con-synch-time{
+    width: 15%;
+}
 .queue-con-top-synch-title{
-    width:30%;
-    margin-left: 10%;
+    width:47%;
+    margin-left: 8%;
     line-height: 25px;
 }
 .queue-con-top-synch-status{
     width: 30%;
 }
 .queue-con-top-synch-time{
-    width: 30%;
-}
-.queue-con-synch-up{
-    top:30px;
-    left:0;
-    right: 0;
-}
-.queue-con-synch-up li{
-    height: 45px;
-    position: relative;
-    margin-top: 1px;
-}
-.queue-con-synch-font{
-    position: absolute;
-    left:0;
-    right: 0;
-    height: 45px;
-    top:0;
-    line-height: 45px;
-}
-.queue-con-synch-file{
-    width: 33%;
-    margin-left: 7%;
-}
-.queue-con-synch-status{
-    width: 30%;
-}
-.queue-con-synch-time{
-    width: 30%;
+    width: 15%;
 }
 .queue-footer{
     height: 35px;

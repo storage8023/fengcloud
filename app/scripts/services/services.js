@@ -1151,8 +1151,8 @@ angular.module('gkClientIndex.services', [])
                 var data = {
                     url:url,
                     type:"normal",
-                    width:800,
-                    height:500,
+                    width:790,
+                    height:460,
                     resize:1
                 }
                 gkClientInterface.setMain(data);
