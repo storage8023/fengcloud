@@ -3,6 +3,21 @@
 /* Services */
 
 angular.module('gkClientIndex.services', [])
+    .factory('GKNews',function(){
+        return {
+            classify:function(news){
+                var classifyNew = {};
+                angular.forEach(news,function(value){
+                    var date = value.date;
+                    if(!classifyNew[date]){
+                        classifyNew[date] = []
+                    }
+                    classifyNew[date].push(value);
+                });
+                return classifyNew;
+            }
+        }
+    })
     .factory('GKPath', function () {
         return {
             getPath: function () {

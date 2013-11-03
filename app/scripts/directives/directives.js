@@ -4,6 +4,20 @@
 
 
 angular.module('gkClientIndex.directives', [])
+    .directive('news',['GKApi','GKNews',function(GKApi,GKNews){
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/news.html",
+            link: function ($scope, $element) {
+                GKApi.update(100).success(function(data){
+                    var news = data['list'] || [];
+                    var classifyNews = GKNews.classify(news);
+                    console.log(classifyNews);
+                })
+            }
+        }
+    }])
     .directive('nofileRightSidebar', [function () {
         return {
             replace: true,

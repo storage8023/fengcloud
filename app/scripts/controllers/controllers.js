@@ -814,8 +814,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         });
 
-
-
         /**
          * 打开文件
          */
@@ -825,6 +823,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 webpath: file.fullpath
             });
         })
+
         $scope.keyword = '';
         $scope.$on('searchFileSuccess', function ($event, resultList, keyword) {
             $scope.fileData = GKFile.dealFileList(resultList, 'api');
@@ -861,8 +860,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
                 RestFile.get(searchParams.mountid, fullpath).success(function (data) {
                     var tag = data.tag || '';
-                    $scope.file.tag = tag;
-                    $scope.file.formatTag = tag.replace(gird, ',');
+                    $scope.file.tag = jQuery.trim(tag);
+                    angular.forEach(tag.split(gird),function(value){
+                        if(value && $scope.file.formatTag.indexOf(value)<0){
+                            $scope.file.formatTag.push(value);
+                        }
+                    });
+                    console.log($scope.file.formatTag);
                 });
 
                 GKApi.sideBar(searchParams.mountid, fullpath).success(function (data) {
@@ -870,32 +874,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.remarks = data.remark;
                     $scope.histories = data.history;
                     $scope.remindMembers = data.remind_members;
-//                    $scope.remindMembers = [
-//                        {
-//                            'id': 1,
-//                            'name': '测试1'
-//                        },
-//                        {
-//                            'id': 2,
-//                            'name': '测试2'
-//                        },
-//                        {
-//                            'id': 3,
-//                            'name': '测试3'
-//                        },
-//                        {
-//                            'id': 4,
-//                            'name': '测试4'
-//                        },
-//                        {
-//                            'id': 5,
-//                            'name': '测试5'
-//                        },
-//                        {
-//                            'id': 6,
-//                            'name': 'xugetest1'
-//                        }
-//                    ];
+
                 });
             } else {
 

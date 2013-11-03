@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','gkNewsApp','gkNewsApp.directives','gkNewsApp.controllers','gkQueueApp'])
+angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','gkNewsApp','gkNewsApp.directives','gkNewsApp.controllers','gkQueueApp','tags-input'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/file', {
