@@ -7,13 +7,12 @@
      </ul>
      <div class = "site-content-form scrollbar">
          <ul>
-                 <li ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat = "syncData in sync" class = "syncline c_f_after">
-                 <div class = "site-synchronous-file f_l">{{syncData.webpath}}</div>
-                 <div class = "site-synchronous-sync f_l">{{syncData.finish}}</div>
-                 <div class = "site-synchronous-file sync-color f_l" ng-click = "syncCancel($index,'{{syncData.webpath}}','{{syncData.mountid}}')"><a href = "javascript:void(0);">取消同步</a></div>
-             </li>
+           <li ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat = "syncData in sync" class = "syncline c_f_after">
+             <div class = "site-synchronous-file f_l">{{syncData.webpath}}</div>
+             <div class = "site-synchronous-sync f_l">{{syncData.finish}}</div>
+             <div class = "site-synchronous-file sync-color f_l" ng-click = "syncCancel($index,'{{syncData.webpath}}','{{syncData.mountid}}')" ><a href = "javascript:void(0);">取消同步</a></div>
+           </li>
          </ul>
      </div>
-     <a class = "sitesynchronousregain" ng-class = "{true: 'sitesynchronousdisplay',flase:'sitesynchronousnone'}[synchronousregain]" ng-click = "synChronousRegain('{{syncData.finish}}')" href = "javascript:void(0);" title = "暂停所有同步">{{startsync}}</a>
-     <a class = "sitesynchronousremove" ng-class = "{true: 'sitesynchronourdisplayblock'}[synchronousremove]" ng-click = "synChronousRemove('{{syncData.finish}}')" href = "javascript:void(0);" title = "恢复所有同步">{{startsync}}</a>
+     <a class = "sitesynchronousregain"  ng-click = "startsync = (startsync ==='暂停所有同步'? '恢复所有同步':'暂停所有同步');siteSyncClick(startsync)" href = "javascript:void(0);" >{{startsync}}</a>
  </div>
