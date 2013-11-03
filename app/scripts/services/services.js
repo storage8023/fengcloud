@@ -3,21 +3,112 @@
 /* Services */
 
 angular.module('gkClientIndex.services', [])
-    .factory('GKNews',function(){
+    .constant('newsKey','gkNews')
+    .factory('GKNews',['localStorageService','newsKey','GKApi','GKClientCallback','$filter',function(localStorageService,newsKey,GKApi,GKClientCallback,$filter){
         return {
             classify:function(news){
-                var classifyNew = {};
+                var classifyNews = [],
+                    context = this;
+                    ;
+                var now = new Date().valueOf();
+                var today = $filter('date')(now,'yyyy-MM-dd');
+                var yesterdayTimestamp = now-24*3600*1000;
+                var yesterday = $filter('date')(yesterdayTimestamp,'yyyy-MM-dd');
                 angular.forEach(news,function(value){
                     var date = value.date;
-                    if(!classifyNew[date]){
-                        classifyNew[date] = []
+                    var dateText = date;
+                    if(date == today){
+                        dateText = '今天，'+$filter('date')(now,'MM-dd');
+                    }else if(date == yesterday){
+                        dateText = '昨天，'+$filter('date')(yesterdayTimestamp,'MM-dd');;
                     }
-                    classifyNew[date].push(value);
+                    var existClassifyItem = context.getClassifyItemByDate(date,classifyNews);
+                    if(!existClassifyItem){
+                        existClassifyItem = {
+                            date:date,
+                            date_text:dateText,
+                            list:[value]
+                        }
+                        classifyNews.push(existClassifyItem);
+                    }else{
+                        existClassifyItem['list'].push(value);
+                    }
                 });
-                return classifyNew;
+                return classifyNews;
+            },
+            getClassifyItemByDate:function(date,classifyNews){
+                if(!classifyNews || !classifyNews.length){
+                    return null;
+                }
+                for(var i=0;i<classifyNews.length;i++){
+                    var value = classifyNews[i];
+                    if(value['date'] == date){
+                        return value;
+                        break;
+                    }
+                }
+                return null;
+            },
+            requestNews:function(size,dateline){
+                var context = this;
+                 GKApi.update(size,dateline).success(function(data){
+                    var news = data['updates'] || [];
+                    var dateline = data['dateline'];
+                    gkClientInterface.setMessageDate(dateline);
+                    //测试数据
+                    angular.forEach(news,function(value,key){
+                        value.org_id = 1;
+                        value.org_name = '够快科技';
+                        if(key==2){
+                            value.org_id = 2;
+                            value.org_name = '测试团队';
+                        }
+                    });
+                    context.addNews(news);
+                })
+            },
+            getNews:function(){
+                var news = localStorageService.get(newsKey);
+                return news;
+            },
+            concatNews:function(oldClassifyNews,newClassifyNews){
+                var context = this;
+                if(!newClassifyNews || !newClassifyNews.length){
+                    return oldClassifyNews;
+                }
+                var existItem;
+                angular.forEach(newClassifyNews,function(value){
+                    existItem = context.getClassifyItemByDate(value['date']);
+                    if(existItem){
+                        existItem['list'] =  existItem['list'].concat(value['list']);
+                    }else{
+                        oldClassifyNews.push(value);
+                    }
+
+                });
+                return oldClassifyNews;
+            },
+            addNews:function(news){
+                var oldNews = this.getNews();
+                if(!oldNews || !oldNews.length){
+                    localStorageService.add(newsKey,JSON.stringify(news));
+                }else{
+                   var newOldNews = oldNews.concat(news);
+                    newOldNews = newOldNews.slice(0,100);
+                    localStorageService.add(newsKey,JSON.stringify(newOldNews));
+                }
+            },
+            appendNews:function(data){
+                if(!data['list'] || !data['list'].length){
+                    if(data['count']>0){
+                        this.requestNews(data['count'])
+                    }
+                }else{
+                    this.addNews(data['list']);
+                }
             }
         }
-    })
+    }])
     .factory('GKPath', function () {
         return {
             getPath: function () {
@@ -812,11 +903,14 @@ angular.module('gkClientIndex.services', [])
 //                    data: jQuery.param(params)
 //                });
             },
-            update: function (size) {
-                size = angular.isDefined(size)?size:20;
+            update: function (size,dateline) {
+                size = angular.isDefined(size)?size:100;
                 var params = {
                     size:size
                 };
+                if(angular.isDefined(dateline)){
+                    params['dateline'] = dateline;
+                }
                angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
@@ -1023,7 +1117,7 @@ angular.module('gkClientIndex.services', [])
         }
     }])
     .factory('GKClientCallback',[function(){
-        return GKClientCallback;
+        return gkClientCallback;
     }])
 /**
  * 记录浏览历史，提供前进,后退功能
@@ -1068,8 +1162,37 @@ angular.module('gkClientIndex.services', [])
     ])
 ;
 
-var GKClientCallback = function(){
+var gkClientCallback = {
+    testCallback:function(param){
 
+    },
+    /**
+     * 文件修改后的回调
+     * @constructor
+     */
+    UpdateWebpath:function(){
+
+    },
+    /**
+     * 有新的消息的回调
+     * @constructor
+     */
+    UpdateMessage:function(param){
+        var JSONparam = JSON.parse(param);
+        var rootScope = jQuery(document).scope();
+        rootScope.$broadcast('updateMessage',JSONparam);
+    },
+    /**
+     * 发现新的附近的人的回调
+     * @constructor
+     */
+    AddFindObject:function(){
+
+    },
+    ShowMessage:function(){
+        var rootScope = jQuery(document).scope();
+        rootScope.$broadcast('showMessage');
+    }
 };
 
 function GKFileSearch() {

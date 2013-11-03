@@ -5,13 +5,27 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient',['$rootScope',function($rootScope){
+    .controller('initClient',['$rootScope','GKNews','$scope',function($rootScope,GKNews,$scope){
         $rootScope.PAGE_CONFIG = {
             user:gkClientInterface.getUser(),
             file:{},
             mount:{},
             condition:''
         };
+
+        GKNews.requestNews();
+
+        $scope.$on('updateMessage',function(e,data){
+            GKNews.appendNews(data);
+        })
+
+        $scope.$on('showMessage',function(e,data){
+            if(!$rootScope.showNews){
+                $rootScope.showNews = true;
+                $rootScope.$digest()
+            }
+
+        })
 
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', function ($scope, $location, GKPath, GKFile, $rootScope) {

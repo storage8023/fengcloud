@@ -8,20 +8,22 @@
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="styles/base.css"/>
     <link rel="stylesheet" href="styles/component.css"/>
-    <link rel="stylesheet" href="styles/app.css"/>
+    <link rel="stylesheet" href="styles/ng-animation.css"/>
     <link rel="stylesheet" href="bower_components/abn.tree/abn_tree_style.css"/>
     <link rel="stylesheet" href="bower_components/jQuery-Tags-Input/jquery.tagsinput.css"/>
     <link rel="stylesheet" href="bower_components/tags-input/ng-tags-input.css"/>
+    <link rel="stylesheet" href="styles/app.css"/>
     <script src="scripts/util.js"></script>
     <script src="scripts/interface.js"></script>
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/jquery/context-menu/jquery.contextMenu.js"></script>
     <script src="bower_components/jQuery-Tags-Input/jquery.tagsinput.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/abn.tree/abn_tree_directive.js"></script>
     <script src="bower_components/angular-ui/module.js"></script>
     <script src="bower_components/angular-ui/ui-utils/ui-utils.js"></script>
@@ -37,7 +39,6 @@
 </head>
 <body ng-controller="initClient">
 <div ng-include="'views/left_sidebar.html'"></div>
-
 <div class="main">
     <div  ng-include="'views/header.html'"></div>
     <div class="content">
@@ -46,6 +47,7 @@
     <div  ng-include="'views/right_sidebar.html'"></div>
 </div>
 <resize></resize>
+<news ng-if="showNews" class="news_warpper bouncy-slide-down"></news>
 <script type="text/ng-template" id="newFileItem.html">
     <div class="file_item file_item_edit">
         <div class="thumb" ng-show="view=='thumb'">
@@ -60,6 +62,5 @@
         <div class="file_size" ng-show="view=='list'"><span>&nbsp;</span></div>
     </div>
 </script>
-<news></news>
 </body>
 </html>
