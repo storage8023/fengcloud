@@ -1,6 +1,6 @@
 'use strict';
 angular.module('LocalStorageModule').value('prefix', 'gkClientIndex');
-angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','gkNewsApp','gkNewsApp.directives','gkNewsApp.controllers','gkQueueApp','tags-input','LocalStorageModule','ngAnimate'])
+angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','gkQueueApp','tags-input','LocalStorageModule','ngAnimate'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/file', {
