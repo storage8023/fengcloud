@@ -1135,7 +1135,7 @@ angular.module('gkClientIndex.services', [])
              */
             openSetting:function(){
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/views/site.html';
+                var url = 'file:///'+UIPath+'/site.html';
                 var data = {
                     url:url,
                     type:"normal",
@@ -1150,7 +1150,7 @@ angular.module('gkClientIndex.services', [])
              */
             openTransfer:function(){
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/views/queue.html';
+                var url = 'file:///'+UIPath+'/queue.html';
                 var data = {
                     url:url,
                     type:"normal",

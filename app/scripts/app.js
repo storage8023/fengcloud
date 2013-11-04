@@ -20,8 +20,8 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
             });
     }]);
 
-angular.module('gkPersonalApp', ['gkPersonalApp.controllers','gkPersonalApp.directives','gkClientIndex.services']);
-angular.module('gkSiteApp', ['gkSiteApp.controllers','gkSiteApp.directives','gkClientIndex.services']);
-angular.module('gkQueueApp', ['gkQueueApp.controllers','ui.bootstrap']);
+
+
+
 
 

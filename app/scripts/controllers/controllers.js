@@ -1124,15 +1124,28 @@ angular.module("gkPersonalApp.controllers", [])
         var perside = function (data) {
             var newData = []
             for (var i = 0, len = data.length; i < len; i++) {
-                if (data[i].orgid > 0) {
-                    if (data[i].type === 0) {
-                        newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid, " orgphoto": data[i].orgphoto});
-                    } else if (data[i].type === 1) {
-                        newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出", " orgphoto": data[i].orgphoto});
-                    } else {
-                        newData.push({ "name": data[i].name, "quit": "退出", " orgphoto": data[i].orgphoto});
+                if(data[i].orgphoto === ''){
+                    if (data[i].orgid > 0) {
+                        if (data[i].type === 0) {
+                            newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid, "orgphoto": 'images/deputy/picture.jpg'});
+                        } else if (data[i].type === 1) {
+                            newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出", "orgphoto": '../images/deputy/picture.jpg'});
+                        } else {
+                            newData.push({ "name": data[i].name, "quit": "退出", "orgphoto":'images/deputy/picture.jpg'});
+                        }
+                    }
+                }else{
+                    if (data[i].orgid > 0) {
+                        if (data[i].type === 0) {
+                            newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid, "orgphoto": data[i].orgphoto});
+                        } else if (data[i].type === 1) {
+                            newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出", "orgphoto": data[i].orgphoto});
+                        } else {
+                            newData.push({ "name": data[i].name, "quit": "退出", "orgphoto": data[i].orgphoto});
+                        }
                     }
                 }
+
             }
             return newData;
         }
@@ -1205,7 +1218,7 @@ angular.module("gkPersonalApp.controllers", [])
         }
         $scope.sitOpen = function ($scope) {
             var data = {
-                url:"file:///F:/fengcloud/app/views/site.html",
+                url:"file:///F:/fengcloud/app/site.html",
                 type:"child",
                 width:760,
                 height:450
@@ -1531,11 +1544,16 @@ angular.module("gkQueueApp.controllers", [])
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor"});
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist'});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传中",filesizepos:filesizePos,possize:posSize});
+                    if(data[i].time === ' '){
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:'网络异常',status:data[i].status,finishData:"上传中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                    }else{
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                    }
+
                 }
             }
             for(var i = 0,len = nofinishdata.length;i<len;i++){
@@ -1561,11 +1579,15 @@ angular.module("gkQueueApp.controllers", [])
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor"});
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist'});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载中",filesizepos:filesizePos,possize:posSize});
+                    if(data[i].time === ' '){
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:'网络异常',status:data[i].status,finishData:"下载中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                    }else{
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                    }
                 }
             }
             for(var i = 0,len = nofinishdata.length;i<len;i++){

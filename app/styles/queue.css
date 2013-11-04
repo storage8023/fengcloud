@@ -1,0 +1,223 @@
+
+/**
+*queue.html
+*/
+.queue-sildbar{
+    width:150px;
+    border-right: 1px solid#BBBCC1;
+    position: absolute;
+    top:0;
+    bottom: 35px;
+    left:0;
+    background:#F1F1F2;
+}
+.queue-sildbar-ul{
+    padding-top: 15px;
+}
+.queue-sildbar-ul li{
+    line-height: 30px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    cursor:pointer ;
+}
+.queue-sildbar-ul li a{
+    padding-left: 30px;
+}
+.blue {
+    background:#8EB7F1;
+}
+.none {
+    background: none;
+}
+.queue-content{
+    position: absolute;
+    top:0;
+    left:150px;
+    right: 0;
+    bottom:0;
+}
+.queue-con-upload,
+.queue-con-download{
+    font-size: 13px;
+}
+.queue-con-upload .queue-con-top,
+.queue-con-download .queue-con-top{
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 35px;
+    background: #F1F1F1;
+    border-bottom:1px solid #CFCFCF;
+}
+.queue-con-top-title{
+    width: 55%;
+    padding-right: 1px;
+    margin-left: 5%;
+}
+.queue-con-top-title a,
+.queue-con-top-status a,
+.queue-con-top-time a,
+.queue-con-top-synch-title a,
+.queue-con-top-synch-status a,
+.queue-con-top-synch-time a{
+    line-height: 35px;
+    color:#8E98A8;
+}
+.queue-con-top-status{
+    width:25%;
+}
+.queue-con-up{
+    top:35px;
+    left:0;
+    right: 0;
+}
+.queue-con-up li{
+    height: 35px;
+    margin-top: 1px;
+    color: #8E98A8;
+}
+.queue-con-font{
+    left:0;
+    right: 0;
+    height: 45px;
+    top:0;
+    line-height: 45px;
+}
+.queue-con-file{
+    color:#2A2E33;
+    width: 36%;
+    margin-left: 5%;
+    padding-right: 10px
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding-right: 10px;
+}
+.queue-con-use{
+    width: 11%;
+    padding-right:1px;
+}
+.downuploadcolor{
+    color:#52AE75;
+}
+.waitcolor{
+    color:#F39C12;
+}
+.queue-con-speed{
+    width:23%;
+    padding: 1px;
+}
+.progressbar{
+    display: none;
+}
+.queue-con-speed-per{
+    height:12px;
+    margin-top: 16px;
+    margin-right:1 px;
+    overflow: hidden;
+    border-radius: 6px 6px 6px 6px;
+    border:1px solid #C2CBD3;
+}
+.queue-con-time{
+    width: 10%;
+    padding: 1px;
+}
+.queue-con-finish{
+    width: 11%;
+    padding: 1px;
+}
+.queue-con-synch{
+    font-size: 13px;
+}
+.queue-con-synch .queue-con-synch-top{
+    height: 35px;
+    background: #F1F1F1;
+    border-bottom:1px solid #CFCFCF;
+}
+.queue-con-synch-up{
+    top:35px;
+    left:0;
+    right: 0;
+}
+.queue-con-synch-up li{
+    height: 35px;
+    position: relative;
+    margin-top: 1px;
+    line-height: 35px;
+}
+.queue-con-synch-font{
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 35px;
+    top:0;
+}
+.queue-con-synch-file{
+    width: 47%;
+    margin-left: 8%;
+}
+.queue-con-synch-status{
+    width: 30%;
+}
+.queue-con-synch-time{
+    width: 15%;
+}
+.queue-con-top-synch-title{
+    width:47%;
+    margin-left: 8%;
+    line-height: 25px;
+}
+.queue-con-top-synch-status{
+    width: 30%;
+}
+.queue-con-top-synch-time{
+    width: 15%;
+}
+.queue-footer{
+    height: 35px;
+    border-top:2px solid #B6BCCA;
+    bottom: 0;
+    position: absolute;
+    line-height: 30px;
+    font-size: 14px;
+    background: #E8EBF0;
+    left:0;
+    right: 0;
+}
+.queue-footer-UploadDownload{
+    margin-left: 10px;
+}
+.queue-footer-Upload,
+.queue-footer-Download{
+    display: inline;
+}
+.queue-footer-Upload .uploadimage{
+    background: url('../images/icon.png') no-repeat 0 -280px;
+}
+.queue-footer-Download .downloadimage{
+    background: url('../images/icon.png') no-repeat 0 -280px;
+}
+.queue-dele-list .queue-con-font .queuedele{
+    display: none;
+}
+.queuedelelist:hover .queue-con-font .queuedele{
+    display: block;
+}
+.queue-footer-UploadDownload span{
+    padding-right:10px;
+    padding-left:6px;
+}
+.queue-footer-Close{
+    width:65px;
+    height:25px;
+    line-height: 25px;
+    border:1px solid #325E94;
+    color:#FFF;
+    background: #467DC2;
+    border-radius: 3px 3px 3px 3px;
+    margin-right: 20px;
+    margin-top: 5px;
+    text-align: center;
+    cursor: pointer;
+}
