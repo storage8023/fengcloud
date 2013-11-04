@@ -2,8 +2,94 @@
 
 /* Directives */
 
+angular.module('gkClientIndex.directives',[])
+    .directive('scrollLoad',['$rootScope',function($rootScope){
+        return {
+            restrict: 'A',
+            link: function ($scope, $element,attrs) {
+                var triggerDistance = 0;
+                var disableScroll = false;
+                if (attrs.triggerDistance != null) {
+                    $scope.$watch(attrs.triggerDistance, function(value) {
+                        return triggerDistance = parseInt(value, 10);
+                    });
+                }
 
-angular.module('gkClientIndex.directives', [])
+                if (attrs.disableScroll != null) {
+                    $scope.$watch(attrs.disableScroll, function(value) {
+                        return disableScroll = !!value;
+                    });
+                }
+
+                var startScrollTop = $element.scrollTop();
+                $element.on('scroll.scrollLoad', function(e) {
+                    var _self = jQuery(this),
+                        realDistance = 0,
+                        scrollH = 0,
+                        scrollT = 0,
+                        isScrollDown = false;
+                    scrollH = jQuery.isWindow(this) ? document.body.scrollHeight : $element[0].scrollHeight;
+                    scrollT = _self.scrollTop();
+                    isScrollDown = scrollT > startScrollTop;
+                    var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
+                    realDistance = scrollH - scrollT - clientHeight;
+                    if (isScrollDown //向下滚动才触发
+                        && realDistance <= triggerDistance && !disableScroll) {
+                        if ($rootScope.$$phase) {
+                            return $scope.$eval(attrs.scrollLoad);
+                        } else {
+                            return $scope.$apply(attrs.scrollLoad);
+                        }
+                    }
+                    startScrollTop = scrollT;
+                });
+                $scope.$on('$destroy',function(){
+                    $element.off('scroll.scrollLoad');
+                })
+            }
+        }
+    }])
+    .directive('news',['GKNews','$rootScope','GKApi',function(GKNews,$rootScope,GKApi){
+        return {
+            replace: true,
+            restrict: 'E',
+            scope:{},
+            templateUrl: "views/news.html",
+            link: function ($scope, $element) {
+                var news = GKNews.getNews();
+
+                var getLastDateline = function(news,lastDateline){
+                    var dateline = lastDateline;
+                    if(news && news.length){
+                        dateline = news[news.length-1]['dateline'];
+                    }
+                    return dateline;
+                };
+
+                var requestDateline = getLastDateline(news,0);
+               $scope.classifyNews = GKNews.classify(news);
+                $scope.hideNews = function(){
+                    $rootScope.showNews = !$rootScope.showNews;
+                }
+
+                $scope.loading = false;
+
+                $scope.getMoreNews = function(){
+                    $scope.loading = true;
+                    console.log(1);
+                    GKApi.update(100,requestDateline).success(function(data){
+                        $scope.loading = false;
+                        var renews = data['updates'] || [];
+                        var classifyNews =  GKNews.classify(renews);
+                        $scope.classifyNews = GKNews.concatNews($scope.classifyNews,classifyNews);
+                        requestDateline = getLastDateline(renews,requestDateline);
+                    }).error(function(){
+                            $scope.loading = false;
+                        })
+                }
+            }
+        }
+    }])
     .directive('nofileRightSidebar', [function () {
         return {
             replace: true,
@@ -14,7 +100,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('member',['$compile','$document','$timeout',function($compile,$document,$timeout){
+    .directive('member',['$compile','$rootScope',function($compile,$rootScope){
         return {
             replace: true,
             restrict: 'E',
@@ -23,15 +109,14 @@ angular.module('gkClientIndex.directives', [])
                 user:'='
             },
             link: function ($scope, $element) {
+
                 $scope.newsOpen = function(){
-                    var newsTmpl = '<newsindex class = "news-index-class" ng-style="newsStyle"></newsindex>';
-                    var news = $compile(newsTmpl)($scope);
-                    $document.find('body').append(news);
-                    $timeout(function(){
-                        $scope.newsStyle = {
-                            top:50
-                        }
-                    },100)
+                    $rootScope.showNews = !$rootScope.showNews;
+//                    var newsTmpl = '<news/>';
+//                    var news = $compile(newsTmpl)($scope);
+//                    $document.find('body').append(news);
+//                    news.css({top:'50px'});
+                    //console.log(news);
                 };
 
                 $scope.personalOpen = function ($scope) {

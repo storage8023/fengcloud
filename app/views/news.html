@@ -1,0 +1,27 @@
+<div class="">
+    <div class="scrollbar news_list_wrapper" scroll-load="getMoreNews()" trigger-distance="5" disable-scroll="loading">
+        <h2>消息</h2>
+        <ul class="news_list">
+            <li ng-repeat="new in classifyNews">
+                <div class="date">{{new.date_text}}</div>
+                <ul class="message_list">
+                    <li ng-repeat="item in new.list" >
+                        <div class="org_grid" ng-show="!new.list[$index-1] || new.list[$index-1]['org_id'] != item.org_id">
+                            <div class="line"></div>
+                            <div class="org_name"><span>{{item.org_name}}</span></div>
+                        </div>
+                        <div>
+                            <span class="time">{{item.dateline|date:'H:mm'}}</span>
+                       <span class="text">
+                           <span>{{item.member_name}}</span>
+                            {{item.render_text}}
+                       </span>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+   <a href="javascript:void(0)" ng-click="hideNews()" class="slide_btn"></a>
+</div>

@@ -15,6 +15,15 @@
         }
 
     },
+    setMessageDate:function(dateline){
+        try {
+           gkClient.gSetMessage(JSON.stringify({
+                dateline:dateline
+           }));
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     /**
      * 获取文件列表
      * @param params
