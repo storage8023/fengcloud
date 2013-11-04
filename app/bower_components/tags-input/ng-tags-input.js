@@ -61,7 +61,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
         restrict: 'A,E',
         scope: { tags: '=ngModel' },
         replace: false,
-        template: '<div class="ngTagsInput {{ options.cssClass }}">' +
+        template: '<div tabindex="-1" class="ngTagsInput {{ options.cssClass }}" ng-class="editing?\'editing\':\'\'">' +
                   '  <ul>' +
                   '    <li ng-repeat="tag in tags" ng-class="getCssClass($index)">' +
                   '      <span>{{ tag }}</span>' +
@@ -70,6 +70,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
                   '  </ul>' +
                   '  <input type="text" placeholder="{{ options.placeholder }}" size="{{ options.placeholder.length }}" maxlength="{{ options.maxLength }}" tabindex="{{ options.tabindex }}" ng-model="newTag">' +
                   '</div>',
+
         controller: function($scope, $attrs) {
             loadOptions($scope, $attrs);
 
@@ -153,7 +154,17 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
                         }
                     }
                 });
-
+            scope.editing = false;
+            element.find('input').on('focus',function(){
+                scope.$apply(function(){
+                    scope.editing = true;
+                })
+            });
+            element.find('input').on('blur',function(){
+                scope.$apply(function(){
+                    scope.editing = false;
+                })
+            });
             element.find('div').bind('click', function() {
                 element.find('input')[0].focus();
             });

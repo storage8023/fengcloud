@@ -1293,7 +1293,7 @@ $.contextMenu = function(operation, options) {
                 throw new Error('Cannot bind to selector "' + o.selector + '" as it contains a reserved className');
             }
             if (!o.build && (!o.items || $.isEmptyObject(o.items))) {
-                throw new Error('No Items sepcified');
+                //throw new Error('No Items sepcified');
             }
             counter ++;
             o.ns = '.contextMenu' + counter;

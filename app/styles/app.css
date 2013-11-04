@@ -1038,73 +1038,58 @@ footer {
     content: "\e009";
     font-family: "Flat-UI-Icons"
 }
-
-.right_sidebar div.tagsinput span.tag {
+.right_sidebar .ngTagsInput{
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+.right_sidebar .ngTagsInput.editing,
+.right_sidebar .ngTagsInput:hover{
+    border: 1px solid #C2CBD3;
+    background: #FFF;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .10);
+}
+.right_sidebar .ngTagsInput input{
+    background: transparent;
+}
+.right_sidebar .ngTagsInput li{
     font-size: 12px;
-    padding: 0 8px;
+    padding: 0 10px;
     background: #e5eaee;
     border: 1px solid #e5eaee;
     color: #818793;
     -webkit-transition: 0.25s;
     position: relative;
+    line-height: 21px;
 }
 
-.right_sidebar div.tagsinput span.tag:hover {
+.right_sidebar .ngTagsInput li > button{
+    display: none;
+    position: absolute;
+    right: 1px;
+    top:3px;
+    background: #3873BD;
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    line-height: 14px;
+    text-align: center;
+
+}
+.right_sidebar .ngTagsInput li:hover > button{
+    display: block;
+    cursor: default;
+    color:#fff;
+}
+
+.right_sidebar .ngTagsInput li:hover {
     background: #4b8bd5;
     border: 1px solid #4b8bd5;
     color: #fff;
     padding-left: 4px;
-    padding-right: 12px;
+    padding-right: 16px;
 }
 
-.right_sidebar .tagsinput-remove-link {
-    bottom: 0;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 12px;
-    opacity: 0;
-    padding: 2px 1px 5px 0;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    text-decoration: none;
-    top: 0;
-    z-index: 2;
-    -webkit-transition: all linear 0.2s;
-}
-
-.right_sidebar .tagsinput-remove-link:before {
-    color: #ffffff;
-    content: "\e00b";
-    font-family: "Flat-UI-Icons";
-}
-
-.right_sidebar .tagsinput .tag:hover .tagsinput-remove-link {
-    color: #ffffff;
-    opacity: 1;
-    display: block;
-    cursor: default;
-}
-
-.right_sidebar div.tagsinput input {
-    padding:0 5px;
-    font-size: 12px;
-    margin: 0 0 0 3px;
-}
-
-.right_sidebar div.tagsinput {
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    -webkit-transition: all linear 0.2s;
-    padding: 3px 2px;
-}
-
-.right_sidebar div.ngTagsInput{
-   /*border: 1px solid #C2CBD3;*/
-   /*background: #FFF;*/
-    /*border-radius: 4px;*/
-}
 .right_sidebar .nav-tabs {
     border-top: 1px solid #cdced0;
     border-bottom: 1px solid #cdced0;

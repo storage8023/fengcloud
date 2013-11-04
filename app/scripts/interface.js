@@ -37,7 +37,6 @@
     getFileList: function (params) {
         try {
            var re = gkClient.gGetFileList(JSON.stringify(params));
-            //console.log(JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
