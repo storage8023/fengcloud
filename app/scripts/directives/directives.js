@@ -76,7 +76,6 @@ angular.module('gkClientIndex.directives',[])
 
                 $scope.getMoreNews = function(){
                     $scope.loading = true;
-                    console.log(1);
                     GKApi.update(100,requestDateline).success(function(data){
                         $scope.loading = false;
                         var renews = data['updates'] || [];
@@ -86,7 +85,35 @@ angular.module('gkClientIndex.directives',[])
                     }).error(function(){
                             $scope.loading = false;
                         })
-                }
+                };
+
+                /**
+                 *处理邀请加入团队的请求
+                 * @param accept
+                 */
+                $scope.handleTeamInvite = function(accept,item){
+                    if(accept){
+                        GKApi.teamInviteJoin(item['org_id'],item['property']['invite_code']).success(function(){
+                            item.handled = true;
+                        }).error(function(){
+
+                            });
+                    }else{
+                        GKApi.teamInviteReject(item['org_id'],item['property']['invite_code']).success(function(){
+                            item.handled = true;
+                        }).error(function(){
+
+                            });
+                    }
+
+                };
+
+                /**
+                 * 处理申请加入团队的请求
+                 */
+                $scope.handleTeamRequest = function(agree){
+
+                };
             }
         }
     }])
@@ -139,31 +166,27 @@ angular.module('gkClientIndex.directives',[])
             restrict: 'E',
             templateUrl: "views/singlefile_right_sidebar.html",
             link: function ($scope, $element) {
-                /**
-                 * 添加注释
-                 * @param tag
-                 */
-                $scope.addTag = function (tag) {
-                    var newTag = $scope.file.tag + ' ' + tag;
-                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, newTag).success(function () {
-                        $scope.file.tag = newTag;
-                    }).error(function () {
-
-                        });
-                };
-
-                /**
-                 * 删除注释
-                 * @param tag
-                 */
-                $scope.removeTag = function (tag) {
-                    var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
-                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, newTag).success(function () {
-                        $scope.file.tag = newTag;
-                    }).error(function () {
-
-                        });
-                };
+//                /**
+//                 * 添加注释
+//                 * @param tag
+//                 */
+//                $scope.addTag = function (tag) {
+//                    var newTag = $scope.file.tag + ' ' + tag;
+//                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, newTag).success(function () {
+//                        $scope.file.tag = newTag;
+//                    }).error(function () {
+//
+//                        });
+//                };
+//
+//                /**
+//                 * 删除注释
+//                 * @param tag
+//                 */
+//                $scope.removeTag = function (tag) {
+//                    var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
+//
+//                };
                 $scope.inputingRemark = false;
                 $scope.postText = '';
 
@@ -180,7 +203,6 @@ angular.module('gkClientIndex.directives',[])
                  * 发布讨论
                  */
                 $scope.postRemark = function (postText) {
-
                     if (!postText || !postText.length) return;
                     var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
                     RestFile.remind($location.search().mountid, fullpath, postText).success(function (data) {
@@ -237,6 +259,7 @@ angular.module('gkClientIndex.directives',[])
                             $scope.postRemark($scope.postText);
                         }
                 };
+
             }
         }
     }])
@@ -250,7 +273,7 @@ angular.module('gkClientIndex.directives',[])
             }
         }
     }])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', function ($location, GKPath, $filter, $templateCache, $compile, $rootScope) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', 'GKFileList',function ($location, GKPath, $filter, $templateCache, $compile, $rootScope,GKFileList) {
         return {
             replace: true,
             restrict: 'E',
@@ -288,7 +311,7 @@ angular.module('gkClientIndex.directives',[])
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $scope.selectedFile = selectedFile;
-                    //$element.find('.list_body').focus();
+                    GKFileList.setSelectFile($scope.selectedFile);
                 };
                 /**
                  * 取消选中
@@ -1021,10 +1044,6 @@ angular.module('gkClientIndex.directives',[])
 
                     }
                 })
-                $scope.$watch('file.formatTag', function () {
-                    jQuery($element).importTags($scope.file.formatTag || '');
-                });
-
             }
         }
     }])

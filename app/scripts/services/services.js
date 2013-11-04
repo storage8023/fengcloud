@@ -128,6 +128,9 @@ angular.module('gkClientIndex.services', [])
         return {
             handleClientException: function (error) {
                 alert(error.message);
+            },
+            handleAjaxException:function(){
+
             }
         }
     }])
@@ -972,9 +975,9 @@ angular.module('gkClientIndex.services', [])
                     params: params
                 });
             },
-            teamInviteJoin: function (data, code) {
+            teamInviteJoin: function (orgId, code) {
                 var params = {
-                    org_id: data,
+                    org_id: orgId,
                     code: code
                 };
                 angular.extend(params, defaultParams);
@@ -986,9 +989,9 @@ angular.module('gkClientIndex.services', [])
                     params: params
                 });
             },
-            teamGroupsMembers:function(data){
+            teamGroupsMembers:function(orgId){
                 var params = {
-                    org_id:data
+                    org_id:orgId
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1104,6 +1107,28 @@ angular.module('gkClientIndex.services', [])
         return GKMyMount;
     }
     ])
+    .factory('GKFileList', [function () {
+        var selectedFile = [];
+        var selectedPath = '';
+        var GKFileList = {
+            setSelectFile:function(file){
+                selectedFile = file;
+                var pathArr = [];
+                angular.forEach(selectedFile,function(value){
+                    pathArr.push(value.fullpath);
+                });
+                selectedPath = pathArr.join('|');
+
+            },
+            getSelectedFile:function(){
+                return selectedFile;
+            },
+            getSelectedPath:function(){
+                return selectedPath;
+            }
+        };
+        return GKFileList;
+    }])
 
 /**
  * 客户端的回调函数
@@ -1339,16 +1364,18 @@ function GKHistory($q, $location, $rootScope) {
 
     $rootScope.$on('$routeChangeSuccess', function ($s, $current) {
         var params = $current.params;
-        if (jQuery.isEmptyObject(params)) return;
-        var l = history.length,
-            cwd = params;
-        if (update) {
-            current >= 0 && l > current + 1 && history.splice(current + 1);
-            history[history.length - 1] != cwd && history.push(cwd);
-            current = history.length - 1;
-        }
-        update = true;
+        if (!jQuery.isEmptyObject(params)) {
+            var l = history.length,
+                cwd = params;
+            if (update) {
+                current >= 0 && l > current + 1 && history.splice(current + 1);
+                history[history.length - 1] != cwd && history.push(cwd);
+                current = history.length - 1;
+            }
+            update = true;
+        };
     });
+
     reset();
 }
 
