@@ -10,7 +10,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             user:gkClientInterface.getUser(),
             file:{},
             mount:{},
-            condition:''
+            filter:''
         };
 
         GKNews.requestNews();
@@ -28,7 +28,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', function ($scope, $location, GKPath, GKFile, $rootScope) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder',function ($scope, $location, GKPath, GKFile, $rootScope,GKSmartFolder) {
         var sideOrgList = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
         var myMount = {}, //我的空间
             orgMount = []; //团队的空间
@@ -47,7 +47,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var getTrashNode = function(mount_id){
             var node = {
-                label: "回收站",
+                label: GKPath.getFilterName('trash'),
                 isParent:false,
                 data: {
                     fullpath: '',
@@ -81,23 +81,25 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 智能文件夹
          * @type {*}
          */
-        var smartFolders = gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'];
+        var smartFolders = GKSmartFolder.getFolders();;
         if (!smartFolders) smartFolders = [];
+
         smartFolders.unshift({
-            name: '我接收的文件',
-            condition: 'inbox',
-            icon:'icon_inbox'
-        });
-        smartFolders.unshift({
-            name: '星标文件',
-            condition: 'star',
-            icon:'icon_star'
+            name: GKPath.getFilterName('inbox'),
+            icon:'icon_inbox',
+            filter:'inbox'
         });
 
         smartFolders.unshift({
-            name: '最近修改的文件',
-            condition: 'recent',
-            icon:'icon_recent'
+            name: GKPath.getFilterName('star'),
+            icon:'icon_star',
+            filter:'star'
+        });
+
+        smartFolders.unshift({
+            name: GKPath.getFilterName('recent'),
+            icon:'icon_recent',
+            filter:'recent'
         });
 
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders, 'magic');
@@ -143,8 +145,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['filter'] = branch.data.filter||'';
                 $rootScope.PAGE_CONFIG.mount = GKFile.getMountById(branch.data.mount_id);
             } else if (partition == 'smartfolder') {
-                pararm['condition'] = branch.data.condition;
-                $rootScope.PAGE_CONFIG.condition = branch.data.condition;
+                pararm['filter'] = branch.data.filter;
+                $rootScope.PAGE_CONFIG.filter = branch.data.filter;
             } else {
                 return;
             }
@@ -180,7 +182,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
-        $scope.condition = $routeParams.condition || ''; //智能文件夹
         $scope.partition = $routeParams.partition || 'myfile'; //当前的分区
         $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name'; //当前的排序
@@ -223,30 +224,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else {
                 source = 'api';
 
-                if ($scope.condition == 'inbox') {
-                    GKApi.inboxFileList($scope.condition).success(function (data) {
+                if ($scope.filter == 'inbox') {
+                    GKApi.inboxFileList($scope.filter).success(function (data) {
                         fileList = data['list'];
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                     }).error(function(){
                             deferred.reject();
                         });
-                } else if ($scope.condition == 'star') {
-                    GKApi.starFileList($scope.condition).success(function (data) {
+                } else if ($scope.filter == 'star') {
+                    GKApi.starFileList($scope.filter).success(function (data) {
                         fileList = data['list'];
 
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                     }).error(function(){
                             deferred.reject();
                         });
-                } else if ($scope.condition == 'recent') {
-                    GKApi.recentFileList($scope.condition).success(function (data) {
+                } else if ($scope.filter == 'recent') {
+                    GKApi.recentFileList($scope.filter).success(function (data) {
                         fileList = data['list'];
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                     }).error(function(){
                             deferred.reject();
                         });
                 } else {
-                    GKApi.smartFolderList($scope.condition).success(function (data) {
+                    GKApi.smartFolderList($scope.filter).success(function (data) {
                         fileList = data['list'];
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                     }).error(function(){
@@ -942,39 +943,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', 'GKSearch','GKDialog',function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout,GKSearch, GKDialog) {
 
-        /**
-         * 面包屑
-         */
-        var getBreads = function () {
-            var path = Util.String.rtrim(Util.String.ltrim($scope.path, '/'), '/'), breads = [], bread;
-            if (path.length) {
-                var paths = path.split('/');
-                for (var i = 0; i < paths.length; i++) {
-                    bread = {
-                        name: paths[i]
-                    };
-                    var fullpath = '';
-                    for (var j = 0; j <= i; j++) {
-                        fullpath += paths[j] + '/'
-                    }
-                    fullpath = Util.String.rtrim(fullpath, '/');
-                    bread.path = fullpath;
-                    bread.url = '#' + GKPath.getPath($scope.partition, bread.path, $scope.view);
-                    breads.push(bread);
-                }
-            }
-            var name = '', currentMountId = $location.search().mountid;
-            if (currentMountId && GKMounts[currentMountId]) {
-                name = GKMounts[currentMountId]['name'];
-            }
-            breads.unshift({
-                name: name,
-                url: '#' + GKPath.getPath($scope.partition, '', $scope.view)
-            });
-
-            return breads;
-        };
-
         $scope.canBack = false;
         $scope.canForward = false;
         $scope.path = '';
@@ -992,7 +960,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.view = params.view || 'list'; //当前的视图模式
             $scope.path = params.path || '';  //当前的文件路径
             $scope.mount_id = params.mountid;  //当前的文件路径
-            $scope.breads = getBreads();
+            $scope.breads = GKPath.getBread();
             $scope.canBack = GKHistory.canBack();
             $scope.canForward = GKHistory.canForward();
         });

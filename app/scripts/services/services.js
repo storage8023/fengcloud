@@ -109,18 +109,107 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKPath', function () {
-        return {
+    .factory('GKSmartFolder',[function(){
+        var smartFolders = [];
+        var GKSmartFolder = {
+            getFolders:function(){
+                smartFolders = gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'];
+                return smartFolders;
+            },
+            getFolderByCode:function(code){
+                var value,smartFolder=null;
+                for(var i=0;i<smartFolders.length;i++){
+                    value = smartFolders[i];
+                    if(value.condition == code){
+                        smartFolder = value
+                    }
+                }
+                return smartFolder
+            }
+        };
+        return GKSmartFolder;
+    }])
+    .factory('GKPath', ['$location','GKMounts','GKSmartFolder',function ($location,GKMounts,GKSmartFolder) {
+        var GKPath =  {
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
                 var params = {
-                    path: paramArr[1],
-                    view: paramArr[2]
+                    partition:paramArr[0],
+                    path: paramArr[1]|'',
+                    view: paramArr[2],
+                    mountid:paramArr[3] || 0,
+                    filter:paramArr[4] || ''
                 };
-                return '/' + paramArr[0] + '?' + jQuery.param(params);
+                return '/file?' + jQuery.param(params);
+            },
+            getFilterName:function(filter){
+                var filterName = '';
+                switch(filter){
+                    case 'trash':
+                        filterName = '回收站';
+                        break;
+                    case 'inbox':
+                        filterName = '我接收的文件';
+                        break;
+                    case 'star':
+                        filterName = '星标文件';
+                        break;
+                    case 'recent':
+                        filterName = '最近修改的文件';
+                        break;
+                    default:
+                        filterName = GKSmartFolder.getFolderByCode(filter)['name'] || '';
+                        break;
+                }
+                return filterName;
+            },
+            getBread:function(){
+                var path = $location.search().path || '';
+                var partition =  $location.search().partition || '';
+                var view =  $location.search().view || 'list';
+                var filter = $location.search().filter;
+                var mountId = $location.search().mountid;
+                var breads = [], bread;
+                if (path.length) {
+                    path = Util.String.rtrim(Util.String.ltrim(path, '/'), '/');
+                    var paths = path.split('/');
+                    for (var i = 0; i < paths.length; i++) {
+                        bread = {
+                            name: paths[i]
+                        };
+                        var fullpath = '';
+                        for (var j = 0; j <= i; j++) {
+                            fullpath += paths[j] + '/'
+                        }
+                        fullpath = Util.String.rtrim(fullpath, '/');
+                        bread.path = fullpath;
+                        bread.filter = '',
+                        bread.url = '#' + this.getPath(partition, bread.path, view,mountId,filter);
+                        breads.push(bread);
+                    }
+                }
+
+                if(filter){
+                    breads.unshift({
+                        name: this.getFilterName(filter),
+                        url: '#' + this.getPath(partition, '',view,mountId,filter),
+                        filter:'filter'
+                    });
+                }
+
+                if (mountId && GKMounts[mountId]) {
+                    breads.unshift({
+                        name: GKMounts[mountId]['name'],
+                        filter:'',
+                        url: '#' + this.getPath(partition, '', view,mountId,filter)
+                    });
+                }
+                return breads;
             }
         }
-    })
+
+        return GKPath;
+    }])
 /**
  * 对请求后返回的错误的处理
  */
@@ -342,6 +431,9 @@ angular.module('gkClientIndex.services', [])
                             data: value
                         };
                     }else{
+                        if(!value.filter && value.condition){
+                            value.filter =  value.condition;
+                        }
                         item = {
                             label: value.name,
                             isParent: false,
@@ -1129,6 +1221,13 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileList;
     }])
+    .factory('GKLocation', [function () {
+        return {
+            getFilterName:function(){
+
+            }
+        };
+    }])
 
 /**
  * 客户端的回调函数
@@ -1226,6 +1325,7 @@ var gkClientCallback = {
         rootScope.$broadcast('showMessage');
     }
 };
+
 
 function GKFileSearch() {
 }

@@ -166,27 +166,7 @@ angular.module('gkClientIndex.directives',[])
             restrict: 'E',
             templateUrl: "views/singlefile_right_sidebar.html",
             link: function ($scope, $element) {
-//                /**
-//                 * 添加注释
-//                 * @param tag
-//                 */
-//                $scope.addTag = function (tag) {
-//                    var newTag = $scope.file.tag + ' ' + tag;
-//                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, newTag).success(function () {
-//                        $scope.file.tag = newTag;
-//                    }).error(function () {
-//
-//                        });
-//                };
-//
-//                /**
-//                 * 删除注释
-//                 * @param tag
-//                 */
-//                $scope.removeTag = function (tag) {
-//                    var newTag = $scope.file.tag.replace(new RegExp(tag + '([,;；，\\s]|$)', 'g'), '');
-//
-//                };
+
                 $scope.inputingRemark = false;
                 $scope.postText = '';
 
@@ -194,7 +174,6 @@ angular.module('gkClientIndex.directives',[])
                  * 取消发布备注
                  */
                 $scope.cancelPostRemark = function () {
-
                     $scope.postText = '';
                     $scope.inputingRemark = false;
                 };
@@ -1130,10 +1109,11 @@ angular.module('gkClientIndex.directives',[])
                 $scope.selectBread = function ($event, bread) {
                     var params = $location.search();
                     $location.search({
-                        path: bread.path,
-                        view: $scope.view,
+                        path: bread.path || '',
+                        view: params.view,
                         mountid: params.mountid,
-                        partition: params.partition
+                        partition: params.partition,
+                        filter:bread.filter
                     });
                     $event.stopPropagation();
                 };

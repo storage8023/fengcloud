@@ -579,12 +579,9 @@ footer {
 }
 
 .toolbar .opt.opt_rename i {
-    background-position: -144px -4px;
+    background-position: -764px -4px;
 }
 
-.toolbar .opt.opt_move i {
-
-}
 .toolbar .opt.opt_sync i{
     background-position: -564px -4px;
 }
