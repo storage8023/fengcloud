@@ -123,6 +123,10 @@ header .bread_and_search_wrapper .bread{
     position: absolute;
     left:13px;
     right: 220px;
+
+}
+header .bread_and_search_wrapper.search_enable .bread{
+    cursor: text;
 }
 header .bread_and_search_wrapper input{
     position: absolute;
@@ -146,7 +150,7 @@ header .bread_and_search_wrapper .icon-search{
     background: url(../images/icon/icon16x16.png) no-repeat -464px -4px;
 }
 header .bread_and_search_wrapper .icon-cancel{
-    background: url(../images/icon/icon16x16.png) no-repeat -664px -4px;
+    background: url(../images/icon/icon16x16.png) no-repeat -364px -44px;
 }
 header .bread_and_search_wrapper .hide_bread{
    position: absolute;
@@ -161,6 +165,7 @@ header .bread_and_search_wrapper .hide_bread > a {
 
 header .bread_and_search_wrapper .bread_list{
  float: left;
+
 }
 
 header .bread_and_search_wrapper .bread_item{
@@ -586,7 +591,15 @@ footer {
 .toolbar .opt.opt_unsync i{
     background-position: -664px -4px;
 }
-
+.toolbar .opt.opt_clear_trash i{
+    background-position: -724px -4px;
+}
+.toolbar .opt.opt_del_completely i{
+    background-position: -744px -4px;
+}
+.toolbar .opt.opt_revert i{
+    background-position: -704px -4px;
+}
 
 .toolbar .opt.opt_view_change > a.active {
     background: #7f8999;

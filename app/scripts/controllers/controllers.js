@@ -161,6 +161,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (branch.expanded) {
                 var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id || 0})['list'];
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
+                if(!branch.children)  branch.children = [];
+                if(branch.data.org_id !=0){
+                    branch.children.push(getTrashNode(branch.data.mount_id));
+                }
             }
         };
 
