@@ -13,6 +13,7 @@
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
     <script src="bower_components/angular-localstorage/angular-local-storage.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/controllers/tcframe_controllers.js"></script>
     <script src="scripts/directives/tcframe_directives.js"></script>
     <script src="scripts/services/services.js"></script>
@@ -37,7 +38,7 @@
             </div>
             <div class="msg">
                 <span ng-bind="message.member_name"></span>
-                <span ng-bind="message.render_text"></span>
+                <span ng-bind-html="message.render_text"></span>
             </div>
         </li>
     </ul>

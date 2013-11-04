@@ -15,7 +15,7 @@
                             <span class="time">{{item.dateline|date:'H:mm'}}</span>
                        <span class="text">
                            <span>{{item.member_name}}</span>
-                            {{item.render_text}}
+                            <span ng-bind-html="item.render_text"></span>
                        </span>
                             <!--他人邀请我加入团队-->
                             <span class="opts" ng-show="new.act==102">
