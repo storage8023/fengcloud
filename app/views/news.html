@@ -5,8 +5,9 @@
             <li ng-repeat="new in classifyNews">
                 <div class="date">{{new.date_text}}</div>
                 <ul class="message_list">
-                    <li ng-repeat="item in new.list" >
-                        <div class="org_grid" ng-show="!new.list[$index-1] || new.list[$index-1]['org_id'] != item.org_id">
+                    <li ng-repeat="item in new.list">
+                        <div class="org_grid"
+                             ng-show="!new.list[$index-1] || new.list[$index-1]['org_id'] != item.org_id">
                             <div class="line"></div>
                             <div class="org_name"><span>{{item.org_name}}</span></div>
                         </div>
@@ -16,6 +17,25 @@
                            <span>{{item.member_name}}</span>
                             {{item.render_text}}
                        </span>
+                            <!--他人邀请我加入团队-->
+                            <span class="opts" ng-show="new.act==102">
+                                <span ng-show="handled">已接收</span>
+                                <span ng-show="!handled">
+                                       <a href="javascript:void(0)" ng-click="handleTeamInvite(true,item)">接收</a>
+                                       <a href="javascript:void(0)" ng-click="handleTeamInvite(false,item)">拒绝</a>
+                                </span>
+
+                            </span>
+                            <!--他人申请加入团队-->
+                              <span class="opts" ng-show="!handled&&new.act==10002">
+                                  <span ng-show="handled">
+                                      已同意
+                                  </span>
+                                  <span ng-show="!handled">
+                                        <a href="javascript:void(0)" ng-click="handleTeamRequest(true,item)">同意</a>
+                                        <a href="javascript:void(0)" ng-click="handleTeamRequest(true,item)">拒绝</a>
+                                  </span>
+                            </span>
                         </div>
                     </li>
                 </ul>
@@ -23,5 +43,5 @@
         </ul>
     </div>
 
-   <a href="javascript:void(0)" ng-click="hideNews()" class="slide_btn"></a>
+    <a href="javascript:void(0)" ng-click="hideNews()" class="slide_btn"></a>
 </div>

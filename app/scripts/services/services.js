@@ -128,6 +128,9 @@ angular.module('gkClientIndex.services', [])
         return {
             handleClientException: function (error) {
                 alert(error.message);
+            },
+            handleAjaxException:function(){
+
             }
         }
     }])
@@ -969,9 +972,9 @@ angular.module('gkClientIndex.services', [])
                     params: params
                 });
             },
-            teamInviteJoin: function (data, code) {
+            teamInviteJoin: function (orgId, code) {
                 var params = {
-                    org_id: data,
+                    org_id: orgId,
                     code: code
                 };
                 angular.extend(params, defaultParams);
@@ -983,9 +986,9 @@ angular.module('gkClientIndex.services', [])
                     params: params
                 });
             },
-            teamGroupsMembers:function(data){
+            teamGroupsMembers:function(orgId){
                 var params = {
-                    org_id:data
+                    org_id:orgId
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);

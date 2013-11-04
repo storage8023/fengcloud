@@ -76,7 +76,6 @@ angular.module('gkClientIndex.directives',[])
 
                 $scope.getMoreNews = function(){
                     $scope.loading = true;
-                    console.log(1);
                     GKApi.update(100,requestDateline).success(function(data){
                         $scope.loading = false;
                         var renews = data['updates'] || [];
@@ -86,7 +85,35 @@ angular.module('gkClientIndex.directives',[])
                     }).error(function(){
                             $scope.loading = false;
                         })
-                }
+                };
+
+                /**
+                 *处理邀请加入团队的请求
+                 * @param accept
+                 */
+                $scope.handleTeamInvite = function(accept,item){
+                    if(accept){
+                        GKApi.teamInviteJoin(item['org_id'],item['property']['invite_code']).success(function(){
+                            item.handled = true;
+                        }).error(function(){
+
+                            });
+                    }else{
+                        GKApi.teamInviteReject(item['org_id'],item['property']['invite_code']).success(function(){
+                            item.handled = true;
+                        }).error(function(){
+
+                            });
+                    }
+
+                };
+
+                /**
+                 * 处理申请加入团队的请求
+                 */
+                $scope.handleTeamRequest = function(agree){
+
+                };
             }
         }
     }])

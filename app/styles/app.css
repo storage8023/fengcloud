@@ -1100,10 +1100,11 @@ footer {
     padding: 3px 2px;
 }
 
-/*.right_sidebar div.tagsinput:hover{*/
-/*border: 1px solid #CCC;*/
-/*background: #FFF;*/
-/*}*/
+.right_sidebar div.ngTagsInput{
+   /*border: 1px solid #C2CBD3;*/
+   /*background: #FFF;*/
+    /*border-radius: 4px;*/
+}
 .right_sidebar .nav-tabs {
     border-top: 1px solid #cdced0;
     border-bottom: 1px solid #cdced0;

@@ -880,7 +880,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             $scope.file.formatTag.push(value);
                         }
                     });
-                    console.log($scope.file.formatTag);
+
                 });
 
                 GKApi.sideBar(searchParams.mountid, fullpath).success(function (data) {
