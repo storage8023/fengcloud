@@ -18,13 +18,15 @@
     line-height: 30px;
     font-size: 14px;
     margin-bottom: 10px;
-    cursor:pointer ;
 }
 .queue-sildbar-ul li a{
     padding-left: 30px;
 }
 .blue {
     background:#8EB7F1;
+}
+.blue a{
+    color:#FFF;
 }
 .none {
     background: none;
@@ -100,13 +102,13 @@
 }
 .downuploadcolor{
     color:#52AE75;
+    text-align: center;
 }
 .waitcolor{
     color:#F39C12;
 }
 .queue-con-speed{
     width:23%;
-    padding: 1px;
 }
 .progressbar{
     display: none;
@@ -121,11 +123,9 @@
 }
 .queue-con-time{
     width: 10%;
-    padding: 1px;
 }
 .queue-con-finish{
     width: 11%;
-    padding: 1px;
 }
 .queue-con-synch{
     font-size: 13px;
@@ -213,11 +213,12 @@
     height:25px;
     line-height: 25px;
     border:1px solid #325E94;
-    color:#FFF;
     background: #467DC2;
     border-radius: 3px 3px 3px 3px;
     margin-right: 20px;
     margin-top: 5px;
     text-align: center;
-    cursor: pointer;
+}
+.queue-footer-Close a{
+    color:#FFF;
 }

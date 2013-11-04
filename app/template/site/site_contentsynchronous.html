@@ -8,8 +8,8 @@
      <div class = "site-content-form scrollbar">
          <ul>
            <li ng-class-odd="'odd'" ng-class-even="'even'" ng-repeat = "syncData in sync" class = "syncline c_f_after">
-             <div class = "site-synchronous-file f_l">{{syncData.webpath}}</div>
-             <div class = "site-synchronous-sync f_l">{{syncData.finish}}</div>
+             <div class = "site-synchronous-file f_l"><span ng-bind = "syncData.webpath"></span></div>
+             <div class = "site-synchronous-sync f_l"><span ng-bind = "syncData.finish"></span></div>
              <div class = "site-synchronous-file sync-color f_l" ng-click = "syncCancel($index,'{{syncData.webpath}}','{{syncData.mountid}}')" ><a href = "javascript:void(0);">取消同步</a></div>
            </li>
          </ul>

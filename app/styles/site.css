@@ -19,7 +19,6 @@
     padding-bottom: 5px;
     margin-bottom: 10px;
     padding-left: 20px;
-    cursor: pointer;
     color: #606D81;
 }
 .site-sidebar ul li .universalbackground{
@@ -52,13 +51,16 @@
 .site-sidebar ul .site-sidebar-color .dvancedbackground{
     background: url(../images/icon.png) no-repeat 0 -160px;
 }
-.site-sidebar ul li h3{
+.site-sidebar ul li a{
     line-height: 20px;
     font-size: 15px;
     padding-left:20px;
 }
 .site-sidebar ul .site-sidebar-color{
     background: #4D8BD8;
+
+}
+.site-sidebar ul .site-sidebar-color a{
     color:#FFF;
 }
 .site-content{
