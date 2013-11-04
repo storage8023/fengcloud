@@ -24,29 +24,37 @@
                     <div class = "queue-con-top-time f_l"><a href = "javascript:void(0);">剩余时间</a></div>
                 </div>
                 <ul class = "queue-con-up">
-                    <li class = "queue-dele-list {{viewupload.delelist}}" ng-hide="hide" ng-repeat = "viewupload in upload">
+                    <li class = "queue-dele-list {{viewupload.delelist}}"
+                        ng-hide="hide"
+                        ng-repeat = "viewupload in upload">
                         <div class = "queue-con-font c_f_after">
                             <div class = "queue-con-file f_l">
-                                <!--img src = "{{viewupload.webpath | getFileIcon:viewupload.dir}}" alt = "" /-->
-                                <span  title = {{viewupload.webpath}}>{{viewupload.webpath}}</span>
+                                <span ng-bind = "viewupload.webpath" ></span>
                             </div>
                             <div class="queue-con-use f_l">
                                 <span></span>
-                                <span title = {{viewupload.possize}}>{{viewupload.possize}}</span>
+                                <span ng-bind = "viewupload.possize" ></span>
                             </div>
                             <div class="queue-con-speed f_l ">
                                 <div class="progress progress-striped active queue-con-speed-per {{viewupload.finishbar}}">
-                                    <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" ng-style="{width:viewupload.filesizepos}">
+                                    <div class="progress-bar"
+                                         role="progressbar"
+                                         aria-valuenow="45"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"
+                                         ng-style="{width:viewupload.filesizepos}">
                                     </div>
                                 </div>
                             </div>
                             <div class="queue-con-finish f_l {{viewupload.valuecolor}}">
-                                <span title = "{{viewupload.finishData}}">{{viewupload.finishData}}</span>
+                                <span ng-bind = "viewupload.finishData"></span>
                             </div>
                             <div class="queue-con-time f_l">
-                                <span model = "{{viewupload.time}}" title = "{{viewupload.time}}">{{viewupload.time}}</span>
+                                <a href = "javascript:void(0);" model = "{{viewupload.time}}" ng-bind = "viewupload.time"></a>
                             </div>
-                            <div class = "queuedele" ng-click = "hide =! hide;queueDelete('{{viewupload.webpath}}');">X
+                            <div class = "queuedele"
+                                 ng-click = "hide =! hide;queueDelete($index,'{{viewupload.webpath}}','{{viewupload.type}}','{{viewupload.mountid}}')">
+                                    <a href = "javascript:void(0);" >XX</a>
                             </div>
                         </div>
                     </li>
@@ -63,24 +71,31 @@
                         <div class = "queue-con-font">
                             <div class = "queue-con-file f_l">
                                 <!--img src = "{{viewupload.webpath | getFileIcon:viewupload.dir}}" alt = "" /-->
-                                <span title = {{viewdownload.webpath}}>{{viewdownload.webpath}}</span>
+                                <span ng-bind = "viewdownload.webpath"></span>
                             </div>
                             <div class="queue-con-use f_l">
-                                <span title = {{viewdownload.possize}}>{{viewdownload.possize}}</span>
+                                <span ng-bind = "viewdownload.possize"></span>
                             </div>
                             <div class="queue-con-speed f_l ">
                                 <div class="progress progress-striped active queue-con-speed-per {{viewdownload.finishbar}}">
-                                    <div class="progress-bar"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" ng-style="{width:viewdownload.filesizepos}">
+                                    <div class="progress-bar"
+                                         role="progressbar"
+                                         aria-valuenow="45"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"
+                                         ng-style="{width:viewdownload.filesizepos}">
                                     </div>
                                 </div>
                             </div>
                             <div class="queue-con-finish f_l">
-                                <span title = "{{viewdownload.finishData}}">{{viewdownload.finishData}}</span>
+                                <span ng-bind = "viewdownload.finishData"></span>
                             </div>
                             <div class="queue-con-time f_l">
-                                <span title = "{{viewdownload.time}}">{{viewdownload.time}}</span>
+                                <span ng-bind = "viewdownload.time" ></span>
                             </div>
-                            <div class = "queuedele" ng-click = "hide =! hide;queueDelete('{{viewdownload.webpath}}');">
+                            <div class = "queuedele"
+                                 ng-click = "hide =! hide;queueDownDelete($index,'{{viewdownload.webpath}}','{{viewdownload.type}}','{{viewdownload.moundid}}')">
+                                <a href = "javascript:void(0);" >XX</a>
                             </div>
                         </div>
                     </li>
@@ -96,13 +111,13 @@
                     <li ng-repeat = "viewsync in sync">
                         <div class = "queue-con-synch-font">
                             <div class = "queue-con-synch-file f_l">
-                                <span title = "{{viewsync.webpath}}">{{viewsync.webpath}}</span>
+                                <span ng-bind = "viewsync.webpath"></span>
                             </div>
                             <div class="queue-con-synch-status {{viewsync.valuecolor}} f_l">
-                                <span title = "{{viewsync.status}}">{{viewsync.status}}</span>
+                                <span ng-bind = "viewsync.status"></span>
                             </div>
                             <div class="queue-con-synch-time f_l">
-                                <span title = "{{viewsync.time}}">{{viewsync.time}}</span>
+                                <span ng-bind = "viewsync.time"></span>
                             </div>
                         </div>
                     </li>
@@ -113,14 +128,16 @@
             <div class = "queue-footer-UploadDownload f_l">
                 <div class = "queue-footer-Upload">
                     <span class = "uploadimage"></span>
-                    <span title = "上传总速度：{{uploadspeek}} Kb/s">上传总速度：{{uploadspeek}}</span>
+                    <span>上传总速度：</span>
+                    <span ng-bind = "uploadspeek" ></span>
                 </div>
                 <div class = "queue-footer-Download">
                     <span class = "downloadimage"></span>
-                    <span title = "下载总速度：{{downloadspeek}} Kb/s">下载总速度：{{downloadspeek}}</span>
+                    <span>下载总速度：</span>
+                    <span ng-bind = "downloadspeek"></span>
                 </div>
             </div>
-            <div class = "queue-footer-Close f_r" ng-click = "queueClose()" ><span>关闭</span></div>
+            <div class = "queue-footer-Close f_r" ng-click = "queueClose()" ><a href = "javascript:void(0);">关闭</a></div>
         </div>
     </div>
     <script src="bower_components/jquery/jquery.js" type="text/javascript"></script>
@@ -129,6 +146,7 @@
     <script src = "scripts/directives/directives.js" type="text/javascript"></script>
     <script src = "scripts/services/services.js" type="text/javascript"></script>
     <script src = "scripts/interface.js" type="text/javascript"></script>
+    <script src = "scripts/filters/filters.js" type="text/javascript"></script>
     <script src = "scripts/queueApp.js" type="text/javascript"></script>
     <script src = "scripts/controllers/controllers.js" type="text/javascript"></script>
 </body>

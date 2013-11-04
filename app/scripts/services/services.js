@@ -924,12 +924,15 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             teamInvitePending: function () {
-                var sign = GK.getApiAuthorization(defaultParams);
-                defaultParams.sign = sign;
+                var params = {
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
                 return $http({
                     method: 'GET',
                     url: GK.getApiHost() + '/1/team/invite_pending',
-                    params: defaultParams
+                    params:  params
                 });
             },
             teamManage: function (data) {
@@ -1031,19 +1034,23 @@ angular.module('gkClientIndex.services', [])
              * @returns {*}
              */
             devicelist:function(){
-                var sign = GK.getApiAuthorization(defaultParams);
-                defaultParams.sign = sign;
+                var params = {
+
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/account/device_list',
-                    params:defaultParams
+                    data:jQuery.param(params)
                 });
             },
             /**
              * 启用禁止设备
              * @returns {*}
              */
-            toggledevice:function(device_id,state){
+            toggledevice:function(state,device_id){
                 var params = {
                     device_id:device_id,
                     state:state
@@ -1051,10 +1058,11 @@ angular.module('gkClientIndex.services', [])
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
+                console.log(params);
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/account/toggle_device',
-                    params:params
+                    data:jQuery.param(params)
                 });
             },
             /**
@@ -1063,16 +1071,15 @@ angular.module('gkClientIndex.services', [])
              */
             deldevice:function(device_id){
                 var params = {
-                    device_id:device_id,
+                    device_id:device_id
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
-                console.log(params);
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/account/del_device',
-                    params:params
+                    data:jQuery.param(params)
                 });
             },
         }

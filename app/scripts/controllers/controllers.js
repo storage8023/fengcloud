@@ -1462,28 +1462,95 @@ angular.module("gkSiteApp.controllers", [])
             GKApi.devicelist().success(function ($http){
                 var message = [];
                 message = $http;
+                console.log($http);
                 deferred.resolve(message);
             })
             return deferred.promise;
         }
         var promiseMember = deviceListHttp();
         promiseMember.then(function(data){
-            var siteDivices = []
-                ,siteDivicesData = [];
-            $scope.divices = data;
-            siteDivices =  $scope.divices.devices;
-            for(var i = 0,len = siteDivices.length;i<len;i++){
-                siteDivicesData.push({allow_edit:siteDivices[i].allow_edit,device_id:siteDivices[i].device_id,device_name:siteDivices[i].device_name,last_activity:siteDivices[i].last_activity,os_name:siteDivices[i].os_name,os_version:siteDivices[i].os_version,startban:'禁止'});
+            var siteDevices = []
+                ,siteDevicesData = [];
+            $scope.devices = data;
+            siteDevices =  $scope.devices.devices;
+            for(var i = 0,len = siteDevices.length;i<len;i++){
+                if(siteDevices[i].state === "1"){
+                    siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                        device_id:siteDevices[i].device_id,
+                        device_name:siteDevices[i].device_name,
+                        last_activity:siteDevices[i].last_activity,
+                        os_name:siteDevices[i].os_name,
+                        os_version:siteDevices[i].os_version,
+                        state:siteDevices[i].state,
+                        startban:'禁止'});
+                }else{
+                    siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                        device_id:siteDevices[i].device_id,
+                        device_name:siteDevices[i].device_name,
+                        last_activity:siteDevices[i].last_activity,
+                        os_name:siteDevices[i].os_name,
+                        os_version:siteDevices[i].os_version,
+                        state:siteDevices[i].state,
+                        startban:'启动'});
+                }
             }
-            $scope.sitedivices = siteDivicesData;
+            $scope.sitedevices = siteDevicesData;
+            $scope.banstart = function(state,device_id,startbandata){
+                    var r=confirm("禁止设备的话，该设备会禁止使用");
+                    if (r==true)
+                    {
+                        GKApi.toggledevice(state,device_id).success(function (){
+
+                        })
+                        var banstartDevices = [],
+                             bansitedevices = [];
+                        banstartDevices =  $scope.sitedevices;
+                        for(var i = 0,len = banstartDevices.length;i<len;i++){
+                            console.log(banstartDevices);
+                            if( banstartDevices[i].device_id === device_id){
+                                if(startbandata === '启动'){
+                                    alert("haod");
+                                    bansitedevices.push({allow_edit: banstartDevices[i].allow_edit,
+                                        device_id: banstartDevices[i].device_id,
+                                        device_name: banstartDevices[i].device_name,
+                                        last_activity: banstartDevices[i].last_activity,
+                                        os_name: banstartDevices[i].os_name,
+                                        os_version: banstartDevices[i].os_version,
+                                        state: banstartDevices[i].state,
+                                        startban:'禁止'});
+
+                                }else{
+                                    alert('xx');
+                                    bansitedevices.push({allow_edit: banstartDevices[i].allow_edit,
+                                        device_id: banstartDevices[i].device_id,
+                                        device_name: banstartDevices[i].device_name,
+                                        last_activity: banstartDevices[i].last_activity,
+                                        os_name: banstartDevices[i].os_name,
+                                        os_version: banstartDevices[i].os_version,
+                                        state: banstartDevices[i].state,
+                                        startban:'启动'});
+
+                                }
+                            }else{
+                            bansitedevices.push(banstartDevices[i]);
+                            }
+                        }
+                        $scope.sitedevices = bansitedevices;
+                        console.log($scope.sitedevices);
+                    }
+            }
+
         })
         $scope.siteSyncDelete = function(device_id,index){
-            GKApi.deldevice(device_id).success(function (){
-
-            })
-            $scope.sitedivices.splice(index, 1);
+            var r=confirm("删除设备的话，该设备信息会消失");
+            if (r==true)
+            {
+                GKApi.deldevice(device_id).success(function (){
+                })
+                $scope.sitedevices.splice(index, 1);
+            }
         }
-        $scope.banstart = "禁用";
+
         /**
          * 按确定保存数据，关闭窗口，
          */
@@ -1513,7 +1580,7 @@ angular.module("gkSiteApp.controllers", [])
     }]);
 
 angular.module("gkQueueApp.controllers", [])
-    .controller('queueCtrl', function ($scope) {
+    .controller('queueCtrl', ['$scope',function ($scope) {
         var time1 = null,
             time2 = null,
             time3 = null;
@@ -1577,18 +1644,26 @@ angular.module("gkQueueApp.controllers", [])
             for(var i = 0,len = data.length; i<len;i++){
                 if(data[i].status === 3){
                     var posSize = bitSize(data[i].filesize);
-                    finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"完成",possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar"});
+                    finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传完成",
+                        possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar",mountid:data[i].mountid});
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist'});
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"继续等待",
+                        filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist',type:"upload",mountid:data[i].mountid});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
                     if(data[i].time === ' '){
-                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:'网络异常',status:data[i].status,finishData:"上传中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                            filesize:data[i].filesize,time:'网络异常',status:data[i].status,filesizepos:filesizePos,
+                            possize:posSize,delelist:'queuedelelist',type:"upload",mountid:data[i].mountid});
                     }else{
-                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                            filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos,
+                            possize:posSize,delelist:'queuedelelist',type:"upload",mountid:data[i].mountid});
                     }
 
                 }
@@ -1612,18 +1687,26 @@ angular.module("gkQueueApp.controllers", [])
             for(var i = 0,len = data.length; i<len;i++){
                 if(data[i].status === 3){
                     var posSize = bitSize(data[i].filesize);
-                    finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"完成",possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar"});
+                    finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载完成",
+                        possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar",mountid:data[i].mountid});
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
-                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist'});
+                    nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"继续等待",
+                        filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist',type:"download",mountid:data[i].mountid});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = bitSize(data[i].filesize);
                     if(data[i].time === ' '){
-                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:'网络异常',status:data[i].status,finishData:"下载中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                            filesize:data[i].filesize,time:'网络异常',status:data[i].status,filesizepos:filesizePos
+                            ,possize:posSize,delelist:'queuedelelist',type:"download",mountid:data[i].mountid});
                     }else{
-                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载中",filesizepos:filesizePos,possize:posSize,delelist:'queuedelelist'});
+                        nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
+                            filesize:data[i].filesize,time:data[i].time,status:data[i].status,filesizepos:filesizePos
+                            ,possize:posSize,delelist:'queuedelelist',type:"download",mountid:data[i].mountid});
                     }
                 }
             }
@@ -1648,9 +1731,11 @@ angular.module("gkQueueApp.controllers", [])
             var newdata = []
             for(var i = 0,len = data.length; i<len;i++){
                 if(data[i].num ===0 ){
-                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:"同步完成",num:data[i].num,valuecolor:"downuploadcolor"});
+                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,
+                        status:"同步完成",num:data[i].num,valuecolor:"downuploadcolor"});
                 }else{
-                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
+                    newdata.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,
+                        status:data[i].num+"项正在同步",num:data[i].num,time:data[i].time});
                 }
             }
             return newdata;
@@ -1666,6 +1751,7 @@ angular.module("gkQueueApp.controllers", [])
                 type:"upload"
             }
             $scope.sildbarUpload = JSON.parse(gkClientInterface.getTransList(data));
+            console.log($scope.sildbarUpload);
             sildbarUploadData =  $scope.sildbarUpload.list;
             if($scope.sildbarUpload.download === 0){
                 $scope.downloadspeek = 0;
@@ -1717,7 +1803,7 @@ angular.module("gkQueueApp.controllers", [])
             }
             $scope.download = queusDatadown(sildbarDownloadData);
         }
-        $scope.queueinterfaceDownload = function(){
+       $scope.queueinterfaceDownload = function(){
             var time2 = setInterval(function() {
                 $scope.$apply(function(){
                      $scope.downloadDataProcessing();
@@ -1764,10 +1850,36 @@ angular.module("gkQueueApp.controllers", [])
             $scope.SynchronousDataProcessing();
             $scope.queueinterfaceSync();
         }
+        $scope.queueDelete = function(index,data,type,mountid){
+            var r=confirm("确定终止上传文件");
+            var data = {
+                webpath:data,
+                mountid:mountid,
+                type:type
+            }
+            if (r==true)
+            {
+                $scope.upload.splice(index, 1);
+                gkClientInterface.setRmoveTrans(data);
+            }
+        }
+        $scope.queueDownDelete = function(index,data,type,mountid){
+            var r=confirm("确定终止下载文件");
+            var data = {
+                webpath:data,
+                mountid:mountid,
+                type:type
+            }
+            if (r==true)
+            {
+                $scope.upload.splice(index, 1);
+                gkClientInterface.setRmoveTrans(data);
+            }
+        }
         $scope.queueClose = function(){
             gkClientInterface.setClose();
         }
-    });
+    }]);
 
 
 
