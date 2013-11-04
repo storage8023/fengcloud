@@ -37,7 +37,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.personalOpen = function ($scope) {
                     var UIPath = gkClientInterface.getUIPath();
                     var data = {
-                        url:"file:///"+UIPath+"/views/personalInformation.html",
+                        url:"file:///"+UIPath+"/personalInformation.html",
                         type:"normal",
                         width:680,
                         height:460,
@@ -1352,7 +1352,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "personal_administrator.html",
+                templateUrl: "template/personal/personal_administrator.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1363,7 +1363,7 @@ angular.module('gkClientIndex.directives', [])
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                templateUrl: "personal_noteam.html",
+                templateUrl: "template/personal/personal_noteam.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1373,7 +1373,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "personal_noteam.html",
+                templateUrl: "template/personal/personal_noteam.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1387,7 +1387,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "site_contentdevice.html",
+                templateUrl: "template/site/site_contentdevice.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1397,7 +1397,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "site_contentuniversal.html",
+                templateUrl: "template/site/site_contentuniversal.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1407,7 +1407,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "site_contentsynchronous.html",
+                templateUrl: "template/site/site_contentsynchronous.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1418,7 +1418,7 @@ angular.module('gkClientIndex.directives', [])
                 restrict: 'E',
                 replace: true,
                 transclude: true,
-                templateUrl: "site_contentnework.html",
+                templateUrl: "template/site/site_contentnework.html",
                 link: function (scope, element, attrs) {
 
                 }
@@ -1428,7 +1428,7 @@ angular.module('gkClientIndex.directives', [])
             return {
                 restrict: 'E',
                 replace: true,
-                templateUrl: "site_contentadvanced.html",
+                templateUrl: "template/site/site_contentadvanced.html",
                 link: function (scope, element, attrs) {
 
                 }
