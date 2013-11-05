@@ -1,10 +1,29 @@
 <div class="search_file">
-    <div class=section_title>更多搜索条件<a href="javascript:void(0)" class="more_search_condition" ng-click="addCondition()"><i></i></a></div>
+    <div class=section_title>搜索条件和智能文件夹</div>
     <section class="search_condition">
+            <div class="setting_layer">
+                <label>智能文件夹名称</label>
+                <input class="form-control" ng-model="smartFolderName" name="smartfolder_name" id="smartfolder_name" />
+                <div class="opt_wrap" ng-if="partition !='smartfolder'">
+                    <button class="btn btn-default" ng-click="saveSearch()">创建智能文件夹</button>
+                </div>
+                <div class="opt_wrap" ng-if="partition =='smartfolder'">
+                    <button class="btn btn-default" ng-click="editSmartFolder()" ng-disabled="disabledSave">保存</button>
+                    <button class="btn btn-default" ng-click="cancelSmartFolder()">关闭</button>
+                </div>
+            </div>
             <div class="condition_list">
+                <div class="keyword_layer">
+                    <label for="keyword">关键字</label>
+                    <input ng-model="searchKeyword" class="form-control" name="keyword" id="keyword" />
+                </div>
+                <div class="file_path_layer">
+                    <label for="path">路径</label>
+                    <input ng-model="searchPath" class="form-control" name="path" id="path" readonly />
+                </div>
                 <div class="file_type_layer">
-                    <label>文件类型</label>
-                    <select class="form-control" name="extension" ng-model="extension" ng-options="ext.name for ext in extensions"></select>
+                    <label for="extension">文件类型</label>
+                    <select class="form-control" id="extension" name="extension" ng-model="extension" ng-options="ext.name for ext in extensions"></select>
                 </div>
                 <div class="create_date_layer">
                     <label>添加时间</label>
@@ -19,16 +38,14 @@
                     <input-datepicker ng-model="toEditDate" class=""></input-datepicker>
                 </div>
                 <div class="creator_layer">
-                    <label>创建人</label>
-                    <input class="form-control" name="creator" ng-model="creator" />
+                    <label for="creator">创建人</label>
+                    <input class="form-control" id="creator" name="creator" ng-model="creator" />
                 </div>
                 <div class="editor_layer">
-                    <label>最后修改人</label>
-                    <input class="form-control" name="modifier" ng-model="modifier" />
+                    <label id="modifier">最后修改人</label>
+                    <input class="form-control" name="modifier" id="modifier" ng-model="modifier" />
                 </div>
             </div>
     </section>
-    <div class="btn_wrapper">
-        <button class='btn btn-gk save_search' ng-click="saveSearch()">保存</button>
-    </div>
+
 </div>

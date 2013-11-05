@@ -1391,6 +1391,16 @@ position: absolute;
     margin-bottom: 8px;
     padding:5px 5px 5px 5px;
 }
+.right_sidebar .search_condition label{
+    display: block;
+    font-weight: normal;
+}
+.right_sidebar .search_condition .setting_layer > *{
+    display: block;
+}
+.right_sidebar .search_condition .setting_layer .opt_wrap{
+    margin: 10px 0 0 0;
+}
 .right_sidebar .search_condition .remove_condition{
     position: absolute;
     top:0px;
@@ -1406,13 +1416,13 @@ position: absolute;
     width: 90px;
     font-size: 12px;
 }
+.right_sidebar .search_condition .condition_list{
+    margin: 20px 0 0 0;
+}
 .right_sidebar .search_condition .condition_list > div{
     margin-top: 8px;
 }
-.right_sidebar .search_condition .condition_list > div label{
-    display: block;
-    font-weight: normal;
-}
+
 .right_sidebar .more_search_condition {
     top:0;
     right: 4px;

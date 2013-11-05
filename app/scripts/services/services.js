@@ -109,13 +109,33 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKSmartFolder',[function(){
+    .factory('GKSmartFolder',['GKFilter',function(GKFilter){
         var smartFolders = [];
         var GKSmartFolder = {
             getFolders:function(){
                 smartFolders = gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'];
+                if (!smartFolders) smartFolders = [];
+
+                smartFolders.unshift({
+                    name: GKFilter.getFilterName('inbox'),
+                    icon:'icon_inbox',
+                    filter:'inbox'
+                });
+
+                smartFolders.unshift({
+                    name: GKFilter.getFilterName('star'),
+                    icon:'icon_star',
+                    filter:'star'
+                });
+
+                smartFolders.unshift({
+                    name: GKFilter.getFilterName('recent'),
+                    icon:'icon_recent',
+                    filter:'recent'
+                });
                 return smartFolders;
             },
+
             getFolderByCode:function(code){
                 var value,smartFolder=null;
                 for(var i=0;i<smartFolders.length;i++){
@@ -125,24 +145,27 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
                 return smartFolder
-            }
+            },
+            removeSmartFolderByCode:function(code){
+               angular.forEach(smartFolders,function(value,key){
+                   if(code == value.code){
+                       smartFolders.splice(key,1);
+                   }
+               });
+            },
+            addSmartFolder:function(name,code){
+                smartFolders.push({
+                    name:name,
+                    condition:code,
+                    filter:'search'
+                });
+                console.log(smartFolders);
+            },
         };
         return GKSmartFolder;
     }])
-    .factory('GKPath', ['$location','GKMount','GKSmartFolder',function ($location,GKMount,GKSmartFolder) {
-        var GKPath =  {
-            getPath: function () {
-                var paramArr = Array.prototype.slice.call(arguments);
-                var params = {
-                    partition:paramArr[0],
-                    path: paramArr[1]|'',
-                    view: paramArr[2],
-                    mountid:paramArr[3] || 0,
-                    filter:paramArr[4] || '',
-                    keyword:paramArr[5] || '',
-                };
-                return '/file?' + jQuery.param(params);
-            },
+    .factory('GKFilter', [function () {
+        var GKFilter =  {
             getFilterName:function(filter){
                 var filterName = '';
                 switch(filter){
@@ -160,11 +183,27 @@ angular.module('gkClientIndex.services', [])
                         break;
                     case 'search':
                         filterName = '搜索结果';
-                    default:
-                        filterName = GKSmartFolder.getFolderByCode(filter)['name'] || '';
                         break;
                 }
                 return filterName;
+            }
+        }
+
+        return GKFilter;
+    }])
+    .factory('GKPath', ['$location','GKMount','GKSmartFolder','GKFilter',function ($location,GKMount,GKSmartFolder,GKFilter) {
+        var GKPath =  {
+            getPath: function () {
+                var paramArr = Array.prototype.slice.call(arguments);
+                var params = {
+                    partition:paramArr[0],
+                    path: paramArr[1]|'',
+                    view: paramArr[2],
+                    mountid:paramArr[3] || 0,
+                    filter:paramArr[4] || '',
+                    keyword:paramArr[5] || '',
+                };
+                return '/file?' + jQuery.param(params);
             },
             getBread:function(){
                 var path = $location.search().path || '';
@@ -198,7 +237,7 @@ angular.module('gkClientIndex.services', [])
                  */
                 if(filter && filter !='search'){
                     breads.unshift({
-                        name: this.getFilterName(filter),
+                        name: GKFilter.getFilterName(filter),
                         url: '#' + this.getPath(partition, '',view,mountId,filter),
                         filter:'filter'
                     });
@@ -206,7 +245,7 @@ angular.module('gkClientIndex.services', [])
                 /**
                  * 智能文件夹
                  */
-                if(filter =='search' && partition =='smartFolder'){
+                if(filter =='search' && partition =='smartfolder'){
                     breads.unshift({
                         name:  GKSmartFolder.getFolderByCode(keyword)['name'] ,
                         url: '#' + this.getPath(partition, '',view,mountId,filter,keyword),
@@ -905,6 +944,48 @@ angular.module('gkClientIndex.services', [])
             token: GK.getToken()
         }
         var GKApi = {
+            getSmartFolder:function(code){
+                var params = {
+                    code: code
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost() + '/1/file/search_condition',
+                    params:params
+                });
+            },
+            removeSmartFolder:function(code){
+                var params = {
+                    code: code
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/file/remove_search',
+                    data:jQuery.param(params)
+                });
+            },
+            updateSmartFolder: function (code, name, condition, description) {
+                var params = {
+                    code: code,
+                    name: name,
+                    condition: condition,
+                    description: description||''
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost() + '/1/file/save_search',
+                    data:jQuery.param(params)
+                });
+            },
             createSmartFolder: function (mount_id, name, condition, description) {
                 var params = {
                     mount_id: mount_id,
@@ -1327,11 +1408,17 @@ angular.module('gkClientIndex.services', [])
     .factory('GKSearch', [function () {
         var searchState = '',
             searchCondition = '',
-            keyword ='';
+            keyword ='',
+            JSONCondition;
         return {
+            checkExist:function(field){
+                if(!JSONCondition || !JSONCondition['include'] || !JSONCondition['include'][field]){
+                    return false;
+                }
+                return true;
+            },
             getKeyWord:function(){
-                var JSONCondition = JSON.parse(searchCondition);
-                if(!JSONCondition || !JSONCondition['include'] || !JSONCondition['include']['keywords']){
+                if(!this.checkExist('keywords')){
                     return '';
                 }
                 return JSONCondition['include']['keywords'][1] || '';
@@ -1343,7 +1430,28 @@ angular.module('gkClientIndex.services', [])
                 return searchState;
             },
             setCondition:function(condition){
-                searchCondition = condition
+                searchCondition = condition;
+                JSONCondition = JSON.parse(searchCondition);
+            },
+            getConditionField:function(field){
+                if(!this.checkExist(field)){
+                    return null;
+                }
+                var value = JSONCondition['include'][field];
+                var reValue;
+                if(value[0] == 'in'){
+                    reValue =  JSONCondition['include'][field][1];
+                }else if(value[1] == 'lt'){
+                    reValue = [0,dateline[1]];
+                }
+                else if(value[1] == 'gt'){
+                    reValue = [value[1],0];
+                }else if(value[1] == 'eq'){
+                    reValue = value[1];
+                }else{
+                    reValue = value[1];
+                }
+                return reValue;
             },
             getCondition:function(){
                 return searchCondition;
@@ -1470,18 +1578,16 @@ GKFileSearch.prototype.conditionIncludePath = function (path) {
     this.includeCondition['path'] = ['prefix', path];
 };
 GKFileSearch.prototype.conditionIncludeCreator = function (creator) {
-    if (angular.isArray(creator)) {
-        this.includeCondition['creator'] = ['in', creator];
-    } else if (angular.isNumber(creator)) {
-        this.includeCondition['creator'] = ['eq', creator];
+    if (!angular.isArray(creator)) {
+        creator = [creator];
     }
+    this.includeCondition['creator'] = ['in', creator];
 };
 GKFileSearch.prototype.conditionIncludeModifier = function (modifier) {
-    if (angular.isArray(modifier)) {
-        this.includeCondition['modifier'] = ['in', modifier];
-    } else if (angular.isNumber(creator)) {
-        this.includeCondition['modifier'] = ['eq', modifier];
+    if (!angular.isArray(modifier)) {
+        modifier = [modifier];
     }
+    this.includeCondition['modifier'] = ['in', modifier];
 };
 GKFileSearch.prototype.conditionIncludeDateline = function (dateline, pre) {
     pre = angular.isDefined(pre) ? pre : 'gt';
