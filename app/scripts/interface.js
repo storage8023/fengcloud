@@ -260,7 +260,7 @@
         for(var key in params){
             params[key] = String(params[key]);
         }
-        console.log(params);
+        //console.log(params);
         return gkClient.gGetApiAuthorization(JSON.stringify(params));
     },
     setSettings:function(){

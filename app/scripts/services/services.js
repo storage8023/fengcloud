@@ -138,7 +138,8 @@ angular.module('gkClientIndex.services', [])
                     path: paramArr[1]|'',
                     view: paramArr[2],
                     mountid:paramArr[3] || 0,
-                    filter:paramArr[4] || ''
+                    filter:paramArr[4] || '',
+                    keyword:paramArr[5] || '',
                 };
                 return '/file?' + jQuery.param(params);
             },
@@ -157,6 +158,8 @@ angular.module('gkClientIndex.services', [])
                     case 'recent':
                         filterName = '最近修改的文件';
                         break;
+                    case 'search':
+                        filterName = '搜索结果';
                     default:
                         filterName = GKSmartFolder.getFolderByCode(filter)['name'] || '';
                         break;
@@ -169,6 +172,7 @@ angular.module('gkClientIndex.services', [])
                 var view =  $location.search().view || 'list';
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
+                var keyword = $location.search().keyword;
                 var breads = [], bread;
                 if (path.length) {
                     path = Util.String.rtrim(Util.String.ltrim(path, '/'), '/');
@@ -189,11 +193,24 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
 
-                if(filter){
+                /**
+                 * 搜索不需要bread
+                 */
+                if(filter && filter !='search'){
                     breads.unshift({
                         name: this.getFilterName(filter),
                         url: '#' + this.getPath(partition, '',view,mountId,filter),
                         filter:'filter'
+                    });
+                }
+                /**
+                 * 智能文件夹
+                 */
+                if(filter =='search' && partition =='smartFolder'){
+                    breads.unshift({
+                        name:  GKSmartFolder.getFolderByCode(keyword)['name'] ,
+                        url: '#' + this.getPath(partition, '',view,mountId,filter,keyword),
+                        filter:filter
                     });
                 }
 
@@ -446,8 +463,8 @@ angular.module('gkClientIndex.services', [])
                             data: value
                         };
                     }else{
-                        if(!value.filter && value.condition){
-                            value.filter =  value.condition;
+                        if(!value.filter){
+                            value.filter =  'search';
                         }
                         item = {
                             label: value.name,
@@ -1303,29 +1320,38 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileList;
     }])
-    .factory('GKLocation', [function () {
-        return {
-            getFilterName:function(){
-
-            }
-        };
-    }])
 
 /**
  * 客户端的回调函数
  */
     .factory('GKSearch', [function () {
+        var searchState = '',
+            searchCondition = '',
+            keyword ='';
         return {
-            showSearchSidebar:false,
-            keyword:'',
-            isShowSearchSidebar:function(){
-                return this.showSearchSidebar;
-            },
             getKeyWord:function(){
-                return this.keyword;
+                var JSONCondition = JSON.parse(searchCondition);
+                if(!JSONCondition || !JSONCondition['include'] || !JSONCondition['include']['keywords']){
+                    return '';
+                }
+                return JSONCondition['include']['keywords'][1] || '';
             },
-            setKeyWord:function(keyword){
-                this.keyword = keyword;
+            setSearchState:function(state){
+                searchState = state;
+            },
+            getSearchState:function(){
+                return searchState;
+            },
+            setCondition:function(condition){
+                searchCondition = condition
+            },
+            getCondition:function(){
+                return searchCondition;
+            },
+            reset:function(){
+                searchState = '';
+                searchCondition = '';
+                keyword = '';
             }
         }
     }])
