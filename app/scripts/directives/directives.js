@@ -199,49 +199,34 @@ angular.module('gkClientIndex.directives',[])
                         $scope.file = null;
                     }
                 },true)
-                console.log($scope.file);
 
                 var gird = /[,;；，\s]/g;
-//                $scope.$watch('file',function(newValue,oldValue){
-//                    if(newValue === oldValue || !$scope.file){
-//                        return;
-//                    }
-//                    var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
-//                    RestFile.get($scope.mountId, fullpath).success(function (data) {
-//                        var tag = data.tag || '';
-//                        $scope.file.tag = jQuery.trim(tag);
-//                        var formatTag = [];
-//                        angular.forEach(tag.split(gird),function(value){
-//                            if(value && formatTag.indexOf(value)<0){
-//                                formatTag.push(value);
-//                            }
-//                        });
-//                        $scope.file.formatTag = formatTag;
-//
-//                        $scope.$watch('file.formatTag', function (value,oldValue) {
-//                            if(!angular.isDefined(value)
-//                                || !angular.isDefined(oldValue)
-//                                || value == oldValue) {
-//                                return;
-//                            }
-//                            GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
-//
-//                                //$scope.file.tag = newTag;
-//                            }).error(function () {
-//
-//                                });
-//                        },true);
-//
-//                    });
-//
-//                    GKApi.sideBar($scope.mountId, fullpath).success(function (data) {
-//                        $scope.shareMembers = data.share_members;
-//                        $scope.remarks = data.remark;
-//                        $scope.histories = data.history;
-//                        $scope.remindMembers = data.remind_members;
-//
-//                    });
-//                })
+                $scope.$watch('file',function(newValue,oldValue){
+                    $scope.file.formatTag = [];
+                    if(newValue === oldValue || !$scope.file){
+                        return;
+                    }
+                    console.log($scope.file.formatTag);
+                    var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                    var formatTag = [];
+                    RestFile.get($scope.mountId, fullpath).success(function (data) {
+                        var tag = data.tag || '';
+                        $scope.file.tag = jQuery.trim(tag);
+                        angular.forEach(tag.split(gird),function(value){
+                            if(value && formatTag.indexOf(value)<0){
+                                formatTag.push(value);
+                            }
+                        });
+                        $scope.file.formatTag = formatTag;
+                    });
+
+                    GKApi.sideBar($scope.mountId, fullpath).success(function (data) {
+                        $scope.shareMembers = data.share_members;
+                        $scope.remarks = data.remark;
+                        $scope.histories = data.history;
+                        $scope.remindMembers = data.remind_members;
+                    });
+                })
             }
         }
     }])
@@ -323,6 +308,20 @@ angular.module('gkClientIndex.directives',[])
                             $scope.postRemark($scope.postText);
                         }
                 };
+
+                $scope.$watch('file.formatTag', function (value,oldValue) {
+                    if(!angular.isDefined(value)
+                        || !angular.isDefined(oldValue)
+                        || value == oldValue) {
+                        return;
+                    }
+                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
+
+                    }).error(function () {
+
+                        });
+                },true);
+
 
             }
         }
@@ -453,7 +452,6 @@ angular.module('gkClientIndex.directives',[])
                             partition: params.partition,
                             mountid: params.mountid
                         });
-                        $rootScope.PAGE_CONFIG.file = file;
                     } else {
                         $scope.$emit('openFile', file);
                     }
@@ -1239,7 +1237,6 @@ angular.module('gkClientIndex.directives',[])
             replace: true,
             templateUrl: "views/search_right_sidebar.html",
             link: function ($scope, $element, $attrs) {
-
                 var getTimeStamp = function(date){
                     return Date.parse(date)/1000;
                 };

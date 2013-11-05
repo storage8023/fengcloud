@@ -129,7 +129,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKSmartFolder;
     }])
-    .factory('GKPath', ['$location','GKMounts','GKSmartFolder',function ($location,GKMounts,GKSmartFolder) {
+    .factory('GKPath', ['$location','GKMount','GKSmartFolder',function ($location,GKMount,GKSmartFolder) {
         var GKPath =  {
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
@@ -197,9 +197,10 @@ angular.module('gkClientIndex.services', [])
                     });
                 }
 
-                if (mountId && GKMounts[mountId]) {
+                if (mountId) {
+                    var mount = GKMount.getMountById(mountId);
                     breads.unshift({
-                        name: GKMounts[mountId]['name'],
+                        name: mount['name'],
                         filter:'',
                         url: '#' + this.getPath(partition, '', view,mountId,filter)
                     });
@@ -365,8 +366,32 @@ angular.module('gkClientIndex.services', [])
         teamFile:'teamfile',
         smartFolder:'smartfolder'
     })
-    .factory('GKFile', ['FILE_SORTS', 'GKMounts', function (FILE_SORTS, GKMounts) {
+    .factory('GKFile', ['FILE_SORTS', function (FILE_SORTS) {
         var GKFile = {
+            /**
+             * 获取单文件信息
+             */
+            getFileInfo:function(mountId,fullpath){
+                var file =  gkClientInterface.getFileInfo({
+                    mountid:mountId,
+                    webpath:fullpath
+                });
+                if(!file.path){
+                    file.path = '';
+                }
+                var formatedFile = this.formatFileItem(file,'client');
+                   angular.extend(formatedFile,{
+                       mount_id:mountId
+                   });
+
+                return formatedFile;
+            },
+            getFileList:function(mountId,fullpath,dir){
+                dir = angular.isDefined(dir)?dir:0;
+                var list = gkClientInterface.getFileList({webpath: fullpath, dir: dir, mountid: mountId})['list'];
+                var formatedList = this.dealFileList(list,'client');
+                return formatedList;
+            },
             /**
              * 是否已同步
              * @param parentFile
@@ -400,13 +425,6 @@ angular.module('gkClientIndex.services', [])
                 }
                 return false;
             },
-            getMountById: function (mountID) {
-                var context = this;
-                if(GKMounts && GKMounts.length){
-                    return context.formatMountItem(GKMounts[mountID]);
-                }
-                return null;
-            },
             dealTreeData: function (data, type, mountId) {
                 var newData = [],
                     item,
@@ -414,12 +432,9 @@ angular.module('gkClientIndex.services', [])
                     context = this;
                 angular.forEach(data, function (value) {
                     if(type=='myfile' || type=='teamfile'){
-                        if (!value.path) {
-                            value = context.formatMountItem(value);
-
+                        if (!value.fullpath) {
                             label = value.name;
                         } else {
-                            value = context.formatFileItem(value);
                             label = value.filename;
                             mountId && angular.extend(value, {
                                 mount_id: mountId
@@ -446,20 +461,7 @@ angular.module('gkClientIndex.services', [])
                 });
                 return newData;
             },
-            formatMountItem: function (mount) {
-                var newMount = {
-                    mount_id: mount.mountid,
-                    name: mount.name ? mount.name : '我的文件',
-                    org_id: mount.orgid,
-                    capacity: mount.total,
-                    size: mount.use,
-                    org_capacity: mount.orgtotal,
-                    org_size: mount.orguse,
-                    type: mount.type,
-                    fullpath: ''
-                };
-                return newMount;
-            },
+
             formatFileItem: function (value, source) {
                 //console.log(value);
                 var file;
@@ -476,7 +478,8 @@ angular.module('gkClientIndex.services', [])
                         lock_member_id: value.lock_member_id || 0,
                         dir: value.dir,
                         last_member_name: value.last_member_name || '',
-                        creator_member_name: value.creator_member_name || ''
+                        creator_member_name: value.creator_member_name || '',
+                        cmd:value.cmd
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -494,7 +497,10 @@ angular.module('gkClientIndex.services', [])
                         last_member_name: value.lastname,
                         creator_member_name: value.creatorname,
                         status: value.status,
-                        sync:value.sync
+                        sync:value.sync,
+                        cmd:1,
+                        sharepath:value.sharepath||'',
+                        syncpath:value.syncpath||''
                     };
                 }
                 return file;
@@ -1177,26 +1183,103 @@ angular.module('gkClientIndex.services', [])
         }
         return GKApi;
     }])
-    .factory('GKMounts', ['$filter', function ($filter) {
-        var GKMounts = [];
-        var mounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'];
-        angular.forEach(mounts, function (value) {
-            if (!value.name) {
-                value.name = $filter('getPartitionName')('myfile');
-            }
-            GKMounts[value.mountid] = value;
+    .factory('GKMount', [function () {
+        /**
+         * 格式化mount数据
+         * @param mount
+         */
+        var formatMountItem = function(mount){
+            var newMount = {
+                mount_id: mount.mountid,
+                name: mount.name ? mount.name : '我的文件',
+                org_id: mount.orgid,
+                capacity: mount.total,
+                size: mount.use,
+                org_capacity: mount.orgtotal,
+                org_size: mount.orguse,
+                type: mount.type,
+                fullpath: ''
+            };
+            return newMount;
+        };
+
+        var mounts = [];
+        var gkMounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'],
+            mountItem;
+        angular.forEach(gkMounts,function(value){
+            mountItem = formatMountItem(value);
+            mounts.push(mountItem);
         });
-        return GKMounts;
-    }
-    ])
-    .factory('GKMyMount', ['GKMounts', function ($filter, GKMounts) {
-        var GKMyMount = null;
-        angular.forEach(GKMounts, function (value) {
-            if (value.orgid == 0) {
-                GKMyMount = value;
-            }
-        });
-        return GKMyMount;
+       var GKMount = {
+           formatMountItem:formatMountItem,
+           /**
+            * 获取所有的mount
+            * @returns {Array}
+            */
+           getMounts:function(){
+               return mounts;
+           },
+           /**
+            * 根据id获取mount
+            * @param id
+            * @returns {null}
+            */
+           getMountById:function(id){
+               var mount = null;
+                angular.forEach(mounts,function(value){
+                    if(value.mount_id == id){
+                        mount = value;
+                        return false;
+                    }
+                })
+               return mount;
+           },
+           /**
+            * 根据团队id获取mount
+            * @param orgId
+            * @returns {null}
+            */
+           getMountByOrgId:function(orgId){
+               var mount = null;
+               angular.forEach(mounts,function(value){
+                   if(value.org_id == orgId){
+                       mount = value;
+                       return false;
+                   }
+               })
+               return mount;
+           },
+           /**
+            * 获取个人的mount
+            * @returns {null}
+            */
+           getMyMount:function(){
+               var myMount = null;
+               angular.forEach(mounts,function(value){
+                   if(value.org_id == 0){
+                       myMount = value;
+                       return false;
+                   }
+               })
+               return myMount;
+           },
+           /**
+            * 获取团队的mount
+            * @returns {Array}
+            */
+           getOrgMounts:function(){
+               var orgMounts = [];
+               angular.forEach(mounts,function(value){
+                   if(value.org_id != 0){
+                       orgMounts.push(value);
+                   }
+               })
+               return orgMounts;
+           }
+       };
+
+      return GKMount;
+
     }
     ])
     .factory('GKFileList', [function () {

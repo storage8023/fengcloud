@@ -15,6 +15,16 @@
         }
 
     },
+    /**
+     * 获取文件信息
+     * @param params
+     * @returns {*}
+     */
+    getFileInfo:function(params){
+        var re = gkClient.gGetFileInfo(JSON.stringify(params));
+        //console.log(JSON.parse(re));
+        return JSON.parse(re);
+    },
     setMessageDate:function(dateline){
         try {
            gkClient.gSetMessage(JSON.stringify({
@@ -37,8 +47,8 @@
     getFileList: function (params) {
         try {
            var re = gkClient.gGetFileList(JSON.stringify(params));
-           console.log(JSON.parse(re));
-            return JSON.parse(re);
+           //console.log(JSON.parse(re));
+           return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }
