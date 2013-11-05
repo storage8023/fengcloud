@@ -1495,9 +1495,11 @@ angular.module('gkClientIndex.directives',[])
                     });
                 })
 
-                jQuery($window).bind('resize',function(){
-                   var max =  jQuery($window).width() - 650;
-                    console.log(max);
+                jQuery(window).bind('resize',function(){
+                   var max =  jQuery(window).width() - 650;
+                   if(max<0){
+                       return;
+                   }
                    if($document.find('.left_sidebar').width()>max){
                        $scope.style = {
                            left:max-1
