@@ -16,12 +16,12 @@
                 <div title="创建人：{{file.creator_member_name}}">创建人：{{file.creator_member_name}}</div>
                 <div title="最后修改人：{{file.last_member_name}}">最后修改人：{{file.last_member_name}}</div>
             </div>
-            <div class="tags">
+            <div class="tags" ng-if="file.cmd>0">
                 <tags-input ng-model="file.formatTag" class="" name="file_tag" id="file_tag" placeholder="+ 添加注释"></tags-input>
             </div>
         </section>
     </div>
-    <section class="file_detail_wrapper" ng-show="PAGE_CONFIG.mount.org_id!=0">
+    <section class="file_detail_wrapper" ng-show="PAGE_CONFIG.mount.org_id!=0&&file.cmd>0">
         <tabset direction="blew">
             <tab heading="共享">
                 <button class="btn btn-gk set_share" ng-dbclick = "sharingindex()" ng-click="showEditShareDialog()">共享设置</button>

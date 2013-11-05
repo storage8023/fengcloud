@@ -1204,13 +1204,12 @@ angular.module('gkClientIndex.services', [])
         var selectedPath = '';
         var GKFileList = {
             setSelectFile:function(file){
-                selectedFile = file;
+                selectedFile = file||[];
                 var pathArr = [];
                 angular.forEach(selectedFile,function(value){
                     pathArr.push(value.fullpath);
                 });
                 selectedPath = pathArr.join('|');
-
             },
             getSelectedFile:function(){
                 return selectedFile;

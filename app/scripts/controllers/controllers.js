@@ -164,19 +164,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var list = gkClientInterface.getFileList({webpath: branch.data.fullpath, dir: 1, mountid: branch.data.mount_id || 0})['list'];
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
                 if(!branch.children)  branch.children = [];
-                if(branch.data.org_id !=0){
+                if(branch.data.org_id !=0 && !branch.data.fullpath){
                     branch.children.push(getTrashNode(branch.data.mount_id));
                 }
             }
         };
 
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch','RestFile',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch,RestFile) {
+    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch','RestFile','GKFileList',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch,RestFile,GKFileList) {
         /**
          * 打开时会有一次空跳转
          */
        if(!$routeParams.partition) return;
 
+        GKSearch.showSearchSidebar = false;
+        GKFileList.setSelectFile();
         /**
          * 分析路径获取参数
          * @type {*}
@@ -865,82 +867,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('rightSidebar', ['$scope', 'RestFile', '$rootScope', 'GKApi', '$http', '$location','GKSearch','GKFileList',function ($scope, RestFile, $rootScope, GKApi, $http, $location,GKSearch,GKFileList) {
-        var gird = /[,;；，\s]/g;
-        $scope.$on('$locationChangeSuccess',function(){
-            $scope.partition = $location.search().partition;
-        })
 
-        /**
-         * 监听已选择的文件
-         */
-        $scope.file = {}; //当前选择的文件
-        $scope.shareMembers = []; //共享参与人
-        $scope.remarks = []; //讨论
-        $scope.histories = []; //历史
-        $scope.remindMembers = [];//可@的成员列表
-
-        $scope.$watch(function(){
-            return GKFileList.getSelectedPath();
-        }, function (value) {
-            $scope.selectedFile = GKFileList.getSelectedFile();
-            $scope.inputingRemark = false;
-            //($scope.selectedFile);
-            if (!$scope.selectedFile || !$scope.selectedFile.length) {
-
-            } else if ($scope.selectedFile.length == 1) {
-                var searchParams = $location.search();
-                $scope.file = $scope.selectedFile[0];
-                var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
-                RestFile.get(searchParams.mountid, fullpath).success(function (data) {
-                    var tag = data.tag || '';
-                    $scope.file.tag = jQuery.trim(tag);
-                    var formatTag = [];
-                    angular.forEach(tag.split(gird),function(value){
-                        if(value && formatTag.indexOf(value)<0){
-                            formatTag.push(value);
-                        }
-                    });
-                    $scope.file.formatTag = formatTag;
-
-                    $scope.$watch('file.formatTag', function (value,oldValue) {
-                        if(!angular.isDefined(value)
-                            || !angular.isDefined(oldValue)
-                            || value == oldValue) {
-                            return;
-                        }
-                        GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
-
-                            //$scope.file.tag = newTag;
-                        }).error(function () {
-
-                            });
-                    },true);
-
-                });
-
-                GKApi.sideBar(searchParams.mountid, fullpath).success(function (data) {
-                    $scope.shareMembers = data.share_members;
-                    $scope.remarks = data.remark;
-                    $scope.histories = data.history;
-                    $scope.remindMembers = data.remind_members;
-
-                });
-
-
-            } else {
-
-            }
-        });
-
-        $scope.showSearch = false;
-        $scope.$watch(function(){
-            return GKSearch.isShowSearchSidebar();
-        },function(newValue){
-            $scope.showSearch = newValue;
-        });
-
-    }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKMounts', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout', 'GKSearch','GKDialog',function ($scope, GKPath, $location, $filter, GKMounts, GKHistory, GKApi, $rootScope,$document,$compile,$timeout,GKSearch, GKDialog) {
 
         $scope.canBack = false;

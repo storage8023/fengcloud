@@ -460,7 +460,7 @@ footer {
     border-left: 1px solid #CDCED0;
     width: 250px;
     background: #F1F1F2;
-    top:50px;
+    top:0;
 }
 
 .main .content {
@@ -468,9 +468,15 @@ footer {
     top: 50px;
     bottom: 0;
     left: 0;
+    right: 0;
+}
+.main .file_browser{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
     right: 250px;
 }
-
 /*文件列表区样式*/
 .toolbar {
     height: 35px;
