@@ -133,6 +133,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
 
         },
         link: function(scope, element) {
+            //console.log(1);
             var ENTER = 13, COMMA = 188, SPACE = 32, BACKSPACE = 8;
 
             element.find('input')
@@ -163,6 +164,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
             element.find('input').on('blur',function(){
                 scope.$apply(function(){
                     scope.editing = false;
+                    scope.tryAdd();
                 })
             });
             element.find('div').bind('click', function() {

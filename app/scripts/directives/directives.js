@@ -173,75 +173,62 @@ angular.module('gkClientIndex.directives',[])
             },
             templateUrl: "views/right_sidebar.html",
             link: function ($scope, $element) {
-
                 $scope.PAGE_CONFIG = $rootScope.PAGE_CONFIG;
                 /**
                  * 监听已选择的文件
                  */
-                $scope.file = $scope.PAGE_CONFIG.file; //当前
+
                 $scope.shareMembers = []; //共享参与人
                 $scope.remarks = []; //讨论
                 $scope.histories = []; //历史
                 $scope.remindMembers = [];//可@的成员列表
+                $scope.file = null;
 
-                $scope.showSearch = false;
-                $scope.$watch(function(){
-                    return GKSearch.isShowSearchSidebar();
-                },function(newValue){
-                    $scope.showSearch = newValue;
-                });
                 $scope.$watch('[selectedFile,path]',function(newValue,oldValue){
                    if (!newValue[0] || !newValue[0].length) {
-                        //$scope.file = $scope.PAGE_CONFIG.file;
+                       if($scope.PAGE_CONFIG.filter == 'search'){
+                           $scope.file = null;
+                           $scope.showSearch = true;
+                       }else{
+                           $scope.file = $scope.PAGE_CONFIG.file; //当前
+                       }
+
                     } else if (newValue[0].length == 1) {
                         $scope.file = newValue[0][0];
-                    } else {
+                       $scope.showSearch = false;
+                    } else { //多选
                         $scope.file = null;
+                       $scope.showSearch = false;
                     }
+                    console.log($scope.showSearch);
                 },true)
-                console.log($scope.file);
 
                 var gird = /[,;；，\s]/g;
-//                $scope.$watch('file',function(newValue,oldValue){
-//                    if(newValue === oldValue || !$scope.file){
-//                        return;
-//                    }
-//                    var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
-//                    RestFile.get($scope.mountId, fullpath).success(function (data) {
-//                        var tag = data.tag || '';
-//                        $scope.file.tag = jQuery.trim(tag);
-//                        var formatTag = [];
-//                        angular.forEach(tag.split(gird),function(value){
-//                            if(value && formatTag.indexOf(value)<0){
-//                                formatTag.push(value);
-//                            }
-//                        });
-//                        $scope.file.formatTag = formatTag;
-//
-//                        $scope.$watch('file.formatTag', function (value,oldValue) {
-//                            if(!angular.isDefined(value)
-//                                || !angular.isDefined(oldValue)
-//                                || value == oldValue) {
-//                                return;
-//                            }
-//                            GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
-//
-//                                //$scope.file.tag = newTag;
-//                            }).error(function () {
-//
-//                                });
-//                        },true);
-//
-//                    });
-//
-//                    GKApi.sideBar($scope.mountId, fullpath).success(function (data) {
-//                        $scope.shareMembers = data.share_members;
-//                        $scope.remarks = data.remark;
-//                        $scope.histories = data.history;
-//                        $scope.remindMembers = data.remind_members;
-//
-//                    });
-//                })
+                $scope.$watch('file',function(newValue,oldValue){
+                    if(newValue === oldValue || !$scope.file){
+                        return;
+                    }
+
+                    var fullpath = $scope.file.dir==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                    var formatTag = [];
+                    RestFile.get($scope.mountId, fullpath).success(function (data) {
+                        var tag = data.tag || '';
+                        $scope.file.tag = jQuery.trim(tag);
+                        angular.forEach(tag.split(gird),function(value){
+                            if(value && formatTag.indexOf(value)<0){
+                                formatTag.push(value);
+                            }
+                        });
+                        $scope.file.formatTag = formatTag;
+                    });
+
+                    GKApi.sideBar($scope.mountId, fullpath).success(function (data) {
+                        $scope.shareMembers = data.share_members;
+                        $scope.remarks = data.remark;
+                        $scope.histories = data.history;
+                        $scope.remindMembers = data.remind_members;
+                    });
+                })
             }
         }
     }])
@@ -323,6 +310,20 @@ angular.module('gkClientIndex.directives',[])
                             $scope.postRemark($scope.postText);
                         }
                 };
+
+                $scope.$watch('file.formatTag', function (value,oldValue) {
+                    if(!angular.isDefined(value)
+                        || !angular.isDefined(oldValue)
+                        || value == oldValue) {
+                        return;
+                    }
+                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
+
+                    }).error(function () {
+
+                        });
+                },true);
+
 
             }
         }
@@ -453,7 +454,6 @@ angular.module('gkClientIndex.directives',[])
                             partition: params.partition,
                             mountid: params.mountid
                         });
-                        $rootScope.PAGE_CONFIG.file = file;
                     } else {
                         $scope.$emit('openFile', file);
                     }
@@ -1111,7 +1111,7 @@ angular.module('gkClientIndex.directives',[])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout',function ($location, $timeout) {
+    .directive('breadsearch', ['$location', '$timeout','GKSearch',function ($location, $timeout,GKSearch) {
         return {
             replace: true,
             restrict: 'E',
@@ -1203,12 +1203,60 @@ angular.module('gkClientIndex.directives',[])
                     $event.stopPropagation();
                 };
 
-                var resetSearch = function () {
-                    $scope.searchState = '';
-                    $scope.keyword = '';
-                };
                 /**
-                 * 监听mousedown 取消搜索模式
+                 * 搜索的范围
+                 * @type {string}
+                 */
+                $scope.searchScope = 'path';
+                $scope.setSearchScope = function (searchScope) {
+                    $scope.searchScope = searchScope;
+                }
+
+                $scope.$watch(function(){
+                    return GKSearch.getSearchState();
+                },function(newValue,oldValue){
+                    if(newValue == oldValue){
+                        return;
+                    }
+                    $scope.searchState = newValue;
+                });
+
+                $scope.searchFile = function () {
+                    if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
+                        return;
+                    }
+                    var fileSearch = new GKFileSearch();
+                    fileSearch.conditionIncludeKeyword($scope.keyword);
+                    fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
+                    var condition = fileSearch.getCondition();
+                    GKSearch.setCondition(condition);
+                    var search = $location.search();
+                    $location.search(angular.extend(search,{
+                        filter:'search',
+                        keyword:$scope.keyword
+                    }));
+                };
+                var resetSearch = function(){
+                    $scope.keyword = '';
+                    $scope.searchState = '';
+                    GKSearch.reset();
+                };
+
+                $scope.cancelSearch = function ($event) {
+                    resetSearch();
+                    var search = $location.search();
+                    $location.search(angular.extend(search,{
+                        filter:'',
+                        keyword:''
+                    }));
+                    if($event){
+                        $event.stopPropagation();
+                    }
+                };
+
+
+                /**
+                 * 监听mousedown 如果没有进行搜索，取消搜索模式
                  */
                 $('body').bind('mousedown', function (event) {
                     $scope.$apply(function () {
@@ -1224,9 +1272,13 @@ angular.module('gkClientIndex.directives',[])
                     })
                 })
 
+
                 $scope.$on('$locationChangeSuccess', function () {
-                    resetSearch();
+                    if($location.search().filter !='search'){
+                        resetSearch();
+                    }
                 });
+
             }
         }
     }])
@@ -1239,7 +1291,6 @@ angular.module('gkClientIndex.directives',[])
             replace: true,
             templateUrl: "views/search_right_sidebar.html",
             link: function ($scope, $element, $attrs) {
-
                 var getTimeStamp = function(date){
                     return Date.parse(date)/1000;
                 };
@@ -1297,33 +1348,15 @@ angular.module('gkClientIndex.directives',[])
                     return condition;
                 };
 
-                $scope.$watch('creator',function(newValue,oldValue){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
 
-                $scope.$watch('modifier',function(){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
-
-                $scope.$watch('fromCreateDate',function(){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
-
-                $scope.$watch('toCreateDate',function(){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
-
-                $scope.$watch('fromEditDate',function(){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
-
-                $scope.$watch('toEditDate',function(){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
-
-                $scope.$watch('extension',function(){
-                    $rootScope.$broadcast('invokeSearch',getCondition());
-                });
+                $scope.$watch('[creator,modifier,fromCreateDate,toCreateDate,fromEditDate,toEditDate,extension]',function(newValue,oldValue){
+                    console.log(newValue != oldValue);
+                    if(newValue != oldValue){
+                        var condition = getCondition();
+                        GKSearch.setCondition(condition);
+                        $rootScope.$broadcast('invokeSearch');
+                    }
+                },true);
 
                 $scope.saveSearch = function(){
                     var saveSearchDialog = $modal.open({
@@ -1498,9 +1531,11 @@ angular.module('gkClientIndex.directives',[])
                     });
                 })
 
-                jQuery($window).bind('resize',function(){
-                   var max =  jQuery($window).width() - 650;
-                    console.log(max);
+                jQuery(window).bind('resize',function(){
+                   var max =  jQuery(window).width() - 650;
+                   if(max<0){
+                       return;
+                   }
                    if($document.find('.left_sidebar').width()>max){
                        $scope.style = {
                            left:max-1
