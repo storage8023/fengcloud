@@ -1,23 +1,28 @@
 <div  class="site-content-synchronous" ng-show="siteSidebar== 'contentdevice'">
-    <p class = "sitedeviceenroll">注册的设备</p>
-    <ul class = "site-content-synchronous-menu c_f_after">
-        <li  class = "site-content-device-file f_l">设备名称</li>
-        <li  class = "site-content-device-file f_l">系统信息</li>
-        <li  class = "site-content-device-date f_l">最后登录时间</li>
-        <li  class = "site-content-device-file f_l">操作</li>
-    </ul>
-    <div class = "site-content-form scrollbar">
-      <ul ng-class-odd="'odd'" ng-class-even="'even'"  >
-          <li ng-repeat = "device in sitedevices"  class = "c_f_after">
-              <div  class = "site-device-file f_l">{{device.device_name}}</div>
-              <div  class = "site-device-file f_l">{{device.os_version}}</div>
-              <div  class = "site-device-date f_l">{{device.last_activity}}</div>
-              <div  class = "site-device-file f_l">
-                  <a href = "javascript:void(0);"  ng-click = "banstart('{{device.state}}' ,'{{device.device_id}}', '{{device.startban}}')">{{device.startban}}</a> |
-                  <a href = "javascript:void(0);" ng-click = "siteSyncDelete('{{device.device_id}}',$index)">删除</a>
-              </div>
-          </li>
-       </ul>
-     </div>
-    <input class = "sitesynchronousban" type = "checkbox" id = "sitesyc"/><label for="sitesyc">禁止其他新设备登录</label>
+    <div class = "site-content-top">
+        <span >注册设备</span>
+        <div class = "f_r"><input class = "sitesynchronousban" type = "checkbox" id = "sitesyc"/><label for="sitesyc">禁止其他新设备登录</label></div>
+    </div>
+    <div class = "site-content-sync">
+        <ul class = "site-content-divice-menu c_f_after">
+            <li  class = "site-content-device-name f_l">设备名称</li>
+            <li  class = "site-content-device-version f_l">系统信息</li>
+            <li  class = "site-content-device-date f_l">最后登录时间</li>
+            <li  class = "site-content-device-file f_r">操作</li>
+        </ul>
+        <div class = "site-content-form scrollbar">
+          <ul>
+              <li ng-repeat = "device in sitedevices" ng-class-odd="'sitedevicesodd'" ng-class-even="'sitedeviceseven'"  class = "c_f_after">
+                  <div  class = "site-device-name f_l"><i></i><span title = "{{device.device_name}}">{{device.device_name}}</span></div>
+                  <div  class = "site-device-version f_l"><span title = "{{device.os_name}}">{{device.os_name}}</span></div>
+                  <div  class = "site-device-date f_l"><span title = "{{device.last_activity}}">{{device.last_activity}}</span></div>
+                  <div  class = "site-device-file f_r">
+                      <a href = "javascript:void(0);" class="'{{device.startbancolor}}' startbanred" ng-click = "banstart('{{device.state}}' ,'{{device.device_id}}', '{{device.startban}}')">{{device.startban}}</a>
+                      <a href = "javascript:void(0);" class = "delebancolor" ng-click = "siteSyncDelete('{{device.device_id}}',$index)">{{device.deleban}}</a>
+                      <a href = "javascript:void(0);" class = "startbangr">{{device.currentban}}</a>
+                  </div>
+              </li>
+           </ul>
+         </div>
+    </div>
 </div>
