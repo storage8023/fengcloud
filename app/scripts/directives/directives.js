@@ -3,6 +3,16 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives',[])
+    .directive['scrollTo',[function(){
+    return {
+        restrict: 'A',
+        link:function(scope,element,attrs){
+             attrs.$observe('',function(){
+
+             })
+        }
+    }
+}]]
     .directive('loadingEllipsis',['$interval',function($interval){
         return {
             replace: true,
@@ -1636,6 +1646,9 @@ angular.module('gkClientIndex.directives',[])
                  * 删除智能文件夹
                  */
                 $scope.cancelSmartFolder = function(){
+                    if(!confirm('你确定要关闭该智能文件夹？')){
+                        return;
+                    }
                     GKApi.removeSmartFolder($scope.keyword).success(function(data){
                         $rootScope.$broadcast('removeSmartFolder',$scope.keyword)
                         $location.search({

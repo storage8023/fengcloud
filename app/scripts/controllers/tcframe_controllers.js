@@ -27,6 +27,7 @@ angular.module('gkClientFrame.controllers',[])
 
         $scope.logout = function(){
             gkClientInterface.quit();
+            return false;
         }
     }])
 

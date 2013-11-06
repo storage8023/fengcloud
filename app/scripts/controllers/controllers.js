@@ -121,6 +121,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.smartTreeList.push(newSmartFolder);
             newSmartFolder.selected = true;
             $scope.handleSelect(newSmartFolder,'smartfolder');
+
         })
 
 
