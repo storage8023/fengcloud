@@ -165,31 +165,27 @@ header .bread_and_search_wrapper .hide_bread > a {
 
 header .bread_and_search_wrapper .bread_list{
  float: left;
-
 }
 
 header .bread_and_search_wrapper .bread_item{
-    border-right: 1px solid transparent;
-    -webkit-transition:border-color linear 0.1s;
+    line-height: 22px;
+    margin-top: 1px;
 }
 header .bread_and_search_wrapper .bread_item > a{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    border: 1px solid transparent;
+    -webkit-transition:border-color linear 0.1s;
+    border-radius: 4px;
 }
-header .bread_and_search_wrapper:hover .bread_item
+header .bread_and_search_wrapper .bread_item a:hover
 {
-    /*border-right-color: #c6cacb;*/
+    border-color: #C7CCD0;
+    background: -webkit-gradient(linear,0 0,0 100%,from(#F7F7F7),to(#E6E7E9));
+    box-shadow: inset 0 1px 0 #fff;
 }
 
-/*header .bread_and_search_wrapper .bread_item > *{*/
-    /*border-right: 1px solid transparent;*/
-    /*-webkit-transition:border-color linear 0.1s;*/
-/*}*/
-/*header .bread_and_search_wrapper:hover .bread_item > *,*/
-/*header .bread_and_search_wrapper.searching .bread_item > *{*/
-    /*border-right-color: #c6cacb;*/
-/*}*/
 header .bread_and_search_wrapper.searching .bread{
 display: none;
 }
@@ -283,7 +279,8 @@ footer {
 }
 
 .left_sidebar,
-.right_sidebar {
+.right_sidebar,
+.nearby_sidebar{
     position: absolute;
     top: 0;
     bottom: 0;
@@ -455,7 +452,8 @@ footer {
     border-bottom:1px solid #232426;
     box-shadow:inset 0 1px 0 0 rgba(255, 255, 255, 0.1) ,0 1px 0 0 rgba(255, 255, 255, 0.1);
 }
-.right_sidebar {
+.right_sidebar,
+.nearby_sidebar{
     right: 0;
     border-left: 1px solid #CDCED0;
     width: 250px;
@@ -922,6 +920,7 @@ footer {
 .right_sidebar .file_info_wrapper{
     background: #F1F1F2;
 }
+.nearby_sidebar .section_title,
 .right_sidebar .section_title {
     border-bottom: 1px solid #cdced0;
     line-height: 35px;
@@ -1387,9 +1386,25 @@ position: absolute;
     margin: 0 5px;
 }
 
-.right_sidebar .search_condition{
-    margin-bottom: 8px;
+.right_sidebar .search_file > .search_condition{
     padding:5px 5px 5px 5px;
+    overflow: auto;
+    margin: 0;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:35px;
+}
+.right_sidebar .search_condition label{
+    display: block;
+    font-weight: normal;
+}
+.right_sidebar .search_condition .setting_layer > *{
+    display: block;
+}
+.right_sidebar .search_condition .setting_layer .opt_wrap{
+    margin: 10px 0 0 0;
 }
 .right_sidebar .search_condition .remove_condition{
     position: absolute;
@@ -1406,13 +1421,13 @@ position: absolute;
     width: 90px;
     font-size: 12px;
 }
+.right_sidebar .search_condition .condition_list{
+    margin: 20px 0 0 0;
+}
 .right_sidebar .search_condition .condition_list > div{
     margin-top: 8px;
 }
-.right_sidebar .search_condition .condition_list > div label{
-    display: block;
-    font-weight: normal;
-}
+
 .right_sidebar .more_search_condition {
     top:0;
     right: 4px;
@@ -1520,4 +1535,80 @@ color: #8A929C;
 }
 .news_warpper .message_list .time{
     margin-right: 10px;
+}
+
+/*附近的人*/
+.nearby_sidebar{
+    top:50px;
+    z-index: 9999;
+}
+.nearby_sidebar .section_title .stop_find{
+    position: absolute;
+    display: block;
+    width: 16px;
+    height: 16px;
+    top:9px;
+    right: 10px;
+}
+.nearby_sidebar .section_title .stop_find i{
+   display: block;
+    height: 100%;
+    background: url('../images/icon/icon16x16.png') no-repeat -4px -64px;
+}
+.nearby_sidebar section{
+   position: absolute;
+   top:35px;
+   left:0;
+    right: 0;
+    bottom: 0;
+}
+.nearby_sidebar section > div{
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+.nearby_sidebar section > div.nearby_member{
+    top:0;
+    bottom: 50%;
+}
+.nearby_sidebar section > div.nearby_group{
+    top:50%;
+    bottom: 0;
+}
+.nearby_sidebar section > div h4{
+    height: 32px;
+    line-height: 32px;
+    border-top:1px solid #B3B3B3;
+    border-bottom:1px solid #B3B3B3;
+    box-shadow: inset 0 1px 0 #fff, 0 1px 0 #fff;
+    margin-top: -1px;
+    padding: 0 20px;
+    font-size: 14px;
+}
+
+.nearby_sidebar section .nearby_list{
+    position: absolute;
+     left:0;
+    right: 0;
+    top:32px;
+    bottom: 0;
+    overflow: auto;
+}
+.nearby_sidebar section .nearby_list > div{
+    padding: 10px 10px 10px 20px; ;
+    margin: 5px 0;
+}
+.nearby_sidebar section .nearby_list > div:hover{
+    background: #eaeaea;
+}
+.nearby_sidebar section .nearby_list img{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin: 0 6px;
+}
+.nearby_sidebar section .nearby_list span.name{
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 20px;
 }

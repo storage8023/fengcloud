@@ -3,6 +3,112 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives',[])
+    .directive('loadingEllipsis',['$interval',function($interval){
+        return {
+            replace: true,
+            restrict: 'E',
+            template:'<span ng-bind="ellipsis" style="margin: 0 0 0 3px"></span>',
+            link:function($scope){
+                var cell='. ';
+                $scope.ellipsis = '';
+                var max = cell.length*3;
+                $interval(function(){
+                    if($scope.ellipsis.length>=max){
+                        $scope.ellipsis = '';
+                    }else{
+                        $scope.ellipsis+=cell;
+                    }
+                },500)
+            }
+        }
+    }])
+    .directive('nearbySidebar',['$rootScope','GKFind',function($rootScope,GKFind){
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl:'views/nearby_sidebar.html',
+            link:function(scope){
+                scope.nearbyMembers = [
+                    {
+                        ip: "10.0.0.12",
+                        name: "郑中周",
+                        photo: "http://oss.aliyuncs.com/gkavatar2/a6/a6b08af6549a31c50f4d26754dfe93a82129ea56.jpg",
+                        port: 1001,
+                        type: "user",
+                        userid: 167
+                    }
+                ];
+                scope.nearbyTeams = [];
+
+                scope.$on('AddFindObject',function(event,obj){
+                    scope.$apply(function(){
+                        var type = obj['type'];
+                        if(type =='user'){
+                            scope.nearbyMembers.unshift(obj)
+                        }else if(type='org'){
+                            scope.nearbyTeams.unshift(obj);
+                        }
+                        //scope.$digest();
+                    })
+
+                })
+
+                scope.$on('removeFindObject',function(event,obj){
+                    var type = obj['type'];
+                    if(type =='user'){
+                        scope.nearbyTeams.unshift(obj)
+                    }else if(type='org'){
+                        scope.nearbyTeams.unshift(obj);
+                    }
+                    scope.$digest();
+                })
+
+                scope.toogleFind = function(){
+                    GKFind.toogleFind();
+                };
+
+
+            }
+        }
+    }])
+    .directive('nearbyMember',[function(){
+        return {
+            replace: true,
+            restrict: 'E',
+            scope:{
+                photo:'@',
+                name:'@',
+                uid:'@',
+                ip:'@',
+                port:'@'
+            },
+            template: '<div class="slide-down member">'
+                +'<img class="photo" ng-src="{{photo}}" alt="{{name}}"/>'
+                +'<span class="name" title="{{name}}" ng-bind="name"></span>'
+                +'</div>',
+            link:function(){
+
+            }
+        }
+    }])
+    .directive('nearbyTeam',[function(){
+        return {
+            replace: true,
+            restrict: 'E',
+            scope:{
+                name:'@',
+                orgId:'@',
+                logo:'@'
+            },
+            template: '<div class="slide-down group">'
+                +'<img class="photo" ng-src="{{logo}}" alt="{{name}}"/>'
+                +'<span class="name" title="{{name}}" ng-bind="name"></span>'
+                +'</div>',
+            link:function(){
+
+            }
+        }
+    }])
     .directive('scrollLoad',['$rootScope',function($rootScope){
         return {
             restrict: 'A',
@@ -169,7 +275,8 @@ angular.module('gkClientIndex.directives',[])
               path:'=',
               mountId:'=',
               filter:'=',
-              partition:'='
+              partition:'=',
+              keyword:'='
             },
             templateUrl: "views/right_sidebar.html",
             link: function ($scope, $element) {
@@ -195,12 +302,11 @@ angular.module('gkClientIndex.directives',[])
 
                     } else if (newValue[0].length == 1) {
                         $scope.file = newValue[0][0];
-                       $scope.showSearch = false;
+                        $scope.showSearch = false;
                     } else { //多选
                         $scope.file = null;
-                       $scope.showSearch = false;
+                        $scope.showSearch = false;
                     }
-                    console.log($scope.showSearch);
                 },true)
 
                 var gird = /[,;；，\s]/g;
@@ -229,6 +335,20 @@ angular.module('gkClientIndex.directives',[])
                         $scope.remindMembers = data.remind_members;
                     });
                 })
+                $scope.sidebar = 'nofile';
+                $scope.$watch('[partition,selectedFile,filter,file]',function(newValue,oldValue){
+                    var selected = newValue[1] || [];
+                    if(newValue[2] =='search' && !selected.length){
+                        $scope.sidebar = 'search';
+                    }else if(selected.length>1){
+                        $scope.sidebar = 'multifile';
+                    }else if(selected.length ==1 || newValue[3].fullpath){
+                        $scope.sidebar = 'singlefile';
+                    }else{
+                        $scope.sidebar = 'nofile';
+                    }
+                    console.log($scope.sidebar);
+                },true)
             }
         }
     }])
@@ -317,6 +437,7 @@ angular.module('gkClientIndex.directives',[])
                         || value == oldValue) {
                         return;
                     }
+                   var fullpath = $scope.file? $scope.file.fullpath||'':'';
                     GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
 
                     }).error(function () {
@@ -1272,9 +1393,10 @@ angular.module('gkClientIndex.directives',[])
                     })
                 })
 
-
-                $scope.$on('$locationChangeSuccess', function () {
-                    if($location.search().filter !='search'){
+                $scope.$on('$routeChangeSuccess', function (event,current,previous) {
+                    var previousParams = previous.params;
+                    var currentParams = current.params;
+                    if(previousParams.partition+previousParams.path !== currentParams.partition+currentParams.path){
                         resetSearch();
                     }
                 });
@@ -1285,12 +1407,73 @@ angular.module('gkClientIndex.directives',[])
 /**
  * 搜索的侧边栏
  */
-    .directive('searchRightSidebar', ['GKApi', '$rootScope','$modal','GKSearch','FILE_SORTS',function (GKApi,$rootScope,$modal,GKSearch,FILE_SORTS) {
+    .directive('searchRightSidebar', ['GKApi', '$rootScope','$modal','GKSearch','FILE_SORTS','$location','GKSmartFolder','GKMount',function (GKApi,$rootScope,$modal,GKSearch,FILE_SORTS,$location,GKSmartFolder,GKMount) {
         return {
             restrict: 'E',
             replace: true,
             templateUrl: "views/search_right_sidebar.html",
             link: function ($scope, $element, $attrs) {
+                var condition = '';
+                if($scope.partition =='smartfolder' && $scope.filter =='search'){
+                    console.log($scope.keyword);
+                    GKApi.getSmartFolder($scope.keyword).success(function(data){
+                        if(data && data.condition){
+                            condition = data.condition;
+                            GKSearch.setCondition(condition);
+                        }
+                    }).error(function(){
+
+                    })
+                }
+
+                /**
+                 * 文件扩展名列表
+                 * @type {Array}
+                 */
+                $scope.extensions = [
+                    {
+                        name:'任意',
+                        value:''
+                    },
+                    {
+                        name:'文件夹',
+                        value:'dir=1'
+                    },
+                    {
+                        name:'文件',
+                        value:'dir=0'
+                    },
+                    {
+                        name:'图片',
+                        value:'extensions='+FILE_SORTS['SORT_IMAGE'].join('|')
+                    },
+                    {
+                        name:'视频',
+                        value:'extensions='+FILE_SORTS['SORT_MOVIE'].join('|')
+                    },
+                    {
+                        name:'音频',
+                        value:'extensions='+FILE_SORTS['SORT_MUSIC'].join('|')
+                    },
+                    {
+                        name:'PDF',
+                        value:'extensions=pdf'
+                    },
+                    {
+                        name:'Word文档',
+                        value:'extensions=doc|docx'
+                    },
+                    {
+                        name:'Excel表格',
+                        value:'extensions=xls|xlsx'
+                    },
+                    {
+                        name:'PowerPoint演示文档',
+                        value:'extensions=ppt|pptx'
+                    }
+                ];
+
+
                 var getTimeStamp = function(date){
                     return Date.parse(date)/1000;
                 };
@@ -1347,10 +1530,14 @@ angular.module('gkClientIndex.directives',[])
                     var condition = fileSearch.getCondition();
                     return condition;
                 };
+                var smartFolderName = '';
+                if($scope.partition =='smartfolder'){
+                     smartFolderName =  GKSmartFolder.getFolderByCode($scope.keyword)['name'];
+                    $scope.smartFolderName =smartFolderName;
+                }
 
-
+                $scope.disabledSave = true;
                 $scope.$watch('[creator,modifier,fromCreateDate,toCreateDate,fromEditDate,toEditDate,extension]',function(newValue,oldValue){
-                    console.log(newValue != oldValue);
                     if(newValue != oldValue){
                         var condition = getCondition();
                         GKSearch.setCondition(condition);
@@ -1358,80 +1545,121 @@ angular.module('gkClientIndex.directives',[])
                     }
                 },true);
 
-                $scope.saveSearch = function(){
-                    var saveSearchDialog = $modal.open({
-                        templateUrl: 'views/save_search.html',
-                        backdrop: false,
-                        windowClass: 'save_search_dialog',
-                        controller: function ($scope, $modalInstance) {
-                            //确定后
-                            $scope.ok = function (smartFolderName) {
-                                $modalInstance.close(smartFolderName);
-                            };
-
-                            //取消后
-                            $scope.cancel = function () {
-                                $modalInstance.dismiss('cancel');
-                            };
+                if($scope.partition =='smartfolder'){
+                    $scope.$watch('smartFolderName',function(newValue,oldValue){
+                        if(newValue == smartFolderName && getCondition() == condiiton){
+                            $scope.disabledSave = true;
+                        }else{
+                            $scope.disabledSave = false;
                         }
                     })
-                    saveSearchDialog.result.then(function(smartFolderName){
-                        var condition = getCondition();
-                        GKApi.createSmartFolder($rootScope.PAGE_CONFIG.mount.mount_id, smartFolderName, condition).success(function(data){
-                            console.log(data);
-                        });
+                }
+
+                var getSelectExtension = function(dir,ext){
+                    var selectedValue;
+                    var selectedExtension;
+
+                    if(dir === null && ext === null){
+                        selectedValue = '';
+                    }else if(ext){
+                        selectedValue = 'extensions='+ext.join('|');
+                    }else{
+                        selectedValue = 'dir='+dir;
+                    }
+                    angular.forEach($scope.extensions,function(value){
+                        if(value.value == selectedValue){
+                            selectedExtension = value;
+                            return false;
+                        }
                     })
+                    return selectedExtension;
                 };
 
+                $scope.$watch(function(){
+                    return GKSearch.getCondition();
+                },function(newValue,oldValue){
+//                    console.log(newVale == oldValue);
+//                    if(newVale == oldValue){
+//                        return;
+//                    }
+                    $scope.searchKeyword = GKSearch.getKeyWord();
+
+                    $scope.searchPath = GKSearch.getConditionField('path');
+                    var creator = GKSearch.getConditionField('creator');
+                    $scope.creator =creator?creator.split(' '):'';
+                    var modifier =  GKSearch.getConditionField('modifier');
+                    $scope.modifier = modifier?modifier.split(' '):'';
+
+                    var dateline =  GKSearch.getConditionField('dateline');
+                    if(dateline){
+                        $scope.fromCreateDate = dateline[0]?$filter('date')(dateline[0]*1000,'yyyy-MM-dd'):'';
+                        $scope.toCreateDate = dateline[1]?$filter('date')(dateline[1]*1000,'yyyy-MM-dd'):'';
+                    }
+                    var lastDateline = GKSearch.getConditionField('last_dateline');
+                    if(lastDateline){
+                        $scope.fromEditDate = lastDateline[0]?$filter('date')(lastDateline[0]*1000,'yyyy-MM-dd'):'';
+                        $scope.toEditDate = lastDateline[1]?$filter('date')(lastDateline[1]*1000,'yyyy-MM-dd'):'';
+                    }
+                    var dir = GKSearch.getConditionField('dir');
+                    var extension = GKSearch.getConditionField('extension');
+                    $scope.extension = getSelectExtension(dir,extension);
+
+                    if($scope.partition =='smartfolder'){
+                        if($scope.smartFolderName == smartFolderName && newValue == condiiton){
+                            $scope.disabledSave = true;
+                        }else{
+                            $scope.disabledSave = false;
+                        }
+                    }
+
+                })
 
                 /**
-                 * 文件扩展名列表
-                 * @type {Array}
+                 * 创建智能文件夹
                  */
-                $scope.extensions = [
-                    {
-                        name:'任意',
-                        value:''
-                    },
-                    {
-                        name:'文件夹',
-                        value:'dir=1'
-                    },
-                    {
-                        name:'文件',
-                        value:'dir=0'
-                    },
-                    {
-                        name:'图片',
-                        value:'extensions='+FILE_SORTS['SORT_IMAGE'].join('|')
-                    },
-                    {
-                        name:'视频',
-                        value:'extensions='+FILE_SORTS['SORT_MOVIE'].join('|')
-                    },
-                    {
-                        name:'音频',
-                        value:'extensions='+FILE_SORTS['SORT_MUSIC'].join('|')
-                    },
-                    {
-                        name:'PDF',
-                        value:'extensions=pdf'
-                    },
-                    {
-                        name:'Word文档',
-                        value:'extensions=doc|docx'
-                    },
-                    {
-                        name:'Excel表格',
-                        value:'extensions=xls|xlsx'
-                    },
-                    {
-                        name:'PowerPoint演示文档',
-                        value:'extensions=ppt|pptx'
+                $scope.saveSearch = function(){
+                    if(!$scope.smartFolderName){
+                        alert('智能文件夹名不能为空');
+                        return;
                     }
-                ];
-                $scope.extension = $scope.extensions[0];
+                    var condition = getCondition();
+                    GKApi.createSmartFolder($rootScope.PAGE_CONFIG.mount.mount_id, $scope.smartFolderName, condition).success(function(data){
+                        if(data && data.code){
+                            $rootScope.$broadcast('addSmartFolder',$scope.smartFolderName,data.code);
+                        }
+                    }).error(function(){
 
+                        });
+                };
+
+                /**
+                 * 删除智能文件夹
+                 */
+                $scope.cancelSmartFolder = function(){
+                    GKApi.removeSmartFolder($scope.keyword).success(function(data){
+                        $rootScope.$broadcast('removeSmartFolder',$scope.keyword)
+                        $location.search({
+                            mountid:GKMount.getMyMount()['mount_id'],
+                            path:'',
+                            partition:'myfile'
+                        });
+
+                    }).error(function(){
+
+                        });
+                };
+
+                /**
+                 * 保存智能文件夹
+                 */
+                $scope.saveSmartFolder = function(){
+                    alert('接口未实现');return;
+                    GKApi.updateSmartFolder($scope.keyword).success(function(data){
+                        console.log(data);
+                    }).error(function(){
+
+                        });
+                };
 
             }
         }

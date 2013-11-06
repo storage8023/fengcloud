@@ -53,7 +53,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder','GKMount',function ($scope, $location, GKPath, GKFile, $rootScope,GKSmartFolder,GKMount) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder','GKMount','GKFilter',function ($scope, $location, GKPath, GKFile, $rootScope,GKSmartFolder,GKMount,GKFilter) {
 
         var myMount = GKMount.getMyMount(), //我的空间
             orgMount = GKMount.getOrgMounts(); //团队的空间
@@ -65,7 +65,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var getTrashNode = function(mount_id){
             var node = {
-                label: GKPath.getFilterName('trash'),
+                label: GKFilter.getFilterName('trash'),
                 isParent:false,
                 data: {
                     fullpath: '',
@@ -99,28 +99,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 智能文件夹
          * @type {*}
          */
-        var smartFolders = GKSmartFolder.getFolders();;
-        if (!smartFolders) smartFolders = [];
-
-        smartFolders.unshift({
-            name: GKPath.getFilterName('inbox'),
-            icon:'icon_inbox',
-            filter:'inbox'
-        });
-
-        smartFolders.unshift({
-            name: GKPath.getFilterName('star'),
-            icon:'icon_star',
-            filter:'star'
-        });
-
-        smartFolders.unshift({
-            name: GKPath.getFilterName('recent'),
-            icon:'icon_recent',
-            filter:'recent'
-        });
-
+        var smartFolders = GKSmartFolder.getFolders();
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders, 'magic');
+
+        $scope.$on('removeSmartFolder',function($event,code){
+            GKSmartFolder.removeSmartFolderByCode(code);
+            angular.forEach($scope.smartTreeList,function(value,key){
+                if(value.data.condition == code){
+                    $scope.smartTreeList.splice(key,1);
+                    return false;
+                }
+            });
+            $scope.treeList[0].selected = true;
+            $scope.handleSelect($scope.treeList[0],'myfile');
+        })
+
+        $scope.$on('addSmartFolder',function($event,name,code){
+            console.log(name);
+            GKSmartFolder.addSmartFolder(name,code);
+            var newSmartFolder = GKFile.dealTreeData([{name:name,condition:code}], 'magic')[0];
+            $scope.smartTreeList.push(newSmartFolder);
+            newSmartFolder.selected = true;
+            $scope.handleSelect(newSmartFolder,'smartfolder');
+        })
+
 
         /**
          * 初始选中
@@ -210,6 +212,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.mountId = $routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id;
         $scope.keyword = $routeParams.keyword || '';
+
         /**
          * 文件列表数据
          */
@@ -298,7 +301,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     /**
                      * 智能文件夹
                      */
-                    GKApi.smartFolderList($scope.filter).success(function (data) {
+                    GKApi.smartFolderList($scope.keyword).success(function (data) {
                         fileList = data['list'];
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                     }).error(function(){
@@ -908,7 +911,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout','GKDialog',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope,$document,$compile,$timeout, GKDialog) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout','GKDialog','GKFind',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope,$document,$compile,$timeout, GKDialog,GKFind) {
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -984,6 +987,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
+
+        $rootScope.showNearBy = false;
+        $scope.toogleNearBy = function(){
+            GKFind.toogleFind();
+        };
 
     }]);
 
