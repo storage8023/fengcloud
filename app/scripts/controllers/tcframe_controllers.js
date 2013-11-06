@@ -25,5 +25,8 @@ angular.module('gkClientFrame.controllers',[])
             gkClientInterface.launchpad({type:'message'});
         };
 
+        $scope.logout = function(){
+            gkClientInterface.quit();
+        }
     }])
 

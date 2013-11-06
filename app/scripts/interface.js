@@ -7,6 +7,13 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    quit:function(){
+        try {
+            gkClient.gQuit();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     startFind:function(){
         try {
             console.log('start');

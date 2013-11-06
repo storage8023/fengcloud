@@ -302,10 +302,10 @@ angular.module('gkClientIndex.directives',[])
 
                     } else if (newValue[0].length == 1) {
                         $scope.file = newValue[0][0];
-                       $scope.showSearch = false;
+                        $scope.showSearch = false;
                     } else { //多选
                         $scope.file = null;
-                       $scope.showSearch = false;
+                        $scope.showSearch = false;
                     }
                 },true)
 
@@ -335,6 +335,20 @@ angular.module('gkClientIndex.directives',[])
                         $scope.remindMembers = data.remind_members;
                     });
                 })
+                $scope.sidebar = 'nofile';
+                $scope.$watch('[partition,selectedFile,filter,file]',function(newValue,oldValue){
+                    var selected = newValue[1] || [];
+                    if(newValue[2] =='search' && !selected.length){
+                        $scope.sidebar = 'search';
+                    }else if(selected.length>1){
+                        $scope.sidebar = 'multifile';
+                    }else if(selected.length ==1 || newValue[3].fullpath){
+                        $scope.sidebar = 'singlefile';
+                    }else{
+                        $scope.sidebar = 'nofile';
+                    }
+                    console.log($scope.sidebar);
+                },true)
             }
         }
     }])
