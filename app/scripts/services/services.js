@@ -1047,7 +1047,7 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'GET',
                     url: GK.getApiHost() + '/1/team/invite_pending',
-                    params:  params
+                    params:params
                 });
             },
             teamManage: function (data) {
@@ -1073,7 +1073,7 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost() + '/1/team/quit',
-                    params: params
+                    data:jQuery.param(params)
                 });
             },
             teamInviteReject: function (data, code) {
@@ -1087,7 +1087,7 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost() + '/1/team/invite_reject',
-                    params: params
+                    data:jQuery.param(params)
                 });
             },
             teamInviteJoin: function (orgId, code) {
@@ -1101,7 +1101,7 @@ angular.module('gkClientIndex.services', [])
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost() + '/1/team/invite_accept',
-                    params: params
+                    data:jQuery.param(params)
                 });
             },
             teamGroupsMembers:function(orgId){
@@ -1369,9 +1369,9 @@ angular.module('gkClientIndex.services', [])
             /**
              * 打开设置框
              */
-            openSetting:function(){
+            openSetting:function(tab){
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/site.html';
+                var url = 'file:///'+UIPath+'/site.html#/?tab='+tab;
                 var data = {
                     url:url,
                     type:"normal",
