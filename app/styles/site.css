@@ -21,6 +21,27 @@
     padding-left: 15px;
     color:#B3B4B5;
 }
+.site-sidebar ul li a{
+    line-height: 28px;
+    font-size: 15px;
+    padding-left:15px;
+}
+.site-sidebar ul .site-sidebar-color{
+    background:#1F2327;
+    padding-left: 12px;
+    border-left:3px solid #448DE8;
+}
+.site-sidebar ul .site-sidebar-color a{
+    color:#FFF;
+}
+.site-sidebar ul .site-sidebar-none{
+    background:#2A2E33;
+    padding-left: 15px;
+    border-left:0;
+}
+.site-sidebar ul .site-sidebar-none a{
+    color:#B3B4B5;
+}
 .site-sidebar ul li .universalbackground{
     width: 20px;
     margin-top:4px;
@@ -28,7 +49,21 @@
     display: block;
     background: url(../images/icon.png) no-repeat -20px -80px;
 }
+.site-sidebar ul .site-sidebar-none .universalbackground{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    background: url(../images/icon.png) no-repeat -20px -80px;
+}
 .site-sidebar ul li .devicebackground{
+    width: 20px;
+    height: 20px;
+    margin-top:4px;
+    display: block;
+    background: url(../images/icon.png) no-repeat -20px -100px;
+}
+.site-sidebar ul .site-sidebar-device .devicebackground{
     width: 20px;
     height: 20px;
     margin-top:4px;
@@ -90,19 +125,6 @@
     margin-top:4px;
     display: block;
     background: url(../images/icon.png) no-repeat 0 -160px;
-}
-.site-sidebar ul li a{
-    line-height: 28px;
-    font-size: 15px;
-    padding-left:15px;
-}
-.site-sidebar ul .site-sidebar-color{
-    background:#1F2327;
-    padding-left: 12px;
-    border-left:3px solid #448DE8;
-}
-.site-sidebar ul .site-sidebar-color a{
-    color:#FFF;
 }
 .site-content{
     top:0;
@@ -181,15 +203,6 @@
 .sitesynchronousban{
     margin-right:5px;
     vertical-align: middle;
-}
-.site-footer{
-    bottom:0;
-    right: 0;
-    left: 0;
-    position:absolute;
-    height: 40px;
-    background:#F0F0F1;
-    border-top:1px solid #D5D6D7;
 }
 .site-content-agent{
     margin-right: 10px;
@@ -287,7 +300,7 @@
     text-align: center;
 }
 .site-device-name{
-    width:38%;
+    width:30%;
     padding:1px;
     line-height: 30px;
     font: 15px;
@@ -297,13 +310,15 @@
     overflow:hidden;
     text-overflow:ellipsis;
     margin-right: 10px;
+    padding-left: 4%;
 }
 .site-content-device-name{
-    width:38%;
+    width:30%;
     line-height: 30px;
     font: 15px;
     color:#45494D;
     margin-right: 10px;
+    padding-left: 4%;
 }
 .site-device-version{
     width:22%;
@@ -464,6 +479,18 @@
 }
 .sitesynchronourdisplayblock{
     display: block;
+}
+/**
+*footer
+*/
+.site-footer{
+    bottom:0;
+    right: 0;
+    left: 0;
+    position:absolute;
+    height: 40px;
+    background:#F0F0F1;
+    border-top:1px solid #D5D6D7;
 }
 .site-footer-determine-close{
     float: right;

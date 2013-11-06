@@ -1,37 +1,26 @@
 <div class = "personal-management-team personal-management-add" ng-show = "haveNoTeam == 'haveTeam' ">
     <div class = "personal-team-picture f_l">
         <a href = "javascript:;" title = "teampicture">
-            <img src = {{createTeam.orgphoto}} alt = "teampicture" />
+            <img src = {{createTeam.org_logo}} alt = "teampicture" />
         </a>
     </div>
     <ul class = "personal-management-information f_l">
         <li class = "personal-team-name">
-            <span title = "{{createTeam.name}}">{{createTeam.name}}</span>
+            <span title = "{{createTeam.org_name}}">{{createTeam.org_name}}</span>
         </li>
         <li class = "personal-team-competence">
-            <span ng-class = "'perdisplayBlock':join{{createTeam.type}},perdisplayNone':!join{{createTeam.type}}" title = "待加入">待加入</span>
-            <span ng-class = "'perdisplayBlock':!join{{createTeam.type}},perdisplayNone':join{{createTeam.type}}" title = "已加入">已加入</span>
+            <span  title = "{{createTeam.type}}">{{createTeam.type}}</span>
         </li>
     </ul>
     <ul class="personal-team-management-show personal-team-management-add c_f_after">
         <li class = "personal-float-management f_l">
-            <a href = "javascript:void(0);"
-               ng-class = "'perdisplayBlock':join{{createTeam.type}},perdisplayNone':!join{{createTeam.type}}"
-               ng-click = "join{{createTeam.type}} = !join{{createTeam.type}}"
-               ng-clange = "perjoin{{createTeam.org_id,createTeam_code}}"
-               title = "加入">
-                加入
-            </a>
-            <a href = "javascript:void(0);" ng-class = "'perdisplayBlock':!join1,perdisplayNone':join1" title = "管理">
-                管理
-            </a>
-            <a href = "javascript:void(0);" ng-class = "'perdisplayBlock':join0,perdisplayNone':!join0" title = "">
-
+            <a href = "javascript:void(0);"  ng-click = "perjoin('{{createTeam.org_id}}','{{createTeam.code}}')" title = "{{createTeam.join}}">
+                {{createTeam.join}}
             </a>
         </li>
         <li class = "personal-float-quit f_r">
-            <a href = "javascript:void(0)" ng-click = "perinvitereject({{createTeam.org_id}},{{createTeam.code}})" title = "退出">
-                退出
+            <a href = "javascript:void(0)" ng-click = "perinvitereject('{{createTeam.org_id}}','{{createTeam.code}}')" title = "{{createTeam.refuse}}">
+                {{createTeam.refuse}}
             </a>
         </li>
     </ul>

@@ -956,7 +956,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"设置",
                 menuclick:function(){
-                    GKDialog.openSetting();
+                    GKDialog.openSetting( 'contentUniversal');
                 }
             },{
                 item:"帮助",
@@ -996,51 +996,157 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }]);
 
-
 /**
  * personal
  */
 angular.module("gkPersonalApp.controllers", [])
-    .controller("personalCtrl", ['$scope', 'GKApi', '$http', function ($scope, GKApi, $http) {
+    .controller("personalCtrl", ['$scope', 'GKApi', '$http','GKDialog','$q',function ($scope, GKApi, $http,GKDialog,$q){
         /**
-         * B,KB,MB,GB,TB,PB
-         * @param num
-         * @param decimal
-         * @returns {*}
+         *待加入团队
          */
-        function bitSize(num, decimal) {
-            if (typeof(num) != 'number') {
-                num = Number(num);
+        var invitePendingHttp = function () {
+            var deferred = $q.defer();
+            GKApi.teamInvitePending().success(function ($http) {
+                var message = [];
+                message = $http.invite_pending;
+                deferred.resolve(message);
+            });
+            return deferred.promise;
+        }
+        var promiseMember = invitePendingHttp();
+        promiseMember.then(function(data){
+            var handleData = [];
+            for(var i = 0,len = data.length;i<len;i++){
+                handleData.push({org_id:data[i].org_id,
+                                org_name:data[i].org_name,
+                                code:data[i].code,
+                                type:'待加入',
+                                join:'加入',
+                                refuse:'拒绝'
+                });
             }
-            if (typeof(decimal) != 'number') {
-                decimal = 2;
-            }
-            if (num < 0) {
-                return '';
-            }
-            var type = new Array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-            var j = 0;
-            while (num >= 1024) {
-                if (j >= 5)
-                    return num + type[j];
-                num = num / 1024;
-                j++;
-            }
-            if (num == 0) {
-                return num;
-            } else {
-                var dec = 1;
-                for (var i = 0; i < decimal; i++) {
-                    dec = dec * 10;
+            $scope.createTeamData = handleData;
+            $scope.perjoin = function(id,code){
+                var joinData = [],
+                    joinHandleData = [];
+                GKApi.teamInviteJoin(id,code).success(function ($http) {
+
+                });
+                joinData = $scope.createTeamData;
+                for(var i = 0,len = joinData.length;i<len;i++){
+                    if(joinData[i].org_id === id){
+                        joinHandleData.push({org_id:joinData[i].org_id,
+                            org_name:joinData[i].org_name,
+                            code:joinData[i].code,
+                            type:'已加入'
+                        });
+                    }else{
+                        joinHandleData.push(joinData[i]);
+                    }
                 }
-                return Math.round(num * dec) / dec + type[j];
+                $scope.createTeamData = joinHandleData;
+            }
+            $scope.perinvitereject = function(id,code){
+                var joinData = [],
+                    joinHandleData = [];
+                GKApi.teamInviteReject(id,code).success(function ($http) {
+
+                });
+                joinData = $scope.createTeamData;
+                for(var i = 0,len = joinData.length;i<len;i++){
+                    if(joinData[i].org_id !== id){
+                        joinHandleData.push(joinData[i]);
+                    }
+                }
+                $scope.createTeamData = joinHandleData;
+            }
+        });
+
+        /**
+         * 修改个人信息
+         */
+        $scope.modifyInformation = function(){
+            var data = {
+                url: '/my ',
+                sso: 1
+            }
+            var dataUrl = gkClientInterface.setGetUrl(data);
+            var params = {
+                url:dataUrl,
+                type:"normal",
+                width:760,
+                resize:1,
+                height:450
+            }
+            gkClientInterface.setMain(params);
+        }
+
+        /**
+         * 管理团队
+         */
+         $scope.permanagement = function(id){
+             var urlData = '/manage?org_id='+id;
+             var data = {
+                 url: urlData,
+                 sso: 1
+             }
+             var dataUrl = gkClientInterface.setGetUrl(data);
+             var params = {
+                 url:dataUrl,
+                 type:"normal",
+                 width:760,
+                 resize:1,
+                 height:450
+             }
+             gkClientInterface.setMain(params);
+        }
+
+        /**
+         * 退出团队
+         */
+        $scope.perquit = function(id){
+            var r=confirm("确定退出团队？");
+            if (r==true)
+            {
+                GKApi.teamQuit(id).success(function ($http) {
+
+                });
             }
         }
 
-        var invitePendingHttp = function () {
-            GKApi.teamInvitePending().success(function ($http, data) {
-                $scope.createTeamData = data.invite_pending;
-            });
+        /**
+         *创建团队跳转
+         @param $scope
+         */
+        $scope.setupteam = function ($scope) {
+            var data = {
+                url: '/mount/create_team',
+                sso: 1
+            }
+            var dataUrl = gkClientInterface.setGetUrl(data);
+            var params = {
+                url:dataUrl,
+                type:"normal",
+                width:760,
+                resize:1,
+                height:450
+            }
+            gkClientInterface.setMain(params);
+        }
+
+        /**
+         *注销账号
+         */
+        $scope.peraccount = function(){
+            gkClientInterface.setLogoff();
+        }
+
+        /**
+         * 打开设置页
+         * @param $scope
+         */
+        $scope.sitOpen = function ($scope) {
+            GKDialog.openSetting("contentdevice");
         }
 
         /**
@@ -1049,31 +1155,19 @@ angular.module("gkPersonalApp.controllers", [])
         var perside = function (data) {
             var newData = []
             for (var i = 0, len = data.length; i < len; i++) {
-                if(data[i].orgphoto === ''){
-                    if (data[i].orgid > 0) {
-                        if (data[i].type === 0) {
-                            newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid, "orgphoto": 'images/deputy/picture.jpg'});
-                        } else if (data[i].type === 1) {
-                            newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出", "orgphoto": '../images/deputy/picture.jpg'});
-                        } else {
-                            newData.push({ "name": data[i].name, "quit": "退出", "orgphoto":'images/deputy/picture.jpg'});
-                        }
-                    }
-                }else{
-                    if (data[i].orgid > 0) {
-                        if (data[i].type === 0) {
-                            newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid, "orgphoto": data[i].orgphoto});
-                        } else if (data[i].type === 1) {
-                            newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出", "orgphoto": data[i].orgphoto});
-                        } else {
-                            newData.push({ "name": data[i].name, "quit": "退出", "orgphoto": data[i].orgphoto});
-                        }
+                if (data[i].orgid > 0) {
+                    if (data[i].type === 0) {
+                        newData.push({ "name": data[i].name, "admin": "超级管理员", "management": "管理", "org_id": data[i].orgid, "orgphoto": data[i].orgphoto});
+                    } else if (data[i].type === 1) {
+                        newData.push({ "name": data[i].name, "admin": "管理员", "management": "管理", "quit": "退出", "orgphoto": data[i].orgphoto});
+                    } else {
+                        newData.push({ "name": data[i].name, "quit": "退出", "orgphoto": data[i].orgphoto});
                     }
                 }
-
             }
             return newData;
         }
+
         /**
          * 个人硬盘已使用处理
          * @param data
@@ -1088,18 +1182,14 @@ angular.module("gkPersonalApp.controllers", [])
             }
             return usesize;
         }
+
         /**
          * 个人信息处理
          *  @type {*}
          */
         var guserInformation = function (data) {
             var guserData = []
-                , oldData = data;
-            if (data.member_phone == '') {
-                guserData.push({"member_email": data.member_email, "member_name": data.member_name, "member_id": data.member_id,"member_phone": '电话：' + '13308923581', "photourl": data.photourl});
-            } else {
-                guserData.push({"member_email": data.member_email, "member_name": data.member_name, "member_id": data.member_id,"member_phone": '电话：' +data.member_phone,"photourl": data.photourl}); //data.member_phone
-            }
+                guserData.push({"member_email": data.member_email, "member_name": data.member_name, "member_id": data.member_id,"member_phone": '电话：' +data.member_phone,"photourl": data.photourl});
             return guserData;
         }
         var perHavaNoteam = function (scope, havajoin, nojoin) {
@@ -1109,47 +1199,6 @@ angular.module("gkPersonalApp.controllers", [])
                 scope.haveNoTeam = 'haveTeam';
             }
         }
-        $scope.permanagement = function (data) {
-            GKApi.teamManage(data).success(function ($http) {
-
-            });
-        }
-        $scope.perquit = function (data) {
-            GKApi.teamQuit(data).success(function ($http) {
-
-            });
-        }
-        $scope.perinvitereject = function (data, code) {
-            GKApi.teamInviteReject(data, code).success(function ($http) {
-
-            });
-        }
-        $scope.setupteam = function ($scope) {
-
-            var data = {
-                url: '/mount/create_team',
-                sso: 1
-            }
-            var dataUrl = gkClientInterface.setGetUrl(data);
-            //console.log(daptaUrl);
-            var params = {
-                url: dataUrl,
-                type: "child",
-                width: 900,
-                height: 600
-            }
-            gkClientInterface.setMain(params);
-
-        }
-        $scope.sitOpen = function ($scope) {
-            var data = {
-                url:"file:///F:/fengcloud/app/site.html",
-                type:"child",
-                width:760,
-                height:450
-            }
-            gkClientInterface.setMain(data);
-        }
 
     var perCtrl = function(){
         //个人信息
@@ -1157,25 +1206,28 @@ angular.module("gkPersonalApp.controllers", [])
         //团队信息
         $scope.per_gSideTreeList = gkClientInterface.getSideTreeList({"sidetype":"org"}).list;
         $scope.perNewgSideTreeList = perside($scope.per_gSideTreeList);
-        console.log( $scope.perNewgSideTreeList);
         $scope.perUseBitSize = useBitSize($scope.per_gSideTreeList);
-        $scope.size_space = bitSize($scope.perUseBitSize[0].use);
+        $scope.size_space = Util.Number.bitSize($scope.perUseBitSize[0].use);
         //打开窗口
         invitePendingHttp();
         perHavaNoteam($scope, $scope.guser_info, $scope.createTeamData);
-        //关闭窗口
-        jQuery(".personal-close-button").click(function(){
-            gkClientInterface.setClose();
-        })
     }
     perCtrl();
+
+    /**
+     * 关闭窗口
+     */
+    $scope.perclose = function(){
+        gkClientInterface.setClose();
+    }
+
 }]);
 
 /**
  * site
  */
 angular.module("gkSiteApp.controllers", [])
-    .controller("siteCtrl",['$scope', 'GKApi', '$http','$q', function ($scope,GKApi, $http,$q) {
+    .controller("siteCtrl",['$scope', 'GKApi', '$http','$q','$location', function ($scope,GKApi, $http,$q,$location) {
         var time = null;
         /**
          * 选择语言处理
@@ -1188,12 +1240,12 @@ angular.module("gkSiteApp.controllers", [])
             $scope.changeLanguage = JSON.parse(gkClientInterface.getLanguage());
             $scope.item = $scope.items[$scope.changeLanguage.type];
         }
+
         /**
          * 打开设置
          * 数据处理
          */
         $scope.SiteOpen = function () {
-            $scope.siteSidebar = 'contentUniversal';
             $scope.siteChangeLanguage();
             $scope.getsitedata = JSON.parse(gkClientInterface.getClientInfo());
             $scope.startStop = $scope.getsitedata.startsync;
@@ -1222,6 +1274,10 @@ angular.module("gkSiteApp.controllers", [])
                 gkClientInterface.setClearCache();
             }
         }
+
+        /**
+         * 移动数据处理
+         */
         $scope.siteadvancepathdlg = function(){
             var configPath = gkClientInterface.selectPath(true);
             if(configPath !== ''){
@@ -1229,49 +1285,10 @@ angular.module("gkSiteApp.controllers", [])
                 $scope.configPathInter = configPath;
             }
         }
+
         /**
-         * 左侧栏单击事件
+         * sync数据处理
          */
-        $scope.siteuniversal = function () {
-            $scope.siteSidebar = 'contentUniversal';
-            $scope.universal = true;
-            $scope.device = "";
-            $scope.synchronous = "";
-            $scope.network = "";
-            $scope.advanced = "";
-        }
-        $scope.sitedevice = function () {
-            $scope.siteSidebar = 'contentdevice';
-            $scope.device = true;
-            $scope.universal = "";
-            $scope.synchronous = "";
-            $scope.network = "";
-            $scope.advanced = "";
-        }
-        $scope.sitesynchronous = function () {
-            $scope.siteSidebar = 'contentSynchronous';
-            $scope.synchronous = true;
-            $scope.universal = "";
-            $scope.device = "";
-            $scope.network = "";
-            $scope.advanced = "";
-        }
-        $scope.sitenetwork = function () {
-            $scope.siteSidebar = 'contentNetwork';
-            $scope.network = true;
-            $scope.universal = "";
-            $scope.device = "";
-            $scope.synchronous = "";
-            $scope.advanced = "";
-        }
-        $scope.siteadvanced = function () {
-            $scope.siteSidebar = 'contentAdvanced';
-            $scope.advanced = true;
-            $scope.universal = "";
-            $scope.device = "";
-            $scope.synchronous = "";
-            $scope.network = "";
-        }
         $scope.siteSyncData = function(){
             var sildbarSyncData = [],
                 syncData = [];
@@ -1280,6 +1297,7 @@ angular.module("gkSiteApp.controllers", [])
                 type:"sync"
             }
             $scope.sildbarSync = JSON.parse(gkClientInterface.getTransList(data));
+            console.log($scope.sildbarSync);
             syncData = $scope.sildbarSync.list;
             if( $scope.startStop ===1){
                 $scope.sync = siteSyncStart(syncData);
@@ -1302,6 +1320,10 @@ angular.module("gkSiteApp.controllers", [])
                 }
             }
         }
+
+        /**
+         * 3秒刷新数据
+         */
         $scope.siteSyncAgainData = function(){
             var time = setInterval(function(){
                 $scope.$apply(function(){
@@ -1310,10 +1332,20 @@ angular.module("gkSiteApp.controllers", [])
             }, 3000);
         }
         $scope.siteSyncAgainData();
+
+        /**
+         * 左侧栏同步单击事件
+         */
         $scope.siteSildbarSync = function(){
             $scope.siteSyncData();
             $scope.siteSyncAgainData();
         }
+
+        /**
+         * 接口数据再处理
+         * @param data
+         * @returns {Array}
+         */
         var siteSyncStart = function(data){
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
@@ -1325,6 +1357,12 @@ angular.module("gkSiteApp.controllers", [])
             }
             return sync;
         }
+
+        /**
+         * 暂停数据处理
+         * @param data
+         * @returns {Array}
+         */
         var siteSyncStop = function(data){
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
@@ -1332,6 +1370,12 @@ angular.module("gkSiteApp.controllers", [])
             }
             return sync;
         }
+
+        /**
+         * 取消同步数据处理
+         * @param webpath
+         * @param mountid
+         */
         $scope.syncCancel = function(index,webpath,mountid){
             var r=confirm("取消同步的话，该同步文件夹会消失");
             var data = {
@@ -1344,13 +1388,15 @@ angular.module("gkSiteApp.controllers", [])
                 gkClientInterface.setRemoveLinkPaths(data);
             }
         }
+        /**
+         * device数据处理
+         */
         $scope.deviceSildeButton = function(){
             var deviceListHttp = function() {
                 var deferred = $q.defer();
                 GKApi.devicelist().success(function ($http){
                     var message = [];
                     message = $http;
-                    console.log($http);
                     deferred.resolve(message);
                 })
                 return deferred.promise;
@@ -1387,31 +1433,30 @@ angular.module("gkSiteApp.controllers", [])
                                 });
                             }
                         }else if(siteDevices[i].allow_delete === 1){
-                                siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
-                                    device_id:siteDevices[i].device_id,
-                                    device_name:siteDevices[i].device_name,
-                                    last_activity:siteDevices[i].last_activity,
-                                    os_name:siteDevices[i].os_name,
-                                    os_version:siteDevices[i].os_version,
-                                    state:siteDevices[i].state,
-                                    startban:'启动',
-                                    startbancolor:'starblue',
-                                    deleban:'删除'
-                                });
-                            }else{
-                                siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
-                                    device_id:siteDevices[i].device_id,
-                                    device_name:siteDevices[i].device_name,
-                                    last_activity:siteDevices[i].last_activity,
-                                    os_name:'—',
-                                    os_version:'—',
-                                    state:siteDevices[i].state,
-                                    startban:'启动',
-                                    startbancolor:'starblue'
-                                });
-                            }
-
+                            siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                                device_id:siteDevices[i].device_id,
+                                device_name:siteDevices[i].device_name,
+                                last_activity:siteDevices[i].last_activity,
+                                os_name:siteDevices[i].os_name,
+                                os_version:siteDevices[i].os_version,
+                                state:siteDevices[i].state,
+                                startban:'启动',
+                                startbancolor:'starblue',
+                                deleban:'删除'
+                            });
+                        }else{
+                            siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                                device_id:siteDevices[i].device_id,
+                                device_name:siteDevices[i].device_name,
+                                last_activity:siteDevices[i].last_activity,
+                                os_name:'—',
+                                os_version:'—',
+                                state:siteDevices[i].state,
+                                startban:'启动',
+                                startbancolor:'starblue'
+                            });
                         }
+                    }
                     else{
                         siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                             device_id:siteDevices[i].device_id,
@@ -1419,12 +1464,19 @@ angular.module("gkSiteApp.controllers", [])
                             last_activity:siteDevices[i].last_activity,
                             os_name:siteDevices[i].os_name,
                             os_version:siteDevices[i].os_version,
-                            currentban:"当前正在使用"
+                            currentban:"当前设备"
                         });
                     }
                 }
                 $scope.sitedevices = siteDevicesData;
-                $scope.banstart = function(state,device_id,startbandata){
+
+                /**
+                 * 启动禁止数据处理
+                 * @param state
+                 * @param device_id
+                 * @param startbandata
+                 */
+                $scope.banstart = function(state,device_id,startbandata,delete_id){
                     if(startbandata === '启动'){
                         GKApi.toggledevice(state,device_id).success(function (){
 
@@ -1463,49 +1515,97 @@ angular.module("gkSiteApp.controllers", [])
                         }
                         $scope.sitedevices = bansitedevices;
                     }else if(startbandata === '禁止'){
-                        var r=confirm("禁止此设备会导致设备无法登录");
-                        if (r==true)
-                        {
-                            GKApi.toggledevice(state,device_id).success(function (){
-                            })
-                            var banstartDevices = [],
-                                bansitedevices = [];
-                            banstartDevices =  $scope.sitedevices;
-                            for(var i = 0,len = banstartDevices.length;i<len;i++){
-                                if( banstartDevices[i].device_id === device_id){
-                                    if(siteDevices[i].allow_delete === 1){
-                                        bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
-                                            device_id:siteDevices[i].device_id,
-                                            device_name:siteDevices[i].device_name,
-                                            last_activity:siteDevices[i].last_activity,
-                                            os_name:siteDevices[i].os_name,
-                                            os_version:siteDevices[i].os_version,
-                                            state:siteDevices[i].state,
-                                            startban:'启动',
-                                            startbancolor:'starblue',
-                                            deleban:'删除'
-                                        });
+                        if(delete_id === 0){
+                            var r=confirm("禁止此设备会导致设备无法登录");
+                            if (r==true)
+                            {
+                                GKApi.toggledevice(state,device_id).success(function (){
+                                })
+                                var banstartDevices = [],
+                                    bansitedevices = [];
+                                banstartDevices =  $scope.sitedevices;
+                                for(var i = 0,len = banstartDevices.length;i<len;i++){
+                                    if( banstartDevices[i].device_id === device_id){
+                                        if(siteDevices[i].allow_delete === 1){
+                                            bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                device_id:siteDevices[i].device_id,
+                                                device_name:siteDevices[i].device_name,
+                                                last_activity:siteDevices[i].last_activity,
+                                                os_name:siteDevices[i].os_name,
+                                                os_version:siteDevices[i].os_version,
+                                                state:siteDevices[i].state,
+                                                startban:'启动',
+                                                startbancolor:'starblue',
+                                                deleban:'删除'
+                                            });
+                                        }else{
+                                            bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                device_id:siteDevices[i].device_id,
+                                                device_name:siteDevices[i].device_name,
+                                                last_activity:siteDevices[i].last_activity,
+                                                os_name:siteDevices[i].os_name,
+                                                os_version:'—',
+                                                state:siteDevices[i].state,
+                                                startban:'启动',
+                                                startbancolor:'starblue'
+                                            });
+                                        }
                                     }else{
-                                        bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
-                                            device_id:siteDevices[i].device_id,
-                                            device_name:siteDevices[i].device_name,
-                                            last_activity:siteDevices[i].last_activity,
-                                            os_name:siteDevices[i].os_name,
-                                            os_version:'—',
-                                            state:siteDevices[i].state,
-                                            startban:'启动',
-                                            startbancolor:'starblue'
-                                        });
+                                        bansitedevices.push(banstartDevices[i]);
                                     }
-                                }else{
-                                    bansitedevices.push(banstartDevices[i]);
                                 }
+                                $scope.sitedevices = bansitedevices;
                             }
-                            $scope.sitedevices = bansitedevices;
+                        }else{
+                            var r=confirm("禁止网页版会导致所有设备都无法以网页方式登录");
+                            if (r==true)
+                            {
+                                GKApi.toggledevice(state,device_id).success(function (){
+                                })
+                                var banstartDevices = [],
+                                    bansitedevices = [];
+                                banstartDevices =  $scope.sitedevices;
+                                for(var i = 0,len = banstartDevices.length;i<len;i++){
+                                    if( banstartDevices[i].device_id === device_id){
+                                        if(siteDevices[i].allow_delete === 1){
+                                            bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                device_id:siteDevices[i].device_id,
+                                                device_name:siteDevices[i].device_name,
+                                                last_activity:siteDevices[i].last_activity,
+                                                os_name:siteDevices[i].os_name,
+                                                os_version:siteDevices[i].os_version,
+                                                state:siteDevices[i].state,
+                                                startban:'启动',
+                                                startbancolor:'starblue',
+                                                deleban:'删除'
+                                            });
+                                        }else{
+                                            bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                device_id:siteDevices[i].device_id,
+                                                device_name:siteDevices[i].device_name,
+                                                last_activity:siteDevices[i].last_activity,
+                                                os_name:siteDevices[i].os_name,
+                                                os_version:'—',
+                                                state:siteDevices[i].state,
+                                                startban:'启动',
+                                                startbancolor:'starblue'
+                                            });
+                                        }
+                                    }else{
+                                        bansitedevices.push(banstartDevices[i]);
+                                    }
+                                }
+                                $scope.sitedevices = bansitedevices;
+                            }
                         }
                     }
                 }
             })
+            /**
+             * 删除数据处理
+             * @param device_id
+             * @param index
+             */
             $scope.siteSyncDelete = function(device_id,index){
                 var r=confirm("删除此设备会在列表中把该条记录删除");
                 if (r==true)
@@ -1516,6 +1616,73 @@ angular.module("gkSiteApp.controllers", [])
                 }
             }
         }
+
+
+
+        /**
+         * 左侧栏单击事件
+         */
+        $scope.univerDevice = function(){
+            if($location.search().tab === 'contentUniversal'){
+                $scope.universal = true;
+                $scope.siteSidebar = 'contentUniversal';
+                $scope.device = "false";
+                $scope.synchronous = "";
+                $scope.network = "";
+                $scope.advanced = "";
+            }else if($location.search().tab === 'contentdevice'){
+                $scope.deviceSildeButton();
+                $scope.device = true;
+                $scope.siteSidebar = 'contentdevice';
+                $scope.universal = "false";
+                $scope.synchronous = "";
+                $scope.network = "";
+                $scope.advanced = "";
+            }
+        }
+        $scope.univerDevice();
+        $scope.siteuniversal = function () {
+            $scope.universal = true;
+            $scope.siteSidebar = 'contentUniversal';
+            $scope.device = "false";
+            $scope.synchronous = "";
+            $scope.network = "";
+            $scope.advanced = "";
+        }
+        $scope.sitedevice = function () {
+            $scope.device = true;
+            $scope.siteSidebar = 'contentdevice';
+            $scope.universal = "false";
+            $scope.synchronous = "";
+            $scope.network = "";
+            $scope.advanced = "";
+        }
+        $scope.sitesynchronous = function () {
+            $scope.siteSidebar = 'contentSynchronous';
+            $scope.synchronous = true;
+            $scope.universal = "false";
+            $scope.device = "false";
+            $scope.network = "";
+            $scope.advanced = "";
+        }
+        $scope.sitenetwork = function () {
+            $scope.siteSidebar = 'contentNetwork';
+            $scope.network = true;
+            $scope.universal = "false";
+            $scope.device = "false";
+            $scope.synchronous = "";
+            $scope.advanced = "";
+        }
+        $scope.siteadvanced = function () {
+            $scope.siteSidebar = 'contentAdvanced';
+            $scope.advanced = true;
+            $scope.universal = "false";
+            $scope.device = "false";
+            $scope.synchronous = "";
+            $scope.network = "";
+        }
+
+
         /**
          * 按确定保存数据，关闭窗口，
          */
@@ -1536,6 +1703,7 @@ angular.module("gkSiteApp.controllers", [])
             gkClientInterface.setChangeLanguage(language);
             gkClientInterface.setClose();
         }
+
         /**
          *   按取消不保存数据，关闭窗口
          */
@@ -1568,34 +1736,6 @@ angular.module("gkQueueApp.controllers", [])
                 $scope.showSyncBg = true;
             }
         }
-        function bitSize(num, decimal) {
-            if (typeof(num) != 'number') {
-                num = Number(num);
-            }
-            if (typeof(decimal) != 'number') {
-                decimal = 2;
-            }
-            if (num < 0) {
-                return '';
-            }
-            var type = new Array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-            var j = 0;
-            while (num >= 1024) {
-                if (j >= 5)
-                    return num + type[j];
-                num = num / 1024;
-                j++;
-            }
-            if (num == 0) {
-                return num;
-            } else {
-                var dec = 1;
-                for (var i = 0; i < decimal; i++) {
-                    dec = dec * 10;
-                }
-                return Math.round(num * dec) / dec + type[j];
-            }
-        }
 
         /**
          * 上传下载处理数据
@@ -1608,19 +1748,19 @@ angular.module("gkQueueApp.controllers", [])
                 ,nofinishdata = [];
             for(var i = 0,len = data.length; i<len;i++){
                 if(data[i].status === 3){
-                    var posSize = bitSize(data[i].filesize);
+                    var posSize = Util.Number.bitSize(data[i].filesize);
                     finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                         filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传完成",
                         possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar",mountid:data[i].mountid});
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
-                        ,posSize = bitSize(data[i].filesize);
+                        ,posSize = Util.Number.bitSize(data[i].filesize);
                     nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                         filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"继续等待",
                         filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist',type:"upload",mountid:data[i].mountid});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
-                        ,posSize = bitSize(data[i].filesize);
+                        ,posSize = Util.Number.bitSize(data[i].filesize);
                     if(data[i].time === ' '){
                         nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                             filesize:data[i].filesize,time:'网络异常',status:data[i].status,filesizepos:filesizePos,
@@ -1651,19 +1791,19 @@ angular.module("gkQueueApp.controllers", [])
                 ,nofinishdata = [];
             for(var i = 0,len = data.length; i<len;i++){
                 if(data[i].status === 3){
-                    var posSize = bitSize(data[i].filesize);
+                    var posSize = Util.Number.bitSize(data[i].filesize);
                     finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                         filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载完成",
                         possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar",mountid:data[i].mountid});
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
-                        ,posSize = bitSize(data[i].filesize);
+                        ,posSize = Util.Number.bitSize(data[i].filesize);
                     nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                         filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"继续等待",
                         filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist',type:"download",mountid:data[i].mountid});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
-                        ,posSize = bitSize(data[i].filesize);
+                        ,posSize = Util.Number.bitSize(data[i].filesize);
                     if(data[i].time === ' '){
                         nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                             filesize:data[i].filesize,time:'网络异常',status:data[i].status,filesizepos:filesizePos
@@ -1721,15 +1861,14 @@ angular.module("gkQueueApp.controllers", [])
             if($scope.sildbarUpload.download === 0){
                 $scope.downloadspeek = 0;
             }else{
-                $scope.downloadspeek = bitSize($scope.sildbarUpload.download);
+                $scope.downloadspeek = Util.Number.bitSize($scope.sildbarUpload.download);
             }
             if( $scope.sildbarUpload.upload === 0 ){
                 $scope.uploadspeek = 0;
             }else{
-                $scope.uploadspeek = bitSize($scope.sildbarUpload.upload);
+                $scope.uploadspeek = Util.Number.bitSize($scope.sildbarUpload.upload);
             }
             $scope.upload = queusData(sildbarUploadData);
-            console.log($scope.upload);
         }
         $scope.getTransListtime();
         $scope.queueinterface = function(){
@@ -1759,12 +1898,12 @@ angular.module("gkQueueApp.controllers", [])
             if($scope.sildbarDownload.download === 0){
                 $scope.downloadspeek = 0;
             }else{
-                $scope.downloadspeek = bitSize($scope.sildbarDownload.download);
+                $scope.downloadspeek = Util.Number.bitSize($scope.sildbarDownload.download);
             }
             if( $scope.sildbarDownload.upload === 0 ){
                 $scope.uploadspeek = 0;
             }else{
-                $scope.uploadspeek = bitSize($scope.sildbarDownload.upload);
+                $scope.uploadspeek = Util.Number.bitSize($scope.sildbarDownload.upload);
             }
             $scope.download = queusDatadown(sildbarDownloadData);
         }
@@ -1794,12 +1933,12 @@ angular.module("gkQueueApp.controllers", [])
             if($scope.sildbarSync.download === 0){
                 $scope.downloadspeek = 0;
             }else{
-                $scope.downloadspeek = bitSize($scope.sildbarSync.download);
+                $scope.downloadspeek = Util.Number.bitSize($scope.sildbarSync.download);
             }
             if( $scope.sildbarSync.upload === 0 ){
                 $scope.uploadspeek = 0;
             }else{
-                $scope.uploadspeek = bitSize($scope.sildbarSync.upload);
+                $scope.uploadspeek = Util.Number.bitSize($scope.sildbarSync.upload);
             }
             $scope.sync = queusSync(sildbarSyncData);
         }

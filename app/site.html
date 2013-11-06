@@ -20,11 +20,11 @@
     <div class = "container c_f_after">
         <div class = "site-sidebar">
             <ul >
-                <li ng-class ="{true: 'site-sidebar-color'}[universal]" ng-click = "siteuniversal()">
+                <li ng-class ="{true: 'site-sidebar-color',false:'site-sidebar-none'}[universal]" ng-click = "siteuniversal()">
                     <i class = "universalbackground f_l"></i>
                     <a href = "javascript:void(0);">通用</a>
                 </li>
-                <li ng-class ="{true: 'site-sidebar-color'}[device]" ng-click ="deviceSildeButton();sitedevice()">
+                <li ng-class ="{true: 'site-sidebar-color',false:'site-sidebar-device'}[device]" ng-click ="deviceSildeButton();sitedevice()">
                     <i class = "devicebackground f_l"></i>
                     <a href = "javascript:void(0);">设备</a>
                 </li>

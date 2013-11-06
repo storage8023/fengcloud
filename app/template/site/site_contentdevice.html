@@ -13,11 +13,11 @@
         <div class = "site-content-form scrollbar">
           <ul>
               <li ng-repeat = "device in sitedevices" ng-class-odd="'sitedevicesodd'" ng-class-even="'sitedeviceseven'"  class = "c_f_after">
-                  <div  class = "site-device-name f_l"><i></i><span title = "{{device.device_name}}">{{device.device_name}}</span></div>
-                  <div  class = "site-device-version f_l"><span title = "{{device.os_name}}">{{device.os_name}}</span></div>
-                  <div  class = "site-device-date f_l"><span title = "{{device.last_activity}}">{{device.last_activity}}</span></div>
+                  <div  class = "site-device-name f_l"><i></i><span >{{device.device_name}}</span></div>
+                  <div  class = "site-device-version f_l"><span >{{device.os_name}}</span></div>
+                  <div  class = "site-device-date f_l"><span>{{device.last_activity}}</span></div>
                   <div  class = "site-device-file f_r">
-                      <a href = "javascript:void(0);" class="'{{device.startbancolor}}' startbanred" ng-click = "banstart('{{device.state}}' ,'{{device.device_id}}', '{{device.startban}}')">{{device.startban}}</a>
+                      <a href = "javascript:void(0);" class="'{{device.startbancolor}}' startbanred" ng-click = "banstart('{{device.state}}' ,'{{device.device_id}}', '{{device.startban}}','{{device.allow_delete}}')">{{device.startban}}</a>
                       <a href = "javascript:void(0);" class = "delebancolor" ng-click = "siteSyncDelete('{{device.device_id}}',$index)">{{device.deleban}}</a>
                       <a href = "javascript:void(0);" class = "startbangr">{{device.currentban}}</a>
                   </div>
