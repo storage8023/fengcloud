@@ -1,5 +1,5 @@
 <aside class="right_sidebar" ng-class="PAGE_CONFIG.mount.org_id==0?'my_right_sidebar':''">
-    <nofile-right-sidebar ng-if="(!file||!file.fullpath) && !showSearch"></nofile-right-sidebar>
+    <nofile-right-sidebar ng-if="!file||!file.fullpath"></nofile-right-sidebar>
     <singlefile-right-sidebar ng-if="file&&file.fullpath && !showSearch"></singlefile-right-sidebar>
     <multifile-right-sidebar ng-if="selectedFile.length>1&& !showSearch"></multifile-right-sidebar>
     <search-right-sidebar ng-if="showSearch"></search-right-sidebar>

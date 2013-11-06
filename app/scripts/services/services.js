@@ -4,7 +4,19 @@
 
 angular.module('gkClientIndex.services', [])
     .constant('newsKey','gkNews')
-    .factory('GKNews',['localStorageService','newsKey','GKApi','GKClientCallback','$filter',function(localStorageService,newsKey,GKApi,GKClientCallback,$filter){
+    .factory('GKFind',['$rootScope',function($rootScope){
+        return {
+            toogleFind:function(){
+                $rootScope.showNearBy = !$rootScope.showNearBy;
+                if($rootScope.showNearBy){
+                    gkClientInterface.startFind();
+                }else{
+                    gkClientInterface.stopFind();
+                }
+            }
+        }
+    }])
+    .factory('GKNews',['localStorageService','newsKey','GKApi','$filter',function(localStorageService,newsKey,GKApi,$filter){
         return {
             classify:function(news){
                 var classifyNews = [],
@@ -1463,9 +1475,6 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKClientCallback',[function(){
-        return gkClientCallback;
-    }])
 /**
  * 记录浏览历史，提供前进,后退功能
  */
@@ -1508,40 +1517,25 @@ angular.module('gkClientIndex.services', [])
     }
     ])
 ;
-
 var gkClientCallback = {
-    testCallback:function(param){
-
-    },
-    /**
-     * 文件修改后的回调
-     * @constructor
-     */
-    UpdateWebpath:function(){
-
-    },
-    /**
-     * 有新的消息的回调
-     * @constructor
-     */
-    UpdateMessage:function(param){
+    AddFindObject:function(param){
+        var rootScope = jQuery(document).scope();
         var JSONparam = JSON.parse(param);
-        var rootScope = jQuery(document).scope();
-        rootScope.$broadcast('updateMessage',JSONparam);
-    },
-    /**
-     * 发现新的附近的人的回调
-     * @constructor
-     */
-    AddFindObject:function(){
-
-    },
-    ShowMessage:function(){
-        var rootScope = jQuery(document).scope();
-        rootScope.$broadcast('showMessage');
+        console.log(JSONparam);
+        rootScope.$broadcast('AddFindObject',JSONparam);
     }
 };
 
+//(function(obj){
+//    var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage'];
+//    angular.forEach(callbacks,function(value){
+//            obj[value] = function(param){
+//                var rootScope = jQuery(document).scope();
+//                var JSONparam = JSON.parse(param);
+//                rootScope.$broadcast(value,JSONparam);
+//            }
+//    });
+//})(gkClientCallback)
 
 function GKFileSearch() {
 }

@@ -7,6 +7,26 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    startFind:function(){
+        try {
+            console.log('start');
+            gkClient.gStartFind();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    stopFind:function(){
+        try {
+            console.log('stop');
+            gkClient.gStopFind();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    /**
+     * 打开lanchpad页面
+     * @param params
+     */
     launchpad:function(params){
         if(typeof params ==='undefined'){
             gkClient.gLaunchpad();

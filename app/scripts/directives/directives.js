@@ -3,6 +3,112 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives',[])
+    .directive('loadingEllipsis',['$interval',function($interval){
+        return {
+            replace: true,
+            restrict: 'E',
+            template:'<span ng-bind="ellipsis" style="margin: 0 0 0 3px"></span>',
+            link:function($scope){
+                var cell='. ';
+                $scope.ellipsis = '';
+                var max = cell.length*3;
+                $interval(function(){
+                    if($scope.ellipsis.length>=max){
+                        $scope.ellipsis = '';
+                    }else{
+                        $scope.ellipsis+=cell;
+                    }
+                },500)
+            }
+        }
+    }])
+    .directive('nearbySidebar',['$rootScope','GKFind',function($rootScope,GKFind){
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl:'views/nearby_sidebar.html',
+            link:function(scope){
+                scope.nearbyMembers = [
+                    {
+                        ip: "10.0.0.12",
+                        name: "郑中周",
+                        photo: "http://oss.aliyuncs.com/gkavatar2/a6/a6b08af6549a31c50f4d26754dfe93a82129ea56.jpg",
+                        port: 1001,
+                        type: "user",
+                        userid: 167
+                    }
+                ];
+                scope.nearbyTeams = [];
+
+                scope.$on('AddFindObject',function(event,obj){
+                    scope.$apply(function(){
+                        var type = obj['type'];
+                        if(type =='user'){
+                            scope.nearbyMembers.unshift(obj)
+                        }else if(type='org'){
+                            scope.nearbyTeams.unshift(obj);
+                        }
+                        //scope.$digest();
+                    })
+
+                })
+
+                scope.$on('removeFindObject',function(event,obj){
+                    var type = obj['type'];
+                    if(type =='user'){
+                        scope.nearbyTeams.unshift(obj)
+                    }else if(type='org'){
+                        scope.nearbyTeams.unshift(obj);
+                    }
+                    scope.$digest();
+                })
+
+                scope.toogleFind = function(){
+                    GKFind.toogleFind();
+                };
+
+
+            }
+        }
+    }])
+    .directive('nearbyMember',[function(){
+        return {
+            replace: true,
+            restrict: 'E',
+            scope:{
+                photo:'@',
+                name:'@',
+                uid:'@',
+                ip:'@',
+                port:'@'
+            },
+            template: '<div class="slide-down member">'
+                +'<img class="photo" ng-src="{{photo}}" alt="{{name}}"/>'
+                +'<span class="name" title="{{name}}" ng-bind="name"></span>'
+                +'</div>',
+            link:function(){
+
+            }
+        }
+    }])
+    .directive('nearbyTeam',[function(){
+        return {
+            replace: true,
+            restrict: 'E',
+            scope:{
+                name:'@',
+                orgId:'@',
+                logo:'@'
+            },
+            template: '<div class="slide-down group">'
+                +'<img class="photo" ng-src="{{logo}}" alt="{{name}}"/>'
+                +'<span class="name" title="{{name}}" ng-bind="name"></span>'
+                +'</div>',
+            link:function(){
+
+            }
+        }
+    }])
     .directive('scrollLoad',['$rootScope',function($rootScope){
         return {
             restrict: 'A',
