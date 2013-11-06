@@ -317,6 +317,7 @@ angular.module('gkClientIndex.directives',[])
                         || value == oldValue) {
                         return;
                     }
+                   var fullpath = $scope.file? $scope.file.fullpath||'':'';
                     GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
 
                     }).error(function () {
@@ -1409,8 +1410,9 @@ angular.module('gkClientIndex.directives',[])
                     var condition = fileSearch.getCondition();
                     return condition;
                 };
-                var smartFolderName =  GKSmartFolder.getFolderByCode($scope.keyword)['name'];
+                var smartFolderName = '';
                 if($scope.partition =='smartfolder'){
+                     smartFolderName =  GKSmartFolder.getFolderByCode($scope.keyword)['name'];
                     $scope.smartFolderName =smartFolderName;
                 }
 

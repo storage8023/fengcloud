@@ -1387,9 +1387,15 @@ position: absolute;
     margin: 0 5px;
 }
 
-.right_sidebar .search_condition{
-    margin-bottom: 8px;
+.right_sidebar .search_file > .search_condition{
     padding:5px 5px 5px 5px;
+    overflow: auto;
+    margin: 0;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:35px;
 }
 .right_sidebar .search_condition label{
     display: block;
