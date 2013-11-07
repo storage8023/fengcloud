@@ -1,0 +1,100 @@
+body{
+    background: #EEEEF2;
+}
+header{
+    height: 124px;
+    background: url(../images/login/login_bg.png) no-repeat 50% 0;
+}
+h2{
+    font-size: 22px;
+    color: #606D7F;
+    margin: 20px 0;
+    text-align: center;
+}
+.form_wrapper{
+    width: 280px;
+    margin: 0 auto;
+
+}
+.form_wrapper *:not(button){
+    color: #606D7F;
+}
+.form_wrapper a{
+    color: #5595E9;
+}
+.form_wrapper label{
+    font-weight: normal;
+}
+.input_wrapper{
+    border:1px solid #C2CBD3;
+    height: 45px;
+    margin: -1px 0 0 0;
+    background: #fff;
+}
+.input_wrapper label{
+    display: inline-block;
+    width: 34px;
+    height:100%;
+    margin: 0;
+    vertical-align: middle;
+    text-align: center;
+    background: #F4F4F6;
+}
+.input_wrapper  .input_text{
+    width: 240px;
+    padding: 0 5px;
+    background: transparent;
+}
+.input_wrapper label .icon16x16{
+    margin: 12px 0 0 0;
+}
+.input_wrapper input{
+    border: 0 none;
+    height:100%;
+    font-weight: bold;
+}
+.input_wrapper input::-webkit-input-placeholder{
+    font-weight: normal;
+}
+.input_wrapper_group .input_wrapper:first-child{
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.1);
+}
+.input_wrapper_group .input_wrapper:first-child label{
+    border-top-left-radius: inherit;
+    box-shadow:inset 0 1px 2px rgba(0,0,0,.1);
+}
+.input_wrapper_group .input_wrapper:first-child .input_text{
+    border-top-right-radius: inherit;
+}
+.input_wrapper_group .input_wrapper:last-child{
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow:0 1px 0 #fff;
+}
+.input_wrapper_group .input_wrapper:last-child label{
+    border-bottom-left-radius: inherit;
+}
+.input_wrapper_group .input_wrapper:last-child .input_text{
+    border-bottom-right-radius: inherit;
+}
+.input_wrapper_group .input_wrapper .icon_email{
+    background-position: -164px -84px;
+}
+.input_wrapper_group .input_wrapper .icon_lock{
+    background-position: -184px -24px;
+}
+.form_wrapper .form_layer{
+    margin-top: 10px;
+}
+.form_wrapper .form_layer button{
+    display: block;
+    width: 100%;
+}
+.form_wrapper .goto_layer{
+text-align: center;
+font-size: 14px;
+}
+
+

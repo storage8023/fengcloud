@@ -979,12 +979,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"注销",
                 menuclick:function(){
-                    return;
+                    gkClientInterface.logOff();
                 }
             },{
                 item:"退出",
                 menuclick:function(){
-                    return;
+                    gkClientInterface.quit();
                 }
             }
         ];

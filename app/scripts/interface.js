@@ -7,6 +7,13 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    logOff:function(){
+        try {
+            gkClient.gLogoff();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     quit:function(){
         try {
             gkClient.gQuit();

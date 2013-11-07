@@ -1487,6 +1487,7 @@ angular.module('gkClientIndex.services', [])
              * 打开设置框
              */
             openSetting:function(tab){
+                tab = angular.isDefined(tab)?tab:'';
                 var UIPath = gkClientInterface.getUIPath();
                 var url = 'file:///'+UIPath+'/site.html#/?tab='+tab;
                 var data = {

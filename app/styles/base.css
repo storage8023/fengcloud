@@ -53,6 +53,9 @@ textarea {
     border: 1px solid #C4C4C4;
     box-shadow: inset 2px 3px 3px rgba(228, 228, 228, .4);
 }
+input[type="password"]{
+    font-family: Verdana, Arial, Helvetica;
+}
 * html {
     filter:expression(document.execCommand("BackgroundImageCache", false, true));
 }
