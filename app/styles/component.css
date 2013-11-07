@@ -6,74 +6,86 @@ i.icon16x16{
     display: inline-block;
     vertical-align: middle;
 }
+i.icon16x16.icon_email{
+    background-position: -164px -84px;
+}
+i.icon16x16.icon_lock{
+    background-position: -184px -24px;
+}
+i.icon16x16.icon_person{
+    background-position: -484px -24px;
+}
+i.icon16x16.icon_close_window{
+    background-position: -204px -64px;
+}
 /*********文件图标 32*32*******/
 
 /*其他文件*/
 .icon_other {
-    background-image: url(/Static/images/file_icon/other32x32.png);
+    background-image: url(../images/icon/other32x32.png);
 }
 
 /*视频文件*/
 .icon_movie {
-    background-image: url(/Static/images/file_icon/movie32x32.png);
+    background-image: url(../images/icon/movie32x32.png);
 }
 
 /*声音文件*/
 .icon_music {
-    background-image: url(/Static/images/file_icon/music32x32.png);
+    background-image: url(../images/icon/music32x32.png);
 }
 
 /*图片文件*/
 .icon_image {
-    background-image: url(/Static/images/file_icon/image32x32.png);
+    background-image: url(../images/icon/image32x32.png);
 }
 
 /*文档文件*/
 .icon_document {
-    background-image: url(/Static/images/file_icon/document32x32.png);
+    background-image: url(../images/icon/document32x32.png);
 }
 
 /*压缩文件*/
 .icon_compress {
-    background-image: url(/Static/images/file_icon/compress32x32.png);
+    background-image: url(../images/icon/compress32x32.png);
 }
 
 .icon_doc {
-    background-image: url(/Static/images/file_icon/word32x32.png);
+    background-image: url(../images/icon/word32x32.png);
 }
 
 .icon_xls {
-    background-image: url(/Static/images/file_icon/excel32x32.png);
+    background-image: url(../images/icon/excel32x32.png);
 }
 
 .icon_ppt {
-    background-image: url(/Static/images/file_icon/ppt32x32.png);
+    background-image: url(../images/icon/ppt32x32.png);
 }
 
 .icon_pdf {
-    background-image: url(/Static/images/file_icon/pdf32x32.png);
+    background-image: url(../images/icon/pdf32x32.png);
 }
 
 /*可执行文件*/
 .icon_execute {
-    background-image: url(/Static/images/file_icon/exe32x32.png);
+    background-image: url(../images/icon/exe32x32.png);
 }
 
 /*文件夹*/
 .icon_folder {
-    background-image: url(/Static/images/file_icon/folder32x32.png);
+    background-image: url(../images/icon/folder32x32.png);
 }
 
 .icon_local_folder {
-    background-image: url(/Static/images/file_icon/local_folder32x32.png);
+    background-image: url(../images/icon/local_folder32x32.png);
 }
 
 .icon_shared_folder {
-    background-image: url(/Static/images/file_icon/folder_share32x32.png);
+    background-image: url(../images/icon/folder_share32x32.png);
 }
 
 .icon_private_folder {
-    background-image: url(/Static/images/file_icon/private_folder32x32.png);
+    background-image: url(../images/icon/private_folder32x32.png);
 }
 
 /*通过border实现的箭头*/
@@ -230,4 +242,17 @@ i.icon16x16{
 }
 .dropdown-menu a{
     font-size: 13px;
+}
+
+/*自定义关闭按钮样式*/
+button.close_window{
+    position: absolute;
+    z-index: 9999;
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: none;
+    border:0 none;
+    top:2px;
+    right: 3px;
 }

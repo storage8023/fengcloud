@@ -4,13 +4,16 @@
 *, *:before, *:after{
     box-sizing: border-box;
 }
-a,button{
-  cursor: default !important;
+button{
+  cursor: default;
 }
-a:hover,
+a{
+    color:#5595E9;
+}
+
 a:active,
-a:link{
-   text-decoration: none;
+a:hover{
+    text-decoration: underline;
 }
 html,body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, form, fieldset, legend, button, input,select, textarea, th, td{
     margin: 0;
@@ -24,7 +27,7 @@ h1, h2, h3, h4, h5, h6{
     font-weight:normal;
 }
 body,button, input, select, textarea{
-    font: 12px/1.5 "hiragino sans gb",'微软雅黑',"Helvetica Neue","Helvetica","Arial",'Yahei',"宋体", "simsun","sans-serif";
+    font: 12px/1.5 "Helvetica Neue","Helvetica","Arial",'Yahei',"hiragino sans gb",'微软雅黑',"宋体", "simsun","sans-serif";
 }
 address, cite, dfn, em, var { font-style: normal; }
 small { font-size: 12px; }
@@ -43,9 +46,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 img {
     border:0;
 }
-a{
-    cursor: default;
-}
+
 textarea {
     overflow:auto;
     outline: 0;
@@ -53,9 +54,9 @@ textarea {
     border: 1px solid #C4C4C4;
     box-shadow: inset 2px 3px 3px rgba(228, 228, 228, .4);
 }
-input[type="password"]{
-    font-family: Verdana, Arial, Helvetica;
-}
+/*input[type="password"]{*/
+    /*font-family: Verdana, Arial, Helvetica;*/
+/*}*/
 * html {
     filter:expression(document.execCommand("BackgroundImageCache", false, true));
 }

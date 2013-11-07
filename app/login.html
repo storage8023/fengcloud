@@ -15,6 +15,7 @@
     <script src="bower_components/angular/angular-md5.js"></script>
     <script src="scripts/login.js"></script>
     <script src="scripts/services/services.js"></script>
+    <script src="scripts/directives/directives.js"></script>
 </head>
 <body ng-controller="loginCtrl">
 <header></header>
@@ -34,7 +35,7 @@
         </div>
         <div class="c_f form_layer">
             <div class="f_r">
-                <a href="javascript:void(0)">忘记密码？</a>
+                <a href="{{siteDomain}}/findpassword">忘记密码？</a>
             </div>
         </div>
         <div class="form_layer">
@@ -84,12 +85,12 @@
                 </div>
             </div>
             <div class="form_layer">
-                <button class="btn btn-blue btn-big login">开始使用</button>
+                <button class="btn btn-blue btn-big login" ng-click="setDevice()">开始使用</button>
             </div>
 
         </div>
     </div>
 </section>
-
+<!--<close-window-button></close-window-button>-->
 </body>
 </html>

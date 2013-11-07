@@ -7,6 +7,9 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    closeWindow:function(){
+        gkClient.gClose();
+    },
     setDevice:function(params){
         gkClient.gSetDevice(JSON.stringify(params));
     },

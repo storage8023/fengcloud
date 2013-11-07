@@ -79,12 +79,7 @@ h2{
 .input_wrapper_group .input_wrapper:last-child .input_text{
     border-bottom-right-radius: inherit;
 }
-.input_wrapper_group .input_wrapper .icon_email{
-    background-position: -164px -84px;
-}
-.input_wrapper_group .input_wrapper .icon_lock{
-    background-position: -184px -24px;
-}
+
 .form_wrapper .form_layer{
     margin-top: 10px;
 }
