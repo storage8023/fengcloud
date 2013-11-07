@@ -1411,6 +1411,7 @@ angular.module("gkSiteApp.controllers", [])
                         if(siteDevices[i].state === "1"){
                             if(siteDevices[i].allow_delete === 1){
                                 siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                                    allow_delete:siteDevices[i].allow_delete,
                                     device_id:siteDevices[i].device_id,
                                     device_name:siteDevices[i].device_name,
                                     last_activity:siteDevices[i].last_activity,
@@ -1422,6 +1423,7 @@ angular.module("gkSiteApp.controllers", [])
                                 });
                             }else{
                                 siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                                    allow_delete:siteDevices[i].allow_delete,
                                     device_id:siteDevices[i].device_id,
                                     device_name:siteDevices[i].os_name,
                                     last_activity:siteDevices[i].last_activity,
@@ -1433,6 +1435,7 @@ angular.module("gkSiteApp.controllers", [])
                             }
                         }else if(siteDevices[i].allow_delete === 1){
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                                allow_delete:siteDevices[i].allow_delete,
                                 device_id:siteDevices[i].device_id,
                                 device_name:siteDevices[i].device_name,
                                 last_activity:siteDevices[i].last_activity,
@@ -1446,6 +1449,7 @@ angular.module("gkSiteApp.controllers", [])
                             });
                         }else{
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                                allow_delete:siteDevices[i].allow_delete,
                                 device_id:siteDevices[i].device_id,
                                 device_name:siteDevices[i].os_name,
                                 last_activity:siteDevices[i].last_activity,
@@ -1460,6 +1464,7 @@ angular.module("gkSiteApp.controllers", [])
                     }
                     else{
                         siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
+                            allow_delete:siteDevices[i].allow_delete,
                             device_id:siteDevices[i].device_id,
                             device_name:siteDevices[i].device_name,
                             last_activity:siteDevices[i].last_activity,
@@ -1478,63 +1483,63 @@ angular.module("gkSiteApp.controllers", [])
                  * @param startbandata
                  */
                 $scope.banstart = function(state,device_id,startbandata,del){
-                    if(startbandata === '激活'){
-                        GKApi.toggledevice(state,device_id).success(function (){
+                    var banstartDevices = [],
+                         bansitedevices = [];
+                    banstartDevices =   $scope.sitedevices;
+                    if(state === '0'){
+                        GKApi.toggledevice(state,device_id).success(function(){
 
                         })
-                        var banstartDevices = [],
-                            bansitedevices = [];
-                        banstartDevices =  $scope.sitedevices;
                         for(var i = 0,len = banstartDevices.length;i<len;i++){
-                            console.log(banstartDevices);
                             if( banstartDevices[i].device_id === device_id){
                                 if(siteDevices[i].allow_delete === 1){
                                     bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                        allow_delete:siteDevices[i].allow_delete,
                                         device_id:siteDevices[i].device_id,
                                         device_name:siteDevices[i].device_name,
                                         last_activity:siteDevices[i].last_activity,
                                         os_name:siteDevices[i].os_name,
                                         os_version:siteDevices[i].os_version,
-                                        state:siteDevices[i].state,
+                                        state:'1',
                                         startban:'禁止',
                                         deleban:'删除'
                                     });
                                 }else{
                                     bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                        allow_delete:siteDevices[i].allow_delete,
                                         device_id:siteDevices[i].device_id,
                                         device_name:siteDevices[i].os_name,
                                         last_activity:siteDevices[i].last_activity,
                                         os_name:siteDevices[i].device_name,
                                         os_version:'浏览器',
-                                        state:siteDevices[i].state,
+                                        state:'1',
                                         startban:'禁止',
                                     });
                                 }
                             }else{
                                 bansitedevices.push(banstartDevices[i]);
                             }
+                            $scope.sitedevices = bansitedevices;
                         }
-                        $scope.sitedevices = bansitedevices;
-                    }else if(startbandata === '禁止'){
-                        if(del === 0){
+                    }else if(state === '1'){
+                        if(del === '1'){
                             var r=confirm("禁止此设备会导致设备无法登录");
-                            if (r==true)
+                            if (r===true)
                             {
                                 GKApi.toggledevice(state,device_id).success(function (){
+
                                 })
-                                var banstartDevices = [],
-                                    bansitedevices = [];
-                                banstartDevices =  $scope.sitedevices;
                                 for(var i = 0,len = banstartDevices.length;i<len;i++){
                                     if( banstartDevices[i].device_id === device_id){
                                         if(siteDevices[i].allow_delete === 1){
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                allow_delete:siteDevices[i].allow_delete,
                                                 device_id:siteDevices[i].device_id,
                                                 device_name:siteDevices[i].device_name,
                                                 last_activity:siteDevices[i].last_activity,
                                                 os_name:siteDevices[i].os_name,
                                                 os_version:siteDevices[i].os_version,
-                                                state:siteDevices[i].state,
+                                                state:'0',
                                                 startban:'激活',
                                                 devicesicon:'deviceicon',
                                                 startbancolor:'starblueclick',
@@ -1542,12 +1547,13 @@ angular.module("gkSiteApp.controllers", [])
                                             });
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                allow_delete:siteDevices[i].allow_delete,
                                                 device_id:siteDevices[i].device_id,
                                                 device_name:siteDevices[i].os_name,
                                                 last_activity:siteDevices[i].last_activity,
                                                 os_name:siteDevices[i].device_name,
                                                 os_version:'浏览器',
-                                                state:siteDevices[i].state,
+                                                state:'0',
                                                 startban:'激活',
                                                 devicesicon:'deviceiconclick',
                                                 startbancolor:'starblue'
@@ -1559,37 +1565,38 @@ angular.module("gkSiteApp.controllers", [])
                                 }
                                 $scope.sitedevices = bansitedevices;
                             }
-                        }else{
+                        }else if(del === '0'){
                             var r=confirm("禁止网页版会导致所有设备都无法以网页方式登录");
                             if (r==true)
                             {
                                 GKApi.toggledevice(state,device_id).success(function (){
                                 })
-                                var banstartDevices = [],
-                                    bansitedevices = [];
-                                banstartDevices =  $scope.sitedevices;
                                 for(var i = 0,len = banstartDevices.length;i<len;i++){
                                     if( banstartDevices[i].device_id === device_id){
                                         if(siteDevices[i].allow_delete === 1){
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                allow_delete:siteDevices[i].allow_delete,
                                                 device_id:siteDevices[i].device_id,
                                                 device_name:siteDevices[i].device_name,
                                                 last_activity:siteDevices[i].last_activity,
                                                 os_name:siteDevices[i].os_name,
                                                 os_version:siteDevices[i].os_version,
-                                                state:siteDevices[i].state,
+                                                state:'0',
                                                 startban:'激活',
                                                 startbancolor:'starblue',
+                                                devicesicon:'deviceiconclick',
                                                 deleban:'删除'
                                             });
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
+                                                allow_delete:siteDevices[i].allow_delete,
                                                 device_id:siteDevices[i].device_id,
                                                 device_name:siteDevices[i].os_name,
                                                 last_activity:siteDevices[i].last_activity,
                                                 os_name:siteDevices[i].device_name,
                                                 os_version:'浏览器',
-                                                state:siteDevices[i].state,
+                                                state:'0',
+                                                devicesicon:'deviceiconclick',
                                                 startban:'激活',
                                                 startbancolor:'starblue'
                                             });
@@ -1598,12 +1605,18 @@ angular.module("gkSiteApp.controllers", [])
                                         bansitedevices.push(banstartDevices[i]);
                                     }
                                 }
-                                $scope.sitedevices = bansitedevices;
+
                             }
+                            $scope.sitedevices = bansitedevices;
                         }
                     }
                 }
+                $scope.changeNewDevice = function(){
+                    
+                }
             })
+
+
             /**
              * 删除数据处理
              * @param device_id
