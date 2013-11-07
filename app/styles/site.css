@@ -3,6 +3,7 @@
 **/
 #site-wrapper{
     border-top:1px solid #888888;
+    -webkit-user-select: none;
 }
 .site-sidebar{
     width:150px;
@@ -47,14 +48,14 @@
     margin-top:4px;
     height: 20px;
     display: block;
-    background: url(../images/icon.png) no-repeat -20px -80px;
+    background: url(../images/icon16x16.png) no-repeat -520px -20px;
 }
 .site-sidebar ul .site-sidebar-none .universalbackground{
     width: 20px;
     margin-top:4px;
     height: 20px;
     display: block;
-    background: url(../images/icon.png) no-repeat -20px -80px;
+    background: url(../images/icon16x16.png) no-repeat -520px -20px;
 }
 .site-sidebar ul li .devicebackground{
     width: 20px;
@@ -147,7 +148,6 @@
     line-height: 38px;
     font-size: 18px;
     color: #3F4754;
-    font-weight: 600;
 }
 .site-content-top div input{
     margin-bottom: 3px;
@@ -292,12 +292,25 @@
     text-overflow:ellipsis;
     text-align: center;
 }
+.site-device-file .btn-group .btn{
+    padding: 0;
+    border:0;
+    line-height: 30px;
+}
 .site-content-device-file{
     width:14%;
     line-height: 30px;
     font: 15px;
     color:#45494D;
     text-align: center;
+}
+.deviceicon{
+    width: 20px;
+    height: 20px;
+    margin-top:3px;
+    margin-right: 4px;
+    display: block;
+    background: url(../images/icon16x16.png) no-repeat -80px -60px;
 }
 .site-device-name{
     width:30%;
@@ -310,15 +323,15 @@
     overflow:hidden;
     text-overflow:ellipsis;
     margin-right: 10px;
-    padding-left: 4%;
 }
+
 .site-content-device-name{
     width:30%;
     line-height: 30px;
     font: 15px;
     color:#45494D;
     margin-right: 10px;
-    padding-left: 4%;
+    padding-left: 24px;
 }
 .site-device-version{
     width:22%;
@@ -408,11 +421,6 @@
 .site-content-network ul li input{
     margin-right: 5px;
 }
-.sitenetworkagentproxy .btn{
-    height:25px;
-    font-size: 13px;
-    padding: 3px 5px 5px ;
-}
 
 .sitenetworkagent:hover{
     background: #E7F2FC;
@@ -435,10 +443,9 @@
     border:1px solid #C7A159;
 }
 .siteadvancepathdlg{
-    height:25px;
-    font-size: 13px;
-    padding: 3px 20px 3px ;
-    margin: 0;
+    margin-left: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 .clercache{
     width:75px;
@@ -497,14 +504,24 @@
     margin-top: 5px;
 }
 .site-footer-close{
-    width:65px;
     margin-right: 10px;
+    margin-top: 3px;
+    background:#EBECED;
+    color:#738295;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 .site-footer-save{
-    width:65px;
+    margin-top: 3px;
     color:#FFF;
-    background: #4883CB;
+    background:#4895F3;
     margin-right: 5px;
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 .site-footer-determine-close .btn-group .btn{
     font-size: 12px;
