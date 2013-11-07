@@ -1491,7 +1491,7 @@ angular.module('gkClientIndex.services', [])
                 var url = 'file:///'+UIPath+'/site.html#/?tab='+tab;
                 var data = {
                     url:url,
-                    type:"normal",
+                    type:"sole",
                     width:760,
                     resize:1,
                     height:450
@@ -1506,7 +1506,7 @@ angular.module('gkClientIndex.services', [])
                 var url = 'file:///'+UIPath+'/queue.html';
                 var data = {
                     url:url,
-                    type:"normal",
+                    type:"sole",
                     width:790,
                     height:460,
                     resize:1

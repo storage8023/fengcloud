@@ -1396,6 +1396,7 @@ angular.module("gkSiteApp.controllers", [])
                 GKApi.devicelist().success(function ($http){
                     var message = [];
                     message = $http;
+                    console.log($http);
                     deferred.resolve(message);
                 })
                 return deferred.promise;
@@ -1423,10 +1424,10 @@ angular.module("gkSiteApp.controllers", [])
                             }else{
                                 siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                     device_id:siteDevices[i].device_id,
-                                    device_name:siteDevices[i].device_name,
+                                    device_name:siteDevices[i].os_name,
                                     last_activity:siteDevices[i].last_activity,
-                                    os_name:'—',
-                                    os_version:'—',
+                                    os_name:siteDevices[i].device_name,
+                                    os_version:'浏览器',
                                     state:siteDevices[i].state,
                                     startban:'禁止',
                                 });
@@ -1441,19 +1442,19 @@ angular.module("gkSiteApp.controllers", [])
                                 state:siteDevices[i].state,
                                 startban:'激活',
                                 startbancolor:'starblue',
-                                devicesicon:'deviceicon',
+                                devicesicon:'deviceiconclick',
                                 deleban:'删除'
                             });
                         }else{
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                 device_id:siteDevices[i].device_id,
-                                device_name:siteDevices[i].device_name,
+                                device_name:siteDevices[i].os_name,
                                 last_activity:siteDevices[i].last_activity,
-                                os_name:'—',
-                                os_version:'—',
+                                os_name:siteDevices[i].device_name,
+                                os_version:'浏览器',
                                 state:siteDevices[i].state,
                                 startban:'激活',
-                                devicesicon:'deviceicon',
+                                devicesicon:'deviceiconclick',
                                 startbancolor:'starblue'
                             });
                         }
@@ -1502,10 +1503,10 @@ angular.module("gkSiteApp.controllers", [])
                                 }else{
                                     bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
                                         device_id:siteDevices[i].device_id,
-                                        device_name:siteDevices[i].device_name,
+                                        device_name:siteDevices[i].os_name,
                                         last_activity:siteDevices[i].last_activity,
-                                        os_name:siteDevices[i].os_name,
-                                        os_version:'—',
+                                        os_name:siteDevices[i].device_name,
+                                        os_version:'浏览器',
                                         state:siteDevices[i].state,
                                         startban:'禁止',
                                     });
@@ -1536,18 +1537,20 @@ angular.module("gkSiteApp.controllers", [])
                                                 os_version:siteDevices[i].os_version,
                                                 state:siteDevices[i].state,
                                                 startban:'激活',
-                                                startbancolor:'starblue',
+                                                devicesicon:'deviceicon',
+                                                startbancolor:'starblueclick',
                                                 deleban:'删除'
                                             });
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
                                                 device_id:siteDevices[i].device_id,
-                                                device_name:siteDevices[i].device_name,
+                                                device_name:siteDevices[i].os_name,
                                                 last_activity:siteDevices[i].last_activity,
-                                                os_name:siteDevices[i].os_name,
-                                                os_version:'—',
+                                                os_name:siteDevices[i].device_name,
+                                                os_version:'浏览器',
                                                 state:siteDevices[i].state,
                                                 startban:'激活',
+                                                devicesicon:'deviceiconclick',
                                                 startbancolor:'starblue'
                                             });
                                         }
@@ -1583,10 +1586,10 @@ angular.module("gkSiteApp.controllers", [])
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
                                                 device_id:siteDevices[i].device_id,
-                                                device_name:siteDevices[i].device_name,
+                                                device_name:siteDevices[i].os_name,
                                                 last_activity:siteDevices[i].last_activity,
-                                                os_name:siteDevices[i].os_name,
-                                                os_version:'—',
+                                                os_name:siteDevices[i].device_name,
+                                                os_version:'浏览器',
                                                 state:siteDevices[i].state,
                                                 startban:'激活',
                                                 startbancolor:'starblue'
