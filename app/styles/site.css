@@ -253,12 +253,37 @@ label{
     width:40%;
     line-height: 30px;
     font: 15px;
+    margin-left: 4px;
 }
 .site-synchronous-sync{
     width:40%;
     line-height: 30px;
     font: 15px;
     color:#868686;
+}
+.syncfinishicon{
+    width: 20px;
+    height: 20px;
+    margin-top:3px;
+    margin-right: 4px;
+    display: block;
+    background: url(../images/icon16x16.png) no-repeat -80px -60px;
+}
+.syncicon{
+    width: 20px;
+    height: 20px;
+    margin-top:3px;
+    margin-right: 4px;
+    display: block;
+    background: url(../images/icon16x16.png) no-repeat -420px 0;
+}
+.syncstopicon{
+    width: 20px;
+    height: 20px;
+    margin-top:3px;
+    margin-right: 4px;
+    display: block;
+    background: url(../images/icon16x16.png) no-repeat -100px -60px;
 }
 .site-synchronous-file{
     width:40%;
@@ -268,7 +293,8 @@ label{
     margin-left: 5%;
 }
 .site-synchronous-oper{
-    color:#498FE8;
+    color:#65A0EB;
+    margin-left: 4px;
 }
 .sitedevicesodd{
     background: #F1F4F7;
@@ -376,7 +402,7 @@ label{
     color:#E76262;
 }
 .sync-color{
-    color:rgb(97,133,188);
+    color:#65A0EB;
 }
 .startbangr{
     color:#59B17A;

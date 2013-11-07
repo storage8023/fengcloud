@@ -360,6 +360,9 @@
     setRmoveTrans: function(params){
         return gkClient.gRemoveTrans(JSON.stringify(params));
     },
+    setDeviceStatus: function(params){
+        gkClient.gSetDeviceStatus(JSON.stringify(params));
+    },
     getUserAgent:function(){
         return navigator.userAgent.split(';')
     },
