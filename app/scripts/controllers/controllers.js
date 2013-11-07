@@ -1396,7 +1396,6 @@ angular.module("gkSiteApp.controllers", [])
                 GKApi.devicelist().success(function ($http){
                     var message = [];
                     message = $http;
-                    console.log($http);
                     deferred.resolve(message);
                 })
                 return deferred.promise;
@@ -1517,7 +1516,7 @@ angular.module("gkSiteApp.controllers", [])
                         }
                         $scope.sitedevices = bansitedevices;
                     }else if(startbandata === '禁止'){
-                        if(del === '0'){
+                        if(del === 0){
                             var r=confirm("禁止此设备会导致设备无法登录");
                             if (r==true)
                             {
