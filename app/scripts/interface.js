@@ -7,6 +7,24 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    setDevice:function(params){
+        gkClient.gSetDevice(JSON.stringify(params));
+    },
+    getComputerInfo:function(){
+        var re = gkClient.gComputerInfo();
+        return JSON.parse(re);
+    },
+    getSiteDomain:function(){
+        return gkClient.gSiteDomain();
+    },
+    login:function(params){
+        try {
+            gkClient.gLogin(JSON.stringify(params));
+        } catch (e) {
+            this._handleException(e);
+        }
+
+    },
     logOff:function(){
         try {
             gkClient.gLogoff();

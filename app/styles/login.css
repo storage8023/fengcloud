@@ -6,10 +6,11 @@ header{
     background: url(../images/login/login_bg.png) no-repeat 50% 0;
 }
 h2{
-    font-size: 22px;
+    font-size: 24px;
     color: #606D7F;
-    margin: 20px 0;
+    margin: 18px 0;
     text-align: center;
+    -webkit-font-smoothing: antialiased;
 }
 .form_wrapper{
     width: 280px;
@@ -36,7 +37,7 @@ h2{
     width: 34px;
     height:100%;
     margin: 0;
-    vertical-align: middle;
+    vertical-align:top;
     text-align: center;
     background: #F4F4F6;
 }

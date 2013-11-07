@@ -7,10 +7,14 @@
     <link rel="stylesheet" href="styles/base.css"/>
     <link rel="stylesheet" href="styles/component.css"/>
     <link rel="stylesheet" href="styles/login.css"/>
+    <script src="scripts/util.js"></script>
+    <script src="scripts/interface.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular/angular-md5.js"></script>
     <script src="scripts/login.js"></script>
+    <script src="scripts/services/services.js"></script>
 </head>
 <body ng-controller="loginCtrl">
 <header></header>
@@ -29,16 +33,12 @@
         </div>
         </div>
         <div class="c_f form_layer">
-            <div class="f_l">
-                <input name="remember" id="remember" type="checkbox" class="input_checkbox" ng-model="remember" />
-                <label for="remember">记住登录状态</label>
-            </div>
             <div class="f_r">
                 <a href="javascript:void(0)">忘记密码？</a>
             </div>
         </div>
         <div class="form_layer">
-            <button class="btn btn-blue btn-big login">登 录</button>
+            <button class="btn btn-blue btn-big login" ng-click="loginSubmit()">登 录</button>
         </div>
         <div class="form_layer goto_layer">
             还没有够快账号？<a href="javascript:void(0)" ng-click="step='regist'">立即免费注册</a>
@@ -61,11 +61,11 @@
                 </div>
                 <div class="input_wrapper">
                     <label><i class="icon16x16 icon_person"></i></label>
-                    <input name="regist_username" id="regist_username" type="text" placeholder="登录密码" class="input_text" ng-model="registUsername" autocomplete="off"/>
+                    <input name="regist_username" id="regist_username" type="text" placeholder="称呼" class="input_text" ng-model="registUsername" autocomplete="off"/>
                 </div>
             </div>
             <div class="form_layer">
-                <button class="btn btn-green btn-big login">注 册</button>
+                <button class="btn btn-green btn-big login" ng-click="registSubmit()">注 册</button>
             </div>
             <div class="form_layer goto_layer">
                 我已有够快账号？<a href="javascript:void(0)" ng-click="step='login'">立即登录</a>
@@ -73,6 +73,7 @@
         </div>
     </div>
 </section>
+
 <section class="device" ng-show="step=='device'">
     <div class="content">
         <h2>注册设备</h2>
@@ -90,35 +91,5 @@
     </div>
 </section>
 
-<script type = "text/javascript">
-    angular.module('mylogin', [
-        'angular-md5',
-        'controllers'
-    ]);
-    var app = angular.module("controllers",[]);
-    app.controller("loginCtrl",['$scope', 'md5', function($scope, md5,$http) {
-
-	    postData($scope,$http);
-        console.log($scope,$http);
-        function postData(caller,http){
-            $scope.$watch('password' ,function() {
-                $scope.userPassword = md5.createHash($scope.password || '');
-
-            });
-            caller.postData = function(){
-                if(typeof this.username === 'undefined' || typeof this.password === 'undefined') return false;
-
-                gkClient.gLogin(JSON.stringify({username: this.username,password: this.userPassword}), function (type, error, message) {
-                    if(error === 0){
-                        alert("登入成功");
-                    }else {
-                        alert(message);
-                    }
-                });
-            }
-        }
-
-    }]);
-</script>
 </body>
 </html>

@@ -144,6 +144,9 @@ input[type="password"]{
     box-shadow:inset 1px 1px 3px rgba(0,0,0,0.3)
 }
 
+input[type="radio"], input[type="checkbox"]{
+    margin:0;
+}
 
 
 
