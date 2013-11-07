@@ -1306,8 +1306,8 @@ angular.module('gkClientIndex.services', [])
              */
             toggledevice:function(state,device_id){
                 var params = {
-                    device_id:device_id,
-                    state:state
+                    state:state,
+                    device_id:device_id
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1336,6 +1336,19 @@ angular.module('gkClientIndex.services', [])
                     data:jQuery.param(params)
                 });
             },
+            disablenewdevice:function(state){
+                var params = {
+                    state:state
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'POST',
+                    url: GK.getApiHost()+'/1/account/disable_new_device',
+                    data:jQuery.param(params)
+                });
+            }
         }
         return GKApi;
     }])
