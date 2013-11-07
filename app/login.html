@@ -1,61 +1,96 @@
 ﻿<!DOCTYPE html>
-<html ng-app = "mylogin">
+<html ng-app = "gkClientLogin">
 <head>
-    <title>login</title>
+    <title>登录</title>
     <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
+    <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" href="styles/base.css"/>
+    <link rel="stylesheet" href="styles/component.css"/>
+    <link rel="stylesheet" href="styles/login.css"/>
+    <script src="scripts/util.js"></script>
+    <script src="scripts/interface.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src = "bower_components/angular/angular-md5.js"></script>
-    <style type = "text/css">
-        #login-wrapper{
-            width:300px;
-            height:300px;
-            margin: 0 auto;
-            background: #F8F9FB;
-            border:1px solid #AEBCD4;
-             border-radius: 6px 6px 6px 6px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-            text-align: center;
-            padding-top: 20px;
-        }
-    </style>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular/angular-md5.js"></script>
+    <script src="scripts/login.js"></script>
+    <script src="scripts/services/services.js"></script>
+    <script src="scripts/directives/directives.js"></script>
 </head>
-<body>
-<div id = "login-wrapper">
-    <form name = "myForm"  ng-controller = "loginCtrl"  ng-submit="postData() ">
-            用户:<input type = "text" size = "25" name = "username" ng-model = "username" /><br /><br />
-            密码:<input type = "password" size= "25" name = "userpassword" ng-model ="password" /><br /><br/>
-        <input type = "submit"  value = "登录" />
-    </form>
+<body ng-controller="loginCtrl">
+<header></header>
+<section class="login" ng-show="step=='login'">
+<div class="content">
+    <h2>欢迎登录够快云盘</h2>
+    <div class="form_wrapper">
+        <div class="input_wrapper_group">
+        <div class="input_wrapper">
+            <label for="username"><i class="icon16x16 icon_email"></i></label>
+            <input name="username" id="username" placeholder="账号" class="input_text" ng-model="username" autocomplete="off"/>
+        </div>
+        <div class="input_wrapper">
+            <label for="password"><i class="icon16x16 icon_lock"></i></label>
+            <input name="password" id="password" type="password" placeholder="密码" class="input_text" ng-model="password" autocomplete="off"/>
+        </div>
+        </div>
+        <div class="c_f form_layer">
+            <div class="f_r">
+                <a href="{{siteDomain}}/findpassword">忘记密码？</a>
+            </div>
+        </div>
+        <div class="form_layer">
+            <button class="btn btn-blue btn-big login" ng-click="loginSubmit()">登 录</button>
+        </div>
+        <div class="form_layer goto_layer">
+            还没有够快账号？<a href="javascript:void(0)" ng-click="step='regist'">立即免费注册</a>
+        </div>
+    </div>
 </div>
-<script type = "text/javascript">
-    angular.module('mylogin', [
-        'angular-md5',
-        'controllers'
-    ]);
-    var app = angular.module("controllers",[]);
-    app.controller("loginCtrl",['$scope', 'md5', function($scope, md5,$http) {
+</section>
+<section class="regist" ng-show="step=='regist'">
+    <div class="content">
+        <h2>注册账号</h2>
+        <div class="form_wrapper">
+            <div class="input_wrapper_group">
+                <div class="input_wrapper">
+                    <label><i class="icon16x16 icon_email"></i></label>
+                    <input name="regist_email" id="regist_email" placeholder="邮箱地址" class="input_text" ng-model="registEmail" autocomplete="off"/>
+                </div>
+                <div class="input_wrapper">
+                    <label><i class="icon16x16 icon_lock"></i></label>
+                    <input name="regist_password" id="regist_password" type="password" placeholder="登录密码" class="input_text" ng-model="registPassword" autocomplete="off"/>
+                </div>
+                <div class="input_wrapper">
+                    <label><i class="icon16x16 icon_person"></i></label>
+                    <input name="regist_username" id="regist_username" type="text" placeholder="称呼" class="input_text" ng-model="registUsername" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="form_layer">
+                <button class="btn btn-green btn-big login" ng-click="registSubmit()">注 册</button>
+            </div>
+            <div class="form_layer goto_layer">
+                我已有够快账号？<a href="javascript:void(0)" ng-click="step='login'">立即登录</a>
+            </div>
+        </div>
+    </div>
+</section>
 
-	    postData($scope,$http);
-        console.log($scope,$http);
-        function postData(caller,http){
-            $scope.$watch('password' ,function() {
-                $scope.userPassword = md5.createHash($scope.password || '');
+<section class="device" ng-show="step=='device'">
+    <div class="content">
+        <h2>注册设备</h2>
+        <div class="form_wrapper">
+            <div class="input_wrapper_group">
+                <div class="input_wrapper">
+                    <input name="regist_device" id="regist_device" placeholder="设备名称" class="input_text" ng-model="registDevice" autocomplete="off"/>
+                </div>
+            </div>
+            <div class="form_layer">
+                <button class="btn btn-blue btn-big login" ng-click="setDevice()">开始使用</button>
+            </div>
 
-            });
-            caller.postData = function(){
-                if(typeof this.username === 'undefined' || typeof this.password === 'undefined') return false;
-
-                gkClient.gLogin(JSON.stringify({username: this.username,password: this.userPassword}), function (type, error, message) {
-                    if(error === 0){
-                        alert("登入成功");
-                    }else {
-                        alert(message);
-                    }
-                });
-            }
-        }
-
-    }]);
-</script>
+        </div>
+    </div>
+</section>
+<!--<close-window-button></close-window-button>-->
 </body>
 </html>

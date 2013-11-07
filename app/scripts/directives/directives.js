@@ -3,6 +3,73 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives',[])
+    .directive('href',['$rootScope',function($rootScope){
+        return {
+            restrict: 'A',
+            link:function(scope,element,attrs){
+                element.on('click',function(){
+                    var href = attrs['href'];
+                    var targetElem = element;
+                    if (!targetElem.hasClass('gk_blank') && /\/storage#!files:(0|1):(.*?)(:(.*):.*)??$/.test(href)) {
+                        if (!RegExp.$2 && !RegExp.$2.length && !RegExp.$4 && !RegExp.$4.length) {
+                            //gkClientInterface.openSyncDir();
+                        } else {
+                            var dir = 0, path = '', uppath = '', file = '';
+                            if (RegExp.$2 && RegExp.$2.length) {
+                                uppath = decodeURIComponent(RegExp.$2);
+                            }
+                            if (RegExp.$4 && RegExp.$4.length) {
+                                file = decodeURIComponent(RegExp.$4);
+                                if (Util.String.lastChar(file) === '/') {
+                                    dir = 1;
+                                }
+                                file = Util.String.rtrim(file, '/');
+                            } else {
+                                dir = 1;
+                            }
+                            path = (uppath.length ? uppath + '/' : '') + file;
+//                            if (dir) {
+//                                gkClientInterface.openSyncDir(path + '/');
+//                            } else {
+//                                gkClientInterface.openPathWithSelect(path);
+//                            }
+                        }
+                        return false;
+                    } else if ($.trim(href) != '' && $.trim(href).indexOf('#') != 0 && !/^javascript:.*?$/.test(href)) {
+                        var param = {
+                            url: href,
+                            sso: 0
+                        };
+                        if ($rootScope.PAGE_CONFIG && $rootScope.PAGE_CONFIG.member || targetElem.data('sso') == 1) {
+                            param.sso = 1;
+                        }
+                        var url = gkClientInterface.setGetUrl(param);
+                        gkClientInterface.openUrl(url);
+                        return false;
+                    }
+                })
+            }
+        }
+    }])
+    .directive('closeWindowButton',[function(){
+        return {
+            restrict: 'E',
+            template:'<button class="close_window"><i class="icon16x16 icon_close_window"></i></button>',
+            link:function(scope,element){
+                element.on('click',function(){
+                    gkClientInterface.closeWindow();
+                })
+            }
+        }
+    }])
+    .directive('scrollTo',[function(){
+        return {
+            restrict: 'A',
+            link:function(scope){
+
+            }
+        }
+    }])
     .directive('loadingEllipsis',['$interval',function($interval){
         return {
             replace: true,
@@ -1636,6 +1703,9 @@ angular.module('gkClientIndex.directives',[])
                  * 删除智能文件夹
                  */
                 $scope.cancelSmartFolder = function(){
+                    if(!confirm('你确定要关闭该智能文件夹？')){
+                        return;
+                    }
                     GKApi.removeSmartFolder($scope.keyword).success(function(data){
                         $rootScope.$broadcast('removeSmartFolder',$scope.keyword)
                         $location.search({

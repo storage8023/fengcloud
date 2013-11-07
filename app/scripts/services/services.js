@@ -283,14 +283,45 @@ angular.module('gkClientIndex.services', [])
  * 对请求后返回的错误的处理
  */
     .factory('GKException', [function () {
-        return {
-            handleClientException: function (error) {
-                alert(error.message);
+        var GKException = {
+            getAjaxErrorMsg:function(request){
+                var errorMsg = '';
+                if (request.responseText) {
+                    var result = JSON.parse(request.responseText);
+                    errorMsg = result.error_msg ? result.error_msg : request.responseText;
+                } else {
+                    switch (request.status) {
+                        case 0:
+                            errorMsg = '请检测网络是否已断开';
+                            break;
+                        case 401:
+                            errorMsg ='连接超时';
+                            break;
+                        case 501:
+                        case 502:
+                            errorMsg = '服务器繁忙, 请稍候重试';
+                            break;
+                        case 503:
+                        case 504:
+                            errorMsg = '因您的操作太过频繁, 操作已被取消';
+                            break;
+                        default:
+                            errorMsg = request.status + ':' + request.statusText;
+                            break;
+                    }
+                }
+                return errorMsg;
             },
-            handleAjaxException:function(){
+            handleClientException: function (request) {
 
+            },
+            handleAjaxException:function(request){
+                var errorMsg = this.getAjaxErrorMsg(request);
+                alert(errorMsg);
             }
-        }
+        };
+
+        return GKException;
     }])
     .factory('GK', ['$q', function ($q) {
         return {
@@ -956,6 +987,21 @@ angular.module('gkClientIndex.services', [])
             token: GK.getToken()
         }
         var GKApi = {
+            regist:function(name,email,password,user_license_check){
+                var params = {
+                    name: name,
+                    email:email,
+                    password:password,
+                    user_license_chk:user_license_check,
+                    disable_next_login:1
+                };
+                return jQuery.ajax({
+                    type: 'POST',
+                    dataType:'json',
+                    url: gkClientInterface.getSiteDomain() + '/account/regist_submit',
+                    data:jQuery.param(params)
+                });
+            },
             getSmartFolder:function(code){
                 var params = {
                     code: code
@@ -1500,6 +1546,7 @@ angular.module('gkClientIndex.services', [])
              * 打开设置框
              */
             openSetting:function(tab){
+                tab = angular.isDefined(tab)?tab:'';
                 var UIPath = gkClientInterface.getUIPath();
                 var url = 'file:///'+UIPath+'/site.html#/?tab='+tab;
                 var data = {
@@ -1530,25 +1577,18 @@ angular.module('gkClientIndex.services', [])
     }
     ])
 ;
-var gkClientCallback = {
-    AddFindObject:function(param){
-        var rootScope = jQuery(document).scope();
-        var JSONparam = JSON.parse(param);
-        console.log(JSONparam);
-        rootScope.$broadcast('AddFindObject',JSONparam);
-    }
-};
 
-//(function(obj){
-//    var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage'];
-//    angular.forEach(callbacks,function(value){
-//            obj[value] = function(param){
-//                var rootScope = jQuery(document).scope();
-//                var JSONparam = JSON.parse(param);
-//                rootScope.$broadcast(value,JSONparam);
-//            }
-//    });
-//})(gkClientCallback)
+var gkClientCallback = {};
+(function(obj){
+    var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage','LoginResult'];
+    angular.forEach(callbacks,function(value){
+            obj[value] = function(param){
+                var rootScope = jQuery(document).scope();
+                var JSONparam = JSON.parse(param);
+                rootScope.$broadcast(value,JSONparam);
+            }
+    });
+})(gkClientCallback)
 
 function GKFileSearch() {
 }

@@ -121,6 +121,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.smartTreeList.push(newSmartFolder);
             newSmartFolder.selected = true;
             $scope.handleSelect(newSmartFolder,'smartfolder');
+
         })
 
 
@@ -983,12 +984,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"注销",
                 menuclick:function(){
-                    return;
+                    gkClientInterface.logOff();
                 }
             },{
                 item:"退出",
                 menuclick:function(){
-                    return;
+                    gkClientInterface.quit();
                 }
             }
         ];
