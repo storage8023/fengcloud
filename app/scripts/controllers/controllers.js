@@ -1491,8 +1491,7 @@ angular.module("gkSiteApp.controllers", [])
                  * @param device_id
                  * @param startbandata
                  */
-                $scope.banstart = function(state,device_id,del,yy){
-                    alert(yy);
+                $scope.banstart = function(state,device_id,del){
                     var banstartDevices = [],
                         bansitedevices = [];
                     banstartDevices =   $scope.sitedevices;

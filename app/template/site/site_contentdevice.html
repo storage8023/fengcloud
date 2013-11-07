@@ -18,7 +18,7 @@
                   <div  class = "site-device-date f_l"><span>{{device.last_activity}}</span></div>
                   <div class="btn-toolbar site-device-file f_r" role="toolbar">
                       <div class="btn-group">
-                          <button type="button" class="btn  '{{device.startbancolor}}' startbanred" ng-click = "banstart('{{device.state}}' ,'{{device.device_id}}','{{device.allow_delete}}', '{{device.devicesicon}}')">{{device.startban}}</button>
+                          <button type="button" class="btn  '{{device.startbancolor}}' startbanred" ng-click = "banstart('{{device.state}}' ,'{{device.device_id}}','{{device.allow_delete}}')">{{device.startban}}</button>
                       </div>
                       <div class="btn-group">
                           <button type="button" class="btn delebancolor" ng-click = "siteSyncDelete('{{device.device_id}}',$index)">{{device.deleban}}</button>

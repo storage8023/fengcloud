@@ -4,6 +4,7 @@
 */
 .queue-wrapper{
     border-top: 1px solid #2A2E33;
+    -webkit-user-select: none;
 }
 .queue-sildbar{
     width:150px;
@@ -22,23 +23,87 @@
     font-size: 14px;
     margin-bottom: 10px;
 }
-.queue-sildbar-ul li a{
-    padding-left: 40px;
-}
 .blue {
     background:#1F2327;
-}
-.blue a{
-    color:#FFF;
+    border-left:3px solid #448DE8;
 }
 .none{
     background:#2A2E33;
+    border: 0;
 }
-.none a{
+.queue-sildbar-ul li .queuesildbardownload{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
     display: block;
-    color:#8E98A8;
-    padding-left: 40px;
+    margin-left: 18px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -380px 0;
 }
+.queue-sildbar-ul li .queuesildbarsynch{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 18px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -420px 0;
+}
+.queue-sildbar-ul .blue .queuesildbarupload{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 15px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -400px -20px;
+}
+.queue-sildbar-ul .blue .queuesildbardownload{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 15px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -380px -20px;
+}
+.queue-sildbar-ul .blue .queuesildbarsynch{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 15px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -420px -20px;
+}
+.queue-sildbar-ul .none .queuesildbarupload{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 18px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -400px 0;
+}
+.queue-sildbar-ul .none .queuesildbardownload{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 18px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -380px 0;
+}
+.queue-sildbar-ul .none .queuesildbarsynch{
+    width: 20px;
+    margin-top:4px;
+    height: 20px;
+    display: block;
+    margin-left: 18px;
+    margin-right: 3px;
+    background: url(../images/icon16x16.png) no-repeat -420px 0;
+}
+
 .queue-content{
     position: absolute;
     top:1px;
@@ -197,15 +262,19 @@
 .queue-footer-UploadDownload{
     margin-left: 10px;
 }
-.queue-footer-Upload,
-.queue-footer-Download{
-    display: inline;
-}
 .queue-footer-Upload .uploadimage{
-    background: url('../images/icon.png') no-repeat 0 -280px;
+    width: 20px;
+    height: 20px;
+    display: block;
+    margin-top: 3px;
+    background: url('../images/icon16x16.png') no-repeat -400px 0;
 }
 .queue-footer-Download .downloadimage{
-    background: url('../images/icon.png') no-repeat 0 -280px;
+    width: 20px;
+    height: 20px;
+    display: block;
+    margin-top: 3px;
+    background: url('../images/icon16x16.png') no-repeat -380px 0;
 }
 .queue-dele-list .queue-con-font .queuedele{
     display: none;
@@ -213,21 +282,12 @@
 .queuedelelist:hover .queue-con-font .queuedele{
     display: block;
 }
-.queue-footer-UploadDownload span{
-    padding-right:10px;
-    padding-left:6px;
+.uploadspan{
+    padding-right: 10px;
 }
 .queue-footer-Close{
-    width:65px;
-    height:25px;
-    line-height: 25px;
-    border:1px solid #325E94;
-    background: #467DC2;
-    border-radius: 3px 3px 3px 3px;
-    margin-right: 20px;
-    margin-top: 5px;
-    text-align: center;
-}
-.queue-footer-Close a{
-    color:#FFF;
+    padding-left: 25px;
+    padding-right: 25px;
+    margin-right: 15px;
+    margin-top: 3px;
 }
