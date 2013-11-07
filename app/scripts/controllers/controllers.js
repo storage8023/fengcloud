@@ -956,7 +956,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"设置",
                 menuclick:function(){
-                    GKDialog.openSetting( 'contentUniversal');
+                    GKDialog.openSetting();
                 }
             },{
                 item:"帮助",
@@ -1397,6 +1397,7 @@ angular.module("gkSiteApp.controllers", [])
                 GKApi.devicelist().success(function ($http){
                     var message = [];
                     message = $http;
+                    console.log($http);
                     deferred.resolve(message);
                 })
                 return deferred.promise;
@@ -1424,10 +1425,10 @@ angular.module("gkSiteApp.controllers", [])
                             }else{
                                 siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                     device_id:siteDevices[i].device_id,
-                                    device_name:siteDevices[i].device_name,
+                                    device_name:siteDevices[i].os_name,
                                     last_activity:siteDevices[i].last_activity,
-                                    os_name:'—',
-                                    os_version:'—',
+                                    os_name:siteDevices[i].device_name,
+                                    os_version:'浏览器',
                                     state:siteDevices[i].state,
                                     startban:'禁止',
                                 });
@@ -1440,19 +1441,21 @@ angular.module("gkSiteApp.controllers", [])
                                 os_name:siteDevices[i].os_name,
                                 os_version:siteDevices[i].os_version,
                                 state:siteDevices[i].state,
-                                startban:'启动',
+                                startban:'激活',
                                 startbancolor:'starblue',
+                                devicesicon:'deviceiconclick',
                                 deleban:'删除'
                             });
                         }else{
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                 device_id:siteDevices[i].device_id,
-                                device_name:siteDevices[i].device_name,
+                                device_name:siteDevices[i].os_name,
                                 last_activity:siteDevices[i].last_activity,
-                                os_name:'—',
-                                os_version:'—',
+                                os_name:siteDevices[i].device_name,
+                                os_version:'浏览器',
                                 state:siteDevices[i].state,
-                                startban:'启动',
+                                startban:'激活',
+                                devicesicon:'deviceiconclick',
                                 startbancolor:'starblue'
                             });
                         }
@@ -1476,8 +1479,8 @@ angular.module("gkSiteApp.controllers", [])
                  * @param device_id
                  * @param startbandata
                  */
-                $scope.banstart = function(state,device_id,startbandata,delete_id){
-                    if(startbandata === '启动'){
+                $scope.banstart = function(state,device_id,startbandata,del){
+                    if(startbandata === '激活'){
                         GKApi.toggledevice(state,device_id).success(function (){
 
                         })
@@ -1501,10 +1504,10 @@ angular.module("gkSiteApp.controllers", [])
                                 }else{
                                     bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
                                         device_id:siteDevices[i].device_id,
-                                        device_name:siteDevices[i].device_name,
+                                        device_name:siteDevices[i].os_name,
                                         last_activity:siteDevices[i].last_activity,
-                                        os_name:siteDevices[i].os_name,
-                                        os_version:'—',
+                                        os_name:siteDevices[i].device_name,
+                                        os_version:'浏览器',
                                         state:siteDevices[i].state,
                                         startban:'禁止',
                                     });
@@ -1515,7 +1518,7 @@ angular.module("gkSiteApp.controllers", [])
                         }
                         $scope.sitedevices = bansitedevices;
                     }else if(startbandata === '禁止'){
-                        if(delete_id === 0){
+                        if(del === '0'){
                             var r=confirm("禁止此设备会导致设备无法登录");
                             if (r==true)
                             {
@@ -1534,19 +1537,21 @@ angular.module("gkSiteApp.controllers", [])
                                                 os_name:siteDevices[i].os_name,
                                                 os_version:siteDevices[i].os_version,
                                                 state:siteDevices[i].state,
-                                                startban:'启动',
-                                                startbancolor:'starblue',
+                                                startban:'激活',
+                                                devicesicon:'deviceicon',
+                                                startbancolor:'starblueclick',
                                                 deleban:'删除'
                                             });
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
                                                 device_id:siteDevices[i].device_id,
-                                                device_name:siteDevices[i].device_name,
+                                                device_name:siteDevices[i].os_name,
                                                 last_activity:siteDevices[i].last_activity,
-                                                os_name:siteDevices[i].os_name,
-                                                os_version:'—',
+                                                os_name:siteDevices[i].device_name,
+                                                os_version:'浏览器',
                                                 state:siteDevices[i].state,
-                                                startban:'启动',
+                                                startban:'激活',
+                                                devicesicon:'deviceiconclick',
                                                 startbancolor:'starblue'
                                             });
                                         }
@@ -1575,19 +1580,19 @@ angular.module("gkSiteApp.controllers", [])
                                                 os_name:siteDevices[i].os_name,
                                                 os_version:siteDevices[i].os_version,
                                                 state:siteDevices[i].state,
-                                                startban:'启动',
+                                                startban:'激活',
                                                 startbancolor:'starblue',
                                                 deleban:'删除'
                                             });
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
                                                 device_id:siteDevices[i].device_id,
-                                                device_name:siteDevices[i].device_name,
+                                                device_name:siteDevices[i].os_name,
                                                 last_activity:siteDevices[i].last_activity,
-                                                os_name:siteDevices[i].os_name,
-                                                os_version:'—',
+                                                os_name:siteDevices[i].device_name,
+                                                os_version:'浏览器',
                                                 state:siteDevices[i].state,
-                                                startban:'启动',
+                                                startban:'激活',
                                                 startbancolor:'starblue'
                                             });
                                         }
@@ -1622,15 +1627,9 @@ angular.module("gkSiteApp.controllers", [])
         /**
          * 左侧栏单击事件
          */
+        $scope.siteSidebar = 'contentUniversal';
         $scope.univerDevice = function(){
-            if($location.search().tab === 'contentUniversal'){
-                $scope.universal = true;
-                $scope.siteSidebar = 'contentUniversal';
-                $scope.device = "false";
-                $scope.synchronous = "";
-                $scope.network = "";
-                $scope.advanced = "";
-            }else if($location.search().tab === 'contentdevice'){
+             if($location.search().tab === 'contentdevice'){
                 $scope.deviceSildeButton();
                 $scope.device = true;
                 $scope.siteSidebar = 'contentdevice';
