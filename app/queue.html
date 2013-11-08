@@ -64,16 +64,16 @@
                                          ng-style="{width:viewupload.filesizepos}">
                                     </div>
                                 </div>
-                            </div>
-                            <div class="queue-con-finish f_l {{viewupload.valuecolor}}">
-                                <span ng-bind = "viewupload.finishData"></span>
+                                <div class = "{{viewupload.valuecolor}}">
+                                    <span ng-bind = "viewupload.finishData"></span>
+                                </div>
                             </div>
                             <div class="queue-con-time f_l">
                                 <a href = "javascript:void(0);" model = "{{viewupload.time}}" ng-bind = "viewupload.time"></a>
                             </div>
-                            <div class = "queuedele"
+                            <div class = "queuedele f_l"
                                  ng-click = "hide =! hide;queueDelete($index,'{{viewupload.webpath}}','{{viewupload.type}}','{{viewupload.mountid}}')">
-                                    <a href = "javascript:void(0);" >XX</a>
+                                    <i class = "queuedeleicon"></i>
                             </div>
                         </div>
                     </li>
