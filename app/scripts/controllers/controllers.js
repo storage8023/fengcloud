@@ -1485,7 +1485,7 @@ angular.module("gkSiteApp.controllers", [])
                  */
                 $scope.banstart = function(state,device_id,startbandata,del){
                     var banstartDevices = [],
-                         bansitedevices = [];
+                        bansitedevices = [];
                     banstartDevices =   $scope.sitedevices;
                     if(state === '0'){
                         GKApi.toggledevice(state,device_id).success(function(){
@@ -1613,7 +1613,7 @@ angular.module("gkSiteApp.controllers", [])
                     }
                 }
                 $scope.changeNewDevice = function(){
-                    
+
                 }
             })
 
@@ -1641,7 +1641,7 @@ angular.module("gkSiteApp.controllers", [])
          */
         $scope.siteSidebar = 'contentUniversal';
         $scope.univerDevice = function(){
-             if($location.search().tab === 'contentdevice'){
+            if($location.search().tab === 'contentdevice'){
                 $scope.deviceSildeButton();
                 $scope.device = true;
                 $scope.siteSidebar = 'contentdevice';

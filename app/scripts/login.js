@@ -29,6 +29,10 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
 
         };
 
+        $scope.showStep = function(step){
+            $scope.step = step;
+        };
+
         /**
          * 监听登录结果的回调
          */
@@ -38,7 +42,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                     alert(params.message);
                     return;
                 }
-                $scope.step = 'device';
+                $scope.showStep('device');
             })
         })
 
@@ -64,9 +68,8 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 return;
             }
             var password = md5.createHash($scope.registPassword);
-            $scope.step = 'device';
+            //$scope.step = 'device';
             GKApi.regist($scope.registUsername,$scope.registEmail,password,1).success(function(){
-
                 gkClientInterface.login({
                     username:$scope.registEmail,
                     password:md5.createHash($scope.registPassword)

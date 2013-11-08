@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="styles/base.css"/>
     <link rel="stylesheet" href="styles/component.css"/>
+    <link rel="stylesheet" href="styles/ng-animation.css"/>
     <link rel="stylesheet" href="styles/login.css"/>
     <script src="scripts/util.js"></script>
     <script src="scripts/interface.js"></script>
@@ -19,7 +20,7 @@
 </head>
 <body ng-controller="loginCtrl">
 <header></header>
-<section class="login" ng-show="step=='login'">
+<section class="login rotate" ng-show="step=='login'">
 <div class="content">
     <h2>欢迎登录够快云盘</h2>
     <div class="form_wrapper">
@@ -42,12 +43,12 @@
             <button class="btn btn-blue btn-big login" ng-click="loginSubmit()">登 录</button>
         </div>
         <div class="form_layer goto_layer">
-            还没有够快账号？<a href="javascript:void(0)" ng-click="step='regist'">立即免费注册</a>
+            还没有够快账号？<a href="javascript:void(0)" ng-click="showStep('regist')">立即免费注册</a>
         </div>
     </div>
 </div>
 </section>
-<section class="regist" ng-show="step=='regist'">
+<section class="regist rotate" ng-show="step=='regist'">
     <div class="content">
         <h2>注册账号</h2>
         <div class="form_wrapper">
@@ -69,13 +70,13 @@
                 <button class="btn btn-green btn-big login" ng-click="registSubmit()">注 册</button>
             </div>
             <div class="form_layer goto_layer">
-                我已有够快账号？<a href="javascript:void(0)" ng-click="step='login'">立即登录</a>
+                我已有够快账号？<a href="javascript:void(0)" ng-click="showStep('login')">立即登录</a>
             </div>
         </div>
     </div>
 </section>
 
-<section class="device" ng-show="step=='device'">
+<section class="device rotate" ng-show="step=='device'">
     <div class="content">
         <h2>注册设备</h2>
         <div class="form_wrapper">
