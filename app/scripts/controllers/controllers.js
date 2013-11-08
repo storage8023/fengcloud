@@ -84,9 +84,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
         var myTreeData = GKFile.dealTreeData([myMount], 'myfile');
-        myTreeData[0]['children'] = GKFile.dealTreeData(GKFile.getFileList(myMount.mount_id,'',1), 'myfile', myMount.mount_id);
-        if(!myTreeData[0]['children']) myTreeData[0]['children'] = [];
-        myTreeData[0]['children'].push(getTrashNode(myMount.mount_id));
+//        myTreeData[0]['children'] = GKFile.dealTreeData(GKFile.getFileList(myMount.mount_id,'',1), 'myfile', myMount.mount_id);
+//        if(!myTreeData[0]['children']) myTreeData[0]['children'] = [];
+//        myTreeData[0]['children'].push(getTrashNode(myMount.mount_id));
         $scope.treeList = myTreeData;
 
         /**
@@ -185,7 +185,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var list = GKFile.getFileList(branch.data.mount_id,branch.data.fullpath,1);
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
                 if(!branch.children)  branch.children = [];
-                if(branch.data.org_id !=0 && !branch.data.fullpath){
+                if(!branch.data.fullpath){
                     branch.children.push(getTrashNode(branch.data.mount_id));
                 }
             }
@@ -939,9 +939,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-	    $scope.queueOpen = function(){
-             GKDialog.openTransfer();
-	    }
+
 
         $scope.items = [
             {
@@ -957,6 +955,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 item:"设置",
                 menuclick:function(){
                     GKDialog.openSetting();
+                }
+            },{
+                item:"传输队列",
+                menuclick:function(){
+                    GKDialog.openTransfer();
                 }
             },{
                 item:"帮助",
@@ -1255,7 +1258,8 @@ angular.module("gkSiteApp.controllers", [])
             $scope.recycle = (typeof $scope.getsitedata.recycle === 'number') ? $scope.getsitedata.recycle === 1 ? true : false : $scope.getsitedata.recycle;
             $scope.local = (typeof $scope.getsitedata.local === 'number') ? $scope.getsitedata.local === 1 ? true : false : $scope.getsitedata.local;
             $scope.https = (typeof $scope.getsitedata.https === 'number') ? $scope.getsitedata.https === 1 ? true : false : $scope.getsitedata.https;
-            $scope.proxy = (typeof $scope.getsitedata.proxy === 'number') ? $scope.getsitedata.proxy === 1 ? true : false : $scope.getsitedata.proxy
+            $scope.proxy = (typeof $scope.getsitedata.proxy === 'number') ? $scope.getsitedata.proxy === 1 ? true : false : $scope.getsitedata.proxy;
+            $scope.state = (typeof $scope.getsitedata.state === 'number') ? $scope.getsitedata.decivestatus === 1 ? true : false : $scope.getsitedata.decivestatus;
         }
         $scope.SiteOpen();
         /**
@@ -1350,9 +1354,9 @@ angular.module("gkSiteApp.controllers", [])
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
                 if(!data[i].num){
-                    sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:'完成同步'});
+                    sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,icon:'syncfinishicon',finish:'完成同步'});
                 }else{
-                    sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:data[i].num+'项正在同步'});
+                    sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,icon:'syncicon',finish:data[i].num+'项正在同步'});
                 }
             }
             return sync;
@@ -1366,7 +1370,7 @@ angular.module("gkSiteApp.controllers", [])
         var siteSyncStop = function(data){
             var sync = [];
             for(var i= 0,len = data.length;i<len;i++){
-                sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,num:data[i].num,finish:'暂停同步'});
+                sync.push({webpath:data[i].webpath,path:data[i].path,mountid:data[i].mountid,icon:'syncstopicon',num:data[i].num,finish:'暂停同步'});
             }
             return sync;
         }
@@ -1421,6 +1425,7 @@ angular.module("gkSiteApp.controllers", [])
                                     state:siteDevices[i].state,
                                     startban:'禁止',
                                     deleban:'删除'
+
                                 });
                             }else{
                                 siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
@@ -1432,6 +1437,7 @@ angular.module("gkSiteApp.controllers", [])
                                     os_version:'浏览器',
                                     state:siteDevices[i].state,
                                     startban:'禁止',
+
                                 });
                             }
                         }else if(siteDevices[i].allow_delete === 1){
@@ -1445,8 +1451,8 @@ angular.module("gkSiteApp.controllers", [])
                                 state:siteDevices[i].state,
                                 startban:'激活',
                                 startbancolor:'starblue',
-                                devicesicon:'deviceiconclick',
-                                deleban:'删除'
+                                deleban:'删除',
+                                devicesicon:'deviceiconclick'
                             });
                         }else{
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
@@ -1458,8 +1464,8 @@ angular.module("gkSiteApp.controllers", [])
                                 os_version:'浏览器',
                                 state:siteDevices[i].state,
                                 startban:'激活',
-                                devicesicon:'deviceiconclick',
-                                startbancolor:'starblue'
+                                startbancolor:'starblue',
+                                devicesicon:'deviceiconclick'
                             });
                         }
                     }
@@ -1483,7 +1489,7 @@ angular.module("gkSiteApp.controllers", [])
                  * @param device_id
                  * @param startbandata
                  */
-                $scope.banstart = function(state,device_id,startbandata,del){
+                $scope.banstart = function(state,device_id,del){
                     var banstartDevices = [],
                         bansitedevices = [];
                     banstartDevices =   $scope.sitedevices;
@@ -1514,13 +1520,12 @@ angular.module("gkSiteApp.controllers", [])
                                         os_name:siteDevices[i].device_name,
                                         os_version:'浏览器',
                                         state:'1',
-                                        startban:'禁止',
+                                        startban:'禁止'
                                     });
                                 }
                             }else{
                                 bansitedevices.push(banstartDevices[i]);
                             }
-                            $scope.sitedevices = bansitedevices;
                         }
                     }else if(state === '1'){
                         if(del === '1'){
@@ -1542,9 +1547,9 @@ angular.module("gkSiteApp.controllers", [])
                                                 os_version:siteDevices[i].os_version,
                                                 state:'0',
                                                 startban:'激活',
-                                                devicesicon:'deviceicon',
-                                                startbancolor:'starblueclick',
-                                                deleban:'删除'
+                                                deleban:'删除',
+                                                startbancolor:'starblue',
+                                                devicesicon:'deviceiconclick'
                                             });
                                         }else{
                                             bansitedevices.push({allow_edit:siteDevices[i].allow_edit,
@@ -1556,15 +1561,18 @@ angular.module("gkSiteApp.controllers", [])
                                                 os_version:'浏览器',
                                                 state:'0',
                                                 startban:'激活',
-                                                devicesicon:'deviceiconclick',
-                                                startbancolor:'starblue'
+                                                startbancolor:'starblue',
+                                                devicesicon:'deviceiconclick'
                                             });
                                         }
                                     }else{
                                         bansitedevices.push(banstartDevices[i]);
                                     }
                                 }
-                                $scope.sitedevices = bansitedevices;
+                            }else{
+                                for(var i = 0,len = banstartDevices.length;i<len;i++){
+                                    bansitedevices.push(banstartDevices[i]);
+                                }
                             }
                         }else if(del === '0'){
                             var r=confirm("禁止网页版会导致所有设备都无法以网页方式登录");
@@ -1572,6 +1580,9 @@ angular.module("gkSiteApp.controllers", [])
                             {
                                 GKApi.toggledevice(state,device_id).success(function (){
                                 })
+                                var banstartDevices = [],
+                                    bansitedevices = [];
+                                banstartDevices =   $scope.sitedevices;
                                 for(var i = 0,len = banstartDevices.length;i<len;i++){
                                     if( banstartDevices[i].device_id === device_id){
                                         if(siteDevices[i].allow_delete === 1){
@@ -1606,14 +1617,14 @@ angular.module("gkSiteApp.controllers", [])
                                         bansitedevices.push(banstartDevices[i]);
                                     }
                                 }
-
+                            }else{
+                                for(var i = 0,len = banstartDevices.length;i<len;i++){
+                                    bansitedevices.push(banstartDevices[i]);
+                                }
                             }
-                            $scope.sitedevices = bansitedevices;
                         }
                     }
-                }
-                $scope.changeNewDevice = function(){
-
+                    $scope.sitedevices = bansitedevices;
                 }
             })
 
@@ -1634,14 +1645,39 @@ angular.module("gkSiteApp.controllers", [])
             }
         }
 
+        $scope.changeNewDevice = function(){
+               if($scope.state){
+                    var r=confirm("禁止后你将无法用其他设备使用够快");
+                    if (r===true)
+                    {
+                        var statedata = 1;
+                        var data = {
+                            status:1
+                        }
+                        gkClientInterface.setDeviceStatus(data);
+                        GKApi.disablenewdevice(statedata).success(function (){
 
+                        })
+                     }else{
+                        $scope.state = false;
+                    }
+                }else{
+                    var statedata = 0;
+                    var data = {
+                        status:0
+                    }
+                    gkClientInterface.setDeviceStatus(data);
+                    GKApi.disablenewdevice(statedata).success(function (){
 
+                    })
+                }
+        }
         /**
          * 左侧栏单击事件
          */
         $scope.siteSidebar = 'contentUniversal';
         $scope.univerDevice = function(){
-            if($location.search().tab === 'contentdevice'){
+             if($location.search().tab === 'contentdevice'){
                 $scope.deviceSildeButton();
                 $scope.device = true;
                 $scope.siteSidebar = 'contentdevice';
@@ -1707,6 +1743,7 @@ angular.module("gkSiteApp.controllers", [])
                 local: (typeof $scope.local !== 'number') ? $scope.local === true ? 1 : 0 : $scope.local,
                 https: (typeof $scope.https !== 'number') ? $scope.https === true ? 1 : 0 : $scope.https,
                 proxy: (typeof  $scope.proxy !== 'number') ? $scope.proxy === true ? 1 : 0 : $scope.proxy,
+                decivestatus: (typeof $scope.state === 'number') ? $scope.state === true ? 1 : 0 : $scope.state,
                 configpath: $scope.configPathInter,
                 startsync: $scope.startStop
             };

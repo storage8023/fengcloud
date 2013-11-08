@@ -62,14 +62,6 @@ angular.module('gkClientIndex.directives',[])
             }
         }
     }])
-    .directive('scrollTo',[function(){
-        return {
-            restrict: 'A',
-            link:function(scope){
-
-            }
-        }
-    }])
     .directive('loadingEllipsis',['$interval',function($interval){
         return {
             replace: true,
