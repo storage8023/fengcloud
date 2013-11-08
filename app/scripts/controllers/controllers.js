@@ -1431,9 +1431,9 @@ angular.module("gkSiteApp.controllers", [])
                                 siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                     allow_delete:siteDevices[i].allow_delete,
                                     device_id:siteDevices[i].device_id,
-                                    device_name:siteDevices[i].os_name,
+                                    device_name:siteDevices[i].device_name,
                                     last_activity:siteDevices[i].last_activity,
-                                    os_name:siteDevices[i].device_name,
+                                    os_name:siteDevices[i].os_name,
                                     os_version:'浏览器',
                                     state:siteDevices[i].state,
                                     startban:'禁止',
@@ -1444,9 +1444,9 @@ angular.module("gkSiteApp.controllers", [])
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                 allow_delete:siteDevices[i].allow_delete,
                                 device_id:siteDevices[i].device_id,
-                                device_name:siteDevices[i].device_name,
+                                device_name:siteDevices[i].os_name,
                                 last_activity:siteDevices[i].last_activity,
-                                os_name:siteDevices[i].os_name,
+                                os_name:siteDevices[i].device_name,
                                 os_version:siteDevices[i].os_version,
                                 state:siteDevices[i].state,
                                 startban:'激活',
@@ -1458,9 +1458,9 @@ angular.module("gkSiteApp.controllers", [])
                             siteDevicesData.push({allow_edit:siteDevices[i].allow_edit,
                                 allow_delete:siteDevices[i].allow_delete,
                                 device_id:siteDevices[i].device_id,
-                                device_name:siteDevices[i].os_name,
+                                device_name:siteDevices[i].device_name,
                                 last_activity:siteDevices[i].last_activity,
-                                os_name:siteDevices[i].device_name,
+                                os_name:siteDevices[i].os_name,
                                 os_version:'浏览器',
                                 state:siteDevices[i].state,
                                 startban:'激活',
@@ -1798,18 +1798,18 @@ angular.module("gkQueueApp.controllers", [])
                 if(data[i].status === 3){
                     var posSize = Util.Number.bitSize(data[i].filesize);
                     finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
-                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"上传完成",
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"完成",
                         possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar",mountid:data[i].mountid});
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = Util.Number.bitSize(data[i].filesize);
                     nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
-                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"继续等待",
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",
                         filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist',type:"upload",mountid:data[i].mountid});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = Util.Number.bitSize(data[i].filesize);
-                    if(data[i].time === ' '){
+                    if(data[i].time === ''){
                         nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                             filesize:data[i].filesize,time:'网络异常',status:data[i].status,filesizepos:filesizePos,
                             possize:posSize,delelist:'queuedelelist',type:"upload",mountid:data[i].mountid});
@@ -1841,18 +1841,18 @@ angular.module("gkQueueApp.controllers", [])
                 if(data[i].status === 3){
                     var posSize = Util.Number.bitSize(data[i].filesize);
                     finishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
-                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"下载完成",
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"完成",
                         possize:posSize,valuecolor:"downuploadcolor",finishbar:"progressbar",mountid:data[i].mountid});
                 }else if(data[i].status === 2){
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = Util.Number.bitSize(data[i].filesize);
                     nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
-                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"继续等待",
+                        filesize:data[i].filesize,time:data[i].time,status:data[i].status,finishData:"等待",
                         filesizepos:filesizePos,possize:posSize,valuecolor:"waitcolor",delelist:'queuedelelist',type:"download",mountid:data[i].mountid});
                 }else{
                     var filesizePos = parseInt((data[i].pos/data[i].filesize)*100)
                         ,posSize = Util.Number.bitSize(data[i].filesize);
-                    if(data[i].time === ' '){
+                    if(data[i].time === ''){
                         nofinishdata.push({webpath:data[i].webpath,path:data[i].path,dir:data[i].dir,pos:data[i].pos,
                             filesize:data[i].filesize,time:'网络异常',status:data[i].status,filesizepos:filesizePos
                             ,possize:posSize,delelist:'queuedelelist',type:"download",mountid:data[i].mountid});
@@ -1924,7 +1924,7 @@ angular.module("gkQueueApp.controllers", [])
                 $scope.$apply(function(){
                     $scope.getTransListtime();
                 });
-            },2000);
+            },3000);
         }
         $scope.queueinterface();
         $scope.queusSildbarUpload = function(){
@@ -1960,7 +1960,7 @@ angular.module("gkQueueApp.controllers", [])
                 $scope.$apply(function(){
                     $scope.downloadDataProcessing();
                 });
-            },2000);
+            },3000);
         }
         $scope.queueinterfaceDownload();
         $scope.queusSildbarDownload = function(){
@@ -1995,7 +1995,7 @@ angular.module("gkQueueApp.controllers", [])
                 $scope.$apply(function(){
                     $scope.SynchronousDataProcessing();
                 });
-            },2000);
+            },3000);
         }
         $scope.queueinterfaceSync();
         $scope.queusSildbarSync = function(){
@@ -2009,6 +2009,7 @@ angular.module("gkQueueApp.controllers", [])
                 mountid:mountid,
                 type:type
             }
+            console.log(data);
             if (r==true)
             {
                 $scope.upload.splice(index, 1);
