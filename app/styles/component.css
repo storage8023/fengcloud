@@ -5,6 +5,7 @@ i.icon16x16{
     background: url(../images/icon/icon16x16.png) no-repeat 0 0;
     display: inline-block;
     vertical-align: middle;
+    margin-top: -3px;
 }
 i.icon16x16.icon_email{
     background-position: -164px -84px;
@@ -13,10 +14,28 @@ i.icon16x16.icon_lock{
     background-position: -184px -24px;
 }
 i.icon16x16.icon_person{
+    background-position: -484px -4px;
+}
+i.icon16x16.icon_person_white{
     background-position: -484px -24px;
 }
 i.icon16x16.icon_close_window{
     background-position: -204px -64px;
+}
+i.icon16x16.icon_info{
+    background-position: -524px -4px;
+}
+i.icon16x16.icon_computer{
+    background-position: -544px -4px;
+}
+i.icon16x16.icon_sync{
+    background-position: -564px -4px;
+}
+i.icon16x16.icon_network{
+    background-position: -584px -4px;
+}
+i.icon16x16.icon_airplane{
+    background-position: -604px -4px;
 }
 /*********文件图标 32*32*******/
 
@@ -255,4 +274,9 @@ button.close_window{
     border:0 none;
     top:2px;
     right: 3px;
+}
+.empty{
+    text-align: center;
+    padding-top: 60px;
+    color:#ACB4BF;
 }

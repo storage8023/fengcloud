@@ -1,0 +1,29 @@
+<div class="{{selectedTab.name}}">
+    <h2>{{selectedTab.title}}</h2>
+    <section class="scrollbar">
+        <div class="list_wrapper">
+            <div class="list_header">
+                <div>同步目录</div>
+                <div>同步状态</div>
+                <div>同步操作</div>
+            </div>
+            <div class="list">
+                <div class="empty" ng-if="!syncedFiles || !syncedFiles.length">未设置同步目录</div>
+                <div class="item" ng-repeat="file in syncedFiles">
+                    <div title="{{file.webpath|getSyncFileName}}">
+                        <i class="file_icon icon_folder"></i>
+                        <span>{{file.webpath|getSyncFileName}}</span>
+                    </div>
+                    <div class="sync_state">
+                        <i class="icon16x16 {{file.numbe|getSyncIcon}}"></i>
+                       <span>{{file.number|getSyncState}}</span>
+                    </div>
+
+                    <div>
+                        <button ng-click="cancelSync()">取消同步</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -563,6 +563,20 @@ Util.Number = {
     }
 };
 
+Util.Array = {
+  getObjectByKeyValue:function(array,key,value){
+      var obj = null,
+          len = array.length;
+      for(var i=0;i<len;i++){
+        if(typeof array[i][key] !=='undefined' && array[i][key] === value){
+            obj =  array[i];
+            break;
+        }
+      }
+      return obj;
+  }
+};
+
 //够快客户端（pc，mac客户端及企业套件）函数通用js函数
 var gkClientCommon = {
     disableDefaultEvent: function() {

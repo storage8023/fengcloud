@@ -1,0 +1,18 @@
+<div class="{{selectedTab.name}}">
+    <h2>{{selectedTab.title}}</h2>
+    <section>
+        <div class="form_layer" ng-repeat="setting in settings">
+            <div ng-if="setting.type=='checkbox'">
+                <input type="{{setting.type}}" ng-model="setting.model" name="{{setting.name}}" id="{{setting.name}}"/>
+                <label for="{{setting.name}}">{{setting.label}}</label>
+            </div>
+            <div ng-if="setting.type=='select'">
+                <label for="{{setting.name}}">{{setting.label}}</label>
+               <select class="form-control" name="{{setting.name}}" ng-model="setting.model" id="{{setting.name}}" ng-options="option.name for option in setting.options"></select>
+            </div>
+            <div ng-if="setting.type=='button'">
+                <button ng-click="setting.click()">{{setting.label}}</button>
+            </div>
+        </div>
+    </section>
+</div>

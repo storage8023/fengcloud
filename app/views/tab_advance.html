@@ -1,0 +1,21 @@
+<div class="{{selectedTab.name}}">
+    <h2>{{selectedTab.title}}</h2>
+    <section>
+        <div class="form_layer">
+            <div>
+                <label for="config_path">配置文件位置<span class="warning">（软件下次启动时生效）</span></label>
+            </div>
+            <div>
+                <input class="form-control" type="text" readonly ng-model="configPath" name="config_path" id="config_path"/>
+                <button ng-click="selectConfigPath()">移动</button>
+            </div>
+        </div>
+        <div class="form_layer">
+            <div>
+                <button class="btn">清除缓存</button>
+                <span>删除缓存可以换出你的硬盘空间，但可能会导致你的同步效率下降</span>
+            </div>
+
+        </div>
+    </section>
+</div>

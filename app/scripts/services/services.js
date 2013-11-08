@@ -1548,13 +1548,13 @@ angular.module('gkClientIndex.services', [])
             openSetting:function(tab){
                 tab = angular.isDefined(tab)?tab:'';
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/site.html#/?tab='+tab;
+                var url = 'file:///'+UIPath+'/setting.html#/?tab='+tab;
                 var data = {
                     url:url,
                     type:"sole",
-                    width:760,
+                    width:794,
                     resize:1,
-                    height:450
+                    height:490
                 }
                 gkClientInterface.setMain(data);
             },

@@ -1,0 +1,217 @@
+.form-control{
+    width: auto;
+    display: inline-block;
+}
+footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    background: -webkit-gradient(linear,0 0,0 100%,from(#FBFBFB),to(#E3E4E5));
+    text-align: right;
+    border-top:1px solid #CDCED0;
+}
+footer .btn{
+    vertical-align: middle;
+    padding: 3px 13px;
+    margin: 8px 10px 0 0;
+}
+.main{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+    bottom: 45px;
+}
+aside{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    width: 158px;
+    border-right: 1px solid #CDCED0;
+    background: #2A2E33;
+    color:#D4D4D4;
+}
+aside ul li{
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+    font-family: 'simsun','宋体',sans-serif;
+    border-left: 4px solid transparent;
+    margin-top: 8px;
+}
+aside ul li i{
+    margin-left: 8px;
+    margin-right: 10px;
+}
+aside ul li:hover{
+    color:#fff;
+}
+aside ul li.active{
+    border-left-color: #448DE8;
+    background: #1F2327;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, .3);
+}
+
+aside ul li:hover i.icon_info,
+aside ul li.active i.icon_info{
+    background-position: -524px -24px
+}
+aside ul li:hover i.icon_person,
+aside ul li.active i.icon_person{
+    background-position: -484px -24px;
+}
+aside ul li:hover i.icon_computer,
+aside ul li.active i.icon_computer{
+    background-position: -544px -24px;
+}
+aside ul li:hover i.icon_sync,
+aside ul li.active i.icon_sync{
+    background-position: -564px -24px;
+}
+aside ul li:hover i.icon_network,
+aside ul li.active i.icon_network{
+    background-position: -584px -24px;
+}
+aside ul li:hover i.icon_airplane,
+aside ul li.active i.icon_airplane{
+    background-position: -604px -24px;
+}
+.content{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left:158px;
+    right: 0;
+}
+.content h2{
+    height: 35px;
+    border-bottom: 1px solid #CDCED0;
+    background: #F1F1F2;
+    line-height: 35px;
+    font-size: 18px;
+    padding:0 10px;
+}
+.content section{
+    font-size: 14px;
+    position: absolute;
+    top:35px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+.content section .form_layer{
+    margin:10px 0;
+}
+.content div label{
+    font-weight: normal;
+}
+.content  .advance section,
+.content  .network section,
+.content  .general section{
+    padding: 30px;
+}
+
+.list_wrapper .list .item > div,
+.list_wrapper .list_header > div{
+    float: left;
+    padding: 0 5px;
+}
+.list_wrapper .list_header{
+    color:#2A2E33;
+}
+.list_wrapper .list_header,
+.list_wrapper .list .item{
+    overflow: hidden;
+    zoom:1;
+    border-bottom:1px solid #EDEDED;
+}
+
+.list .item > div:nth-child(1),
+.list_header > div:nth-child(1){
+    width: 35%;
+    padding-left: 30px;
+}
+.list .item > div:nth-child(2),
+.list_header > div:nth-child(2){
+    width: 25%;
+}
+.list .item > div:nth-child(3),
+.list_wrapper .list_header > div:nth-child(3){
+    width: 25%;
+}
+.list .item > div:nth-child(4),
+.list_wrapper .list_header > div:nth-child(4){
+    width: 15%;
+}
+
+.content .list_header div{
+    font-weight: normal;
+    line-height: 36px;
+}
+.content .list_body div{
+    line-height: 30px;
+    font-size: 13px;
+}
+.content .list_wrapper div{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.content .list{
+    color: #606D7F;
+    font-size:13px ;
+}
+
+.content .list .item{
+    line-height: 34px;
+
+    box-shadow: inset 0 1px 0 #fff;
+}
+.content .list .dateline{
+    color:#ACB4BF;
+}
+
+.content .list .item:nth-child(odd){
+    background: #F1F4F7;
+}
+
+.sync .list .item > div:nth-child(1),
+.sync .list_header > div:nth-child(1){
+    width: 45%;
+    padding-left: 30px;
+}
+.sync .list .item > div:nth-child(2),
+.sync .list_header > div:nth-child(2){
+    width: 35%;
+
+}
+.sync .list .item > div:nth-child(3),
+.sync .list_wrapper .list_header > div:nth-child(3){
+    width: 20%;
+}
+.sync .list .item .file_icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    margin: -2px 8px 0 0;
+    position: relative;
+}
+
+.sync .list .item .sync_state{
+    color:#ACB4BF;
+}
+.sync .list .item .icon_syncing{
+    background-position: -84px -64px;
+}
+.sync .list .item .icon_sync_pause{
+    background-position: -104px -64px;
+}
+.sync .list .item .icon_sync_done{
+    background-position: -124px -64px;
+}

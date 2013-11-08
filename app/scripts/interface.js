@@ -371,10 +371,12 @@
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
     getGetlinkPaths: function(){
-        return gkClient.gGetlinkPaths();
+        var re = gkClient.gGetLinkPaths();
+        return JSON.parse(re);
     },
     setSyncStatus: function(){
-        return gkClient.gSetSyncStatus();
+        var re = gkClient.gSetSyncStatus();
+        return JSON.parse(re);
     },
     setStartSync: function(){
         gkClient.gStartSync();

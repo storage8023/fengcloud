@@ -10,7 +10,9 @@ button{
 a{
     color:#5595E9;
 }
-
+span,p,div{
+    cursor: default;
+}
 a:active,
 a:hover{
     text-decoration: underline;
