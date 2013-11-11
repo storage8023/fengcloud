@@ -311,3 +311,10 @@ aside ul li.active i.icon_sync2_white{
 .transfer_page .list .item:hover .opt button{
     display: inline-block;
 }
+.transfer_page .list .item .filename{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding-right: 42px;
+}

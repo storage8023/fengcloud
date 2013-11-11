@@ -8,8 +8,8 @@
                 <div class="empty" ng-if="!fileList || !fileList.length">没有{{selectedTab.title}}文件</div>
               <div class="item" ng-repeat="item in fileList">
                 <div>
-                    <i class="file_icon {{item.filename|baseName|getFileIcon:item.dir}}" ></i>
-                    <span title="{{item.webpath|baseName}}">{{item.webpath|baseName}}</span>
+                    <i class="file_icon {{item.webpath|baseName|getFileIcon:item.dir||0}}" ></i>
+                    <span class="filename" title="{{item.webpath|baseName}}">{{item.webpath|baseName}}</span>
                 </div>
                   <div>
                       <span class="filesize" ng-if="selectedTab.name!='sync'">{{item.filesize|bitSize}}</span>
