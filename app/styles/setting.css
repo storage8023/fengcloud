@@ -94,6 +94,13 @@ aside ul li.active i.icon_airplane{
     line-height: 35px;
     font-size: 18px;
     padding:0 10px;
+    position: relative;
+}
+.content h2 .global_opt_wrapper{
+    position: absolute;
+    right: 10px;
+    top:0;
+    font-size: 13px;
 }
 .content section{
     font-size: 14px;
@@ -175,7 +182,9 @@ aside ul li.active i.icon_airplane{
 .content .list .dateline{
     color:#ACB4BF;
 }
-
+.content .tip{
+    color:#d14
+}
 .content .list .item:nth-child(odd){
     background: #F1F4F7;
 }
@@ -209,9 +218,11 @@ aside ul li.active i.icon_airplane{
 .sync .list .item .icon_syncing{
     background-position: -84px -64px;
 }
+
 .sync .list .item .icon_sync_pause{
     background-position: -104px -64px;
 }
+
 .sync .list .item .icon_sync_done{
-    background-position: -124px -64px;
+    background-position: -84px -64px;
 }

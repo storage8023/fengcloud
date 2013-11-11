@@ -987,6 +987,17 @@ angular.module('gkClientIndex.services', [])
             token: GK.getToken()
         }
         var GKApi = {
+            userInfo:function(){
+                var params = {};
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return $http({
+                    method: 'GET',
+                    url: GK.getApiHost() + '/1/account/info',
+                    params:params
+                });
+            },
             regist:function(name,email,password,user_license_check){
                 var params = {
                     name: name,
@@ -1110,7 +1121,6 @@ angular.module('gkClientIndex.services', [])
                     params: params
                 });
             },
-
             inboxFileList:function(){
                 var params = {};
                 angular.extend(params, defaultParams);
@@ -1304,7 +1314,7 @@ angular.module('gkClientIndex.services', [])
              * 启用禁止设备
              * @returns {*}
              */
-            toggledevice:function(state,device_id){
+            toggleDevice:function(device_id,state){
                 var params = {
                     state:state,
                     device_id:device_id
@@ -1323,7 +1333,7 @@ angular.module('gkClientIndex.services', [])
              * 删除设备
              * @returns {*}
              */
-            deldevice:function(device_id){
+            delDevice:function(device_id){
                 var params = {
                     device_id:device_id
                 };
@@ -1336,7 +1346,7 @@ angular.module('gkClientIndex.services', [])
                     data:jQuery.param(params)
                 });
             },
-            disablenewdevice:function(state){
+            disableNewDevice:function(state){
                 var params = {
                     state:state
                 };
@@ -1580,11 +1590,14 @@ angular.module('gkClientIndex.services', [])
 
 var gkClientCallback = {};
 (function(obj){
-    var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage','LoginResult'];
+    var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage','LoginResult','ShowFind'];
     angular.forEach(callbacks,function(value){
             obj[value] = function(param){
                 var rootScope = jQuery(document).scope();
-                var JSONparam = JSON.parse(param);
+                var JSONparam;
+                if(param && param !== undefined){
+                    JSONparam = JSON.parse(param);
+                }
                 rootScope.$broadcast(value,JSONparam);
             }
     });

@@ -568,12 +568,22 @@ Util.Array = {
       var obj = null,
           len = array.length;
       for(var i=0;i<len;i++){
-        if(typeof array[i][key] !=='undefined' && array[i][key] === value){
+        if(array[i] !== undefined && typeof array[i][key] !=='undefined' && array[i][key] == value){
             obj =  array[i];
             break;
         }
       }
       return obj;
+  },
+  removeByValue:function(array,value){
+      var len = array.length;
+      for(var i=0;i<len;i++){
+          if(array[i] == value){
+              array.splice(i,1);
+              break;
+          }
+      }
+      return array;
   }
 };
 

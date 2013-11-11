@@ -1,5 +1,11 @@
 <div class="{{selectedTab.name}}">
-    <h2>{{selectedTab.title}}</h2>
+    <h2>
+        <span>{{selectedTab.title}}</span>
+        <span class="global_opt_wrapper">
+            <button class="btn btn-default start_sync" ng-if="isAllSyncPaused" ng-click="toggleAllSync()"><i></i>开启所有同步</button>
+            <button class="btn btn-default pause_sync" ng-if="!isAllSyncPaused" ng-click="toggleAllSync()"><i></i>暂停所有同步</button>
+        </span>
+    </h2>
     <section class="scrollbar">
         <div class="list_wrapper">
             <div class="list_header">
@@ -15,12 +21,11 @@
                         <span>{{file.webpath|getSyncFileName}}</span>
                     </div>
                     <div class="sync_state">
-                        <i class="icon16x16 {{file.numbe|getSyncIcon}}"></i>
-                       <span>{{file.number|getSyncState}}</span>
+                        <i class="icon16x16 {{file.number|getSyncIcon:isAllSyncPaused}}"></i>
+                       <span>{{file.number|getSyncState:isAllSyncPaused}}</span>
                     </div>
-
                     <div>
-                        <button ng-click="cancelSync()">取消同步</button>
+                        <button ng-click="cancelSync(file)">取消同步</button>
                     </div>
                 </div>
             </div>

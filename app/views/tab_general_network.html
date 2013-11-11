@@ -5,13 +5,16 @@
             <div ng-if="setting.type=='checkbox'">
                 <input type="{{setting.type}}" ng-model="setting.model" name="{{setting.name}}" id="{{setting.name}}"/>
                 <label for="{{setting.name}}">{{setting.label}}</label>
+                <span class="tip" ng-if="setting.tip">{{setting.tip}}</span>
             </div>
             <div ng-if="setting.type=='select'">
                 <label for="{{setting.name}}">{{setting.label}}</label>
-               <select class="form-control" name="{{setting.name}}" ng-model="setting.model" id="{{setting.name}}" ng-options="option.name for option in setting.options"></select>
+               <select class="form-control" name="{{setting.name}}" ng-model="setting.model" id="{{setting.name}}" ng-change="setting.change()" ng-options="option.name for option in setting.options"></select>
+                <span class="tip" ng-if="setting.tip">{{setting.tip}}</span>
             </div>
             <div ng-if="setting.type=='button'">
                 <button ng-click="setting.click()">{{setting.label}}</button>
+                <span class="tip" ng-if="setting.tip">{{setting.tip}}</span>
             </div>
         </div>
     </section>

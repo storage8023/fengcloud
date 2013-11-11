@@ -1,5 +1,11 @@
 <div class="{{selectedTab.name}}">
-    <h2>{{selectedTab.title}}</h2>
+    <h2>
+        <span>{{selectedTab.title}}</span>
+        <span class="global_opt_wrapper">
+            <input type="checkbox" value="" name="disable_new_device" id="disable_new_device" ng-model="disableNewDevice" ng-change="toggleNewDevice()"/>
+            <label for="disable_new_device">禁止其他新设备登录</label>
+        </span>
+    </h2>
     <section class="scrollbar">
         <div class="list_wrapper">
             <div class="list_header">
@@ -21,9 +27,9 @@
                      </div>
                       <div ng-if="device.is_current_device ==1">当前正在使用</div>
                       <div ng-if="device.is_current_device !=1 && device.allow_edit==1">
-                          <button ng-if="device.state==0" ng-click="editState(device,'active')">激活</button>
-                          <button ng-if="device.state==1" ng-click="editState(device,'disable')">禁用</button>
-                          <button ng-click="editState(device,'del')">删除</button>
+                          <button ng-if="device.state==0" ng-click="editDeviceState(device,'active')">激活</button>
+                          <button ng-if="device.state==1" ng-click="editDeviceState(device,'disable')">禁用</button>
+                          <button ng-click="editDeviceState(device,'del')">删除</button>
                       </div>
               </div>
             </div>

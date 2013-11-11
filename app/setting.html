@@ -27,9 +27,9 @@
                 </li>
             </ul>
         </aside>
-        <div class="content">
+        <div class="content" ng-controller="tabContentCtrl">
             <div ng-if="selectedTab.name=='general'">
-                <tab-general></tab-general>
+                <tab-general settings="generalSetting" selected-tab = 'selectedTab'></tab-general>
             </div>
             <div ng-if="selectedTab.name=='account'">
              <tab-account></tab-account>
@@ -41,13 +41,11 @@
                 <tab-sync></tab-sync>
             </div>
             <div ng-if="selectedTab.name=='network'">
-                <tab-network></tab-network>
+                <tab-network settings="networkSetting" selected-tab = 'selectedTab'></tab-network>
             </div>
             <div ng-if="selectedTab.name=='advance'">
                 <tab-advance></tab-advance>
             </div>
-
-
         </div>
     </div>
     <footer>

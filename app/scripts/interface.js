@@ -7,6 +7,14 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getLanguage:function(){
+        var re = gkClient.gGetLanguage();
+        return JSON.parse(re);
+    },
+    getClientInfo:function(){
+      var re = gkClient.gGetClientInfo();
+        return JSON.parse(re);
+    },
     closeWindow:function(){
         gkClient.gClose();
     },
@@ -64,7 +72,7 @@
      */
     launchpad:function(params){
         if(typeof params ==='undefined'){
-            gkClient.gLaunchpad();
+            gkClient.gLaunchpad('');
         }else{
             gkClient.gLaunchpad(JSON.stringify(params));
         }
@@ -346,10 +354,7 @@
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
     setChangeLanguage:function(params){
-       return gkClient.gChangeLanguage(JSON.stringify(params));
-    },
-    getLanguage:function(){
-       return gkClient.gGetLanguage();
+       gkClient.gChangeLanguage(JSON.stringify(params));
     },
     setGetUrl:function(params){
         return gkClient.gGetUrl(JSON.stringify(params));
@@ -359,9 +364,6 @@
     },
     getUIPath: function(){
         return gkClient.gGetUIPath();
-    },
-    getClientInfo: function(){
-        return gkClient.gGetClientInfo();
     },
     getLocalSyncURI: function(param){
         var re =  gkClient.gGetNormalPath(JSON.stringify(param));
@@ -378,10 +380,10 @@
         var re = gkClient.gSetSyncStatus();
         return JSON.parse(re);
     },
-    setStartSync: function(){
+    startSync: function(){
         gkClient.gStartSync();
     },
-    setStopSync: function(){
+    stopSync: function(){
         gkClient.gStopSync();
     },
     setRemoveLinkPaths: function(){
