@@ -1589,13 +1589,11 @@ angular.module('gkClientIndex.services', [])
     .factory('GKQueue', ['$rootScope','$interval',function ($rootScope,$interval) {
         return {
             getQueueList:function($scope,type){
-                $scope.fileList = [];
                 $rootScope.downloadSpeed = 0;
                 $rootScope.uploadSpeed = 0;
                 var getFileList = function(){
                     var re = gkClientInterface.getTransList({type:type});
                     $scope.fileList = re['list'];
-                    console.log( $scope.fileList);
                     $rootScope.downloadSpeed = re['download'];
                     $rootScope.uploadSpeed = re['upload'];
                 }

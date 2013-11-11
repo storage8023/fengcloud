@@ -390,7 +390,7 @@
     setRemoveLinkPaths: function(){
         gkClient.gRemoveLinkPaths();
     },
-    setRmoveTrans: function(params){
+    removeTrans: function(params){
         return gkClient.gRemoveTrans(JSON.stringify(params));
     },
     setDeviceStatus: function(params){

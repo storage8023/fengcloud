@@ -14,6 +14,11 @@ angular.module('gkClientIndex.filters', [])
     .filter('baseName', function(){
         return Util.String.baseName;
     })
+    .filter('getPercent',function(){
+        return function(val,total){
+            return Math.round(val/total * 100)+'%';
+        }
+    })
     .filter('getPartitionName',[function(){
         return function(partition){
             var partitionName = '';

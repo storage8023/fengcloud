@@ -32,6 +32,7 @@ aside{
     border-right: 1px solid #CDCED0;
     background: #2A2E33;
     color:#D4D4D4;
+    padding-top: 10px;
 }
 aside ul li{
     height: 30px;
@@ -55,30 +56,30 @@ aside ul li.active{
     color: #fff;
     box-shadow: inset 0 0 3px rgba(0, 0, 0, .3);
 }
-/*aside ul li:hover i.icon_info,*/
-/*aside ul li.active i.icon_info{*/
-    /*background-position: -524px -24px*/
-/*}*/
-/*aside ul li:hover i.icon_person,*/
-/*aside ul li.active i.icon_person{*/
-    /*background-position: -484px -24px;*/
-/*}*/
-/*aside ul li:hover i.icon_computer,*/
-/*aside ul li.active i.icon_computer{*/
-    /*background-position: -544px -24px;*/
-/*}*/
-/*aside ul li:hover i.icon_sync,*/
-/*aside ul li.active i.icon_sync{*/
-    /*background-position: -564px -24px;*/
-/*}*/
-/*aside ul li:hover i.icon_network,*/
-/*aside ul li.active i.icon_network{*/
-    /*background-position: -584px -24px;*/
-/*}*/
-/*aside ul li:hover i.icon_airplane,*/
-/*aside ul li.active i.icon_airplane{*/
-    /*background-position: -604px -24px;*/
-/*}*/
+
+aside ul li.active i.icon_info{
+    background-position: -524px -24px
+}
+
+aside ul li.active i.icon_person{
+    background-position: -484px -24px;
+}
+
+aside ul li.active i.icon_computer{
+    background-position: -544px -24px;
+}
+
+aside ul li.active i.icon_sync{
+    background-position: -564px -24px;
+}
+
+aside ul li.active i.icon_network{
+    background-position: -584px -24px;
+}
+
+aside ul li.active i.icon_airplane{
+    background-position: -604px -24px;
+}
 
 .content{
     position: absolute;
@@ -227,18 +228,18 @@ aside ul li.active{
 }
 
 /*传输队列的样式*/
-/*aside ul li:hover i.icon_download_white,*/
-/*aside ul li.active i.icon_download_white{*/
-    /*background-position: -384px -4px;*/
-/*}*/
-/*aside ul li:hover i.icon_upload,*/
-/*aside ul li.active i.icon_upload_white{*/
-    /*background-position: -404px -4px;*/
-/*}*/
-/*aside ul li:hover i.icon_sync2_white,*/
-/*aside ul li.active i.icon_sync2_white{*/
-    /*background-position: -424px -4px;*/
-/*}*/
+
+aside ul li.active i.icon_download_white{
+    background-position: -384px -4px;
+}
+
+aside ul li.active i.icon_upload_white{
+    background-position: -404px -4px;
+}
+
+aside ul li.active i.icon_sync2_white{
+    background-position: -424px -4px;
+}
 .transfer_page .content section{
   top:0;
 }
@@ -255,7 +256,7 @@ aside ul li.active{
 
 .transfer_page .list .item > div:nth-child(1),
  .transfer_page .list_header > div:nth-child(1){
-     width: 50%;
+     width: 40%;
 }
 .transfer_page .list .item > div:nth-child(2),
 .transfer_page .list_header > div:nth-child(2){
@@ -265,9 +266,11 @@ aside ul li.active{
 .transfer_page .list_wrapper .list_header > div:nth-child(3){
     width: 15%;
 }
-.transfer_page .list_header > div:nth-child(1){
-    padding-left: 74px;
+.transfer_page .list .item > div:nth-child(4),
+.transfer_page .list_wrapper .list_header > div:nth-child(4){
+    width: 10%;
 }
+
 .transfer_page .list_header{
     background:#F1F1F2;
     border-bottom: 1px solid #CDCED0;
@@ -294,4 +297,17 @@ aside ul li.active{
     white-space:nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.transfer_page .list .item > div .status_3{
+    color:#52AE75;
+}
+.transfer_page .list .item > div .status_2{
+    color:#F3A427;
+}
+.transfer_page .list .item .opt button{
+    display: none;
+}
+.transfer_page .list .item:hover .opt button{
+    display: inline-block;
 }

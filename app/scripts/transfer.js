@@ -51,7 +51,16 @@ angular.module('gkClientTransfer', ['gkClientIndex.services','ui.bootstrap','gkC
                 selectedTab:'='
             },
             link:function($scope){
+                $scope.thead = ['文件','状态','剩余时间'];
                 GKQueue.getQueueList($scope,'upload');
+                $scope.removeTransfer = function(file){
+                    var param = {
+                        type:'upload',
+                        mountid:file.mountid,
+                        webpath:file.webpath
+                    };
+                    gkClientInterface.removeTrans(param);
+                }
             }
         }
     }])
@@ -66,7 +75,19 @@ angular.module('gkClientTransfer', ['gkClientIndex.services','ui.bootstrap','gkC
                 selectedTab:'='
             },
             link:function($scope){
+                $scope.thead = ['文件','状态','剩余时间'];
                 GKQueue.getQueueList($scope,'download');
+                $scope.removeTransfer = function(file){
+                    var param = {
+                        type:'download',
+                        mountid:file.mountid,
+                        webpath:file.webpath
+                    };
+
+                    var re = gkClientInterface.removeTrans(param);
+                    console.log(re);
+                    //Util.Array.removeByValue($scope.fileList,file);
+                }
             }
         }
     }])
@@ -81,6 +102,7 @@ angular.module('gkClientTransfer', ['gkClientIndex.services','ui.bootstrap','gkC
                 selectedTab:'='
             },
             link:function($scope){
+                $scope.thead = ['同步目录','同步状态','剩余时间'];
                 GKQueue.getQueueList($scope,'sync');
             }
         }
