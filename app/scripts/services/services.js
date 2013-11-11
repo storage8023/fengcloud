@@ -1573,15 +1573,36 @@ angular.module('gkClientIndex.services', [])
              */
             openTransfer:function(){
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/queue.html';
+                var url = 'file:///'+UIPath+'/transfer.html';
                 var data = {
                     url:url,
                     type:"sole",
-                    width:790,
-                    height:460,
+                    width:794,
+                    height:490,
                     resize:1
                 }
                 gkClientInterface.setMain(data);
+            }
+        }
+    }
+    ])
+    .factory('GKQueue', ['$rootScope','$interval',function ($rootScope,$interval) {
+        return {
+            getQueueList:function($scope,type){
+                $scope.fileList = [];
+                $rootScope.downloadSpeed = 0;
+                $rootScope.uploadSpeed = 0;
+                var getFileList = function(){
+                    var re = gkClientInterface.getTransList({type:type});
+                    $scope.fileList = re['list'];
+                    console.log( $scope.fileList);
+                    $rootScope.downloadSpeed = re['download'];
+                    $rootScope.uploadSpeed = re['upload'];
+                }
+                getFileList();
+                $interval(function(){
+                    getFileList();
+                },1000);
             }
         }
     }

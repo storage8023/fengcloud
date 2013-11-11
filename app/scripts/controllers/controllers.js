@@ -992,9 +992,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         ];
 
-        $rootScope.showNearBy = false;
-        $scope.toogleNearBy = function(){
-            GKFind.toogleFind();
+
+        $scope.showTransfer = function(){
+            GKDialog.openTransfer();
         };
 
     }]);

@@ -35,7 +35,26 @@ i.icon16x16.icon_network{
     background-position: -584px -4px;
 }
 i.icon16x16.icon_airplane{
-    background-position: -604px -4px;
+     background-position: -604px -4px;
+ }
+i.icon16x16.icon_upload{
+    background-position: -404px -4px;
+}
+
+i.icon16x16.icon_upload_white{
+    background-position: -404px -24px;
+}
+i.icon16x16.icon_download{
+    background-position: -384px -4px;
+}
+i.icon16x16.icon_download_white{
+    background-position: -384px -24px;
+}
+i.icon16x16.icon_sync2{
+    background-position: -424px -4px;
+}
+i.icon16x16.icon_sync2_white{
+    background-position: -424px -24px;
 }
 /*********文件图标 32*32*******/
 

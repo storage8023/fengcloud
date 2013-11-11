@@ -345,7 +345,8 @@
         gkClient.gUpdateLinkPaths(JSON.stringify(param));
     },
     getTransList: function(param){
-        return gkClient.gTransList(JSON.stringify(param));
+        var re = gkClient.gTransList(JSON.stringify(param));
+        return JSON.parse(re);
     },
     setLogoff:function(){
         gkClient.gLogoff();
