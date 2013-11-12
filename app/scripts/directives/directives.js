@@ -307,7 +307,7 @@ angular.module('gkClientIndex.directives',[])
                 };
 
                 $scope.personalOpen = function ($scope) {
-                    GKDialog.openPersonalSetting();
+                    GKDialog.openSetting('account');
                 };
             }
         }
@@ -393,7 +393,6 @@ angular.module('gkClientIndex.directives',[])
                     }else{
                         $scope.sidebar = 'nofile';
                     }
-                    console.log($scope.sidebar);
                 },true)
             }
         }

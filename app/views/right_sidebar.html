@@ -1,6 +1,14 @@
 <aside class="right_sidebar" ng-class="PAGE_CONFIG.mount.org_id==0?'my_right_sidebar':''"  ng-switch="sidebar">
-    <singlefile-right-sidebar ng-switch-when="singlefile"></singlefile-right-sidebar>
-    <multifile-right-sidebar ng-switch-when="multifile"></multifile-right-sidebar>
-    <search-right-sidebar ng-switch-when="search"></search-right-sidebar>
-    <nofile-right-sidebar ng-switch-when="nofile"></nofile-right-sidebar>
+    <div ng-switch-when="singlefile">
+        <singlefile-right-sidebar></singlefile-right-sidebar>
+    </div>
+    <div ng-switch-when="multifile">
+        <multifile-right-sidebar></multifile-right-sidebar>
+    </div>
+    <div ng-switch-when="search">
+        <search-right-sidebar></search-right-sidebar>
+    </div>
+   <div ng-switch-when="nofile">
+       <nofile-right-sidebar></nofile-right-sidebar>
+   </div>
 </aside>

@@ -11,8 +11,8 @@
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedMyBranch"
                   init-selected-branch = "initSelectedBranch"
-                  on-select="handleSelect(branch,'myfile')"
-                  on-expand="handleExpand(branch,'myfile')"
+                  on-select="handleSelect(branch,GKPartition.myFile)"
+                  on-expand="handleExpand(branch,GKPartition.myFile)"
                 >
         </abn-tree>
         <abn-tree tree-data="orgTreeList"
@@ -23,8 +23,20 @@
                   icon-node-expand="icon_folder"
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedOrgBranch"
-                  on-select="handleSelect(branch,'teamfile')"
-                  on-expand="handleExpand(branch,'teamfile')"
+                  on-select="handleSelect(branch,GKPartition.teamFile)"
+                  on-expand="handleExpand(branch,GKPartition.teamFile)"
+                >
+        </abn-tree>
+        <abn-tree tree-data="orgSubscribeList"
+                  header="订阅团队"
+                  icon-leaf="icon_file"
+                  icon-expand="icon_fold"
+                  icon-collapse="icon_unfold"
+                  icon-node-expand="icon_folder"
+                  icon-node-collapse="icon_folder"
+                  selected-branch="selectedSubscribeBranch"
+                  on-select="handleSelect(branch,GKPartition.subscribeFile)"
+                  on-expand="handleExpand(branch,GKPartition.subscribeFile)"
                 >
         </abn-tree>
         <abn-tree tree-data="smartTreeList"
@@ -35,8 +47,8 @@
                   icon-node-expand="icon_folder"
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedSmartBranch"
-                  on-select="handleSelect(branch,'smartfolder')"
-                  on-expand="handleExpand(branch,'smartfolder')"
+                  on-select="handleSelect(branch,GKPartition.smartFolder)"
+                  on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
                 >
         </abn-tree>

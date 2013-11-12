@@ -52,7 +52,7 @@
     },
     startFind:function(){
         try {
-            console.log('start');
+            //console.log('start');
             gkClient.gStartFind();
         } catch (e) {
             this._handleException(e);
@@ -60,7 +60,7 @@
     },
     stopFind:function(){
         try {
-            console.log('stop');
+            //console.log('stop');
             gkClient.gStopFind();
         } catch (e) {
             this._handleException(e);
@@ -143,6 +143,7 @@
     getSideTreeList: function (params) {
         try {
             var re = gkClient.gSideTreeList(JSON.stringify(params));
+            //console.log(JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);

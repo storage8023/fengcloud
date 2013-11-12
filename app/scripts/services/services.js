@@ -463,9 +463,10 @@ angular.module('gkClientIndex.services', [])
     .constant('GKPartition', {
         myFile:'myfile',
         teamFile:'teamfile',
-        smartFolder:'smartfolder'
+        smartFolder:'smartfolder',
+        subscribeFile:'subscribefile'
     })
-    .factory('GKFile', ['FILE_SORTS', function (FILE_SORTS) {
+    .factory('GKFile', ['FILE_SORTS','GKPartition', function (FILE_SORTS,GKPartition) {
         var GKFile = {
             /**
              * 获取单文件信息
@@ -516,10 +517,22 @@ angular.module('gkClientIndex.services', [])
              * @returns {boolean}
              */
             isSyncable:function(parentFile,file){
+                /**
+                 * 根目录不允许同步
+                 */
+                if(!file.fullpath){
+                    return false;
+                }
+                /**
+                 * 未同步的允许进行同步、不同步 操作
+                 */
                 if(!this.isSynced(parentFile,file)){
                     return true;
                 }
-                if((parentFile.syncpath==='/'&&!file.fullpath)||parentFile.syncpath === file.fullpath || file.sync==1){
+                /**
+                 * 同步的目录 就是当前操作目录
+                 */
+                if(parentFile.syncpath === file.fullpath || file.sync==1){
                     return true;
                 }
                 return false;
@@ -530,7 +543,7 @@ angular.module('gkClientIndex.services', [])
                     label,
                     context = this;
                 angular.forEach(data, function (value) {
-                    if(type=='myfile' || type=='teamfile'){
+                    if(type==GKPartition.myFile || type==GKPartition.teamFile || type==GKPartition.subscribeFile){
                         if (!value.fullpath) {
                             label = value.name;
                         } else {
@@ -710,9 +723,17 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition',function (GKCilpboard,GKFile,GKPartition) {
+    .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition','GKMount',function (GKCilpboard,GKFile,GKPartition,GKMount) {
         var GKOpt = {
+            /**
+             * 同步，不同步命令的逻辑
+             * @param opts
+             * @param parentFile 夫目录
+             * @param file 设置的目录
+             */
             setSyncOpt:function(opts,parentFile,file){
+                console.log(file);
+                console.log(GKFile.isSyncable(parentFile,file));
                 if(!GKFile.isSyncable(parentFile,file)){
                     this.disableOpt(opts,'sync','unsync');
                 }else{
@@ -723,7 +744,7 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
             },
-            getOpts: function (currentFile, selectedFiles, partition, filter) {
+            getOpts: function (currentFile, selectedFiles, partition, filter,mount) {
                 var opts,
                     partitionOpts,
                     multiOpts,
@@ -731,10 +752,10 @@ angular.module('gkClientIndex.services', [])
                     currentOpts,
                     authOpts;
 
-                partitionOpts =  this.getPartitionOpts(partition,filter);
-                authOpts = this.getAuthOpts();
+                partitionOpts =  this.getPartitionOpts(partition,filter,mount);
+                authOpts = this.getAuthOpts(currentFile,selectedFiles,partition);
                 if(!selectedFiles || !selectedFiles.length){
-                    currentOpts =  this.getCurrentOpts(currentFile);
+                    currentOpts =  this.getCurrentOpts(currentFile,partition);
                     opts =  this.getFinalOpts(partitionOpts, currentOpts, authOpts);
                 }else{
                         multiOpts = this.getMultiSelectOpts(selectedFiles);
@@ -743,10 +764,36 @@ angular.module('gkClientIndex.services', [])
                }
                 return opts;
             },
+            /**
+             * 所有默认操作
+             * */
             getDefaultOpts:function(){
-               return ["add","new_folder",'clear_trash',"sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock", 'del_completely','revert',"order_by"];
+               return [
+                   'nearby', //附近
+                   'unsubscribe', //取消订阅
+                   'new_folder', //新建
+                   'create', //创建
+                   'manage', //管理
+                   'add', //添加
+                   'clear_trash', //清空回收站
+                   'lock',  //锁定
+                   'unlock', //解锁
+                   'sync',  //同步
+                   'unsync',//不同步
+                   'save',  //保存到
+                   'rename', //重命名
+                   'del',   //删除
+                   'paste', //粘贴
+                   'cut', //剪切
+                   'copy', //复制
+                   'del_completely', //彻底删除
+                   'revert', //还原
+                   'order_by' //排序
+               ];
             },
-
+            /**
+             * 根据各个条件的命令计算出所有命令
+             * */
             getFinalOpts: function () {
                 var optsArr = Array.prototype.slice.call(arguments);
                 var opts = this.getDefaultOpts();
@@ -763,43 +810,78 @@ angular.module('gkClientIndex.services', [])
                 }
 
                 return opts;
-
             },
-            getPartitionOpts:function(partition,filter){
+            /**
+             * 获取分区的命令
+             * */
+            getPartitionOpts:function(partition,filter,mount){
                 var opts = this.getDefaultOpts();
                 switch (partition){
                     case GKPartition.myFile:
                     case GKPartition.teamFile:
+                        this.disableOpt(opts,'nearby','unsubscribe');
                         if(filter =='trash'){
-                            this.disableOpt(opts,"add","new_folder","sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock","order_by");
+                            this.disableOpt(opts,"add","new_folder","sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock","order_by",'manage','create');
                         }else{
                             this.disableOpt(opts,"clear_trash","revert","del_completely");
+                            if(partition == GKPartition.myFile){
+                                this.disableOpt(opts,"manage","create",'lock','unlock');
+                            }else{
+                                if(!GKMount.isAdmin(mount)){
+                                    this.disableOpt(opts,'manage');
+                                }
+                            }
+                        }
+                        if(GKCilpboard.isEmpty()){
+                            this.disableOpt(opts,'paste');
                         }
                         break;
-
-
+                    case GKPartition.subscribeFile:
+                        this.disableOpt(opts,"new_folder","manage","create",'add','clear_trash','sync','unsync','rename','del','paste','cut','lock','unlock','del_completely','revert');
                         break;
                     case (GKPartition.smartFolder || filter =='search'):
-                        this.disableOpt(opts,'add','new_folder','sync','unsync','paste','copy','cut');
+                        this.disableOpt(opts,'nearby','unsubscribe','create','add','clear_trash','manage','new_folder','sync','unsync','paste','copy','cut');
                         break;
                 }
 
                 return opts;
             },
-            getAuthOpts:function(){
+            /**
+             * 获取权限的命令
+             * */
+            getAuthOpts:function(currentFile,files,partition){
                 var opts = this.getDefaultOpts();
+                if(partition == GKPartition.teamFile){
+                    if(!currentFile.fullpath){
+                        this.disableOpt(opts,'cut','new_folder','add','paste');
+                    }else{
+                        this.disableOpt(opts,'create','manage');
+                    }
+
+                }
                 return opts;
             },
-
-            getCurrentOpts: function (currentFile) {
+            /**
+             * 获取当前文件夹的命令
+             * */
+            getCurrentOpts: function (currentFile,partition) {
                 var opts = this.getDefaultOpts();
                 this.disableOpt(opts, "rename", "save", "cut", "copy","lock", "unlock", "del",'revert','del_completely');
                 if(GKCilpboard.isEmpty()){
                     this.disableOpt(opts,'paste');
                 }
                 this.setSyncOpt(opts,currentFile,currentFile);
+                /**
+                 * 团队文件的跟目录不允许添加
+                 */
+                if(!currentFile.fullpath && partition==GKPartition.teamFile){
+                    this.disableOpt(opts,'add');
+                }
                 return opts;
             },
+            /**
+             * 获取多选的命令
+             * */
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
@@ -807,11 +889,14 @@ angular.module('gkClientIndex.services', [])
                 }
                 return opts;
             },
+            /**
+             * 获取选中的命令
+             * */
             getSelectOpts: function (currentFile,files) {
                 var opts = this.getDefaultOpts();
                 var context = this;
                 angular.forEach(files,function(file){
-                    context.disableOpt(opts,"add","new_folder","paste","order_by",'clear_trash');
+                    context.disableOpt(opts,"add","new_folder","order_by",'clear_trash','create','manage','nearby','unsubscribe');
                     if (file.dir == 1) {
                         context.disableOpt(opts, 'lock', 'unlock');
                         context.setSyncOpt(opts,currentFile,file);
@@ -826,6 +911,9 @@ angular.module('gkClientIndex.services', [])
                 });
                 return opts;
             },
+            /**
+             * disable命令
+             * */
             disableOpt: function (opts) {
                 var disableOpts = Array.prototype.slice.call(arguments).splice(1);
                 var l = opts.length;
@@ -1376,7 +1464,7 @@ angular.module('gkClientIndex.services', [])
                 size: mount.use,
                 org_capacity: mount.orgtotal,
                 org_size: mount.orguse,
-                type: mount.type,
+                type: mount.mountid==263688?3: mount.mountid==264704?2:mount.type,
                 fullpath: ''
             };
             return newMount;
@@ -1390,6 +1478,9 @@ angular.module('gkClientIndex.services', [])
             mounts.push(mountItem);
         });
        var GKMount = {
+           isAdmin:function(mount){
+               return mount.type < 2;
+           },
            formatMountItem:formatMountItem,
            /**
             * 获取所有的mount
@@ -1449,11 +1540,20 @@ angular.module('gkClientIndex.services', [])
            getOrgMounts:function(){
                var orgMounts = [];
                angular.forEach(mounts,function(value){
-                   if(value.org_id != 0){
+                   if(value.org_id != 0 && value.type!=3){
                        orgMounts.push(value);
                    }
                })
                return orgMounts;
+           },
+           getSubscribeMounts:function(){
+               var subscribeMounts = [];
+               angular.forEach(mounts,function(value){
+                   if(value.org_id != 0 && value.type==3){
+                       subscribeMounts.push(value);
+                   }
+               })
+               return subscribeMounts;
            }
        };
 
@@ -1580,20 +1680,6 @@ angular.module('gkClientIndex.services', [])
                     width:794,
                     height:490,
                     resize:1
-                }
-                gkClientInterface.setMain(data);
-            },
-            openPersonalSetting:function(){
-                var url = gkClientInterface.getUrl({
-                    url:'/my',
-                    sso:1
-                });
-                var data = {
-                    url:url,
-                    type:"sole",
-                    width:794,
-                    height:490,
-                    resize:0
                 }
                 gkClientInterface.setMain(data);
             }
