@@ -517,7 +517,8 @@ angular.module('gkClientIndex.directives',[])
                 order: '=',
                 selectedFile: '=',
                 rightOpts: '=',
-                keyword: '@'
+                keyword: '@',
+                selectedPath:'@'
             },
             link: function ($scope, $element) {
                 var selectedFile = [], //当前已选中的条目
@@ -544,6 +545,26 @@ angular.module('gkClientIndex.directives',[])
                     $scope.selectedFile = selectedFile;
                     GKFileList.setSelectFile($scope.selectedFile);
                 };
+
+                /**
+                 * 通过路径选中文件
+                 * @param path
+                 */
+                var selectFileByPath = function(path){
+                    angular.forEach($scope.fileData,function(value,index){
+                        if(value.fullpath === path){
+                            selectFile(index,true);
+                        }
+                    });
+                }
+
+               if($scope.selectedPath){
+                    console.log($scope.selectedPath.split('|'));
+                    angular.forEach($scope.selectedPath.split('|'),function(value){
+                        selectFileByPath(value);
+                    });
+                }
+
                 /**
                  * 取消选中
                  * @param index

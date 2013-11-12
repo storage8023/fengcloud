@@ -2,7 +2,7 @@ var module;
 
 module = angular.module('angularBootstrapNavTree', []);
 
-module.directive('abnTree', function($timeout) {
+module.directive('abnTree', ['$timeout','$parse',function($timeout,$parse) {
   return {
     restrict: 'E',
     templateUrl: 'bower_components/abn.tree/abn_tree_template.html',
@@ -12,11 +12,13 @@ module.directive('abnTree', function($timeout) {
       initialSelection: '=',
       selectedBranch:'=',
       onExpand: '&',
-      initSelectedBranch:'='
+      initSelectedBranch:'=',
+      onAdd:'&'
     },
     link: function(scope, element, attrs) {
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
        index  = 20;
+       scope.showAdd = !!attrs['onAdd'];
       if (attrs.iconExpand == null) {
         attrs.iconExpand = 'icon-plus';
       }
@@ -239,7 +241,16 @@ module.directive('abnTree', function($timeout) {
           }
         });
       }
+
+      scope.handleAddBtn = function(){
+          if (scope.onAdd != null) {
+              return $timeout(function() {
+                  return scope.onAdd();s
+              });
+          }
+      };
+
       return scope.$watch('treeData', on_treeData_change, true);
     }
   };
-});
+}]);

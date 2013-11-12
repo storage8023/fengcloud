@@ -1,6 +1,6 @@
 
 <ul class="nav nav-list abn-tree">
-  <li ng-show="header" class="nav-header">{{ header }}</li>
+  <li ng-show="header" class="nav-header"><span>{{ header }}</span><a ng-click="handleAddBtn()" ng-if="showAdd" href="javascript:void(0)">+</a></li>
   <li ng-repeat="row in tree_rows | filter:{visible:true} track by row.branch.uid"
       ng-animate="'abn-tree-animate'"
       ng-class="'level-' + {{ row.level }} + (row.branch.selected ? ' active':'')"

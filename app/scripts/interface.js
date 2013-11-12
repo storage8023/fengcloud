@@ -7,6 +7,10 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getComputePath:function(param){
+        var re = gkClient.gGetComputerPath(JSON.stringify(param));
+        return re;
+    },
     getLanguage:function(){
         var re = gkClient.gGetLanguage();
         return JSON.parse(re);
@@ -257,7 +261,7 @@
     selectPath:function(params){
         try {
             if(typeof params === 'undefined'){
-                return gkClient.gSelectPathDlg();
+                return gkClient.gSelectPathDlg('');
             }else{
                 return gkClient.gSelectPathDlg(JSON.stringify(params));
             }

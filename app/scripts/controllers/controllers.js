@@ -53,7 +53,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder','GKMount','GKFilter','GKPartition',function ($scope, $location, GKPath, GKFile, $rootScope,GKSmartFolder,GKMount,GKFilter,GKPartition) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder','GKMount','GKFilter','GKPartition','$modal','GK',function ($scope, $location, GKPath, GKFile, $rootScope,GKSmartFolder,GKMount,GKFilter,GKPartition,$modal,GK) {
         $scope.GKPartition = GKPartition;
         var myMount = GKMount.getMyMount(), //我的空间
             orgMount = GKMount.getOrgMounts(),//团队的空间
@@ -194,6 +194,93 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
+
+        $scope.handleAdd = function(partition){
+           if(partition == GKPartition.myFile){
+               var backupDialog = $modal.open({
+                   templateUrl: 'views/backup.html',
+                   backdrop: false,
+                   windowClass: 'backup_dialog',
+                   controller: function ($scope, $modalInstance) {
+                       $scope.backupList = [
+                           {
+                               name:'desktop',
+                               text:'桌面',
+                               tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                           },
+                           {
+                               name:'documents',
+                               text:'文档',
+                               tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                           },
+                           {
+                               name:'pictures',
+                               text:'照片',
+                               tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                           },
+                           {
+                               name:'music',
+                               text:'音乐',
+                               tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                           },
+                           {
+                               name:'video',
+                               text:'视频',
+                               tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                           },
+                           {
+                               name:'other',
+                               text:'文件夹',
+                               tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                           }
+                       ];
+                       $scope.backUp = function(item){
+                           var localUri = '',defaultName = '';
+                           if(item.name=='other'){
+                               localUri = gkClientInterface.selectPath({
+                                   disable_root:1
+                               });
+                               if(!localUri){
+                                   return;
+                               }
+                               defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri,'/'),'\\\\'));
+                           }else{
+                               localUri = gkClientInterface.getComputePath({
+                                   type:item.name
+                               });
+                               defaultName = item.text;
+                           }
+                            if(!defaultName) return;
+                          var  params = {
+                               webpath: defaultName,
+                               fullpath: localUri,
+                               mountid: myMount['mount_id'],
+                               overwrite: 1
+                           };
+                           GK.setLinkPath(params);
+                           $location.search({
+                               mountid:myMount['mount_id'],
+                               partition:GKPartition.myFile,
+                               path:'',
+                               view:$location.search().view,
+                               selectedpath:''
+                           });
+                           $scope.cancel();
+                       };
+
+                       $scope.cancel = function () {
+                           $modalInstance.dismiss('cancel');
+                       };
+                   }
+               });
+
+           }else if(partition == GKPartition.teamFile){
+
+           }else if(partition == GKPartition.subscribeFile){
+
+           }
+        };
+
     }])
     .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q','GKSearch','RestFile','GKFileList','GKPartition',function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi,$q,GKSearch,RestFile,GKFileList,GKPartition) {
         /**
@@ -216,7 +303,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.mountId = $routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id;
         $scope.keyword = $routeParams.keyword || '';
-
+        console.log($scope.selectedpath);
         /**
          * 文件列表数据
          */
@@ -318,31 +405,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         /**
-         * 通过路径选中文件
-         * @param path
-         */
-//        var selectFileByPath = function(path){
-//            angular.forEach($scope.fileData,function(value){
-//                if(value.fullpath === path){
-//                    selectFile(value);
-//                }
-//            });
-//        }
-
-        /**
          * 刷新列表数据
          */
         var refreahData = function () {
             getFileData().then(function(newFileData){
                 $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-//                if($scope.selectedpath){
-//                    var selectPathArr = $scope.selectedpath.split('|');
-//                    angular.forEach(selectPathArr,function(value){
-//                        $scope.multiSelect = true;
-//                        selectFileByPath(value);
-//                        $scope.multiSelect = false;
-//                    });
-//                }
+
             })
 
         };
@@ -452,8 +520,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }else{
                         file.sync = 1;
                     }
-                }, function () {
-
                 });
             }
 
@@ -1050,7 +1116,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-
 
         $scope.showTransfer = function(){
             GKDialog.openTransfer();

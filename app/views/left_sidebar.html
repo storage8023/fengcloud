@@ -11,6 +11,7 @@
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedMyBranch"
                   init-selected-branch = "initSelectedBranch"
+                  on-add ="handleAdd(GKPartition.myFile)"
                   on-select="handleSelect(branch,GKPartition.myFile)"
                   on-expand="handleExpand(branch,GKPartition.myFile)"
                 >
@@ -23,6 +24,7 @@
                   icon-node-expand="icon_folder"
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedOrgBranch"
+                  on-add ="handleAdd(GKPartition.teamFile)"
                   on-select="handleSelect(branch,GKPartition.teamFile)"
                   on-expand="handleExpand(branch,GKPartition.teamFile)"
                 >
@@ -35,6 +37,7 @@
                   icon-node-expand="icon_folder"
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedSubscribeBranch"
+                  on-add="handleAdd(GKPartition.subscribeFile)"
                   on-select="handleSelect(branch,GKPartition.subscribeFile)"
                   on-expand="handleExpand(branch,GKPartition.subscribeFile)"
                 >
@@ -47,6 +50,7 @@
                   icon-node-expand="icon_folder"
                   icon-node-collapse="icon_folder"
                   selected-branch="selectedSmartBranch"
+                  show-add-btn ="false"
                   on-select="handleSelect(branch,GKPartition.smartFolder)"
                   on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
