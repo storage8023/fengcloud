@@ -357,7 +357,7 @@
     setChangeLanguage:function(params){
        gkClient.gChangeLanguage(JSON.stringify(params));
     },
-    setGetUrl:function(params){
+    getUrl:function(params){
         return gkClient.gGetUrl(JSON.stringify(params));
     },
     setMain:function(data){

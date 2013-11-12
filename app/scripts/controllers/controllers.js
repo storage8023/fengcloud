@@ -945,7 +945,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             {
                item: "访问网站",
                 menuclick:function(){
-                    var url = gkClientInterface.setGetUrl({
+                    var url = gkClientInterface.getUrl({
                         sso:1,
                         url:'/storage'
                     });
@@ -964,7 +964,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"帮助",
                 menuclick:function(){
-                    var url = gkClientInterface.setGetUrl({
+                    var url = gkClientInterface.getUrl({
                         sso:1,
                         url:'/help'
                     });
@@ -973,7 +973,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },{
                 item:"关于",
                 menuclick:function(){
-                    var url = gkClientInterface.setGetUrl({
+                    var url = gkClientInterface.getUrl({
                         sso:1,
                         url:'/about'
                     });

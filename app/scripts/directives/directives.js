@@ -43,7 +43,7 @@ angular.module('gkClientIndex.directives',[])
                         if ($rootScope.PAGE_CONFIG && $rootScope.PAGE_CONFIG.member || targetElem.data('sso') == 1) {
                             param.sso = 1;
                         }
-                        var url = gkClientInterface.setGetUrl(param);
+                        var url = gkClientInterface.getUrl(param);
                         gkClientInterface.openUrl(url);
                         return false;
                     }
@@ -292,7 +292,7 @@ angular.module('gkClientIndex.directives',[])
             }
         }
     }])
-    .directive('member',['$compile','$rootScope',function($compile,$rootScope){
+    .directive('member',['$compile','$rootScope','GKDialog',function($compile,$rootScope,GKDialog){
         return {
             replace: true,
             restrict: 'E',
@@ -304,23 +304,10 @@ angular.module('gkClientIndex.directives',[])
 
                 $scope.newsOpen = function(){
                     $rootScope.showNews = !$rootScope.showNews;
-//                    var newsTmpl = '<news/>';
-//                    var news = $compile(newsTmpl)($scope);
-//                    $document.find('body').append(news);
-//                    news.css({top:'50px'});
-                    //console.log(news);
                 };
 
                 $scope.personalOpen = function ($scope) {
-                    var UIPath = gkClientInterface.getUIPath();
-                    var data = {
-                        url:"file:///"+UIPath+"/personalInformation.html",
-                        type:"normal",
-                        width:680,
-                        height:460,
-                        resize:1
-                    }
-                    gkClientInterface.setMain(data);
+                    GKDialog.openPersonalSetting();
                 };
             }
         }

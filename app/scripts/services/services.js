@@ -128,11 +128,11 @@ angular.module('gkClientIndex.services', [])
                 smartFolders = gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'];
                 if (!smartFolders) smartFolders = [];
 
-                smartFolders.unshift({
-                    name: GKFilter.getFilterName('inbox'),
-                    icon:'icon_inbox',
-                    filter:'inbox'
-                });
+//                smartFolders.unshift({
+//                    name: GKFilter.getFilterName('inbox'),
+//                    icon:'icon_inbox',
+//                    filter:'inbox'
+//                });
 
                 smartFolders.unshift({
                     name: GKFilter.getFilterName('star'),
@@ -1580,6 +1580,20 @@ angular.module('gkClientIndex.services', [])
                     width:794,
                     height:490,
                     resize:1
+                }
+                gkClientInterface.setMain(data);
+            },
+            openPersonalSetting:function(){
+                var url = gkClientInterface.getUrl({
+                    url:'/my',
+                    sso:1
+                });
+                var data = {
+                    url:url,
+                    type:"sole",
+                    width:794,
+                    height:490,
+                    resize:0
                 }
                 gkClientInterface.setMain(data);
             }
