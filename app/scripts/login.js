@@ -67,7 +67,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 alert('请输入你的称呼');
                 return;
             }
-            var password = md5.createHash($scope.registPassword);
+            var password = $scope.registPassword;
             //$scope.step = 'device';
             GKApi.regist($scope.registUsername,$scope.registEmail,password,1).success(function(){
                 gkClientInterface.login({
