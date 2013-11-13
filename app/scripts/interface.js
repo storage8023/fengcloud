@@ -7,6 +7,9 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    notice:function(params,success,error){
+        gkClient.gNotice(JSON.stringify(params),success,error);
+    },
     getComputePath:function(param){
         var re = gkClient.gGetComputerPath(JSON.stringify(param));
         return re;
@@ -319,7 +322,7 @@
             date: String(date),
             mountid:parseInt(mountid)
         };
-
+        //onsole.log(params);
         var JSONParams = JSON.stringify(params);
         return gkClient.gGetAuthorization(JSONParams);
     },

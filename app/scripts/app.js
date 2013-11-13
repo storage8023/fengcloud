@@ -1,6 +1,6 @@
 'use strict';
 angular.module('LocalStorageModule').value('prefix', 'gkClientIndex');
-angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filters','gkClientIndex.directives','gkClientIndex.services','ngRoute','LocalStorageModule','ui.directives','ui.utils','ui.bootstrap','ngSanitize','tags-input','LocalStorageModule','ngAnimate'])
+angular.module('gkClientIndex', ['gkClientIndex.controllers', 'gkClientIndex.filters', 'gkClientIndex.directives', 'gkClientIndex.services', 'ngRoute', 'LocalStorageModule', 'ui.directives', 'ui.utils', 'ui.bootstrap', 'ngSanitize', 'tags-input', 'LocalStorageModule', 'ngAnimate'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/file', {
@@ -8,7 +8,7 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
                 controller: 'fileBrowser'
             }).
             otherwise({
-                redirectTo: function(){
+                redirectTo: function () {
 //                    $location.search({
 //                        path:'',
 //                        partition:'myfile',
@@ -18,6 +18,12 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers','gkClientIndex.filt
                     return '/file'
                 }
             });
+    }])
+    .config(['$sceDelegateProvider',function ($sceDelegateProvider) {
+        $sceDelegateProvider.resourceUrlWhitelist([
+            'self',
+            'http://gkdev.gokuai.cn/**'
+        ]);
     }]);
 
 

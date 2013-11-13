@@ -4,6 +4,134 @@
 
 angular.module('gkClientIndex.services', [])
     .constant('newsKey','gkNews')
+    .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location',function($rootScope,$modal,GK,GKMount,GKPartition,$location){
+        return{
+            backUp:function(){
+                return $modal.open({
+                    templateUrl: 'views/backup.html',
+                    backdrop: false,
+                    windowClass: 'backup_dialog',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.backupList = [
+                            {
+                                name:'desktop',
+                                text:'桌面',
+                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                            },
+                            {
+                                name:'documents',
+                                text:'文档',
+                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                            },
+                            {
+                                name:'pictures',
+                                text:'照片',
+                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                            },
+                            {
+                                name:'music',
+                                text:'音乐',
+                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                            },
+                            {
+                                name:'video',
+                                text:'视频',
+                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                            },
+                            {
+                                name:'other',
+                                text:'文件夹',
+                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                            }
+                        ];
+                        $scope.backUp = function(item){
+                            var localUri = '',defaultName = '';
+                            if(item.name=='other'){
+                                localUri = gkClientInterface.selectPath({
+                                    disable_root:1
+                                });
+                                if(!localUri){
+                                    return;
+                                }
+                                defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri,'/'),'\\\\'));
+                            }else{
+                                localUri = gkClientInterface.getComputePath({
+                                    type:item.name
+                                });
+                                defaultName = item.text;
+                            }
+                            if(!defaultName) return;
+                            var myMount = GKMount.getMyMount();
+                            var  params = {
+                                webpath: defaultName,
+                                fullpath: localUri,
+                                mountid: myMount['mount_id'],
+                                overwrite: 1
+                            };
+                            GK.setLinkPath(params);
+                            $modalInstance.close({
+                                mountid:myMount['mount_id'],
+                                partition:GKPartition.myFile,
+                                path:'',
+                                view:$location.search().view,
+                                selectedpath:''
+                            });
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                });
+            },
+            nearBy:function(){
+                return $modal.open({
+                    templateUrl: 'views/nearby_dialog.html',
+                    backdrop: false,
+                    windowClass: 'nearby_dialog',
+                    controller: function ($scope, $modalInstance,src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso:1,
+                                url:'/org/neighbour'
+                            });
+                        }
+                    }
+                });
+            },
+            createTeam:function(){
+                return $modal.open({
+                    templateUrl: 'views/create_team_dialog.html',
+                    backdrop: false,
+                    windowClass: 'create_team_dialog',
+                    controller: function ($scope, $modalInstance,src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        $rootScope.$on('createTeamSuccess',function(orgId){
+                            $modalInstance.close(orgId);
+                        })
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso:1,
+                                url:'/org/create_team'
+                            });
+                        }
+                    }
+                });
+            }
+        }
+    }])
     .factory('GKFind',['$rootScope',function($rootScope){
         return {
             toogleFind:function(){
@@ -1591,7 +1719,13 @@ angular.module('gkClientIndex.services', [])
                    }
                })
                return subscribeMounts;
+           },
+           addMount:function(newMount,$scope){
+               var mountItem = formatMountItem(newMount);
+               mounts.push(mountItem);
+              return mountItem;
            }
+
        };
 
       return GKMount;
@@ -1743,7 +1877,10 @@ angular.module('gkClientIndex.services', [])
     }
     ])
 ;
-
+/**
+ * 客户端的回调函数
+ * @type {{}}
+ */
 var gkClientCallback = {};
 (function(obj){
     var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage','LoginResult','ShowFind'];
@@ -1759,6 +1896,23 @@ var gkClientCallback = {};
     });
 })(gkClientCallback)
 
+/**
+ * 网站的回调
+ * @param name
+ * @param params
+ */
+var gkSiteCallback = function(name,params){
+    if(typeof name !=='string'){
+        name = String(name);
+    }
+    var rootScope = jQuery(document).scope();
+    rootScope.$broadcast(name,params);
+};
+
+/**
+ * 搜索
+ * @constructor
+ */
 function GKFileSearch() {
 }
 GKFileSearch.prototype = {

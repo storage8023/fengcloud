@@ -207,12 +207,12 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
     }])
     .filter('getOS',function(){
         return function(osName,osVersion){
-            return osName?osName+' '+osVersion:'-';
+            return osVersion?osVersion:'-';
         }
     })
     .filter('getDeviceName',function(){
-        return function(deviceName){
-            return deviceName?deviceName:'-';
+        return function(os_name){
+            return os_name?os_name:'网页版';
         }
     })
     .filter('getSyncFileName',['GKMount',function(GKMount){
