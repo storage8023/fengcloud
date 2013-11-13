@@ -171,34 +171,75 @@ angular.module('gkClientIndex.services', [])
                     condition:code,
                     filter:'search'
                 });
-                console.log(smartFolders);
             },
         };
         return GKSmartFolder;
     }])
     .factory('GKFilter', [function () {
         var GKFilter =  {
+            trash:'trash',
+            inbox:'inbox',
+            star:'star',
+            recent:'recent',
+            search:'search',
             getFilterName:function(filter){
                 var filterName = '';
                 switch(filter){
-                    case 'trash':
+                    case this.trash:
                         filterName = '回收站';
                         break;
-                    case 'inbox':
+                    case this.inbox:
                         filterName = '我接收的文件';
                         break;
-                    case 'star':
+                    case this.star:
                         filterName = '星标文件';
                         break;
-                    case 'recent':
+                    case this.recent:
                         filterName = '最近修改的文件';
                         break;
-                    case 'search':
+                    case this.search:
                         filterName = '搜索结果';
                         break;
                 }
                 return filterName;
+            },
+            getFilterTip:function(filter){
+                var tip = '';
+                switch(filter){
+                    case this.trash:
+                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        break;
+                    case this.inbox:
+                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        break;
+                    case this.star:
+                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        break;
+                    case this.recent:
+                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        break;
+                    case this.search:
+                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        break;
+                }
+                return tip;
+            },
+            isTrash:function(filter){
+                return filter == this.trash;
+            },
+            isInbox:function(filter){
+                return filter == this.inbox;
+            },
+            isRecent:function(filter){
+                return filter == this.recent;
+            },
+            isSearch:function(filter){
+                return filter == this.search;
+            },
+            isStar:function(filter){
+                return filter == this.star;
             }
+
         }
 
         return GKFilter;
@@ -358,9 +399,7 @@ angular.module('gkClientIndex.services', [])
                 gkClientInterface.saveToLocal(params);
             },
             del: function (params) {
-                console.log(params);
                 var re = gkClientInterface.del(params);
-                console.log(re);
                 var deferred = $q.defer();
                 if (!re || re.error == 0) {
                     deferred.resolve(re);
@@ -391,7 +430,6 @@ angular.module('gkClientIndex.services', [])
             },
             move: function (params) {
                 var re = gkClientInterface.move(params);
-                console.log(re);
                 var deferred = $q.defer();
                 if (!re || re.error == 0) {
                     deferred.resolve(re);
@@ -575,7 +613,6 @@ angular.module('gkClientIndex.services', [])
             },
 
             formatFileItem: function (value, source) {
-                //console.log(value);
                 var file;
                 if (source == 'api') {
                     var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
@@ -732,8 +769,6 @@ angular.module('gkClientIndex.services', [])
              * @param file 设置的目录
              */
             setSyncOpt:function(opts,parentFile,file){
-                console.log(file);
-                console.log(GKFile.isSyncable(parentFile,file));
                 if(!GKFile.isSyncable(parentFile,file)){
                     this.disableOpt(opts,'sync','unsync');
                 }else{
@@ -1410,7 +1445,6 @@ angular.module('gkClientIndex.services', [])
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
-                console.log(params);
                 return $http({
                     method: 'POST',
                     url: GK.getApiHost()+'/1/account/toggle_device',
@@ -1464,9 +1498,11 @@ angular.module('gkClientIndex.services', [])
                 size: mount.use,
                 org_capacity: mount.orgtotal,
                 org_size: mount.orguse,
-                type: mount.mountid==263688?3: mount.mountid==264704?2:mount.type,
+                type: mount.type,
                 fullpath: '',
-                logo:mount.orgphoto
+                logo:mount.orgphoto,
+                member_count:mount.membercount,
+                subscriber_count:mount.subscribecount
             };
             return newMount;
         };

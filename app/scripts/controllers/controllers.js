@@ -118,7 +118,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.$on('addSmartFolder',function($event,name,code){
-            console.log(name);
             GKSmartFolder.addSmartFolder(name,code);
             var newSmartFolder = GKFile.dealTreeData([{name:name,condition:code}], GKPartition.smartFolder)[0];
             $scope.smartTreeList.push(newSmartFolder);
@@ -193,7 +192,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var list = GKFile.getFileList(branch.data.mount_id,branch.data.fullpath,1);
                 branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
                 if(!branch.children)  branch.children = [];
-                if(!branch.data.fullpath){
+                if(!branch.data.fullpath && !branch.data.filter){
                     branch.children.push(getTrashNode(branch.data.mount_id));
                 }
             }
@@ -308,7 +307,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.mountId = $routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id;
         $scope.keyword = $routeParams.keyword || '';
-        console.log($scope.selectedpath);
         /**
          * 文件列表数据
          */
@@ -589,7 +587,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     RestFile.clear($rootScope.PAGE_CONFIG.mount.mount_id).success(function(){
                         refreahData();
                     }).error(function(){
-                            console.log(2);
                         });
                 }
             },
@@ -601,7 +598,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         fullpaths.push(value.dir==1?value.fullpath+'/':value.fullpath);
                     });
                     RestFile.recover($rootScope.PAGE_CONFIG.mount.mount_id,fullpaths,'').success(function(){
-                        //console.log(1);
                         angular.forEach($scope.selectedFile, function (value) {
                             angular.forEach($scope.fileData, function (file, key) {
                                 if (value == file) {

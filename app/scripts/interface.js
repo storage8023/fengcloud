@@ -147,12 +147,11 @@
     getSideTreeList: function (params) {
         try {
             var re = gkClient.gSideTreeList(JSON.stringify(params));
-            console.log(JSON.parse(re));
+            //console.log(JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
         }
-        console.log(params);
     },
     /**
      * 显示添加文件的对话框
@@ -226,7 +225,7 @@
     },
     copy:function(params){
         try {
-            console.log(params);
+            //console.log(params);
             var re = gkClient.gCopy(JSON.stringify(params));
             return JSON.parse(re);
         } catch (e) {
@@ -235,7 +234,7 @@
     },
     move:function(params){
         try {
-            console.log(params);
+            //console.log(params);
             var re = gkClient.gMove(JSON.stringify(params));
             return JSON.parse(re);
         } catch (e) {
@@ -279,7 +278,7 @@
     },
     setLinkPath:function(params){
         try {
-            console.log(params);
+            //console.log(params);
             return gkClient.gSetLinkPaths(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);

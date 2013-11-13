@@ -912,7 +912,7 @@ footer {
     color:#738295;
 }
 .right_sidebar .no_file{
-    padding: 20px 26px;
+    padding: 25px 26px;
     color:#ACB4BF;
 }
 .right_sidebar .no_file .head_wrapper{
@@ -926,9 +926,6 @@ footer {
 .right_sidebar .no_file .head_wrapper > div{
     margin: -52px 0 0 65px;
     color: #7F8999;
-}
-.right_sidebar .no_file_subscribefile .head_wrapper > div{
-    margin-top: -40px;
 }
 .right_sidebar .no_file .head_wrapper > div .title{
     font-size: 18px;
@@ -952,6 +949,33 @@ footer {
 .right_sidebar .no_file .tip{
     line-height: 24px;
     margin-top: 20px;
+}
+.right_sidebar .no_file_subscribefile .head_wrapper > div{
+    margin-top: -40px;
+}
+.right_sidebar .filter_right_sidebar .bgicon{
+    width: 128px;
+    height: 128px;
+    display: block;
+    margin: 0 auto;
+    background-image: url(../images/icon/icon_other.png);
+    background-repeat: no-repeat;
+}
+.right_sidebar .filter_right_sidebar .bgicon.recent{
+    background-position: -136px -80px;
+}
+.right_sidebar .filter_right_sidebar .bgicon.star{
+    background-position: -264px -80px;
+}
+.right_sidebar .filter_right_sidebar .bgicon.trash{
+    background-position: -8px -80px;
+}
+.right_sidebar .filter_right_sidebar h3{
+    color: #3F4754;
+    text-align: center;
+}
+.right_sidebar .filter_right_sidebar .tip{
+    margin: 20px 0 0 0;
 }
 .right_sidebar .file_info_wrapper{
     background: #F1F1F2;

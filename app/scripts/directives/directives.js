@@ -322,7 +322,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('rightSidebar', ['RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', function (RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition) {
+    .directive('rightSidebar', ['GKFilter','RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', function (GKFilter,RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition) {
         return {
             replace: true,
             restrict: 'E',
@@ -403,9 +403,7 @@ angular.module('gkClientIndex.directives', [])
                         $scope.sidebar = 'singlefile';
                     } else {
                         $scope.sidebar = 'nofile';
-                        if ($scope.partition == GKPartition.smartFolder) {
-
-                        } else {
+                        if(!$scope.filter){
                             $scope.sidbarData = {
                                 title: $rootScope.PAGE_CONFIG.mount.name,
                                 tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
@@ -420,7 +418,7 @@ angular.module('gkClientIndex.directives', [])
                             } else {
                                 $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
                                 if($scope.partition == GKPartition.teamFile){
-                                    $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅' + $rootScope.PAGE_CONFIG.mount.member_count + '人';
+                                    $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
                                     $scope.sidbarData.menus = [
                                         {
                                             text: '在线访问',
@@ -479,8 +477,13 @@ angular.module('gkClientIndex.directives', [])
 
 
                             }
+                        }else{
+                            $scope.sidbarData = {
+                                title: GKFilter.getFilterName($scope.filter),
+                                tip: GKFilter.getFilterTip($scope.filter),
+                                icon:$scope.filter
+                            };
                         }
-
                     }
                 }, true)
             }
@@ -648,7 +651,6 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 if ($scope.selectedPath) {
-                    console.log($scope.selectedPath.split('|'));
                     angular.forEach($scope.selectedPath.split('|'), function (value) {
                         selectFileByPath(value);
                     });
@@ -681,7 +683,6 @@ angular.module('gkClientIndex.directives', [])
                  * @param index
                  */
                 $scope.handleClick = function ($event, index) {
-                    // console.log($scope.rightOpts);
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
@@ -1118,7 +1119,6 @@ angular.module('gkClientIndex.directives', [])
                 };
                 var preSelectItem = function (newIndex) {
                     if (!$scope.list || !$scope.list.length) return;
-                    console.log(newIndex);
                     angular.forEach($scope.list, function (value) {
                         if (value.selected) {
                             value.selected = false;
@@ -1313,7 +1313,6 @@ angular.module('gkClientIndex.directives', [])
                                 });
                             }
                         }
-                        //console.log(resultList);
                         if (!resultList || !resultList.length) {
                             hide();
                         } else {
@@ -1570,7 +1569,6 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element, $attrs) {
                 var condition = '';
                 if ($scope.partition == 'smartfolder' && $scope.filter == 'search') {
-                    console.log($scope.keyword);
                     GKApi.getSmartFolder($scope.keyword).success(function (data) {
                         if (data && data.condition) {
                             condition = data.condition;
@@ -1814,7 +1812,6 @@ angular.module('gkClientIndex.directives', [])
                     alert('接口未实现');
                     return;
                     GKApi.updateSmartFolder($scope.keyword).success(function (data) {
-                        console.log(data);
                     }).error(function () {
 
                         });
@@ -1942,11 +1939,11 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/common_right_sidebar.html"
         }
     }])
-    .directive('smartfolderRightSidebar', [function () {
+    .directive('filterRightSidebar', [function () {
         return {
             restrict: 'E',
             replace: true,
-            templateUrl: "views/smartfolder_right_sidebar.html"
+            templateUrl: "views/filter_right_sidebar.html"
         }
     }])
 
