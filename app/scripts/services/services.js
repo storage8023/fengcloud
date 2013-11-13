@@ -116,7 +116,7 @@ angular.module('gkClientIndex.services', [])
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $rootScope.$on('createTeamSuccess',function(orgId){
+                        $rootScope.$on('createTeamSuccess',function(event,orgId){
                             $modalInstance.close(orgId);
                         })
                     },
@@ -1905,6 +1905,7 @@ var gkSiteCallback = function(name,params){
     if(typeof name !=='string'){
         name = String(name);
     }
+    console.log(arguments);
     var rootScope = jQuery(document).scope();
     rootScope.$broadcast(name,params);
 };
