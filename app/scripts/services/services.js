@@ -1465,7 +1465,8 @@ angular.module('gkClientIndex.services', [])
                 org_capacity: mount.orgtotal,
                 org_size: mount.orguse,
                 type: mount.mountid==263688?3: mount.mountid==264704?2:mount.type,
-                fullpath: ''
+                fullpath: '',
+                logo:mount.orgphoto
             };
             return newMount;
         };

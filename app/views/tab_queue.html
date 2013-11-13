@@ -24,8 +24,8 @@
                       <span ng-if="item.num<=0" class="status_{{item.status}}">完成</span>
                   </div>
                   <div>
-                      <span ng-if="item.time==0">--:--:--</span>
-                      <span ng-if="item.time!=0">{{item.time}}</span>
+                      <span ng-if="!item.time">--:--:--</span>
+                      <span ng-if="item.time>0">{{item.time}}</span>
                   </div>
                   <div class="opt" ng-if="selectedTab.name=='download'">
                       <button class="remove" ng-click="removeTransfer(item)">取消</button>

@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient',['$rootScope','GKNews','$scope','GKMount','$location','GKFile',function($rootScope,GKNews,$scope,GKMount,$location,GKFile){
+    .controller('initClient',['$rootScope','GKNews','$scope','GKMount','$location','GKFile','GKPartition',function($rootScope,GKNews,$scope,GKMount,$location,GKFile,GKPartition){
         $rootScope.PAGE_CONFIG = {
             user:gkClientInterface.getUser(),
             file:{},
@@ -42,7 +42,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 partition:param.partition,
                 view:param.view
             };
-            if(['myfile','teamfile'].indexOf(param.partition)>=0){
+            if([GKPartition.myFile,GKPartition.teamFile,GKPartition.subscribeFile].indexOf(param.partition)>=0){
                 extend.file = GKFile.getFileInfo(param.mountid,param.path);
                 extend.mount = GKMount.getMountById(param.mountid)
             }else{
@@ -135,19 +135,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedMyBranch = null;
         $scope.selectedOrgBranch = null;
         $scope.selectedSmartBranch = null;
+        $scope.selectedSubscribleBranch = null;
         $scope.initSelectedBranch = $scope.treeList[0];
         var unSelectAllBranch = function (partition) {
-            if (partition != 'myfile' && $scope.selectedMyBranch) {
+            if (partition != GKPartition.myFile && $scope.selectedMyBranch) {
                 $scope.selectedMyBranch.selected = false;
                 $scope.selectedMyBranch = null;
             }
-            if (partition != 'teamfile' && $scope.selectedOrgBranch) {
+            if (partition != GKPartition.teamFile && $scope.selectedOrgBranch) {
                 $scope.selectedOrgBranch.selected = false;
                 $scope.selectedOrgBranch = null;
             }
-            if (partition != 'smartfolder' && $scope.selectedSmartBranch) {
+            if (partition != GKPartition.smartFolder && $scope.selectedSmartBranch) {
                 $scope.selectedSmartBranch.selected = false;
                 $scope.selectedSmartBranch = null;
+            }
+            if (partition != GKPartition.subscribeFile && $scope.selectedSubscribleBranch) {
+                $scope.selectedSubscribleBranch.selected = false;
+                $scope.selectedSubscribleBranch = null;
             }
         };
 
@@ -1038,6 +1043,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope','$document','$compile','$timeout','GKDialog','GKFind',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope,$document,$compile,$timeout, GKDialog,GKFind) {
+        $scope.testCallback = function(){
+            gkClient.gTest(JSON.stringify({a:1}),function(){
+                console.log(arguments);
+            },function(){
+                console.log(arguments);
+            })
+        }
+
         $scope.canBack = false;
         $scope.canForward = false;
 

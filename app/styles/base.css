@@ -10,7 +10,7 @@ button{
 a{
     color:#5595E9;
 }
-span,p,div{
+p,div{
     cursor: default;
 }
 a:active,
