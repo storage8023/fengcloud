@@ -1905,7 +1905,7 @@ var gkSiteCallback = function(name,params){
     if(typeof name !=='string'){
         name = String(name);
     }
-    console.log(arguments);
+    //console.log(arguments);
     var rootScope = jQuery(document).scope();
     rootScope.$broadcast(name,params);
 };

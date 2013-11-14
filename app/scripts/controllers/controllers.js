@@ -211,13 +211,27 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var createTeamDialog = GKModal.createTeam();
                 createTeamDialog.result.then(function (orgId) {
                     gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
-                        var newOrg = JSON.parse(param);
-                        newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
-                        $scope.orgTreeList.push(newOrg);
+                        $scope.$apply(function(){
+                            var newOrg = JSON.parse(param);
+                            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
+                            $scope.orgTreeList.push(newOrg);
+                        });
+
                     })
                 })
             } else if (partition == GKPartition.subscribeFile) {
                 var nearbyDialog = GKModal.nearBy();
+                nearbyDialog.opened.then(function(){
+                    $rootScope.$on('subscribeTeamSuccess',function(event,orgId){
+                        gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
+                            $scope.$apply(function(){
+                                var newOrg = JSON.parse(param);
+                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
+                                $scope.orgSubscribeList.push(newOrg);
+                            });
+                        })
+                    })
+                })
             }
         };
 
