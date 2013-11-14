@@ -4,8 +4,88 @@
 
 angular.module('gkClientIndex.services', [])
     .constant('newsKey','gkNews')
-    .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location',function($rootScope,$modal,GK,GKMount,GKPartition,$location){
+    .value('uiSelectableConfig',{
+        filter:'.file_item',
+        //tolerance:'fit',
+        distance: 10
+    })
+    .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location','$timeout',function($rootScope,$modal,GK,GKMount,GKPartition,$location,$timeout){
         return{
+            news:function(GKNews,GKApi){
+                return $modal.open({
+                    templateUrl: 'views/news_dialog.html',
+                    backdrop: false,
+                    windowClass: 'news_dialog',
+                    controller: function ($scope, $modalInstance,classifyNews) {
+
+                        $scope.cancel = function(){
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        $timeout(function(){
+                            $scope.showList = true;
+                        },500)
+                        $scope.classifyNews = classifyNews;
+                        $scope.loading = false;
+
+                        $scope.getMoreNews = function () {
+                            $scope.loading = true;
+                            GKApi.update(100, requestDateline).success(function (data) {
+                                $scope.loading = false;
+                                var renews = data['updates'] || [];
+                                var classifyNews = GKNews.classify(renews);
+                                $scope.classifyNews = GKNews.concatNews($scope.classifyNews, classifyNews);
+                                requestDateline = getLastDateline(renews, requestDateline);
+                            }).error(function () {
+                                    $scope.loading = false;
+                                })
+                        };
+
+                        /**
+                         *处理邀请加入团队的请求
+                         * @param accept
+                         */
+                        $scope.handleTeamInvite = function (accept, item) {
+                            if (accept) {
+                                GKApi.teamInviteJoin(item['org_id'], item['property']['invite_code']).success(function () {
+                                    item.handled = true;
+                                }).error(function () {
+
+                                    });
+                            } else {
+                                GKApi.teamInviteReject(item['org_id'], item['property']['invite_code']).success(function () {
+                                    item.handled = true;
+                                }).error(function () {
+
+                                    });
+                            }
+
+                        };
+
+                        /**
+                         * 处理申请加入团队的请求
+                         */
+                        $scope.handleTeamRequest = function (agree) {
+
+                        };
+                    },
+                    resolve:{
+                        classifyNews:function(){
+                            var news = GKNews.getNews();
+                            var getLastDateline = function (news, lastDateline) {
+                                var dateline = lastDateline;
+                                if (news && news.length) {
+                                    dateline = news[news.length - 1]['dateline'];
+                                }
+                                return dateline;
+                            };
+
+                            var requestDateline = getLastDateline(news, 0);
+                          return GKNews.classify(news);
+                        }
+                    }
+                });
+            },
             backUp:function(){
                 return $modal.open({
                     templateUrl: 'views/backup.html',
@@ -156,11 +236,11 @@ angular.module('gkClientIndex.services', [])
                 var yesterday = $filter('date')(yesterdayTimestamp,'yyyy-MM-dd');
                 angular.forEach(news,function(value){
                     var date = value.date;
-                    var dateText = date;
+                    var dateText = $filter('date')(value.dateline*1000,'yyyy年M月d日');
                     if(date == today){
-                        dateText = '今天，'+$filter('date')(now,'MM-dd');
+                        dateText = '今天，'+$filter('date')(now,'yyyy年M月d日');
                     }else if(date == yesterday){
-                        dateText = '昨天，'+$filter('date')(yesterdayTimestamp,'MM-dd');;
+                        dateText = '昨天，'+$filter('date')(yesterdayTimestamp,'yyyy年M月d日');;
                     }
                     var existClassifyItem = context.getClassifyItemByDate(date,classifyNews);
                     if(!existClassifyItem){
@@ -1734,21 +1814,59 @@ angular.module('gkClientIndex.services', [])
     ])
     .factory('GKFileList', [function () {
         var selectedFile = [];
+        var selectedIndex = [];
         var selectedPath = '';
         var GKFileList = {
-            setSelectFile:function(file){
-                selectedFile = file||[];
-                var pathArr = [];
-                angular.forEach(selectedFile,function(value){
-                    pathArr.push(value.fullpath);
+            select:function($scope,index,multiSelect){
+                multiSelect = !angular.isDefined(multiSelect) ? false : true;
+                if (!multiSelect && selectedFile && selectedFile.length) {
+                    this.unSelectAll($scope);
+                }
+                $scope.fileData[index].selected = true;
+                selectedFile.push($scope.fileData[index]);
+                selectedIndex.push(index);
+                $scope.selectedFile = selectedFile;
+            },
+            unSelect:function($scope,index){
+                $scope.fileData[index].selected = false;
+                var i = selectedIndex.indexOf(index);
+                if (i >= 0) {
+                    selectedIndex.splice(i, 1);
+                    selectedFile.splice(i, 1);
+                }
+            },
+            unSelectAll:function($scope){
+                for (var i = selectedIndex.length - 1; i >= 0; i--) {
+                    this.unSelect($scope,selectedIndex[i]);
+                }
+            },
+            selectByPath:function($scope,path){
+                var context = this;
+                angular.forEach($scope.fileData, function (value, index) {
+                    if (value.fullpath === path) {
+                        context.select($scope,index, true);
+                    }
                 });
-                selectedPath = pathArr.join('|');
+            },
+            reIndex:function(fileData){
+                var newSelectedIndex = [];
+                var newSelectedFile = [];
+                angular.forEach(fileData, function (value, key) {
+                    angular.forEach(selectedFile, function (file) {
+                        if (value == file) {
+                            newSelectedIndex.push(key);
+                            newSelectedFile.push(file);
+                        }
+                    });
+                });
+                selectedIndex = newSelectedIndex;
+                selectedFile = newSelectedFile;
+            },
+            getSelectedIndex:function(){
+              return selectedIndex;
             },
             getSelectedFile:function(){
                 return selectedFile;
-            },
-            getSelectedPath:function(){
-                return selectedPath;
             }
         };
         return GKFileList;

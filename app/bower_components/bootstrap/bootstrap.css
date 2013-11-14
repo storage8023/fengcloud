@@ -5781,10 +5781,14 @@ button.close {
 
 .modal.fade {
     top: -25%;
-    -webkit-transition: opacity 0.3s linear, top 0.3s ease-out;
-    -moz-transition: opacity 0.3s linear, top 0.3s ease-out;
-    -o-transition: opacity 0.3s linear, top 0.3s ease-out;
-    transition: opacity 0.3s linear, top 0.3s ease-out;
+    -webkit-transition:top 0.3s ease-out;
+    -moz-transition:  top 0.3s ease-out;
+    -o-transition: top 0.3s ease-out;
+    transition: top 0.3s ease-out;
+    /*-webkit-transition: opacity 0.3s linear, top 0.3s ease-out;*/
+    /*-moz-transition: opacity 0.3s linear, top 0.3s ease-out;*/
+    /*-o-transition: opacity 0.3s linear, top 0.3s ease-out;*/
+    /*transition: opacity 0.3s linear, top 0.3s ease-out;*/
 }
 
 .modal.fade.in {

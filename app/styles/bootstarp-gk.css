@@ -1,0 +1,62 @@
+.btn{
+    padding: 3px 28px;
+    font-size: 13px;
+    border:0 none;
+    color: #fff;
+}
+.btn.btn-default{
+    background: #7F8999;
+}
+.btn:hover,
+.btn:active{
+    color: #fff;
+}
+.btn.btn-default:hover{
+    background: #9AA5B8;
+}
+.btn.btn-default:active{
+    background: #6A7280;
+}
+.btn.btn-danger{
+    background: #E65353;
+}
+.btn.btn-danger:hover{
+    background: #F26363;
+}
+.btn.btn-danger:active{
+    background: #CC4949;
+}
+.modal{
+    border:0 none;
+    background: #40464D;
+    color:#fff;
+    width: 674px;
+    margin-left: -337px;
+}
+.modal.white{
+
+}
+.modal .modal-header{
+    text-align: center;
+    background: #23272A;
+    color: #fff;
+    padding: 12px;
+    border:0 none;
+    border-top-left-radius:6px;
+    border-top-right-radius:6px;
+}
+.modal-header .close{
+    color: #fff;
+    text-shadow: none;
+    opacity: 1;
+    margin-top: -2px;
+}
+.modal .modal-header h4{
+    font-size: 14px;
+}
+.modal .modal-footer{
+    padding: 7px 12px;
+    border: 0 none;
+    background: #4E565E;
+    box-shadow:none;
+}

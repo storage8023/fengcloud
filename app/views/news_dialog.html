@@ -1,0 +1,51 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4>我的消息</h4>
+</div>
+<div class="scrollbar modal-body">
+    <ul class="news_list" ng-show="showList">
+        <li ng-repeat="new in classifyNews">
+            <div class="date">{{new.date_text}}</div>
+            <ul class="message_list">
+                <li ng-repeat="item in new.list">
+                    <!--<div class="org_grid"-->
+                    <!--ng-show="!new.list[$index-1] || new.list[$index-1]['org_id'] != item.org_id">-->
+                    <!--<div class="line"></div>-->
+                    <!--<div class="org_name"><span>{{item.org_name}}</span></div>-->
+                    <!--</div>-->
+                    <div class="c_f_after">
+                          <span class="opts">
+                                <span ng-show="handled">已接收</span>
+                                <span ng-show="!handled">
+                                       <button class="btn btn-default" ng-click="handleTeamInvite(true,item)">接收
+                                       </button><button class="btn btn-danger" ng-click="handleTeamInvite(false,item)">
+                                    拒绝
+                                </button>
+                                </span>
+                            </span>
+                        <span class="time">{{item.dateline|date:'H:mm'}}</span>
+                       <span class="text">
+                           <img src="images/default_photo.png" ng-src="item.member_photo" error-src="images/default_photo.png" class="photo" />
+                             <img src="mages/default_logo.png" ng-src="item.member_photo" error-src="images/default_logo.png" class="photo" />
+                           <span>{{item.member_name}}</span>
+                            <span ng-bind-html="item.render_text"></span>
+                       </span>
+
+                        <!--他人邀请我加入团队-->
+
+                        <!--他人申请加入团队-->
+                        <!--<span class="opts" ng-show="!handled&&new.act==10002">-->
+                        <!--<span ng-show="handled">-->
+                        <!--已同意-->
+                        <!--</span>-->
+                        <!--<span ng-show="!handled">-->
+                        <!--<a href="javascript:void(0)" ng-click="handleTeamRequest(true,item)">同意</a>-->
+                        <!--<a href="javascript:void(0)" ng-click="handleTeamRequest(true,item)">拒绝</a>-->
+                        <!--</span>-->
+                        <!--</span>-->
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

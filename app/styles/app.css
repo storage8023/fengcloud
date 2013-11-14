@@ -1530,70 +1530,84 @@ body.resizing *{
 }
 
 /*消息框的样式*/
-.news_warpper
+.news_dialog
 {
-    position: absolute;
-    background: #F1F1F2;
-    height: 470px;
     width: 820px;
-    z-index: 997;
-    left:50%;
-    margin-left:-410px;
+    margin-left: -410px;
+}
+.news_dialog .modal-body{
+    height: 400px;
+}
+
+
+.news_dialog .news_list > li .date{
+    font-size: 13px;
+}
+/*消息框的样式*/
+.news_dialog .news_list > li{
+    margin-bottom: 15px;
+}
+.news_dialog .message_list li{
+    margin-top: 5px;
+    height: 46px;
+    line-height: 46px;
+}
+.news_dialog .message_list li > div{
+    color: #3F4754;
     font-size: 14px;
-    border:1px solid #AEBCD4;
-    color: #606D7F;
-    box-shadow: 0 0 12px rgba(0,0,0,.3);
-    top:49px;
-
-}
-
-.news_list_wrapper{
+    border-radius: 4px;
     height: 100%;
-    overflow: auto;
-    padding:15px 24px;
+    display: inline-block;
+}
+.news_dialog .message_list li > div > span{
+    float: left;
+    height: 100%;
+}
+.news_dialog .message_list li > div > span.time{
+    border-radius: 4px 0 0 4px;
+}
+.news_dialog .message_list li button:last-child,
+.news_dialog .message_list li > div > span.text{
+    border-radius: 0 4px 4px 0;
+}
+.news_dialog .message_list li > div > span.time{
+    background: #51AE75;
+    padding: 0 10px;
+    color: #fff;
+}
+.news_dialog .message_list li > div .photo{
+    width: 32px;
+    height: 32px;
+    box-shadow: 32px;
+}
+.news_dialog .message_list li > div > .opts{
+    float: right;
+    margin-left: -100px;
+    -webkit-transition:margin linear .1s;
+}
+.news_dialog .message_list li > div > span.text{
+    padding: 0 100px 0 20px;
+    -webkit-transition:padding linear .1s;
+    background: #FFFFFF;
+}
+.news_dialog .message_list li > div:hover > span.text{
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 0;
+}
 
+.news_dialog .message_list li > div:hover > .opts{
+    margin-left: 0px;
 }
-.news_warpper h2{
-    font-size: 18px;
-    color:#3D4F69;
-    margin-bottom: 18px;
+.news_dialog .message_list li button{
+    border-radius: 0;
+    padding: 0;
+    height: 100%;
+   vertical-align: top;
+    box-shadow: none;
+    width: 50px;
 }
-.news_warpper .date,
-.news_warpper .org_name{
-color: #8A929C;
-    font-size: 12px;
-}
-.news_warpper .slide_btn{
-    position: absolute;
-    bottom: -26px;
-    width: 137px;
-    background: url(../images/deputy/packup.png);
-    height: 26px;
-    left: 50%;
-    margin-left: -78.5px;
-}
-.news_warpper .message_list{
-    padding-left: 80px;
-    margin-top: -20px;
-}
-.news_warpper .message_list li{
-    margin:12px 0;
-}
-.news_warpper .message_list .line{
-    height: 1px;
-    background: #E0E1E2;
-}
-.news_warpper .message_list .org_name{
-    text-align: right;
-    margin: -9px 0 0 0;
-}
-.news_warpper .message_list .org_name span{
-    background: #F1F1F2;
-    padding: 3px;
-}
-.news_warpper .message_list .time{
-    margin-right: 10px;
-}
+
 
 /*附近的人*/
 .nearby_sidebar{

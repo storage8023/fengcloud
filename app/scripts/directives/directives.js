@@ -3,6 +3,76 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('uiSelectable', ['uiSelectableConfig','GKFileList',function (uiSelectableConfig,GKFileList) {
+        return {
+            restrict:'A',
+            require: ['ngModel'],
+            link:function (scope, element, attrs, ctrlArr) {
+
+                var ngModel = ctrlArr[0];
+                var uiSelectableDragDropCtrl = ctrlArr[1];
+
+                function combineCallbacks(first,second){
+                    if( second && (typeof second === "function") ){
+                        return function(e,ui){
+                            first(e,ui);
+                            second(e,ui);
+                        };
+                    }
+                    return first;
+                }
+                var opts = { filter: 'li' };
+                angular.extend(opts, uiSelectableConfig);
+
+                var callbacks = {
+                    selected: null,
+                    selecting: null,
+                    start: null,
+                    stop: null,
+                    unselected: null,
+                    unselecting: null
+                };
+
+                if (ngModel) {
+                    ngModel.$render = function() {
+                        element.selectable( "refresh" );
+                    };
+                    callbacks.selected = function(e, ui) {
+                        scope.$apply(function(){
+                            GKFileList.select(scope,jQuery(ui.selected).index(),true);
+                        })
+                    };
+                    callbacks.stop = function(e, ui) {
+
+                    };
+                    callbacks.start = function(e, ui) {
+                        scope.$apply(function(){
+                            GKFileList.unSelectAll(scope);
+                        })
+                    };
+                    callbacks.unselected = function(e, ui) {
+                        scope.$apply(function(){
+                            GKFileList.unSelect(scope,jQuery(ui.selected).index());
+                        })
+                    };
+//                    callbacks.selecting = function(e, ui) {
+//                        var offsetParent = $(ui.selecting).offsetParent();
+//                        var position = $(ui.selecting).position();
+//                        var grid = position.top - offsetParent.height();
+//                        if(grid-20>0){
+//                            offsetParent.scrollTop(grid);
+//                        }
+//                    };
+                }
+
+                angular.forEach(callbacks, function(value, key ){
+                    opts[key] = combineCallbacks(value, opts[key]);
+                });
+                console.log(opts);
+                element.selectable(opts);
+            }
+        };
+    }])
     .directive('errorSrc',[function(){
         return {
             restrict: 'A',
@@ -231,64 +301,6 @@ angular.module('gkClientIndex.directives', [])
             scope: {},
             templateUrl: "views/news.html",
             link: function ($scope, $element) {
-                var news = GKNews.getNews();
-
-                var getLastDateline = function (news, lastDateline) {
-                    var dateline = lastDateline;
-                    if (news && news.length) {
-                        dateline = news[news.length - 1]['dateline'];
-                    }
-                    return dateline;
-                };
-
-                var requestDateline = getLastDateline(news, 0);
-                $scope.classifyNews = GKNews.classify(news);
-                $scope.hideNews = function () {
-                    $rootScope.showNews = !$rootScope.showNews;
-                }
-
-                $scope.loading = false;
-
-                $scope.getMoreNews = function () {
-                    $scope.loading = true;
-                    GKApi.update(100, requestDateline).success(function (data) {
-                        $scope.loading = false;
-                        var renews = data['updates'] || [];
-                        var classifyNews = GKNews.classify(renews);
-                        $scope.classifyNews = GKNews.concatNews($scope.classifyNews, classifyNews);
-                        requestDateline = getLastDateline(renews, requestDateline);
-                    }).error(function () {
-                            $scope.loading = false;
-                        })
-                };
-
-                /**
-                 *处理邀请加入团队的请求
-                 * @param accept
-                 */
-                $scope.handleTeamInvite = function (accept, item) {
-                    if (accept) {
-                        GKApi.teamInviteJoin(item['org_id'], item['property']['invite_code']).success(function () {
-                            item.handled = true;
-                        }).error(function () {
-
-                            });
-                    } else {
-                        GKApi.teamInviteReject(item['org_id'], item['property']['invite_code']).success(function () {
-                            item.handled = true;
-                        }).error(function () {
-
-                            });
-                    }
-
-                };
-
-                /**
-                 * 处理申请加入团队的请求
-                 */
-                $scope.handleTeamRequest = function (agree) {
-
-                };
             }
         }
     }])
@@ -302,7 +314,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('member', ['$compile', '$rootScope', 'GKDialog', function ($compile, $rootScope, GKDialog) {
+    .directive('member', ['$compile', '$rootScope', 'GKDialog','GKModal','GKNews', 'GKApi',function ($compile, $rootScope, GKDialog,GKModal,GKNews,GKApi) {
         return {
             replace: true,
             restrict: 'E',
@@ -313,7 +325,7 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
 
                 $scope.newsOpen = function () {
-                    $rootScope.showNews = !$rootScope.showNews;
+                    GKModal.news(GKNews,GKApi);
                 };
 
                 $scope.personalOpen = function ($scope) {
@@ -613,70 +625,15 @@ angular.module('gkClientIndex.directives', [])
                 selectedPath: '@'
             },
             link: function ($scope, $element) {
-                var selectedFile = [], //当前已选中的条目
-                    selectedIndex = [], //已选中文件的索引
-                    unSelectFile, //取消选中的函数
-                    unSelectAllFile, //取消所有选中的文件
-                    selectFile,//选中函数
-                    shiftLastIndex = 0 //shift键盘的起始点
-                    ;
-
-                /**
-                 * 选中文件
-                 * @param index
-                 * @param multiSelect
-                 */
-                selectFile = function (index, multiSelect) {
-                    multiSelect = arguments[1] === undefined ? false : true;
-                    if (!multiSelect && selectedFile && selectedFile.length) {
-                        unSelectAllFile();
-                    }
-                    $scope.fileData[index].selected = true;
-                    selectedFile.push($scope.fileData[index]);
-                    selectedIndex.push(index);
-                    $scope.selectedFile = selectedFile;
-                    GKFileList.setSelectFile($scope.selectedFile);
-                };
-
-                /**
-                 * 通过路径选中文件
-                 * @param path
-                 */
-                var selectFileByPath = function (path) {
-                    angular.forEach($scope.fileData, function (value, index) {
-                        if (value.fullpath === path) {
-                            selectFile(index, true);
-                        }
-                    });
-                }
+                var shiftLastIndex = 0; //shift键盘的起始点
 
                 if ($scope.selectedPath) {
                     angular.forEach($scope.selectedPath.split('|'), function (value) {
-                        selectFileByPath(value);
+                        GKFileList.selectByPath($scope,value);
                     });
                 }
 
-                /**
-                 * 取消选中
-                 * @param index
-                 */
-                unSelectFile = function (index) {
-                    $scope.fileData[index].selected = false;
-                    var i = selectedIndex.indexOf(index);
-                    if (i >= 0) {
-                        selectedIndex.splice(i, 1);
-                        selectedFile.splice(i, 1);
-                    }
-                };
-                /**
-                 * 取消所有选中
-                 */
-                unSelectAllFile = function () {
-                    for (var i = selectedIndex.length - 1; i >= 0; i--) {
-                        unSelectFile(selectedIndex[i]);
-                    }
 
-                };
                 /**
                  * 处理点击
                  * @param $event
@@ -686,25 +643,25 @@ angular.module('gkClientIndex.directives', [])
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
-                            unSelectFile(index);
+                            GKFileList.unSelect($scope,index);
                         } else {
-                            selectFile(index, true);
+                            GKFileList.select($scope,index, true);
                         }
                     } else if ($event.shiftKey) {
                         var lastIndex = shiftLastIndex;
-                        unSelectAllFile();
+                        GKFileList.unSelectAll($scope)
                         if (index > lastIndex) {
                             for (var i = lastIndex; i <= index; i++) {
-                                selectFile(i, true);
+                                GKFileList.select($scope,i, true);
                             }
                         } else if (index < lastIndex) {
                             for (var i = index; i <= lastIndex; i++) {
-                                selectFile(i, true);
+                                GKFileList.select($scope,i, true);
                             }
                         }
 
                     } else {
-                        selectFile(index);
+                        GKFileList.select($scope,index);
                     }
                     if (!$event.shiftKey) {
                         shiftLastIndex = index;
@@ -767,40 +724,20 @@ angular.module('gkClientIndex.directives', [])
                     if (fileItem.size()) {
                         var index = fileItem.index();
                         if (!$scope.fileData[index].selected) {
-                            selectFile(index);
+                            GKFileList.select($scope,index);
                         }
                     } else {
-                        unSelectAllFile();
+                        GKFileList.unSelectAll($scope);
                     }
                 };
 
-
-                /**
-                 * 重新索引文件
-                 * @param fileData
-                 * todo 对shiftlastindex的重新索引
-                 */
-                var reIndex = function (fileData) {
-                    var newSelectedIndex = [];
-                    var newSelectedFile = [];
-                    angular.forEach(fileData, function (value, key) {
-                        angular.forEach(selectedFile, function (file) {
-                            if (value == file) {
-                                newSelectedIndex.push(key);
-                                newSelectedFile.push(file);
-                            }
-                        });
-                    });
-                    selectedIndex = newSelectedIndex;
-                    selectedFile = newSelectedFile;
-                };
 
                 /**
                  * 监听order的变化
                  */
                 $scope.$watch('order', function () {
                     $scope.fileData = $filter('orderBy')($scope.fileData, $scope.order);
-                    reIndex($scope.fileData);
+                    GKFileList.reIndex($scope.fileData);
                 });
 
                 /**
@@ -815,8 +752,8 @@ angular.module('gkClientIndex.directives', [])
                  * enter 键
                  */
                 $scope.enterPress = function () {
-                    if (selectedFile && selectedFile.length) {
-                        $scope.handleDblClick(selectedFile[0]);
+                    if ($scope.selectedFile && $scope.selectedFile.length) {
+                        $scope.handleDblClick($scope.selectedFile[0]);
                     }
                 };
 
@@ -885,6 +822,7 @@ angular.module('gkClientIndex.directives', [])
                     /**
                      * 如果已经选中，则取已选中的最小一个
                      */
+                    var selectedIndex = GKFileList.getSelectedIndex();
                     if (selectedIndex.length) {
                         initIndex = Math.min.apply('', selectedIndex);
                     }
@@ -895,11 +833,11 @@ angular.module('gkClientIndex.directives', [])
 
                     if ($event.shiftKey) {
                         for (var i = (initIndex > ($scope.fileData.length - 1) ? $scope.fileData.length - 1 : initIndex); i >= newIndex; i--) {
-                            selectFile(i, true);
+                            GKFileList.select($scope,i, true);
                         }
                     } else {
-                        unSelectAllFile();
-                        selectFile(newIndex);
+                        GKFileList.unSelectAll($scope);
+                        GKFileList.select($scope,newIndex);
                         shiftLastIndex = newIndex;
                     }
                 };
@@ -931,6 +869,7 @@ angular.module('gkClientIndex.directives', [])
                     /**
                      * 如果已经选中，则取已选中的最大一个
                      */
+                    var selectedIndex = GKFileList.getSelectedIndex();
                     if (selectedIndex.length) {
                         initIndex = Math.max.apply('', selectedIndex);
                     }
@@ -940,11 +879,11 @@ angular.module('gkClientIndex.directives', [])
                     }
                     if ($event.shiftKey) {
                         for (var i = (initIndex > 0 ? initIndex : 0); i <= newIndex; i++) {
-                            selectFile(i, true);
+                            GKFileList.select($scope,i, true);
                         }
                     } else {
-                        unSelectAllFile();
-                        selectFile(newIndex);
+                        GKFileList.unSelectAll($scope);
+                        GKFileList.select($scope,newIndex, true);
                         shiftLastIndex = newIndex;
                     }
                 };
@@ -993,7 +932,7 @@ angular.module('gkClientIndex.directives', [])
                  * 新建文件开始
                  */
                 $scope.$on('fileNewFolderStart', function (event, callback) {
-                    unSelectAllFile();
+                    GKFileList.unSelectAll($scope);
                     var newFileItem = $compile($templateCache.get('newFileItem.html'))($scope);
                     newFileItem.addClass('selected').prependTo($element.find('.list_body'));
                     var input = newFileItem.find('input[type="text"]');
@@ -1020,7 +959,7 @@ angular.module('gkClientIndex.directives', [])
                     $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
                     angular.forEach($scope.fileData, function (value, key) {
                         if (value.fullpath === newFilePath) {
-                            selectFile(key);
+                            GKFileList.select($scope,key);
                         }
                     });
                 });
@@ -1069,7 +1008,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.handleMouseDown = function (event) {
                     var $target = jQuery(event.target);
                     if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
-                        unSelectAllFile();
+                        GKFileList.unSelectAll($scope);
                     }
                 };
             }

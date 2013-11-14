@@ -21,12 +21,12 @@ angular.module('gkClientIndex', ['gkClientIndex.controllers', 'gkClientIndex.fil
     }])
     .config(['$sceDelegateProvider',function ($sceDelegateProvider) {
         var siteDomain = gkClientInterface.getSiteDomain();
-        console.log(siteDomain);
         $sceDelegateProvider.resourceUrlWhitelist([
             'self',
             siteDomain+'/**'
         ]);
-    }]);
+    }])
+;
 
 
 

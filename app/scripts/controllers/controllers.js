@@ -242,7 +242,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         if (!$routeParams.partition) return;
 
-        GKFileList.setSelectFile();
         /**
          * 分析路径获取参数
          * @type {*}

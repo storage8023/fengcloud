@@ -1,9 +1,14 @@
 /* css reset 样式 */
 @charset "utf-8";
 /*CSS RESET*/
-*, *:before, *:after{
+*,
+*:before,
+*:after{
     box-sizing: border-box;
+    margin:0;
+    padding: 0;
 }
+
 button{
   cursor: default;
 }
@@ -22,7 +27,7 @@ html,body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, fo
     padding: 0;
 }
 html,body{
-    color: #434343;
+    color: #3F4754;
     -webkit-tap-highlight-color: rgba(255,0,0,0);
 }
 h1, h2, h3, h4, h5, h6{

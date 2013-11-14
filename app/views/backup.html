@@ -2,7 +2,7 @@
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4>备份你的电脑</h4>
 </div>
-<div class="modal-body">
+<div class="scrollbar modal-body">
     <p>选择你计算机中的对应内容，我们将自动帮你备份到够快中</p>
     <ul class="backup_list">
         <li ng-repeat="item in backupList" class="{{item.name}}">
@@ -20,5 +20,5 @@
     </ul>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-warning" ng-click="cancel()">取消</button>
+    <button class="btn btn-default" ng-click="cancel()">取消</button>
 </div>
