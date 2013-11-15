@@ -6,7 +6,6 @@ angular.module('gkClientIndex.directives', [])
     .directive('preventDragDrop',[function(){
         return function ($scope, $element, $attrs) {
             $element.on('drop', function (event) {
-                console.log(event);
                 event.preventDefault();
             });
         };
@@ -14,7 +13,9 @@ angular.module('gkClientIndex.directives', [])
     .directive('ngDrop', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngDrop);
+            console.log($element);
             $element.on('drop', function (event) {
+                console.log(event);
                 $scope.$apply(function () {
                     fn($scope, {$event: event});
                 });
@@ -1045,8 +1046,9 @@ angular.module('gkClientIndex.directives', [])
                    $scope.$emit('dropFile',file);
                 };
 
-                $scope.handleSysDrop = function(event){
-                    console.log(event.originalEvent.dataTransfer.files);
+                $scope.handleSysDrop = function($event){
+                    console.log($event);
+                    //console.log(event.originalEvent.dataTransfer.files);
                 };
             }
         };
