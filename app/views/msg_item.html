@@ -1,0 +1,14 @@
+<div class="c_f_after" ng-class="item.opts&&item.opts.length?'button_len_'+item.opts.length:''">
+    <div class="opts" ng-if="item.opts && item.opts.length">
+        <button ng-repeat="opt in item.opts" class="btn opt.classes" ng-click="opt.click(item)">{{item.text}}</button>
+    </div>
+    <span class="time">{{item.dateline|date:'H:mm'}}</span>
+    <span class="text">
+        <span>
+            <img src="images/default_photo.png" ng-src="item.member_photo" error-src="images/default_photo.png" class="photo"/>
+            <img src="images/default_logo.png" ng-src="item.member_photo" error-src="images/default_logo.png" class="photo"/>
+        </span>
+       <span>{{item.member_name}}</span>
+       <span ng-bind-html="item.render_text"></span>
+    </span>
+</div>

@@ -224,8 +224,91 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKNews',['localStorageService','newsKey','GKApi','$filter',function(localStorageService,newsKey,GKApi,$filter){
-        return {
+    .factory('GKNews',['localStorageService','newsKey','GKApi','$filter','GKDialog','GKPath','GKException',function(localStorageService,newsKey,GKApi,$filter,GKDialog,GKPath,GKException){
+        var GKNews = {
+            getOptsByItem:function(item){
+                var opts = [];
+                switch(item.act){
+                    case 'file':
+                        opts.push({
+                            classes:'btn-primary',
+                            text:'查看',
+                            click:function(item){
+                                var orgId = item.org_id,
+                                    mountId = item.mount_id,
+                                    fullpath = item.fullpath;
+                                GKPath.gotoFile(orgId,mountId,fullpath);
+                            }
+                        });
+                        break;
+                    case 'invite':
+                        opts.push({
+                            classes:'btn-default',
+                            text:'接收',
+                            click:function(item){
+                                var orgId = item.orgId;
+                                var code = item.code;
+                                GKApi.teamInviteJoin(orgId,code).success(function(){
+
+                                }).error(function(request){
+                                        GKException.handleAjaxException(request);
+                                    });
+                            }
+                        });
+                        opts.push({
+                            classes:'btn-danger',
+                            text:'拒绝',
+                            click:function(item){
+                                GKApi.teamInviteReject(orgId,code).success(function(){
+
+                                }).error(function(request){
+                                        GKException.handleAjaxException(request);
+                                    });
+                            }
+                        });
+                    case 'accepted':
+                        opts.push({
+                            classes:'btn-primary',
+                            text:'查看',
+                            click:function(item){
+                                GKDialog.openTeamMember();
+                            }
+                        });
+                    case 'join_success':
+                        opts.push({
+                            classes:'btn-primary',
+                            text:'查看',
+                            click:function(item){
+                                var orgId = item.org_id,
+                                    mountId = item.mount_id,
+                                    fullpath = '';
+                                GKPath.gotoFile(orgId,mountId,fullpath);
+                            }
+                        });
+                    case 'new_device':
+                        opts.push({
+                            classes:'btn-primary',
+                            text:'查看',
+                            click:function(item){
+                                GKDialog.openSetting('device');
+                            }
+                        });
+                    case 'product':
+                        opts.push({
+                            classes:'btn-primary',
+                            text:'查看',
+                            click:function(item){
+                               var url = item.url;
+                                url = gkClientInterface.getUrl({
+                                    url:url,
+                                    sso:1
+                                });
+                                gkClientInterface.openUrl();
+                            }
+                        });
+                        break;
+                }
+            },
             classify:function(news){
                 var classifyNews = [],
                     context = this;
@@ -236,6 +319,7 @@ angular.module('gkClientIndex.services', [])
                 var yesterday = $filter('date')(yesterdayTimestamp,'yyyy-MM-dd');
                 angular.forEach(news,function(value){
                     var date = value.date;
+                    value.opts = context.getOpts(value);
                     var dateText = $filter('date')(value.dateline*1000,'yyyy年M月d日');
                     if(date == today){
                         dateText = '今天，'+$filter('date')(now,'yyyy年M月d日');
@@ -327,7 +411,8 @@ angular.module('gkClientIndex.services', [])
                     this.addNews(data['list']);
                 }
             }
-        }
+        };
+        return GKNews;
     }])
     .factory('GKSmartFolder',['GKFilter',function(GKFilter){
         var smartFolders = [];
@@ -452,8 +537,16 @@ angular.module('gkClientIndex.services', [])
 
         return GKFilter;
     }])
-    .factory('GKPath', ['$location','GKMount','GKSmartFolder','GKFilter',function ($location,GKMount,GKSmartFolder,GKFilter) {
+    .factory('GKPath', ['$location','GKMount','GKSmartFolder','GKFilter','GKPartition',function ($location,GKMount,GKSmartFolder,GKFilter,GKPartition) {
         var GKPath =  {
+            gotoFile:function(orgId,mountId,path){
+                $location.search({
+                    partition:orgId==0?GKPartition.myFile:GKPartition.teamFile,
+                    mountid:mountId,
+                    path:path,
+                    list:$location.search().list
+                });
+            },
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
                 var params = {
@@ -1556,9 +1649,9 @@ angular.module('gkClientIndex.services', [])
                     data:jQuery.param(params)
                 });
             },
-            teamInviteReject: function (data, code) {
+            teamInviteReject: function (orgId, code) {
                 var params = {
-                    org_id: data,
+                    org_id: orgId,
                     code: code
                 };
                 angular.extend(params, defaultParams);
@@ -1941,6 +2034,9 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKDialog', [function () {
         return {
+            openTeamMember:function(){
+
+            },
             /**
              * 打开设置框
              */

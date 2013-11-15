@@ -3,6 +3,19 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+/**
+ * 默认消息
+ */
+    .directive('msg_item',[function(){
+        return {
+            restrict:'A',
+            replace:true,
+            template: 'views/msg_item.html',
+            link:function ($scope, $element, $attrs) {
+
+            }
+        };
+    }])
     .directive('uiSelectable', ['uiSelectableConfig','GKFileList',function (uiSelectableConfig,GKFileList) {
         return {
             restrict:'A',
@@ -294,16 +307,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('news', ['GKNews', '$rootScope', 'GKApi', function (GKNews, $rootScope, GKApi) {
-        return {
-            replace: true,
-            restrict: 'E',
-            scope: {},
-            templateUrl: "views/news.html",
-            link: function ($scope, $element) {
-            }
-        }
-    }])
+
     .directive('nofileRightSidebar', [function () {
         return {
             replace: true,

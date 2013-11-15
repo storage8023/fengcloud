@@ -1582,12 +1582,17 @@ body.resizing *{
 }
 .news_dialog .message_list li > div > .opts{
     float: right;
+    -webkit-transition:margin linear .3s;
+}
+.news_dialog .message_list li > div.button_len_2 > .opts{
     margin-left: -100px;
-    -webkit-transition:margin linear .1s;
+}
+.news_dialog .message_list li > div.button_len_1 > .opts{
+    margin-left: -50px;
 }
 .news_dialog .message_list li > div > span.text{
     padding: 0 100px 0 20px;
-    -webkit-transition:padding linear .1s;
+    -webkit-transition:padding linear .3s;
     background: #FFFFFF;
 }
 .news_dialog .message_list li > div:hover > span.text{
