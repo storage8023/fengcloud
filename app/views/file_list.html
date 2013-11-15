@@ -38,7 +38,6 @@
             </div>
             <div class="file_name">
                 <i class="file_icon {{file.filename | getFileIcon:file.dir}}" ng-show="view=='list'">
-                    <s class="locked" ng-show="file.lock==1"></s>
                 </i>
                 <span title="{{file.fullpath}}" class="name" ng-if="!keyword.length" ng-bind="file.filename"></span>
                 <span title="{{file.fullpath}}" class="name" ng-if="keyword.length" ng-bind-html="file.filename|highlight:keyword"></span>

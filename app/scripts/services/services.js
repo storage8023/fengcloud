@@ -1160,8 +1160,8 @@ angular.module('gkClientIndex.services', [])
                    'manage', //管理
                    'add', //添加
                    'clear_trash', //清空回收站
-                   'lock',  //锁定
-                   'unlock', //解锁
+                   //'lock',  //锁定
+                   //'unlock', //解锁
                    'sync',  //同步
                    'unsync',//不同步
                    'save',  //保存到
