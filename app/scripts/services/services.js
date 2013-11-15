@@ -9,6 +9,48 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .factory('GKFileOpt',['$q','GK',function($q,GK){
+         var GKFileOpt = {};
+         return {
+            copy:function(toFullpath,toMountId,fromFullpathes,fromMountId){
+                if(!angular.isArray(fromFullpathes)){
+                    fromFullpathes  = [fromFullpathes];
+                }
+                var params = {
+                    target: toFullpath,
+                    targetmountid: toMountId,
+                    from_mountid: fromMountId,
+                    from_list: fromFullpathes
+                };
+                var deferred = $q.defer();
+                GK.copy(params).then(function () {
+                    deferred.resolve();
+                }, function (error) {
+                    deferred.reject(error);
+                });
+                return deferred.promise;
+            },
+             move:function(toFullpath,toMountId,fromFullpathes,fromMountId){
+                 console.log(arguments);
+                 if(!angular.isArray(fromFullpathes)){
+                     fromFullpathes  = [fromFullpathes];
+                 }
+                 var params = {
+                     target: toFullpath,
+                     targetmountid: toMountId,
+                     from_mountid: fromMountId,
+                     from_list: fromFullpathes
+                 };
+                 var deferred = $q.defer();
+                 GK.move(params).then(function () {
+                     deferred.resolve();
+                 }, function (error) {
+                     deferred.reject(error);
+                 });
+                 return deferred.promise;
+             }
+         };
+    }])
     .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location','$timeout',function($rootScope,$modal,GK,GKMount,GKPartition,$location,$timeout){
         return{
             news:function(GKNews,GKApi){
@@ -319,7 +361,7 @@ angular.module('gkClientIndex.services', [])
                 var yesterday = $filter('date')(yesterdayTimestamp,'yyyy-MM-dd');
                 angular.forEach(news,function(value){
                     var date = value.date;
-                    value.opts = context.getOpts(value);
+                    value.opts = context.getOptsByItem(value);
                     var dateText = $filter('date')(value.dateline*1000,'yyyy年M月d日');
                     if(date == today){
                         dateText = '今天，'+$filter('date')(now,'yyyy年M月d日');
@@ -891,7 +933,13 @@ angular.module('gkClientIndex.services', [])
                                 mount_id: mountId
                             });
                         }
+                        var dropAble = false;
+                        if(type==GKPartition.myFile || type==GKPartition.teamFile){
+                            dropAble = true;
+                        }
+
                         item = {
+                            dropAble: dropAble,
                             label: label,
                             isParent: true,
                             data: value

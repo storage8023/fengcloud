@@ -1,10 +1,11 @@
 /* app css stylesheet */
-@font-face {
-    font-family: 'Flat-UI-Icons';
-    src: url('../fonts/Flat-UI-Icons.eot');
-    src: url('../fonts/Flat-UI-Icons.eot?#iefix') format('embedded-opentype'), url('../fonts/Flat-UI-Icons.woff') format('woff'), url('../fonts/Flat-UI-Icons.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+.helper{
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background: #fff;
+    border:1px solid #cdced0;
 }
 
 html,body{
@@ -399,6 +400,7 @@ footer {
 .left_sidebar ul.nav.nav-list.abn-tree > .active .icon_trash{
     background-position: -24px -24px;
 }
+.left_sidebar ul.nav.nav-list.abn-tree > .hover > a,
 .left_sidebar ul.nav.nav-list.abn-tree > .active > a,
 .left_sidebar ul.nav.nav-list.abn-tree > a:hover,
 .left_sidebar ul.nav.nav-list.abn-tree > a:focus{
@@ -754,6 +756,7 @@ footer {
     border-bottom: 1px solid #e8eaed;
     background-color: transparent;
     -webkit-transition: background-color linear 0.1s;
+
 }
 
 .list_view .file_item:nth-child(even) {
@@ -778,15 +781,14 @@ footer {
     position: absolute;
     background: url(../images/icon.png) no-repeat -2px -282px;
 }
-
+.file_list_wrapper .file_item.hover,
 .file_list_wrapper .file_item.selected {
     background-color: #4d8bd8;
 }
-
-.file_list_wrapper .file_item.selected span {
+.file_list_wrapper .file_item.hover span,
+.file_list_wrapper .file_item.selected span{
     color: #fff;
 }
-
 .file_list_wrapper .ngViewport {
     outline: 0;
 }
@@ -1595,13 +1597,14 @@ body.resizing *{
     -webkit-transition:padding linear .3s;
     background: #FFFFFF;
 }
-.news_dialog .message_list li > div:hover > span.text{
+.news_dialog .message_list li > div.button_len_2:hover > span.text,
+.news_dialog .message_list li > div.button_len_1:hover > span.text{
     padding-right: 10px;
     padding-left: 10px;
     border-radius: 0;
 }
-
-.news_dialog .message_list li > div:hover > .opts{
+.news_dialog .message_list li > div.button_len_2:hover > .opts,
+.news_dialog .message_list li > div.button_len_1:hover > .opts{
     margin-left: 0px;
 }
 .news_dialog .message_list li button{

@@ -2,7 +2,7 @@ var module;
 
 module = angular.module('angularBootstrapNavTree', []);
 
-module.directive('abnTree', ['$timeout','$parse',function($timeout,$parse) {
+module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$parse,$window) {
   return {
     restrict: 'E',
     templateUrl: 'bower_components/abn.tree/abn_tree_template.html',
@@ -13,7 +13,8 @@ module.directive('abnTree', ['$timeout','$parse',function($timeout,$parse) {
       selectedBranch:'=',
       onExpand: '&',
       initSelectedBranch:'=',
-      onAdd:'&'
+      onAdd:'&',
+      onDrop:'&'
     },
     link: function(scope, element, attrs) {
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
@@ -41,9 +42,10 @@ module.directive('abnTree', ['$timeout','$parse',function($timeout,$parse) {
         if (treeData.label != null) {
           scope.treeData = [treeData];
         } else {
-          alert('treeData should be an array of root branches');
+         // alert('treeData should be an array of root branches');
         }
       }
+
       for_each_branch = function(f) {
         var do_f, root_branch, _i, _len, _ref, _results;
         do_f = function(branch, level) {
@@ -245,11 +247,42 @@ module.directive('abnTree', ['$timeout','$parse',function($timeout,$parse) {
       scope.handleAddBtn = function(){
           if (scope.onAdd != null) {
               return $timeout(function() {
-                  return scope.onAdd();s
+                  return scope.onAdd();
               });
           }
       };
 
+     var expandedTimer;
+      scope.drop = function(event,ui,branch){
+          branch.hover = false;
+          if(expandedTimer){
+              clearTimeout(expandedTimer);
+          }
+          if (scope.onDrop != null) {
+              return $timeout(function() {
+                  return scope.onDrop({
+                      branch:branch
+                  });
+              });
+          }
+      };
+      scope.dropOver = function(event,ui,branch){
+          branch.hover = true;
+          expandedTimer = setTimeout(function(){
+              scope.$apply(function(){
+                  if(!branch.expanded){
+                      expand_branch(branch);
+                  }
+              });
+          },500)
+      };
+
+      scope.dropOut = function(event,ui,branch){
+          branch.hover = false;
+          if(expandedTimer){
+             clearTimeout(expandedTimer);
+          }
+      };
       return scope.$watch('treeData', on_treeData_change, true);
     }
   };

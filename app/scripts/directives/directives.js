@@ -3,17 +3,22 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
-/**
- * 默认消息
- */
-    .directive('msg_item',[function(){
-        return {
-            restrict:'A',
-            replace:true,
-            template: 'views/msg_item.html',
-            link:function ($scope, $element, $attrs) {
-
-            }
+    .directive('preventDragDrop',[function(){
+        return function ($scope, $element, $attrs) {
+            $element.on('drop', function (event) {
+                console.log(event);
+                event.preventDefault();
+            });
+        };
+    }])
+    .directive('ngDrop', ['$parse', function ($parse) {
+        return function ($scope, $element, $attrs) {
+            var fn = $parse($attrs.ngDrop);
+            $element.on('drop', function (event) {
+                $scope.$apply(function () {
+                    fn($scope, {$event: event});
+                });
+            });
         };
     }])
     .directive('uiSelectable', ['uiSelectableConfig','GKFileList',function (uiSelectableConfig,GKFileList) {
@@ -81,7 +86,7 @@ angular.module('gkClientIndex.directives', [])
                 angular.forEach(callbacks, function(value, key ){
                     opts[key] = combineCallbacks(value, opts[key]);
                 });
-                console.log(opts);
+               //console.log(opts);
                 element.selectable(opts);
             }
         };
@@ -357,7 +362,6 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 监听已选择的文件
                  */
-
                 $scope.shareMembers = []; //共享参与人
                 $scope.remarks = []; //讨论
                 $scope.histories = []; //历史
@@ -384,10 +388,10 @@ angular.module('gkClientIndex.directives', [])
 
                 var gird = /[,;；，\s]/g;
                 $scope.$watch('file', function (newValue, oldValue) {
-                    if (newValue === oldValue || !$scope.file) {
+                    ///console.logconsole.log(arguments);
+                    if (!newValue || !oldValue || newValue === oldValue) {
                         return;
                     }
-
                     var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
                     var formatTag = [];
                     RestFile.get($scope.mountId, fullpath).success(function (data) {
@@ -591,7 +595,11 @@ angular.module('gkClientIndex.directives', [])
                         return;
                     }
                     var fullpath = $scope.file ? $scope.file.fullpath || '' : '';
-                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id, $scope.file.fullpath, value.join(' ')).success(function () {
+                   if(!value){
+                       value = '';
+                   }
+
+                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id,fullpath, value.join(' ')).success(function () {
 
                     }).error(function () {
 
@@ -776,7 +784,7 @@ angular.module('gkClientIndex.directives', [])
                 }
                 var setListHeaderWidth = function () {
                     if (checkScroll($element.find('.list_body'))) {
-                        $element.find('.file_list_header').css('right', 16);
+                        $element.find('.file_list_header').css('right', 8);
                     } else {
                         $element.find('.file_list_header').css('right', 0);
                     }
@@ -1014,6 +1022,31 @@ angular.module('gkClientIndex.directives', [])
                     if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
                         GKFileList.unSelectAll($scope);
                     }
+                };
+
+                /**drag drop **/
+                $scope.getHelper = function(){
+                    //return $scope.$apply(function(){
+                        return '<div class="helper">'+$scope.selectedFile.length+'</div>';
+                    //})
+                };
+                $scope.dragState = function(event,ui,$index){
+
+                };
+                $scope.handleOver = function(event,ui,file){
+                    file.hover = true;
+                };
+
+                $scope.handleOut = function(event,ui,file){
+                    file.hover = false;
+                };
+
+                $scope.handleDrop = function(event,ui,file){
+                   $scope.$emit('dropFile',file);
+                };
+
+                $scope.handleSysDrop = function(event){
+                    console.log(event.originalEvent.dataTransfer.files);
                 };
             }
         };

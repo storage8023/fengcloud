@@ -14,6 +14,7 @@
                   on-add ="handleAdd(GKPartition.myFile)"
                   on-select="handleSelect(branch,GKPartition.myFile)"
                   on-expand="handleExpand(branch,GKPartition.myFile)"
+                  on-drop="handleDrop(branch)"
                 >
         </abn-tree>
         <abn-tree tree-data="orgTreeList"
@@ -27,6 +28,7 @@
                   on-add ="handleAdd(GKPartition.teamFile)"
                   on-select="handleSelect(branch,GKPartition.teamFile)"
                   on-expand="handleExpand(branch,GKPartition.teamFile)"
+                  on-drop="handleDrop(branch)"
                 >
         </abn-tree>
         <abn-tree tree-data="orgSubscribeList"
