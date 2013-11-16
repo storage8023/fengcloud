@@ -313,7 +313,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-
     .directive('nofileRightSidebar', [function () {
         return {
             replace: true,
@@ -1047,8 +1046,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.handleSysDrop = function($event){
-                    console.log($event);
-                    //console.log(event.originalEvent.dataTransfer.files);
+                    console.log($event.originalEvent.dataTransfer.files);
                 };
             }
         };
@@ -1909,7 +1907,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-
     .directive('commonRightSidebar', [function () {
         return {
             restrict: 'E',

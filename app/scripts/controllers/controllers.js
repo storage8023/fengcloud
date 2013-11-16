@@ -1016,14 +1016,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind) {
-        $scope.testCallback = function () {
-            gkClient.gTest(JSON.stringify({a: 1}), function () {
-                console.log(arguments);
-            }, function () {
-                console.log(arguments);
-            })
-        }
-
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -1095,23 +1087,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             {
-                item: "注销",
-                menuclick: function () {
-                    gkClientInterface.logOff();
-                }
-            },
-            {
                 item: "退出",
                 menuclick: function () {
                     gkClientInterface.quit();
                 }
             }
         ];
-
-        $scope.showTransfer = function () {
-            GKDialog.openTransfer();
-        };
-
     }]);
 
 

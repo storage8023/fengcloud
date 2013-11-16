@@ -1,8 +1,9 @@
 /* css 通用组件样式 */
-i.icon16x16{
+.icon16x16{
     width: 16px;
     height: 16px;
-    background: url(../images/icon/icon16x16.png) no-repeat 0 0;
+    background-image: url(../images/icon/icon16x16.png?v=2);
+    background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
     margin-top: -3px;

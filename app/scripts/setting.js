@@ -28,7 +28,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             {
                 name:'sync',
                 title:'同步',
-                icon:'icon_sync',
+                icon:'icon16x16 icon_sync',
                 directive:'tabSync'
             },
             {
@@ -55,14 +55,6 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             $scope.selectedTab = tab;
         };
 
-        $scope.ok = function(){
-            $rootScope.$broadcast('okSetting');
-        };
-
-        $scope.cancel = function(){
-            $rootScope.$broadcast('cancelSetting');
-        };
-
     }])
     .controller('tabContentCtrl',['$scope',function($scope){
         var clientInfo = gkClientInterface.getClientInfo();
@@ -83,6 +75,16 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
         ];
         var language = gkClientInterface.getLanguage()['type'];
         var selectedLang = Util.Array.getObjectByKeyValue(langOptions,'value',language);
+
+        $scope.setting = {
+            auto:clientInfo['auto']==1?true:false,
+            prompt:clientInfo['prompt']==1?true:false,
+            recycle:clientInfo['recycle']==1?true:false,
+            local:clientInfo['local']==1?true:false,
+            https:clientInfo['https']==1?true:false,
+            proxy:clientInfo['proxy']==1?true:false,
+            configpath:clientInfo['configpath']
+        };
         /**
          * 通用设置
          * @type {Array}
@@ -92,19 +94,19 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                 type:'checkbox',
                 label:'系统启动时运行够快',
                 name:'auto',
-                model:clientInfo['auto']==1?true:false
+                model:$scope.setting['auto']
             },
             {
                 type:'checkbox',
                 label:'显示桌面通知',
                 name:'prompt',
-                model:clientInfo['prompt']==1?true:false
+                model:$scope.setting['prompt']
             },
             {
                 type:'checkbox',
                 label:'别人删除与我共享的文件时，也进入我电脑的回收站',
                 name:'recycle',
-                model:clientInfo['recycle']==1?true:false
+                model:$scope.setting['recycle']
             },
             {
                 type:'select',
@@ -123,51 +125,51 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             }
         ];
 
+        /**
+         * 网络设置
+         * @type {*}
+         */
         $scope.networkSetting = [
             {
                 type:'checkbox',
                 label:'开启局域网内高速同步',
-                name:'auto',
-                model:clientInfo['local']==1?true:false
+                name:'local',
+                model:$scope.setting['local']
             },
             {
                 type:'checkbox',
                 label:'开启HTTPS安全连接',
-                name:'prompt',
-                model:clientInfo['https']==1?true:false
+                name:'https',
+                model:$scope.setting['https']
             },
             {
                 type:'checkbox',
                 label:'开启IE代理',
-                name:'recycle',
+                name:'proxy',
                 tip:'（软件下次启动时生效）',
-                model:clientInfo['proxy']==1?true:false
+                model:$scope.setting['proxy']
             },
-            ,
             {
                 type:'button',
                 label:'设置代理',
                 click:function(){
+                    console.log(1);
                     gkClientInterface.setSettings();
                 }
 
             }
         ];
 
-        /**
-         * 网络设置
-         * @type {*}
-         */
-        $scope.configPath = clientInfo['configpath'];
         $scope.selectConfigPath = function(){
              var newPath =  gkClientInterface.selectPath({
-                  path:$scope.configPath,
+                  path:$scope.setting['configpath'],
                   disable_root:0
               });
              if(newPath && newPath.length){
-                 $scope.configPath = newPath;
+                 $scope.setting['configpath'] = newPath;
              }
         };
+
         $scope.clearCache = function(){
             if(!confirm('确定要清空缓存？')){
                 return;
@@ -175,35 +177,27 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             gkClientInterface.setClearCache();
         };
 
-
-        $scope.$on('okSetting',function(){
-            var param = {
-                "auto":0,
-                "prompt":1,
-                "local":1,
-                "recycle":0,
-                "configpath":$scope.configPath,
-                "https":0,
-                "proxy":0
-            };
+        $scope.$watch('[networkSetting,generalSetting,setting.configpath]',function(newValue,oldValue){
+            if(angular.equals(newValue,oldValue)){
+                return;
+            }
             var allSetting = $scope.generalSetting.concat($scope.networkSetting);
-            angular.forEach(param,function(v,key){
+            var setting = {};
+            angular.forEach($scope.setting,function(v,key){
                 var obj =  Util.Array.getObjectByKeyValue(allSetting,'name',key);
                 if(obj){
                     if(obj['type'] == 'checkbox'){
-                        param[key] = Number(obj['model']);
+                        setting[key] = Number(obj['model']);
                     }else{
-                        param[key] = obj['model'];
+                        setting[key] = obj['model'];
                     }
                 }
             });
-            gkClientInterface.setClientInfo(param);
-            gkClientInterface.closeWindow();
-        })
+            setting.configpath = $scope.setting.configpath;
+            console.log(setting);
+            gkClientInterface.setClientInfo(setting);
+        },true);
 
-        $scope.$on('cancelSetting',function(){
-            gkClientInterface.closeWindow();
-        })
     }])
     .filter('getOS',function(){
         return function(osName,osVersion){
@@ -213,6 +207,18 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
     .filter('getDeviceName',function(){
         return function(os_name){
             return os_name?os_name:'网页版';
+        }
+    })
+    .filter('getDeviceStateIcon',function(){
+        return function(state,isCurrentDevice){
+           if(isCurrentDevice){
+               return 'glyphicon-device-current';
+           }
+            if(state==0){
+                return 'glyphicon-device-disable';
+            }else{
+                return 'glyphicon-device-active';
+            }
         }
     })
     .filter('getSyncFileName',['GKMount',function(GKMount){
@@ -228,13 +234,13 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
         return function(number,isAllSyncPaused){
             number = parseInt(number);
             if(isAllSyncPaused){
-                return 'icon_pause';
+                return 'glyphicon-sync-pause';
             }else if(!number){
-                return 'icon_sync_done';
+                return 'glyphicon-device-active';
             }else if(number > 0){
-                return 'icon_syncing';
+                return 'glyphicon-device-current';
             }else{
-                return 'icon_pause';
+                return 'glyphicon-sync-pause';
             }
         }
     }])
@@ -268,12 +274,48 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
 /**
  * 设置-账号
  */
-    .directive('tabAccount',[function(){
+    .directive('tabAccount',['$rootScope','GKMount',function($rootScope,GKMount){
         return {
             restrict: 'E',
             templateUrl:'views/tab_account.html',
-            link:function(){
+            link:function($scope){
+                var user = $rootScope.PAGE_CONFIG.user;
+                var device = gkClientInterface.getComputerInfo()['name'];
+                var myMount = GKMount.getMyMount();
+                $scope.attrs = [
+                    {
+                        icon:'icon-phone',
+                        name:'phone',
+                        text:'电话：'+(user.member_phone?user.member_phone:'无')
+                    },
+                    {
+                        icon:'icon-mail',
+                        name:'mail',
+                        text:user.member_email?'<'+user.member_email+'>':'无'
+                    },
+                    {
+                        icon:'icon-device',
+                        name:'mail',
+                        text:'当前使用设备：'+(device?device:'')
+                    },
+                    {
+                        icon:'icon-space',
+                        name:'mail',
+                        text:'使用空间：'+Util.Number.bitSize(myMount['size'])
+                    }
+                ];
 
+                $scope.logOut = function(){
+                    gkClientInterface.logOff();
+                };
+
+                $scope.accountSetting = function(){
+                    var url = gkClientInterface.getUrl({
+                        url:'/my',
+                        sso:1
+                    });
+                    gkClientInterface.openUrl(url);
+                };
             }
         }
     }])
@@ -360,7 +402,12 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             restrict: 'E',
             templateUrl:'views/tab_sync.html',
             link:function(scope){
-                scope.syncedFiles = gkClientInterface.getGetlinkPaths()['list'] || [];
+                //scope.syncedFiles = gkClientInterface.getGetlinkPaths()['list'] || [];
+                console.log(1);
+                scope.syncedFiles = [
+                         {"webpath":"工具 - 副本 - 副本","fullpath":'C:\\\\工具 - 副本 - 副本','mountid':10,'share':1,'local':0},
+                               {"webpath":"工具 - 副本 - 副本xx","fullpath":'C:\\\\工具 - 副本 - 副本','mountid':10,'share':1,'local':0}
+                            ];
                 scope.isAllSyncPaused = scope.clientInfo['startsync']==1?false:true;
                 scope.toggleAllSync = function(){
                     if(scope.isAllSyncPaused){

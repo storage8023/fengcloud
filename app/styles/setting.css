@@ -2,27 +2,14 @@
     width: auto;
     display: inline-block;
 }
-footer{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 45px;
-    background: -webkit-gradient(linear,0 0,0 100%,from(#FBFBFB),to(#E3E4E5));
-    text-align: right;
-    border-top:1px solid #CDCED0;
-}
-footer .btn{
-    vertical-align: middle;
-    padding: 3px 13px;
-    margin: 8px 10px 0 0;
-}
+
+
 .main{
     position: absolute;
     left: 0;
     right: 0;
     top:0;
-    bottom: 45px;
+    bottom: 0;
 }
 aside{
     position: absolute;
@@ -31,14 +18,13 @@ aside{
     width: 158px;
     border-right: 1px solid #CDCED0;
     background: #2A2E33;
-    color:#D4D4D4;
+    color:#fff;
     padding-top: 10px;
 }
 aside ul li{
     height: 30px;
     line-height: 30px;
-    font-size: 15px;
-    font-family: 'simsun','宋体',sans-serif;
+    font-size: 14px;
     border-left: 4px solid transparent;
     margin-top: 8px;
 }
@@ -47,14 +33,12 @@ aside ul li i{
     margin-right: 10px;
 }
 aside ul li:hover{
-    color:#fff;
-    border-left-color: #448DE8;
+   background-color: #393D42;
 }
 aside ul li.active{
     border-left-color: #448DE8;
     background: #1F2327;
-    color: #fff;
-    box-shadow: inset 0 0 3px rgba(0, 0, 0, .3);
+    font-weight: bold;
 }
 
 aside ul li.active i.icon_info{
@@ -88,20 +72,28 @@ aside ul li.active i.icon_airplane{
     left:158px;
     right: 0;
 }
-.content h2{
+.content .section_head{
     height: 35px;
     border-bottom: 1px solid #CDCED0;
     background: #F1F1F2;
-    line-height: 35px;
-    font-size: 18px;
     padding:0 10px;
     position: relative;
 }
-.content h2 .global_opt_wrapper{
+.content .section_head .global_opt_wrapper{
     position: absolute;
     right: 10px;
-    top:0;
-    font-size: 13px;
+    top:5px;
+}
+.content .section_head .global_opt_wrapper input[type="checkbox"]{
+    height: 23px;
+    vertical-align: middle;
+}
+.content .section_head .global_opt_wrapper button{
+    margin-right: 5px;
+}
+.content .section_head h2{
+    line-height: 35px;
+    font-size: 18px;
 }
 .content section{
     font-size: 14px;
@@ -113,7 +105,7 @@ aside ul li.active i.icon_airplane{
     overflow: auto;
 }
 .content section .form_layer{
-    margin:10px 0;
+    margin:15px 0;
 }
 .content div label{
     font-weight: normal;
@@ -129,9 +121,7 @@ aside ul li.active i.icon_airplane{
     float: left;
     padding: 0 5px;
 }
-.list_wrapper .list_header{
-    color:#2A2E33;
-}
+\
 .list_wrapper .list_header,
 .list_wrapper .list .item{
     overflow: hidden;
@@ -156,7 +146,13 @@ aside ul li.active i.icon_airplane{
 .list_wrapper .list_header > div:nth-child(4){
     width: 15%;
 }
-
+.list .item .opts .btn-flat{
+    height: 32px;
+    line-height: 32px;
+    margin-top: 1px;
+    padding: 0 8px;
+    vertical-align: top;
+}
 .content .list_header div{
     font-weight: normal;
     line-height: 36px;
@@ -171,7 +167,7 @@ aside ul li.active i.icon_airplane{
     text-overflow: ellipsis;
 }
 .content .list{
-    color: #606D7F;
+    color: #7F8999;
     font-size:13px ;
 }
 
@@ -183,8 +179,11 @@ aside ul li.active i.icon_airplane{
 .content .list .dateline{
     color:#ACB4BF;
 }
+.content .warning{
+    color:#E65353
+}
 .content .tip{
-    color:#d14
+    color: #ACB4BF;
 }
 .content .list .item:nth-child(even){
     background: #F1F4F7;
@@ -226,7 +225,36 @@ aside ul li.active i.icon_airplane{
 .sync .list .item .icon_sync_done{
     background-position: -84px -64px;
 }
+.account img{
+    width: 64px;
+    height: 64px;
+    border-radius: 64px;
+    margin: 0 5px 0 0;
+}
+.account section{
+    padding: 15px;
+}
 
+.account section .member_name{
+    font-size: 26px;
+}
+.account section ul{
+    margin-left: 75px;
+    color: #7F8999;
+    font-size: 13px;
+}
+.account section ul li{
+    margin: 15px 0;
+}
+.account section ul li .icon16x16{
+    margin-right: 5px;
+}
+.advance .form_layer > div{
+    margin-top: 5px;
+}
+.advance input[type="text"]{
+    width: 50%;
+}
 /*传输队列的样式*/
 
 aside ul li.active i.icon_download_white{
@@ -318,3 +346,4 @@ aside ul li.active i.icon_sync2_white{
     width: 100%;
     padding-right: 42px;
 }
+

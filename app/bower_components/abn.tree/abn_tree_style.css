@@ -1,10 +1,7 @@
 ul.nav.nav-list.abn-tree{
     font-size: 16px;
 }
-ul.nav.nav-list.abn-tree *{
-    color:inherit;
-    cursor: default;
-}
+
 ul.nav.nav-list.abn-tree .nav-header a{
     position: absolute;
     width: 20px;
@@ -17,9 +14,10 @@ ul.nav.nav-list.abn-tree .nav-header a{
     padding: 0;
     border:1px solid #232426;
     border-radius: 20px;
-    font-weight: bold;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
     font-size: 21px;
+    background: #25282D;
+    color: #fff;
 }
 ul.nav.nav-list.abn-tree .tree-icon{
     width: 20px;
@@ -36,7 +34,7 @@ ul.nav.nav-list.abn-tree .node_icon{
     height: 16px;
     display: inline-block;
     vertical-align: middle;
-    margin: -3px 2px 0 0;
+    margin: -3px 2px 0 2px;
 
 }
 ul.nav.nav-list.abn-tree .tree-icon.icon-minus{

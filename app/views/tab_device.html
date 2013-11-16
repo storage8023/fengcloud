@@ -1,22 +1,23 @@
 <div class="{{selectedTab.name}}">
-    <h2>
-        <span>{{selectedTab.title}}</span>
-        <span class="global_opt_wrapper">
+    <div class="section_head">
+        <h2>{{selectedTab.title}}</h2>
+         <span class="global_opt_wrapper">
             <input type="checkbox" value="" name="disable_new_device" id="disable_new_device" ng-model="disableNewDevice" ng-change="toggleNewDevice()"/>
             <label for="disable_new_device">禁止其他新设备登录</label>
         </span>
-    </h2>
+    </div>
     <section class="scrollbar">
         <div class="list_wrapper">
             <div class="list_header">
                <div>设备名称</div>
                 <div>系统名称</div>
-                <div>最后登录数据</div>
+                <div>最后登录时间</div>
                <div>操作</div>
             </div>
             <div class="list">
               <div class="item" ng-repeat="device in devices">
                      <div title="{{device.os_name|getDeviceName}}">
+                         <i class="icon16x16" ng-class="device.state|getDeviceStateIcon:device.is_current_device"></i>
                          {{device.os_name|getDeviceName}}
                      </div>
                       <div title="{{device.os_name|getOS:device.os_version}}">
@@ -26,10 +27,8 @@
                          {{device.last_activity}}
                      </div>
                       <div ng-if="device.is_current_device ==1">当前正在使用</div>
-                      <div ng-if="device.is_current_device !=1 && device.allow_edit==1">
-                          <button ng-if="device.state==0" ng-click="editDeviceState(device,'active')">激活</button>
-                          <button ng-if="device.state==1" ng-click="editDeviceState(device,'disable')">禁用</button>
-                          <button ng-click="editDeviceState(device,'del')">删除</button>
+                      <div class="opts" ng-if="device.is_current_device !=1 && device.allow_edit==1">
+                          <button class="btn btn-primary btn-flat" ng-if="device.state==0" ng-click="editDeviceState(device,'active')">激活</button><button class="btn btn-danger btn-flat" ng-if="device.state==1" ng-click="editDeviceState(device,'disable')">禁用</button><button class="btn btn-default btn-flat" ng-click="editDeviceState(device,'del')">删除</button>
                       </div>
               </div>
             </div>
