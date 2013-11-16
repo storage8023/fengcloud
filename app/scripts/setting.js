@@ -402,12 +402,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             restrict: 'E',
             templateUrl:'views/tab_sync.html',
             link:function(scope){
-                //scope.syncedFiles = gkClientInterface.getGetlinkPaths()['list'] || [];
-                console.log(1);
-                scope.syncedFiles = [
-                         {"webpath":"工具 - 副本 - 副本","fullpath":'C:\\\\工具 - 副本 - 副本','mountid':10,'share':1,'local':0},
-                               {"webpath":"工具 - 副本 - 副本xx","fullpath":'C:\\\\工具 - 副本 - 副本','mountid':10,'share':1,'local':0}
-                            ];
+                scope.syncedFiles = gkClientInterface.getGetlinkPaths()['list'] || [];
                 scope.isAllSyncPaused = scope.clientInfo['startsync']==1?false:true;
                 scope.toggleAllSync = function(){
                     if(scope.isAllSyncPaused){
