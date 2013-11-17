@@ -84,9 +84,10 @@ angular.module('gkClientTransfer', ['gkClientIndex.services','ui.bootstrap','gkC
                         webpath:file.webpath
                     };
 
-                    var re = gkClientInterface.removeTrans(param);
-                    console.log(re);
-                    //Util.Array.removeByValue($scope.fileList,file);
+                    var re = gkClientInterface.removeTrans(param,function(){
+                        Util.Array.removeByValue($scope.fileList,file);
+                    });
+
                 }
             }
         }

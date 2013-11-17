@@ -187,17 +187,17 @@ angular.module('gkClientIndex.services', [])
                             var  params = {
                                 webpath: defaultName,
                                 fullpath: localUri,
-                                mountid: myMount['mount_id'],
-                                overwrite: 1
+                                mountid: myMount['mount_id']
                             };
-                            GK.setLinkPath(params);
-                            $modalInstance.close({
-                                mountid:myMount['mount_id'],
-                                partition:GKPartition.myFile,
-                                path:'',
-                                view:$location.search().view,
-                                selectedpath:''
-                            });
+                            gkClientInterface.setLinkPath(params,function(){
+                                $modalInstance.close({
+                                    mountid:myMount['mount_id'],
+                                    partition:GKPartition.myFile,
+                                    path:'',
+                                    view:$location.search().view,
+                                    selectedpath:''
+                                });
+                            })
                         };
 
                         $scope.cancel = function () {
@@ -709,31 +709,60 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GK', ['$q', function ($q) {
         return {
-            addFile: function (params) {
-                var re = gkClientInterface.addFile(params);
+            recover:function(params){
                 var deferred = $q.defer();
-                if (re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                gkClientInterface.recover(params,function(re){
+                    if (re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            },
+            addFile: function (params) {
+                var deferred = $q.defer();
+                gkClientInterface.addFile(params,function(re){
+                    if (re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
                 return deferred.promise;
             },
             createFolder: function (params) {
-                var re = gkClientInterface.createFolder(params);
                 var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                gkClientInterface.createFolder(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
                 return deferred.promise;
             },
             lock: function (params) {
-                gkClientInterface.lock(params);
+                params.status = 1;
+                var deferred = $q.defer();
+                gkClientInterface.toggleLock(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
             },
             unlock: function (params) {
-                gkClientInterface.unlock(params);
+                params.status = 0;
+                var deferred = $q.defer();
+                gkClientInterface.lock(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
             },
             getUser: function () {
                 return gkClientInterface.getUser();
@@ -742,43 +771,48 @@ angular.module('gkClientIndex.services', [])
                 gkClientInterface.saveToLocal(params);
             },
             del: function (params) {
-                var re = gkClientInterface.del(params);
                 var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                var re = gkClientInterface.del(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
                 return deferred.promise;
             },
             rename: function (params) {
-                var re = gkClientInterface.rename(params);
                 var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                var re = gkClientInterface.rename(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
                 return deferred.promise;
             },
             copy: function (params) {
-                var re = gkClientInterface.copy(params);
                 var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                var re = gkClientInterface.copy(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+
                 return deferred.promise;
             },
             move: function (params) {
-                var re = gkClientInterface.move(params);
                 var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                 gkClientInterface.move(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
                 return deferred.promise;
             },
             open: function (params) {
@@ -788,27 +822,15 @@ angular.module('gkClientIndex.services', [])
             selectPath: function (params) {
                 return gkClientInterface.selectPath(params);
             },
-            checkPathIsEmpty: function (params) {
-                return gkClientInterface.checkPathIsEmpty(params);
-            },
-            setLinkPath: function (params) {
-                var re = gkClientInterface.setLinkPath(params);
-                var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
-                return deferred.promise;
-            },
             removeLinkPath: function (params) {
-                var re = gkClientInterface.removeLinkPath(params);
                 var deferred = $q.defer();
-                if (!re || re.error == 0) {
-                    deferred.resolve(re);
-                } else {
-                    deferred.reject(re);
-                }
+                gkClientInterface.removeLinkPath(params,function(re){
+                    if (re && re.error == 0) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
                 return deferred.promise;
             },
             getRestHost: function () {

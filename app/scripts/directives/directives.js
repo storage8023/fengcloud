@@ -13,7 +13,6 @@ angular.module('gkClientIndex.directives', [])
     .directive('ngDrop', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngDrop);
-            console.log($element);
             $element.on('drop', function (event) {
                 console.log(event);
                 $scope.$apply(function () {

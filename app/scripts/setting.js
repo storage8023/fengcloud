@@ -402,7 +402,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             restrict: 'E',
             templateUrl:'views/tab_sync.html',
             link:function(scope){
-                scope.syncedFiles = gkClientInterface.getGetlinkPaths()['list'] || [];
+                scope.syncedFiles = gkClientInterface.getLinkPath()['list'] || [];
                 scope.isAllSyncPaused = scope.clientInfo['startsync']==1?false:true;
                 scope.toggleAllSync = function(){
                     if(scope.isAllSyncPaused){

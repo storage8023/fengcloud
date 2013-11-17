@@ -7,8 +7,26 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
-    notice:function(params,success,error){
-        gkClient.gNotice(JSON.stringify(params),success,error);
+    recover:function(params,callback){
+        try {
+
+            gkClient.gRecover(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    notice:function(params,callback){
+        gkClient.gNotice(JSON.stringify(params),function(re){
+            re = JSON.parse(re);
+            if(typeof callback === 'function'){
+                callback(re);
+            }
+        });
     },
     getComputePath:function(param){
         var re = gkClient.gGetComputerPath(JSON.stringify(param));
@@ -166,34 +184,39 @@
             this._handleException(e);
         }
     },
-    addFile: function (params) {
+    addFile: function (params,callback) {
         try {
-            //console.log(params);
-            var re = gkClient.gAdd(JSON.stringify(params));
-            return JSON.parse(re);
+
+             gkClient.gAdd(JSON.stringify(params),function(re){
+                 re = JSON.parse(re);
+                 if(typeof callback === 'function'){
+                     callback(re);
+                 }
+             });
         } catch (e) {
             this._handleException(e);
         }
     },
-    createFolder: function (params) {
+    createFolder: function (params,callback) {
         try {
-            gkClient.gNewFile(JSON.stringify(params));
+            gkClient.gNewFile(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
         } catch (e) {
             this._handleException(e);
         }
     },
-    lock: function (params) {
+    toggleLock: function (params,callback) {
         try {
-            params.status = 1;
-           gkClient.gLock(JSON.stringify(params));
-        } catch (e) {
-            this._handleException(e);
-        }
-    },
-    unlock: function (params) {
-        try {
-            params.status = 0;
-            gkClient.gLock(JSON.stringify(params));
+           gkClient.gLock(JSON.stringify(params),function(re){
+               re = JSON.parse(re);
+               if(typeof callback === 'function'){
+                   callback(re);
+               }
+           });
         } catch (e) {
             this._handleException(e);
         }
@@ -209,36 +232,52 @@
             this._handleException(e);
         }
     },
-    del:function(params){
+    del:function(params,callback){
         try {
-            var re = gkClient.gDelete(JSON.stringify(params));
-            return re?JSON.parse(re):'';
+           gkClient.gDelete(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
         } catch (e) {
             this._handleException(e);
         }
     },
-    rename:function(params){
+    rename:function(params,callback){
         try {
-            var re = gkClient.gRename(JSON.stringify(params));
-            return JSON.parse(re);
+          gkClient.gRename(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+
         } catch (e) {
             this._handleException(e);
         }
     },
-    copy:function(params){
+    copy:function(params,callback){
         try {
-            //console.log(params);
-            var re = gkClient.gCopy(JSON.stringify(params));
-            return JSON.parse(re);
+            gkClient.gCopy(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+
         } catch (e) {
             this._handleException(e);
         }
     },
-    move:function(params){
+    move:function(params,callback){
         try {
-            //console.log(params);
-            var re = gkClient.gMove(JSON.stringify(params));
-            return JSON.parse(re);
+            gkClient.gMove(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
         } catch (e) {
             this._handleException(e);
         }
@@ -278,17 +317,42 @@
             this._handleException(e);
         }
     },
-    setLinkPath:function(params){
+    setLinkPath:function(params,callback){
         try {
-            //console.log(params);
-            return gkClient.gSetLinkPaths(JSON.stringify(params));
+            gkClient.gSetLinkPaths(JSON.stringify(params),function(re){
+                var re = JSON.parse(re);
+                if(re && re.error==0){
+                    if(typeof callback === 'function'){
+                        callback(re);
+                    }
+                }
+            });
         } catch (e) {
             this._handleException(e);
         }
     },
-    removeLinkPath:function(params){
+    moveLinkPath:function(params,callback){
         try {
-            return gkClient.gRemoveLinkPaths(JSON.stringify(params));
+            gkClient.gMoveLinkPaths(JSON.stringify(params),function(re){
+                var re = JSON.parse(re);
+                if(re && re.error==0){
+                    if(typeof callback === 'function'){
+                        callback(re);
+                    }
+                }
+            });
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    removeLinkPath:function(params,callback){
+        try {
+            gkClient.gDeleteLinkPath(JSON.stringify(params),function(re){
+                re = JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
         } catch (e) {
             this._handleException(e);
         }
@@ -373,19 +437,26 @@
         return gkClient.gGetUIPath();
     },
     getLocalSyncURI: function(param){
-        var re =  gkClient.gGetNormalPath(JSON.stringify(param));
+        var re =  gkClient.gGetSyncNormalPath (JSON.stringify(param));
         return re;
     },
     setClientInfo: function(params){
         return gkClient.gSetClientInfo(JSON.stringify(params));
     },
-    getGetlinkPaths: function(){
-        var re = gkClient.gGetLinkPaths();
+    getLinkPath: function(){
+        var re = gkClient.gGetLinkPath();
         return JSON.parse(re);
     },
-    setSyncStatus: function(){
-        var re = gkClient.gSetSyncStatus();
-        return JSON.parse(re);
+    setSyncStatus: function(params,callback){
+        gkClient.gSetSyncStatus(JSON.stringify(params),function(re){
+            var re = JSON.parse(re);
+            if(re && re.error==0){
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            }
+        });
+
     },
     startSync: function(){
         gkClient.gStartSync();
@@ -396,8 +467,15 @@
     setRemoveLinkPaths: function(){
         gkClient.gRemoveLinkPaths();
     },
-    removeTrans: function(params){
-        return gkClient.gRemoveTrans(JSON.stringify(params));
+    removeTrans: function(params,callback){
+        gkClient.gRemoveTrans(JSON.stringify(params),function(re){
+            var re = JSON.parse(re);
+            if(re && re.error==0){
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            }
+        });
     },
     setDeviceStatus: function(params){
         gkClient.gSetDeviceStatus(JSON.stringify(params));

@@ -212,12 +212,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var createTeamDialog = GKModal.createTeam();
                 createTeamDialog.result.then(function (orgId) {
                     gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
-                        $scope.$apply(function(){
-                            var newOrg = JSON.parse(param);
-                            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
-                            $scope.orgTreeList.push(newOrg);
-                        });
-
+                        if(param){
+                            $scope.$apply(function(){
+                                var newOrg = param;
+                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
+                                $scope.orgTreeList.push(newOrg);
+                            });
+                        }
                     })
                 })
             } else if (partition == GKPartition.subscribeFile) {
@@ -225,11 +226,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 nearbyDialog.opened.then(function(){
                     $rootScope.$on('subscribeTeamSuccess',function(event,orgId){
                         gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
-                            $scope.$apply(function(){
-                                var newOrg = JSON.parse(param);
-                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
-                                $scope.orgSubscribeList.push(newOrg);
-                            });
+                            if(param){
+                                $scope.$apply(function(){
+                                    var newOrg = param;
+                                    newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
+                                    $scope.orgSubscribeList.push(newOrg);
+                                });
+                            }
+
                         })
                     })
                 })
@@ -463,32 +467,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         return;
                     }
                     var params = {};
-                    /**
-                     * 检测选择呢的文件夹是否为空
-                     */
-                    var isNotEmpty = GK.checkPathIsEmpty({
-                        path: new_local_uri,
-                        type: 'fullpath',
-                        dir: 1,
+
+                    params = {
+                        webpath: file.fullpath,
+                        fullpath: new_local_uri,
                         mountid: $rootScope.PAGE_CONFIG.mount.mount_id
+                    };
+                    gkClientInterface.setLinkPath(params,function(){
+                        if (setParentFile) {
+                            file.syncpath = file.fullpath;
+                        } else {
+                            file.sync = 1;
+                        }
                     });
 
-                    if (isNotEmpty == 1) { //文件夹为空
-                        params = {
-                            webpath: file.fullpath,
-                            fullpath: new_local_uri,
-                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
-                            overwrite: 1
-                        };
-                        GK.setLinkPath(params);
-                    } else { //文件夹不为空
-
-                    }
-                    if (setParentFile) {
-                        file.syncpath = file.fullpath;
-                    } else {
-                        file.sync = 1;
-                    }
                 });
             }
 
@@ -711,9 +703,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GK.lock({
                         webpath: file.fullpath,
                         mountid: $scope.mountId
-                    })
-                    file.lock = 1;
-                    file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
+                    }).then(function(){
+                            file.lock = 1;
+                            file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
+                        })
+
                 }
             },
             'unlock': {
@@ -727,9 +721,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GK.unlock({
                         webpath: file.fullpath,
                         mountid: $scope.mountId
-                    })
-                    file.lock = 0;
-                    file.lock_member_name = '';
+                    }).then(function(){
+                            file.lock = 0;
+                            file.lock_member_name = '';
+                        })
+
                 }
             },
             'save': {
