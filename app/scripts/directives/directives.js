@@ -1045,7 +1045,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.handleSysDrop = function($event){
-                    console.log($event.originalEvent.dataTransfer.files);
+                    //console.log($event.originalEvent.dataTransfer.files);
                 };
             }
         };

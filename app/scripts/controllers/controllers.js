@@ -1009,7 +1009,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 });
             });
            GKFileOpt.move(toFullpath,toMountId,fromFullpathes,fromMountId).then(function(){
-               refreahData();
+              refreahData();
            },function(){
 
            });

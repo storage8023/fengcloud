@@ -270,54 +270,56 @@
     background-position: -24px -624px;
 }
 
-.icon16x16.icon_up{
-    background-position: -4px -644px;
-}
 
-.icon16x16.icon_up_white{
-    background-position: -24px -644px;
-}
-
+.active .icon16x16.icon_down_white,
 .icon16x16.icon_down{
     background-position: -4px -664px;
 }
 .icon16x16.icon_down_white{
     background-position: -24px -664px;
 }
-
-.icon16x16.icon_play{
+.active .icon16x16.icon_up_white,
+.icon16x16.icon_up{
     background-position: -4px -684px;
 }
-.icon16x16.icon_play_white{
+.icon16x16.icon_up_white{
     background-position: -24px -684px;
 }
 
-.icon16x16.icon_syncing{
+.icon16x16.icon_play{
     background-position: -4px -704px;
 }
-.icon16x16.icon_syncing_white{
+.icon16x16.icon_play_white{
     background-position: -24px -704px;
 }
 
-.icon16x16.icon_pause{
+.active .icon16x16.icon_syncing_white,
+.icon16x16.icon_syncing{
     background-position: -4px -724px;
 }
-.icon16x16.icon_pause_white{
+.icon16x16.icon_syncing_white{
     background-position: -24px -724px;
 }
 
-.icon16x16.icon_ban{
+.icon16x16.icon_pause{
     background-position: -4px -744px;
 }
-.icon16x16.icon_ban_white{
+.icon16x16.icon_pause_white{
     background-position: -24px -744px;
 }
 
-.icon16x16.icon_done{
+.icon16x16.icon_ban{
     background-position: -4px -764px;
 }
-.icon16x16.icon_done_white{
+.icon16x16.icon_ban_white{
     background-position: -24px -764px;
+}
+
+.icon16x16.icon_done{
+    background-position: -4px -784px;
+}
+.icon16x16.icon_done_white{
+    background-position: -24px -784px;
 }
 
 .icon16x16.icon_leftarrow{

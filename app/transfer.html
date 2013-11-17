@@ -4,6 +4,7 @@
     <title>传输队列</title>
     <meta http-equiv="content-type" content="text/html;charset = utf-8"/>
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" href="styles/bootstrap-gk.css" type="text/css"/>
     <link rel="stylesheet" href="styles/base.css" type="text/css"/>
     <link rel="stylesheet" href="styles/component.css" type="text/css"/>
     <link rel="stylesheet" href="styles/setting.css" type="text/css"/>
@@ -41,9 +42,8 @@
         </div>
     </div>
     <footer clas="c_f">
-        <span class="f_l"><i class="icon16x16 icon_upload"></i><span>上传总速度：<em ng-show="uploadSpeed>0">{{uploadSpeed|bitSize}}</em><em ng-show="uploadSpeed<=0">-</em></span></span>
-        <span class="f_l"><i class="icon16x16 icon_download"></i><span>下载总速度：<em ng-show="downloadSpeed>0">{{downloadSpeed|bitSize}}</em><em ng-show="downloadSpeed<=0">-</em></span></span>
-        <button class="f_r btn btn-default" ng-click="cancel()">关闭</button>
+        <span class="f_l"><i class="icon16x16 icon_up"></i><span>上传总速度：<em ng-show="uploadSpeed>0">{{uploadSpeed|bitSize}}</em><em ng-show="uploadSpeed<=0">-</em></span></span>
+        <span class="f_l"><i class="icon16x16 icon_down"></i><span>下载总速度：<em ng-show="downloadSpeed>0">{{downloadSpeed|bitSize}}</em><em ng-show="downloadSpeed<=0">-</em></span></span>
     </footer>
 </div>
 </body>

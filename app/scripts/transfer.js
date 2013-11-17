@@ -7,19 +7,19 @@ angular.module('gkClientTransfer', ['gkClientIndex.services','ui.bootstrap','gkC
             {
                 name:'upload',
                 title:'上传',
-                icon:'icon_upload_white',
+                icon:'icon_up_white',
                 directive:'tabUpload'
             },
             {
                 name:'download',
                 title:'下载',
-                icon:'icon_download_white',
+                icon:'icon_down_white',
                 directive:'tabDownload'
             },
             {
                 name:'sync',
                 title:'同步',
-                icon:'icon_sync2_white',
+                icon:'icon_syncing_white',
                 directive:'tabSync'
             }
         ];

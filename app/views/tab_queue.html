@@ -8,7 +8,8 @@
                 <div class="empty" ng-if="!fileList || !fileList.length">没有{{selectedTab.title}}文件</div>
               <div class="item" ng-repeat="item in fileList">
                 <div>
-                    <i class="file_icon {{item.webpath|baseName|getFileIcon:item.dir||0}}" ></i>
+                    <i class="file_icon {{item.webpath|baseName|getFileIcon:(selectedTab.name=='sync'?1:item.dir)}}" ></i>
+
                     <span class="filename" title="{{item.webpath|baseName}}">{{item.webpath|baseName}}</span>
                 </div>
                   <div ng-if="selectedTab.name!='sync'">
@@ -25,10 +26,10 @@
                   </div>
                   <div>
                       <span ng-if="!item.time">--:--:--</span>
-                      <span ng-if="item.time>0">{{item.time}}</span>
+                      <span ng-if="item.time">{{item.time}}</span>
                   </div>
-                  <div class="opt" ng-if="selectedTab.name=='download'">
-                      <button class="remove" ng-click="removeTransfer(item)">取消</button>
+                  <div class="opts" ng-if="selectedTab.name=='download'">
+                      <button class="btn btn-danger btn-flat remove" ng-click="removeTransfer(item)">取消</button>
                   </div>
               </div>
             </div>

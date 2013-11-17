@@ -64,7 +64,21 @@ aside ul li.active i.icon_network{
 aside ul li.active i.icon_airplane{
     background-position: -604px -24px;
 }
-
+footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    background: -webkit-gradient(linear,0 0,0 100%,from(#FBFBFB),to(#E3E4E5));
+    text-align: right;
+    border-top:1px solid #CDCED0;
+}
+footer .btn{
+    vertical-align: middle;
+    padding: 3px 13px;
+    margin: 8px 10px 0 0;
+}
 .content{
     position: absolute;
     top:0;
@@ -289,6 +303,9 @@ aside ul li.active i.icon_sync2_white{
  .transfer_page .list_header > div:nth-child(1){
      width: 40%;
 }
+.transfer_page .list_header > div:nth-child(1){
+    padding-left: 34px;
+}
 .transfer_page .list .item > div:nth-child(2),
 .transfer_page .list_header > div:nth-child(2){
     width: 35%;
@@ -296,6 +313,7 @@ aside ul li.active i.icon_sync2_white{
 .transfer_page .list .item > div:nth-child(3),
 .transfer_page .list_wrapper .list_header > div:nth-child(3){
     width: 15%;
+
 }
 .transfer_page .list .item > div:nth-child(4),
 .transfer_page .list_wrapper .list_header > div:nth-child(4){
@@ -306,7 +324,6 @@ aside ul li.active i.icon_sync2_white{
     background:#F1F1F2;
     border-bottom: 1px solid #CDCED0;
     font-size: 12px;
-    color:#8E98A8;
 }
 .transfer_page .content .list_header div{
     line-height: 34px;
@@ -315,8 +332,10 @@ aside ul li.active i.icon_sync2_white{
     line-height: 40px;
     border-bottom: 0;
 }
+.transfer_page .main{
+    bottom:45px;
+}
 .transfer_page footer .f_l{
-    color:#8E98A8;
     font-size: 13px;
     margin: 13px 0 13px 13px;
 }
@@ -336,12 +355,7 @@ aside ul li.active i.icon_sync2_white{
 .transfer_page .list .item > div .status_2{
     color:#F3A427;
 }
-.transfer_page .list .item .opt button{
-    display: none;
-}
-.transfer_page .list .item:hover .opt button{
-    display: inline-block;
-}
+
 .transfer_page .list .item .filename{
     overflow: hidden;
     text-overflow: ellipsis;

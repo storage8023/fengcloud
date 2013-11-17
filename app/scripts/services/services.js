@@ -31,7 +31,6 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
              move:function(toFullpath,toMountId,fromFullpathes,fromMountId){
-                 console.log(arguments);
                  if(!angular.isArray(fromFullpathes)){
                      fromFullpathes  = [fromFullpathes];
                  }
@@ -2151,11 +2150,12 @@ angular.module('gkClientIndex.services', [])
                     $scope.fileList = re['list'];
                     $rootScope.downloadSpeed = re['download'];
                     $rootScope.uploadSpeed = re['upload'];
+                    console.log($scope.fileList);
                 }
                 getFileList();
-                $interval(function(){
-                    getFileList();
-                },1000);
+//                $interval(function(){
+//                    getFileList();
+//                },1000);
             }
         }
     }
