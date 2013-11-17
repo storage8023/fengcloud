@@ -477,7 +477,7 @@ angular.module('gkClientIndex.services', [])
 
                 smartFolders.unshift({
                     name: GKFilter.getFilterName('recent'),
-                    icon:'icon_recent',
+                    icon:'icon_clock',
                     filter:'recent'
                 });
                 return smartFolders;

@@ -8,23 +8,25 @@
     vertical-align: middle;
     margin-top: -3px;
 }
-.icon16x16.icon_folder{
+.icon16x16.icon_myfolder{
     background-position: -4px -4px;
 }
-.icon16x16.icon_folder_white{
+.icon16x16.icon_myfolder_white{
     background-position: -24px -4px;
 }
-.icon16x16.icon_folder_color{
+.active .icon16x16.icon_myfolder,
+.icon16x16.icon_myfolder_color{
     background-position: -44px -4px;
 }
 
-.icon16x16.icon_sharefolder{
+.icon16x16.icon_teamfolder{
     background-position: -4px -24px;
 }
-.icon16x16.icon_sharefolder_white{
+.icon16x16.icon_teamfolder_white{
     background-position: -24px -24px;
 }
-.icon16x16.icon_sharefolder_color{
+.active .icon16x16.icon_teamfolder,
+.icon16x16.icon_teamfolder_color{
     background-position: -44px -24px;
 }
 
@@ -35,6 +37,7 @@
 .icon16x16.icon_subscribefolder_white{
     background-position: -24px -44px;
 }
+.active .icon16x16.icon_subscribefolder,
 .icon16x16.icon_subscribefolder_color{
     background-position: -44px -44px;
 }
@@ -45,6 +48,7 @@
 .icon16x16.icon_smartfolder_white{
     background-position: -24px -64px;
 }
+.active .icon16x16.icon_smartfolder,
 .icon16x16.icon_smartfolder_color{
     background-position: -44px -64px;
 }
@@ -55,6 +59,7 @@
 .icon16x16.icon_star_white{
     background-position: -24px -84px;
 }
+.active .icon16x16.icon_star,
 .icon16x16.icon_star_color{
     background-position: -44px -84px;
 }
@@ -66,6 +71,7 @@
 .icon16x16.icon_clock_white{
     background-position: -24px -104px;
 }
+.active .icon16x16.icon_clock,
 .icon16x16.icon_clock_color{
     background-position: -44px -104px;
 }
@@ -76,7 +82,8 @@
 .icon16x16.icon_trash_white{
     background-position: -24px -124px;
 }
-.icon16x16.icon_clock_color{
+.active .icon16x16.icon_trash,
+.icon16x16.icon_trash_color{
     background-position: -44px -124px;
 }
 
@@ -314,17 +321,17 @@
 }
 
 .icon16x16.icon_leftarrow{
-    background-position: -4px -784px;
+    background-position: -4px -804px;
 }
 .icon16x16.icon_leftarrow_white{
-    background-position: -24px -784px;
+    background-position: -24px -804px;
 }
 
 .icon16x16.icon_rightarrow{
-    background-position: -4px -804px;
+    background-position: -4px -824px;
 }
 .icon16x16.icon_rightarrow_white{
-    background-position: -24px -804px;
+    background-position: -24px -824px;
 }
 
 .icon16x16.icon_plus{
@@ -334,57 +341,6 @@
     background-position: -44px -824px;
 }
 
-
-
-.icon16x16.icon_email{
-    background-position: -164px -84px;
-}
-.icon16x16.icon_lock{
-    background-position: -184px -24px;
-}
-.icon16x16.icon_person{
-    background-position: -484px -4px;
-}
-.icon16x16.icon_person_white{
-    background-position: -484px -24px;
-}
-.icon16x16.icon_close_window{
-    background-position: -204px -64px;
-}
-.icon16x16.icon_info{
-    background-position: -524px -4px;
-}
-.icon16x16.icon_computer{
-    background-position: -544px -4px;
-}
-.icon16x16.icon_sync{
-    background-position: -564px -4px;
-}
-.icon16x16.icon_network{
-    background-position: -584px -4px;
-}
-.icon16x16.icon_airplane{
-     background-position: -604px -4px;
- }
-.icon16x16.icon_upload{
-    background-position: -404px -4px;
-}
-
-.icon16x16.icon_upload_white{
-    background-position: -404px -24px;
-}
-.icon16x16.icon_download{
-    background-position: -384px -4px;
-}
-.icon16x16.icon_download_white{
-    background-position: -384px -24px;
-}
-.icon16x16.icon_sync2{
-    background-position: -424px -4px;
-}
-.icon16x16.icon_sync2_white{
-    background-position: -424px -24px;
-}
 /*********文件图标 32*32*******/
 
 /*其他文件*/

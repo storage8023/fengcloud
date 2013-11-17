@@ -551,11 +551,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'revert': {
                 name: '还原',
                 callback: function () {
-                    var fullpaths = [];
+                    var list = [];
                     angular.forEach($scope.selectedFile, function (value) {
-                        fullpaths.push(value.dir == 1 ? value.fullpath + '/' : value.fullpath);
+                        list.push({
+                            webpath: value.fullpath
+                        });
                     });
-                    RestFile.recover($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths, '').success(function () {
+                    var param = {
+                        mountid:$rootScope.PAGE_CONFIG.mount.mount_id,
+                        list:list
+                    };
+                    GK.recover(param).then(function(){
                         angular.forEach($scope.selectedFile, function (value) {
                             angular.forEach($scope.fileData, function (file, key) {
                                 if (value == file) {
@@ -565,9 +571,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         });
                         $scope.selectedFile = [];
                         $scope.selectedIndex = [];
-                    }).error(function () {
-
-                        });
+                    })
                 }
             },
             'del_completely': {

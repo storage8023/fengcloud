@@ -239,23 +239,14 @@ header .back_forward .btn{
 header .back_forward .btn.forward{
     margin-left: 1px;
 }
-header .back_forward .btn i{
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    background: url(../images/icon/icon16x16.png) no-repeat -624px -4px;
-    display: inline-block;
-    margin: -3px 0 0 0;
-}
-header .back_forward .btn.forward i{
-     background-position: -644px -4px;
-}
+
 header .back_forward .btn.forward[disabled] i{
-    background-position: -644px -24px;
+    background-position: -4px -824px;
 }
 header .back_forward .btn.back[disabled] i{
-    background-position: -624px -24px;
+    background-position: -4px -804px;
 }
+
 footer {
     position: absolute;
     bottom: 0;
@@ -392,15 +383,9 @@ footer {
     border-left-color: #fff;
 }
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_folder{
-    background: url(../images/icon/icon16x16.png) no-repeat -4px -4px;
 }
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_trash{
-    background: url(../images/icon/icon16x16.png) no-repeat -24px -4px;
     margin-left: 32px;
-}
-
-.left_sidebar ul.nav.nav-list.abn-tree > .active .icon_folder{
-    background-position: -4px -24px;
 }
 
 .left_sidebar ul.nav.nav-list.abn-tree > .activ .tree-icon{
@@ -408,9 +393,6 @@ footer {
     -webkit-transition:all linear .2s;
 }
 
-.left_sidebar ul.nav.nav-list.abn-tree > .active .icon_trash{
-    background-position: -24px -24px;
-}
 .left_sidebar ul.nav.abn-tree > .hover > a,
 .left_sidebar ul.nav.abn-tree > li > a:hover{
     background: #393D42;
@@ -425,38 +407,7 @@ footer {
 .left_sidebar .smart_tree_list ul.nav.nav-list.abn-tree .node_icon{
     margin-left: 11px;
 }
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_recent,
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_inbox,
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_star{
-    background-image: url(../images/icon/icon16x16.png);
-    background-repeat: no-repeat;
 
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_recent{
-    background-position: -64px -4px;
-}
-.left_sidebar ul.nav.nav-list.abn-tree > .active > a .icon_recent,
-.left_sidebar ul.nav.nav-list.abn-tree > a:hover .icon_recent,
-.left_sidebar ul.nav.nav-list.abn-tree > a:focus .icon_recent{
-    background-position: -64px -24px;
-}
-
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_inbox{
-    background-position: -44px -4px;
-}
-.left_sidebar ul.nav.nav-list.abn-tree > .active > a .icon_inbox,
-.left_sidebar ul.nav.nav-list.abn-tree > a:hover .icon_inbox,
-.left_sidebar ul.nav.nav-list.abn-tree > a:focus .icon_inbox{
-    background-position: -44px -24px;
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_star{
-    background-position: -84px -4px;
-}
-.left_sidebar ul.nav.nav-list.abn-tree > .active > a .icon_star,
-.left_sidebar ul.nav.nav-list.abn-tree > a:hover .icon_star,
-.left_sidebar ul.nav.nav-list.abn-tree > a:focus .icon_star{
-    background-position: -84px -24px;
-}
 .left_sidebar ul.nav.nav-list.abn-tree .nav-header{
     height: 32px;
     line-height: 32px;
