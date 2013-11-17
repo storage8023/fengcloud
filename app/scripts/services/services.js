@@ -265,7 +265,8 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKNews',['localStorageService','newsKey','GKApi','$filter','GKDialog','GKPath','GKException',function(localStorageService,newsKey,GKApi,$filter,GKDialog,GKPath,GKException){
+    .factory('GKNews',['localStorageService','GKApi','$filter','GKDialog','GKPath','GKException',function(localStorageService,GKApi,$filter,GKDialog,GKPath,GKException){
+        var newsKey = 'news_'+gkClientInterface.getUser()['member_id'];
         var GKNews = {
             getOptsByItem:function(item){
                 var opts = [];
@@ -400,15 +401,15 @@ angular.module('gkClientIndex.services', [])
                     var news = data['updates'] || [];
                     var dateline = data['dateline'];
                     gkClientInterface.setMessageDate(dateline);
-                    //测试数据
-                    angular.forEach(news,function(value,key){
-                        value.org_id = 1;
-                        value.org_name = '够快科技';
-                        if(key==2){
-                            value.org_id = 2;
-                            value.org_name = '测试团队';
-                        }
-                    });
+
+//                    angular.forEach(news,function(value,key){
+//                        value.org_id = 1;
+//                        value.org_name = '够快科技';
+//                        if(key==2){
+//                            value.org_id = 2;
+//                            value.org_name = '测试团队';
+//                        }
+//                    });
                     context.addNews(news);
                 })
             },
