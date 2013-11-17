@@ -40,7 +40,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             {
                 name:'advance',
                 title:'高级',
-                icon:'icon_airplane',
+                icon:'icon_plane',
                 directive:'tabAdvance'
             }
         ];
@@ -284,22 +284,22 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                 var myMount = GKMount.getMyMount();
                 $scope.attrs = [
                     {
-                        icon:'icon-phone',
+                        icon:'icon_phone',
                         name:'phone',
                         text:'电话：'+(user.member_phone?user.member_phone:'无')
                     },
                     {
-                        icon:'icon-mail',
+                        icon:'icon_mail',
                         name:'mail',
                         text:user.member_email?'<'+user.member_email+'>':'无'
                     },
                     {
-                        icon:'icon-device',
+                        icon:'icon_computer',
                         name:'mail',
                         text:'当前使用设备：'+(device?device:'')
                     },
                     {
-                        icon:'icon-space',
+                        icon:'icon_pie',
                         name:'mail',
                         text:'使用空间：'+Util.Number.bitSize(myMount['size'])
                     }
