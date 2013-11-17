@@ -709,20 +709,10 @@ footer {
     padding: 5px 0;
     height: 42px;
     line-height: 32px;
-    background-color: transparent;
     -webkit-transition: background-color linear 0.1s;
 }
 
-.list_view .file_item:nth-child(even) {
-    background-color: #F7F7F7;
-}
-.file_list_wrapper .file_item:hover{
-    background-color:#E1E3E7;
-}
 
-.file_list_wrapper .file_item.selected {
-    background-color:#7F8999
-}
 .file_item .file_icon {
     display: inline-block;
     width: 32px;
