@@ -518,6 +518,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'create': {
                 name: '创建',
                 icon:'',
+                className:"create",
                 callback: function () {
 
                 }
@@ -525,6 +526,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'unsubscribe': {
                 name: '取消订阅',
                 icon:'',
+                className:"unsubscribe",
                 callback: function () {
 
                 }
@@ -532,6 +534,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'nearby': {
                 name: '附近',
                 icon:'',
+                className:"nearby",
                 callback: function () {
 
                 }
@@ -539,6 +542,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'manage': {
                 name: '管理',
                 icon:'',
+                className:"manage",
                 callback: function () {
 
                 }
@@ -546,6 +550,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'clear_trash': {
                 name: '清空回收站',
                 icon:'icon_del',
+                className:"clear_trash",
                 callback: function () {
                     RestFile.clear($rootScope.PAGE_CONFIG.mount.mount_id).success(function () {
                         refreahData();
@@ -556,6 +561,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'revert': {
                 name: '还原',
                 icon:'icon_recover',
+                className:"revert",
                 callback: function () {
                     var list = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -582,6 +588,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'del_completely': {
                 name: '彻底删除',
+                className:"del_completely",
                 icon:'icon_disable',
                 callback: function () {
                     var fullpaths = [];
@@ -605,6 +612,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'sync': {
                 name: '同步',
+                className:"sync",
                 icon:'icon_sync',
                 callback: function () {
                     toggleSync(0);
@@ -612,6 +620,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'unsync': {
                 name: '取消同步',
+                className:"unsync",
                 icon:'icon_disable',
                 callback: function () {
                     toggleSync(1);
@@ -619,6 +628,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'paste': {
                 name: '粘贴',
+                className:"paste",
                 icon:'icon_paste',
                 callback: function () {
                     var data = GKCilpboard.getData();
@@ -649,6 +659,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'cut': {
                 name: '剪切',
+                className:"cut",
                 icon:'icon_cut',
                 callback: function () {
                     var data = {
@@ -661,6 +672,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'copy': {
                 name: '复制',
+                className:"copy",
                 icon:'icon_copy',
                 callback: function () {
                     var data = {
@@ -674,6 +686,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'add': {
                 name: '添加',
+                className:"add",
                 icon:'icon_download',
                 callback: function () {
                     var addFiles = gkClientInterface.addFileDialog();
@@ -695,6 +708,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'new_folder': {
                 name: '新建',
+                className:"new_folder",
                 icon:'icon_newfolder',
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
@@ -716,6 +730,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'lock': {
                 name: '锁定',
+                className:"lock",
                 icon:'icon_lock',
                 callback: function () {
                     var file = $scope.selectedFile[0];
@@ -731,6 +746,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'unlock': {
                 name: '解锁',
+                className:"unlock",
                 icon:'icon_unlock',
                 callback: function () {
                     var file = $scope.selectedFile[0];
@@ -750,6 +766,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'save': {
                 name: '保存到',
+                className:"save",
                 icon:'icon_save',
                 callback: function () {
                     var files = [];
@@ -769,6 +786,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'del': {
                 name: '删除',
                 index: 5,
+                className:"del",
                 icon:'icon_trash',
                 callback: function () {
                     var files = [];
@@ -802,6 +820,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'rename': {
                 name: '重命名',
+                className:"rename",
                 index: 6,
                 icon:'icon_rename',
                 callback: function () {
@@ -831,11 +850,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'order_by': {
                 name: '排序方式',
+                className:"order_by",
                 index: 7,
                 items: {
                     'order_by_file_name': {
                         name: '文件名',
-                        className: $scope.order.indexOf('file_name') >= 0 ? 'current' : '',
+                        className: 'order_by_file_name'+($scope.order.indexOf('file_name') >= 0 ? 'current' : ''),
                         callback: function () {
                             $scope.$apply(function () {
                                 setOrder('filename');
@@ -844,7 +864,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     },
                     'order_by_file_size': {
                         name: '大小',
-                        className: $scope.order.indexOf('file_size') >= 0 ? 'current' : '',
+                        className: 'order_by_file_size'+($scope.order.indexOf('file_size') >= 0 ? 'current' : ''),
                         callback: function () {
                             $scope.$apply(function () {
                                 setOrder('filesize');
@@ -853,7 +873,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     },
                     'order_by_file_type': {
                         name: '类型',
-                        className: $scope.order.indexOf('file_type') >= 0 ? 'current' : '',
+                        className: 'order_by_file_type'+($scope.order.indexOf('file_type') >= 0 ? 'current' : ''),
                         callback: function () {
                             $scope.$apply(function () {
                                 setOrder('ext');
@@ -862,7 +882,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     },
                     'order_by_last_edit_time': {
                         name: '最后修改时间',
-                        className: $scope.order.indexOf('last_edit_time') >= 0 ? 'current' : '',
+                        className: 'order_by_last_edit_time'+($scope.order.indexOf('last_edit_time') >= 0 ? 'current' : ''),
                         callback: function () {
                             $scope.$apply(function () {
                                 setOrder('last_edit_time');

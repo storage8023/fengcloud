@@ -1056,7 +1056,10 @@ var // currently active contextMenu trigger
                         
                         case 'sub':
                             // FIXME: shouldn't this .html() be a .text()?
-                            $('<span></span>').html(item._name || item.name).appendTo($t);
+                            var icon = '<i class="icon16x16 '+item.icon+'"></i>';
+                            var accesskey = '<span class="accesskey">'+(item.accesskey||'')+'</span>';
+                            var text = '<span>'+(item._name || item.name || "")+'</span>';
+                            $(icon+text+accesskey).appendTo($t);
                             item.appendTo = item.$node;
                             op.create(item, root);
                             $t.data('contextMenu', item).addClass('context-menu-submenu');
@@ -1075,7 +1078,11 @@ var // currently active contextMenu trigger
                                 }
                             });
                             // FIXME: shouldn't this .html() be a .text()?
-                            $('<span></span>').html(item._name || item.name || "").appendTo($t);
+                            var icon = '<i class="icon16x16 '+item.icon+'"></i>';
+                            var accesskey = '<span class="accesskey">'+(item.accesskey||'')+'</span>';
+                            var text = '<span>'+(item._name || item.name || "")+'</span>';
+
+                            $(icon+text+accesskey).appendTo($t);
                             break;
                     }
                     
@@ -1091,9 +1098,9 @@ var // currently active contextMenu trigger
                     }
                 
                     // add icons
-                    if (item.icon) {
-                        $t.addClass("icon icon-" + item.icon);
-                    }
+//                    if (item.icon) {
+//                        $t.addClass("icon icon-" + item.icon);
+//                    }
                 }
                 
                 // cache contained elements
