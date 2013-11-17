@@ -333,7 +333,7 @@
         return gkClient.gGetApiAuthorization(JSON.stringify(params));
     },
     setSettings:function(){
-        gkClient.gSettings();
+        gkClient.gNetworkAgent();
     },
     setClose:function(){
         gkClient.gClose();
