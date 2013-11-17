@@ -421,7 +421,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                         return;
                     }
                     var params = {
-                        webpath: file.fullpath,
+                        webpath: file.webpath,
                         mountid: file.mountid
                     };
 
