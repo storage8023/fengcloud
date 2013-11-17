@@ -319,7 +319,7 @@
     },
     setLinkPath:function(params,callback){
         try {
-            gkClient.gSetLinkPaths(JSON.stringify(params),function(re){
+            gkClient.gSetLinkPath(JSON.stringify(params),function(re){
                 var re = JSON.parse(re);
                 if(re && re.error==0){
                     if(typeof callback === 'function'){
@@ -333,7 +333,7 @@
     },
     moveLinkPath:function(params,callback){
         try {
-            gkClient.gMoveLinkPaths(JSON.stringify(params),function(re){
+            gkClient.gMoveLinkPath(JSON.stringify(params),function(re){
                 var re = JSON.parse(re);
                 if(re && re.error==0){
                     if(typeof callback === 'function'){
@@ -411,9 +411,6 @@
     setClearCache:function(){
         gkClient.gClearCache();
     },
-    getUpdateLinkPaths: function(param){
-        gkClient.gUpdateLinkPaths(JSON.stringify(param));
-    },
     getTransList: function(param){
         var re = gkClient.gTransList(JSON.stringify(param));
         return JSON.parse(re);
@@ -463,9 +460,6 @@
     },
     stopSync: function(){
         gkClient.gStopSync();
-    },
-    setRemoveLinkPaths: function(){
-        gkClient.gRemoveLinkPaths();
     },
     removeTrans: function(params,callback){
         gkClient.gRemoveTrans(JSON.stringify(params),function(re){

@@ -8,53 +8,381 @@
     vertical-align: middle;
     margin-top: -3px;
 }
-i.icon16x16.icon_email{
+.icon16x16.icon_folder{
+    background-position: -4px -4px;
+}
+.icon16x16.icon_folder_white{
+    background-position: -24px -4px;
+}
+.icon16x16.icon_folder_color{
+    background-position: -44px -4px;
+}
+
+.icon16x16.icon_sharefolder{
+    background-position: -4px -24px;
+}
+.icon16x16.icon_sharefolder_white{
+    background-position: -24px -24px;
+}
+.icon16x16.icon_sharefolder_color{
+    background-position: -44px -24px;
+}
+
+
+.icon16x16.icon_subscribefolder{
+    background-position: -4px -44px;
+}
+.icon16x16.icon_subscribefolder_white{
+    background-position: -24px -44px;
+}
+.icon16x16.icon_subscribefolder_color{
+    background-position: -44px -44px;
+}
+
+.icon16x16.icon_smartfolder{
+    background-position: -4px -64px;
+}
+.icon16x16.icon_smartfolder_white{
+    background-position: -24px -64px;
+}
+.icon16x16.icon_smartfolder_color{
+    background-position: -44px -64px;
+}
+
+.icon16x16.icon_star{
+    background-position: -4px -84px;
+}
+.icon16x16.icon_star_white{
+    background-position: -24px -84px;
+}
+.icon16x16.icon_star_color{
+    background-position: -44px -84px;
+}
+
+
+.icon16x16.icon_clock{
+    background-position: -4px -104px;
+}
+.icon16x16.icon_clock_white{
+    background-position: -24px -104px;
+}
+.icon16x16.icon_clock_color{
+    background-position: -44px -104px;
+}
+
+.icon16x16.icon_trash{
+    background-position: -4px -124px;
+}
+.icon16x16.icon_trash_white{
+    background-position: -24px -124px;
+}
+.icon16x16.icon_clock_color{
+    background-position: -44px -124px;
+}
+
+.icon16x16.icon_newfolder{
+    background-position: -4px -144px;
+}
+.icon16x16.icon_newfolder_white{
+    background-position: -24px -144px;
+}
+
+
+.icon16x16.icon_download{
+    background-position: -4px -164px;
+}
+.icon16x16.icon_download_white{
+    background-position: -24px -164px;
+}
+
+
+.icon16x16.icon_save{
+    background-position: -4px -184px;
+}
+.icon16x16.icon_save_white{
+    background-position: -24px -184px;
+}
+
+
+.icon16x16.icon_rename{
+    background-position: -4px -204px;
+}
+.icon16x16.icon_rename_white{
+    background-position: -24px -204px;
+}
+
+
+.icon16x16.icon_paste{
+    background-position: -4px -224px;
+}
+.icon16x16.icon_paste_white{
+    background-position: -24px -224px;
+}
+
+
+.icon16x16.icon_copy{
+    background-position: -4px -244px;
+}
+.icon16x16.icon_copy_white{
+    background-position: -24px -244px;
+}
+
+
+.icon16x16.icon_cut{
+    background-position: -4px -264px;
+}
+.icon16x16.icon_cut_white{
+    background-position: -24px -264px;
+}
+
+
+.icon16x16.icon_lock{
+    background-position: -4px -284px;
+}
+.icon16x16.icon_lock_white{
+    background-position: -24px -284px;
+}
+
+.icon16x16.icon_unlock{
+    background-position: -4px -304px;
+}
+.icon16x16.icon_unlock_white{
+    background-position: -24px -304px;
+}
+
+.icon16x16.icon_setting{
+    background-position: -4px -324px;
+}
+.icon16x16.icon_setting_white{
+    background-position: -24px -324px;
+}
+
+.icon16x16.icon_sync{
+    background-position: -4px -344px;
+}
+.icon16x16.icon_sync_white{
+    background-position: -24px -344px;
+}
+
+.icon16x16.icon_logout{
+    background-position: -4px -364px;
+}
+.icon16x16.icon_logout_white{
+    background-position: -24px -364px;
+}
+
+.icon16x16.icon_info{
+    background-position: -4px -384px;
+}
+.icon16x16.icon_info_white{
+    background-position: -24px -384px;
+}
+
+.icon16x16.icon_computer{
+    background-position: -4px -404px;
+}
+.icon16x16.icon_computer_white{
+    background-position: -24px -404px;
+}
+
+.icon16x16.icon_network{
+    background-position: -4px -424px;
+}
+.icon16x16.icon_network_white{
+    background-position: -24px -424px;
+}
+
+.icon16x16.icon_plane{
+    background-position: -4px -444px;
+}
+.icon16x16.icon_plane_white{
+    background-position: -24px -444px;
+}
+
+.icon16x16.icon_del{
+    background-position: -4px -464px;
+}
+.icon16x16.icon_del_white{
+    background-position: -24px -464px;
+}
+
+
+.icon16x16.icon_disable{
+    background-position: -4px -484px;
+}
+.icon16x16.icon_disable_white{
+    background-position: -24px -484px;
+}
+
+.icon16x16.icon_person{
+    background-position: -4px -504px;
+}
+.icon16x16.icon_person_white{
+    background-position: -24px -504px;
+}
+
+.icon16x16.icon_people{
+    background-position: -4px -524px;
+}
+.icon16x16.icon_people_white{
+    background-position: -24px -524px;
+}
+
+.icon16x16.icon_search{
+    background-position: -4px -544px;
+}
+.icon16x16.icon_search_white{
+    background-position: -24px -544px;
+}
+
+.icon16x16.icon_listview{
+    background-position: -4px -564px;
+}
+.icon16x16.icon_listview_white{
+    background-position: -24px -564px;
+}
+
+.icon16x16.icon_thumbview{
+    background-position: -4px -584px;
+}
+.icon16x16.icon_thumbview_white{
+    background-position: -24px -584px;
+}
+
+.icon16x16.icon_upload{
+    background-position: -4px -604px;
+}
+.icon16x16.icon_upload_white{
+    background-position: -24px -604px;
+}
+
+.icon16x16.icon_downloadfrom{
+    background-position: -4px -624px;
+}
+.icon16x16.icon_downloadfrom_white{
+    background-position: -24px -624px;
+}
+
+.icon16x16.icon_up{
+    background-position: -4px -644px;
+}
+
+.icon16x16.icon_up_white{
+    background-position: -24px -644px;
+}
+
+.icon16x16.icon_down{
+    background-position: -4px -664px;
+}
+.icon16x16.icon_down_white{
+    background-position: -24px -664px;
+}
+
+.icon16x16.icon_play{
+    background-position: -4px -684px;
+}
+.icon16x16.icon_play_white{
+    background-position: -24px -684px;
+}
+
+.icon16x16.icon_syncing{
+    background-position: -4px -704px;
+}
+.icon16x16.icon_syncing_white{
+    background-position: -24px -704px;
+}
+
+.icon16x16.icon_pause{
+    background-position: -4px -724px;
+}
+.icon16x16.icon_pause_white{
+    background-position: -24px -724px;
+}
+
+.icon16x16.icon_ban{
+    background-position: -4px -744px;
+}
+.icon16x16.icon_ban_white{
+    background-position: -24px -744px;
+}
+
+.icon16x16.icon_done{
+    background-position: -4px -764px;
+}
+.icon16x16.icon_done_white{
+    background-position: -24px -764px;
+}
+
+.icon16x16.icon_leftarrow{
+    background-position: -4px -784px;
+}
+.icon16x16.icon_leftarrow_white{
+    background-position: -24px -784px;
+}
+
+.icon16x16.icon_rightarrow{
+    background-position: -4px -804px;
+}
+.icon16x16.icon_rightarrow_white{
+    background-position: -24px -804px;
+}
+
+.icon16x16.icon_plus{
+    background-position: -4px -824px;
+}
+.icon16x16.icon_plus_color{
+    background-position: -44px -824px;
+}
+
+
+
+.icon16x16.icon_email{
     background-position: -164px -84px;
 }
-i.icon16x16.icon_lock{
+.icon16x16.icon_lock{
     background-position: -184px -24px;
 }
-i.icon16x16.icon_person{
+.icon16x16.icon_person{
     background-position: -484px -4px;
 }
-i.icon16x16.icon_person_white{
+.icon16x16.icon_person_white{
     background-position: -484px -24px;
 }
-i.icon16x16.icon_close_window{
+.icon16x16.icon_close_window{
     background-position: -204px -64px;
 }
-i.icon16x16.icon_info{
+.icon16x16.icon_info{
     background-position: -524px -4px;
 }
-i.icon16x16.icon_computer{
+.icon16x16.icon_computer{
     background-position: -544px -4px;
 }
-i.icon16x16.icon_sync{
+.icon16x16.icon_sync{
     background-position: -564px -4px;
 }
-i.icon16x16.icon_network{
+.icon16x16.icon_network{
     background-position: -584px -4px;
 }
-i.icon16x16.icon_airplane{
+.icon16x16.icon_airplane{
      background-position: -604px -4px;
  }
-i.icon16x16.icon_upload{
+.icon16x16.icon_upload{
     background-position: -404px -4px;
 }
 
-i.icon16x16.icon_upload_white{
+.icon16x16.icon_upload_white{
     background-position: -404px -24px;
 }
-i.icon16x16.icon_download{
+.icon16x16.icon_download{
     background-position: -384px -4px;
 }
-i.icon16x16.icon_download_white{
+.icon16x16.icon_download_white{
     background-position: -384px -24px;
 }
-i.icon16x16.icon_sync2{
+.icon16x16.icon_sync2{
     background-position: -424px -4px;
 }
-i.icon16x16.icon_sync2_white{
+.icon16x16.icon_sync2_white{
     background-position: -424px -24px;
 }
 /*********文件图标 32*32*******/
