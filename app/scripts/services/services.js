@@ -2153,9 +2153,9 @@ angular.module('gkClientIndex.services', [])
                     console.log($scope.fileList);
                 }
                 getFileList();
-//                $interval(function(){
-//                    getFileList();
-//                },1000);
+                $interval(function(){
+                    getFileList();
+                },1000);
             }
         }
     }

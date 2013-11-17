@@ -210,20 +210,27 @@
 .icon16x16.icon_plane_white{
     background-position: -24px -444px;
 }
-
-.icon16x16.icon_del{
+.icon16x16.icon_recover{
     background-position: -4px -464px;
 }
-.icon16x16.icon_del_white{
+
+.icon16x16.icon_recover_white{
     background-position: -24px -464px;
+}
+
+.icon16x16.icon_del{
+    background-position: -4px -484px;
+}
+.icon16x16.icon_del_white{
+    background-position: -24px -484px;
 }
 
 
 .icon16x16.icon_disable{
-    background-position: -4px -484px;
+    background-position: -4px -504px;
 }
 .icon16x16.icon_disable_white{
-    background-position: -24px -484px;
+    background-position: -24px -504px;
 }
 
 .icon16x16.icon_person{
@@ -249,7 +256,7 @@
 }
 
 .icon16x16.icon_listview{
-    background-position: -4px -564px;
+    background-position: -4px -584px;
 }
 .icon16x16.icon_listview_white{
     background-position: -24px -584px;

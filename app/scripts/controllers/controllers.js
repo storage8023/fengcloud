@@ -517,30 +517,35 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var allOpts = {
             'create': {
                 name: '创建',
+                icon:'',
                 callback: function () {
 
                 }
             },
             'unsubscribe': {
                 name: '取消订阅',
+                icon:'',
                 callback: function () {
 
                 }
             },
             'nearby': {
                 name: '附近',
+                icon:'',
                 callback: function () {
 
                 }
             },
             'manage': {
                 name: '管理',
+                icon:'',
                 callback: function () {
 
                 }
             },
             'clear_trash': {
                 name: '清空回收站',
+                icon:'icon_del',
                 callback: function () {
                     RestFile.clear($rootScope.PAGE_CONFIG.mount.mount_id).success(function () {
                         refreahData();
@@ -550,6 +555,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'revert': {
                 name: '还原',
+                icon:'icon_recover',
                 callback: function () {
                     var list = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -576,6 +582,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'del_completely': {
                 name: '彻底删除',
+                icon:'icon_disable',
                 callback: function () {
                     var fullpaths = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -598,18 +605,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'sync': {
                 name: '同步',
+                icon:'icon_sync',
                 callback: function () {
                     toggleSync(0);
                 }
             },
             'unsync': {
                 name: '取消同步',
+                icon:'icon_disable',
                 callback: function () {
                     toggleSync(1);
                 }
             },
             'paste': {
                 name: '粘贴',
+                icon:'icon_paste',
                 callback: function () {
                     var data = GKCilpboard.getData();
                     if (!data || !data.files || !data.mount_id) return;
@@ -639,6 +649,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'cut': {
                 name: '剪切',
+                icon:'icon_cut',
                 callback: function () {
                     var data = {
                         code: 'ctrlX',
@@ -650,6 +661,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'copy': {
                 name: '复制',
+                icon:'icon_copy',
                 callback: function () {
                     var data = {
                         code: 'ctrlC',
@@ -662,6 +674,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'add': {
                 name: '添加',
+                icon:'icon_download',
                 callback: function () {
                     var addFiles = gkClientInterface.addFileDialog();
                     if (!addFiles || !addFiles.list || !addFiles.list.length) {
@@ -682,6 +695,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'new_folder': {
                 name: '新建',
+                icon:'icon_newfolder',
                 callback: function () {
                     $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
@@ -702,6 +716,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'lock': {
                 name: '锁定',
+                icon:'icon_lock',
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     GK.lock({
@@ -716,6 +731,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'unlock': {
                 name: '解锁',
+                icon:'icon_unlock',
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     if (file.lock_member_id != $rootScope.PAGE_CONFIG.member_id) {
@@ -734,6 +750,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'save': {
                 name: '保存到',
+                icon:'icon_save',
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -752,6 +769,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'del': {
                 name: '删除',
                 index: 5,
+                icon:'icon_trash',
                 callback: function () {
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
@@ -785,6 +803,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'rename': {
                 name: '重命名',
                 index: 6,
+                icon:'icon_rename',
                 callback: function () {
                     var file = $scope.selectedFile[0];
                     $scope.$broadcast('fileEditNameStart', file, function (new_file_name) {

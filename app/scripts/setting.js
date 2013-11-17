@@ -353,7 +353,6 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                         if(!confirm(msg)){
                             return;
                         }
-                        console.log(device);
                         GKApi.toggleDevice(device.device_id,reState).success(function(){
                             device.state = reState;
                         }).error(function(request){

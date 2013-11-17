@@ -440,9 +440,8 @@ footer {
 }
 /*文件列表区样式*/
 .toolbar {
-    height: 35px;
-    border-bottom: 1px solid #CDCED0;
-    background: #F1F1F2;
+    height: 45px;
+    background: #E1E3E7;
     line-height: 24px;
     padding: 0 5px;
     font-family: 'SimSun', '宋体';
@@ -451,7 +450,7 @@ footer {
 
 .toolbar > button,
 .toolbar > span {
-    margin-top: 4px;
+    margin-top: 9px;
 }
 
 .toolbar button {
@@ -468,21 +467,10 @@ footer {
     margin-right: 10px;
 }
 
-.toolbar .opt i {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-image: url(../images/icon/icon16x16.png);
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    margin-top: -4px;
-}
-
 .toolbar .opt {
     display: block;
-    padding: 3px 7px;
-    border-radius: 4px;
-    border: 1px solid transparent;
+    padding: 3px 12px;
+    border-radius: 3px;
 }
 .toolbar .opt.opt_sync .cancel_sync{
     display: none;
@@ -497,14 +485,16 @@ footer {
     margin-right: 4px;
 }
 .toolbar .opt.opt_view_change{
-    margin-top: 1px;
+    margin-top: 7px;
 }
-.toolbar button .opt:hover {
-    border-color: #c2cbd3;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f7f7f7), to(#dbdee1));
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 1), 0 1px 1px rgba(255, 255, 255, 1);
+.toolbar button .opt:hover{
+    background: #9AA5B8;
+    color: #fff;
 }
-
+.toolbar button .opt:active{
+    color: #fff;
+    background: #6A7280;
+}
 .toolbar .opt.opt_view_change > a {
     display: inline-block;
     height: 24px;
@@ -514,67 +504,69 @@ footer {
 }
 
 .toolbar .opt.opt_view_change > a.list_view > i {
-    background-position: -244px -4px;
+
 }
 
 .toolbar .opt.opt_view_change > a.thumb_view > i {
-    background-position: -264px -4px;
+
 }
 
-.toolbar .opt.opt_add i {
-    background-position: -144px -4px;
+.toolbar .opt.opt_add:hover i {
+    background-position: -24px -164px;
 }
 
-.toolbar .opt.opt_new_folder i {
-    background-position: -164px -4px;
+.toolbar .opt.opt_new_folder:hover i {
+    background-position: -24px -144px;
 }
 
-.toolbar .opt.opt_lock i {
-    background-position: -184px -4px;
+.toolbar .opt.opt_lock:hover i {
+    background-position: -24px -284px;
 }
 
-.toolbar .opt.opt_unlock i {
-    background-position: -204px -4px;
+.toolbar .opt.opt_unlock:hover i {
+    background-position: -24px -304px;
 }
 
-.toolbar .opt.opt_save i {
-    background-position: -224px -4px;
+.toolbar .opt.opt_save:hover i {
+    background-position: -24px -184px;
 }
 
-.toolbar .opt.opt_del i {
-    background-position: -24px -4px;
+.toolbar .opt.opt_del:hover i {
+    background-position: -24px -124px;
 }
 
-.toolbar .opt.opt_rename i {
-    background-position: -764px -4px;
+.toolbar .opt.opt_rename:hover i {
+    background-position: -24px -204px;
 }
 
-.toolbar .opt.opt_sync i{
-    background-position: -564px -4px;
+.toolbar .opt.opt_sync:hover i{
+    background-position: -24px -344px;
 }
-.toolbar .opt.opt_unsync i{
-    background-position: -664px -4px;
+.toolbar .opt.opt_unsync:hover i{
+    background-position: -24px -504px;
 }
-.toolbar .opt.opt_clear_trash i{
-    background-position: -724px -4px;
+.toolbar .opt.opt_clear_trash:hover i{
+    background-position: -24px -484px;
 }
-.toolbar .opt.opt_del_completely i{
-    background-position: -744px -4px;
+.toolbar .opt.opt_del_completely:hover i{
+    background-position: -24px -504px;
 }
-.toolbar .opt.opt_revert i{
-    background-position: -704px -4px;
+.toolbar .opt.opt_revert:hover i{
+    background-position: -24px -464px;
 }
-
+.toolbar .opt.opt_view_change > a:hover{
+    background: #9AA5B8;
+}
 .toolbar .opt.opt_view_change > a.active {
-    background: #7f8999;
+    background: #6A7280;
 }
-
+.toolbar .opt.opt_view_change > a:hover.list_view > i,
 .toolbar .opt.opt_view_change > a.active.list_view > i {
-    background-position: -244px -24px;
+    background-position: -24px -584px;
 }
-
+.toolbar .opt.opt_view_change > a:hover.thumb_view > i,
 .toolbar .opt.opt_view_change > a.active.thumb_view > i {
-    background-position: -264px -24px;
+    background-position: -24px -604px;
 }
 
 .bread {
@@ -598,7 +590,7 @@ footer {
 }
 .file_list_wrapper {
     position: absolute;
-    top: 35px;
+    top: 45px;
     left: 0;
     right: 0;
     bottom: 0;
