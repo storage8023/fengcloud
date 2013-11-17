@@ -709,16 +709,20 @@ footer {
     padding: 5px 0;
     height: 42px;
     line-height: 32px;
-    border-bottom: 1px solid #e8eaed;
     background-color: transparent;
     -webkit-transition: background-color linear 0.1s;
-
 }
 
 .list_view .file_item:nth-child(even) {
-    background-color: #f1f4f7;
+    background-color: #F7F7F7;
+}
+.file_list_wrapper .file_item:hover{
+    background-color:#E1E3E7;
 }
 
+.file_list_wrapper .file_item.selected {
+    background-color:#7F8999
+}
 .file_item .file_icon {
     display: inline-block;
     width: 32px;
@@ -737,10 +741,7 @@ footer {
     position: absolute;
     background: url(../images/icon.png) no-repeat -2px -282px;
 }
-.file_list_wrapper .file_item.hover,
-.file_list_wrapper .file_item.selected {
-    background-color: #4d8bd8;
-}
+
 .file_list_wrapper .file_item.hover span,
 .file_list_wrapper .file_item.selected span{
     color: #fff;

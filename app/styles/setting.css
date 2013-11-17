@@ -202,9 +202,7 @@ footer .btn{
 .content .tip{
     color: #ACB4BF;
 }
-.content .list .item:nth-child(even){
-    background: #F1F4F7;
-}
+
 .list .item .file_icon {
     display: inline-block;
     width: 32px;

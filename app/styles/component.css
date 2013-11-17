@@ -598,3 +598,18 @@ button.close_window{
     text-align: center;
     padding-top: 60px;
 }
+
+.item{
+    background-color: transparent;
+    -webkit-transition: background-color linear 0.1s;
+}
+.item:nth-child(even) {
+    background-color: #F7F7F7;
+}
+.item:hover{
+    background-color:#E1E3E7;
+}
+
+.item.selected {
+    background-color:#7F8999
+}
