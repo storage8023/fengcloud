@@ -450,6 +450,53 @@ a:hover > .icon16x16.icon_pin,
 .icon16x16.icon_location_white{
     background-position: -24px -1084px;
 }
+
+/*32x32*/
+.icon32x32{
+    width: 32px;
+    height: 32px;
+    background-image: url(../images/icon/icon32x32.png?v=1);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+.icon32x32.icon_pin{
+    background-position: -4px -4px;
+}
+.icon32x32.icon_pin_white{
+    background-position: -40px -4px;
+}
+.icon32x32.icon_pin_color{
+    background-position: -76px -4px;
+}
+.icon32x32.icon_envelope{
+    background-position: -4px -244px;
+}
+.icon32x32.icon_envelope_white{
+    background-position: -40px -220px;
+}
+.icon32x32.icon_envelope_color{
+    background-position: -76px -220px;
+}
+.icon32x32.icon_setting{
+    background-position: -4px -148px;
+}
+.icon32x32.icon_setting_white{
+    background-position: -40px -148px;
+}
+.icon32x32.icon_setting_color{
+    background-position: -76px -148px;
+}
+.icon32x32.icon_transfer{
+    background-position: -4px -256px;
+}
+.icon32x32.icon_transfer_white{
+    background-position: -40px -256px;
+}
+.icon32x32.icon_transfer_color{
+    background-position: -76px -256px;
+}
 /*********文件图标 32*32*******/
 
 /*其他文件*/

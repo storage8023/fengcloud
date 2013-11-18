@@ -14,6 +14,7 @@
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
     <script src="bower_components/angular-localstorage/angular-local-storage.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="scripts/directives/directives.js"></script>
     <script src="scripts/controllers/tcframe_controllers.js"></script>
     <script src="scripts/directives/tcframe_directives.js"></script>
     <script src="scripts/services/services.js"></script>
@@ -31,11 +32,14 @@
 </header>
 <qiuckmenu></qiuckmenu>
 <div class="message_wrapper" ng-click="showMessage()">
-    <div class="message_tip" ng-show="messageCount>0">一周内有{{messageCount}}条消息</div>
     <ul class="scrollbar message_list">
         <li ng-show="!messages || !messages.length" class="empty">没有消息</li>
         <li ng-repeat="message in messages">
             <div class="dateline" ng-bind="message.date_txt">
+            </div>
+            <div class="photo_wrapper">
+                <img src="images/default_photo.png" ng-src="message.member_photo" error-src="images/default_photo.png" class="photo"/>
+                <img src="images/default_logo.png" ng-src="message.member_photo" error-src="images/default_logo.png" class="photo"/>
             </div>
             <div class="msg">
                 <span ng-bind="message.member_name"></span>

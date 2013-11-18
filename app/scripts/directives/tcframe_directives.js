@@ -13,6 +13,7 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'message',
                         name:'消息',
+                        icon:'icon_envelope_white',
                         handleClick:function(){
                             gkClientInterface.launchpad({type:'message'});
                         }
@@ -20,6 +21,7 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'nearby',
                         name:'附近',
+                        icon:'icon_pin_white',
                         handleClick:function(){
                             gkClientInterface.launchpad({type:'find'});
                         }
@@ -27,6 +29,7 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'trasfer',
                         name:'传输',
+                        icon:'icon_transfer_white',
                         handleClick:function(){
                             GKDialog.openTransfer();
                         }
@@ -34,6 +37,7 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'setting',
                         name:'设置',
+                        icon:'icon_setting_white',
                         handleClick:function(){
                             GKDialog.openSetting();
                         }

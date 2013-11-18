@@ -1,6 +1,6 @@
 <ul class="quickmenu">
     <li ng-repeat="menu in menus" ng-class="menu.classes" ng-click="menu.handleClick()">
-        <i></i>
+        <i class="icon32x32" ng-class="menu.icon"></i>
         <span ng-bind="menu.name"></span>
     </li>
 </ul>
