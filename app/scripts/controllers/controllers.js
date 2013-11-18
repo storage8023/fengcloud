@@ -252,6 +252,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     webpath:value.fullpath
                 });
             });
+            var actName = '移动';
+            if(file.mount_id != $rootScope.PAGE_CONFIG.mount.mount_id){
+                actName = '复制';
+            }
+            var toName  ='';
+            if(toFullpath){
+                toName = Util.String.baseName(toFullpath);
+            }else{
+                toName = GKMount.getMountById(toMountId)['name'];
+            }
+            var msg = '你确定要将 '+Util.String.baseName(fromFullpathes[0]['webpath'])+(fromFullpathes.length>1?'等'+fromFullpathes.length+'文件':'')+' '+actName+'到 '+ toName+' 吗？';
+            if(!confirm(msg)){
+                return;
+            }
             if(file.mount_id == $rootScope.PAGE_CONFIG.mount.mount_id){
                 GKFileOpt.move(toFullpath,toMountId,fromFullpathes,fromMountId);
             }else{
@@ -1042,11 +1056,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
               toFullpath = file.fullpath,
               fromMountId = $scope.mountId,
               fromFullpathes = [];
+
             angular.forEach($scope.selectedFile,function(value){
                 fromFullpathes.push({
                     webpath:value.fullpath
                 });
             });
+            var msg = '你确定要将 '+Util.String.baseName(fromFullpathes[0]['webpath'])+(fromFullpathes.length>1?'等'+fromFullpathes.length+'文件':'')+' 移动到 '+ Util.String.baseName(toFullpath)+' 吗？';
+            if(!confirm(msg)){
+                return;
+            }
            GKFileOpt.move(toFullpath,toMountId,fromFullpathes,fromMountId).then(function(){
               refreahData();
            },function(){

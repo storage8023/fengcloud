@@ -1536,7 +1536,7 @@ angular.module('gkClientIndex.directives', [])
 /**
  * 搜索的侧边栏
  */
-    .directive('searchRightSidebar', ['GKApi', '$rootScope', '$modal', 'GKSearch', 'FILE_SORTS', '$location', 'GKSmartFolder', 'GKMount', function (GKApi, $rootScope, $modal, GKSearch, FILE_SORTS, $location, GKSmartFolder, GKMount) {
+    .directive('searchRightSidebar', ['GKApi', '$rootScope', '$modal', 'GKSearch', 'FILE_SORTS', '$location', 'GKSmartFolder', 'GKMount', 'GKException',function (GKApi, $rootScope, $modal, GKSearch, FILE_SORTS, $location, GKSmartFolder, GKMount,GKException) {
         return {
             restrict: 'E',
             replace: true,
@@ -1755,8 +1755,8 @@ angular.module('gkClientIndex.directives', [])
                         if (data && data.code) {
                             $rootScope.$broadcast('addSmartFolder', $scope.smartFolderName, data.code);
                         }
-                    }).error(function () {
-
+                    }).error(function (request) {
+                            GKException.handleAjaxException(request);
                         });
                 };
 
