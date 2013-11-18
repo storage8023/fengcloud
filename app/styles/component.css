@@ -2,7 +2,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=3);
+    background-image: url(../images/icon/icon16x16.png?v=4);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -388,14 +388,68 @@ a:hover > .icon16x16.icon_pin,
     background-position: -24px -924px;
 }
 
-.icon16x16.icon_manage{
+.icon16x16.icon_add{
+    background-position: -4px -924px;
+}
+.icon16x16.icon_add_white{
+    background-position: -24px -924px;
+}
+
+.icon16x16.icon_remove{
     background-position: -4px -944px;
 }
-a:hover > .icon16x16.icon_manage,
-.icon16x16.icon_manage_color{
+.icon16x16.icon_remove_white{
     background-position: -24px -944px;
 }
 
+.icon16x16.icon_envelope{
+    background-position: -4px -964px;
+}
+.icon16x16.icon_envelope_white{
+    background-position: -24px -964px;
+}
+
+.icon16x16.icon_pen{
+    background-position: -4px -984px;
+}
+.icon16x16.icon_pen_white{
+    background-position: -24px -984px;
+}
+
+.icon16x16.icon_phone{
+    background-position: -4px -1004px;
+}
+.icon16x16.icon_phone_white{
+    background-position: -24px -1004px;
+}
+
+.icon16x16.icon_shutdown{
+    background-position: -4px -1024px;
+}
+.icon16x16.icon_shutdown_white{
+    background-position: -24px -1024px;
+}
+
+.icon16x16.icon_recycle{
+    background-position: -4px -1044px;
+}
+.icon16x16.icon_recycle_white{
+    background-position: -24px -1044px;
+}
+
+.icon16x16.icon_bookmark{
+    background-position: -4px -1064px;
+}
+.icon16x16.icon_bookmark_white{
+    background-position: -24px -1064px;
+}
+
+.icon16x16.icon_location{
+    background-position: -4px -1084px;
+}
+.icon16x16.icon_location_white{
+    background-position: -24px -1084px;
+}
 /*********文件图标 32*32*******/
 
 /*其他文件*/

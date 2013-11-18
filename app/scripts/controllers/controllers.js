@@ -572,7 +572,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var allOpts = {
             'create': {
                 name: '创建',
-                icon:'',
+                icon:'icon_add',
                 className:"create",
                 callback: function () {
                     console.log(111);
@@ -602,7 +602,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'unsubscribe': {
                 name: '取消订阅',
-                icon:'',
+                icon:'icon_remove',
                 className:"unsubscribe",
                 callback: function () {
                     GKApi.teamQuit($rootScope.PAGE_CONFIG.mount.org_id).success(function(){
@@ -617,7 +617,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'nearby': {
                 name: '附近',
-                icon:'',
+                icon:'icon_location',
                 className:"nearby",
                 callback: function () {
                     GKModal.nearBy();
@@ -625,7 +625,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },
             'manage': {
                 name: '管理',
-                icon:'',
+                icon:'icon_setting',
                 className:"manage",
                 callback: function () {
                     GKOpen.manage($rootScope.PAGE_CONFIG.mount.org_id);

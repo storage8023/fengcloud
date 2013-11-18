@@ -565,6 +565,25 @@ footer {
 .toolbar .opt.paste:hover i{
     background-position: -24px -224px;
 }
+.context-menu-item.create:hover i,
+.toolbar .opt.create:hover i{
+    background-position: -24px -924px;
+}
+
+.context-menu-item.unsubscribe:hover i,
+.toolbar .opt.unsubscribe:hover i{
+    background-position: -24px -944px;
+}
+
+.context-menu-item.manage:hover i,
+.toolbar .opt.manage:hover i{
+    background-position: -24px -324px;
+}
+
+.context-menu-item.nearby:hover i,
+.toolbar .opt.nearby:hover i{
+    background-position: -24px -1084px;
+}
 
 .toolbar .opt.opt_view_change > a:hover{
     background: #9AA5B8;
