@@ -210,12 +210,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else if (partition == GKPartition.teamFile) {
                 var createTeamDialog = GKModal.createTeam();
                 createTeamDialog.result.then(function (orgId) {
-                    gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
+                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
                         if(param){
                             $scope.$apply(function(){
                                 var newOrg = param;
                                 newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
+                                unSelectAllBranch(GKPartition.teamFile);
+                                newOrg.selected = true;
                                 $scope.orgTreeList.push(newOrg);
+                                var len =  $scope.orgTreeList.length;
+                                $scope.handleSelect($scope.orgTreeList[len-1], GKPartition.teamFile);
                             });
                         }
                     })
@@ -224,13 +228,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var nearbyDialog = GKModal.nearBy();
                 nearbyDialog.opened.then(function(){
                     $rootScope.$on('subscribeTeamSuccess',function(event,orgId){
-                        gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
-                            console.log(param);
+                        gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
                             if(param){
                                 $scope.$apply(function(){
                                     var newOrg = param;
                                     newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
+                                    unSelectAllBranch(GKPartition.subscribeFile);
+                                    newOrg.selected = true;
                                     $scope.orgSubscribeList.push(newOrg);
+                                    var len =  $scope.orgSubscribeList.length;
+                                    nearbyDialog.dismiss('cancel');
+                                    $scope.handleSelect($scope.orgSubscribeList[len-1], GKPartition.subscribeFile);
                                 });
                             }
 
@@ -574,7 +582,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 className:"unsubscribe",
                 callback: function () {
                     GKApi.teamQuit($rootScope.PAGE_CONFIG.mount.org_id).success(function(){
-                         $rootScope.$broadcast('unSubscribeTeam',$rootScope.PAGE_CONFIG.mount.org_id);
+                        $scope.$apply(function(){
+                            $rootScope.$broadcast('unSubscribeTeam',$rootScope.PAGE_CONFIG.mount.org_id);
+                        });
+
                     }).error(function(request){
                         GKException.handleAjaxException(request);
                     });
