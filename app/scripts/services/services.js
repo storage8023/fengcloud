@@ -1,6 +1,10 @@
 'use strict';
 
 /* Services */
+//全局AJAX请求默认返回的数据格式
+jQuery.ajaxSetup({
+    dataType: 'json'
+});
 
 angular.module('gkClientIndex.services', [])
     .constant('newsKey','gkNews')
@@ -9,6 +13,20 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .factory('GKOpen', [function ($q) {
+        return {
+            manage:function(orgId){
+                var url = gkClientInterface.getUrl({
+                    url:'/manage?org_id='+orgId,
+                    sso:1
+                });
+                gkClientInterface.openUrl(url);
+            },
+            move:function(){
+
+            }
+        };
+    }])
     .factory('GKFileOpt',['$q','GK',function($q,GK){
          var GKFileOpt = {};
          return {
@@ -72,11 +90,14 @@ angular.module('gkClientIndex.services', [])
                         $scope.getMoreNews = function () {
                             $scope.loading = true;
                             GKApi.update(100, requestDateline).success(function (data) {
-                                $scope.loading = false;
-                                var renews = data['updates'] || [];
-                                var classifyNews = GKNews.classify(renews);
-                                $scope.classifyNews = GKNews.concatNews($scope.classifyNews, classifyNews);
-                                requestDateline = getLastDateline(renews, requestDateline);
+                                $scope.$apply(function(){
+                                    $scope.loading = false;
+                                    var renews = data['updates'] || [];
+                                    var classifyNews = GKNews.classify(renews);
+                                    $scope.classifyNews = GKNews.concatNews($scope.classifyNews, classifyNews);
+                                    requestDateline = getLastDateline(renews, requestDateline);
+                                });
+
                             }).error(function () {
                                     $scope.loading = false;
                                 })
@@ -89,13 +110,19 @@ angular.module('gkClientIndex.services', [])
                         $scope.handleTeamInvite = function (accept, item) {
                             if (accept) {
                                 GKApi.teamInviteJoin(item['org_id'], item['property']['invite_code']).success(function () {
-                                    item.handled = true;
+                                   $scope.$apply(function(){
+                                       item.handled = true;
+                                   });
+
                                 }).error(function () {
 
                                     });
                             } else {
                                 GKApi.teamInviteReject(item['org_id'], item['property']['invite_code']).success(function () {
-                                    item.handled = true;
+                                    $scope.$apply(function(){
+                                        item.handled = true;
+                                    });
+
                                 }).error(function () {
 
                                     });
@@ -209,7 +236,7 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open({
                     templateUrl: 'views/nearby_dialog.html',
                     backdrop: false,
-                    windowClass: 'nearby_dialog',
+                    windowClass: 'modal_frame nearby_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
                         $scope.cancel = function () {
@@ -230,7 +257,7 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open({
                     templateUrl: 'views/create_team_dialog.html',
                     backdrop: false,
-                    windowClass: 'create_team_dialog',
+                    windowClass: 'modal_frame create_team_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
                         $scope.cancel = function () {
@@ -245,12 +272,76 @@ angular.module('gkClientIndex.services', [])
                         src: function () {
                             return gkClientInterface.getUrl({
                                 sso:1,
-                                url:'/org/create_team'
+                                url:'/org/regist'
+                            });
+                        }
+                    }
+                });
+            },
+            addShare:function(mountId,fullpath){
+                return $modal.open({
+                    templateUrl: 'views/add_share_dialog.html',
+                    backdrop: false,
+                    windowClass: 'modal_frame add_share_dialog',
+                    controller: function ($scope, $modalInstance,src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso:1,
+                                url:'/client/set_share_dialog?fullpath='+fullpath+'&mount_id='+mountId
+                            });
+                        }
+                    }
+                });
+            },
+            teamMember:function(orgId){
+                return $modal.open({
+                    templateUrl: 'views/team_member_dialog.html',
+                    backdrop: false,
+                    windowClass: 'modal_frame team_member_dialog',
+                    controller: function ($scope, $modalInstance,src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso:1,
+                                url:'/client/get_member_dialog?org_id='+orgId
+                            });
+                        }
+                    }
+                });
+            },
+            teamQr:function(orgId){
+                return $modal.open({
+                    templateUrl: 'views/team_qr_dialog.html',
+                    backdrop: false,
+                    windowClass: 'modal_frame team_qr_dialog',
+                    controller: function ($scope, $modalInstance,src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso:1,
+                                url:'/org/team_qr?org_id='+orgId
                             });
                         }
                     }
                 });
             }
+
         }
     }])
     .factory('GKFind',['$rootScope',function($rootScope){
@@ -542,19 +633,19 @@ angular.module('gkClientIndex.services', [])
                 var tip = '';
                 switch(filter){
                     case this.trash:
-                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        tip = '';
                         break;
                     case this.inbox:
-                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        tip = '';
                         break;
                     case this.star:
-                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        tip = '';
                         break;
                     case this.recent:
-                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        tip = '';
                         break;
                     case this.search:
-                        tip = '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接';
+                        tip = '';
                         break;
                 }
                 return tip;
@@ -1334,6 +1425,36 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('RestFile', ['GK', '$http', function (GK, $http) {
         var restFile = {
+            star: function (mount_id, fullpath) {
+                var date = new Date().toUTCString();
+                var method = 'FAVORITES_ADD';
+                var webpath = Util.String.encodeRequestUri(fullpath);
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                return jQuery.ajax({
+                    type: method,
+                    url: GK.getRestHost() + webpath,
+                    headers: {
+                        'x-gk-mount': mount_id,
+                        'Date': date,
+                        'Authorization': authorization,
+                    }
+                })
+            },
+            unstar: function (mount_id, fullpath) {
+                var date = new Date().toUTCString();
+                var method = 'FAVORITES_DELETE';
+                var webpath = Util.String.encodeRequestUri(fullpath);
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                return jQuery.ajax({
+                    type: method,
+                    url: GK.getRestHost() + webpath,
+                    headers: {
+                        'x-gk-mount': mount_id,
+                        'Date': date,
+                        'Authorization': authorization,
+                    }
+                })
+            },
             get: function (mount_id, fullpath) {
                 var date = new Date().toUTCString();
                 var method = 'GET';
@@ -1481,6 +1602,22 @@ angular.module('gkClientIndex.services', [])
             token: GK.getToken()
         }
         var GKApi = {
+            delCollaboration:function(mountId,fullpath,collaboration){
+                var params = {
+                    mount_id:mountId,
+                    fullpath:fullpath,
+                    collaboration:collaboration
+                };
+                angular.extend(params, defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    dataType:'json',
+                    url: GK.getApiHost() + '/1/file/delete_collaboration',
+                    data:params
+                });
+            },
             userInfo:function(){
                 var params = {};
                 angular.extend(params, defaultParams);
@@ -1639,6 +1776,7 @@ angular.module('gkClientIndex.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
+                    dataType:'json',
                     url: GK.getApiHost() + '/1/file/client_sidebar',
                     data: params
                 });
@@ -1701,9 +1839,9 @@ angular.module('gkClientIndex.services', [])
                     data:params
                 });
             },
-            teamQuit: function (data) {
+            teamQuit: function (org_id) {
                 var params = {
-                    org_id: data
+                    org_id: org_id
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1780,6 +1918,7 @@ angular.module('gkClientIndex.services', [])
                     type: 'GET',
                     url: GK.getApiHost()+'/1/team/search',
                     data:params
+
                 });
             },
             /**
@@ -1797,6 +1936,7 @@ angular.module('gkClientIndex.services', [])
                     type: 'POST',
                     url: GK.getApiHost()+'/1/account/device_list',
                     data:params
+
                 });
             },
             /**
@@ -1961,7 +2101,14 @@ angular.module('gkClientIndex.services', [])
            addMount:function(newMount,$scope){
                var mountItem = formatMountItem(newMount);
                mounts.push(mountItem);
-              return mountItem;
+               return mountItem;
+           },
+           removeMountByOrgId:function(orgId){
+               var mount = this.getMountByOrgId(orgId);
+               if(mount){
+                   Util.Array.removeByValue(mounts,mount);
+               }
+               return mount;
            }
 
        };
@@ -2185,7 +2332,7 @@ var gkSiteCallback = function(name,params){
     if(typeof name !=='string'){
         name = String(name);
     }
-    //console.log(arguments);
+    console.log(arguments);
     var rootScope = jQuery(document).scope();
     rootScope.$broadcast(name,params);
 };

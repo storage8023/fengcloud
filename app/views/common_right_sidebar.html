@@ -9,7 +9,7 @@
     <div class="tip">{{sidbarData.tip}}</div>
     <ul class="menu_list">
         <li ng-repeat="menu in sidbarData.menus" class="{{menu.name}}">
-            <a href="javascript:void(0)" ng-click="menu.click()"><i class="icon16x16"></i><span>{{menu.text}}</span></a>
+            <a href="javascript:void(0)" ng-click="menu.click()"><i class="icon16x16" ng-class="menu.icon"></i><span>{{menu.text}}</span></a>
         </li>
     </ul>
 </div>

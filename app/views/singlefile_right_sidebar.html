@@ -5,14 +5,17 @@
                     <span class="title">
                         详细
                     </span>
-            <span class="f_r fold gk_up_arrow" ng-click="toggleFileInfoWrapper()"></span>
-        </div>
+            <button ng-show="PAGE_CONFIG.partition==GKPartition.teamFile" class="btn btn-default f_r fold" ng-click="toggleFileInfoWrapper()"><i class="icon16x16 icon_upload_white"></i></button>
+    </div>
         <section class="scrollbar">
             <div class="file_icon">
                 <img ng-src="{{file.filename | getFileThumb:file.dir}}" alt=""/>
             </div>
             <div class="file_attrs">
-                <div class="file_name" title="{{file.filename}}">{{file.filename}}</div>
+                <div class="file_name">
+                    <a class="add_star" ng-click="toggleStar(file.favorite)" ng-class="file.favorite==1?'stared':''" href="javascript:void(0)"><i class="icon16x16 icon_star"></i></a>
+                    <span title="{{file.filename}}">{{file.filename}}</span>
+                </div>
                 <div title="创建人：{{file.creator_member_name}}">创建人：{{file.creator_member_name}}</div>
                 <div title="最后修改人：{{file.last_member_name}}">最后修改人：{{file.last_member_name}}</div>
             </div>
@@ -24,12 +27,21 @@
     <section class="file_detail_wrapper" ng-show="PAGE_CONFIG.mount.org_id!=0&&file.cmd>0">
         <tabset direction="blew">
             <tab heading="共享">
-                <button class="btn btn-gk set_share" ng-dbclick = "sharingindex()" ng-click="showEditShareDialog()">共享设置</button>
+                <button class="btn btn-default set_share" ng-click="showEditShareDialog()">添加共享</button>
                 <ul class="scrollbar share_member_list">
-                    <li ng-repeat="shareMember in shareMembers">
-                        <span class="icon"><i></i></span>
+                    <li class="item" ng-repeat="shareGroup in shareGroups">
+                        <span class="icon"><i class="icon16x16 icon_people"></i></span>
+                        <span class="name">{{shareGroup.group_name}}</span>
+                        <span class="opts">
+                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareGroup)">删除</button>
+                        </span>
+                    </li>
+                    <li class="item" ng-repeat="shareMember in shareMembers">
+                        <span class="icon"><i class="icon16x16 icon_person"></i></span>
                         <span class="name">{{shareMember.member_name}}</span>
-                        <span class="role">{{shareMember.auth_name}}</span>
+                        <span class="opts">
+                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除</button>
+                        </span>
                     </li>
                 </ul>
             </tab>
@@ -37,8 +49,8 @@
             <tab heading="讨论">
                 <div class="update_wrapper" ng-class="inputingRemark?'editing':''">
                     <ul class="scrollbar update_list">
-                        <li ng-repeat="remark in remarks">
-                            <span class="update_member">{{remark.member_name}}</span>
+                        <li ng-repeat="remark in remarks" class="item c_f_after">
+                            <span class="update_member"><span>{{remark.member_name}}</span></span>
                                  <span class="update_text">
                                     <span ng-bind-html="remark.render_text"></span>
                                      <span class="update_time">({{remark.dateline*1000|date:'M月d日'}})</span>
@@ -51,8 +63,8 @@
 
                         <div class="post_opts">
                             <a href="javascript:void(0)" ng-click="insertAt()" class="f_l">提醒(@)</a>
-                            <button class="btn btn-gk f_r" ng-click="cancelPostRemark()">取消</button>
-                            <button class="btn btn-gk f_r" ng-click="postRemark(postText)">确定</button>
+                            <button class="btn btn-default f_r" ng-click="cancelPostRemark()">取消</button>
+                            <button class="btn btn-primary f_r" ng-click="postRemark(postText)">确定</button>
                         </div>
                     </div>
                 </div>
@@ -60,24 +72,24 @@
             </tab>
             <tab heading='历史'>
                 <ul class="scrollbar history_list">
-                    <li ng-repeat="history in histories">
+                    <li class="item c_f_after" ng-class="'act_'+history.act" ng-repeat="history in histories">
+                        <div class="act_name"><span>{{history.act_name}}</span></div>
                         <div class="act_info">
                             <div> <span class="filename">{{history.fullpath|baseName}}</span></div>
                             <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span class="act_dateline">{{history.dateline*1000 | date:'yyyy/M/d H:m'}}</span></div>
                         </div>
-                        <div class="act_name"><span>{{history.act_name}}</span></div>
-                        <div class="act_opts dropdown">
-                            <a dropdown-toggle href="javascript:void(0);">
-                                <i class="gk_down_arrow"></i>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="javascript:;" ng-click="openVersion()">打开</a>
-                                    <a href="javascript:;" ng-click="saveVersion()">另存为</a>
-                                    <a href="javascript:;" ng-click="recoveryVersion()">恢复</a>
-                                </li>
-                            </ul>
-                        </div>
+                        <!--<div class="act_opts dropdown">-->
+                            <!--<a dropdown-toggle href="javascript:void(0);">-->
+                                <!--<i class="gk_down_arrow"></i>-->
+                            <!--</a>-->
+                            <!--<ul class="dropdown-menu">-->
+                                <!--<li>-->
+                                    <!--<a href="javascript:;" ng-click="openVersion()">打开</a>-->
+                                    <!--<a href="javascript:;" ng-click="saveVersion()">另存为</a>-->
+                                    <!--<a href="javascript:;" ng-click="recoveryVersion()">恢复</a>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
                     </li>
                 </ul>
             </tab>

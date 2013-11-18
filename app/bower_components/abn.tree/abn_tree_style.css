@@ -8,16 +8,18 @@ ul.nav.nav-list.abn-tree .nav-header a{
     height: 20px;
     right: 10px;
     top:5px;
-    line-height: 19px;
+    line-height: 20px;
     text-align: center;
     display: block;
     padding: 0;
     border:1px solid #232426;
     border-radius: 20px;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
-    font-size: 21px;
+    font-size: 20px;
     background: #25282D;
     color: #fff;
+    font-family: Courier;
+    font-weight: bold;
 }
 ul.nav.nav-list.abn-tree .tree-icon{
     width: 20px;

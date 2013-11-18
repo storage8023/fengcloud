@@ -45,7 +45,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
             cssClass: getStr('ngClass', ''),
             placeholder: getStr('placeholder', 'Add a tag'),
             tabindex: getInt('tabindex', ''),
-            removeTagSymbol: getStr('removeTagSymbol', String.fromCharCode(215)),
+            removeTagSymbol: getStr('removeTagSymbol','&times;'),
             replaceSpacesWithDashes: getBool('replaceSpacesWithDashes', true),
             minLength: getInt('minLength', 3),
             maxLength: getInt('maxLength', ''),
@@ -65,7 +65,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
                   '  <ul>' +
                   '    <li ng-repeat="tag in tags" ng-class="getCssClass($index)">' +
                   '      <span>{{ tag }}</span>' +
-                  '      <button type="button" ng-click="remove($index)">{{ options.removeTagSymbol }}</button>' +
+                  '      <button type="button" ng-click="remove($index)">&times;</button>' +
                   '    </li>' +
                   '  </ul>' +
                   '  <input type="text" placeholder="{{ options.placeholder }}" size="{{ options.placeholder.length }}" maxlength="{{ options.maxLength }}" tabindex="{{ options.tabindex }}" ng-model="newTag">' +

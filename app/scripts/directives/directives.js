@@ -342,7 +342,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('rightSidebar', ['GKFilter','RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', function (GKFilter,RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition) {
+    .directive('rightSidebar', ['GKOpen','GKFilter','RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition','GKModal', function (GKOpen,GKFilter,RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition,GKModal) {
         return {
             replace: true,
             restrict: 'E',
@@ -394,21 +394,25 @@ angular.module('gkClientIndex.directives', [])
                     var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
                     var formatTag = [];
                     RestFile.get($scope.mountId, fullpath).success(function (data) {
-                        var tag = data.tag || '';
-                        $scope.file.tag = jQuery.trim(tag);
-                        angular.forEach(tag.split(gird), function (value) {
-                            if (value && formatTag.indexOf(value) < 0) {
-                                formatTag.push(value);
-                            }
-                        });
-                        $scope.file.formatTag = formatTag;
+                            var tag = data.tag || '';
+                            $scope.file.tag = jQuery.trim(tag);
+                            $scope.file.favorite = data.favorite;
+                            angular.forEach(tag.split(gird), function (value) {
+                                if (value && formatTag.indexOf(value) < 0) {
+                                    formatTag.push(value);
+                                }
+                            });
+                            $scope.file.formatTag = formatTag;
                     });
 
                     GKApi.sideBar($scope.mountId, fullpath).success(function (data) {
-                        $scope.shareMembers = data.share_members;
-                        $scope.remarks = data.remark;
-                        $scope.histories = data.history;
-                        $scope.remindMembers = data.remind_members;
+                        $scope.$apply(function(){
+                            $scope.shareMembers = data.share_members;
+                            $scope.shareGroups = data.share_groups;
+                            $scope.remarks = data.remark;
+                            $scope.histories = data.history;
+                            $scope.remindMembers = data.remind_members;
+                        })
                     });
                 })
                 $scope.sidebar = 'nofile';
@@ -428,7 +432,7 @@ angular.module('gkClientIndex.directives', [])
                                 tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
                                 photo: "",
                                 attrHtml: '',
-                                menus: null
+                                menus: []
                             };
                             if ($scope.partition == GKPartition.myFile) {
                                 $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.user.avatar;
@@ -436,62 +440,63 @@ angular.module('gkClientIndex.directives', [])
 
                             } else {
                                 $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
+                                $scope.sidbarData.tip = $rootScope.PAGE_CONFIG.mount.org_description||'';
+                                var visitItem = {
+                                    text: '在线访问',
+                                    icon:'icon_earth',
+                                    name: 'visit_website',
+                                    click: function () {
+                                        var url = gkClientInterface.getUrl({
+                                            url:'/storage#!:'+$rootScope.PAGE_CONFIG.mount.mount_id,
+                                            sso:1
+                                        });
+                                        gkClientInterface.openUrl(url);
+                                    }
+                                };
+
+                                var qrItem = {
+                                    text: '团队二维码',
+                                    icon:'icon_qr',
+                                    name: 'team_qr',
+                                    click: function () {
+
+                                    }
+                                };
+                                $scope.sidbarData.menus.push(visitItem);
+                                $scope.sidbarData.menus.push(qrItem);
                                 if($scope.partition == GKPartition.teamFile){
                                     $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                                    $scope.sidbarData.menus = [
-                                        {
-                                            text: '在线访问',
-                                            name: 'visit_website',
-                                            click: function () {
 
-                                            }
-                                        },
-                                        {
-                                            text: '团队二维码',
-                                            name: 'team_qr',
-                                            click: function () {
-
-                                            }
-                                        },
-                                        {
-                                            text: '成员与分组',
-                                            name: 'member_group',
-                                            click: function () {
-
-                                            }
-                                        },
-                                        {
-                                            text: '订阅者',
-                                            name: 'subscriber',
-                                            click: function () {
-
-                                            }
-                                        },
-                                        {
-                                            text: '管理团队',
-                                            name: 'manage_team',
-                                            click: function () {
-
-                                            }
+                                    $scope.sidbarData.menus.push({
+                                        text: '成员与分组',
+                                        icon:'icon_team',
+                                        name: 'member_group',
+                                        click: function () {
+                                            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
                                         }
-                                    ];
-                                }else{
-                                    $scope.sidbarData.menus = [
-                                        {
-                                            text: '在线访问',
-                                            name: 'visit_website',
-                                            click: function () {
+                                    });
 
-                                            }
-                                        },
-                                        {
-                                            text: '团队二维码',
-                                            name: 'team_qr',
-                                            click: function () {
-
-                                            }
+                                    $scope.sidbarData.menus.push({
+                                        text: '订阅者',
+                                        icon:'icon_pin',
+                                        name: 'subscriber',
+                                        click: function () {
+                                            var url = gkClientInterface.getUrl({
+                                                url:'/manage/subscribers',
+                                                sso:1
+                                            });
+                                            gkClientInterface.openUrl(url);
                                         }
-                                    ];
+                                    });
+
+                                    $scope.sidbarData.menus.push( {
+                                        text: '管理团队',
+                                        icon:'icon_manage',
+                                        name: 'manage_team',
+                                        click: function () {
+                                            GKOpen.manage($rootScope.PAGE_CONFIG.mount.org_id);
+                                        }
+                                    });
                                 }
 
 
@@ -508,7 +513,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile', '$location', '$timeout', 'GKApi', '$rootScope', function (RestFile, $location, $timeout, GKApi, $rootScope) {
+    .directive('singlefileRightSidebar', ['RestFile', '$location', '$timeout', 'GKApi', '$rootScope', 'GKModal','GKException',function (RestFile, $location, $timeout, GKApi, $rootScope,GKModal,GKException) {
         return {
             replace: true,
             restrict: 'E',
@@ -573,12 +578,8 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 $scope.showEditShareDialog = function () {
-                    var selectModal = selectMemberModal.open(PAGE_CONFIG.mount.org_id);
-                    selectModal.result.then(function (selectedMembers, selectedGroups) {
-
-                    }, function () {
-
-                    })
+                    var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                    GKModal.addShare($scope.PAGE_CONFIG.mount.mount_id,fullpath);
                 };
 
                 $scope.handleKeyDown = function (e) {
@@ -605,7 +606,52 @@ angular.module('gkClientIndex.directives', [])
                         });
                 }, true);
 
+                $scope.toggleStar = function(star){
+                    var fullpath = $scope.file.fullpath;
+                    if(!fullpath) return;
+                     if(star==1){
+                        RestFile.unstar($rootScope.PAGE_CONFIG.mount.mount_id,fullpath).success(function(){
+                            $scope.$apply(function(){
+                                $scope.file.favorite = 0;
+                            })
+                        }).error(function(request){
+                                GKException.handleAjaxException(request);
+                            });
+                     }else{
+                         RestFile.star($rootScope.PAGE_CONFIG.mount.mount_id,fullpath).success(function(){
+                             $scope.$apply(function(){
+                                 $scope.file.favorite = 1;
+                             })
+                         }).error(function(request){
+                            GKException.handleAjaxException(request);
+                             });
+                     }
+                }
 
+                /**
+                 * 删除共享
+                 * @param shareItem
+                 */
+                $scope.removeShare = function(shareItem){
+                    var fullpath = $scope.file.fullpath;
+                    var collaboration = [],collaborationItem='';
+                    var type = shareItem['group_id']?'group':'member';
+                    collaborationItem = type+'|'+(type=='group'?shareItem['group_id']:shareItem['member_id']);
+
+                    collaboration.push(collaborationItem);
+                    GKApi.delCollaboration($scope.PAGE_CONFIG.mount.mount_id,fullpath,collaboration.join(',')).success(function(){
+                        $scope.$apply(function(){
+                            if(type == 'group'){
+                                Util.Array.removeByValue($scope.shareGroups,shareItem);
+                            }else{
+                                Util.Array.removeByValue($scope.shareMembers,shareItem);
+                            }
+                        });
+
+                    }).error(function(request){
+                    GKException.handleAjaxException(request);
+                        });
+                }
             }
         }
     }])
@@ -1523,6 +1569,9 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $scope.$on('$routeChangeSuccess', function (event, current, previous) {
+                    if(!previous|| !current){
+                        return;
+                    }
                     var previousParams = previous.params;
                     var currentParams = current.params;
                     if (previousParams.partition + previousParams.path !== currentParams.partition + currentParams.path) {
@@ -1545,10 +1594,13 @@ angular.module('gkClientIndex.directives', [])
                 var condition = '';
                 if ($scope.partition == 'smartfolder' && $scope.filter == 'search') {
                     GKApi.getSmartFolder($scope.keyword).success(function (data) {
-                        if (data && data.condition) {
-                            condition = data.condition;
-                            GKSearch.setCondition(condition);
-                        }
+                        $scope.$apply(function(){
+                            if (data && data.condition) {
+                                condition = data.condition;
+                                GKSearch.setCondition(condition);
+                            }
+                        });
+
                     }).error(function () {
 
                         })
@@ -1752,9 +1804,12 @@ angular.module('gkClientIndex.directives', [])
                     }
                     var condition = getCondition();
                     GKApi.createSmartFolder($rootScope.PAGE_CONFIG.mount.mount_id, $scope.smartFolderName, condition).success(function (data) {
-                        if (data && data.code) {
-                            $rootScope.$broadcast('addSmartFolder', $scope.smartFolderName, data.code);
-                        }
+                        $scope.$apply(function(){
+                            if (data && data.code) {
+                                $rootScope.$broadcast('addSmartFolder', $scope.smartFolderName, data.code);
+                            }
+                        });
+
                     }).error(function (request) {
                             GKException.handleAjaxException(request);
                         });
@@ -1768,12 +1823,15 @@ angular.module('gkClientIndex.directives', [])
                         return;
                     }
                     GKApi.removeSmartFolder($scope.keyword).success(function (data) {
-                        $rootScope.$broadcast('removeSmartFolder', $scope.keyword)
-                        $location.search({
-                            mountid: GKMount.getMyMount()['mount_id'],
-                            path: '',
-                            partition: 'myfile'
+                        $scope.$apply(function(){
+                            $rootScope.$broadcast('removeSmartFolder', $scope.keyword)
+                            $location.search({
+                                mountid: GKMount.getMyMount()['mount_id'],
+                                path: '',
+                                partition: 'myfile'
+                            });
                         });
+
 
                     }).error(function () {
 
@@ -1784,7 +1842,6 @@ angular.module('gkClientIndex.directives', [])
                  * 保存智能文件夹
                  */
                 $scope.saveSmartFolder = function () {
-                    alert('接口未实现');
                     return;
                     GKApi.updateSmartFolder($scope.keyword).success(function (data) {
                     }).error(function () {
@@ -1796,29 +1853,6 @@ angular.module('gkClientIndex.directives', [])
         }
     }])
 
-/**
- * 选中人的输入框
- */
-    .directive('inputMember', ['GKApi', '$rootScope', function (GKApi, $rootScope) {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-
-            },
-            templateUrl: "views/input_member.html",
-            link: function (scope, element, attrs) {
-                $scope.$watch('tags', function (newValue, oldValue) {
-                    if (newValue === oldValue) {
-                        return;
-                    }
-                    GKApi.teamsearch($rootScope.PAGE_CONFIG.mount.org_id, 'test').then(function (data) {
-
-                    });
-                });
-            }
-        }
-    }])
     .directive('inputDatepicker', [function () {
         return {
             restrict: 'E',

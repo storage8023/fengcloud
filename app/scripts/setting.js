@@ -329,9 +329,12 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
             link:function(scope){
                 scope.devices = [];
                 GKApi.devicelist().success(function(data){
-                    if(data && data.devices){
-                        scope.devices = data.devices;
-                    }
+                    scope.$apply(function(){
+                        if(data && data.devices){
+                            scope.devices = data.devices;
+                        }
+                    });
+
                 })
 
                 scope.editDeviceState = function(device,state){
@@ -340,7 +343,10 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                             return;
                         }
                         GKApi.delDevice(device.device_id).success(function(){
-                            Util.Array.removeByValue(scope.devices,device);
+                            $scope.$apply(function(){
+                                Util.Array.removeByValue(scope.devices,device);
+                            });
+
                         }).error(function(request){
                                 GKException.handleAjaxException(request);
                             });
@@ -354,7 +360,10 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                             return;
                         }
                         GKApi.toggleDevice(device.device_id,reState).success(function(){
-                            device.state = reState;
+                            $scope.$apply(function(){
+                                device.state = reState;
+                            });
+
                         }).error(function(request){
                                 GKException.handleAjaxException(request);
                             });
@@ -363,10 +372,11 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
 
                 scope.disableNewDevice = false;
                 GKApi.userInfo().success(function(data){
-                    if(data && data.settings){
-                        scope.disableNewDevice = data.settings['disable_new_device']==1?true:false;
-                    }
-
+                    scope.$apply(function(){
+                        if(data && data.settings){
+                            scope.disableNewDevice = data.settings['disable_new_device']==1?true:false;
+                        }
+                    });
                 })
 
                 scope.toggleNewDevice = function(){

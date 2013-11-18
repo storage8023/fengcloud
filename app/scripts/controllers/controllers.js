@@ -126,7 +126,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.smartTreeList.push(newSmartFolder);
             newSmartFolder.selected = true;
             $scope.handleSelect(newSmartFolder, 'smartfolder');
-
         })
 
 
@@ -226,6 +225,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 nearbyDialog.opened.then(function(){
                     $rootScope.$on('subscribeTeamSuccess',function(event,orgId){
                         gkClientInterface.notice({type: 'getOrg', 'org_id': orgId}, function (param) {
+                            console.log(param);
                             if(param){
                                 $scope.$apply(function(){
                                     var newOrg = param;
@@ -272,8 +272,27 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKFileOpt.copy(toFullpath,toMountId,fromFullpathes,fromMountId);
             }
         };
+
+
+        /**
+         * 取消订阅
+         */
+        $scope.$on('unSubscribeTeam', function ($event, orgId) {
+            var mount = GKMount.removeMountByOrgId(orgId);
+           if(mount){
+               angular.forEach($scope.orgSubscribeList,function(value,key){
+                   if(value.data.org_id == orgId){
+                       $scope.orgSubscribeList.splice(key,1);
+                       return false;
+                   }
+               });
+               $scope.treeList[0].selected = true;
+               $scope.handleSelect($scope.treeList[0], GKPartition.myFile);
+           };
+
+        })
     }])
-    .controller('fileBrowser', ['$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition','GKFileOpt', function ($scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition,GKFileOpt) {
+    .controller('fileBrowser', ['GKOpen','$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition','GKFileOpt', 'GKModal',function (GKOpen,$scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition,GKFileOpt,GKModal) {
         /**
          * 打开时会有一次空跳转
          */
@@ -323,9 +342,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GKSearch.setSearchState('loading');
                     var condition = GKSearch.getCondition();
                     GKApi.searchFile(condition, $scope.mountId).success(function (data) {
-                        GKSearch.setSearchState('end');
-                        fileList = data['list'];
-                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                        $scope.$apply(function(){
+                            GKSearch.setSearchState('end');
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        });
                     }).error(function () {
                             GKSearch.setSearchState('end');
                         });
@@ -350,8 +371,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                  */
                 if ($scope.filter == 'inbox') {
                     GKApi.inboxFileList($scope.filter).success(function (data) {
-                        fileList = data['list'];
-                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                        $scope.$apply(function(){
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        });
+
                     }).error(function () {
                             deferred.reject();
                         });
@@ -361,9 +385,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                      */
                 } else if ($scope.filter == 'star') {
                     GKApi.starFileList($scope.filter).success(function (data) {
-                        fileList = data['list'];
-
-                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                        $scope.$apply(function(){
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        });
                     }).error(function () {
                             deferred.reject();
                         });
@@ -372,8 +397,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                      */
                 } else if ($scope.filter == 'recent') {
                     GKApi.recentFileList($scope.filter).success(function (data) {
-                        fileList = data['list'];
-                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                        $scope.$apply(function(){
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        });
+
                     }).error(function () {
                             deferred.reject();
                         });
@@ -382,8 +410,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                      * 智能文件夹
                      */
                     GKApi.smartFolderList($scope.keyword).success(function (data) {
-                        fileList = data['list'];
-                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                        $scope.$apply(function(){
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        });
+
                     }).error(function () {
                             deferred.reject();
                         });
@@ -542,7 +573,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon:'',
                 className:"unsubscribe",
                 callback: function () {
-
+                    GKApi.teamQuit($rootScope.PAGE_CONFIG.mount.org_id).success(function(){
+                         $rootScope.$broadcast('unSubscribeTeam',$rootScope.PAGE_CONFIG.mount.org_id);
+                    }).error(function(request){
+                        GKException.handleAjaxException(request);
+                    });
                 }
             },
             'nearby': {
@@ -550,7 +585,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon:'',
                 className:"nearby",
                 callback: function () {
-
+                    GKModal.nearBy();
                 }
             },
             'manage': {
@@ -558,7 +593,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon:'',
                 className:"manage",
                 callback: function () {
-
+                    GKOpen.manage($rootScope.PAGE_CONFIG.mount.org_id);
                 }
             },
             'clear_trash': {

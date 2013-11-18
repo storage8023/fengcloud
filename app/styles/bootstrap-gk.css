@@ -258,6 +258,9 @@ input[type="password"] {
 }
 .btn.btn-flat{
     border-radius: 0;
+    vertical-align: top;
+    padding: 0;
+    width: 56px;
 }
 .has-switch {
     -webkit-border-radius: 2px;

@@ -14,7 +14,9 @@ angular.module('gkClientFrame.controllers',[])
 //        });
 
         GKApi.update(3).success(function(data){
-            $scope.messageCount = data.update_count;
+            $scope.$apply(function(){
+                $scope.messageCount = data.update_count;
+            });
         });
 
         $scope.handleHeaderClick = function(){

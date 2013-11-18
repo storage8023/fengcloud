@@ -55,7 +55,7 @@
 }
 
 .ngTagsInput span {
-    font: 13px Arial, sans-serif;
+
 }
 
 .ngTagsInput button {
@@ -64,7 +64,7 @@
     background: none;
     color: #585858;
     cursor: pointer;
-    font: bold 16px Arial, sans-serif;
+    font: bold 16px Courier, sans-serif;
     vertical-align: middle;
 }
 
@@ -80,6 +80,7 @@
     height: 21px;
     float: left;
     font: 13px Arial, sans-serif;
+    line-height: 17px;
 }
 
 .ngTagsInput input::-ms-clear {
