@@ -435,10 +435,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 刷新列表数据
          */
-        var refreahData = function () {
+        var refreahData = function (selectPath) {
             getFileData().then(function (newFileData) {
                 $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-
+                if(selectPath){
+                    $scope.selectedpath = selectPath;
+                }
             })
         };
 
@@ -573,7 +575,29 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon:'',
                 className:"create",
                 callback: function () {
+                    console.log(111);
+                    var createTeamFolderDialog = GKModal.createTeamFolder();
+                    createTeamFolderDialog.result.then(function(name){
+                        var collaboration = 'member|'+$rootScope.PAGE_CONFIG.user.member_id+'|1';
+                        RestFile.orgShare($rootScope.PAGE_CONFIG.mount.mount_id,name,collaboration)
+                            .success(function(data){
+                                var params = {
+                                    webpath: name,
+                                    dir: 1,
+                                    mountid: $rootScope.PAGE_CONFIG.mount.mount_id
+                                };
+                                GK.createFolder(params).then(function () {
+                                    refreahData(name);
+                                    GKModal.addShare($rootScope.PAGE_CONFIG.mount.mount_id,name+'/');
+                                }, function (error) {
+                                    GKException.handleClientException(error);
+                                });
 
+                            })
+                            .error(function(request){
+                                GKException.handleAjaxException(request);
+                        });
+                    });
                 }
             },
             'unsubscribe': {

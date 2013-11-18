@@ -320,7 +320,7 @@ angular.module('gkClientIndex.services', [])
                     }
                 });
             },
-            teamQr:function(orgId){
+            teamQr:function(orgId,width){
                 return $modal.open({
                     templateUrl: 'views/team_qr_dialog.html',
                     backdrop: false,
@@ -335,8 +335,28 @@ angular.module('gkClientIndex.services', [])
                         src: function () {
                             return gkClientInterface.getUrl({
                                 sso:1,
-                                url:'/org/team_qr?org_id='+orgId
+                                url:'/org/qr_subscribe?org_id='+orgId+'&width='+600
                             });
+                        }
+                    }
+                });
+            },
+            createTeamFolder:function(){
+                return $modal.open({
+                    templateUrl: 'views/create_teamfolder_dialog.html',
+                    backdrop: false,
+                    windowClass: 'create_teamfolder',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        $scope.ok = function(filename){
+                            if(!filename.length){
+                                 alert('请输入文件夹名称');
+                                return;
+                            }
+                            $modalInstance.close(filename);
                         }
                     }
                 });
@@ -1090,6 +1110,7 @@ angular.module('gkClientIndex.services', [])
                         dir: value.dir,
                         last_member_name: value.last_member_name || '',
                         creator_member_name: value.creator_member_name || '',
+                        creator_member_id: value.creator_member_id || '',
                         cmd:value.cmd
                     };
                 } else {
@@ -1107,11 +1128,13 @@ angular.module('gkClientIndex.services', [])
                         dir: value.dir,
                         last_member_name: value.lastname,
                         creator_member_name: value.creatorname,
+                        creator_member_id: value.creatorid,
                         status: value.status,
                         sync:value.sync,
                         cmd:1,
                         sharepath:value.sharepath||'',
-                        syncpath:value.syncpath||''
+                        syncpath:value.syncpath||'',
+                        share:value.share
                     };
                 }
                 return file;
@@ -1425,6 +1448,24 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('RestFile', ['GK', '$http', function (GK, $http) {
         var restFile = {
+            orgShare : function(mount_id,fullpath,collaboration){
+                var date = new Date().toUTCString();
+                var method = 'ORG_SHARE';
+                var webpath = Util.String.encodeRequestUri(fullpath);
+                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
+                return jQuery.ajax({
+                    type: method,
+                    url: GK.getRestHost() + webpath,
+                    headers: {
+                        'x-gk-mount': mount_id,
+                        'Date': date,
+                        'Authorization': authorization,
+                    },
+                    data:{
+                        collaboration:collaboration
+                    }
+                })
+            },
             star: function (mount_id, fullpath) {
                 var date = new Date().toUTCString();
                 var method = 'FAVORITES_ADD';

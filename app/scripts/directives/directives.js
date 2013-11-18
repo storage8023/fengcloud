@@ -414,6 +414,11 @@ angular.module('gkClientIndex.directives', [])
                             $scope.remindMembers = data.remind_members;
                         })
                     });
+                    $scope.enableAddShare = false;
+                    if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
+                        ){
+                        $scope.enableAddShare = true;
+                    }
                 })
                 $scope.sidebar = 'nofile';
                 $scope.$watch('[partition,selectedFile,filter,file]', function (newValue, oldValue) {
@@ -459,7 +464,7 @@ angular.module('gkClientIndex.directives', [])
                                     icon:'icon_qr',
                                     name: 'team_qr',
                                     click: function () {
-
+                                        GKModal.teamQr($rootScope.PAGE_CONFIG.mount.org_id);
                                     }
                                 };
                                 $scope.sidbarData.menus.push(visitItem);
@@ -652,6 +657,8 @@ angular.module('gkClientIndex.directives', [])
                     GKException.handleAjaxException(request);
                         });
                 }
+
+
             }
         }
     }])
@@ -681,15 +688,20 @@ angular.module('gkClientIndex.directives', [])
                 keyword: '@',
                 selectedPath: '@'
             },
-            link: function ($scope, $element) {
+            link: function ($scope, $element,$attrs) {
                 var shiftLastIndex = 0; //shift键盘的起始点
 
-                if ($scope.selectedPath) {
-                    angular.forEach($scope.selectedPath.split('|'), function (value) {
-                        GKFileList.selectByPath($scope,value);
-                    });
-                }
-
+                $attrs.$observe('selectedPath',function(newValue,oldValue){
+                    console.log(arguments);
+                    if(!newValue || newValue == oldValue){
+                        return;
+                    }
+                    if (newValue) {
+                        angular.forEach(newValue.split('|'), function (value) {
+                            GKFileList.selectByPath($scope,value);
+                        });
+                    }
+                })
 
                 /**
                  * 处理点击
