@@ -99,38 +99,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.teamFile);
 
         /**
-         * 智能文件夹
-         * @type {*}
-         */
-        var smartFolders = GKSmartFolder.getFolders();
-        $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder);
-
-        $scope.$on('removeSmartFolder', function ($event, code) {
-            GKSmartFolder.removeSmartFolderByCode(code);
-            angular.forEach($scope.smartTreeList, function (value, key) {
-                if (value.data.condition == code) {
-                    $scope.smartTreeList.splice(key, 1);
-                    return false;
-                }
-            });
-            $scope.treeList[0].selected = true;
-            $scope.selectedMyBranch = $scope.treeList[0];
-            $scope.handleSelect($scope.treeList[0], GKPartition.myFile);
-        })
-
-        $scope.$on('addSmartFolder', function ($event, name, code) {
-            GKSmartFolder.addSmartFolder(name, code);
-            var newSmartFolder = GKFile.dealTreeData([
-                {name: name, condition: code}
-            ], GKPartition.smartFolder)[0];
-            $scope.smartTreeList.push(newSmartFolder);
-            newSmartFolder.selected = true;
-            $scope.selectedSmartBranch = newSmartFolder;
-            $scope.handleSelect(newSmartFolder, 'smartfolder');
-        })
-
-
-        /**
          * 初始选中
          * @type {*}
          */
@@ -157,6 +125,51 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.selectedSubscribleBranch = null;
             }
         };
+
+        var selectBreanch = function(branch,partition,isListFile){
+            branch.selected = true;
+            if(partition == GKPartition.myFile){
+                $scope.selectedMyBranch = branch;
+            }else if(partition == GKPartition.teamFile){
+                $scope.selectedOrgBranch = branch;
+            }else if(partition == GKPartition.smartFolder){
+                $scope.selectedSmartBranch = branch;
+            }else if(partition == GKPartition.subscribeFile){
+                $scope.selectedSubscribleBranch = branch;
+            }
+
+            if(isListFile){
+                $scope.handleSelect(branch, partition);
+            }
+        };
+
+        /**
+         * 智能文件夹
+         * @type {*}
+         */
+        var smartFolders = GKSmartFolder.getFolders();
+        $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder);
+
+        $scope.$on('removeSmartFolder', function ($event, code) {
+            GKSmartFolder.removeSmartFolderByCode(code);
+            angular.forEach($scope.smartTreeList, function (value, key) {
+                if (value.data.condition == code) {
+                    $scope.smartTreeList.splice(key, 1);
+                    return false;
+                }
+            });
+            selectBreanch($scope.treeList[0],GKPartition.myFile,true);
+        })
+
+        $scope.$on('addSmartFolder', function ($event, name, code) {
+            GKSmartFolder.addSmartFolder(name, code);
+            var newSmartFolder = GKFile.dealTreeData([
+                {name: name, condition: code}
+            ], GKPartition.smartFolder)[0];
+            $scope.smartTreeList.push(newSmartFolder);
+            selectBreanch(newSmartFolder,GKPartition.smartFolder,true);
+        })
+
 
         /**
          * 选中树节点的处理函数
@@ -295,30 +308,39 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                        return false;
                    }
                });
-               $scope.treeList[0].selected = true;
-               $scope.handleSelect($scope.treeList[0], GKPartition.myFile);
+               selectBreanch($scope.treeList[0],GKPartition.myFile,true)
            };
 
         })
 
         $scope.$on('$locationChangeSuccess', function ($s, $current,$prev) {
             var param = $location.search();
-            var extend = {
-                filter: param.filter || '',
-                partition: param.partition,
-                view: param.view
-            };
             if(param.partition == GKPartition.myFile && !$scope.selectedMyBranch){
-                unSelectAllBranch();
+                unSelectAllBranch(GKPartition.teamFile)
+                selectBreanch($scope.treeList[0],GKPartition.myFile);
             }
             if(param.partition == GKPartition.teamFile && !$scope.selectedOrgBranch){
-                unSelectAllBranch();
+                angular.forEach($scope.orgTreeList,function(value){
+                    console.log(value.data.mount_id == param.mountid);
+                      if(value.data.mount_id == param.mountid){
+                          unSelectAllBranch(GKPartition.teamFile)
+                          selectBreanch(value,GKPartition.teamFile);
+                          return false;
+                      }
+                })
+
             }
             if(param.partition == GKPartition.smartFolder && !$scope.selectedSmartBranch){
                 unSelectAllBranch();
             }
             if(param.partition == GKPartition.subscribeFile && !$scope.selectedSubscribleBranch){
-                unSelectAllBranch();
+                unSelectAllBranch(GKPartition.teamFile)
+                angular.forEach($scope.orgSubscribeList,function(value){
+                    if(value.data.mount_id == param.mount_id){
+                        selectBreanch(value,GKPartition.subscribeFile);
+                        return false;
+                    }
+                })
             }
 
         })

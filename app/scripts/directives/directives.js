@@ -3,11 +3,74 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('newFileItem',['$parse',function($parse){
+        return {
+            restrict: 'E',
+            replace:true,
+            templateUrl: 'views/new_file_item.html',
+            scope:{
+                'onSubmit':'&',
+                'view':'@',
+                'isEnd':'='
+            },
+            link:function($scope, $element,$attrs){
+                $scope.filename = '新建文件夹';
+                var fn = $parse($attrs.onSubmit);
+                var input = $element.find('input');
+//                input.on('blur',function(event){
+//                    $scope.$apply(function () {
+//                        if($scope.onSubmit != null){
+//                            $scope.onSubmit({
+//                                filename:$scope.filename
+//                            });
+//                        }
+//                    });
+//                })
+                $element.on('mousedown',function(event){
+                    event.stopPropagation();
+                })
+
+                jQuery(document).on('mousedown.newfile',function(event){
+                    if(jQuery(event.target).is($element) || $element.parents('.file_item_edit').size()){
+                        return;
+                    }
+                    $scope.$apply(function () {
+                        if($scope.onSubmit != null){
+                            $scope.onSubmit({
+                                filename:$scope.filename
+                            });
+                        }
+                    });
+                });
+                input[0].select();
+                input.bind('keydown', function (event) {
+                    if (event.keyCode == 13) {
+                        $scope.$apply(function () {
+                            if($scope.onSubmit != null){
+                                $scope.onSubmit({
+                                    filename:$scope.filename
+                                });
+                            }
+                        });
+                    }
+                });
+
+            }
+        }
+    }])
+    .directive('editName',[function(){
+        return {
+            restrict: 'A',
+            link:function($scope,$element,$attrs){
+
+            }
+        }
+    }])
     .directive('gkinput',[function(){
         return {
             restrict: 'E',
             link:function(scope, element,attrs){
-                ;
+
             }
         }
     }])
@@ -1040,36 +1103,29 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.$on('fileNewFolderStart', function (event, callback) {
                     GKFileList.unSelectAll($scope);
-                    var newFileItem = $compile($templateCache.get('newFileItem.html'))($scope);
+                    $scope.submitNewFileName = function(filename){
+
+                        angular.isFunction(callback) && callback(filename);
+                    };
+                    var newFileItem = $compile(angular.element('<new-file-item view="{{view}}" is-end="createNewFileEnd" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                     newFileItem.addClass('selected').prependTo($element.find('.list_body'));
-                    var input = newFileItem.find('input[type="text"]');
-                    var inputParent = input.parent();
-                    var iElem = inputParent.find('i');
-                    input.val('新建文件夹')[0].select();
-                    input.bind('keydown', function (e) {
-                        if (e.keyCode == 13) {
-                            angular.isFunction(callback) && callback(input.val());
-                            return false;
-                        }
+
+                    /**
+                     * 新建文件结束
+                     */
+                    $scope.$on('fileNewFolderEnd', function (event, newFileData, newFilePath) {
+                        jQuery(document).off('mousedown.newfile');
+                        newFileItem.remove();
+                        $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
+                        angular.forEach($scope.fileData, function (value, key) {
+                            if (value.fullpath === newFilePath) {
+                                GKFileList.select($scope,key);
+                            }
+                        });
                     });
 
-                    input.bind('blur', function () {
-                        angular.isFunction(callback) && callback(input.val());
-                    })
                 });
 
-                /**
-                 * 新建文件结束
-                 */
-                $scope.$on('fileNewFolderEnd', function (event, newFileData, newFilePath) {
-                    $element.find('.file_item_edit').remove();
-                    $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-                    angular.forEach($scope.fileData, function (value, key) {
-                        if (value.fullpath === newFilePath) {
-                            GKFileList.select($scope,key);
-                        }
-                    });
-                });
 
                 /**
                  * 重命名开始
@@ -1163,9 +1219,11 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
                 if($scope.partition == GKPartition.smartFolder && $scope.filter){
                     if($scope.filter =='search'){
-                        $scope.filterName = GKSmartFolder.getFolderByCode($scope.keyword)['name']
+                        var smartFolder = GKSmartFolder.getFolderByCode($scope.keyword);
+                        if(smartFolder){
+                            $scope.filterName = smartFolder['name'];
+                        }
                     }else{
-                        console.log($scope.filter);
                         $scope.filterName =  GKFilter.getFilterName($scope.filter)
                     }
                 }
@@ -1725,7 +1783,7 @@ angular.module('gkClientIndex.directives', [])
                     var fileSearch = new GKFileSearch();
                     fileSearch.conditionIncludeKeyword(GKSearch.getKeyWord());
                     fileSearch.conditionIncludePath($rootScope.PAGE_CONFIG.file.fullpath || '');
-                    if ($scope.extension.value) {
+                    if ($scope.extension && $scope.extension.value) {
                         var tem = $scope.extension.value.split('=');
                         if (tem[0] == 'dir') {
                             fileSearch.conditionIncludeDir(tem[1]);
@@ -1790,7 +1848,7 @@ angular.module('gkClientIndex.directives', [])
 
                 if ($scope.partition == 'smartfolder') {
                     $scope.$watch('smartFolderName', function (newValue, oldValue) {
-                        if (newValue == smartFolderName && getCondition() == condiiton) {
+                        if (newValue == smartFolderName && getCondition() == condition) {
                             $scope.disabledSave = true;
                         } else {
                             $scope.disabledSave = false;
@@ -1848,7 +1906,7 @@ angular.module('gkClientIndex.directives', [])
                     $scope.extension = getSelectExtension(dir, extension);
 
                     if ($scope.partition == 'smartfolder') {
-                        if ($scope.smartFolderName == smartFolderName && newValue == condiiton) {
+                        if ($scope.smartFolderName == smartFolderName && newValue == condition) {
                             $scope.disabledSave = true;
                         } else {
                             $scope.disabledSave = false;
