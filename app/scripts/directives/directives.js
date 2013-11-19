@@ -1603,9 +1603,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-/**
- * 搜索的侧边栏
- */
     .directive('searchRightSidebar', ['GKApi', '$rootScope', '$modal', 'GKSearch', 'FILE_SORTS', '$location', 'GKSmartFolder', 'GKMount', 'GKException',function (GKApi, $rootScope, $modal, GKSearch, FILE_SORTS, $location, GKSmartFolder, GKMount,GKException) {
         return {
             restrict: 'E',
@@ -1873,7 +1870,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-
     .directive('inputDatepicker', [function () {
         return {
             restrict: 'E',
@@ -1975,5 +1971,4 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
-
 ;

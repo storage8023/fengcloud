@@ -2228,6 +2228,15 @@ angular.module('gkClientIndex.services', [])
             },
             getSelectedFile:function(){
                 return selectedFile;
+            },
+            getOptFileMountId:function($scope,$rootScope){
+                var mountID;
+                if($scope.selectedFile.length>1){
+                    mountID = $rootScope.PAGE_CONFIG.mount.mount_id;
+                }else{
+                    mountID = $scope.selectedFile[0]['mount_id'] || $rootScope.PAGE_CONFIG.mount.mount_id
+                }
+                return Number(mountID);
             }
         };
         return GKFileList;
