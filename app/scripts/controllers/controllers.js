@@ -387,9 +387,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         webpath: $scope.path,
                         mountid: $scope.mountId
                     });
-                    console.log(re);
                     fileList = re['list'];
-
                     deferred.resolve(GKFile.dealFileList(fileList, source));
                 }
 
@@ -1147,7 +1145,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 打开文件
          */
         $scope.$on('openFile', function ($event, file) {
-           console.log(file);
             GK.open({
                 mountid: GKFileList.getOptFileMountId($scope,$rootScope),
                 webpath: file.fullpath

@@ -16,15 +16,15 @@
                     <a class="add_star" ng-click="toggleStar(file.favorite)" ng-class="file.favorite==1?'stared':''" href="javascript:void(0)"><i class="icon16x16 icon_star"></i></a>
                     <span title="{{file.filename}}">{{file.filename}}</span>
                 </div>
-                <div title="创建人：{{file.creator_member_name}}">创建人：{{file.creator_member_name}}</div>
-                <div title="最后修改人：{{file.last_member_name}}">最后修改人：{{file.last_member_name}}</div>
+                <div title="创建人：{{file.creator_member_name}}">创建人：<span ng-bind="file.creator_member_name"></span></div>
+                <div title="最后修改人：{{file.last_member_name}}">最后修改人：<span ng-bind="file.last_member_name"></span></div>
             </div>
             <div class="tags" ng-if="file.cmd>0">
                 <tags-input ng-model="file.formatTag" class="" name="file_tag" id="file_tag" placeholder="+ 添加注释"></tags-input>
             </div>
         </section>
     </div>
-    <section class="file_detail_wrapper" ng-show="PAGE_CONFIG.mount.org_id!=0&&file.cmd>0">
+    <section class="file_detail_wrapper" ng-show="showTab">
         <tabset direction="blew">
             <tab heading="共享">
                 <button ng-if="enableAddShare" class="btn btn-default set_share" ng-click="showEditShareDialog()">添加共享</button>
