@@ -350,7 +350,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('rightSidebar', ['GKOpen','GKFilter','RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition','GKModal', function (GKOpen,GKFilter,RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition,GKModal) {
+    .directive('rightSidebar', ['GKFile','GKOpen','GKFilter','RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition','GKModal','GKMount',function (GKFile,GKOpen,GKFilter,RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition,GKModal,GKMount) {
         return {
             replace: true,
             restrict: 'E',
@@ -373,63 +373,28 @@ angular.module('gkClientIndex.directives', [])
                 $scope.remarks = []; //讨论
                 $scope.histories = []; //历史
                 $scope.remindMembers = [];//可@的成员列表
-                $scope.file = null;
-
+                $scope.localFile = null;
+                
                 $scope.$watch('[selectedFile,path]', function (newValue, oldValue) {
-                    if (!newValue[0] || !newValue[0].length) {
+                    if (!newValue[0] || !newValue[0].length) { //未选中文件
                         if ($scope.PAGE_CONFIG.filter == 'search') {
-                            $scope.file = null;
+                            $scope.localFile = null;
                             $scope.showSearch = true;
                         } else {
-                            $scope.file = $scope.PAGE_CONFIG.file; //当前
+                            $scope.localFile = $rootScope.PAGE_CONFIG.file;
                         }
 
-                    } else if (newValue[0].length == 1) {
-                        $scope.file = newValue[0][0];
+                    } else if (newValue[0].length == 1) { //选中了一个文件
+                        $scope.localFile = newValue[0][0];
                         $scope.showSearch = false;
                     } else { //多选
-                        $scope.file = null;
+                        $scope.localFile = null;
                         $scope.showSearch = false;
                     }
-                }, true)
+                }, true);
 
-                var gird = /[,;；，\s]/g;
-                $scope.$watch('file', function (newValue, oldValue) {
-                    ///console.logconsole.log(arguments);
-                    if (!newValue || !oldValue || newValue === oldValue) {
-                        return;
-                    }
-                    var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
-                    var formatTag = [];
-                    RestFile.get($scope.mountId, fullpath).success(function (data) {
-                            var tag = data.tag || '';
-                            $scope.file.tag = jQuery.trim(tag);
-                            $scope.file.favorite = data.favorite;
-                            angular.forEach(tag.split(gird), function (value) {
-                                if (value && formatTag.indexOf(value) < 0) {
-                                    formatTag.push(value);
-                                }
-                            });
-                            $scope.file.formatTag = formatTag;
-                    });
-
-                    GKApi.sideBar($scope.mountId, fullpath).success(function (data) {
-                        $scope.$apply(function(){
-                            $scope.shareMembers = data.share_members;
-                            $scope.shareGroups = data.share_groups;
-                            $scope.remarks = data.remark;
-                            $scope.histories = data.history;
-                            $scope.remindMembers = data.remind_members;
-                        })
-                    });
-                    $scope.enableAddShare = false;
-                    if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
-                        ){
-                        $scope.enableAddShare = true;
-                    }
-                })
                 $scope.sidebar = 'nofile';
-                $scope.$watch('[partition,selectedFile,filter,file]', function (newValue, oldValue) {
+                $scope.$watch('[partition,selectedFile,filter,localFile]', function (newValue, oldValue) {
                     var selected = newValue[1] || [];
                     if (newValue[2] == 'search' && !selected.length) {
                         $scope.sidebar = 'search';
@@ -526,13 +491,76 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile', '$location', '$timeout', 'GKApi', '$rootScope', 'GKModal','GKException',function (RestFile, $location, $timeout, GKApi, $rootScope,GKModal,GKException) {
+    .directive('singlefileRightSidebar', ['RestFile', '$location', '$timeout', 'GKApi', '$rootScope', 'GKModal','GKException','GKPartition','GKFile','GKMount',function (RestFile, $location, $timeout, GKApi, $rootScope,GKModal,GKException,GKPartition,GKFile,GKMount) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/singlefile_right_sidebar.html",
             link: function ($scope, $element) {
+                $scope.file = {};
+                $scope.showTab = false; //是否显示共享等tab
+                $scope.enableAddShare = false; //是否允许编辑共享参与人
+                var gird = /[,;；，\s]/g;
+                var getOptMountId = function(file){
+                    var mountID;
+                    if(!file){
+                        mountID = $rootScope.PAGE_CONFIG.mount.mount_id;
+                    }else{
+                        mountID = file['mount_id'] || $rootScope.PAGE_CONFIG.mount.mount_id;
+                    }
+                    return Number(mountID);
+                };
 
+                var getFileInfo =  function(file){
+                    var mountId = getOptMountId(file);
+                    var mount = GKMount.getMountById(mountId);
+                    var fullpath = file.dir == 1 ? file.fullpath + '/' : file.fullpath;
+                    var formatTag = [];
+                    RestFile.get(mountId, fullpath).success(function (data) {
+                        angular.forEach(jQuery.trim(data.tag).split(gird), function (value) {
+                            if (value && formatTag.indexOf(value) < 0) {
+                                formatTag.push(value);
+                            }
+                        });
+                        data.formatTag = formatTag;
+                        var formatFile = GKFile.formatFileItem(data,'api');
+                        angular.extend($scope.file,formatFile);
+                        if(mount['org_id']>0 && $scope.file.cmd > 0  && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile){
+                            $scope.showTab = true;
+                        }else{
+                            $scope.showTab = false;
+                        }
+
+                    });
+
+                    GKApi.sideBar(mountId, fullpath).success(function (data) {
+                        $scope.$apply(function(){
+                            $scope.shareMembers = data.share_members;
+                            $scope.shareGroups = data.share_groups;
+                            $scope.remarks = data.remark;
+                            $scope.histories = data.history;
+                            $scope.remindMembers = data.remind_members;
+                        })
+                    });
+
+                    $scope.enableAddShare = false;
+                    if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
+                        ){
+                        $scope.enableAddShare = true;
+                    }
+                };
+
+                /**
+                 * 通过接口获取文件信息
+                 */
+                $scope.$watch('localFile', function (file, oldValue) {
+                    if (!file || !oldValue || file == oldValue || file.fullpath == oldValue.fullpath) {
+                        return;
+                    }
+                    getFileInfo(file);
+                })
+                console.log($scope.file);
+                getFileInfo($scope.localFile);
                 $scope.inputingRemark = false;
                 $scope.postText = '';
 

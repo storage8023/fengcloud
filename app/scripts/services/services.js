@@ -37,8 +37,8 @@ angular.module('gkClientIndex.services', [])
                 var params = {
                     target: toFullpath,
                     targetmountid: toMountId,
-                    from_mountid: fromMountId,
-                    from_list: fromFullpathes
+                    frommountid: fromMountId,
+                    fromlist: fromFullpathes
                 };
                 var deferred = $q.defer();
                 GK.copy(params).then(function () {
@@ -55,8 +55,8 @@ angular.module('gkClientIndex.services', [])
                  var params = {
                      target: toFullpath,
                      targetmountid: toMountId,
-                     from_mountid: fromMountId,
-                     from_list: fromFullpathes
+                     frommountid: fromMountId,
+                     fromlist: fromFullpathes
                  };
                  var deferred = $q.defer();
                  GK.move(params).then(function () {
@@ -148,9 +148,7 @@ angular.module('gkClientIndex.services', [])
                                 }
                                 return dateline;
                             };
-
                             var requestDateline = getLastDateline(news, 0);
-                            //console.log( GKNews.classify(news));
                           return GKNews.classify(news);
                         }
                     }
@@ -1118,8 +1116,8 @@ angular.module('gkClientIndex.services', [])
                         lock_member_id: value.lock_member_id || 0,
                         dir: value.dir,
                         last_member_name: value.last_member_name || '',
-                        creator_member_name: value.creator_member_name || '',
-                        creator_member_id: value.creator_member_id || '',
+                        creator_member_name: value.create_member_name || '',
+                        creator_member_id: value.create_member_id || '',
                         cmd:value.cmd
                     };
                 } else {
@@ -2357,7 +2355,6 @@ angular.module('gkClientIndex.services', [])
                     $scope.fileList = re['list'];
                     $rootScope.downloadSpeed = re['download'];
                     $rootScope.uploadSpeed = re['upload'];
-                    console.log($scope.fileList);
                 }
                 getFileList();
                 $interval(function(){
@@ -2396,7 +2393,6 @@ var gkSiteCallback = function(name,params){
     if(typeof name !=='string'){
         name = String(name);
     }
-    console.log(arguments);
     var rootScope = jQuery(document).scope();
     rootScope.$broadcast(name,params);
 };
