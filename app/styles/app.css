@@ -998,6 +998,9 @@ footer {
     height: 16px;
     width: 16px;
 }
+.right_sidebar .file_attrs .file_name .add_star .icon16x16{
+    background-position: -4px -84px;
+}
 .right_sidebar .file_attrs .file_name .add_star.stared .icon16x16{
     background-position: -44px -84px;
 }
