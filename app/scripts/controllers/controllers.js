@@ -114,6 +114,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
             $scope.treeList[0].selected = true;
+            $scope.selectedMyBranch = $scope.treeList[0];
             $scope.handleSelect($scope.treeList[0], GKPartition.myFile);
         })
 
@@ -124,6 +125,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             ], GKPartition.smartFolder)[0];
             $scope.smartTreeList.push(newSmartFolder);
             newSmartFolder.selected = true;
+            $scope.selectedSmartBranch = newSmartFolder;
             $scope.handleSelect(newSmartFolder, 'smartfolder');
         })
 
