@@ -239,6 +239,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (partition == GKPartition.myFile) {
                 var backupDialog = GKModal.backUp();
                 backupDialog.result.then(function (param) {
+                    alert('同步成功');
                     $location.search(param);
                 })
             } else if (partition == GKPartition.teamFile) {
@@ -597,6 +598,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         } else {
                             file.sync = 1;
                         }
+                        alert('同步成功');
                     });
 
                 });

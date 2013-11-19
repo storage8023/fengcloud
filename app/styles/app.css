@@ -1468,8 +1468,41 @@ position: absolute;
     margin-top:8px;
 }
 /**同步设置窗口**/
-.sync_settiong_dialog #local_uri{
 
+.sync_settiong_dialog{
+    width: 600px;
+    margin-left: -300px;
+}
+.sync_settiong_dialog .modal-body{
+    padding: 40px;
+}
+.sync_settiong_dialog .modal-body > div{
+    margin-top: 20px;
+}
+.sync_settiong_dialog .modal-body > div > *{
+    display: inline-block;
+}
+.sync_settiong_dialog #local_uri{
+width: 70%;
+    margin-right: 20px;
+}
+/*创建团队文件夹就*/
+.create_teamfolder{
+    width: 500px;
+    margin-left: -250px;
+}
+.create_teamfolder .modal-body{
+    padding: 40px;
+}
+.create_teamfolder .modal-body > div{
+
+}
+.create_teamfolder .modal-body > div > *{
+    display: inline-block;
+}
+.create_teamfolder input[type="text"]{
+    width: 80%;
+    margin-right: 20px;
 }
 
 /*resize*/
