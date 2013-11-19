@@ -653,14 +653,21 @@ footer {
     border-top:1px solid #fff;
 }
 .file_list_wrapper .file_list_hint{
-    height: 24px;
-    line-height: 24px;
-    background: #6ed7f1;
+    padding-left: 20px;
+    height: 30px;
+    line-height: 30px;
+    background: #428BCA;
+    color:#fff;
     position: absolute;
     left: 0;
     right: 0;
     top:32px;
     z-index: 2;
+}
+
+.btn.sync_opt{
+    line-height: 24px;
+    background-color: #428BCA;
 }
 .file_list_wrapper .list_body {
     position: absolute;

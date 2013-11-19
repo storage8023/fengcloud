@@ -451,6 +451,21 @@ a:hover > .icon16x16.icon_pin,
     background-position: -24px -1084px;
 }
 
+.icon16x16.icon_open_local{
+    background-position: -24px -4px;
+}
+.icon16x16.icon_open_local_white{
+    background-position: -24px -4px;
+}
+
+.icon16x16.icon_sync_setting{
+    background-position: -24px -324px;
+}
+.icon16x16.icon_sync_setting_white{
+    background-position: -24px -324px;
+}
+
+
 /*32x32*/
 .icon32x32{
     width: 32px;

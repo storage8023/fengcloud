@@ -21,9 +21,15 @@
         </div>
     </div>
     <div class="c_f_after file_list_hint" ng-show="showHint">
-        <span class="f_l">当前文件夹已同步</span>
-        <a class="f_l go_to_local" href="javascript:void(0)" ng-click="goToLocal()"><i class="icon16x16"></i></a>
-        <a class="f_r" href="javascript:void(0)" ng-click="showSyncSetting()"><i class="icon16x16 icon_setting"></i></a>
+        <span class="f_l">同步的文件夹</span>
+        <a class="f_r go_to_local sync_opt btn btn-default" href="javascript:void(0)" ng-click="showSyncSetting()">
+            <i class="icon16x16 icon_sync_setting"></i>
+            <span>设置</span>
+        </a>
+        <a class="f_r go_to_local sync_opt btn btn-default " href="javascript:void(0)" ng-click="goToLocal()">
+           <i class="icon16x16 icon_open_local"></i>
+            <span>前往</span>
+        </a>
     </div>
     <div class="selectable scrollbar list_body" ng-drop="handleSysDrop($event)"  ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)" ui-selectable ng-model="testModel">
         <div class="item file_item"
