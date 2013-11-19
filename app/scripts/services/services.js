@@ -386,7 +386,7 @@ angular.module('gkClientIndex.services', [])
         }
     }])
     .factory('GKNews',['localStorageService','GKApi','$filter','GKDialog','GKPath','GKException',function(localStorageService,GKApi,$filter,GKDialog,GKPath,GKException){
-        var newsKey = 'news_'+gkClientInterface.getUser()['member_id'];
+        var newsKey = 'gknews_'+gkClientInterface.getUser()['member_id'];
         var GKNews = {
             getOptsByItem:function(item){
                 var opts = [];
@@ -515,21 +515,17 @@ angular.module('gkClientIndex.services', [])
                 }
                 return null;
             },
-            requestNews:function(size,dateline){
+            requestNews:function(dateline){
                 var context = this;
-                 GKApi.update(size,dateline).success(function(data){
+                var dateline = 0;
+                var oldNews = this.getNews();
+                if(oldNews && oldNews.length){
+                    dateline = oldNews[0]['dateline']+1;
+                }
+                 GKApi.newUpdate(dateline).success(function(data){
                     var news = data['updates'] || [];
                     var dateline = data['dateline'];
                     gkClientInterface.setMessageDate(dateline);
-
-//                    angular.forEach(news,function(value,key){
-//                        value.org_id = 1;
-//                        value.org_name = '够快科技';
-//                        if(key==2){
-//                            value.org_id = 2;
-//                            value.org_name = '测试团队';
-//                        }
-//                    });
                     context.addNews(news);
                 })
             },
@@ -555,11 +551,14 @@ angular.module('gkClientIndex.services', [])
                 return oldClassifyNews;
             },
             addNews:function(news){
+                if(!news || !news.length){
+                    return;
+                }
                 var oldNews = this.getNews();
                 if(!oldNews || !oldNews.length){
                     localStorageService.add(newsKey,JSON.stringify(news));
                 }else{
-                   var newOldNews = oldNews.concat(news);
+                   var newOldNews = news.concat(oldNews);
                     newOldNews = newOldNews.slice(0,100);
                     localStorageService.add(newsKey,JSON.stringify(newOldNews));
                 }
@@ -567,7 +566,7 @@ angular.module('gkClientIndex.services', [])
             appendNews:function(data){
                 if(!data['list'] || !data['list'].length){
                     if(data['count']>0){
-                        this.requestNews(data['count'])
+                        this.requestNews()
                     }
                 }else{
                     this.addNews(data['list']);
@@ -1872,6 +1871,19 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/updates/ls',
+                    data: params
+                });
+            },
+           newUpdate: function (dateline) {
+                var params = {
+                    dateline:dateline||0
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: GK.getApiHost() + '/1/updates/ls_newer',
                     data: params
                 });
             },
