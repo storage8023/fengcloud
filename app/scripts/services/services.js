@@ -1310,7 +1310,6 @@ angular.module('gkClientIndex.services', [])
                    'unsubscribe', //取消订阅
                    'new_folder', //新建
                    'create', //创建
-                   'manage', //管理
                    'add', //添加
                    'clear_trash', //清空回收站
                    //'lock',  //锁定

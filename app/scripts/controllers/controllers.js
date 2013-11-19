@@ -632,7 +632,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
                     var createTeamFolderDialog = GKModal.createTeamFolder();
                     createTeamFolderDialog.result.then(function(name){
-                        var collaboration = 'member|'+$rootScope.PAGE_CONFIG.user.member_id+'|1';
+                        var collaboration = 'member|'+$rootScope.PAGE_CONFIG.user.member_id+'|2';
                         RestFile.orgShare($rootScope.PAGE_CONFIG.mount.mount_id,name,collaboration)
                             .success(function(data){
                                 var params = {
@@ -1253,16 +1253,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.items = [
-            {
-                item: "访问网站",
-                menuclick: function () {
-                    var url = gkClientInterface.getUrl({
-                        sso: 1,
-                        url: '/storage'
-                    });
-                    gkClientInterface.openUrl(url);
-                }
-            },
             {
                 item: "设置",
                 menuclick: function () {

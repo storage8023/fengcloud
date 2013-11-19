@@ -1669,43 +1669,39 @@ body.resizing *{
     margin-top: -100%;
 }
 .backup_dialog .backup_list li div.next{
-    background-color: rgba(0,0,0,.6);
-}
+    background: #606D7F;}
 .backup_dialog .backup_list li div .tip{
     padding-left: 10px;
     padding-right: 10px;
     margin-bottom: 10px;
 }
-.backup_dialog .backup_list li i{
-    width: 48px;
-    height: 48px;
-    margin:0 auto;
-    display: block;
-    background: #fff;
-}
+
 .backup_dialog .backup_list li .name{
     font-size: 14px;
-    margin: 20px 0 0 0;
+    margin: 70px 0 0 0;
 }
 
-
-.backup_dialog .backup_list li.desktop{
-    background-color: #E65353;
+.backup_dialog .backup_list li .prev{
+    background-image: url(../images/backup.png);
+   background-repeat: no-repeat;
 }
-.backup_dialog .backup_list li.documents{
-    background-color: #66AEFF;
+.backup_dialog .backup_list li.desktop .prev{
+   background-position: 0 0;
 }
-.backup_dialog .backup_list li.pictures{
-    background-color: #F7CD21;
+.backup_dialog .backup_list li.documents .prev{
+    background-position: -150px 0;
 }
-.backup_dialog .backup_list li.music{
-    background-color: #6ED7F1;
+.backup_dialog .backup_list li.pictures .prev{
+    background-position: -300px 0;
 }
-.backup_dialog .backup_list li.video{
-    background-color: #52AE75;
+.backup_dialog .backup_list li.music .prev{
+    background-position: 0 -150px;
 }
-.backup_dialog .backup_list li.other{
-    background-color: #F39C12;
+.backup_dialog .backup_list li.video .prev{
+    background-position: -150px -150px;
+}
+.backup_dialog .backup_list li.other .prev{
+    background-position: -300px -150px;
 }
 .create_team_dialog,
 .nearby_dialog{
