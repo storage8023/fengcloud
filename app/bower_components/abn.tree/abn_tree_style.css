@@ -14,7 +14,6 @@ ul.nav.nav-list.abn-tree .nav-header a{
     padding: 0;
     border:1px solid #232426;
     border-radius: 20px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
     font-size: 20px;
     background: #25282D;
     color: #fff;
@@ -82,7 +81,7 @@ ul.nav.nav-list.abn-tree>.active>a,
 ul.nav.nav-list.abn-tree>a:hover,
 ul.nav.nav-list.abn-tree>a:focus{
     text-decoration: none;
-    background-color: #4d8bd8;
+    background-color: #000;
     color:#fff;
 }
 /*ul.nav.nav-list.abn-tree > li > a:hover .tree-icon,*/
