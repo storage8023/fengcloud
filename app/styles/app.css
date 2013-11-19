@@ -423,6 +423,7 @@ footer {
     width: 250px;
     background: #F1F1F2;
     top:0;
+    box-shadow: inset 3px 0 15px rgba(0, 0, 0, .07);
 }
 
 .main .content {
@@ -442,7 +443,7 @@ footer {
 /*文件列表区样式*/
 .toolbar {
     height: 45px;
-    background: #E1E3E7;
+    background: #f1f1f2;
     line-height: 24px;
     padding: 0 5px;
     font-size: 13px;
@@ -458,10 +459,15 @@ footer {
     margin-top: 9px;
 }
 
+.toolbar button:hover{
+    border-color: transparent;
+}
+
 .toolbar button {
     background-color: transparent;
-    border: 0 none;
     cursor: default;
+    border: 1px solid #A7B3C4;
+    border-radius: 3px;
 }
 
 .toolbar .f_l {
@@ -503,9 +509,10 @@ footer {
 .toolbar .opt.opt_view_change > a {
     display: inline-block;
     height: 24px;
-    width: 24px;
-    border-radius: 4px;
+    width: 40px;
+    border-radius: 3px;
     text-align: center;
+    background-color: #7F8999;
 }
 
 
@@ -594,7 +601,7 @@ footer {
     background: #9AA5B8;
 }
 .toolbar .opt.opt_view_change > a.active {
-    background: #6A7280;
+    background: #448DE8;
 }
 .toolbar .opt.opt_view_change > a:hover.list_view > i,
 .toolbar .opt.opt_view_change > a.active.list_view > i {
