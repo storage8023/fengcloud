@@ -643,7 +643,16 @@ footer {
     z-index: 1;
     border-top:1px solid #fff;
 }
-
+.file_list_wrapper .file_list_hint{
+    height: 24px;
+    line-height: 24px;
+    background: #6ed7f1;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:32px;
+    z-index: 2;
+}
 .file_list_wrapper .list_body {
     position: absolute;
     background: #fff;
@@ -655,7 +664,9 @@ footer {
     padding-top: 32px;
     outline: 0;
 }
-
+.file_list_wrapper .has_hint .list_body{
+    padding-top: 56px;
+}
 .file_list_wrapper .file_list_header > div:hover {
     background: -webkit-gradient(linear, 0 0, 0 85%, from(#dfe4ea), to(rgb(255, 255, 255)));
 }
@@ -767,7 +778,6 @@ footer {
     background: url(../images/icon.png) no-repeat -2px -282px;
 }
 
-.file_list_wrapper .file_item.hover span,
 .file_list_wrapper .file_item.selected span{
     color: #fff;
 }

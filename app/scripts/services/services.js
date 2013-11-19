@@ -1118,7 +1118,8 @@ angular.module('gkClientIndex.services', [])
                         last_member_name: value.last_member_name || '',
                         creator_member_name: value.create_member_name || '',
                         creator_member_id: value.create_member_id || '',
-                        cmd:value.cmd
+                        cmd:value.cmd,
+                        favorite:value.favorite
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -1198,19 +1199,16 @@ angular.module('gkClientIndex.services', [])
              * @param local
              * @returns {string}
              */
-            getFileIconSuffix: function (filename, dir, share, local) {
+            getFileIconSuffix: function (filename, dir, share,sync) {
                 var suffix = '';
                 var sorts = FILE_SORTS;
                 if (dir==1) {
                     suffix = 'folder';
+                    if(sync==1){
+                        suffix = 'sync_'+suffix;
+                    }
                     if (share > 0) {
-                        if (local == 1) {
-                            suffix = 'local_' + suffix;
-                        } else if (local == 2) {
-                            suffix = 'private_' + suffix;
-                        } else {
-                            suffix = 'shared_' + suffix;
-                        }
+                        suffix = 'shared_' + suffix;
                     }
                 } else {
                     var ext = Util.String.getExt(filename);
@@ -1262,6 +1260,7 @@ angular.module('gkClientIndex.services', [])
              * @param file 设置的目录
              */
             setSyncOpt:function(opts,parentFile,file){
+                this.disableOpt(opts,'unsync');
                 if(!GKFile.isSyncable(parentFile,file)){
                     this.disableOpt(opts,'sync','unsync');
                 }else{
@@ -2187,7 +2186,10 @@ angular.module('gkClientIndex.services', [])
                 $scope.selectedFile = selectedFile;
             },
             unSelect:function($scope,index){
-                $scope.fileData[index].selected = false;
+                if($scope.fileData[index]){
+                    $scope.fileData[index].selected = false;
+                }
+
                 var i = selectedIndex.indexOf(index);
                 if (i >= 0) {
                     selectedIndex.splice(i, 1);
@@ -2235,6 +2237,21 @@ angular.module('gkClientIndex.services', [])
                     mountID = $scope.selectedFile[0]['mount_id'] || $rootScope.PAGE_CONFIG.mount.mount_id
                 }
                 return Number(mountID);
+            },
+            remove:function($scope,value){
+                angular.forEach($scope.fileData, function (file, key) {
+                    if (value == file) {
+                        $scope.fileData.splice(key, 1);
+                    }
+                })
+            },
+            removeAllSelectFile:function($scope){
+                var context = this;
+                angular.forEach($scope.selectedFile, function (value) {
+                    context.remove($scope,value);
+                });
+                $scope.selectedFile = [];
+                $scope.selectedIndex = [];
             }
         };
         return GKFileList;
