@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition) {
+    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition','GKModal', 'GKApi',function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition,GKModal,GKApi) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -27,8 +27,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$on('ShowMessage', function (e, data) {
             if (!$rootScope.showNews) {
-                $rootScope.showNews = true;
-                $rootScope.$digest()
+                GKModal.news(GKNews,GKApi);
+            }
+        })
+
+        /**
+         * 监听打开消息的通知
+         */
+        $scope.$on('ShowFind', function (e, data) {
+            if (!$rootScope.showFind) {
+                GKModal.nearBy();
             }
         })
 
@@ -1067,12 +1075,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var extendParam = {};
                 if (!isRightOpt) {
                     extendParam['key'] = key;
-                }
-                /**
-                 * 团队文件夹的根目录 将 删除 改为 退出
-                 */
-                if ($scope.partition == GKPartition.teamFile && key == 'del' && !$rootScope.PAGE_CONFIG.file.fullpath) {
-                    extendParam['name'] = '退出';
                 }
                 return angular.extend(opt, extendParam);
             }

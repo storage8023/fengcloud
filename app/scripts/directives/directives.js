@@ -747,6 +747,9 @@ angular.module('gkClientIndex.directives', [])
                     var fullpath = $scope.file.fullpath;
                     var collaboration = [],collaborationItem='';
                     var type = shareItem['group_id']?'group':'member';
+                    if(!confirm('你确定要删除改共享参与'+(type=='group'?'组':'人'+'？'))){
+                        return;
+                    }
                     collaborationItem = type+'|'+(type=='group'?shareItem['group_id']:shareItem['member_id']);
 
                     collaboration.push(collaborationItem);

@@ -28,18 +28,18 @@
             <tab heading="共享">
                 <button ng-if="enableAddShare" class="btn btn-default set_share" ng-click="showEditShareDialog()">添加共享</button>
                 <ul class="scrollbar share_member_list" ng-style="{top:!enableAddShare?0:''}">
+                    <li class="item" ng-repeat="shareMember in shareMembers">
+                        <span class="icon"><i class="icon16x16 icon_person"></i></span>
+                        <span class="name">{{shareMember.member_name}}</span>
+                        <span class="opts" ng-if="enableAddShare && shareMember.member_id != PAGE_CONFIG.user.member_id">
+                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除{{shareMember.member_id}}</button>
+                        </span>
+                    </li>
                     <li class="item" ng-repeat="shareGroup in shareGroups">
                         <span class="icon"><i class="icon16x16 icon_people"></i></span>
                         <span class="name">{{shareGroup.group_name}}</span>
                         <span class="opts" ng-if="enableAddShare">
                             <button class="btn btn-danger btn-flat" ng-click="removeShare(shareGroup)">删除</button>
-                        </span>
-                    </li>
-                    <li class="item" ng-repeat="shareMember in shareMembers">
-                        <span class="icon"><i class="icon16x16 icon_person"></i></span>
-                        <span class="name">{{shareMember.member_name}}</span>
-                        <span class="opts" ng-if="enableAddShare">
-                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除</button>
                         </span>
                     </li>
                 </ul>
