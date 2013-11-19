@@ -288,6 +288,15 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        $scope.$on('addShareDone',function(isCancel){
+                            if(isCancel==1){
+                                $modalInstance.dismiss('cancel');
+                            }else{
+                                $modalInstance.close('cancel');
+                            }
+
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -2407,6 +2416,7 @@ var gkClientCallback = {};
  * @param params
  */
 var gkSiteCallback = function(name,params){
+    console.log(arguments);
     if(typeof name !=='string'){
         name = String(name);
     }

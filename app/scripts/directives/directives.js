@@ -531,6 +531,13 @@ angular.module('gkClientIndex.directives', [])
                             $scope.showTab = false;
                         }
 
+
+                        $scope.enableAddShare = false;
+                        if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
+                            ){
+                            $scope.enableAddShare = true;
+                        }
+
                     });
 
                     GKApi.sideBar(mountId, fullpath).success(function (data) {
@@ -543,11 +550,6 @@ angular.module('gkClientIndex.directives', [])
                         })
                     });
 
-                    $scope.enableAddShare = false;
-                    if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
-                        ){
-                        $scope.enableAddShare = true;
-                    }
                 };
 
                 /**
@@ -559,7 +561,6 @@ angular.module('gkClientIndex.directives', [])
                     }
                     getFileInfo(file);
                 })
-                console.log($scope.file);
                 getFileInfo($scope.localFile);
                 $scope.inputingRemark = false;
                 $scope.postText = '';
@@ -578,7 +579,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.postRemark = function (postText) {
                     if (!postText || !postText.length) return;
                     var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
-                    RestFile.remind($location.search().mountid, fullpath, postText).success(function (data) {
+                    RestFile.remind(getOptMountId($scope.file), fullpath, postText).success(function (data) {
                         $scope.postText = '';
                         $scope.inputingRemark = false;
                         if (data && data.length) {
@@ -620,7 +621,7 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.showEditShareDialog = function () {
                     var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
-                    GKModal.addShare($scope.PAGE_CONFIG.mount.mount_id,fullpath);
+                    GKModal.addShare(getOptMountId($scope.file),fullpath);
                 };
 
                 $scope.handleKeyDown = function (e) {
@@ -640,10 +641,10 @@ angular.module('gkClientIndex.directives', [])
                        value = '';
                    }
 
-                    GKApi.setTag($rootScope.PAGE_CONFIG.mount.mount_id,fullpath, value.join(' ')).success(function () {
+                    GKApi.setTag(getOptMountId($scope.file),fullpath, value.join(' ')).success(function () {
 
-                    }).error(function () {
-
+                    }).error(function (request) {
+                       GKException.handleAjaxException(request);
                         });
                 }, true);
 
@@ -686,7 +687,7 @@ angular.module('gkClientIndex.directives', [])
                     collaborationItem = type+'|'+(type=='group'?shareItem['group_id']:shareItem['member_id']);
 
                     collaboration.push(collaborationItem);
-                    GKApi.delCollaboration($scope.PAGE_CONFIG.mount.mount_id,fullpath,collaboration.join(',')).success(function(){
+                    GKApi.delCollaboration(getOptMountId($scope.file),fullpath,collaboration.join(',')).success(function(){
                         $scope.$apply(function(){
                             if(type == 'group'){
                                 Util.Array.removeByValue($scope.shareGroups,shareItem);
