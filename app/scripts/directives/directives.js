@@ -17,23 +17,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.filename = '新建文件夹';
                 var fn = $parse($attrs.onSubmit);
                 var input = $element.find('input');
-//                input.on('blur',function(event){
-//                    $scope.$apply(function () {
-//                        if($scope.onSubmit != null){
-//                            $scope.onSubmit({
-//                                filename:$scope.filename
-//                            });
-//                        }
-//                    });
-//                })
-                $element.on('mousedown',function(event){
-                    event.stopPropagation();
-                })
-
-                jQuery(document).on('mousedown.newfile',function(event){
-                    if(jQuery(event.target).is($element) || $element.parents('.file_item_edit').size()){
-                        return;
-                    }
+                input.on('blur',function(event){
                     $scope.$apply(function () {
                         if($scope.onSubmit != null){
                             $scope.onSubmit({
@@ -41,7 +25,23 @@ angular.module('gkClientIndex.directives', [])
                             });
                         }
                     });
-                });
+                })
+//                $element.on('mousedown',function(event){
+//                    event.stopPropagation();
+//                })
+//
+//                jQuery(document).on('mousedown.newfile',function(event){
+//                    if(jQuery(event.target).is($element) || $element.parents('.file_item_edit').size()){
+//                        return;
+//                    }
+//                    $scope.$apply(function () {
+//                        if($scope.onSubmit != null){
+//                            $scope.onSubmit({
+//                                filename:$scope.filename
+//                            });
+//                        }
+//                    });
+//                });
                 input[0].select();
                 input.bind('keydown', function (event) {
                     if (event.keyCode == 13) {
@@ -1114,7 +1114,7 @@ angular.module('gkClientIndex.directives', [])
                      * 新建文件结束
                      */
                     $scope.$on('fileNewFolderEnd', function (event, newFileData, newFilePath) {
-                        jQuery(document).off('mousedown.newfile');
+                        //jQuery(document).off('mousedown.newfile');
                         newFileItem.remove();
                         $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
                         angular.forEach($scope.fileData, function (value, key) {

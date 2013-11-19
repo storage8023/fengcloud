@@ -31,7 +31,7 @@
             <span>前往</span>
         </a>
     </div>
-    <div class="selectable scrollbar list_body" ng-drop="handleSysDrop($event)"  ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)" ui-selectable ng-model="testModel">
+    <div class="scrollbar list_body" ng-drop="handleSysDrop($event)"  ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)" ng-model="testModel">
         <div class="item file_item"
              ng-class="{'hover':file.hover,'selected':file.selected}"
              ng-repeat="file in fileData"

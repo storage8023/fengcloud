@@ -823,7 +823,7 @@ angular.module('gkClientIndex.services', [])
                 return errorMsg;
             },
             handleClientException: function (error) {
-                alert(error.message);
+                //alert(error.message);
             },
             handleAjaxException:function(request){
                 var errorMsg = this.getAjaxErrorMsg(request);
