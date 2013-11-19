@@ -321,7 +321,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         })
     }])
-    .controller('fileBrowser', ['GKOpen','$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition','GKFileOpt', 'GKModal',function (GKOpen,$scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition,GKFileOpt,GKModal) {
+    .controller('fileBrowser', ['GKDialog','GKOpen','$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition','GKFileOpt', 'GKModal',function (GKDialog,GKOpen,$scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition,GKFileOpt,GKModal) {
         /**
          * 打开时会有一次空跳转
          */
@@ -918,15 +918,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         return;
                     }
                     GK.del(params).then(function () {
-                        angular.forEach($scope.selectedFile, function (value) {
-                            angular.forEach($scope.fileData, function (file, key) {
-                                if (value == file) {
-                                    $scope.fileData.splice(key, 1);
-                                }
-                            })
-                        });
-                        $scope.selectedFile = [];
-                        $scope.selectedIndex = [];
+                        GKFileList.removeAllSelectFile($scope);
                     }, function (error) {
                         GKException.handleClientException(error);
                     });
@@ -1158,6 +1150,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKPath.gotoFile(GKFileList.getOptFileMountId($scope,$rootScope),file.fullpath);
         })
 
+        /**
+         * 拖拽
+         */
         $scope.$on('dropFile', function ($event, file) {
           var toMountId = $scope.mountId,
               toFullpath = file.fullpath,
@@ -1171,6 +1166,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
             var msg = '你确定要将 '+Util.String.baseName(fromFullpathes[0]['webpath'])+(fromFullpathes.length>1?'等'+fromFullpathes.length+'文件':'')+' 移动到 '+ Util.String.baseName(toFullpath)+' 吗？';
             if(!confirm(msg)){
+                file.hover = false;
                 return;
             }
            GKFileOpt.move(toFullpath,toMountId,fromFullpathes,fromMountId).then(function(){
@@ -1179,6 +1175,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
            });
         })
+
+        /**
+         * 取消收藏
+         */
+        $scope.$on('unstar',function($event){
+            GKFileList.removeAllSelectFile($scope);
+        })
+
+        $scope.showHint = false;
+        if($rootScope.PAGE_CONFIG.file.syncpath){
+            $scope.showHint = true;
+        }
+
+        $scope.$on('goToLocal',function(){
+            gkClientInterface.open({
+                mountid:$rootScope.PAGE_CONFIG.mount.mount_id,
+                webpath:$rootScope.PAGE_CONFIG.file.fullpath
+            });
+        })
+
+        $scope.$on('showSyncSetting',function(){
+            GKDialog.openSetting('sync');
+        })
+
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind) {
         $scope.canBack = false;

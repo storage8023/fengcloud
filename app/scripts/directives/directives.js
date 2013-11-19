@@ -374,7 +374,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.histories = []; //历史
                 $scope.remindMembers = [];//可@的成员列表
                 $scope.localFile = null;
-                
+
                 $scope.$watch('[selectedFile,path]', function (newValue, oldValue) {
                     if (!newValue[0] || !newValue[0].length) { //未选中文件
                         if ($scope.PAGE_CONFIG.filter == 'search') {
@@ -522,9 +522,9 @@ angular.module('gkClientIndex.directives', [])
                                 formatTag.push(value);
                             }
                         });
-                        data.formatTag = formatTag;
                         var formatFile = GKFile.formatFileItem(data,'api');
                         angular.extend($scope.file,formatFile);
+                        $scope.file.formatTag = formatTag;
                         if(mount['org_id']>0 && $scope.file.cmd > 0  && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile){
                             $scope.showTab = true;
                         }else{
@@ -649,17 +649,23 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.toggleStar = function(star){
                     var fullpath = $scope.file.fullpath;
+                    var mountId = $scope.file.mount_id || $scope.PAGE_CONFIG.mount.mount_id;
                     if(!fullpath) return;
                      if(star==1){
-                        RestFile.unstar($rootScope.PAGE_CONFIG.mount.mount_id,fullpath).success(function(){
+                        RestFile.unstar(mountId,fullpath).success(function(){
                             $scope.$apply(function(){
-                                $scope.file.favorite = 0;
+                                if($scope.PAGE_CONFIG.partition == GKPartition.smartFolder && $scope.filter=='star'){
+                                    $scope.$emit('unstar');
+                                }else{
+                                    $scope.file.favorite = 0;
+                                }
+
                             })
                         }).error(function(request){
                                 GKException.handleAjaxException(request);
                             });
                      }else{
-                         RestFile.star($rootScope.PAGE_CONFIG.mount.mount_id,fullpath).success(function(){
+                         RestFile.star(mountId,fullpath).success(function(){
                              $scope.$apply(function(){
                                  $scope.file.favorite = 1;
                              })
@@ -722,7 +728,8 @@ angular.module('gkClientIndex.directives', [])
                 selectedFile: '=',
                 rightOpts: '=',
                 keyword: '@',
-                selectedPath: '@'
+                selectedPath: '@',
+                showHint:'='
             },
             link: function ($scope, $element,$attrs) {
                 var shiftLastIndex = 0; //shift键盘的起始点
@@ -871,9 +878,9 @@ angular.module('gkClientIndex.directives', [])
                 }
                 var setListHeaderWidth = function () {
                     if (checkScroll($element.find('.list_body'))) {
-                        $element.find('.file_list_header').css('right', 8);
+                        $element.find('.file_list_header,.file_list_hint').css('right', 8);
                     } else {
-                        $element.find('.file_list_header').css('right', 0);
+                        $element.find('.file_list_header,.file_list_hint').css('right', 0);
                     }
                 };
                 jQuery(window).bind('resize', function () {
@@ -1135,6 +1142,15 @@ angular.module('gkClientIndex.directives', [])
                 $scope.handleSysDrop = function($event){
                     //console.log($event.originalEvent.dataTransfer.files);
                 };
+
+                $scope.goToLocal = function(){
+                    $scope.$emit('goToLocal');
+                };
+
+                $scope.showSyncSetting = function(){
+                    $scope.$emit('showSyncSetting');
+                }
+
             }
         };
     }])

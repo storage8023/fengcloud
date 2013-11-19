@@ -40,8 +40,8 @@ angular.module('gkClientIndex.filters', [])
         }
     }])
     .filter('getFileIcon',['GKFile',function(GKFile){
-          return function(filename,dir){
-              return'icon_'+GKFile.getFileIconSuffix(filename,dir);
+          return function(filename,dir,share,sync){
+              return'icon_'+GKFile.getFileIconSuffix(filename,dir,share,sync);
           }
     }])
     .filter('getFileThumb',['GKFile',function(GKFile){

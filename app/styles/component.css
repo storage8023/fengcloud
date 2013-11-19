@@ -554,7 +554,12 @@ a:hover > .icon16x16.icon_pin,
 .icon_folder {
     background-image: url(../images/icon/folder32x32.png);
 }
-
+.icon_sync_folder {
+    background-image: url(../images/icon/folder_share32x32.png);
+}
+.icon_sync_shared_folder {
+    background-image: url(../images/icon/folder_share32x32.png);
+}
 .icon_local_folder {
     background-image: url(../images/icon/local_folder32x32.png);
 }
@@ -757,6 +762,7 @@ button.close_window{
 .item:nth-child(even) {
     background-color: #F7F7F7;
 }
+.item.hover,
 .item:hover{
     background-color:#E1E3E7;
 }
