@@ -3,6 +3,7 @@
     <section class="scrollbar search_condition">
             <div class="setting_layer">
                 <label>智能文件夹名称</label>
+                <input ng-model="mountId" type="hidden"/>
                 <input class="form-control" ng-model="smartFolderName" name="smartfolder_name" id="smartfolder_name" />
                 <div class="opt_wrap" ng-if="partition !='smartfolder'">
                     <button class="btn btn-default" ng-click="saveSearch()">创建智能文件夹</button>
@@ -15,7 +16,7 @@
             <div class="condition_list">
                 <div class="keyword_layer">
                     <label for="keyword">关键字</label>
-                    <input ng-model="searchKeyword" class="form-control" name="keyword" id="keyword" />
+                    <input ng-model="searchKeyword" class="form-control" name="keyword" id="keyword" readonly/>
                 </div>
                 <div class="file_path_layer">
                     <label for="path">路径</label>

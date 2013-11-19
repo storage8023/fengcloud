@@ -1742,7 +1742,7 @@ angular.module('gkClientIndex.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/save_search',
+                    url: GK.getApiHost() + '/1/file/edit_search',
                     data:params
                 })
             },
@@ -2315,12 +2315,12 @@ angular.module('gkClientIndex.services', [])
                 var reValue;
                 if(value[0] == 'in'){
                     reValue =  JSONCondition['include'][field][1];
-                }else if(value[1] == 'lt'){
+                }else if(value[0] == 'lt'){
                     reValue = [0,dateline[1]];
                 }
-                else if(value[1] == 'gt'){
+                else if(value[0] == 'gt'){
                     reValue = [value[1],0];
-                }else if(value[1] == 'eq'){
+                }else if(value[0] == 'eq'){
                     reValue = value[1];
                 }else{
                     reValue = value[1];
@@ -2440,6 +2440,11 @@ var gkSiteCallback = function(name,params){
  * @constructor
  */
 function GKFileSearch() {
+    this.includeCondition = {};
+    this.iexcludeCondition={};
+    this.condition={};
+    this.limit={};
+    this.order={};
 }
 GKFileSearch.prototype = {
     includeCondition: {},
@@ -2468,6 +2473,9 @@ GKFileSearch.prototype.conditionIncludeKeyword = function (keyword) {
 };
 GKFileSearch.prototype.conditionIncludeDir = function (dir) {
     this.includeCondition['dir'] = ['eq',dir];
+};
+GKFileSearch.prototype.conditionIncludeMountId = function (mountId) {
+    this.includeCondition['mount_id'] = ['eq',mountId];
 };
 
 GKFileSearch.prototype.conditionIncludePath = function (path) {

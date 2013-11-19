@@ -729,6 +729,7 @@ a:hover > .icon16x16.icon_manage,
 }
 .gk_datepicker *{
    font-size: 12px;
+    color: #fff;
 }
 .gk_datepicker td{
     border: 1px solid #E5E5E5;
@@ -746,8 +747,7 @@ a:hover > .icon16x16.icon_manage,
 .gk_datepicker table .btn.btn-info,
 .gk_datepicker table .btn:hover,
 .gk_datepicker table .btn:active{
-    background:#eaeaea;
-    color:#333;
+    background:#448de8;
 }
 .dropdown-menu a{
     font-size: 13px;

@@ -178,6 +178,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             selectBreanch(newSmartFolder,GKPartition.smartFolder,true);
         })
 
+        $scope.$on('editSmartFolder', function ($event, name, code) {
+            angular.forEach($scope.smartTreeList,function(value){
+                if(value.data.condition == code){
+                    value.label = name;
+                    value.data.name = name;
+                    return false;
+                }
+            });
+        })
+
+
+
 
         /**
          * 选中树节点的处理函数

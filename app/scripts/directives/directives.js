@@ -1715,7 +1715,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('searchRightSidebar', ['GKApi', '$rootScope', '$modal', 'GKSearch', 'FILE_SORTS', '$location', 'GKSmartFolder', 'GKMount', 'GKException',function (GKApi, $rootScope, $modal, GKSearch, FILE_SORTS, $location, GKSmartFolder, GKMount,GKException) {
+    .directive('searchRightSidebar', ['$filter','GKApi', '$rootScope', '$modal', 'GKSearch', 'FILE_SORTS', '$location', 'GKSmartFolder', 'GKMount', 'GKException',function ($filter,GKApi, $rootScope, $modal, GKSearch, FILE_SORTS, $location, GKSmartFolder, GKMount,GKException) {
         return {
             restrict: 'E',
             replace: true,
@@ -1731,9 +1731,7 @@ angular.module('gkClientIndex.directives', [])
                             }
                         });
 
-                    }).error(function () {
-
-                        })
+                    })
                 }
 
                 /**
@@ -1792,13 +1790,22 @@ angular.module('gkClientIndex.directives', [])
                     var fileSearch = new GKFileSearch();
                     fileSearch.conditionIncludeKeyword(GKSearch.getKeyWord());
                     fileSearch.conditionIncludePath($rootScope.PAGE_CONFIG.file.fullpath || '');
-                    if ($scope.extension && $scope.extension.value) {
-                        var tem = $scope.extension.value.split('=');
-                        if (tem[0] == 'dir') {
-                            fileSearch.conditionIncludeDir(tem[1]);
-                        } else if (tem[0] == 'extensions') {
-                            fileSearch.conditionIncludeExtension(tem[1].split('|'));
+                    if($scope.mountId>0){
+                        fileSearch.conditionIncludeMountId($scope.mountId);
+                }
+                    if ($scope.extension) {
+
+                        if(!$scope.extension.value){
+
+                        }else{
+                            var tem = $scope.extension.value.split('=');
+                            if (tem[0] == 'dir') {
+                                fileSearch.conditionIncludeDir(tem[1]);
+                            } else if (tem[0] == 'extensions') {
+                                fileSearch.conditionIncludeExtension(tem[1].split('|'));
+                            }
                         }
+
                     }
                     var fromCreateDateline = 0,
                         toCreateDateline = 0,
@@ -1832,27 +1839,31 @@ angular.module('gkClientIndex.directives', [])
                         fileSearch.conditionIncludeLastDateline(toEditDateline, 'lt');
                     }
                     if ($scope.creator) {
-                        fileSearch.conditionIncludeCreator($scope.creator.split(','));
+                        fileSearch.conditionIncludeCreator(String($scope.creator).split(','));
                     }
                     if ($scope.modifier) {
-                        fileSearch.conditionIncludeModifier($scope.modifier.split(','));
+                        fileSearch.conditionIncludeModifier(String($scope.modifier).split(','));
                     }
                     var condition = fileSearch.getCondition();
                     return condition;
                 };
                 var smartFolderName = '';
                 if ($scope.partition == 'smartfolder') {
-                    smartFolderName = GKSmartFolder.getFolderByCode($scope.keyword)['name'];
-                    $scope.smartFolderName = smartFolderName;
+                    var smartfolder = GKSmartFolder.getFolderByCode($scope.keyword);
+                    if(smartfolder){
+                        smartFolderName =smartfolder['name'];
+                        $scope.smartFolderName = smartFolderName;
+                    }
+
                 }
 
                 $scope.disabledSave = true;
                 $scope.$watch('[creator,modifier,fromCreateDate,toCreateDate,fromEditDate,toEditDate,extension]', function (newValue, oldValue) {
-                    if (newValue != oldValue) {
+                    if(angular.equals(newValue,oldValue)) return;
                         var condition = getCondition();
+                        //console.log(condition);
                         GKSearch.setCondition(condition);
                         $rootScope.$broadcast('invokeSearch');
-                    }
                 }, true);
 
                 if ($scope.partition == 'smartfolder') {
@@ -1893,14 +1904,21 @@ angular.module('gkClientIndex.directives', [])
 //                        return;
 //                    }
                     $scope.searchKeyword = GKSearch.getKeyWord();
-
+                    $scope.mountId = GKSearch.getConditionField('mount_id');
                     $scope.searchPath = GKSearch.getConditionField('path');
+                    var mountId =  GKSearch.getConditionField('mount_id') || $scope.PAGE_CONFIG.mount.mount_id;
+                    var mount =  GKMount.getMountById(mountId);
+                    if(mount){
+                        $scope.searchPath = $scope.searchPath?mount['name'] + '/' + $scope.searchPath:mount['name'];
+                    }
+
                     var creator = GKSearch.getConditionField('creator');
-                    $scope.creator = creator ? creator.split(' ') : '';
+                    $scope.creator = creator ? String(creator).split(' ') : '';
                     var modifier = GKSearch.getConditionField('modifier');
-                    $scope.modifier = modifier ? modifier.split(' ') : '';
+                    $scope.modifier = modifier ? String(modifier).split(' ') : '';
 
                     var dateline = GKSearch.getConditionField('dateline');
+
                     if (dateline) {
                         $scope.fromCreateDate = dateline[0] ? $filter('date')(dateline[0] * 1000, 'yyyy-MM-dd') : '';
                         $scope.toCreateDate = dateline[1] ? $filter('date')(dateline[1] * 1000, 'yyyy-MM-dd') : '';
@@ -1949,7 +1967,7 @@ angular.module('gkClientIndex.directives', [])
                  * 删除智能文件夹
                  */
                 $scope.cancelSmartFolder = function () {
-                    if (!confirm('你确定要关闭该智能文件夹？')) {
+                    if (!confirm('你确定要删除该智能文件夹？')) {
                         return;
                     }
                     GKApi.removeSmartFolder($scope.keyword).success(function (data) {
@@ -1971,11 +1989,20 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 保存智能文件夹
                  */
-                $scope.saveSmartFolder = function () {
-                    return;
-                    GKApi.updateSmartFolder($scope.keyword).success(function (data) {
-                    }).error(function () {
+                $scope.editSmartFolder = function () {
+                    if (!$scope.smartFolderName) {
+                        alert('智能文件夹名不能为空');
+                        return;
+                    }
+                    var condition = getCondition();
+                    GKApi.updateSmartFolder($scope.keyword,$scope.smartFolderName,condition).success(function (data) {
+                        alert('保存成功');
+                        $scope.$apply(function(){
+                            $rootScope.$broadcast('editSmartFolder',$scope.smartFolderName,$scope.keyword);
+                        })
 
+                    }).error(function (requst) {
+                    GKException.handleAjaxException(requst);
                         });
                 };
 
