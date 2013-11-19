@@ -3,6 +3,14 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('gkinput',[function(){
+        return {
+            restrict: 'E',
+            link:function(scope, element,attrs){
+                ;
+            }
+        }
+    }])
     .directive('preventDragDrop',[function(){
         return function ($scope, $element, $attrs) {
             $element.on('drop', function (event) {
@@ -692,7 +700,6 @@ angular.module('gkClientIndex.directives', [])
                 var shiftLastIndex = 0; //shift键盘的起始点
 
                 $attrs.$observe('selectedPath',function(newValue,oldValue){
-                    console.log(arguments);
                     if(!newValue || newValue == oldValue){
                         return;
                     }
@@ -751,12 +758,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                     if (file.dir == 1) {
                         var params = $location.search();
-                        $location.search({
-                            path: file.fullpath,
-                            view: $scope.view,
-                            partition: params.partition,
-                            mountid: params.mountid
-                        });
+                        $scope.$emit('goToFile', file);
                     } else {
                         $scope.$emit('openFile', file);
                     }
@@ -1108,13 +1110,20 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('toolbar', [function () {
+    .directive('toolbar', ['GKFilter','GKPartition','GKSmartFolder',function (GKFilter,GKPartition,GKSmartFolder) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/toolbar.html",
             link: function ($scope, $element) {
-
+                if($scope.partition == GKPartition.smartFolder && $scope.filter){
+                    if($scope.filter =='search'){
+                        $scope.filterName = GKSmartFolder.getFolderByCode($scope.keyword)['name']
+                    }else{
+                        console.log($scope.filter);
+                        $scope.filterName =  GKFilter.getFilterName($scope.filter)
+                    }
+                }
             }
         }
     }])

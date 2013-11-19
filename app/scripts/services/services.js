@@ -95,6 +95,7 @@ angular.module('gkClientIndex.services', [])
                                     var renews = data['updates'] || [];
                                     var classifyNews = GKNews.classify(renews);
                                     $scope.classifyNews = GKNews.concatNews($scope.classifyNews, classifyNews);
+
                                     requestDateline = getLastDateline(renews, requestDateline);
                                 });
 
@@ -149,6 +150,7 @@ angular.module('gkClientIndex.services', [])
                             };
 
                             var requestDateline = getLastDateline(news, 0);
+                            //console.log( GKNews.classify(news));
                           return GKNews.classify(news);
                         }
                     }
@@ -390,7 +392,7 @@ angular.module('gkClientIndex.services', [])
                                 var orgId = item.org_id,
                                     mountId = item.mount_id,
                                     fullpath = item.fullpath;
-                                GKPath.gotoFile(orgId,mountId,fullpath);
+                                GKPath.gotoFile(mountId,fullpath);
                             }
                         });
                         break;
@@ -435,7 +437,7 @@ angular.module('gkClientIndex.services', [])
                                 var orgId = item.org_id,
                                     mountId = item.mount_id,
                                     fullpath = '';
-                                GKPath.gotoFile(orgId,mountId,fullpath);
+                                GKPath.gotoFile(mountId,fullpath);
                             }
                         });
                     case 'new_device':
@@ -692,14 +694,21 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKPath', ['$location','GKMount','GKSmartFolder','GKFilter','GKPartition',function ($location,GKMount,GKSmartFolder,GKFilter,GKPartition) {
         var GKPath =  {
-            gotoFile:function(orgId,mountId,path){
-                $location.search({
-                    partition:orgId==0?GKPartition.myFile:GKPartition.teamFile,
+            gotoFile:function(mountId,path,selectFile){
+                selectFile = angular.isDefined(selectFile)?selectFile:'';
+                var mount = GKMount.getMountById(mountId);
+                var search = {
+                    partition:mount['org_id']==0?GKPartition.myFile:GKPartition.teamFile,
                     mountid:mountId,
                     path:path,
-                    list:$location.search().list
-                });
+                    view:$location.search().view,
+                    selectedpath:selectFile
+                };
+                if(mount){
+                    $location.search(search);
+                }
             },
+
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
                 var params = {
@@ -1093,12 +1102,12 @@ angular.module('gkClientIndex.services', [])
                 });
                 return newData;
             },
-
             formatFileItem: function (value, source) {
                 var file;
                 if (source == 'api') {
                     var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
                     file = {
+                        mount_id: value.mount_id || 0,
                         filename: value.filename,
                         filesize: parseInt(value.filesize),
                         ext: ext,
@@ -1117,6 +1126,7 @@ angular.module('gkClientIndex.services', [])
                     var fileName = Util.String.baseName(value.path);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
                     file = {
+                        mount_id: value.mount_id || 0,
                         filename: fileName,
                         filesize: parseInt(value.filesize),
                         ext: ext,
@@ -1193,7 +1203,7 @@ angular.module('gkClientIndex.services', [])
             getFileIconSuffix: function (filename, dir, share, local) {
                 var suffix = '';
                 var sorts = FILE_SORTS;
-                if (dir) {
+                if (dir==1) {
                     suffix = 'folder';
                     if (share > 0) {
                         if (local == 1) {
@@ -1289,6 +1299,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getDefaultOpts:function(){
                return [
+                   'goto', //打开位置
                    'nearby', //附近
                    'unsubscribe', //取消订阅
                    'new_folder', //新建
@@ -1355,12 +1366,16 @@ angular.module('gkClientIndex.services', [])
                         if(GKCilpboard.isEmpty()){
                             this.disableOpt(opts,'paste');
                         }
+                        this.disableOpt(opts,'goto');
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts,"new_folder","manage","create",'add','clear_trash','sync','unsync','rename','del','paste','cut','lock','unlock','del_completely','revert');
+                        this.disableOpt(opts,'goto',"new_folder","manage","create",'add','clear_trash','sync','unsync','rename','del','paste','cut','lock','unlock','del_completely','revert');
                         break;
                     case (GKPartition.smartFolder || filter =='search'):
-                        this.disableOpt(opts,'nearby','unsubscribe','create','add','clear_trash','manage','new_folder','sync','unsync','paste','copy','cut');
+                        this.disableOpt(opts,'revert','del_completely','del','rename','nearby','unsubscribe','create','add','clear_trash','manage','new_folder','sync','unsync','paste','copy','cut');
+                        if(partition == GKPartition.smartFolder){
+                            this.disableOpt(opts,'del','rename');
+                        }
                         break;
                 }
 
@@ -1386,7 +1401,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getCurrentOpts: function (currentFile,partition) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, "rename", "save", "cut", "copy","lock", "unlock", "del",'revert','del_completely');
+                this.disableOpt(opts, "goto", "rename", "save", "cut", "copy","lock", "unlock", "del",'revert','del_completely');
                 if(GKCilpboard.isEmpty()){
                     this.disableOpt(opts,'paste');
                 }
@@ -1405,7 +1420,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts,"save","sync","unsync", "rename" ,"lock", "unlock");
+                    this.disableOpt(opts,"goto","save","sync","unsync", "rename" ,"lock", "unlock");
                 }
                 return opts;
             },
@@ -2217,7 +2232,6 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileList;
     }])
-
 /**
  * 客户端的回调函数
  */

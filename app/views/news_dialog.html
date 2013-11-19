@@ -13,7 +13,7 @@
                         <div class="opts" ng-if="item.opts && item.opts.length">
                             <button ng-repeat="opt in item.opts" class="btn opt.classes" ng-click="opt.click(item)">{{item.text}}</button>
                         </div>
-                        <span class="time">{{item.dateline|date:'H:mm'}}</span>
+                        <span class="time">{{item.dateline*1000|date:'H:mm'}}</span>
     <span class="text">
         <span>
             <img src="images/default_photo.png" ng-src="item.member_photo" error-src="images/default_photo.png" class="photo"/>

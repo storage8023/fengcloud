@@ -444,8 +444,12 @@ footer {
     background: #E1E3E7;
     line-height: 24px;
     padding: 0 5px;
-    font-family: 'SimSun', '宋体';
     font-size: 13px;
+}
+.toolbar .filter_name{
+    line-height: 45px;
+    font-size: 18px;
+    margin:0 0 0 10px ;
 }
 
 .toolbar > button,

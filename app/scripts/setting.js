@@ -118,7 +118,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
                 change:function(val,e){
                     var val = Util.Array.getObjectByKeyValue( $scope.generalSetting,'name','language');
                     var params = {
-                        type:val.model.value
+                        type:Number(val.model.value)
                     };
                     gkClientInterface.setChangeLanguage(params);
                 }
@@ -205,8 +205,8 @@ angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
         }
     })
     .filter('getDeviceName',function(){
-        return function(os_name){
-            return os_name?os_name:'网页版';
+        return function(device_name){
+            return device_name?device_name:'-';
         }
     })
     .filter('getDeviceStateIcon',function(){

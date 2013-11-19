@@ -80,7 +80,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return node;
         };
 
-
         /**
          * 个人的文件
          * @type {*}
@@ -299,6 +298,28 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
            };
 
         })
+
+        $scope.$on('$locationChangeSuccess', function ($s, $current,$prev) {
+            var param = $location.search();
+            var extend = {
+                filter: param.filter || '',
+                partition: param.partition,
+                view: param.view
+            };
+            if(param.partition == GKPartition.myFile && !$scope.selectedMyBranch){
+                unSelectAllBranch();
+            }
+            if(param.partition == GKPartition.teamFile && !$scope.selectedOrgBranch){
+                unSelectAllBranch();
+            }
+            if(param.partition == GKPartition.smartFolder && !$scope.selectedSmartBranch){
+                unSelectAllBranch();
+            }
+            if(param.partition == GKPartition.subscribeFile && !$scope.selectedSubscribleBranch){
+                unSelectAllBranch();
+            }
+
+        })
     }])
     .controller('fileBrowser', ['GKOpen','$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition','GKFileOpt', 'GKModal',function (GKOpen,$scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition,GKFileOpt,GKModal) {
         /**
@@ -318,7 +339,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.selectedpath = $routeParams.selectedpath || ''; //当前目录已选中的文件的路径，允许多选，用|分割
         $scope.fileData = []; //文件列表的数据
         $scope.selectedFile = []; //当前目录已选中的文件数据
-        $scope.mountId = $routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id;
+        $scope.mountId = Number($routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
         $scope.keyword = $routeParams.keyword || '';
         /**
          * 文件列表数据
@@ -366,7 +387,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         webpath: $scope.path,
                         mountid: $scope.mountId
                     });
-
+                    console.log(re);
                     fileList = re['list'];
 
                     deferred.resolve(GKFile.dealFileList(fileList, source));
@@ -564,18 +585,42 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setOrder(order);
         });
 
+        /**
+         * 获取操作的mount_id
+         */
+        var getOptFileMountId = function(){
+            var mountID;
+            if($scope.selectedFile.length>1){
+                mountID = $rootScope.PAGE_CONFIG.mount.mount_id;
+            }else{
+                mountID = $scope.selectedFile[0]['mount_id'] || $rootScope.PAGE_CONFIG.mount.mount_id
+            }
+            return Number(mountID);
+        };
 
         /**
          * 所有操作
          * @type {{add: {name: string, index: number, callback: Function}, new_folder: {name: string, index: number, callback: Function}, lock: {name: string, index: number, callback: Function}, unlock: {name: string, index: number, callback: Function}, save: {name: string, index: number, callback: Function}, del: {name: string, index: number, callback: Function}, rename: {name: string, index: number, callback: Function}, order_by: {name: string, index: number, items: {order_by_file_name: {name: string, className: string, callback: Function}, order_by_file_size: {name: string, className: string, callback: Function}, order_by_file_type: {name: string, className: string, callback: Function}, order_by_last_edit_time: {name: string, className: string, callback: Function}}}}}
          */
         var allOpts = {
+            'goto': {
+                name: '位置',
+                icon:'icon_location',
+                className:"goto",
+                callback: function () {
+                    var mountId = getOptFileMountId();
+                    var fullpath = $scope.selectedFile[0].fullpath;
+                    var upPath = Util.String.dirName(fullpath);
+                    var filename =  $scope.selectedFile[0].filename;
+                    GKPath.gotoFile(mountId,upPath,fullpath);
+                }
+            },
             'create': {
                 name: '创建',
                 icon:'icon_add',
                 className:"create",
                 callback: function () {
-                    console.log(111);
+
                     var createTeamFolderDialog = GKModal.createTeamFolder();
                     createTeamFolderDialog.result.then(function(name){
                         var collaboration = 'member|'+$rootScope.PAGE_CONFIG.user.member_id+'|1';
@@ -861,7 +906,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     var params = {
                         list: files,
-                        mountid: $scope.mountId
+                        mountid: getOptFileMountId()
                     };
 
                     GK.saveToLocal(params);
@@ -1115,10 +1160,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 打开文件
          */
         $scope.$on('openFile', function ($event, file) {
+           console.log(file);
             GK.open({
-                mountid: $location.search().mountid,
+                mountid: getOptFileMountId(),
                 webpath: file.fullpath
             });
+        })
+
+        /**
+         * 打开文件位置
+         */
+        $scope.$on('goToFile', function ($event, file) {
+            GKPath.gotoFile(getOptFileMountId(),file.fullpath);
         })
 
         $scope.$on('dropFile', function ($event, file) {
