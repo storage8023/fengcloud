@@ -761,7 +761,7 @@ angular.module('gkClientIndex.services', [])
                     breads.unshift({
                         name: GKFilter.getFilterName(filter),
                         url: '#' + this.getPath(partition, '',view,mountId,filter),
-                        filter:'filter'
+                        filter:filter
                     });
                 }
                 /**

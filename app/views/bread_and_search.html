@@ -1,4 +1,4 @@
-<div class="bread_and_search_wrapper" ng-class="searchState?'searching '+searchState:''" ng-class="searchEnable?'search_enable':''" ng-click="showSearch($event)">
+<div class="bread_and_search_wrapper" ng-class="{true:'search_disable',false:searchState?'searching '+searchState:''}[disableSearch]"  ng-click="showSearch($event)">
     <div class="dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
         <a href="javascript:void(0)" dropdown-toggle><i class="gk_down_arrow"></i></a>
         <ul class="dropdown-menu">
@@ -14,8 +14,8 @@
             </li>
         </ul>
     </div>
-    <i class="icon-search" ng-click="searchFile()"></i>
-    <i class="icon-cancel" ng-click="cancelSearch($event)"></i>
+    <i class="icon16x16 icon_search" ng-click="searchFile()"></i>
+    <i class="icon_cancel" ng-click="cancelSearch($event)">&times;</i>
     <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"  ui-keydown="{'enter':'searchFile()'}"/>
     <div class="searching_label dropdown">
         <a href="javascript:void(0)" dropdown-toggle title="在 {{searchScope=='partition' || !path.length?(partition|getPartitionName):(path|baseName)}} 中搜索：">

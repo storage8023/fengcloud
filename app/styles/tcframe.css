@@ -99,17 +99,7 @@ ul.message_list li{
     display: table;
     width: 100%;
 }
-ul.message_list li.empty{
-    color:#ACB4BF;
-    position: absolute;
-    top:50%;
-    text-align: center;
-    height: 20px;
-    line-height: 20px;
-    margin-top: -10px;
-    left:0;
-    right: 0;
-}
+
 ul.message_list .dateline{
     position: absolute;
     right: 10px;

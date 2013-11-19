@@ -115,10 +115,21 @@ header .bread_and_search_wrapper .bread{
     position: absolute;
     left:13px;
     right: 220px;
-
 }
-header .bread_and_search_wrapper.search_enable .bread{
+header .bread_and_search_wrapper.search_disable .bread{
+right: 0;
+}
+header .bread_and_search_wrapper.search_disable .icon_search,
+header .bread_and_search_wrapper.search_disable .icon_cancel,
+header .bread_and_search_wrapper.search_disable input,
+header .bread_and_search_wrapper.search_disable .searching_label{
+display: none;
+}
+header .bread_and_search_wrapper .bread{
     cursor: text;
+}
+header .bread_and_search_wrapper.search_disable .bread{
+    cursor: default;
 }
 header .bread_and_search_wrapper input{
     position: absolute;
@@ -128,22 +139,17 @@ header .bread_and_search_wrapper input{
     padding: 2px 5px;
     width: 200px;
 }
-header .bread_and_search_wrapper .icon-search,
-header .bread_and_search_wrapper .icon-cancel{
+header .bread_and_search_wrapper .icon_search,
+header .bread_and_search_wrapper .icon_cancel{
     position: absolute;
     right: 5px;
-    top:5px;
+    top:8px;
     display: inline-block;
     vertical-align: middle;
     width: 16px;
     height: 16px;
 }
-header .bread_and_search_wrapper .icon-search{
-    background: url(../images/icon/icon16x16.png) no-repeat -464px -4px;
-}
-header .bread_and_search_wrapper .icon-cancel{
-    background: url(../images/icon/icon16x16.png) no-repeat -364px -44px;
-}
+
 header .bread_and_search_wrapper .hide_bread{
    position: absolute;
    left:2px;
@@ -216,16 +222,27 @@ header .bread_and_search_wrapper .keyword_label .label .remove_label{
     font-weight: normal;
     margin: 0 3px;
 }
-header .bread_and_search_wrapper.searching.loading .icon-search{
+header .bread_and_search_wrapper.searching.loading .icon_search{
     background: url(../images/icon/loading16x16.gif) no-repeat 50%;
 }
-header .bread_and_search_wrapper.searching.end .icon-search{
+header .bread_and_search_wrapper.searching.end .icon_search{
     display: none;
 }
-header .bread_and_search_wrapper .icon-cancel{
-display: none;
+header .bread_and_search_wrapper .icon_cancel{
+ display: none;
+     width: 16px;
+    height: 16px;
+    line-height: 20px;
+   text-align: center;
+  padding: 0;
+font-size: 24px;
+ font-family: Courier;
+ font-weight: bold;
+    font-style: normal;
+    color: #7f8999;
+    top: 5px;
 }
-header .bread_and_search_wrapper.searching.end .icon-cancel{
+header .bread_and_search_wrapper.searching.end .icon_cancel{
     display: block;
 }
 
@@ -857,6 +874,7 @@ footer {
 .right_sidebar .no_file .menu_list li a:hover{
     color: #448DE8;
 }
+
 .right_sidebar .no_file .menu_list li a i{
     margin-right: 10px;
 }

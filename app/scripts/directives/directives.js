@@ -1534,7 +1534,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', function ($location, $timeout, GKSearch) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKSearch','GKPartition', function ($location, $timeout, GKSearch,GKPartition) {
         return {
             replace: true,
             restrict: 'E',
@@ -1678,9 +1678,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
 
-                /**
-                 * 监听mousedown 如果没有进行搜索，取消搜索模式
-                 */
+
                 $('body').bind('mousedown', function (event) {
                     $scope.$apply(function () {
                         if (
@@ -1694,16 +1692,24 @@ angular.module('gkClientIndex.directives', [])
                         resetSearch();
                     })
                 })
-
+                $scope.disableSearch = false;
                 $scope.$on('$routeChangeSuccess', function (event, current, previous) {
                     if(!previous|| !current){
                         return;
                     }
                     var previousParams = previous.params;
                     var currentParams = current.params;
+                    if([GKPartition.myFile,GKPartition.teamFile,GKPartition.subscribeFile].indexOf(currentParams.partition)>=0){
+                        $scope.disableSearch = false;
+                    }else{
+                        $scope.disableSearch = true;
+                    }
+
+
                     if (previousParams.partition + previousParams.path !== currentParams.partition + currentParams.path) {
                         resetSearch();
                     }
+
                 });
 
             }

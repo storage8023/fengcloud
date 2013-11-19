@@ -163,7 +163,9 @@
 .icon16x16.icon_setting_white{
     background-position: -24px -324px;
 }
-
+.icon16x16.icon_setting_color{
+    background-position: -44px -324px;
+}
 .icon16x16.icon_sync{
     background-position: -4px -344px;
 }
@@ -361,7 +363,7 @@
 }
 a:hover > .icon16x16.icon_earth,
 .icon16x16.icon_earth_color{
-    background-position: -24px -864px;
+    background-position: -44px -864px;
 }
 
 .icon16x16.icon_qr{
@@ -369,24 +371,35 @@ a:hover > .icon16x16.icon_earth,
 }
 a:hover > .icon16x16.icon_qr,
 .icon16x16.icon_qr_color{
-    background-position: -24px -884px;
+    background-position: -44px -884px;
+}
+.icon16x16.icon_pin{
+    background-position: -4px -904px;
+}
+a:hover > .icon16x16.icon_pin,
+.icon16x16.icon_pincolor{
+    background-position: -44px -904px;
 }
 
 .icon16x16.icon_team{
-    background-position: -4px -904px;
+    background-position: -4px -544px;
 }
 a:hover > .icon16x16.icon_team,
 .icon16x16.icon_team_color{
-    background-position: -24px -904px;
+    background-position: -44px -544px;
+}
+.icon16x16.icon_manage{
+    background-position: -4px -324px;
+}
+.icon16x16.icon_manage_white{
+    background-position: -24px -324px;
+}
+a:hover > .icon16x16.icon_manage,
+.icon16x16.icon_manage_color{
+    background-position: -44px -324px;
 }
 
-.icon16x16.icon_pin{
-    background-position: -4px -924px;
-}
-a:hover > .icon16x16.icon_pin,
-.icon16x16.icon_pin_color{
-    background-position: -24px -924px;
-}
+
 
 .icon16x16.icon_add{
     background-position: -4px -924px;
