@@ -620,7 +620,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 };
                                 GK.createFolder(params).then(function () {
                                     refreahData(name);
-                                    GKModal.addShare($rootScope.PAGE_CONFIG.mount.mount_id,name+'/');
+                                    var addShareModal = GKModal.addShare($rootScope.PAGE_CONFIG.mount.mount_id,name+'/');
                                 }, function (error) {
                                     GKException.handleClientException(error);
                                 });
