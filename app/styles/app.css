@@ -369,7 +369,7 @@ footer {
     font-weight: normal;
 }
 .left_sidebar ul.nav > li > a{
-    padding: 6px 15px;
+    padding: 6px 10px 6px 0;
     border-left:4px solid transparent;
     color:#9FA7AC;
     transition:background-color linear .1s;
