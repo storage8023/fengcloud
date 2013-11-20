@@ -177,6 +177,9 @@ input[type="password"] {
     color: #fff;
     border-radius: 3px;
     line-height: 1.5;
+    -webkit-font-smoothing: subpixel-antialiased;
+    -webkit-transition: 0.25s linear;
+    transition: 0.25s linear;
 }
 
 .btn.btn-default {
@@ -541,5 +544,104 @@ input[type="password"] {
 }
 .glyphicon-sync-pause{
     background-position: -4px -744px;
+}
+
+
+/* 表单文本框 */
+.form-control {
+    border: 2px solid #ACB4BF;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+.form-control.disabled,
+.form-control.readonly {
+    border-color: #E1E3E7;
+    background-color: #F1F1F2;
+}
+
+.form-control:-moz-placeholder {
+    color: #ACB4BF;
+}
+
+.form-control::-moz-placeholder {
+    color: #ACB4BF;
+}
+
+.form-control:-ms-input-placeholder {
+    color: #ACB4BF;
+}
+
+.form-control::-webkit-input-placeholder {
+    color: #ACB4BF;
+}
+
+.form-control:focus {
+    border-color: #448DE8;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+/* 文本组 */
+.input-group {
+    border: 2px solid #ACB4BF;
+    border-radius: 4px;
+    overflow: hidden;
+    zoom: 1;
+}
+
+.input-group .form-control {
+    border: 0;
+    box-shadow: none;
+}
+
+.input-group .input-group-btn > .btn {
+    background-color: #ACB4BF;
+    padding: 8px 15px 7px;
+    border-radius: 0;
+}
+
+.input-group-focus {
+    border-color: #448DE8;
+}
+
+.input-group-focus .input-group-btn > .btn {
+    background-color: #448DE8;
+}
+
+.input-group-primary {
+    border-color: #448DE8;
+}
+
+.input-group-primary .input-group-btn > .btn {
+    background-color: #448DE8;
+}
+
+.input-group-disable {
+    border-color: #E1E3E7;
+}
+
+.input-group-disable .input-group-btn > .btn {
+    background-color: #E1E3E7;
+}
+
+.input-group .input-group-addon {
+    background-color: transparent;
+    border: 0;
+    padding-right: 0px;
+    color: #ACB4BF;
+}
+
+.input-group-focus .input-group-addon {
+    color: #448DE8;
+}
+
+.input-group {
+    border: 2px solid #ACB4BF;
+    border-radius: 4px;
+    overflow: hidden;
+    zoom: 1;
+    -webkit-transition: border .25s linear, color .25s linear, background-color .25s linear;
+    transition: border .25s linear, color .25s linear, background-color .25s linear;
 }
 

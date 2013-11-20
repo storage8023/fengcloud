@@ -3,6 +3,36 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('avatar',[function(){
+        return {
+            restrict: 'E',
+            replace:true,
+            scope:{
+                gkSrc:'@'
+            },
+            template:'<img src="images/default_photo.png" error-src="images/default_photo.png" ng-src="{{gkSrc}}" />'
+        }
+    }])
+    .directive('groupPhoto',[function(){
+        return {
+            restrict: 'E',
+            replace:true,
+            scope:{
+                gkSrc:'@'
+            },
+            template:'<img src="images/default_group.png" error-src="images/default_group.png" ng-src="{{gkSrc}}" />'
+        }
+    }])
+    .directive('teamLogo',[function(){
+        return {
+            restrict: 'E',
+            replace:true,
+            scope:{
+                gkSrc:'@'
+            },
+            template:'<img src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{gkSrc}}" />'
+        }
+    }])
     .directive('newFileItem',['$parse',function($parse){
         return {
             restrict: 'E',
@@ -662,8 +692,7 @@ angular.module('gkClientIndex.directives', [])
                     $scope.folded = !$scope.folded;
                 };
 
-                $scope.insertAt = function () {
-                    var input = '@';
+                $scope.insertAt = function (input) {
                     var val = $scope.postText;
                     var jqTextarea = $element.find('.post_wrapper textarea');
                     var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');

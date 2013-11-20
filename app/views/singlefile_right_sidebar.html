@@ -26,18 +26,25 @@
     <section class="file_detail_wrapper" ng-show="showTab">
         <tabset direction="blew">
             <tab heading="共享">
-                <button ng-if="enableAddShare" class="btn btn-default set_share" ng-click="showEditShareDialog()">添加共享</button>
+                <button ng-if="enableAddShare" class="btn btn-primary set_share" ng-click="showEditShareDialog()"><i class="icon16x16 icon_add_share_white"></i>添加共享</button>
                 <ul class="scrollbar share_member_list" ng-style="{top:!enableAddShare?0:''}">
                     <li class="item" ng-repeat="shareMember in shareMembers">
-                        <span class="icon"><i class="icon16x16 icon_person"></i></span>
+                        <span class="icon">
+                           <avatar class="avatar avatar_mini" gk-src="{{shareMember.avatar}}"></avatar>
+                        </span>
                         <span class="name">{{shareMember.member_name}}</span>
                         <span class="opts" ng-if="enableAddShare && shareMember.member_id != PAGE_CONFIG.user.member_id">
                             <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除</button>
                         </span>
                     </li>
                     <li class="item" ng-repeat="shareGroup in shareGroups">
-                        <span class="icon"><i class="icon16x16 icon_people"></i></span>
+                        <span class="icon">
+                            <group-photo class="avatar avatar_mini" gk-src="{{shareGroup.photo}}"></group-photo>
+                        </span>
                         <span class="name">{{shareGroup.group_name}}</span>
+                        <span class="members">
+                             <avatar ng-repeat="member in members" title="{{member.member_name}}" class="avatar avatar_mini" gk-src="{{member.avatar}}"></avatar>
+                        </span>
                         <span class="opts" ng-if="enableAddShare">
                             <button class="btn btn-danger btn-flat" ng-click="removeShare(shareGroup)">删除</button>
                         </span>
@@ -47,9 +54,13 @@
 
             <tab heading="讨论">
                 <div class="update_wrapper" ng-class="inputingRemark?'editing':''">
+                    <div class="empty" ng-if="!remarks || !remarks.length">没有讨论</div>
                     <ul class="scrollbar update_list">
                         <li ng-repeat="remark in remarks" class="item c_f_after">
-                            <span class="update_member"><span>{{remark.member_name}}</span></span>
+                            <span class="update_member" title="{{remark.member_name}}">
+                                <avatar class="avatar avatar_mini" gk-src="{{remark.member_photo}}"></avatar>
+                                <span>{{remark.member_name}}：</span>
+                            </span>
                                  <span class="update_text">
                                     <span ng-bind-html="remark.render_text"></span>
                                      <span class="update_time">({{remark.dateline*1000|date:'M月d日'}})</span>
@@ -57,12 +68,14 @@
                         </li>
                     </ul>
                     <div class="post_wrapper">
-                        <textarea ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="inputingRemark=true"
+                        <textarea class="form-control" ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="inputingRemark=true"
                                   ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
 
                         <div class="post_opts">
-                            <a href="javascript:void(0)" ng-click="insertAt()" class="f_l">提醒(@)</a>
-                            <button class="btn btn-default f_r" ng-click="cancelPostRemark()">取消</button>
+                            <span ng-show="remindMembers && remindMembers.length">
+                                <a href="javascript:void(0)" ng-click="insertAt('@')" class="f_l" title="提醒">@</a>
+                            <a href="javascript:void(0)" ng-click="insertAt('@all ')" class="f_l" title="提醒所有共享者">@全部</a>
+                            </span>
                             <button class="btn btn-primary f_r" ng-click="postRemark(postText)">确定</button>
                         </div>
                     </div>
@@ -70,6 +83,7 @@
 
             </tab>
             <tab heading='历史'>
+                <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
                 <ul class="scrollbar history_list">
                     <li class="item c_f_after" ng-class="'act_'+history.act" ng-repeat="history in histories">
                         <div class="act_name"><span>{{history.act_name}}</span></div>

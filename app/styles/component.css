@@ -1,4 +1,7 @@
 /* css 通用组件样式 */
+.btn > i{
+    margin-right: 5px;
+}
 .icon16x16{
     width: 16px;
     height: 16px;
@@ -478,6 +481,13 @@ a:hover > .icon16x16.icon_manage,
     background-position: -24px -324px;
 }
 
+.icon16x16.icon_add_share{
+    background-position: -4px  -1104px;
+}
+.icon16x16.icon_add_share_white{
+    background-position: -24px -1104px;
+}
+
 
 /*32x32*/
 .icon32x32{
@@ -558,7 +568,7 @@ a:hover > .icon16x16.icon_manage,
 }
 .icon_docx,
 .icon_doc {
-    background-image: url(../images/icon/word32x32.png);
+    background-image: url(../images/icon/doc32x32.png);
 }
 .icon_xlsx,
 .icon_xls {
@@ -765,6 +775,7 @@ button.close_window{
 .empty{
     text-align: center;
     padding-top: 60px;
+    color: #ACB4BF;
 }
 
 /*一行*/
@@ -900,4 +911,16 @@ button.close_window{
     height: 560px;
     max-height: 560px;
     border-radius: 0 0 6px 6px;
+}
+
+/*头像*/
+.avatar{
+vertical-align: middle;
+}
+.avatar.avatar_mini{
+   width: 16px;
+    height: 16px;
+    border-radius: 16px;
+    margin-right: 3px;
+    margin-top: -2px;
 }

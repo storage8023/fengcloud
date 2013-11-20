@@ -160,36 +160,64 @@ angular.module('gkClientIndex.services', [])
                     backdrop: false,
                     windowClass: 'backup_dialog',
                     controller: function ($scope, $modalInstance) {
+                        var tips = {
+                            'desktop': {
+                                mac:'同步桌面上的文件到够快',
+                                windows:'同步桌面上的文件到够快'
+                            },
+                            'documents': {
+                                mac:'同步finder中的文档文件夹（路径）到够快',
+                                windows:'同步电脑中的文档文件夹（库\\文档）到够快'
+                            },
+                            'pictures': {
+                                mac:'同步finder中的图片文件夹（路径）到够快',
+                                windows:'同步电脑中的图片文件夹（库\\图片）到够快'
+                            },
+                            'music': {
+                                mac:'同步finder中的音乐文件夹（路径）到够快',
+                                windows:'同步电脑中的音乐文件夹（库\\音乐）到够快'
+                            },
+                            'video': {
+                                mac:'同步finder中的视频文件夹（路径）到够快',
+                                windows:'同步电脑中的视频文件夹（库\\视频）到够快'
+                            },
+                            'other': {
+                                mac:'自定义计算机中的文件夹同步到够快',
+                                windows:'自定义计算机中的文件夹同步到够快'
+                            }
+                        };
+                        var os = gkClientInterface.getClientOS().toLowerCase();
+                        console.log(os);
                         $scope.backupList = [
                             {
                                 name:'desktop',
                                 text:'桌面',
-                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                                tip:tips['desktop'][os]
                             },
                             {
                                 name:'documents',
                                 text:'文档',
-                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                                tip:tips['documents'][os]
                             },
                             {
                                 name:'pictures',
                                 text:'照片',
-                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                                tip:tips['pictures'][os]
                             },
                             {
                                 name:'music',
                                 text:'音乐',
-                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                                tip:tips['music'][os]
                             },
                             {
                                 name:'video',
                                 text:'视频',
-                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                                tip:tips['video'][os]
                             },
                             {
                                 name:'other',
                                 text:'文件夹',
-                                tip:'选择你计算机中的对应内容，我们将自动帮你备份到够快中'
+                                tip:tips['other'][os]
                             }
                         ];
                         $scope.backUp = function(item){
@@ -2404,24 +2432,24 @@ angular.module('gkClientIndex.services', [])
     }
     ])
 ;
+
+
 /**
- * 客户端的回调函数
- * @type {{}}
+ * 客户端的回调
+ * @param name
+ * @param params
  */
-var gkClientCallback = {};
-(function(obj){
-    var callbacks = ['testCallback','UpdateWebpath','UpdateMessage','AddFindObject','ShowMessage','LoginResult','ShowFind'];
-    angular.forEach(callbacks,function(value){
-            obj[value] = function(param){
-                var rootScope = jQuery(document).scope();
-                var JSONparam;
-                if(param && param !== undefined){
-                    JSONparam = JSON.parse(param);
-                }
-                rootScope.$broadcast(value,JSONparam);
-            }
-    });
-})(gkClientCallback)
+var gkClientCallback = function(name,params){
+    if(typeof name !=='string'){
+        name = String(name);
+    }
+    var rootScope = jQuery(document).scope();
+    var JSONparam;
+    if(param){
+        JSONparam = JSON.parse(param);
+    }
+    rootScope.$broadcast(name,JSONparam);
+};
 
 /**
  * 网站的回调
@@ -2429,7 +2457,6 @@ var gkClientCallback = {};
  * @param params
  */
 var gkSiteCallback = function(name,params){
-    console.log(arguments);
     if(typeof name !=='string'){
         name = String(name);
     }
