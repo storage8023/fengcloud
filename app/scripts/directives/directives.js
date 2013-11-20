@@ -646,7 +646,7 @@ angular.module('gkClientIndex.directives', [])
                                 if(data.share_members){
                                     $scope.shareMembers = data.share_members;
                                 }
-                               if(data.shareGroups){
+                               if(data.share_groups){
                                    $scope.shareGroups = data.share_groups;
                                }
                                if(data.remark){

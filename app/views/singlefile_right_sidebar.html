@@ -43,7 +43,7 @@
                         </span>
                         <span class="name">{{shareGroup.group_name}}</span>
                         <span class="members">
-                             <avatar ng-repeat="member in members" title="{{member.member_name}}" class="avatar avatar_mini" gk-src="{{member.avatar}}"></avatar>
+                             <avatar ng-repeat="member in shareGroup.members" title="{{member.member_name}}" class="avatar avatar_mini" gk-src="{{member.avatar}}"></avatar>
                         </span>
                         <span class="opts" ng-if="enableAddShare">
                             <button class="btn btn-danger btn-flat" ng-click="removeShare(shareGroup)">删除</button>
