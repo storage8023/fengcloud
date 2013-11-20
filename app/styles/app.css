@@ -376,13 +376,18 @@ footer {
     -webkit-transition:background-color linear .1s;
 }
 .left_sidebar  ul.nav.nav-list.abn-tree .tree-icon{
-    display: inline-block;
+    background: none;
+
+    text-align: right;
+}
+.left_sidebar  ul.nav.nav-list.abn-tree .tree-icon i{
     height: 0;
     width: 0;
     line-height: 0;
     border: 4px solid transparent;
     border-left-color: #7F8999;
-    background: none;
+    display: inline-block;
+    vertical-align: middle;
     transition:transform linear .1s;
     -webkit-transition:-webkit-transform linear .1s;
     transform-origin:25% 50%;
@@ -392,23 +397,17 @@ footer {
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_fold{
 
 }
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_unfold{
+.left_sidebar  ul.nav.nav-list.abn-tree .icon_unfold i{
     transform:rotate(90deg);
     -webkit-transform:rotate(90deg);
 }
-.left_sidebar ul.nav.nav-list.abn-tree > .active .tree-icon{
-    border-left-color: #fff;
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_folder{
-}
+
+
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_trash{
     margin-left: 32px;
 }
 
-.left_sidebar ul.nav.nav-list.abn-tree > .activ .tree-icon{
-    transition:all linear .2s;
-    -webkit-transition:all linear .2s;
-}
+
 
 .left_sidebar ul.nav.abn-tree > .hover > a,
 .left_sidebar ul.nav.abn-tree > li > a:hover{

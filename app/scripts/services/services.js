@@ -2439,7 +2439,7 @@ angular.module('gkClientIndex.services', [])
  * @param name
  * @param params
  */
-var gkClientCallback = function(name,params){
+var gkClientCallback = function(name,param){
     if(typeof name !=='string'){
         name = String(name);
     }
