@@ -825,7 +825,18 @@ footer {
     height: 166px;
     text-align: center;
     border-radius: 5px;
+    background-color: transparent;
 }
+
+.thumb_view .file_item.hover,
+.thumb_view .file_item:hover{
+    background-color:#E1E3E7;
+}
+
+.thumb_view .file_item.selected {
+    background-color:#7F8999
+}
+
 
 .file_item_edit .form-control.new_file_name {
     display: inline-block;
