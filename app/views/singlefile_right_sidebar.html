@@ -32,7 +32,7 @@
                         <span class="icon"><i class="icon16x16 icon_person"></i></span>
                         <span class="name">{{shareMember.member_name}}</span>
                         <span class="opts" ng-if="enableAddShare && shareMember.member_id != PAGE_CONFIG.user.member_id">
-                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除{{shareMember.member_id}}</button>
+                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除</button>
                         </span>
                     </li>
                     <li class="item" ng-repeat="shareGroup in shareGroups">
