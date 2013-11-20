@@ -644,9 +644,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 callback: function () {
 
                     var createTeamFolderDialog = GKModal.createTeamFolder();
-                    createTeamFolderDialog.result.then(function(name){
-                        var collaboration = 'member|'+$rootScope.PAGE_CONFIG.user.member_id+'|2';
-                        RestFile.orgShare($rootScope.PAGE_CONFIG.mount.mount_id,name,collaboration)
+                    createTeamFolderDialog.result.then(function(param){
+                        var name = param.filename,
+                            shareToSubscriber = param.shareToSubscriber;
+                        var collaborations = ['member|'+$rootScope.PAGE_CONFIG.user.member_id+'|2','group|0|1'];
+                        if(shareToSubscriber){
+                            collaborations.push('member|0|0');
+                        }
+                        RestFile.orgShare($rootScope.PAGE_CONFIG.mount.mount_id,name,collaborations.join(','))
                             .success(function(data){
                                 var params = {
                                     webpath: name,
@@ -672,6 +677,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon:'icon_remove',
                 className:"unsubscribe",
                 callback: function () {
+                    if(!confirm('你确定要取消订阅改团队？')){
+                        return;
+                    }
                     GKApi.teamQuit($rootScope.PAGE_CONFIG.mount.org_id).success(function(){
                         $scope.$apply(function(){
                             $rootScope.$broadcast('unSubscribeTeam',$rootScope.PAGE_CONFIG.mount.org_id);

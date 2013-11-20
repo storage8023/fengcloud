@@ -604,44 +604,63 @@ angular.module('gkClientIndex.directives', [])
                     return Number(mountID);
                 };
 
-                var getFileInfo =  function(file){
+                var getFileInfo =  function(file,options){
+                    var defaultOptions = {
+                      data:'',
+                        cache:true
+                    };
+                     options = angular.extend(defaultOptions,options);
                     var mountId = getOptMountId(file);
                     var mount = GKMount.getMountById(mountId);
                     var fullpath = file.dir == 1 ? file.fullpath + '/' : file.fullpath;
                     var formatTag = [];
-                    RestFile.get(mountId, fullpath).success(function (data) {
-                        angular.forEach(jQuery.trim(data.tag).split(gird), function (value) {
-                            if (value && formatTag.indexOf(value) < 0) {
-                                formatTag.push(value);
+
+                    if(options.data != 'sidebar'){
+                        RestFile.get(mountId, fullpath).success(function (data) {
+                            angular.forEach(jQuery.trim(data.tag).split(gird), function (value) {
+                                if (value && formatTag.indexOf(value) < 0) {
+                                    formatTag.push(value);
+                                }
+                            });
+                            var formatFile = GKFile.formatFileItem(data,'api');
+                            angular.extend($scope.file,formatFile);
+                            $scope.file.formatTag = formatTag;
+                            if(mount['org_id']>0 && $scope.file.cmd > 0  && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile){
+                                $scope.showTab = true;
+                            }else{
+                                $scope.showTab = false;
                             }
+
+                            $scope.enableAddShare = false;
+                            if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
+                                ){
+                                $scope.enableAddShare = true;
+                            }
+
                         });
-                        var formatFile = GKFile.formatFileItem(data,'api');
-                        angular.extend($scope.file,formatFile);
-                        $scope.file.formatTag = formatTag;
-                        if(mount['org_id']>0 && $scope.file.cmd > 0  && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile){
-                            $scope.showTab = true;
-                        }else{
-                            $scope.showTab = false;
-                        }
+                    }
 
-
-                        $scope.enableAddShare = false;
-                        if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
-                            ){
-                            $scope.enableAddShare = true;
-                        }
-
-                    });
-
-                    GKApi.sideBar(mountId, fullpath).success(function (data) {
-                        $scope.$apply(function(){
-                            $scope.shareMembers = data.share_members;
-                            $scope.shareGroups = data.share_groups;
-                            $scope.remarks = data.remark;
-                            $scope.histories = data.history;
-                            $scope.remindMembers = data.remind_members;
-                        })
-                    });
+                    if(options.data != 'file'){
+                        GKApi.sideBar(mountId, fullpath,options.type,options.cache).success(function (data) {
+                            $scope.$apply(function(){
+                                if(data.share_members){
+                                    $scope.shareMembers = data.share_members;
+                                }
+                               if(data.shareGroups){
+                                   $scope.shareGroups = data.share_groups;
+                               }
+                               if(data.remark){
+                                   $scope.remarks = data.remark;
+                               }
+                                if(data.history){
+                                    $scope.histories = data.history;
+                                }
+                               if(data.remind_members){
+                                   $scope.remindMembers = data.remind_members;
+                               }
+                            })
+                        });
+                    }
 
                 };
 
@@ -713,8 +732,15 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.showEditShareDialog = function () {
                     var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
-                    GKModal.addShare(getOptMountId($scope.file),fullpath);
+                    var addShareModal = GKModal.addShare(getOptMountId($scope.file),fullpath);
+                    addShareModal.result.then(function(){
+
+                    })
                 };
+
+                $scope.$on('refreshSidebar',function(){
+                    getFileInfo($scope.localFile,{data:'sidebar',type:'share',cache:false});
+                })
 
                 $scope.handleKeyDown = function (e) {
                     if (e.keyCode == 13 & (e.ctrlKey || e.metaKey)) {
@@ -824,18 +850,19 @@ angular.module('gkClientIndex.directives', [])
                 selectedFile: '=',
                 rightOpts: '=',
                 keyword: '@',
-                selectedPath: '@',
+                selectedPath: '=',
                 showHint:'='
             },
             link: function ($scope, $element,$attrs) {
                 $scope.PAGE_CONFIG = $rootScope.PAGE_CONFIG;
                 var shiftLastIndex = 0; //shift键盘的起始点
 
-                $attrs.$observe('selectedPath',function(newValue,oldValue){
+                $scope.$watch('selectedPath',function(newValue,oldValue){
                     if(!newValue || newValue == oldValue){
                         return;
                     }
                     if (newValue) {
+                        GKFileList.unSelectAll($scope);
                         angular.forEach(newValue.split('|'), function (value) {
                             GKFileList.selectByPath($scope,value);
                         });

@@ -7,8 +7,14 @@
        <label>文件夹名：</label>
        <input class="form-control" type="text" ng-model="filename" />
    </div>
+    <div>
+        <div class="checkbox">
+            <input id="share_to_subscriber" name="share_to_subscriber" type="checkbox" ng-model="shareToSubscriber" />
+            <label for="share_to_subscriber">同时共享给订阅者</label>
+        </div>
+    </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok(filename)">确定</button>
+    <button class="btn btn-primary" ng-click="ok(filename,shareToSubscriber)">确定</button>
     <button class="btn btn-default" ng-click="cancel()">取消</button>
 </div>

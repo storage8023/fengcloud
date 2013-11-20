@@ -320,7 +320,8 @@ angular.module('gkClientIndex.services', [])
                             if(isCancel==1){
                                 $modalInstance.dismiss('cancel');
                             }else{
-                                $modalInstance.close('cancel');
+                                $modalInstance.close('done');
+                                $rootScope.$broadcast('refreshSidebar');
                             }
 
                         })
@@ -386,13 +387,16 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-
-                        $scope.ok = function(filename){
+                        $scope.shareToSubscriber = false;
+                        $scope.ok = function(filename,shareToSubscriber){
                             if(!filename.length){
                                  alert('请输入文件夹名称');
                                 return;
                             }
-                            $modalInstance.close(filename);
+                            $modalInstance.close({
+                                filename:filename,
+                                shareToSubscriber:shareToSubscriber
+                            });
                         }
                     }
                 });
@@ -1855,7 +1859,7 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            sideBar: function (mount_id, fullpath, type, start, date) {
+            sideBar: function (mount_id, fullpath, type,cache, start, date) {
                 var params = {
                     mount_id: mount_id,
                     fullpath: fullpath,
@@ -1867,6 +1871,7 @@ angular.module('gkClientIndex.services', [])
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
+                    cache:cache||true,
                     type: 'GET',
                     dataType:'json',
                     url: GK.getApiHost() + '/1/file/client_sidebar',
