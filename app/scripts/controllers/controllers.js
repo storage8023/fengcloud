@@ -333,7 +333,28 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 unSelectAllBranch();
                 selectBreanch(branch,param.partition);
             }
+        })
 
+        /**
+         * 监控团队数据的更新
+         */
+        $scope.$on('AddOrgObject',function(event,param){
+            if(!param){
+                return;
+            }
+            $scope.$apply(function(){
+                var newOrg = param;
+                var partition = GKPartition.teamFile;
+                if(newOrg['type']==3){
+                    partition = GKPartition.subscribeFile;
+                }
+                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
+                if(partition == GKPartition.teamFile){
+                    $scope.orgTreeList.push(newOrg);
+                }else{
+                    $scope.orgSubscribeList.push(newOrg);
+                }
+            });
         })
     }])
     .controller('fileBrowser', ['GKDialog','GKOpen','$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition','GKFileOpt', 'GKModal',function (GKDialog,GKOpen,$scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition,GKFileOpt,GKModal) {
