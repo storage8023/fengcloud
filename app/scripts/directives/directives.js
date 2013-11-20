@@ -799,6 +799,7 @@ angular.module('gkClientIndex.directives', [])
                 showHint:'='
             },
             link: function ($scope, $element,$attrs) {
+                $scope.PAGE_CONFIG = $rootScope.PAGE_CONFIG;
                 var shiftLastIndex = 0; //shift键盘的起始点
 
                 $attrs.$observe('selectedPath',function(newValue,oldValue){

@@ -556,15 +556,15 @@ a:hover > .icon16x16.icon_manage,
 .icon_compress {
     background-image: url(../images/icon/compress32x32.png);
 }
-
+.icon_docx,
 .icon_doc {
     background-image: url(../images/icon/word32x32.png);
 }
-
+.icon_xlsx,
 .icon_xls {
     background-image: url(../images/icon/excel32x32.png);
 }
-
+.icon_pptx,
 .icon_ppt {
     background-image: url(../images/icon/ppt32x32.png);
 }
@@ -583,10 +583,10 @@ a:hover > .icon16x16.icon_manage,
     background-image: url(../images/icon/folder32x32.png);
 }
 .icon_sync_folder {
-    background-image: url(../images/icon/folder_share32x32.png);
+    background-image: url(../images/icon/folder_sync32x32.png);
 }
-.icon_sync_shared_folder {
-    background-image: url(../images/icon/folder_share32x32.png);
+.icon_shared_sync_folder {
+    background-image: url(../images/icon/folder_share_sync32x32.png);
 }
 .icon_local_folder {
     background-image: url(../images/icon/local_folder32x32.png);
@@ -596,9 +596,6 @@ a:hover > .icon16x16.icon_manage,
     background-image: url(../images/icon/folder_share32x32.png);
 }
 
-.icon_private_folder {
-    background-image: url(../images/icon/private_folder32x32.png);
-}
 
 /*通过border实现的箭头*/
 

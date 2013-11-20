@@ -46,10 +46,10 @@
              data-jqyoui-options="{helper:getHelper,zIndex: 9999,appendTo:'body'}"
              >
             <div class="thumb" ng-show="view=='thumb'">
-                <img ng-src="{{file.filename | getFileThumb:file.dir}}" alt=""/>
+                <img ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" alt=""/>
             </div>
             <div class="file_name">
-                <i class="file_icon {{file.filename | getFileIcon:file.dir:file.local:file.sync}}" ng-show="view=='list'">
+                <i class="file_icon {{file.filename | getFileIcon:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" ng-show="view=='list'">
                 </i>
                 <span title="{{file.fullpath}}" class="name" ng-if="!keyword.length" ng-bind="file.filename"></span>
                 <span title="{{file.fullpath}}" class="name" ng-if="keyword.length" ng-bind-html="file.filename|highlight:keyword"></span>

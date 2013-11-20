@@ -45,8 +45,8 @@ angular.module('gkClientIndex.filters', [])
           }
     }])
     .filter('getFileThumb',['GKFile',function(GKFile){
-        return function(filename,dir){
-            return  'images/icon/' + GKFile.getFileIconSuffix(filename,dir) + '128x128.png';
+        return function(filename,dir,share,sync){
+            return  'images/icon/' + GKFile.getFileIconSuffix(filename,dir,share,sync) + '128x128.png';
         }
     }])
     .filter('getFileType',['GKFile',function(GKFile){

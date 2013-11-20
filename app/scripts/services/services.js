@@ -1220,7 +1220,9 @@ angular.module('gkClientIndex.services', [])
                     }
                 } else {
                     var ext = Util.String.getExt(filename);
-                    if (jQuery.inArray(ext, sorts['SORT_MOVIE']) > -1) {
+                    if(jQuery.inArray(ext, sorts['SORT_SPEC']) > -1){
+                        suffix = ext;
+                    }else if (jQuery.inArray(ext, sorts['SORT_MOVIE']) > -1) {
                         suffix = 'movie';
                     } else if (jQuery.inArray(ext, sorts['SORT_MUSIC']) > -1) {
                         suffix = 'music';
