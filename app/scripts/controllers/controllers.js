@@ -110,44 +110,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 初始选中
          * @type {*}
          */
-        $scope.selectedMyBranch = null;
-        $scope.selectedOrgBranch = null;
-        $scope.selectedSmartBranch = null;
-        $scope.selectedSubscribleBranch = null;
+        $scope.selectedBranch = null;
         $scope.initSelectedBranch = $scope.treeList[0];
-        var unSelectAllBranch = function (partition) {
-            if (partition != GKPartition.myFile && $scope.selectedMyBranch) {
-                $scope.selectedMyBranch.selected = false;
-                $scope.selectedMyBranch = null;
-            }
-            if (partition != GKPartition.teamFile && $scope.selectedOrgBranch) {
-                $scope.selectedOrgBranch.selected = false;
-                $scope.selectedOrgBranch = null;
-            }
-            if (partition != GKPartition.smartFolder && $scope.selectedSmartBranch) {
-                $scope.selectedSmartBranch.selected = false;
-                $scope.selectedSmartBranch = null;
-            }
-            if (partition != GKPartition.subscribeFile && $scope.selectedSubscribleBranch) {
-                $scope.selectedSubscribleBranch.selected = false;
-                $scope.selectedSubscribleBranch = null;
+        var unSelectAllBranch = function () {
+            if($scope.selectedBranch){
+                $scope.selectedBranch.selected = false;
+                $scope.selectedBranch = null;
             }
         };
 
         var selectBreanch = function(branch,partition,isListFile){
-            branch.selected = true;
-            if(partition == GKPartition.myFile){
-                $scope.selectedMyBranch = branch;
-            }else if(partition == GKPartition.teamFile){
-                $scope.selectedOrgBranch = branch;
-            }else if(partition == GKPartition.smartFolder){
-                $scope.selectedSmartBranch = branch;
-            }else if(partition == GKPartition.subscribeFile){
-                $scope.selectedSubscribleBranch = branch;
-            }
-
-            if(isListFile){
-                $scope.handleSelect(branch, partition);
+            if(!angular.equals($scope.selectedBranch,branch)){
+                branch.selected = true;
+                $scope.selectedBranch = branch;
+                if(isListFile){
+                    $scope.handleSelect(branch, partition);
+                }
             }
         };
 
@@ -188,17 +166,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-
-
-
         /**
          * 选中树节点的处理函数
          * @param branch
          */
         $scope.handleSelect = function (branch, partition) {
-            if (partition != $location.search().partition) {
-                unSelectAllBranch(partition);
-            }
+            //unSelectAllBranch();
             var pararm = {
                 view: 'list',
                 partition: partition
@@ -247,15 +220,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 createTeamDialog.result.then(function (orgId) {
                     gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
                         if(param){
-                            $scope.$apply(function(){
-                                var newOrg = param;
-                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
-                                unSelectAllBranch(GKPartition.teamFile);
-                                newOrg.selected = true;
-                                $scope.orgTreeList.push(newOrg);
-                                var len =  $scope.orgTreeList.length;
-                                $scope.handleSelect($scope.orgTreeList[len-1], GKPartition.teamFile);
-                            });
+                            var newOrg = param;
+                            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
+                            $scope.orgTreeList.push(newOrg);
+                            unSelectAllBranch();
+                            selectBreanch(newOrg,GKPartition.teamFile,true);
                         }
                     })
                 })
@@ -268,12 +237,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 $scope.$apply(function(){
                                     var newOrg = param;
                                     newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
-                                    unSelectAllBranch(GKPartition.subscribeFile);
-                                    newOrg.selected = true;
-                                    $scope.orgSubscribeList.push(newOrg);
-                                    var len =  $scope.orgSubscribeList.length;
-                                    nearbyDialog.dismiss('cancel');
-                                    $scope.handleSelect($scope.orgSubscribeList[len-1], GKPartition.subscribeFile);
+                                    if(newOrg){
+                                        $scope.orgSubscribeList.push(newOrg);
+                                        unSelectAllBranch();
+                                        selectBreanch(newOrg,GKPartition.subscribeFile,true);
+                                        nearbyDialog.dismiss('cancel');
+                                    }
                                 });
                             }
 
@@ -336,32 +305,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$locationChangeSuccess', function ($s, $current,$prev) {
             var param = $location.search();
-            if(param.partition == GKPartition.myFile && !$scope.selectedMyBranch){
-                unSelectAllBranch(GKPartition.teamFile)
-                selectBreanch($scope.treeList[0],GKPartition.myFile);
-            }
-            if(param.partition == GKPartition.teamFile && !$scope.selectedOrgBranch){
+            var branch;
+            if(param.partition == GKPartition.myFile){
+                branch = $scope.treeList[0]
+            }else if(param.partition == GKPartition.teamFile){
                 angular.forEach($scope.orgTreeList,function(value){
-                    console.log(value.data.mount_id == param.mountid);
-                      if(value.data.mount_id == param.mountid){
-                          unSelectAllBranch(GKPartition.teamFile)
-                          selectBreanch(value,GKPartition.teamFile);
-                          return false;
-                      }
-                })
-
-            }
-            if(param.partition == GKPartition.smartFolder && !$scope.selectedSmartBranch){
-                unSelectAllBranch();
-            }
-            if(param.partition == GKPartition.subscribeFile && !$scope.selectedSubscribleBranch){
-                unSelectAllBranch(GKPartition.teamFile)
-                angular.forEach($scope.orgSubscribeList,function(value){
-                    if(value.data.mount_id == param.mount_id){
-                        selectBreanch(value,GKPartition.subscribeFile);
+                    if(value.data.mount_id == param.mountid){
+                        branch = value;
                         return false;
                     }
                 })
+            }else if(param.partition == GKPartition.subscribeFile){
+                angular.forEach($scope.orgSubscribeList,function(value){
+                    if(value.data.mount_id == param.mount_id){
+                        branch = value;
+                        return false;
+                    }
+                })
+            }
+            /**
+             * 如果当前的路径分区与选择的节点分区不同，则需要手动unselect已选择的节点
+             */
+            if(branch && $scope.selectedBranch && branch.data.partition != $scope.selectedBranch.data.partition){
+                unSelectAllBranch();
+                selectBreanch(branch,param.partition);
             }
 
         })

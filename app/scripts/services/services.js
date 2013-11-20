@@ -187,7 +187,6 @@ angular.module('gkClientIndex.services', [])
                             }
                         };
                         var os = gkClientInterface.getClientOS().toLowerCase();
-                        console.log(os);
                         $scope.backupList = [
                             {
                                 name:'desktop',
@@ -1100,6 +1099,9 @@ angular.module('gkClientIndex.services', [])
                     label,
                     context = this;
                 angular.forEach(data, function (value) {
+                     angular.extend(value,{
+                         partition:type
+                     });
                     if(type==GKPartition.myFile || type==GKPartition.teamFile || type==GKPartition.subscribeFile){
                         if (!value.fullpath) {
                             label = value.name;
@@ -2457,6 +2459,7 @@ var gkClientCallback = function(name,param){
  * @param params
  */
 var gkSiteCallback = function(name,params){
+     console.log(arguments);
     if(typeof name !=='string'){
         name = String(name);
     }

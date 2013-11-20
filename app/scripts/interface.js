@@ -21,6 +21,7 @@
         }
     },
     notice:function(params,callback){
+        console.log(arguments);
         gkClient.gNotice(JSON.stringify(params),function(re){
             re = JSON.parse(re);
             if(typeof callback === 'function'){
