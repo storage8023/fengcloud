@@ -1,7 +1,7 @@
 /**
  * Created by admin on 13-11-4.
  */
-angular.module('gkClientSetting', ['gkClientIndex.services','ui.bootstrap'])
+angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.directives','ui.bootstrap'])
     .controller('settingCtrl',['$scope','$location','$rootScope','GKApi',function($scope,$location,$rootScope,GKApi){
         $rootScope.PAGE_CONFIG = {
             user : gkClientInterface.getUser()

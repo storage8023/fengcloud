@@ -914,6 +914,9 @@ button.close_window{
 /*头像*/
 .avatar{
 vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    border-radius: 18px;
 }
 .avatar.avatar_mini{
    width: 16px;

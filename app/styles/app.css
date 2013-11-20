@@ -330,9 +330,6 @@ footer {
     right:5px;
 }
 .left_sidebar  .account .photo{
-    width: 32px;
-    height: 32px;
-    border-radius: 32px;
     position: absolute;
     left:10px;
 

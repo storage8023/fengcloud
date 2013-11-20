@@ -31,13 +31,13 @@ $provide.value("$locale", {
       "12\u6708"
     ],
     "SHORTDAY": [
-      "\u5468\u65e5",
-      "\u5468\u4e00",
-      "\u5468\u4e8c",
-      "\u5468\u4e09",
-      "\u5468\u56db",
-      "\u5468\u4e94",
-      "\u5468\u516d"
+      "\u9031\u65e5",
+      "\u9031\u4e00",
+      "\u9031\u4e8c",
+      "\u9031\u4e09",
+      "\u9031\u56db",
+      "\u9031\u4e94",
+      "\u9031\u516d"
     ],
     "SHORTMONTH": [
       "1\u6708",
@@ -55,15 +55,15 @@ $provide.value("$locale", {
     ],
     "fullDate": "y\u5e74M\u6708d\u65e5EEEE",
     "longDate": "y\u5e74M\u6708d\u65e5",
-    "medium": "yyyy-M-d ah:mm:ss",
-    "mediumDate": "yyyy-M-d",
-    "mediumTime": "ah:mm:ss",
-    "short": "yy-M-d ah:mm",
-    "shortDate": "yy-M-d",
+    "medium": "y\u5e74M\u6708d\u65e5 ahh:mm:ss",
+    "mediumDate": "y\u5e74M\u6708d\u65e5",
+    "mediumTime": "ahh:mm:ss",
+    "short": "yy\u5e74M\u6708d\u65e5 ah:mm",
+    "shortDate": "yy\u5e74M\u6708d\u65e5",
     "shortTime": "ah:mm"
   },
   "NUMBER_FORMATS": {
-    "CURRENCY_SYM": "\u00a5",
+    "CURRENCY_SYM": "$",
     "DECIMAL_SEP": ".",
     "GROUP_SEP": ",",
     "PATTERNS": [
@@ -93,7 +93,7 @@ $provide.value("$locale", {
       }
     ]
   },
-  "id": "zh-cn",
+  "id": "zh-hk",
   "pluralCat": function (n) {  return PLURAL_CATEGORY.OTHER;}
 });
 }]);
