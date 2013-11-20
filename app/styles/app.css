@@ -1779,7 +1779,4 @@ body.resizing *{
 .backup_dialog .backup_list li.other .prev{
     background-position: -300px -150px;
 }
-.create_team_dialog,
-.nearby_dialog{
-    width: 650px;
-}
+

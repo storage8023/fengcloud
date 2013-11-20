@@ -908,8 +908,8 @@ button.close_window{
 .modal_frame .modal-body{
     padding: 0;
     overflow: hidden;
-    height: 560px;
-    max-height: 560px;
+    height: 440px;
+    max-height: 440px;
     border-radius: 0 0 6px 6px;
 }
 
