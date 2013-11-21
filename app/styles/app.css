@@ -476,7 +476,8 @@ footer {
     margin-top: 9px;
 }
 
-.toolbar button:hover{
+.toolbar button:hover,
+.toolbar button:active{
     border-color: transparent;
 }
 

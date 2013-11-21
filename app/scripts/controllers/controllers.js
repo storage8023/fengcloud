@@ -233,12 +233,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 })
             } else if (partition == GKPartition.subscribeFile) {
                 var nearbyDialog = GKModal.nearBy();
-                nearbyDialog.opened.then(function () {
-                    $rootScope.$on('subscribeTeamSuccess', function (event, orgId) {
-                        gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                            if (param) {
-                                $scope.$apply(function () {
-                                    var newOrg = param;
+                nearbyDialog.result.then(function (orgId) {
+                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
+                        if (param) {
+                            $scope.$apply(function () {
+                                var newOrg = param;
+                                if(!GKMount.checkMountExsit(newOrg['mountid'])){
                                     newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
                                     if (newOrg) {
                                         $scope.orgSubscribeList.push(newOrg);
@@ -246,10 +246,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                         selectBreanch(newOrg, GKPartition.subscribeFile, true);
                                         nearbyDialog.dismiss('cancel');
                                     }
-                                });
-                            }
+                                }
+                            });
+                        }
 
-                        })
                     })
                 })
             }
@@ -344,6 +344,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             $scope.$apply(function () {
                 var newOrg = param;
+                if(GKMount.checkMountExsit(newOrg.mountid)){
+                    return;
+                }
                 var partition = GKPartition.teamFile;
                 if (newOrg['type'] == 3) {
                     partition = GKPartition.subscribeFile;
@@ -642,12 +645,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon: 'icon_add',
                 className: "create",
                 callback: function () {
-
                     var createTeamFolderDialog = GKModal.createTeamFolder();
                     createTeamFolderDialog.result.then(function (param) {
+                        var myAuth = 2;
                         var name = param.filename,
                             shareToSubscriber = param.shareToSubscriber;
-                        var collaborations = ['member|' + $rootScope.PAGE_CONFIG.user.member_id + '|2', 'group|0|1'];
+                        var collaborations = ['member|' + $rootScope.PAGE_CONFIG.user.member_id + '|'+myAuth, 'group|0|1'];
                         if (shareToSubscriber) {
                             collaborations.push('member|0|0');
                         }
@@ -656,7 +659,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 var params = {
                                     webpath: name,
                                     dir: 1,
-                                    mountid: $rootScope.PAGE_CONFIG.mount.mount_id
+                                    mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
+                                    org:1,
+                                    orgtype:myAuth
                                 };
                                 GK.createFolder(params).then(function () {
                                     refreahData(name);
@@ -870,7 +875,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 className: "new_folder",
                 icon: 'icon_newfolder',
                 callback: function () {
-                    $scope.$broadcast('fileNewFolderStart', function (new_file_name) {
+                    var isShare = $scope.partition == GKPartition.teamFile?1:0;
+                    $scope.$broadcast('fileNewFolderStart', isShare,function (new_file_name) {
                         var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
                         var params = {
                             webpath: webpath,

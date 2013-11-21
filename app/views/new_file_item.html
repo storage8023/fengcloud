@@ -1,9 +1,9 @@
 <div class="file_item file_item_edit">
     <div class="thumb" ng-show="view=='thumb'">
-        <img ng-src="images/icon/folder128x128.png" alt=""/>
+        <img ng-src="{{'' | getFileThumb:1:isShare}}" alt=""/>
     </div>
     <div class="file_name">
-        <i class="file_icon icon_folder" ng-show="view=='list'"></i>
+        <i class="file_icon {{'' | getFileIcon:1:isShare}}"  ng-show="view=='list'"></i>
         <input type="text" ng-model="filename" class="new_file_name form-control" name="file_name" class=""/>
     </div>
     <div class="last_edit_time" ng-show="view=='list'"><span>&nbsp;</span></div>

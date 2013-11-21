@@ -41,7 +41,8 @@ angular.module('gkClientIndex.directives', [])
             scope:{
                 'onSubmit':'&',
                 'view':'@',
-                'isEnd':'='
+                'isEnd':'=',
+                'isShare':'@'
             },
             link:function($scope, $element,$attrs){
                 $scope.filename = '新建文件夹';
@@ -498,8 +499,9 @@ angular.module('gkClientIndex.directives', [])
                     } else {
                         $scope.sidebar = 'nofile';
                         if(!$scope.filter){
+                            var title = $scope.PAGE_CONFIG.mount?$scope.PAGE_CONFIG.mount.name:'';
                             $scope.sidbarData = {
-                                title: $rootScope.PAGE_CONFIG.mount.name,
+                                title: $scope.PAGE_CONFIG.mount.name,
                                 tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
                                 photo: "",
                                 attrHtml: '',
@@ -1161,13 +1163,13 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 新建文件开始
                  */
-                $scope.$on('fileNewFolderStart', function (event, callback) {
+                $scope.$on('fileNewFolderStart', function (event,isShare, callback) {
                     GKFileList.unSelectAll($scope);
                     $scope.submitNewFileName = function(filename){
 
                         angular.isFunction(callback) && callback(filename);
                     };
-                    var newFileItem = $compile(angular.element('<new-file-item view="{{view}}" is-end="createNewFileEnd" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
+                    var newFileItem = $compile(angular.element('<new-file-item view="{{view}}" is-share="{{'+isShare+'}}" is-end="createNewFileEnd" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                     newFileItem.addClass('selected').prependTo($element.find('.list_body'));
 
                     /**

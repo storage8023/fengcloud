@@ -106,14 +106,30 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         $scope.getBtnClasses = function(opt){
-                            var successBtn = ['invite_accpet'];
+                            var successBtn = ['invite_accept'];
                             var dangerBtn = ['invite_reject'];
-                            if(opt.type == 'view' ||opt.type == 'url') {
-                                return 'btn-primary'
-                            }else if(dangerBtn.indexOf(opt.opt)>=0){
+                            if(dangerBtn.indexOf(opt.opt)>=0){
                                 return 'btn-danger';
                             }else if(successBtn.indexOf(opt.opt)>=0){
                                 return 'btn-success';
+                            }else if(opt.type == 'view'){
+                                return 'btn-primary';
+                            }else if(opt.type == 'url'){
+                                if(!opt.btn_class){
+                                    return 'btn-primary';
+                                }else{
+                                    if(opt.btn_class == 'blue'){
+                                        return 'btn-primary';
+                                    }else if(opt.btn_class == 'red'){
+                                        return 'btn-danger';
+                                    }else if(opt.btn_class == 'green'){
+                                        return 'btn-success';
+                                    }else if(opt.btn_class == 'yellow'){
+                                        return 'btn-warning';
+                                    }else{
+                                        return 'btn-default';
+                                    }
+                                }
                             }else{
                                 return 'btn-default';
                             }
@@ -121,6 +137,11 @@ angular.module('gkClientIndex.services', [])
 
                         $scope.handleOpt = function(opt,item){
                             if(opt.type=='request'){
+                                if(opt.opt == 'invite_accept' || opt.opt == 'invite_reject'){
+                                    if(!confirm('你确定要'+opt.name+'该团队的邀请？')){
+                                        return;
+                                    }
+                                }
                                 GKApi.updateAct(item.id,opt.opt).success(function (data) {
                                     $scope.$apply(function(){
                                         item.opts = [];
@@ -344,6 +365,11 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        $rootScope.$on('subscribeTeamSuccess', function (event, orgId) {
+                            $modalInstance.close(orgId);
+
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -929,7 +955,7 @@ angular.module('gkClientIndex.services', [])
                 return errorMsg;
             },
             handleClientException: function (error) {
-                //alert(error.message);
+                alert(error.message);
             },
             handleAjaxException:function(request){
                 var errorMsg = this.getAjaxErrorMsg(request);
@@ -2249,6 +2275,9 @@ angular.module('gkClientIndex.services', [])
                     }
                 })
                return mount;
+           },
+           checkMountExsit:function(id){
+               return !!this.getMountById(id);
            },
            /**
             * 根据团队id获取mount
