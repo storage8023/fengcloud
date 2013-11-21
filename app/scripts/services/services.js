@@ -123,7 +123,7 @@ angular.module('gkClientIndex.services', [])
                             if(opt.type=='request'){
                                 GKApi.updateAct(item.id,opt.opt).success(function (data) {
                                     $scope.$apply(function(){
-                                        item.handled = true;
+                                        item.opts = [];
                                         if(data && data.updates){
                                             var newItem = data.updates[0];
                                             item.render_content = newItem.render_content;

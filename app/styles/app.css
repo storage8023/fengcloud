@@ -385,12 +385,15 @@ footer {
     border-left-color: #7F8999;
     display: inline-block;
     vertical-align: middle;
-    transition:transform linear .1s;
+    transition:all linear .1s;
     -webkit-transition:-webkit-transform linear .1s;
     transform-origin:25% 50%;
     -webkit-transform-origin:25% 50%;
 }
+.left_sidebar  ul.nav.nav-list.abn-tree .tree-icon:hover i{
+    border-left-color: #fff;
 
+}
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_fold{
 
 }
@@ -1599,8 +1602,11 @@ body.resizing *{
     vertical-align: top;
 }
 .news_dialog .message_list li > div > .text .content{
-    margin: -46px 120px 0 0;
+    margin: 0 120px 0 0;
     padding: 10px 0 0 0;
+}
+.news_dialog .message_list li > div.has_opt > .text .content {
+    margin-top: -46px;
 }
 .news_dialog .message_list li > div .photo{
     width: 32px;

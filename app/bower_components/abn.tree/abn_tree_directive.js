@@ -139,12 +139,12 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
          * @returns {*}
          */
       scope.user_clicks_branch = function($event,branch) {
-        if(!angular.element($event.target).hasClass('tree-icon')){
+        if(angular.element($event.target).hasClass('tree-icon') || angular.element($event.target).parents('.tree-icon').size()){
+            return expand_branch(branch);
+        }else{
             if (branch !== scope.selectedBranch) {
                 return select_branch(branch);
             }
-        }else{
-            return expand_branch(branch);
         }
 
       };
