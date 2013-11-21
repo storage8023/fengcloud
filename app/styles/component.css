@@ -11,6 +11,7 @@
     vertical-align: middle;
     margin-top: -3px;
 }
+
 .icon16x16.icon_myfolder{
     background-position: -44px -4px;
 }
@@ -75,7 +76,8 @@
     background-position: -24px -104px;
 }
 .active .icon16x16.icon_clock,
-.icon16x16.icon_clock_color{
+.icon16x16.icon_clock_color,
+.icon16x16.icon_recent{
     background-position: -44px -104px;
 }
 

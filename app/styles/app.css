@@ -320,12 +320,7 @@ footer {
     display: inline-block;
     vertical-align: middle;
 }
-.left_sidebar  .account .account_info .icon_mail{
-    width: 24px;
-    height: 32px;
-    vertical-align: middle;
-    display: inline-block;
-    background: url(../images/icon/icon_other.png) no-repeat -7px -6px;
+.left_sidebar  .account .account_info .icon_envelope_white{
     position: absolute;
     right:5px;
 }
@@ -341,7 +336,7 @@ footer {
     font-size: 18px;
     position: absolute;
     left:50px;
-    right:30px;
+    right:40px;
 }
 .left_sidebar .tree_wrapper{
     position: absolute;

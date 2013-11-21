@@ -10,6 +10,8 @@
     <div class="bread" ng-style="breadStyle">
         <ul class="bread_list">
             <li class="bread_item" ng-repeat="bread in breads">
+                <i class="icon16x16" ng-class="bread.icon" ng-if="!bread.logo && bread.icon"></i>
+                <team-logo gk-src="{{bread.logo}}" ng-if="bread.logo" class="avatar avatar_mini"></team-logo>
                 <a  ng-click="selectBread($event,bread)" href="javascript:void(0)">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
             </li>
         </ul>

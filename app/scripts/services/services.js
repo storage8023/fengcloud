@@ -893,27 +893,37 @@ angular.module('gkClientIndex.services', [])
                     breads.unshift({
                         name: GKFilter.getFilterName(filter),
                         url: '#' + this.getPath(partition, '',view,mountId,filter),
-                        filter:filter
+                        filter:filter,
+                        icon:'icon_'+filter
                     });
                 }
                 /**
                  * 智能文件夹
                  */
                 if(filter =='search' && partition =='smartfolder'){
-                    breads.unshift({
+                    var item = {
                         name:  GKSmartFolder.getFolderByCode(keyword)['name'] ,
                         url: '#' + this.getPath(partition, '',view,mountId,filter,keyword),
-                        filter:filter
-                    });
+                        filter:filter,
+                        icon:'icon_'+partition
+                    };
+                    breads.unshift(item);
                 }
 
                 if (mountId) {
                     var mount = GKMount.getMountById(mountId);
-                    breads.unshift({
+                    var item = {
                         name: mount['name'],
                         filter:'',
                         url: '#' + this.getPath(partition, '', view,mountId,filter)
-                    });
+                    }
+
+                    if(mount.org_id==0){
+                        item.icon = 'icon_myfolder';
+                    }else{
+                        item.logo = mount['logo'];
+                    }
+                    breads.unshift(item);
                 }
                 return breads;
             }
@@ -1300,7 +1310,8 @@ angular.module('gkClientIndex.services', [])
                         cmd:1,
                         sharepath:value.sharepath||'',
                         syncpath:value.syncpath||'',
-                        share:value.share
+                        share:value.share,
+                        auth:value.auth
                     };
                 }
                 return file;
@@ -1597,6 +1608,9 @@ angular.module('gkClientIndex.services', [])
                         } else {
                             context.disableOpt(opts, 'unlock');
                         }
+                    }
+                    if(file.auth<2){
+                        context.disableOpt(opts, 'del','rename');
                     }
                 });
                 return opts;

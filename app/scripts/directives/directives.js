@@ -654,14 +654,14 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.$apply(function(){
                                     $scope.loading = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
-                                    console.log(errorCode);
-
+                                    //console.log(errorCode);
+                                    //console.log($scope.localFile);
                                     if(errorCode == 40402){
                                         $scope.fileExist = false;
                                         $scope.sidbarData = {
                                             icon:'uploading'
                                         }
-                                        if($scope.localFile.status == 4 || $scope.localFile.status == 1){
+                                        if($scope.localFile.status == 1){
                                             $scope.sidbarData.title = '文件正在上传中';
                                             var reFile;
                                             fileInterval = setInterval(function(){
