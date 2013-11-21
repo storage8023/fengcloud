@@ -118,7 +118,7 @@
      */
     getFileInfo:function(params){
         var re = gkClient.gGetFileInfo(JSON.stringify(params));
-        //console.log(JSON.parse(re));
+        console.log(JSON.parse(re));
         return JSON.parse(re);
     },
     setMessageDate:function(dateline){

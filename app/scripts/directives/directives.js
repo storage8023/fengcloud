@@ -595,6 +595,10 @@ angular.module('gkClientIndex.directives', [])
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
                 $scope.enableAddShare = false; //是否允许编辑共享参与人
+                $scope.loading = true;
+                $scope.fileExist = false;
+                var fileInterval;
+
                 var gird = /[,;；，\s]/g;
                 var getOptMountId = function(file){
                     var mountID;
@@ -606,6 +610,9 @@ angular.module('gkClientIndex.directives', [])
                     return Number(mountID);
                 };
 
+                /**
+                 * 通过接口获取文件信息
+                 */
                 var getFileInfo =  function(file,options){
                     var defaultOptions = {
                       data:'',
@@ -619,27 +626,66 @@ angular.module('gkClientIndex.directives', [])
 
                     if(options.data != 'sidebar'){
                         RestFile.get(mountId, fullpath).success(function (data) {
-                            angular.forEach(jQuery.trim(data.tag).split(gird), function (value) {
-                                if (value && formatTag.indexOf(value) < 0) {
-                                    formatTag.push(value);
+                            $scope.$apply(function(){
+                                $scope.loading = false;
+                                $scope.fileExist = true;
+                                angular.forEach(jQuery.trim(data.tag).split(gird), function (value) {
+                                    if (value && formatTag.indexOf(value) < 0) {
+                                        formatTag.push(value);
+                                    }
+                                });
+                                var formatFile = GKFile.formatFileItem(data,'api');
+                                angular.extend($scope.file,formatFile);
+                                $scope.file.formatTag = formatTag;
+                                if(mount['org_id']>0 && $scope.file.cmd > 0  && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile){
+                                    $scope.showTab = true;
+                                }else{
+                                    $scope.showTab = false;
+                                }
+
+                                $scope.enableAddShare = false;
+                                if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
+                                    ){
+                                    $scope.enableAddShare = true;
                                 }
                             });
-                            var formatFile = GKFile.formatFileItem(data,'api');
-                            angular.extend($scope.file,formatFile);
-                            $scope.file.formatTag = formatTag;
-                            if(mount['org_id']>0 && $scope.file.cmd > 0  && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile){
-                                $scope.showTab = true;
-                            }else{
-                                $scope.showTab = false;
-                            }
 
-                            $scope.enableAddShare = false;
-                            if($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
-                                ){
-                                $scope.enableAddShare = true;
-                            }
+                        }).error(function(request){
+                                $scope.$apply(function(){
+                                    $scope.loading = false;
+                                    var errorCode = GKException.getAjaxErroCode(request);
+                                    console.log(errorCode);
 
-                        });
+                                    if(errorCode == 40402){
+                                        $scope.fileExist = false;
+                                        $scope.sidbarData = {
+                                            icon:'uploading'
+                                        }
+                                        if($scope.localFile.status == 4 || $scope.localFile.status == 1){
+                                            $scope.sidbarData.title = '文件正在上传中';
+                                            var reFile;
+                                            fileInterval = setInterval(function(){
+                                                //$scope.$apply(function(){
+                                                    reFile = gkClientInterface.getFileInfo({
+                                                        mountid:file.mount_id,
+                                                        webpath:file.fullpath
+                                                    });
+                                                    console.log(file);
+                                                    if(!reFile || reFile.status !=1){
+                                                        clearInterval(fileInterval);
+                                                        if(reFile){
+                                                            getFileInfo($scope.localFile);
+                                                        }
+                                                    }
+                                               // })
+
+                                            },1000);
+                                        }else{
+                                            $scope.sidbarData.title = '云端已删除';
+                                        }
+                                    }
+                                })
+                            });
                     }
 
                     if(options.data != 'file'){
@@ -666,19 +712,38 @@ angular.module('gkClientIndex.directives', [])
 
                 };
 
-                /**
-                 * 通过接口获取文件信息
-                 */
                 $scope.$watch('localFile', function (file, oldValue) {
                     if (!file || !oldValue || file == oldValue || file.fullpath == oldValue.fullpath) {
                         return;
                     }
+                    if(fileInterval){
+                        clearInterval(fileInterval);
+                    }
                     getFileInfo(file);
-                })
+                });
+
                 getFileInfo($scope.localFile);
+
+                $scope.$watch('file.formatTag', function (value, oldValue) {
+                    if (!angular.isDefined(value)
+                        || !angular.isDefined(oldValue)
+                        || value == oldValue) {
+                        return;
+                    }
+                    var fullpath = $scope.file ? $scope.file.fullpath || '' : '';
+                    if(!value){
+                        value = '';
+                    }
+
+                    GKApi.setTag(getOptMountId($scope.file),fullpath, value.join(' ')).success(function () {
+
+                    }).error(function (request) {
+                            GKException.handleAjaxException(request);
+                        });
+                }, true);
+
                 $scope.inputingRemark = false;
                 $scope.postText = '';
-
                 /**
                  * 取消发布备注
                  */
@@ -705,14 +770,6 @@ angular.module('gkClientIndex.directives', [])
                         });
                 };
 
-                $scope.folded = false;
-                /**
-                 * 显示及缩小文件信息框
-                 */
-                $scope.toggleFileInfoWrapper = function () {
-                    $scope.folded = !$scope.folded;
-                };
-
                 $scope.insertAt = function (input) {
                     var val = $scope.postText;
                     var jqTextarea = $element.find('.post_wrapper textarea');
@@ -732,42 +789,16 @@ angular.module('gkClientIndex.directives', [])
 
                 }
 
-                $scope.showEditShareDialog = function () {
-                    var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
-                    var addShareModal = GKModal.addShare(getOptMountId($scope.file),fullpath);
-                    addShareModal.result.then(function(){
-
-                    })
-                };
-
-                $scope.$on('refreshSidebar',function(){
-                    getFileInfo($scope.localFile,{data:'sidebar',type:'share',cache:false});
-                })
-
                 $scope.handleKeyDown = function (e) {
                     if (e.keyCode == 13 & (e.ctrlKey || e.metaKey)) {
                         $scope.postRemark($scope.postText);
                     }
                 };
 
-                $scope.$watch('file.formatTag', function (value, oldValue) {
-                    if (!angular.isDefined(value)
-                        || !angular.isDefined(oldValue)
-                        || value == oldValue) {
-                        return;
-                    }
-                    var fullpath = $scope.file ? $scope.file.fullpath || '' : '';
-                   if(!value){
-                       value = '';
-                   }
-
-                    GKApi.setTag(getOptMountId($scope.file),fullpath, value.join(' ')).success(function () {
-
-                    }).error(function (request) {
-                       GKException.handleAjaxException(request);
-                        });
-                }, true);
-
+                /**
+                 * 星标
+                 * @param star
+                 */
                 $scope.toggleStar = function(star){
                     var fullpath = $scope.file.fullpath;
                     var mountId = $scope.file.mount_id || $scope.PAGE_CONFIG.mount.mount_id;
@@ -823,6 +854,24 @@ angular.module('gkClientIndex.directives', [])
                     GKException.handleAjaxException(request);
                         });
                 }
+
+                /**
+                 * 添加共享
+                 */
+                $scope.showEditShareDialog = function () {
+                    var fullpath = $scope.file.dir ==1?$scope.file.fullpath+'/':$scope.file.fullpath;
+                    var addShareModal = GKModal.addShare(getOptMountId($scope.file),fullpath);
+                    addShareModal.result.then(function(){
+
+                    })
+                };
+
+                /**
+                 * 监听刷新事件
+                 */
+                $scope.$on('refreshSidebar',function(){
+                    getFileInfo($scope.localFile,{data:'sidebar',type:'share',cache:false});
+                })
 
 
             }
@@ -1632,11 +1681,13 @@ angular.module('gkClientIndex.directives', [])
                         if ($element.find('.bread_list .bread_item:visible').size() == 1) {
                             break;
                         }
-                        var hideBread = $scope.breads[$scope.hideBreads.length];
-                        if (hideBread) {
-                            $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
-                            $element.find('.bread_list .bread_item:visible').eq(0).hide();
-                            breadListWidth = $element.find('.bread_list').width();
+                        if($scope.breads && $scope.breads.length){
+                            var hideBread = $scope.breads[$scope.hideBreads.length];
+                            if (hideBread) {
+                                $scope.hideBreads.unshift($scope.breads[$scope.hideBreads.length]);
+                                $element.find('.bread_list .bread_item:visible').eq(0).hide();
+                                breadListWidth = $element.find('.bread_list').width();
+                            }
                         }
                     }
                 };
@@ -1737,8 +1788,6 @@ angular.module('gkClientIndex.directives', [])
                         $event.stopPropagation();
                     }
                 };
-
-
 
                 $('body').bind('mousedown', function (event) {
                     $scope.$apply(function () {

@@ -897,29 +897,32 @@ footer {
 .right_sidebar .no_file_subscribefile .head_wrapper > div{
     margin-top: -40px;
 }
-.right_sidebar .filter_right_sidebar .bgicon{
+.right_sidebar .bgicon{
     width: 128px;
     height: 128px;
     display: block;
     margin: 0 auto;
-    background-image: url(../images/icon/icon_other.png);
+    background-image: url(../images/icon/icon_other.png?v=2);
     background-repeat: no-repeat;
 }
-.right_sidebar .filter_right_sidebar .bgicon.recent{
-    background-position: -136px -80px;
+.right_sidebar .bgicon.recent{
+    background-position: -136px -8px;
 }
-.right_sidebar .filter_right_sidebar .bgicon.star{
-    background-position: -264px -80px;
+.right_sidebar .bgicon.star{
+    background-position: -8px -136px;
 }
-.right_sidebar .filter_right_sidebar .bgicon.trash{
-    background-position: -8px -80px;
+.right_sidebar .bgicon.trash{
+    background-position: -8px -8px;
 }
-.right_sidebar .filter_right_sidebar h3{
+.right_sidebar .bgicon.uploading{
+    background-position: -666px -8px;
+}
+.right_sidebar h3{
     color: #3F4754;
     text-align: center;
     margin: 15px 0;
 }
-.right_sidebar .filter_right_sidebar .tip{
+.right_sidebar .tip{
     margin: 20px 0 0 0;
 }
 

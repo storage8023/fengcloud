@@ -954,6 +954,16 @@ angular.module('gkClientIndex.services', [])
                 }
                 return errorMsg;
             },
+            getAjaxErroCode:function(request){
+                var code = 0;
+                if (request.responseText) {
+                    var result = JSON.parse(request.responseText);
+                    code = result.error_code || 0;
+                } else {
+                    code = request.status || 0;
+                }
+                return code;
+            },
             handleClientException: function (error) {
                 alert(error.message);
             },
@@ -1661,8 +1671,8 @@ angular.module('gkClientIndex.services', [])
                 var method = 'GET';
                 var webpath = Util.String.encodeRequestUri(fullpath);
                 var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return $http({
-                    method: method,
+                return jQuery.ajax({
+                    type: method,
                     url: GK.getRestHost() + webpath,
                     headers: {
                         'x-gk-mount': mount_id,
