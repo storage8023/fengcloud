@@ -7,6 +7,14 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getDragFiles:function(){
+        try {
+            var re = gkClient.gGetDragFiles();
+            return JSON.parse(re);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     recover:function(params,callback){
         try {
 

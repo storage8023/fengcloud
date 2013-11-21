@@ -69,7 +69,7 @@
                     </ul>
                     <div class="post_wrapper">
                         <textarea class="form-control" ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="inputingRemark=true"
-                                  ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
+                                  ng-model="postText" ng-blur="inputingRemark=false" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
 
                         <div class="post_opts">
                             <span ng-show="remindMembers && remindMembers.length">

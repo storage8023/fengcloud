@@ -68,9 +68,10 @@ angular.module('gkClientIndex.services', [])
              }
          };
     }])
-    .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location','$timeout',function($rootScope,$modal,GK,GKMount,GKPartition,$location,$timeout){
+    .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location','$timeout','GKException','GKDialog','GKPath',function($rootScope,$modal,GK,GKMount,GKPartition,$location,$timeout,GKException,GKDialog,GKPath){
         return{
             news:function(GKNews,GKApi){
+                var context = this;
                 return $modal.open({
                     templateUrl: 'views/news_dialog.html',
                     backdrop: false,
@@ -86,22 +87,96 @@ angular.module('gkClientIndex.services', [])
                         },500)
                         $scope.classifyNews = classifyNews;
                         $scope.loading = false;
-
+                        var requestDateline = 0;
                         $scope.getMoreNews = function () {
                             $scope.loading = true;
+
                             GKApi.update(100, requestDateline).success(function (data) {
                                 $scope.$apply(function(){
                                     $scope.loading = false;
                                     var renews = data['updates'] || [];
                                     var classifyNews = GKNews.classify(renews);
                                     $scope.classifyNews = GKNews.concatNews($scope.classifyNews, classifyNews);
-
                                     requestDateline = getLastDateline(renews, requestDateline);
                                 });
 
                             }).error(function () {
                                     $scope.loading = false;
                                 })
+                        };
+
+                        $scope.getBtnClasses = function(opt){
+                            var successBtn = ['invite_accpet'];
+                            var dangerBtn = ['invite_reject'];
+                            if(opt.type == 'view' ||opt.type == 'url') {
+                                return 'btn-primary'
+                            }else if(dangerBtn.indexOf(opt.opt)>=0){
+                                return 'btn-danger';
+                            }else if(successBtn.indexOf(opt.opt)>=0){
+                                return 'btn-success';
+                            }else{
+                                return 'btn-default';
+                            }
+                        };
+
+                        $scope.handleOpt = function(opt,item){
+                            if(opt.type=='request'){
+                                GKApi.updateAct(item.id,opt.opt).success(function (data) {
+                                    $scope.$apply(function(){
+                                        item.handled = true;
+                                        if(data && data.updates){
+                                            var newItem = data.updates[0];
+                                            item.render_content = newItem.render_content;
+                                        }
+
+                                    });
+
+                                }).error(function (request) {
+                                        GKException.handleAjaxException(request);
+                                    });
+                            }else if(opt.type=='url'){
+                                var url = gkClientInterface.getUrl({
+                                    url:opt.url,
+                                    sso:Number(opt.sso)
+                                });
+                                if(opt.browser == 1){
+                                    gkClientInterface.openUrl(url);
+                                }else{
+                                    var data = {
+                                        url:url,
+                                        type:"sole",
+                                        width:794,
+                                        resize:1,
+                                        height:490
+                                    }
+                                    gkClientInterface.setMain(data);
+                                }
+                                $modalInstance.close();
+                            }else if(opt.type=='view'){
+                                if(opt.opt == 'view_file'){
+                                    var fullpath = item.dir == 1?item.fullpath: Util.String.dirName(item.fullpath);
+                                    var selectPath = item.dir == 1?'':item.fullpath;
+                                    GKPath.gotoFile(item.mount_id, fullpath,selectPath);
+                                }else if(opt.opt == 'view_org_root'){
+                                    if(!item.org_id){
+                                        return;
+                                    }
+                                    var mount = GKMount.getMountByOrgId(item.org_id);
+                                    if(!mount){
+                                        return;
+                                    }
+                                    GKPath.gotoFile(mount.mount_id, '');
+                                }else if(opt.opt == 'view_org_member'){
+                                    if(!item.org_id){
+                                        return;
+                                    }
+                                    context.teamMember(item.org_id);
+                                }
+                                else if(opt.opt == 'view_device'){
+                                    GKDialog.openSetting('device');
+                                }
+                                $modalInstance.close();
+                            }
                         };
 
                         /**
@@ -512,7 +587,7 @@ angular.module('gkClientIndex.services', [])
                 var yesterday = $filter('date')(yesterdayTimestamp,'yyyy-MM-dd');
                 angular.forEach(news,function(value){
                     var date = value.date;
-                    value.opts = context.getOptsByItem(value);
+                    //value.opts = context.getOptsByItem(value);
                     var dateText = $filter('date')(value.dateline*1000,'yyyy年M月d日');
                     if(date == today){
                         dateText = '今天，'+$filter('date')(now,'yyyy年M月d日');
@@ -1109,6 +1184,7 @@ angular.module('gkClientIndex.services', [])
                     if(type==GKPartition.myFile || type==GKPartition.teamFile || type==GKPartition.subscribeFile){
                         if (!value.fullpath) {
                             label = value.name;
+
                         } else {
                             label = value.filename;
                             mountId && angular.extend(value, {
@@ -1126,6 +1202,9 @@ angular.module('gkClientIndex.services', [])
                             isParent: true,
                             data: value
                         };
+                        if(type==GKPartition.teamFile || type==GKPartition.subscribeFile){
+                            item.nodeImg = value.logo;
+                        }
                     }else{
                         if(!value.filter){
                             value.filter =  'search';
@@ -1341,7 +1420,7 @@ angular.module('gkClientIndex.services', [])
             getDefaultOpts:function(){
                return [
                    'goto', //打开位置
-                   'nearby', //附近
+                   //'nearby', //附近
                    'unsubscribe', //取消订阅
                    'new_folder', //新建
                    'create', //创建
@@ -1921,6 +2000,20 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'GET',
                     url: GK.getApiHost() + '/1/updates/ls_newer',
+                    data: params
+                });
+            },
+            updateAct: function (id,opt) {
+                var params = {
+                    id:id,
+                    opt:opt
+                };
+                angular.extend(params,defaultParams);
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: GK.getApiHost() + '/1/updates/do_action',
                     data: params
                 });
             },

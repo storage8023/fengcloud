@@ -1257,6 +1257,8 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.handleSysDrop = function($event){
+                    var dragFiles = gkClientInterface.getDragFiles();
+                    $scope.$emit('dropSysFile',dragFiles);
                     //console.log($event.originalEvent.dataTransfer.files);
                 };
 

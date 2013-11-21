@@ -188,7 +188,7 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
           }
         });
         add_branch_to_list = function(level, branch, visible) {
-          var child, child_visible, tree_icon, _i, _len, _ref, _results,node_icon;
+          var child, child_visible, tree_icon, _i, _len, _ref, _results,node_icon,node_img;
           if (branch.expanded == null) {
             branch.expanded = false;
           }
@@ -206,13 +206,15 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
             }else{
                 node_icon =branch.iconNodeExpand?branch.iconNodeExpand: attrs.iconNodeExpand;
             }
+            node_img = branch.nodeImg||'';
           scope.tree_rows.push({
             level: level,
             branch: branch,
             label: branch.label,
             tree_icon: tree_icon,
             visible: visible,
-            node_icon:node_icon
+            node_icon:node_icon,
+              node_img:node_img
           });
           if (branch.children != null) {
             _ref = branch.children;

@@ -1571,69 +1571,65 @@ body.resizing *{
 }
 .news_dialog .message_list li{
     margin-top: 5px;
-    height: 46px;
     line-height: 46px;
 }
 .news_dialog .message_list li > div{
     color: #3F4754;
     font-size: 14px;
     border-radius: 4px;
-    height: 100%;
-    display: inline-block;
+    display: table;
 }
-.news_dialog .message_list li > div > span{
-    float: left;
-    height: 100%;
+.news_dialog .message_list li > div > div{
+   display: table-cell;
 }
-.news_dialog .message_list li > div > span.time{
+.news_dialog .message_list li > div .time{
     border-radius: 4px 0 0 4px;
-}
-.news_dialog .message_list li button:last-child,
-.news_dialog .message_list li > div > span.text{
-    border-radius: 0 4px 4px 0;
-}
-.news_dialog .message_list li > div > span.time{
     background: #51AE75;
     padding: 0 10px;
     color: #fff;
+    width: 60px;
+}
+
+.news_dialog .message_list li > div > .text{
+    border-radius: 0 4px 4px 0;
+    padding: 0 0 0 20px;
+    background: #FFFFFF;
+    line-height: 22px;
+    overflow: hidden;
+    vertical-align: top;
+}
+.news_dialog .message_list li > div > .text .content{
+    margin: -46px 120px 0 0;
+    padding: 10px 0 0 0;
 }
 .news_dialog .message_list li > div .photo{
     width: 32px;
     height: 32px;
     box-shadow: 32px;
 }
-.news_dialog .message_list li > div > .opts{
-    float: right;
+.news_dialog .message_list li > div .opts{
     -webkit-transition:margin linear .3s;
+    height: 46px;
+    text-align: right;
+    margin-right: -60px;
 }
-.news_dialog .message_list li > div.button_len_2 > .opts{
-    margin-left: -100px;
+.news_dialog .message_list li > div .opts_len_2{
+    margin-right: -120px;
 }
-.news_dialog .message_list li > div.button_len_1 > .opts{
-    margin-left: -50px;
+.news_dialog .message_list li > div .opts_len_3{
+    margin-right: -180px;
 }
-.news_dialog .message_list li > div > span.text{
-    padding: 0 100px 0 20px;
-    -webkit-transition:padding linear .3s;
-    background: #FFFFFF;
+.news_dialog .message_list li > div:hover .opts{
+    margin-right:0;
 }
-.news_dialog .message_list li > div.button_len_2:hover > span.text,
-.news_dialog .message_list li > div.button_len_1:hover > span.text{
-    padding-right: 10px;
-    padding-left: 10px;
-    border-radius: 0;
-}
-.news_dialog .message_list li > div.button_len_2:hover > .opts,
-.news_dialog .message_list li > div.button_len_1:hover > .opts{
-    margin-left: 0px;
-}
+
 .news_dialog .message_list li button{
     border-radius: 0;
     padding: 0;
-    height: 100%;
-   vertical-align: top;
+    vertical-align: top;
     box-shadow: none;
-    width: 50px;
+    width: 60px;
+    height: 100%;
 }
 
 
@@ -1717,6 +1713,8 @@ body.resizing *{
 .backup_dialog .modal-body{
     padding-top: 40px;
     padding-bottom:40px;
+    height: 440px;
+    max-height: 440px;
 }
 .backup_dialog p{
     text-align: center;

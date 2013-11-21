@@ -8,20 +8,24 @@
         <li ng-repeat="new in classifyNews">
             <div class="date">{{new.date_text}}</div>
             <ul class="message_list">
-                <li ng-repeat="item in new.list" ng-switch="item.act">
+                <li ng-repeat="item in new.list" ng-switch="item.act" >
                     <div class="c_f_after" ng-class="item.opts&&item.opts.length?'button_len_'+item.opts.length:''">
-                        <div class="opts" ng-if="item.opts && item.opts.length">
-                            <button ng-repeat="opt in item.opts" class="btn opt.classes" ng-click="opt.click(item)">{{item.text}}</button>
+                        <div class="time">{{item.dateline*1000|date:'H:mm'}}</div>
+                        <div class="text">
+                            <div class="opts" ng-class="'opts_len_'+item.opts.length" ng-if="item.opts && item.opts.length && !item.handled">
+                                <button ng-repeat="opt in item.opts" class="btn" ng-class="getBtnClasses(opt)" ng-click="handleOpt(opt,item)">{{opt.name}}
+                                </button>
+                            </div>
+                            <div class="content">
+                                <span>
+                                <team-logo ng-if="item.org_logo" class="avatar" gk-src="{{item.org_logo}}"></team-logo>
+                                <avatar class="avatar" gk-src="{{item.member_photo}}"></avatar>
+                            </span>
+                                <span ng-bind="item.render_content"></span>
+                            </div>
+
                         </div>
-                        <span class="time">{{item.dateline*1000|date:'H:mm'}}</span>
-    <span class="text">
-        <span>
-            <img src="images/default_photo.png" ng-src="item.member_photo" error-src="images/default_photo.png" class="photo"/>
-            <img src="images/default_logo.png" ng-src="item.member_photo" error-src="images/default_logo.png" class="photo"/>
-        </span>
-       <span>{{item.member_name}}</span>
-       <span ng-bind-html="item.render_text"></span>
-    </span>
+
                     </div>
                 </li>
             </ul>

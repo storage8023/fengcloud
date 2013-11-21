@@ -284,12 +284,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                 var myMount = GKMount.getMyMount();
                 $scope.attrs = [
                     {
-                        icon:'icon_phone',
-                        name:'phone',
-                        text:'电话：'+(user.member_phone?user.member_phone:'无')
-                    },
-                    {
-                        icon:'icon_mail',
+                        icon:'icon_envelope',
                         name:'mail',
                         text:user.member_email?'<'+user.member_email+'>':'无'
                     },
