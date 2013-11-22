@@ -411,7 +411,10 @@ input[type="password"] {
 }
 
 /*modal*/
-
+.modal-backdrop,
+.modal-backdrop.fade.in {
+    opacity: 0;
+}
 .modal .modal-header {
     text-align: center;
     background: #23272A;

@@ -69,12 +69,15 @@ angular.module('gkClientIndex.services', [])
          };
     }])
     .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location','$timeout','GKException','GKDialog','GKPath',function($rootScope,$modal,GK,GKMount,GKPartition,$location,$timeout,GKException,GKDialog,GKPath){
+        var defaultOption = {
+            backdrop: 'static',
+            keyboard:false,
+        };
         return{
             news:function(GKNews,GKApi){
                 var context = this;
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/news_dialog.html',
-                    backdrop: false,
                     windowClass: 'news_dialog',
                     controller: function ($scope, $modalInstance,classifyNews) {
 
@@ -171,7 +174,7 @@ angular.module('gkClientIndex.services', [])
                                         height:490
                                     }
                                     gkClientInterface.setMain(data);
-                                }
+                                };
                                 $modalInstance.close();
                             }else if(opt.type=='view'){
                                 if(opt.opt == 'view_file'){
@@ -207,9 +210,9 @@ angular.module('gkClientIndex.services', [])
                         $scope.handleTeamInvite = function (accept, item) {
                             if (accept) {
                                 GKApi.teamInviteJoin(item['org_id'], item['property']['invite_code']).success(function () {
-                                   $scope.$apply(function(){
-                                       item.handled = true;
-                                   });
+                                    $scope.$apply(function(){
+                                        item.handled = true;
+                                    });
 
                                 }).error(function () {
 
@@ -245,15 +248,16 @@ angular.module('gkClientIndex.services', [])
                                 return dateline;
                             };
                             var requestDateline = getLastDateline(news, 0);
-                          return GKNews.classify(news);
+                            return GKNews.classify(news);
                         }
                     }
-                });
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
             },
             backUp:function(){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/backup.html',
-                    backdrop: false,
                     windowClass: 'backup_dialog',
                     controller: function ($scope, $modalInstance) {
                         var tips = {
@@ -353,12 +357,13 @@ angular.module('gkClientIndex.services', [])
                             $modalInstance.dismiss('cancel');
                         };
                     }
-                });
+                };
+                option = angular.extend({},option,defaultOption);
+                return $modal.open(option);
             },
             nearBy:function(){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/nearby_dialog.html',
-                    backdrop: false,
                     windowClass: 'modal_frame nearby_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
@@ -379,12 +384,13 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                     }
-                });
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
             },
             createTeam:function(){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/create_team_dialog.html',
-                    backdrop: false,
                     windowClass: 'modal_frame create_team_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
@@ -404,12 +410,13 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                     }
-                });
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
             },
             addShare:function(mountId,fullpath){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/add_share_dialog.html',
-                    backdrop: false,
                     windowClass: 'modal_frame add_share_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
@@ -435,12 +442,13 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                     }
-                });
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
             },
             teamMember:function(orgId){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/team_member_dialog.html',
-                    backdrop: false,
                     windowClass: 'modal_frame team_member_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
@@ -456,12 +464,13 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                     }
-                });
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
             },
             teamQr:function(orgId,width){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/team_qr_dialog.html',
-                    backdrop: false,
                     windowClass: 'modal_frame team_qr_dialog',
                     controller: function ($scope, $modalInstance,src) {
                         $scope.url = src;
@@ -477,12 +486,13 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                     }
-                });
+                };
+                option =angular.extend({},defaultOption,option);
+                return $modal.open(option);
             },
             createTeamFolder:function(){
-                return $modal.open({
+                var option = {
                     templateUrl: 'views/create_teamfolder_dialog.html',
-                    backdrop: false,
                     windowClass: 'create_teamfolder',
                     controller: function ($scope, $modalInstance) {
                         $scope.cancel = function () {
@@ -491,7 +501,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.shareToSubscriber = false;
                         $scope.ok = function(filename,shareToSubscriber){
                             if(!filename.length){
-                                 alert('请输入文件夹名称');
+                                alert('请输入文件夹名称');
                                 return;
                             }
                             $modalInstance.close({
@@ -500,7 +510,9 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                     }
-                });
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
             }
 
         }
