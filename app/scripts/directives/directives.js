@@ -3,6 +3,13 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('networkUnconnect',[function(){
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl:'views/network_unconnect.html'
+        }
+    }])
     .directive('avatar', [function () {
         return {
             restrict: 'E',
@@ -491,11 +498,9 @@ angular.module('gkClientIndex.directives', [])
                 $scope.sidebar = 'nofile';
                 $scope.$watch('[partition,selectedFile,filter,localFile]', function (newValue, oldValue) {
                     var selected = newValue[1] || [];
-                    if (newValue[2] == 'search' && !selected.length) {
-                        $scope.sidebar = 'search';
-                    } else if (selected.length > 1) {
+                   if (selected.length > 1) {
                         $scope.sidebar = 'multifile';
-                    } else if (selected.length == 1 || newValue[3].fullpath) {
+                    } else if (selected.length == 1 || (newValue[3] && newValue[3].fullpath)) {
                         $scope.sidebar = 'singlefile';
                     } else {
                         $scope.sidebar = 'nofile';
@@ -576,6 +581,7 @@ angular.module('gkClientIndex.directives', [])
 
                             }
                         } else {
+                            console.log(1);
                             $scope.sidbarData = {
                                 title: GKFilter.getFilterName($scope.filter),
                                 tip: GKFilter.getFilterTip($scope.filter),
@@ -621,7 +627,9 @@ angular.module('gkClientIndex.directives', [])
                         data: '',
                         cache: true
                     };
-                    options = angular.extend(defaultOptions, options);
+
+                    options = angular.extend({},defaultOptions, options);
+
                     var mountId = getOptMountId(file);
                     var mount = GKMount.getMountById(mountId);
                     var fullpath = file.dir == 1 ? file.fullpath + '/' : file.fullpath;
@@ -657,31 +665,26 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.$apply(function () {
                                     $scope.loading = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
-                                    //console.log(errorCode);
-                                    //console.log($scope.localFile);
                                     if (errorCode == 40402) {
                                         $scope.fileExist = false;
                                         $scope.sidbarData = {
                                             icon: 'uploading'
                                         }
                                         if ($scope.localFile.status == 1) {
-                                            $scope.sidbarData.title = '文件正在上传中';
-                                            var reFile;
+                                            $scope.sidbarData.title = '正在上传中 0%';
+                                            var info;
                                             fileInterval = setInterval(function () {
-                                                //$scope.$apply(function(){
-                                                reFile = gkClientInterface.getFileInfo({
+                                                info = gkClientInterface.getTransInfo({
                                                     mountid: file.mount_id,
                                                     webpath: file.fullpath
                                                 });
-                                                console.log(file);
-                                                if (!reFile || reFile.status != 1) {
+                                                $scope.sidbarData.title = '正在上传中 '+info.offset||0;
+                                                if (info.offset == 100) {
                                                     clearInterval(fileInterval);
-                                                    if (reFile) {
+                                                    if (info.offset == 100) {
                                                         getFileInfo($scope.localFile);
                                                     }
                                                 }
-                                                // })
-
                                             }, 1000);
                                         } else {
                                             $scope.sidbarData.title = '云端已删除';

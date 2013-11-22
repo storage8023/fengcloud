@@ -597,6 +597,19 @@ a:hover > .icon16x16.icon_manage,
 .icon32x32.icon_menu_white{
     background-position: -40px -288px;
 }
+
+.icon128x128{
+    width: 128px;
+    height:128px;
+    background-image: url(../images/icon/icon_other.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+.icon128x128.icon_network{
+    background-position: -400px -136px;
+}
 /*********文件图标 32*32*******/
 
 /*其他文件*/
@@ -990,4 +1003,13 @@ vertical-align: middle;
     border-radius: 16px;
     margin-right: 3px;
     margin-top: -2px;
+}
+
+.network_unconnected{
+text-align: center;
+    padding-top: 40px;
+}
+
+.network_unconnected h3{
+    margin-top: 40px;
 }

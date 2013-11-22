@@ -3,8 +3,11 @@
     <h4>附近的团队</h4>
 </div>
 <div class="modal-body">
-    <iframe frameborder="0" ng-src="{{url}}"  ></iframe>
+    <div ng-if="!PAGE_CONFIG.networkConnected">
+        <network-unconnect></network-unconnect>
+    </div>
+    <div ng-if="PAGE_CONFIG.networkConnected">
+        <iframe frameborder="0" ng-src="{{url}}"  ></iframe>
+    </div>
 </div>
-<!--<div class="modal-footer">-->
-    <!--<button class="btn btn-warning" ng-click="cancel()">取消</button>-->
-<!--</div>-->
+</div>

@@ -55,6 +55,12 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
             $scope.selectedTab = tab;
         };
 
+
+        $scope.$on('LinkStatus', function ($event,param) {
+            $scope.$apply(function(){
+                $rootScope.PAGE_CONFIG.networkConnected = param.link;
+            });
+        })
     }])
     .controller('tabContentCtrl',['$scope',function($scope){
         var clientInfo = gkClientInterface.getClientInfo();
@@ -323,6 +329,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
             templateUrl:'views/tab_device.html',
             link:function(scope){
                 scope.devices = [];
+                scope.errorMsg = '';
                 GKApi.devicelist().success(function(data){
                     scope.$apply(function(){
                         if(data && data.devices){
@@ -330,7 +337,11 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                         }
                     });
 
-                })
+                }).error(function(request){
+                        scope.$apply(function(){
+                        scope.errorMsg = GKException.getAjaxErrorMsg(request);
+                    })
+                 })
 
                 scope.editDeviceState = function(device,state){
                     if(state == 'del'){

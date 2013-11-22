@@ -1,7 +1,7 @@
 /**
  * Created by admin on 13-11-4.
  */
-angular.module('gkClientTransfer', ['gkClientIndex.services','ui.bootstrap','gkClientIndex.filters'])
+angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.services','ui.bootstrap','gkClientIndex.filters'])
     .controller('transferCtrl',['$scope','$location',function($scope,$location){
         $scope.tabs = [
             {

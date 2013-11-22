@@ -15,6 +15,9 @@
                <div>&nbsp;</div>
             </div>
             <div class="list">
+              <div class="empty" ng-if="errorMsg">
+                  <span>{{errorMsg}}</span>
+              </div>
               <div class="item" ng-repeat="device in devices">
                      <div title="{{device.device_name|getDeviceName}}">
                          <i class="icon16x16" ng-class="device.state|getDeviceStateIcon:device.is_current_device"></i>

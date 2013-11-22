@@ -702,10 +702,14 @@ footer {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
 .file_list_wrapper .thumb_view .file_name {
     white-space:nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.nonetwork .file_list_wrapper .item.nocache span{
+    color: #ACB4BF;
 }
 .file_list_wrapper .file_list_header i:first-child {
     float: left;
@@ -907,6 +911,12 @@ footer {
 .right_sidebar .bgicon.flower{
     background-position: -8px -136px;
 }
+.right_sidebar .bgicon.search{
+    background-position: -266px -136px;
+}
+.right_sidebar .bgicon.multiselect{
+    background-position: -140px -136px;
+}
 .right_sidebar .bgicon.trash{
     background-position: -8px -8px;
 }
@@ -932,15 +942,9 @@ footer {
     font-size: 14px;
 }
 
-.right_sidebar .multi_file > div{
-    position: absolute;
-    top:50%;
-    text-align: center;
-    height: 24px;
-    line-height: 24px;
-    margin: -12px 0 0 0;
-    left:5%;
-    right:5%;
+.right_sidebar .multi_file {
+    padding: 25px 26px;
+    color: #ACB4BF;
 
 }
 .right_sidebar .section_title .name{

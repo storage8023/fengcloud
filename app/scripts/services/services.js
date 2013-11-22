@@ -3,7 +3,8 @@
 /* Services */
 //全局AJAX请求默认返回的数据格式
 jQuery.ajaxSetup({
-    dataType: 'json'
+    dataType: 'json',
+    timeout:30000
 });
 
 angular.module('gkClientIndex.services', [])
@@ -1026,10 +1027,10 @@ angular.module('gkClientIndex.services', [])
                 } else {
                     switch (request.status) {
                         case 0:
-                            errorMsg = '请检测网络是否已断开';
+                            errorMsg = '网络未连接';
                             break;
                         case 401:
-                            errorMsg ='连接超时';
+                            errorMsg ='网络连接超时';
                             break;
                         case 501:
                         case 502:
@@ -1393,7 +1394,8 @@ angular.module('gkClientIndex.services', [])
                         sharepath:value.sharepath||'',
                         syncpath:value.syncpath||'',
                         share:value.share,
-                        auth:value.auth
+                        auth:value.auth,
+                        cache:value.have
                     };
                 }
                 return file;

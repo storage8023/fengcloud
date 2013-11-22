@@ -8,7 +8,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             user: gkClientInterface.getUser(),
             file: {},
             mount: {},
-            filter: ''
+            filter: '',
+            networkConnected:1
         };
         /**
          * 页面载入时请求消息
@@ -58,6 +59,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 extend.mount = {};
             }
             angular.extend($rootScope.PAGE_CONFIG, extend);
+        })
+
+        $scope.$on('LinkStatus', function ($event,param) {
+           $scope.$apply(function(){
+               $rootScope.PAGE_CONFIG.networkConnected = param.link;
+           });
         })
 
     }])
@@ -502,6 +509,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             })
         };
+
+        $scope.$on('LinkStatus', function () {
+            $scope.$apply(function(){
+                var selectPath = [];
+                angular.forEach($scope.selectedFile,function(value){
+                    selectPath.push(value.fullpath);
+                })
+                refreahData(selectPath.join('|'));
+            });
+        })
 
         /**
          * 监听侧边栏的搜索
@@ -1183,6 +1200,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 打开文件
          */
         $scope.$on('openFile', function ($event, file) {
+            if(!$scope.PAGE_CONFIG.networkConnected && !file.cache){
+                return;
+            }
             GK.open({
                 mountid: GKFileList.getOptFileMountId($scope, $rootScope),
                 webpath: file.fullpath

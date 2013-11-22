@@ -7,6 +7,15 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getTransInfo:function(param){
+        try {
+            var re = gkClient.gGetTransInfo(JSON.stringify(param));
+            console.log(re);
+            return JSON.parse(re);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     getDragFiles:function(){
         try {
             var re = gkClient.gGetDragFiles();

@@ -35,7 +35,7 @@
     <div class="scrollbar list_body" ng-drop="handleSysDrop($event)"  ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)" ng-model="testModel">
         <div class="empty" ng-if="!fileData || !fileData.length">该文件夹为空</div>
         <div class="item file_item"
-             ng-class="{'hover':file.hover,'selected':file.selected}"
+             ng-class="{'nocache':file.cache==0 && file.dir==0,'hover':file.hover,'selected':file.selected}"
              ng-repeat="file in fileData"
              ng-dblclick="handleDblClick(file)"
              ng-mousedown="handleClick($event,$index)"
