@@ -9,6 +9,7 @@
     },
     getTransInfo:function(param){
         try {
+            console.log(param);
             var re = gkClient.gGetTransInfo(JSON.stringify(param));
             console.log(re);
             return JSON.parse(re);

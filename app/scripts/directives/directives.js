@@ -674,17 +674,26 @@ angular.module('gkClientIndex.directives', [])
                                             $scope.sidbarData.title = '正在上传中 0%';
                                             var info;
                                             fileInterval = setInterval(function () {
-                                                info = gkClientInterface.getTransInfo({
-                                                    mountid: file.mount_id,
-                                                    webpath: file.fullpath
-                                                });
-                                                $scope.sidbarData.title = '正在上传中 '+info.offset||0;
-                                                if (info.offset == 100) {
-                                                    clearInterval(fileInterval);
-                                                    if (info.offset == 100) {
-                                                        getFileInfo($scope.localFile);
+                                                $scope.$apply(function(){
+                                                    info = gkClientInterface.getTransInfo({
+                                                        mountid: mountId,
+                                                        webpath: file.fullpath
+                                                    });
+                                                    var offset = info.offset ||0 ;
+                                                    var filesize = info.filesize || 0;
+                                                    var str = '';
+                                                    if(file.dir ==0){
+                                                        str = Math.round(offset/filesize*100)+'%';
                                                     }
-                                                }
+                                                    $scope.sidbarData.title = '正在上传中'+str;
+                                                    if (info.offset == 100) {
+                                                        clearInterval(fileInterval);
+                                                        if (info.offset == 100) {
+                                                            getFileInfo($scope.localFile);
+                                                        }
+                                                    }
+                                                })
+
                                             }, 1000);
                                         } else {
                                             $scope.sidbarData.title = '云端已删除';
