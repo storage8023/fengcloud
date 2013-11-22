@@ -1823,15 +1823,14 @@ angular.module('gkClientIndex.services', [])
     ])
     .factory('GKApi', ['GK', '$http', function (GK, $http) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
-        var defaultParams = {
-            token: GK.getToken()
-        }
+        var defaultParams = {};
         var GKApi = {
             delCollaboration:function(mountId,fullpath,collaboration){
                 var params = {
                     mount_id:mountId,
                     fullpath:fullpath,
-                    collaboration:collaboration
+                    collaboration:collaboration,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1844,7 +1843,9 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             userInfo:function(){
-                var params = {};
+                var params = {
+                    token: GK.getToken()
+                };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
@@ -1860,7 +1861,8 @@ angular.module('gkClientIndex.services', [])
                     email:email,
                     password:password,
                     user_license_chk:user_license_check,
-                    disable_next_login:1
+                    disable_next_login:1,
+                    token: GK.getToken()
                 };
                 return jQuery.ajax({
                     type: 'POST',
@@ -1871,7 +1873,8 @@ angular.module('gkClientIndex.services', [])
             },
             getSmartFolder:function(code){
                 var params = {
-                    code: code
+                    code: code,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1884,7 +1887,8 @@ angular.module('gkClientIndex.services', [])
             },
             removeSmartFolder:function(code){
                 var params = {
-                    code: code
+                    code: code,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1900,7 +1904,8 @@ angular.module('gkClientIndex.services', [])
                     code: code,
                     name: name,
                     condition: condition,
-                    description: description||''
+                    description: description||'',
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1916,7 +1921,8 @@ angular.module('gkClientIndex.services', [])
                     mount_id: mount_id,
                     name: name,
                     condition: condition,
-                    description: description||''
+                    description: description||'',
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1931,7 +1937,8 @@ angular.module('gkClientIndex.services', [])
 
                 var params = {
                     mount_id: mount_id,
-                    condition: condition
+                    condition: condition,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1944,7 +1951,8 @@ angular.module('gkClientIndex.services', [])
             },
             smartFolderList:function(code){
                 var params = {
-                    code: code
+                    code: code,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -1956,7 +1964,9 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             starFileList:function(){
-                var params = {};
+                var params = {
+                    token: GK.getToken()
+                };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
@@ -1967,7 +1977,9 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             recentFileList:function(){
-                var params = {};
+                var params = {
+                    token: GK.getToken()
+                };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
@@ -1978,7 +1990,9 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             inboxFileList:function(){
-                var params = {};
+                var params = {
+                    token: GK.getToken()
+                };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
@@ -1994,7 +2008,8 @@ angular.module('gkClientIndex.services', [])
                     fullpath: fullpath,
                     type: type || '',
                     start: start || '',
-                    date: date || ''
+                    date: date || '',
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2011,7 +2026,8 @@ angular.module('gkClientIndex.services', [])
                 var params = {
                     mount_id: mount_id,
                     fullpath: fullpath,
-                    keywords: keyword
+                    keywords: keyword,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2026,7 +2042,8 @@ angular.module('gkClientIndex.services', [])
             update: function (size,dateline) {
                 size = angular.isDefined(size)?size:100;
                 var params = {
-                    size:size
+                    size:size,
+                    token: GK.getToken()
                 };
                 if(angular.isDefined(dateline)){
                     params['dateline'] = dateline;
@@ -2042,7 +2059,8 @@ angular.module('gkClientIndex.services', [])
             },
            newUpdate: function (dateline) {
                 var params = {
-                    dateline:dateline||0
+                    dateline:dateline||0,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2056,7 +2074,8 @@ angular.module('gkClientIndex.services', [])
             updateAct: function (id,opt) {
                 var params = {
                     id:id,
-                    opt:opt
+                    opt:opt,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2069,6 +2088,7 @@ angular.module('gkClientIndex.services', [])
             },
             teamInvitePending: function () {
                 var params = {
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2081,7 +2101,8 @@ angular.module('gkClientIndex.services', [])
             },
             teamManage: function (data) {
                 var params = {
-                    org_id: data
+                    org_id: data,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2094,7 +2115,8 @@ angular.module('gkClientIndex.services', [])
             },
             teamQuit: function (org_id) {
                 var params = {
-                    org_id: org_id
+                    org_id: org_id,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2108,7 +2130,8 @@ angular.module('gkClientIndex.services', [])
             teamInviteReject: function (orgId, code) {
                 var params = {
                     org_id: orgId,
-                    code: code
+                    code: code,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2122,7 +2145,8 @@ angular.module('gkClientIndex.services', [])
             teamInviteJoin: function (orgId, code) {
                 var params = {
                     org_id: orgId,
-                    code: code
+                    code: code,
+                    token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2135,7 +2159,8 @@ angular.module('gkClientIndex.services', [])
             },
             teamGroupsMembers:function(orgId){
                 var params = {
-                    org_id:orgId
+                    org_id:orgId,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2148,7 +2173,8 @@ angular.module('gkClientIndex.services', [])
             },
             groupMember:function(data){
                 var params = {
-                    org_id:data
+                    org_id:data,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2162,7 +2188,8 @@ angular.module('gkClientIndex.services', [])
             teamsearch:function(org_id,keyword){
                 var params = {
                     org_id:org_id,
-                    key:keyword
+                    key:keyword,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2180,7 +2207,7 @@ angular.module('gkClientIndex.services', [])
              */
             devicelist:function(){
                 var params = {
-
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2199,7 +2226,8 @@ angular.module('gkClientIndex.services', [])
             toggleDevice:function(device_id,state){
                 var params = {
                     state:state,
-                    device_id:device_id
+                    device_id:device_id,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2216,7 +2244,8 @@ angular.module('gkClientIndex.services', [])
              */
             delDevice:function(device_id){
                 var params = {
-                    device_id:device_id
+                    device_id:device_id,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2229,7 +2258,8 @@ angular.module('gkClientIndex.services', [])
             },
             disableNewDevice:function(state){
                 var params = {
-                    state:state
+                    state:state,
+                    token: GK.getToken()
                 };
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
@@ -2384,8 +2414,10 @@ angular.module('gkClientIndex.services', [])
                     this.unSelectAll($scope);
                 }
                 $scope.fileData[index].selected = true;
-                selectedFile.push($scope.fileData[index]);
-                selectedIndex.push(index);
+                if(selectedIndex.indexOf(index)<0){
+                    selectedFile.push($scope.fileData[index]);
+                    selectedIndex.push(index);
+                }
                 $scope.selectedFile = selectedFile;
             },
             unSelect:function($scope,index){

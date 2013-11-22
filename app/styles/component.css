@@ -537,6 +537,12 @@ a:hover > .icon16x16.icon_manage,
 .icon32x32.icon_transfer_color{
     background-position: -76px -256px;
 }
+.icon32x32.icon_menu{
+    background-position: -4px -288px;
+}
+.icon32x32.icon_menu_white{
+    background-position: -40px -288px;
+}
 /*********文件图标 32*32*******/
 
 /*其他文件*/
