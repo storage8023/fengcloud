@@ -746,42 +746,58 @@ angular.module('gkClientIndex.directives', [])
                 }, true);
 
                 $scope.inputingRemark = false;
-                $scope.postText = '';
+                $scope.remarkText = '';
                 /**
                  * 取消发布备注
                  */
                 $scope.cancelPostRemark = function () {
-                    $scope.postText = '';
+                    $scope.remarkText = '';
                     $scope.inputingRemark = false;
                 };
+
+                $scope.handleFocus = function(){
+                    if(!$scope.inputingRemark) {
+                        $scope.inputingRemark = true;
+                    }
+                };
+
+
+                jQuery('body').off('click.cancelRemark').on('click.cancelRemark',function(e){
+                    if(!jQuery(e.target).hasClass('post_wrapper') && !jQuery(e.target).parents('.post_wrapper').size()){
+                        $scope.$apply(function(){
+                            if(!$scope.remarkText)  {
+                                $scope.inputingRemark = false;
+                            }
+                        });
+                    }
+                })
 
                 /**
                  * 发布讨论
                  */
-                $scope.postRemark = function (postText) {
-                    if (!postText || !postText.length) return;
+                $scope.postRemark = function (remarkText) {
+                    if (!remarkText || !remarkText.length) return;
                     var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
-                    RestFile.remind(getOptMountId($scope.file), fullpath, postText).success(function (data) {
-                        $scope.postText = '';
-                        $scope.inputingRemark = false;
+                    RestFile.remind(getOptMountId($scope.file), fullpath, remarkText).success(function (data) {
+                        $scope.cancelPostRemark();
                         if (data && data.length) {
                             $scope.remarks.unshift(data[0]);
                         }
 
-                    }).error(function () {
-
+                    }).error(function (request) {
+                        GKException.handleAjaxException(request);
                         });
                 };
 
                 $scope.insertAt = function (input) {
-                    var val = $scope.postText;
+                    var val = $scope.remarkText;
                     var jqTextarea = $element.find('.post_wrapper textarea');
                     var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');
                     var is_insert = input_pos[1] != val.length ? 1 : 0;
                     var l = val.substr(0, input_pos[0]);
                     var r = val.substr(input_pos[1], val.length);
                     val = l + input + r;
-                    $scope.postText = val;
+                    $scope.remarkText = val;
                     $timeout(function () {
                         if (is_insert) {
                             Util.Input.moveCur(jqTextarea[0], parseInt(input_pos[0]) + (input).length);
@@ -794,7 +810,7 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.handleKeyDown = function (e) {
                     if (e.keyCode == 13 & (e.ctrlKey || e.metaKey)) {
-                        $scope.postRemark($scope.postText);
+                        $scope.postRemark($scope.remarkText);
                     }
                 };
 
@@ -1578,7 +1594,7 @@ angular.module('gkClientIndex.directives', [])
 
                 var checkAt = function () {
                     $scope.$apply(function () {
-                        val = $scope.postText;
+                        val = $scope.remarkText;
                         var cursor = Util.Input.getCurSor($element[0]);
                         inputPos = cursor.split('|');
                         var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
@@ -1634,16 +1650,16 @@ angular.module('gkClientIndex.directives', [])
 
                 var insertChar = function (input) {
                     input += ' ';
-                    var newVal = $scope.postText;
+                    var newVal = $scope.remarkText;
                     var newInputPos = inputPos;
                     var isInsert = newInputPos[1] != newVal.length;
                     newVal = newVal.substr(0, lastIndex + 1) + input + newVal.substr(inputPos[1], newVal.length);
-                    $scope.postText = newVal;
+                    $scope.remarkText = newVal;
                     $timeout(function () {
                         if (isInsert) {
                             Util.Input.moveCur(elem, parseInt(inputPos[0]) + (input).length);
                         } else {
-                            Util.Input.moveCur(elem, $scope.postText.length);
+                            Util.Input.moveCur(elem, $scope.remarkText.length);
                         }
                     }, 0)
 

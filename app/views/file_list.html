@@ -45,7 +45,7 @@
              jqyoui-draggable="{ onStart:'dragBegin($index)',onStop:'dragEnd($index)'}"
              data-drop="file.dir==1"
              jqyoui-droppable="{onDrop:'handleDrop(file)',onOver:'handleOver(file)',onOut:'handleOut(file)'}"
-             data-jqyoui-options="{helper:getHelper,zIndex: 9999,appendTo:'body',cursorAt: { left: 5 ,top:8}}"
+             data-jqyoui-options="{containment:'window',helper:getHelper,zIndex: 9999,appendTo:'body',cursorAt: { left: 5 ,top:8}}"
              >
             <div class="thumb" ng-show="view=='thumb'">
                 <img ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" alt=""/>
