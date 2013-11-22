@@ -17,12 +17,17 @@
                     </div>
                     <div class="file_attrs">
                         <div class="file_name">
-                            <a class="add_star" ng-click="toggleStar(file.favorite)" ng-class="file.favorite==1?'stared':''" href="javascript:void(0)"><i class="icon16x16 icon_star"></i></a>
                             <span title="{{file.filename}}">{{file.filename}}</span>
                         </div>
                         <div title="创建人：{{file.creator_member_name}}">创建人：<span ng-bind="file.creator_member_name"></span></div>
                         <div title="最后修改人：{{file.last_member_name}}">最后修改人：<span ng-bind="file.last_member_name"></span></div>
+                        <div class="smart">
+                            <a href="javascript:void(0)" ng-repeat="smart in smarts" ng-class="isSmartAdd(file.favorite,smart.filter)?'active':''" ng-click="toggleSmart(smart.filter,file.favorite)">
+                                <i class="icon16x16 {{smart.icon}}" title="{{smart.name}}"></i>
+                            </a>
+                        </div>
                     </div>
+
                     <div class="tags" ng-if="file.cmd>0">
                         <tags-input ng-model="file.formatTag" class="" name="file_tag" id="file_tag" placeholder="+ 添加注释"></tags-input>
                     </div>

@@ -587,7 +587,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['RestFile', '$location', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', function (RestFile, $location, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount) {
+    .directive('singlefileRightSidebar', ['GKFilter','GKSmartFolder','RestFile', '$location', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', function (GKFilter,GKSmartFolder,RestFile, $location, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount) {
         return {
             replace: true,
             restrict: 'E',
@@ -610,6 +610,8 @@ angular.module('gkClientIndex.directives', [])
                     }
                     return Number(mountID);
                 };
+
+                $scope.smarts = GKSmartFolder.getFolders('recent');
 
                 /**
                  * 通过接口获取文件信息
@@ -796,31 +798,42 @@ angular.module('gkClientIndex.directives', [])
                     }
                 };
 
+                $scope.isSmartAdd = function(favorite,filter){
+                    if(!favorite) favorite = [];
+                    var type = GKFilter.getFilterType(filter);
+                    if(favorite.indexOf(String(type))>=0){
+                        return true;
+                    }
+                    return false;
+                };
+
                 /**
                  * 星标
                  * @param star
                  */
-                $scope.toggleStar = function (star) {
+                $scope.toggleSmart = function (filter,favorite) {
                     var fullpath = $scope.file.fullpath;
                     var mountId = $scope.file.mount_id || $scope.PAGE_CONFIG.mount.mount_id;
                     if (!fullpath) return;
-                    if (star == 1) {
-                        RestFile.unstar(mountId, fullpath).success(function () {
+                    var filterType = String(GKFilter.getFilterType(filter));
+                    if(!favorite) favorite = [];
+                    var star = favorite.indexOf(filterType)>=0;
+                    if (star) {
+                        GKApi.removeFromFav(mountId, fullpath,filterType).success(function () {
                             $scope.$apply(function () {
-                                if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder && $scope.filter == 'star') {
-                                    $scope.$emit('unstar');
+                                if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder && $scope.filter == filter) {
+                                    $scope.$emit('unFav');
                                 } else {
-                                    $scope.file.favorite = 0;
+                                    Util.Array.removeByValue(favorite,filterType);
                                 }
-
                             })
                         }).error(function (request) {
                                 GKException.handleAjaxException(request);
                             });
                     } else {
-                        RestFile.star(mountId, fullpath).success(function () {
+                        GKApi.addToFav(mountId, fullpath,filterType).success(function () {
                             $scope.$apply(function () {
-                                $scope.file.favorite = 1;
+                                favorite.push(filterType);
                             })
                         }).error(function (request) {
                                 GKException.handleAjaxException(request);
@@ -935,7 +948,7 @@ angular.module('gkClientIndex.directives', [])
                             GKFileList.unSelect($scope, index);
                         }
                         else {
-                            GKFileList.select($scope, index, true);
+                            GKFileList.select($scope, index,true);
                         }
                     } else if ($event.shiftKey) {
                         var lastIndex = shiftLastIndex;
@@ -1701,7 +1714,10 @@ angular.module('gkClientIndex.directives', [])
                     var breadWidth = $element.find('.bread').width();
                     $element.find('.bread_list .bread_item a').css({'max-width': breadWidth});
                     var breadListWidth = $element.find('.bread_list').width();
-                    while (breadListWidth > breadWidth) {
+                    var count = 0;
+                    while (breadListWidth > breadWidth && breadListWidth>0 && breadWidth>0) {
+                        if(count>50) break;
+                        count++;
                         if ($element.find('.bread_list .bread_item:visible').size() == 1) {
                             break;
                         }

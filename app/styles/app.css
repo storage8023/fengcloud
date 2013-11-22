@@ -899,7 +899,12 @@ footer {
 .right_sidebar .bgicon.recent{
     background-position: -136px -8px;
 }
-.right_sidebar .bgicon.star{
+.right_sidebar .bgicon.star,
+.right_sidebar .bgicon.diamond,
+.right_sidebar .bgicon.moon,
+.right_sidebar .bgicon.heart,
+.right_sidebar .bgicon.triangle,
+.right_sidebar .bgicon.flower{
     background-position: -8px -136px;
 }
 .right_sidebar .bgicon.trash{
@@ -1016,16 +1021,47 @@ footer {
     color: #3f4754;
     margin-bottom: 2px;
 }
-.right_sidebar .file_attrs .file_name .add_star{
-    float: right;
-    height: 16px;
-    width: 16px;
+.right_sidebar .file_attrs .smart{
+    margin-top: 5px;
 }
-.right_sidebar .file_attrs .file_name .add_star .icon16x16{
-    background-position: -4px -84px;
+.right_sidebar .file_attrs .smart a{
+    margin-right: 2px;
 }
-.right_sidebar .file_attrs .file_name .add_star.stared .icon16x16{
-    background-position: -44px -84px;
+.right_sidebar .file_attrs .smart a .icon_star{
+     background-position: -4px -1124px;
+ }
+.right_sidebar .file_attrs .smart a.active .icon_star{
+    background-position: -44px -1124px;
+}
+.right_sidebar .file_attrs .smart a .icon_moon{
+    background-position: -4px -1144px;
+}
+.right_sidebar .file_attrs .smart a.active .icon_moon{
+    background-position: -44px -1144px;
+}
+.right_sidebar .file_attrs .smart a .icon_triangle{
+    background-position: -4px -1204px;
+}
+.right_sidebar .file_attrs .smart a.active .icon_triangle{
+    background-position: -44px -1204px;
+}
+.right_sidebar .file_attrs .smart a .icon_diamond{
+    background-position: -4px -1224px;
+}
+.right_sidebar .file_attrs .smart a.active .icon_diamond{
+    background-position: -44px -1224px;
+}
+.right_sidebar .file_attrs .smart a .icon_flower{
+    background-position: -4px -1184px;
+}
+.right_sidebar .file_attrs .smart a.active .icon_flower{
+    background-position: -44px -1184px;
+}
+.right_sidebar .file_attrs .smart a .icon_heart{
+    background-position: -4px -1164px;
+}
+.right_sidebar .file_attrs .smart a.active .icon_heart{
+    background-position: -44px -1164px;
 }
 .right_sidebar .file_icon {
     margin: 15px 0 0 10px;

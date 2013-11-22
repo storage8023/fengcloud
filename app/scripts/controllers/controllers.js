@@ -360,7 +360,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
     }])
-    .controller('fileBrowser', ['GKDialog', 'GKOpen', '$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition', 'GKFileOpt', 'GKModal', function (GKDialog, GKOpen, $scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition, GKFileOpt, GKModal) {
+    .controller('fileBrowser', ['GKDialog', 'GKOpen', '$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition', 'GKFileOpt', 'GKModal', 'GKFilter',function (GKDialog, GKOpen, $scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition, GKFileOpt, GKModal,GKFilter) {
         /**
          * 打开时会有一次空跳转
          */
@@ -449,8 +449,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     /**
                      * 加星标的文件
                      */
-                } else if ($scope.filter == 'star') {
-                    GKApi.starFileList($scope.filter).success(function (data) {
+                } else if (['star','diamond','moon','triangle','flower','heart'].indexOf($scope.filter)>=0) {
+                    var type  = GKFilter.getFilterType($scope.filter);
+                    GKApi.starFileList(type).success(function (data) {
                         $scope.$apply(function () {
                             fileList = data['list'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));
@@ -1224,7 +1225,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 取消收藏
          */
-        $scope.$on('unstar', function ($event) {
+        $scope.$on('unFav', function ($event) {
             GKFileList.removeAllSelectFile($scope);
         })
 
@@ -1285,7 +1286,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 判断前进后退按钮的状态
          * @type {*}
          */
-        $scope.$on('$locationChangeSuccess', function () {
+        $scope.$on('$routeChangeSuccess', function () {
             $scope.breads = GKPath.getBread();
             $scope.canBack = GKHistory.canBack();
             $scope.canForward = GKHistory.canForward();

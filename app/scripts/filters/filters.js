@@ -19,6 +19,16 @@ angular.module('gkClientIndex.filters', [])
             return Math.round(val/total * 100)+'%';
         }
     })
+    .filter('getSmartIcon',['GKFilter',function(GKFilter){
+        return function(favorites,filter){
+          var type = GKFilter.getFilterType(filter);
+          var classes = 'icon_'+filter;
+          if(favorites.indexOf(type)>=0){
+              classes += ' added';
+          }
+          return classes;
+        }
+    }])
     .filter('getPartitionName',[function(){
         return function(partition){
             var partitionName = '';

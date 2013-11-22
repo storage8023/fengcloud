@@ -5,7 +5,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=4);
+    background-image: url(../images/icon/icon16x16.png?v=5);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -55,17 +55,6 @@
 .active .icon16x16.icon_smartfolder,
 .icon16x16.icon_smartfolder_color{
     background-position: -44px -64px;
-}
-
-.icon16x16.icon_star{
-    background-position: -44px -84px;
-}
-.icon16x16.icon_star_white{
-    background-position: -24px -84px;
-}
-.active .icon16x16.icon_star,
-.icon16x16.icon_star_color{
-    background-position: -44px -84px;
 }
 
 
@@ -490,6 +479,71 @@ a:hover > .icon16x16.icon_manage,
     background-position: -24px -1104px;
 }
 
+.icon16x16.icon_star{
+    background-position: -44px -1124px;
+}
+.icon16x16.icon_star_white{
+    background-position: -24px -1124px;
+}
+.active .icon16x16.icon_star,
+.icon16x16.icon_star_color{
+    background-position: -44px -1124px;
+}
+
+.icon16x16.icon_moon{
+    background-position: -44px -1144px;
+}
+.icon16x16.icon_moon_white{
+    background-position: -24px -1144px;
+}
+.active .icon16x16.icon_moon,
+.icon16x16.icon_moon_color{
+    background-position: -44px -1144px;
+}
+
+.icon16x16.icon_heart{
+    background-position: -44px -1164px;
+}
+.icon16x16.icon_heart_white{
+    background-position: -24px -1164px;
+}
+.active .icon16x16.icon_heart,
+.icon16x16.icon_heart_color{
+    background-position: -44px -1164px;
+}
+
+.icon16x16.icon_flower{
+    background-position: -44px -1184px;
+}
+.icon16x16.icon_flower_white{
+    background-position: -24px -1184px;
+}
+.active .icon16x16.icon_flower,
+.icon16x16.icon_flower_color{
+    background-position: -44px -1184px;
+}
+
+.icon16x16.icon_triangle{
+    background-position: -44px -1204px;
+}
+.icon16x16.icon_triangle_white{
+    background-position: -24px -1204px;
+}
+.active .icon16x16.icon_triangle,
+.icon16x16.icon_triangle_color{
+    background-position: -44px -1204px;
+}
+
+.icon16x16.icon_diamond{
+    background-position: -44px -1224px;
+}
+.icon16x16.icon_diamond_white{
+    background-position: -24px -1224px;
+}
+.active .icon16x16.icon_diamond,
+.icon16x16.icon_diamond_color{
+    background-position: -44px -1224px;
+}
 
 /*32x32*/
 .icon32x32{

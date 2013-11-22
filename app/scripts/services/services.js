@@ -708,32 +708,58 @@ angular.module('gkClientIndex.services', [])
         return GKNews;
     }])
     .factory('GKSmartFolder',['GKFilter',function(GKFilter){
-        var smartFolders = [];
+        var smartFolders = [
+            {
+                name: GKFilter.getFilterName('recent'),
+                icon:'icon_clock',
+                filter:'recent'
+            },
+            {
+                name: GKFilter.getFilterName('star'),
+                icon:'icon_star',
+                filter:'star'
+            },
+            {
+                name: GKFilter.getFilterName('moon'),
+                icon:'icon_moon',
+                filter:'moon'
+            },
+            {
+                name: GKFilter.getFilterName('heart'),
+                icon:'icon_heart',
+                filter:'heart'
+            },
+            {
+                name: GKFilter.getFilterName('diamond'),
+                icon:'icon_diamond',
+                filter:'diamond'
+            },
+            {
+                name: GKFilter.getFilterName('triangle'),
+                icon:'icon_triangle',
+                filter:'triangle'
+            },
+            {
+                name: GKFilter.getFilterName('flower'),
+                icon:'icon_flower',
+                filter:'flower'
+            }
+        ];
         var GKSmartFolder = {
-            getFolders:function(){
-                smartFolders = gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'];
-                if (!smartFolders) smartFolders = [];
-
-//                smartFolders.unshift({
-//                    name: GKFilter.getFilterName('inbox'),
-//                    icon:'icon_inbox',
-//                    filter:'inbox'
-//                });
-
-                smartFolders.unshift({
-                    name: GKFilter.getFilterName('star'),
-                    icon:'icon_star',
-                    filter:'star'
-                });
-
-                smartFolders.unshift({
-                    name: GKFilter.getFilterName('recent'),
-                    icon:'icon_clock',
-                    filter:'recent'
-                });
+            getFolders:function(exclue){
+                if(exclue){
+                  if(!angular.isArray(exclue)) exclue = [exclue];
+                  angular.forEach(exclue,function(value){
+                    angular.forEach(smartFolders,function(smart,key){
+                        if(smart.filter == value){
+                            smartFolders.splice(key,1);
+                            return false
+                        }
+                    })
+                  });
+                }
                 return smartFolders;
             },
-
             getFolderByCode:function(code){
                 var value,smartFolder=null;
                 for(var i=0;i<smartFolders.length;i++){
@@ -767,6 +793,11 @@ angular.module('gkClientIndex.services', [])
             inbox:'inbox',
             star:'star',
             recent:'recent',
+            triangle:'triangle',
+            diamond:'diamond',
+            flower:'flower',
+            moon:'moon',
+            heart:'heart',
             search:'search',
             getFilterName:function(filter){
                 var filterName = '';
@@ -778,16 +809,55 @@ angular.module('gkClientIndex.services', [])
                         filterName = '我接收的文件';
                         break;
                     case this.star:
-                        filterName = '星标文件';
+                        filterName = '星形';
                         break;
                     case this.recent:
                         filterName = '最近修改的文件';
+                        break;
+                    case this.triangle:
+                        filterName = '三角形';
+                        break;
+                    case this.diamond:
+                        filterName = '钻石';
+                        break;
+                    case this.flower:
+                        filterName = '幸运草';
+                        break;
+                    case this.heart:
+                        filterName = '爱心';
+                        break;
+                    case this.moon:
+                        filterName = '月亮';
                         break;
                     case this.search:
                         filterName = '搜索结果';
                         break;
                 }
                 return filterName;
+            },
+            getFilterType:function(filter){
+                var filterType = '';
+                switch(filter){
+                    case this.star:
+                        filterType = 1;
+                        break;
+                    case this.moon:
+                        filterType = 2;
+                        break;
+                    case this.heart:
+                        filterType = 3;
+                        break;
+                    case this.flower:
+                        filterType = 4;
+                        break;
+                    case this.triangle:
+                        filterType = 5;
+                        break;
+                    case this.diamond:
+                        filterType = 6;
+                        break;
+                }
+                return filterType;
             },
             getFilterTip:function(filter){
                 var tip = '';
@@ -861,7 +931,7 @@ angular.module('gkClientIndex.services', [])
             },
             getBread:function(){
                 var path = $location.search().path || '';
-                var partition =  $location.search().partition || '';
+                var partition =  $location.search().partition || GKPartition.myFile;
                 var view =  $location.search().view || 'list';
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
@@ -1650,36 +1720,7 @@ angular.module('gkClientIndex.services', [])
                     }
                 })
             },
-            star: function (mount_id, fullpath) {
-                var date = new Date().toUTCString();
-                var method = 'FAVORITES_ADD';
-                var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return jQuery.ajax({
-                    type: method,
-                    url: GK.getRestHost() + webpath,
-                    headers: {
-                        'x-gk-mount': mount_id,
-                        'Date': date,
-                        'Authorization': authorization,
-                    }
-                })
-            },
-            unstar: function (mount_id, fullpath) {
-                var date = new Date().toUTCString();
-                var method = 'FAVORITES_DELETE';
-                var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return jQuery.ajax({
-                    type: method,
-                    url: GK.getRestHost() + webpath,
-                    headers: {
-                        'x-gk-mount': mount_id,
-                        'Date': date,
-                        'Authorization': authorization,
-                    }
-                })
-            },
+
             get: function (mount_id, fullpath) {
                 var date = new Date().toUTCString();
                 var method = 'GET';
@@ -1825,6 +1866,38 @@ angular.module('gkClientIndex.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            addToFav: function (mountId, fullpath,type) {
+                var params = {
+                    mount_id:mountId,
+                    fullpath:fullpath,
+                    favorite_type:type,
+                    token: GK.getToken()
+                };
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: GK.getApiHost()+'/1/file/favorites_add',
+                    dataType:'json',
+                    data:params
+                })
+            },
+            removeFromFav: function (mountId, fullpath,type) {
+                var params = {
+                    mount_id:mountId,
+                    fullpath:fullpath,
+                    favorite_type:type,
+                    token: GK.getToken()
+                };
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: GK.getApiHost()+'/1/file/favorites_delete',
+                    dataType:'json',
+                    data:params
+                })
+            },
             delCollaboration:function(mountId,fullpath,collaboration){
                 var params = {
                     mount_id:mountId,
@@ -1963,8 +2036,9 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            starFileList:function(){
+            starFileList:function(type){
                 var params = {
+                    favorite_type:type,
                     token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -2409,7 +2483,7 @@ angular.module('gkClientIndex.services', [])
         var selectedPath = '';
         var GKFileList = {
             select:function($scope,index,multiSelect){
-                multiSelect = !angular.isDefined(multiSelect) ? false : true;
+                multiSelect = !angular.isDefined(multiSelect) ? false : multiSelect;
                 if (!multiSelect && selectedFile && selectedFile.length) {
                     this.unSelectAll($scope);
                 }
@@ -2417,8 +2491,8 @@ angular.module('gkClientIndex.services', [])
                 if(selectedIndex.indexOf(index)<0){
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
+                    $scope.selectedFile = selectedFile;
                 }
-                $scope.selectedFile = selectedFile;
             },
             unSelect:function($scope,index){
                 if($scope.fileData[index]){
@@ -2429,6 +2503,7 @@ angular.module('gkClientIndex.services', [])
                 if (i >= 0) {
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
+                    $scope.selectedFile = selectedFile;
                 }
             },
             unSelectAll:function($scope){
