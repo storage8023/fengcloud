@@ -1369,7 +1369,9 @@ angular.module('gkClientIndex.services', [])
                         creator_member_name: value.create_member_name || '',
                         creator_member_id: value.create_member_id || '',
                         cmd:value.cmd,
-                        favorite:value.favorite
+                        favorite:value.favorite,
+                        filehash:value.filehash,
+                        hash:value.hash
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -1395,7 +1397,9 @@ angular.module('gkClientIndex.services', [])
                         syncpath:value.syncpath||'',
                         share:value.share,
                         auth:value.auth,
-                        cache:value.have
+                        cache:value.have,
+                        filehash:value.filehash,
+                        hash:value.uuidhash
                     };
                 }
                 return file;

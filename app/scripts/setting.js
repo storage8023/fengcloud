@@ -327,30 +327,30 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
         return {
             restrict: 'E',
             templateUrl:'views/tab_device.html',
-            link:function(scope){
-                scope.devices = [];
-                scope.errorMsg = '';
+            link:function($scope){
+                $scope.devices = [];
+                $scope.errorMsg = '';
                 GKApi.devicelist().success(function(data){
-                    scope.$apply(function(){
+                    $scope.$apply(function(){
                         if(data && data.devices){
-                            scope.devices = data.devices;
+                            $scope.devices = data.devices;
                         }
                     });
 
                 }).error(function(request){
-                        scope.$apply(function(){
-                        scope.errorMsg = GKException.getAjaxErrorMsg(request);
+                        $scope.$apply(function(){
+                        $scope.errorMsg = GKException.getAjaxErrorMsg(request);
                     })
                  })
 
-                scope.editDeviceState = function(device,state){
+                $scope.editDeviceState = function(device,state){
                     if(state == 'del'){
                         if(!confirm('你确定要删除该设备信息？')){
                             return;
                         }
                         GKApi.delDevice(device.device_id).success(function(){
                             $scope.$apply(function(){
-                                Util.Array.removeByValue(scope.devices,device);
+                                Util.Array.removeByValue($scope.devices,device);
                             });
 
                         }).error(function(request){
@@ -360,7 +360,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                         var reState = state=='active'?1:0;
                         var msg = '你确定要禁用该设备?';
                         if(reState){
-                            msg = '你确定要启用改设备？';
+                            msg = '你确定要激活该设备？';
                         }
                         if(!confirm(msg)){
                             return;
@@ -376,25 +376,25 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                     }
                 }
 
-                scope.disableNewDevice = false;
+                $scope.disableNewDevice = false;
                 GKApi.userInfo().success(function(data){
-                    scope.$apply(function(){
+                    $scope.$apply(function(){
                         if(data && data.settings){
-                            scope.disableNewDevice = data.settings['disable_new_device']==1?true:false;
+                            $scope.disableNewDevice = data.settings['disable_new_device']==1?true:false;
                         }
                     });
                 })
 
-                scope.toggleNewDevice = function(){
-                    var state = scope.disableNewDevice?1:0;
+                $scope.toggleNewDevice = function(){
+                    var state = $scope.disableNewDevice?1:0;
                     if(state){
                         if(!confirm('你确定要禁止其他新的设备的登录？')){
-                            scope.disableNewDevice = !scope.disableNewDevice;
+                            $scope.disableNewDevice = !$scope.disableNewDevice;
                             return;
                         }
                     }else{
                         if(!confirm('你确定要允许新的设备的登录？')){
-                            scope.disableNewDevice = !scope.disableNewDevice;
+                            $scope.disableNewDevice = !$scope.disableNewDevice;
                             return;
                         }
                     }
@@ -402,7 +402,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                     GKApi.disableNewDevice(state).success(function(){
 
                     }).error(function(request){
-                            scope.disableNewDevice = !scope.disableNewDevice;
+                            $scope.disableNewDevice = !$scope.disableNewDevice;
                             GKException.handleAjaxException(request);
                         });
                 }
