@@ -383,7 +383,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.order = '+file_name'; //当前的排序
         $scope.filter = $routeParams.filter || ''; //当前的筛选 [search|trash]
         $scope.selectedpath = $routeParams.selectedpath || ''; //当前目录已选中的文件的路径，允许多选，用|分割
-        $scope.fileData = []; //文件列表的数据
+        //$scope.fileData = []; //文件列表的数据
         $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.mountId = Number($routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
         $scope.keyword = $routeParams.keyword || '';
@@ -455,12 +455,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                      */
                 } else if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf($scope.filter) >= 0) {
                     var type = GKFilter.getFilterType($scope.filter);
+
                     GKApi.starFileList(type).success(function (data) {
                         fileList = data['list'];
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                     }).error(function (request) {
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
+
+
                     /**
                      * 最近访问的文件
                      */
@@ -493,13 +496,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var refreahData = function (selectPath) {
             getFileData().then(function (newFileData) {
                 $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
+                //console.log($scope.fileData);
                 if (selectPath) {
                     $scope.selectedpath = selectPath;
                 }
-                if((!$scope.fileData || !$scope.fileData.length)){
+                if ((!$scope.fileData || !$scope.fileData.length)) {
                     $scope.errorMsg = '该文件夹为空';
                 }
-            },function(errorMsg){
+            }, function (errorMsg) {
                 $scope.errorMsg = errorMsg;
             })
         };
@@ -634,6 +638,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('setOrder', function (event, order) {
             setOrder(order);
         });
+
+
+        $scope.$on('searchSmartFolder', function (event, keyword) {
+            if (!keyword) {
+                return;
+            }
+            var fileList = $filter('filter')($scope.fileData, {filename: keyword});
+            if (!fileList || !fileList.length) {
+                $scope.errorMsg = '未找到相关搜索结果';
+            } else {
+                $scope.keyword = keyword;
+                $scope.fileData = fileList;
+            }
+        })
+
 
         /**
          * 所有操作

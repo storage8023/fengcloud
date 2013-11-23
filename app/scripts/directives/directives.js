@@ -1708,7 +1708,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', function ($location, $timeout, GKSearch, GKPartition) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', '$rootScope',function ($location, $timeout, GKSearch, GKPartition,$rootScope) {
         return {
             replace: true,
             restrict: 'E',
@@ -1827,16 +1827,22 @@ angular.module('gkClientIndex.directives', [])
                     if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                         return;
                     }
-                    var fileSearch = new GKFileSearch();
-                    fileSearch.conditionIncludeKeyword($scope.keyword);
-                    fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
-                    var condition = fileSearch.getCondition();
-                    GKSearch.setCondition(condition);
-                    var search = $location.search();
-                    $location.search(angular.extend(search, {
-                        filter: 'search',
+                    var params = {
                         keyword: $scope.keyword
-                    }));
+                    };
+                    if($scope.PAGE_CONFIG.partition != GKPartition.smartFolder){
+                        var fileSearch = new GKFileSearch();
+                        fileSearch.conditionIncludeKeyword($scope.keyword);
+                        fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
+                        var condition = fileSearch.getCondition();
+                        GKSearch.setCondition(condition);
+                        params.filter = 'search';
+                        var search = $location.search();
+                        $location.search(angular.extend(search,params));
+                    }else{
+                       $rootScope.$broadcast('searchSmartFolder',$scope.keyword);
+                    }
+
                 };
                 var resetSearch = function () {
                     $scope.keyword = '';
