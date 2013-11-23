@@ -4,6 +4,7 @@
     <title>登录</title>
     <meta http-equiv = "content-type" content="text/html;charset = utf-8" />
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" href="styles/bootstrap-gk.css"/>
     <link rel="stylesheet" href="styles/base.css"/>
     <link rel="stylesheet" href="styles/component.css"/>
     <link rel="stylesheet" href="styles/ng-animation.css"/>
@@ -19,19 +20,21 @@
     <script src="scripts/directives/directives.js"></script>
 </head>
 <body ng-controller="loginCtrl">
-<header></header>
+
 <section class="login rotate" ng-show="step=='login'">
+    <header>
+        <img class="logo" src="images/login_logo.png" alt="" />
+    </header>
 <div class="content">
-    <h2>欢迎登录够快云盘</h2>
     <div class="form_wrapper">
         <div class="input_wrapper_group">
-        <div class="input_wrapper">
-            <label for="username"><i class="icon16x16 icon_email"></i></label>
-            <input name="username" id="username" placeholder="账号" class="input_text" ng-model="username" autocomplete="off"/>
+        <div class="input-group">
+            <label for="username" class="input-group-addon"><i class="icon16x16 icon_envelope"></i></label>
+            <input name="username" id="username" placeholder="账号" class="form-control" ng-model="username" autocomplete="off"/>
         </div>
-        <div class="input_wrapper">
-            <label for="password"><i class="icon16x16 icon_lock"></i></label>
-            <input name="password" id="password" type="password" placeholder="密码" class="input_text" ng-model="password" autocomplete="off"/>
+        <div class="input-group">
+            <label class="input-group-addon" for="password"><i class="icon16x16 icon_lock"></i></label>
+            <input name="password" id="password" type="password" placeholder="密码" class="form-control" ng-model="password" autocomplete="off"/>
         </div>
         </div>
         <div class="c_f form_layer">
@@ -49,21 +52,23 @@
 </div>
 </section>
 <section class="regist rotate" ng-show="step=='regist'">
+    <header>
+        <img class="logo" src="images/login_logo.png" alt="" />
+    </header>
     <div class="content">
-        <h2>注册账号</h2>
         <div class="form_wrapper">
             <div class="input_wrapper_group">
-                <div class="input_wrapper">
-                    <label><i class="icon16x16 icon_email"></i></label>
-                    <input name="regist_email" id="regist_email" placeholder="邮箱地址" class="input_text" ng-model="registEmail" autocomplete="off"/>
+                <div class="input-group">
+                    <label class="input-group-addon"><i class="icon16x16 icon_envelope"></i></label>
+                    <input name="regist_email" id="regist_email" placeholder="邮箱地址" class="form-control" ng-model="registEmail" autocomplete="off"/>
                 </div>
-                <div class="input_wrapper">
-                    <label><i class="icon16x16 icon_lock"></i></label>
-                    <input name="regist_password" id="regist_password" type="password" placeholder="登录密码" class="input_text" ng-model="registPassword" autocomplete="off"/>
+                <div class="input-group">
+                    <label class="input-group-addon"><i class="icon16x16 icon_lock"></i></label>
+                    <input name="regist_password" id="regist_password" type="password" placeholder="登录密码" class="form-control" ng-model="registPassword" autocomplete="off"/>
                 </div>
-                <div class="input_wrapper">
-                    <label><i class="icon16x16 icon_person_white"></i></label>
-                    <input name="regist_username" id="regist_username" type="text" placeholder="称呼" class="input_text" ng-model="registUsername" autocomplete="off"/>
+                <div class="input-group">
+                    <label class="input-group-addon"><i class="icon16x16 icon_person"></i></label>
+                    <input name="regist_username" id="regist_username" type="text" placeholder="称呼" class="form-control" ng-model="registUsername" autocomplete="off"/>
                 </div>
             </div>
             <div class="form_layer">
@@ -77,12 +82,15 @@
 </section>
 
 <section class="device rotate" ng-show="step=='device'">
+    <header>
+        <img class="logo" src="images/login_logo.png" alt="" />
+    </header>
     <div class="content">
-        <h2>注册设备</h2>
         <div class="form_wrapper">
             <div class="input_wrapper_group">
-                <div class="input_wrapper">
-                    <input name="regist_device" id="regist_device" placeholder="设备名称" class="input_text" ng-model="registDevice" autocomplete="off"/>
+                <div class="input-group">
+                    <label for="username" class="input-group-addon"><i class="icon16x16 icon_computer"></i></label>
+                    <input name="regist_device" id="regist_device" placeholder="设备名称" class="form-control" ng-model="registDevice" autocomplete="off"/>
                 </div>
             </div>
             <div class="form_layer">

@@ -12,13 +12,11 @@ header{
     right: 0;
     top:0;
 }
-header > i{
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    vertical-align: middle;
+header i.icon_logo{
     margin-top: 4px;
-    background: url(../images/icon/icon_other.png) -40px -4px;
+}
+header i.icon_logo:hover{
+    background-position: -40px -328px;
 }
 ul.quickmenu{
     height: 60px;

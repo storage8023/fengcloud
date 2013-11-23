@@ -548,7 +548,7 @@ a:hover > .icon16x16.icon_manage,
 .icon32x32{
     width: 32px;
     height: 32px;
-    background-image: url(../images/icon/icon32x32.png?v=1);
+    background-image: url(../images/icon/icon32x32.png?v=2);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -595,6 +595,12 @@ a:hover > .icon16x16.icon_manage,
 }
 .icon32x32.icon_menu_white{
     background-position: -40px -288px;
+}
+.icon32x32.icon_logo{
+    background-position: -4px -328px;
+}
+.icon32x32.icon_logo_white{
+    background-position: -40px -328px;
 }
 
 .icon128x128{
@@ -738,7 +744,6 @@ a:hover > .icon16x16.icon_manage,
     border-color: #597FAE;
     color: #fff;
     font-weight: normal;
-    text-shadow: -1px -1px 0 rgba(0,0,0,.9);
 }
 .btn-blue:hover,
 .btn-blue:active,
