@@ -40,7 +40,7 @@
                         <ul class="scrollbar share_member_list" ng-style="{top:!enableAddShare?0:''}">
                             <li class="item" ng-repeat="shareMember in shareMembers">
                         <span class="icon">
-                           <avatar class="avatar avatar_mini" gk-src="{{shareMember.avatar}}"></avatar>
+                           <avatar class="avatar avatar_mini" gk-src="{{shareMember.member_id==0?'images/subscribe_group.png':shareMember.avatar}}"></avatar>
                         </span>
                                 <span class="name">{{shareMember.member_name}}</span>
                         <span class="opts" ng-if="enableAddShare && shareMember.member_id != PAGE_CONFIG.user.member_id">

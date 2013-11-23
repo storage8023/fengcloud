@@ -55,7 +55,9 @@
              data-jqyoui-options="{containment:'window',helper:getHelper,zIndex: 9999,appendTo:'body',cursorAt: { left: 5 ,top:8}}"
                 >
             <div class="thumb" ng-show="view=='thumb'">
-                <img ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
+                <!--<thumb hash="{{file.hash}}" filehash="file.filehash" ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"></thumb>-->
+
+                <img ng-if="" ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
                      alt=""/>
             </div>
             <div class="file_name">

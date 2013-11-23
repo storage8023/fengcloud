@@ -605,7 +605,10 @@ footer {
 .toolbar .opt.nearby:hover i{
     background-position: -24px -1084px;
 }
-
+.context-menu-item.goto:hover i,
+.toolbar .opt.goto:hover i{
+    background-position: -24px -1244px;
+}
 .toolbar .opt.opt_view_change > a:hover{
     background: #9AA5B8;
 }

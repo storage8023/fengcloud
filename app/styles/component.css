@@ -5,7 +5,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=5);
+    background-image: url(../images/icon/icon16x16.png?v=6);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -451,13 +451,6 @@ a:hover > .icon16x16.icon_manage,
     background-position: -24px -1064px;
 }
 
-.icon16x16.icon_location{
-    background-position: -4px -1084px;
-}
-.icon16x16.icon_location_white{
-    background-position: -24px -1084px;
-}
-
 .icon16x16.icon_open_local{
     background-position: -24px -4px;
 }
@@ -545,6 +538,12 @@ a:hover > .icon16x16.icon_manage,
     background-position: -44px -1224px;
 }
 
+.icon16x16.icon_location{
+    background-position: -4px -1244px;
+}
+.icon16x16.icon_location_white{
+    background-position: -24px -1244px;
+}
 /*32x32*/
 .icon32x32{
     width: 32px;

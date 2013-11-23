@@ -3,6 +3,19 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('thumb',[function(){
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {
+                file: '='
+            },
+            template:'<img src="images/default_photo.png" error-src="images/default_photo.png" ng-src="{{gkSrc}}" />',
+            link:function(){
+
+            }
+        }
+    }])
     .directive('networkUnconnect',[function(){
         return {
             restrict: 'E',
@@ -1876,13 +1889,11 @@ angular.module('gkClientIndex.directives', [])
                     }
                     var previousParams = previous.params;
                     var currentParams = current.params;
-                    if ([GKPartition.myFile, GKPartition.teamFile, GKPartition.subscribeFile].indexOf(currentParams.partition) >= 0) {
-                        $scope.disableSearch = false;
-                    } else {
-                        $scope.disableSearch = true;
-                    }
-
-
+//                    if ([GKPartition.myFile, GKPartition.teamFile, GKPartition.subscribeFile].indexOf(currentParams.partition) >= 0) {
+//                        $scope.disableSearch = false;
+//                    } else {
+//                        $scope.disableSearch = true;
+//                    }
                     if (previousParams.partition + previousParams.path !== currentParams.partition + currentParams.path) {
                         resetSearch();
                     }
