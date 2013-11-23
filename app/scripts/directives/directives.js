@@ -123,7 +123,6 @@ angular.module('gkClientIndex.directives', [])
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngDrop);
             $element.on('drop', function (event) {
-                console.log(event);
                 $scope.$apply(function () {
                     fn($scope, {$event: event});
                 });
@@ -581,7 +580,6 @@ angular.module('gkClientIndex.directives', [])
 
                             }
                         } else {
-                            console.log(1);
                             $scope.sidbarData = {
                                 title: GKFilter.getFilterName($scope.filter),
                                 tip: GKFilter.getFilterTip($scope.filter),
@@ -944,7 +942,8 @@ angular.module('gkClientIndex.directives', [])
                 rightOpts: '=',
                 keyword: '@',
                 selectedPath: '=',
-                showHint: '='
+                showHint: '=',
+                errorMsg:'@'
             },
             link: function ($scope, $element, $attrs) {
                 $scope.PAGE_CONFIG = $rootScope.PAGE_CONFIG;

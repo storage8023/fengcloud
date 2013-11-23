@@ -15,7 +15,8 @@
             <span>文件名</span>
             <i ng-class="order=='-filename'?'gk_down_arrow':'gk_up_arrow'"></i>
         </div>
-        <div class="last_edit_time" ng-class="order.indexOf('last_edit_time')>=0?'current':''" ng-click="setOrder('last_edit_time')">
+        <div class="last_edit_time" ng-class="order.indexOf('last_edit_time')>=0?'current':''"
+             ng-click="setOrder('last_edit_time')">
             <i class="grid_line"></i>
             <span>最后修改时间</span>
             <i ng-class="order=='-last_edit_time'?'gk_down_arrow':'gk_up_arrow'"></i>
@@ -32,8 +33,14 @@
         </div>
     </div>
 
-    <div class="scrollbar list_body" ng-drop="handleSysDrop($event)"  ng-mousedown="handleMouseDown($event)" ng-right-click = "handleRightClick($event)" ng-model="testModel">
-        <div class="empty" ng-if="!fileData || !fileData.length">该文件夹为空</div>
+    <div class="scrollbar list_body" ng-drop="handleSysDrop($event)" ng-mousedown="handleMouseDown($event)"
+         ng-right-click="handleRightClick($event)" ng-model="testModel">
+        <div class="empty" ng-if="errorMsg">
+            <span>{{errorMsg}}</span>
+        </div>
+        <div ng-if="!errorMsg">
+
+
         <div class="item file_item"
              ng-class="{'nocache':file.cache==0 && file.dir==0,'hover':file.hover,'selected':file.selected}"
              ng-repeat="file in fileData"
@@ -46,20 +53,25 @@
              data-drop="file.dir==1"
              jqyoui-droppable="{onDrop:'handleDrop(file)',onOver:'handleOver(file)',onOut:'handleOut(file)'}"
              data-jqyoui-options="{containment:'window',helper:getHelper,zIndex: 9999,appendTo:'body',cursorAt: { left: 5 ,top:8}}"
-             >
+                >
             <div class="thumb" ng-show="view=='thumb'">
-                <img ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" alt=""/>
+                <img ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
+                     alt=""/>
             </div>
             <div class="file_name">
-                <i class="file_icon {{file.filename | getFileIcon:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" ng-show="view=='list'">
+                <i class="file_icon {{file.filename | getFileIcon:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
+                   ng-show="view=='list'">
                 </i>
                 <span title="{{file.fullpath}}" class="name" ng-if="!keyword.length" ng-bind="file.filename"></span>
-                <span title="{{file.fullpath}}" class="name" ng-if="keyword.length" ng-bind-html="file.filename|highlight:keyword"></span>
+                <span title="{{file.fullpath}}" class="name" ng-if="keyword.length"
+                      ng-bind-html="file.filename|highlight:keyword"></span>
             </div>
-            <div class="last_edit_time" ng-show="view=='list'"><span>{{file.last_edit_time*1000 | date:'yyyy/M/d H:m'}}</span></div>
-            <div class="file_type" ng-show="view=='list'"><span>{{file.filename | getFileType:file.dir:file.ext}}</span></div>
+            <div class="last_edit_time" ng-show="view=='list'">
+                <span>{{file.last_edit_time*1000 | date:'yyyy/M/d H:m'}}</span></div>
+            <div class="file_type" ng-show="view=='list'"><span>{{file.filename | getFileType:file.dir:file.ext}}</span>
+            </div>
             <div class="file_size" ng-show="view=='list'"><span>{{file.dir==1?'-':(file.filesize|bitSize)}}</span></div>
+        </div>
+        </div>
     </div>
-    </div>
-
 </div>

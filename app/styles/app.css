@@ -1544,7 +1544,7 @@ position: absolute;
 width: 70%;
     margin-right: 20px;
 }
-/*创建团队文件夹就*/
+/*创建团队文件夹*/
 .create_teamfolder{
     width: 500px;
     margin-left: -250px;
@@ -1555,12 +1555,11 @@ width: 70%;
 .create_teamfolder .modal-body > div{
 
 }
-.create_teamfolder .modal-body > div > *{
-    display: inline-block;
-}
+
 .create_teamfolder input[type="text"]{
     width: 80%;
     margin-right: 20px;
+    display: inline-block;
 }
 .create_teamfolder .checkbox{
     margin:15px 0 0 63px;

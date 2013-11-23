@@ -977,7 +977,7 @@ angular.module('gkClientIndex.services', [])
                         name: GKFilter.getFilterName(filter),
                         url: '#' + this.getPath(partition, '',view,mountId,filter),
                         filter:filter,
-                        icon:'icon_'+filter
+                        icon:filter!='trash'?'icon_'+filter:''
                     });
                 }
                 /**
@@ -1617,6 +1617,7 @@ angular.module('gkClientIndex.services', [])
                             this.disableOpt(opts,'paste');
                         }
                         this.disableOpt(opts,'goto');
+
                         break;
                     case GKPartition.subscribeFile:
                         this.disableOpt(opts,'goto',"new_folder","manage","create",'add','clear_trash','sync','unsync','rename','del','paste','cut','lock','unlock','del_completely','revert');
@@ -1628,7 +1629,9 @@ angular.module('gkClientIndex.services', [])
                         }
                         break;
                 }
-
+                if(filter == 'search'){
+                    this.disableOpt(opts,'new_folder','add','create','paste','manage');
+                }
                 return opts;
             },
             /**
@@ -1790,8 +1793,8 @@ angular.module('gkClientIndex.services', [])
                 if(angular.isDefined(size)){
                     headers['x-gk-size'] = size;
                 }
-                return $http({
-                    method: method,
+                return jQuery.ajax({
+                    type: method,
                     url: GK.getRestHost() + webpath,
                     headers: headers
                 })
@@ -2021,7 +2024,6 @@ angular.module('gkClientIndex.services', [])
                 })
             },
             searchFile: function (condition, mount_id) {
-
                 var params = {
                     mount_id: mount_id,
                     condition: condition,
