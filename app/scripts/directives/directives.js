@@ -652,7 +652,10 @@ angular.module('gkClientIndex.directives', [])
                                 }
 
                                 $scope.enableAddShare = false;
-                                if ($scope.file.creator_member_id == $rootScope.PAGE_CONFIG.user.member_id && !$rootScope.PAGE_CONFIG.file.fullpath
+                                /**
+                                 * 如果是管理员，并且在根目录允许共享操作
+                                 */
+                                if (GKMount.isAdmin(mount) && !$rootScope.PAGE_CONFIG.file.fullpath
                                     ) {
                                     $scope.enableAddShare = true;
                                 }

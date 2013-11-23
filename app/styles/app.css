@@ -1427,6 +1427,7 @@ position: absolute;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_name{
     width: 40px;
+    white-space: nowrap;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_name span{
    font-size: 12px;
