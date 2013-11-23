@@ -668,7 +668,7 @@ angular.module('gkClientIndex.directives', [])
                                             icon: 'uploading'
                                         }
                                         if ($scope.localFile.status == 1) {
-                                            $scope.sidbarData.title = '正在上传中 0%';
+                                            $scope.sidbarData.title = '正在上传中';
                                             var info;
                                             fileInterval = setInterval(function () {
                                                 $scope.$apply(function () {

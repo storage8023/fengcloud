@@ -383,7 +383,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.order = '+file_name'; //当前的排序
         $scope.filter = $routeParams.filter || ''; //当前的筛选 [search|trash]
         $scope.selectedpath = $routeParams.selectedpath || ''; //当前目录已选中的文件的路径，允许多选，用|分割
-        //$scope.fileData = []; //文件列表的数据
+        $scope.fileData = []; //文件列表的数据
         $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.mountId = Number($routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
         $scope.keyword = $routeParams.keyword || '';
@@ -395,6 +395,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var fileList,
                 source = 'client',
                 deferred = $q.defer();
+            $scope.errorMsg = '';
             /**
              * 我的文件和团队文件夹
              */
