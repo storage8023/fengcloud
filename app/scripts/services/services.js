@@ -1613,7 +1613,7 @@ angular.module('gkClientIndex.services', [])
                                 this.disableOpt(opts,"manage","create",'lock','unlock');
                             }else{
                                 if(!GKMount.isAdmin(mount)){
-                                    this.disableOpt(opts,'manage');
+                                    this.disableOpt(opts,'manage','create');
                                 }
                             }
                         }
@@ -1700,9 +1700,9 @@ angular.module('gkClientIndex.services', [])
                             context.disableOpt(opts, 'unlock');
                         }
                     }
-                    if(file.auth<2){
-                        context.disableOpt(opts, 'del','rename');
-                    }
+//                    if(file.auth<2){
+//                        context.disableOpt(opts, 'del','rename');
+//                    }
                 });
                 return opts;
             },

@@ -1832,3 +1832,10 @@ body.resizing *{
     background-position: -300px -150px;
 }
 
+.team_qr_dialog{
+    width: 405px;
+    margin-left: -202px;
+}
+.team_qr_dialog .modal-body{
+    height: 410px;
+}

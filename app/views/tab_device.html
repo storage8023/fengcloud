@@ -2,8 +2,8 @@
     <div class="section_head">
         <h2>{{selectedTab.title}}</h2>
          <span class="global_opt_wrapper">
-            <input type="checkbox" value="" name="disable_new_device" id="disable_new_device" ng-model="disableNewDevice" ng-change="toggleNewDevice()"/>
-            <label for="disable_new_device">禁止其他新设备登录</label>
+             <button class="btn btn-danger" ng-show="!disableNewDevice" ng-click="toggleNewDevice()">禁止新设备登录</button>
+             <button class="btn btn-danger" ng-show="disableNewDevice" ng-click="toggleNewDevice()">允许新设备登录</button>
         </span>
     </div>
     <section class="scrollbar">
@@ -16,7 +16,7 @@
             </div>
             <div class="list">
               <div class="empty" ng-if="errorMsg">
-                  <span>{{errorMsg}}</span>
+
               </div>
               <div class="item" ng-repeat="device in devices">
                      <div title="{{device.device_name|getDeviceName}}">

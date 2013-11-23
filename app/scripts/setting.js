@@ -379,31 +379,33 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                 $scope.disableNewDevice = false;
                 GKApi.userInfo().success(function(data){
                     $scope.$apply(function(){
-                        if(data && data.settings){
+                        if(data && data.settings && data.settings['disable_new_device']){
                             $scope.disableNewDevice = data.settings['disable_new_device']==1?true:false;
                         }
                     });
                 })
 
                 $scope.toggleNewDevice = function(){
-                    var state = $scope.disableNewDevice?1:0;
+                    var state = $scope.disableNewDevice?0:1;
                     if(state){
                         if(!confirm('你确定要禁止其他新的设备的登录？')){
-                            $scope.disableNewDevice = !$scope.disableNewDevice;
                             return;
                         }
                     }else{
                         if(!confirm('你确定要允许新的设备的登录？')){
-                            $scope.disableNewDevice = !$scope.disableNewDevice;
                             return;
                         }
                     }
 
                     GKApi.disableNewDevice(state).success(function(){
+                        $scope.$apply(function(){
+                            $scope.disableNewDevice = !$scope.disableNewDevice;
+                        })
 
                     }).error(function(request){
-                            $scope.disableNewDevice = !$scope.disableNewDevice;
-                            GKException.handleAjaxException(request);
+                            $scope.$apply(function(){
+                                GKException.handleAjaxException(request);
+                            })
                         });
                 }
             }
