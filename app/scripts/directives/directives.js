@@ -544,7 +544,6 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.sidbarData.menus.push(qrItem);
                                 if ($scope.partition == GKPartition.teamFile) {
                                     $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-
                                     $scope.sidbarData.menus.push({
                                         text: '成员与分组',
                                         icon: 'icon_team',
@@ -677,19 +676,20 @@ angular.module('gkClientIndex.directives', [])
                                                         mountid: mountId,
                                                         webpath: file.fullpath
                                                     });
-                                                    var offset = info.offset || 0;
-                                                    var filesize = info.filesize || 0;
-                                                    var str = '';
-                                                    if (file.dir == 0) {
-                                                        str = Math.round(offset / filesize * 100) + '%';
-                                                    }
-                                                    $scope.sidbarData.title = '正在上传中' + str;
-                                                    if (info.offset == 100) {
-                                                        clearInterval(fileInterval);
-                                                        if (info.offset == 100) {
+                                                    if(info.offset){
+                                                        var offset = Number(info.offset);
+                                                        var filesize = Number(info.filesize || 0);
+                                                        var str = '';
+                                                        if (file.dir == 0) {
+                                                            str = Math.round(offset / filesize * 100) + '%';
+                                                        }
+                                                        $scope.sidbarData.title = '正在上传中' + str;
+                                                        if (offset == 100) {
+                                                            clearInterval(fileInterval);
                                                             getFileInfo($scope.localFile);
                                                         }
                                                     }
+
                                                 })
 
                                             }, 1000);
@@ -1388,20 +1388,18 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', function (GKFilter, GKPartition, GKSmartFolder) {
+    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount',function (GKFilter, GKPartition, GKSmartFolder,GKMount) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/toolbar.html",
             link: function ($scope, $element) {
                 if ($scope.partition == GKPartition.smartFolder && $scope.filter) {
-                    if ($scope.filter == 'search') {
-                        var smartFolder = GKSmartFolder.getFolderByCode($scope.keyword);
-                        if (smartFolder) {
-                            $scope.filterName = smartFolder['name'];
-                        }
-                    } else {
-                        $scope.filterName = GKFilter.getFilterName($scope.filter)
+                    $scope.listName = GKFilter.getFilterName($scope.filter)
+                }else{
+                    var mount = GKMount.getMountById($scope.mountId);
+                    if(mount){
+                        $scope.listName = mount['name'];
                     }
                 }
             }

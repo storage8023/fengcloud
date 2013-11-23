@@ -916,6 +916,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         };
                         GK.createFolder(params).then(function () {
                             getFileData().then(function (newFileData) {
+                                console.log(newFileData);
                                 $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
                             })
                         }, function (error) {

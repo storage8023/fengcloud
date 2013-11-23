@@ -16,7 +16,6 @@
                         <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
                              ng-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" />
                         <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
-                             src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
                              error-src="{{file.filename | getFileThumb:file.dir:(file.share||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
                              ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
                     </div>
