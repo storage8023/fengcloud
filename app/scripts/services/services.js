@@ -499,9 +499,11 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        $scope.filename = '';
                         $scope.shareToSubscriber = false;
                         $scope.ok = function(filename,shareToSubscriber){
-                            if(!filename.length){
+                            if(!filename || !filename.length){
                                 alert('请输入文件夹名称');
                                 return;
                             }

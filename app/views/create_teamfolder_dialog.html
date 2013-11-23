@@ -3,13 +3,13 @@
     <h4>创建团队文件夹</h4>
 </div>
 <div class="modal-body">
-    <div ng-if="!PAGE_CONFIG.networkConnected">
+    <div ng-show="!PAGE_CONFIG.networkConnected">
         <network-unconnect></network-unconnect>
     </div>
-    <div ng-if="PAGE_CONFIG.networkConnected">
+    <div ng-show="PAGE_CONFIG.networkConnected">
         <div>
-            <label>文件夹名：</label>
-            <input class="form-control" type="text" ng-model="filename" />
+            <label id="filename">文件夹名：</label>
+            <input class="form-control" type="text" name="filename" id="filename" ng-model="filename" />
         </div>
         <div>
             <div class="checkbox">
