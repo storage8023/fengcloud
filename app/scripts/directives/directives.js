@@ -3,6 +3,19 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('inputGroup', [function () {
+        return {
+            restrict: 'C',
+            link:function($scope, $element){
+                $element.find('input[type="text"],input[type="password"]').on('focus',function(){
+                    $element.addClass('input-group-focus');
+                })
+                $element.find('input[type="text"],input[type="password"]').on('blur',function(){
+                    $element.removeClass('input-group-focus');
+                })
+            }
+        }
+    }])
     .directive('networkUnconnect', [function () {
         return {
             restrict: 'E',

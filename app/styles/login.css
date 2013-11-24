@@ -48,6 +48,9 @@ h2{
     margin-top: 10px;
     border-color: transparent;
 }
+.form_wrapper .input-group.input-group-focus{
+    border-color: #448DE8;
+}
 .form_wrapper .input-group .input-group-addon{
     background: #fff;
     padding-left: 8px;

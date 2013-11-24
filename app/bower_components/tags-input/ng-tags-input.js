@@ -47,7 +47,7 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
             tabindex: getInt('tabindex', ''),
             removeTagSymbol: getStr('removeTagSymbol','&times;'),
             replaceSpacesWithDashes: getBool('replaceSpacesWithDashes', true),
-            minLength: getInt('minLength', 3),
+            minLength: getInt('minLength', 1),
             maxLength: getInt('maxLength', ''),
             addOnEnter: getBool('addOnEnter', true),
             addOnSpace: getBool('addOnSpace', false),
@@ -80,9 +80,8 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
             $scope.tryAdd = function() {
                 var changed = false;
                 var tag = $scope.newTag;
-
+                console.log(tag.length >= $scope.options.minLength);
                 if (tag.length >= $scope.options.minLength && $scope.options.allowedTagsPattern.test(tag)) {
-
                     if ($scope.options.replaceSpacesWithDashes) {
                         tag = tag.replace(/\s/g, '-');
                     }
