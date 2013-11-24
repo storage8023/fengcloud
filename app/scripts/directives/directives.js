@@ -679,15 +679,17 @@ angular.module('gkClientIndex.directives', [])
                                                         mountid: mountId,
                                                         webpath: file.fullpath
                                                     });
-                                                    if(info.offset){
+                                                    console.log(info);
+                                                    if(typeof info.offset !=='undefined'){
                                                         var offset = Number(info.offset);
                                                         var filesize = Number(info.filesize || 0);
+                                                        var status = info.status || 0
                                                         var str = '';
-                                                        if (file.dir == 0) {
+                                                        if (filesize != 0) {
                                                             str = Math.round(offset / filesize * 100) + '%';
                                                         }
                                                         $scope.sidbarData.title = '正在上传中' + str;
-                                                        if (offset == 100) {
+                                                        if (status == 1) {
                                                             clearInterval(fileInterval);
                                                             getFileInfo($scope.localFile);
                                                         }

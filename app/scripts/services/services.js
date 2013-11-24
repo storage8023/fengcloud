@@ -1540,7 +1540,7 @@ angular.module('gkClientIndex.services', [])
                     authOpts;
 
                 partitionOpts =  this.getPartitionOpts(partition,filter,mount);
-                authOpts = this.getAuthOpts(currentFile,selectedFiles,partition);
+                authOpts = this.getAuthOpts(currentFile,selectedFiles,partition,mount);
                 if(!selectedFiles || !selectedFiles.length){
                     currentOpts =  this.getCurrentOpts(currentFile,partition);
                     opts =  this.getFinalOpts(partitionOpts, currentOpts, authOpts);
@@ -1613,10 +1613,6 @@ angular.module('gkClientIndex.services', [])
                             this.disableOpt(opts,"clear_trash","revert","del_completely");
                             if(partition == GKPartition.myFile){
                                 this.disableOpt(opts,"manage","create",'lock','unlock');
-                            }else{
-                                if(!GKMount.isAdmin(mount)){
-                                    this.disableOpt(opts,'manage','create');
-                                }
                             }
                         }
                         if(GKCilpboard.isEmpty()){
@@ -1643,11 +1639,14 @@ angular.module('gkClientIndex.services', [])
             /**
              * 获取权限的命令
              * */
-            getAuthOpts:function(currentFile,files,partition){
+            getAuthOpts:function(currentFile,files,partition,mount){
                 var opts = this.getDefaultOpts();
                 if(partition == GKPartition.teamFile){
                     if(!currentFile.fullpath){
                         this.disableOpt(opts,'cut','new_folder','add','paste');
+                        if(!GKMount.isAdmin(mount)){
+                            this.disableOpt(opts,'manage','create','del','rename');
+                        }
                     }else{
                         this.disableOpt(opts,'create','manage');
                     }
@@ -1702,7 +1701,7 @@ angular.module('gkClientIndex.services', [])
                             context.disableOpt(opts, 'unlock');
                         }
                     }
-                    if(file.auth<2){
+                    if(file.auth<1){
                         context.disableOpt(opts, 'del','rename');
                     }
                 });
