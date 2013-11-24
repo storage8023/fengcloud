@@ -1309,14 +1309,18 @@ angular.module('gkClientIndex.directives', [])
                     fileItem.addClass('file_item_edit');
                     fileItem.find('.name').hide().after(input);
                     input.focus();
-                    input.bind('keydown', function (e) {
+                    input.on('keydown', function (e) {
                         if (e.keyCode == 13) {
                             angular.isFunction(callback) && callback(input.val());
                             return false;
                         }
                     });
-                    input.bind('blur', function () {
+                    input.on('blur', function () {
                         angular.isFunction(callback) && callback(input.val());
+                    })
+                    input.on('dblclick', function () {
+                        angular.isFunction(callback) && callback(input.val());
+                        return false;
                     })
                 });
 
