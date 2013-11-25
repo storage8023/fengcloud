@@ -62,10 +62,11 @@ angular.module('gkClientIndex.directives', [])
                 'onSubmit': '&',
                 'view': '@',
                 'isEnd': '=',
-                'isShare': '@'
+                'isShare': '@',
+                'defaultNewName':'@'
             },
             link: function ($scope, $element, $attrs) {
-                $scope.filename = '新建文件夹';
+                $scope.filename = $scope.defaultNewName?$scope.defaultNewName:'新建文件夹';
                 var fn = $parse($attrs.onSubmit);
                 var input = $element.find('input');
                 input.on('blur', function (event) {
@@ -1293,7 +1294,9 @@ angular.module('gkClientIndex.directives', [])
                     $scope.submitNewFileName = function (filename) {
                         angular.isFunction(callback) && callback(filename);
                     };
-                    var newFileItem = $compile(angular.element('<new-file-item view="{{view}}" is-share="{{' + isShare + '}}" is-end="createNewFileEnd" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
+                    var defaultNewName = GKFileList.getDefualtNewName($scope);
+                    console.log(defaultNewName);
+                    var newFileItem = $compile(angular.element('<new-file-item view="{{view}}" default-new-name="'+defaultNewName+'" is-share="{{' + isShare + '}}" is-end="createNewFileEnd" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                     newFileItem.addClass('selected').prependTo($element.find('.list_body'));
 
                     /**

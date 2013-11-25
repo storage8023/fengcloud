@@ -2604,6 +2604,22 @@ angular.module('gkClientIndex.services', [])
                 });
                 $scope.selectedFile = [];
                 $scope.selectedIndex = [];
+            },
+            getDefualtNewName:function($scope){
+                var preName = '新建文件夹';
+                var count = 0;
+                do{
+                  var exist = false;
+                  var defaultFileName =preName + (!count?'':'('+count+')');
+                  angular.forEach($scope.fileData,function(value){
+                      if(String(value.filename) === defaultFileName){
+                          exist = true;
+                          return false;
+                      }
+                  });
+                  count++;
+                }while(exist);
+                return defaultFileName;
             }
         };
         return GKFileList;
