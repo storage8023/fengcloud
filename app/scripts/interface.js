@@ -29,7 +29,8 @@
         try {
 
             gkClient.gRecover(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+
+                re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -40,7 +41,7 @@
     },
     notice:function(params,callback){
         gkClient.gNotice(JSON.stringify(params),function(re){
-            re = JSON.parse(re);
+            re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
                 callback(re);
             }
@@ -205,7 +206,7 @@
         try {
 
              gkClient.gAdd(JSON.stringify(params),function(re){
-                 re = JSON.parse(re);
+                 re = typeof re ==='object'?re:JSON.parse(re);
                  if(typeof callback === 'function'){
                      callback(re);
                  }
@@ -217,7 +218,7 @@
     createFolder: function (params,callback) {
         try {
             gkClient.gNewFile(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+                re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -229,7 +230,7 @@
     toggleLock: function (params,callback) {
         try {
            gkClient.gLock(JSON.stringify(params),function(re){
-               re = JSON.parse(re);
+               re = typeof re ==='object'?re:JSON.parse(re);
                if(typeof callback === 'function'){
                    callback(re);
                }
@@ -252,7 +253,7 @@
     del:function(params,callback){
         try {
            gkClient.gDelete(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+                re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -264,7 +265,7 @@
     rename:function(params,callback){
         try {
           gkClient.gRename(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+                re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -277,7 +278,7 @@
     copy:function(params,callback){
         try {
             gkClient.gCopy(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+                re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -290,7 +291,7 @@
     move:function(params,callback){
         try {
             gkClient.gMove(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+                re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -337,7 +338,7 @@
     setLinkPath:function(params,callback){
         try {
             gkClient.gSetLinkPath(JSON.stringify(params),function(re){
-                var re = JSON.parse(re);
+                re =typeof re ==='object'?re: JSON.parse(re);
                 if(re && re.error==0){
                     if(typeof callback === 'function'){
                         callback(re);
@@ -351,7 +352,7 @@
     moveLinkPath:function(params,callback){
         try {
             gkClient.gMoveLinkPath(JSON.stringify(params),function(re){
-                var re = JSON.parse(re);
+                re =typeof re ==='object'?re: JSON.parse(re);
                 if(re && re.error==0){
                     if(typeof callback === 'function'){
                         callback(re);
@@ -365,7 +366,7 @@
     removeLinkPath:function(params,callback){
         try {
             gkClient.gDeleteLinkPath(JSON.stringify(params),function(re){
-                re = JSON.parse(re);
+                re =typeof re ==='object'?re: JSON.parse(re);
                 if(typeof callback === 'function'){
                     callback(re);
                 }
@@ -463,7 +464,7 @@
     },
     setSyncStatus: function(params,callback){
         gkClient.gSetSyncStatus(JSON.stringify(params),function(re){
-            var re = JSON.parse(re);
+            re = typeof re ==='object'?re: JSON.parse(re);
             if(re && re.error==0){
                 if(typeof callback === 'function'){
                     callback(re);
@@ -480,7 +481,7 @@
     },
     removeTrans: function(params,callback){
         gkClient.gRemoveTrans(JSON.stringify(params),function(re){
-            var re = JSON.parse(re);
+            re = typeof re ==='object'?re: JSON.parse(re);
             if(re && re.error==0){
                 if(typeof callback === 'function'){
                     callback(re);
