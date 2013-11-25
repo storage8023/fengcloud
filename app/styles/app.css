@@ -1546,10 +1546,10 @@ position: absolute;
 .sync_settiong_dialog .modal-body{
     padding: 40px;
 }
-.sync_settiong_dialog .modal-body > div{
+.sync_settiong_dialog .modal-body > div > div{
     margin-top: 20px;
 }
-.sync_settiong_dialog .modal-body > div > *{
+.sync_settiong_dialog .modal-body > div input{
     display: inline-block;
 }
 .sync_settiong_dialog #local_uri{
