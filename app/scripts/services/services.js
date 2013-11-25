@@ -2490,8 +2490,29 @@ angular.module('gkClientIndex.services', [])
                    Util.Array.removeByValue(mounts,mount);
                }
                return mount;
-           }
+           },
+           removeOrgSubscribeList:function($scope,orgId){
+               var mount = this.removeMountByOrgId(orgId);
+               if(!mount) return;
+               angular.forEach($scope.orgSubscribeList, function (value, key) {
+                   if (value.data.org_id == orgId) {
+                       $scope.orgSubscribeList.splice(key, 1);
+                       return false;
+                   }
+               });
 
+           },
+           removeTeamList:function($scope,orgId){
+               var mount = this.removeMountByOrgId(orgId);
+               if(!mount) return;
+               angular.forEach($scope.orgTreeList, function (value, key) {
+                   if (value.data.org_id == orgId) {
+                       $scope.orgTreeList.splice(key, 1);
+                       return false;
+                   }
+               });
+
+           }
        };
 
       return GKMount;

@@ -300,22 +300,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
+
+
         /**
          * 取消订阅
          */
         $scope.$on('unSubscribeTeam', function ($event, orgId) {
-            var mount = GKMount.removeMountByOrgId(orgId);
-            if (mount) {
-                angular.forEach($scope.orgSubscribeList, function (value, key) {
-                    if (value.data.org_id == orgId) {
-                        $scope.orgSubscribeList.splice(key, 1);
-                        return false;
-                    }
-                });
-                selectBreanch($scope.treeList[0], GKPartition.myFile, true)
-            }
-            ;
-
+            GKMount.removeOrgSubscribeList($scope,orgId);
+            selectBreanch($scope.treeList[0], GKPartition.myFile, true);
         })
 
         $scope.$on('$locationChangeSuccess', function ($s, $current, $prev) {
@@ -348,7 +340,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         /**
-         * 监控团队数据的更新
+         * 监控增加团队的回调
          */
         $scope.$on('AddOrgObject', function (event, param) {
             if (!param) {
@@ -368,6 +360,31 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.orgTreeList.push(newOrg);
                 } else {
                     $scope.orgSubscribeList.push(newOrg);
+                }
+            });
+        })
+
+        /**
+         * 监控删除团队的回调
+         */
+        $scope.$on('RemoveOrgObject', function (event, param) {
+            $scope.$apply(function () {
+                if (!param) {
+                    return;
+                }
+                var mountid = param.mountid;
+                var mount = GKMount.getMountById(mountid);
+                if (!mount) {
+                    return;
+                }
+                var partition = GKPartition.teamFile;
+                if (newOrg['type'] == 3) {
+                    partition = GKPartition.subscribeFile;
+                }
+                if(partition == GKPartition.teamFile){
+                    GKMount.removeTeamList($scope,mount.org_id);
+                }else{
+                    GKMount.removeOrgSubscribeList($scope,mount.org_id);
                 }
             });
         })
