@@ -17,7 +17,6 @@ aside{
     top:0;
     bottom: 0;
     width: 158px;
-    border-right: 1px solid #CDCED0;
     background: #2A2E33;
     color:#fff;
     padding-top: 10px;
@@ -147,7 +146,7 @@ footer .btn{
 .list .item > div:nth-child(1),
 .list_header > div:nth-child(1){
     width: 35%;
-    padding-left: 30px;
+    padding-left: 10px;
 }
 .list .item > div:nth-child(2),
 .list_header > div:nth-child(2){
@@ -184,12 +183,13 @@ width: 112px;
 .content .list_header div{
     font-weight: normal;
     line-height: 36px;
+    overflow: hidden;
 }
 .content .list_body div{
     line-height: 30px;
     font-size: 13px;
 }
-.content .list_wrapper div{
+.content .list_wrapper .item{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -197,6 +197,12 @@ width: 112px;
 .content .list{
     color: #7F8999;
     font-size:13px ;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:35px;
+    overflow: auto;
 }
 
 .content .list .item{
@@ -313,7 +319,7 @@ aside ul li.active i.icon_sync2_white{
      width: 40%;
 }
 .transfer_page .list_header > div:nth-child(1){
-    padding-left: 34px;
+    /*padding-left: 34px;*/
 }
 .transfer_page .list .item > div:nth-child(2),
 .transfer_page .list_header > div:nth-child(2){
@@ -333,6 +339,10 @@ aside ul li.active i.icon_sync2_white{
     background:#F1F1F2;
     border-bottom: 1px solid #CDCED0;
     font-size: 12px;
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 35px;
 }
 .transfer_page .content .list_header div{
     line-height: 34px;
@@ -373,3 +383,42 @@ aside ul li.active i.icon_sync2_white{
     padding-right: 42px;
 }
 
+.transfer_page .list_wrapper.has_sync_list .list{
+
+}
+.transfer_page .download .list .list_inner,
+.transfer_page .upload .list .list_inner {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+}
+.transfer_page .download .list .list_inner:first-child,
+.transfer_page .upload .list .list_inner:first-child{
+    top:0;
+    height: 45%;
+    overflow: auto;
+}
+
+.transfer_page .download .list .list_inner:last-child,
+.transfer_page .upload .list .list_inner:last-child{
+    top:45%;
+    bottom:0;
+    height: 55%;
+}
+.transfer_page .download .list .list_grid,
+.transfer_page .upload .list .list_grid{
+    height: 24px;
+    line-height: 24px;
+    padding: 0 10px;
+    border-bottom: 1px solid #CDCED0;
+}
+.transfer_page .download .list .list_inner:last-child .list_layer,
+.transfer_page .upload .list .list_inner:last-child .list_layer{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:24px;
+    bottom: 0;
+    overflow: auto;
+}

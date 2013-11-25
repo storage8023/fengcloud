@@ -431,6 +431,7 @@
     },
     getTransList: function(param){
         var re = gkClient.gTransList(JSON.stringify(param));
+        //console.log(re);
         return JSON.parse(re);
     },
     setLogoff:function(){

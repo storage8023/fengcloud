@@ -2,30 +2,14 @@
 <aside class="left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user"></member>
     <div class="scrollbar tree_wrapper">
-        <abn-tree tree-data="treeList"
-                  header="我的云库"
-                  icon-leaf="icon_file"
-                  icon-expand="icon_fold"
-                  icon-collapse="icon_unfold"
-                  icon-node-expand="icon_myfolder"
-                  icon-node-collapse="icon_myfolder"
-                  selected-branch="selectedBranch"
-                  init-selected-branch = "initSelectedBranch"
-                  on-add ="handleAdd(GKPartition.myFile)"
-                  on-select="handleSelect(branch,GKPartition.myFile)"
-                  on-expand="handleExpand(branch,GKPartition.myFile)"
-                  on-drop="handleDrop(branch)"
-                >
-        </abn-tree>
         <abn-tree tree-data="orgTreeList"
-                  header="团队的云库"
+                  header="我的云库"
                   icon-leaf="icon_file"
                   icon-expand="icon_fold"
                   icon-collapse="icon_unfold"
                   icon-node-expand="icon_teamfolder"
                   icon-node-collapse="icon_teamfolder"
                   selected-branch="selectedBranch"
-                  on-add ="handleAdd(GKPartition.teamFile)"
                   on-select="handleSelect(branch,GKPartition.teamFile)"
                   on-expand="handleExpand(branch,GKPartition.teamFile)"
                   on-drop="handleDrop(branch)"
@@ -39,7 +23,6 @@
                   icon-node-expand="icon_subscribefolder"
                   icon-node-collapse="icon_subscribefolder"
                   selected-branch="selectedBranch"
-                  on-add="handleAdd(GKPartition.subscribeFile)"
                   on-select="handleSelect(branch,GKPartition.subscribeFile)"
                   on-expand="handleExpand(branch,GKPartition.subscribeFile)"
                 >

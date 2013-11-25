@@ -2464,7 +2464,7 @@ angular.module('gkClientIndex.services', [])
            getOrgMounts:function(){
                var orgMounts = [];
                angular.forEach(mounts,function(value){
-                   if(value.org_id != 0 && value.type!=3){
+                   if(value.type!=3){
                        orgMounts.push(value);
                    }
                })
@@ -2731,20 +2731,71 @@ angular.module('gkClientIndex.services', [])
     }
     ])
     .factory('GKQueue', ['$rootScope','$interval',function ($rootScope,$interval) {
+        var dealList = function(oldList,newList,type){
+            angular.forEach(oldList,function(value){
+                var localUri = '';
+                if(['download','syncdownload'].indexOf(type)>=0){
+                    localUri = value.path;
+                }
+                var mountId = value.mountid;
+                var fullpath =  value.webpath;
+                angular.forEach(newList,function(newItem,key){
+                    if(newItem.mountid==mountId && newItem.webpath == fullpath){
+                        value.time = newItem.time;
+                        value.pos = newItem.pos;
+                        value.status = newItem.status;
+                        newList.splice(key,1);
+                        return false;
+                    }
+                });
+            });
+        };
         return {
             getQueueList:function($scope,type){
                 $rootScope.downloadSpeed = 0;
                 $rootScope.uploadSpeed = 0;
-                var getFileList = function(){
+                var getFileList = function(isUpdate){
+                    isUpdate = angular.isDefined(isUpdate)?isUpdate:false;
                     var re = gkClientInterface.getTransList({type:type});
-                    $scope.fileList = re['list'];
+                    var list = re['list']||[];
                     $rootScope.downloadSpeed = re['download'];
                     $rootScope.uploadSpeed = re['upload'];
+
+                    var syncList;
+                    var hasSyncList = false;
+                    if(['download','upload'].indexOf(type)>=0){
+                        hasSyncList = true;
+                        var syncRe = gkClientInterface.getTransList({type:'sync'+type});
+                        var syncList = syncRe['list'] || [];
+                        $rootScope.downloadSpeed = syncRe['download'];
+                        $rootScope.uploadSpeed = syncRe['upload'];
+                    }
+
+                    if(isUpdate){
+                        var newList = angular.extend([],list);
+                        dealList($scope.fileList,newList,type);
+                        if(newList && newList.length){
+                           $scope.fileList = $scope.fileList.concat(newList);
+                        }
+                        if(hasSyncList){
+                            var newSyncList = angular.extend([],syncList);
+                            dealList($scope.syncFileList,newSyncList,'sync'+type);
+                            if(newSyncList && newSyncList.length){
+                                $scope.syncFileList = $scope.syncFileList.concat(newSyncList);
+                            }
+                        }
+                    }else{
+                        $scope.fileList = list;
+                        if(hasSyncList){
+                            $scope.syncFileList = syncList;
+                        }
+                    }
                 }
                 getFileList();
                 $interval(function(){
-                    getFileList();
-                },1000);
+                  getFileList(true);
+                },1000)
+
             }
         }
     }

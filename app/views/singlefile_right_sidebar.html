@@ -39,33 +39,6 @@
             </div>
             <section class="file_detail_wrapper" ng-show="showTab">
                 <tabset direction="blew">
-                    <tab heading="共享">
-                        <button ng-if="enableAddShare" class="btn btn-primary set_share" ng-click="showEditShareDialog()"><i class="icon16x16 icon_add_share_white"></i>添加共享</button>
-                        <ul class="scrollbar share_member_list" ng-style="{top:!enableAddShare?0:''}">
-                            <li class="item" ng-repeat="shareMember in shareMembers">
-                        <span class="icon">
-                           <avatar class="avatar avatar_mini" gk-src="{{shareMember.member_id==0?'images/subscribe_group.png':shareMember.avatar}}"></avatar>
-                        </span>
-                                <span class="name">{{shareMember.member_name}}</span>
-                        <span class="opts" ng-if="enableAddShare && shareMember.member_id != PAGE_CONFIG.user.member_id">
-                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareMember)">删除</button>
-                        </span>
-                            </li>
-                            <li class="item" ng-repeat="shareGroup in shareGroups">
-                        <span class="icon">
-                            <group-photo class="avatar avatar_mini" gk-src="{{shareGroup.photo}}"></group-photo>
-                        </span>
-                                <span class="name">{{shareGroup.group_name}}</span>
-                        <span class="members">
-                             <avatar ng-repeat="member in shareGroup.members" title="{{member.member_name}}" class="avatar avatar_mini" gk-src="{{member.avatar}}"></avatar>
-                        </span>
-                        <span class="opts" ng-if="enableAddShare">
-                            <button class="btn btn-danger btn-flat" ng-click="removeShare(shareGroup)">删除</button>
-                        </span>
-                            </li>
-                        </ul>
-                    </tab>
-
                     <tab heading="讨论">
                         <div class="update_wrapper" ng-class="inputingRemark?'editing':''">
                             <div class="empty" ng-if="!remarks || !remarks.length">没有讨论</div>

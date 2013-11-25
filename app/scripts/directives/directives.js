@@ -3,6 +3,13 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('queueItem', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: 'views/queue_item.html'
+        }
+    }])
     .directive('inputGroup', [function () {
         return {
             restrict: 'C',
