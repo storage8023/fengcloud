@@ -79,7 +79,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
 
-        var getTrashNode = function (mount_id) {
+        var getTrashNode = function (mount_id,partition) {
             var node = {
                 label: GKFilter.getFilterName('trash'),
                 isParent: false,
@@ -87,7 +87,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 data: {
                     fullpath: '',
                     filter: 'trash',
-                    mount_id: mount_id
+                    mount_id: mount_id,
+                    partition:partition
                 },
                 iconNodeExpand: 'icon_trash',
                 iconNodeCollapse: 'icon_trash'
@@ -214,7 +215,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                  * 添加回收站
                  */
                 if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
-                    branch.children.push(getTrashNode(branch.data.mount_id));
+                    branch.children.push(getTrashNode(branch.data.mount_id,branch.data.partition));
                 }
             }
         };
@@ -314,7 +315,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var param = $location.search();
             var branch;
             if (param.partition == GKPartition.myFile) {
-                branch = $scope.treeList[0]
+                branch = $scope.treeList[0];
             } else if (param.partition == GKPartition.teamFile) {
                 angular.forEach($scope.orgTreeList, function (value) {
                     if (value.data.mount_id == param.mountid) {
