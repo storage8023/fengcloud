@@ -38,12 +38,11 @@
             <div class="dateline" ng-bind="message.date_txt">
             </div>
             <div class="photo_wrapper">
-                <img src="images/default_photo.png" ng-src="message.member_photo" error-src="images/default_photo.png" class="photo"/>
-                <img src="images/default_logo.png" ng-src="message.member_photo" error-src="images/default_logo.png" class="photo"/>
+                <team-logo ng-if="message.org_logo" class="avatar" gk-src="{{message.org_logo}}"></team-logo>
+                <avatar class="avatar" gk-src="{{message.member_photo}}"></avatar>
             </div>
             <div class="msg">
-                <span ng-bind="message.member_name"></span>
-                <span ng-bind-html="message.render_text"></span>
+                <span ng-bind-html="message.render_content"></span>
             </div>
         </li>
     </ul>

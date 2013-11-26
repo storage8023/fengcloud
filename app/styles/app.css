@@ -859,7 +859,9 @@ footer {
 
 
 /**右侧**/
-
+.right_sidebar .network_unconnected{
+    padding-top: 40px;
+}
 .right_sidebar .no_file{
     padding: 25px 26px;
     color:#ACB4BF;
