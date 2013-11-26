@@ -3,7 +3,7 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
-    .directive('contextmenu', [function () {
+    .directive('contextmenu', ['GKContextMenu',function (GKContextMenu) {
         return {
             restrict: 'A',
             link:function($scope, $element,$attrs){
@@ -11,21 +11,29 @@ angular.module('gkClientIndex.directives', [])
                  * 设置右键菜单
                  */
                 jQuery.contextMenu({
-                    selector: '.file_list .list_body',
+                    selector: '.abn-tree .abn-tree-row',
                     reposition: false,
                     zIndex: 99,
                     animation: {
                         show: "show",
                         hide: "hide"
                     },
+                    events:{
+                      show:function(){
+                          this.addClass('hover');
+                      },
+                      hide:function(){
+                          this.removeClass('hover');
+                      }
+                    },
                     build:function($trigger, e){
+                        var data = $trigger.data('branch');
+                        var items = GKContextMenu.getSidebarMenu(data);
                         return {
                             callback: function(){
 
                             },
-                            items: {
-
-                            }
+                            items:items
                         }
                     }
                 });
@@ -1342,7 +1350,6 @@ angular.module('gkClientIndex.directives', [])
                         angular.isFunction(callback) && callback(filename);
                     };
                     var defaultNewName = GKFileList.getDefualtNewName($scope);
-                    console.log(defaultNewName);
                     var newFileItem = $compile(angular.element('<new-file-item view="{{view}}" default-new-name="'+defaultNewName+'" is-share="{{' + isShare + '}}" is-end="createNewFileEnd" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                     newFileItem.addClass('selected').prependTo($element.find('.list_body'));
 

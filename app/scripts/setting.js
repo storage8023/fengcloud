@@ -301,7 +301,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                     {
                         icon:'icon_pie',
                         name:'mail',
-                        text:'使用空间：'+Util.Number.bitSize(myMount['size'])
+                        text:'使用空间：'
                     }
                 ];
 

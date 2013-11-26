@@ -28,6 +28,78 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
+    .factory('GKContextMenu', ['GKPartition','GKModal',function (GKPartition,GKModal) {
+        return {
+           getSidebarMenu:function(data){
+               var partition = data.partition,
+                   fullpath = data.fullpath,
+                   items;
+               if(partition == GKPartition.teamFile){
+                   if(!fullpath){
+                       items = {
+                           'new':{
+                               name:'新的云库',
+                               callback:function(){
+                                   console.log(arguments);return;
+                                   GKModal.createTeam();
+                               }
+                           },
+                           'view_member':{
+                               name:'云库成员',
+                               callback:function(){
+                                   GKModal.teamMember(data.org_id);
+                               }
+                           },
+                           'view_subscriber':{
+                               name:'查看订阅者',
+                               callback:function(){
+                                   GKModal.teamMember(data.org_id,0);
+                               }
+                           },
+                           'manage':{
+                               name:'设置',
+                               callback:function(){
+                                   GKModal.teamManage(data.org_id);
+                               }
+                           }
+                       };
+                   }else {
+                       items = {};
+                       if(fullpath.split('/').length==1){
+                           items['create_team_folder'] = {
+                               name:'创建公共文件夹',
+                               callback:function(){
+
+                               }
+                           };
+                       }
+
+                       items['sync'] = {
+                           name:'同步目录',
+                           callback:function(){
+
+                           }
+                       };
+
+                       items['del'] = {
+                           name:'删除',
+                           callback:function(){
+
+                           }
+                       };
+                   }
+
+               }else if(data.partition == GKPartition.subscribeFile){
+                   items = {
+                       'unsubscribe':{
+                           name:'取消订阅'
+                       }
+                   };
+               }
+               return items;
+           }
+        };
+    }])
     .factory('GKFileOpt',['$q','GK',function($q,GK){
          var GKFileOpt = {};
          return {
@@ -75,6 +147,63 @@ angular.module('gkClientIndex.services', [])
             keyboard:false,
         };
         return{
+            sync:function(mountId,file,setParentFile){
+                setParentFile = angular.isDefined(setParentFile)?setParentFile:0;
+                var option = {
+                    templateUrl: 'views/set_sync.html',
+                    windowClass: 'sync_settiong_dialog',
+                    controller: function ($scope, $modalInstance) {
+                        $scope.filename = file.filename || file.name;
+                        $scope.localURI = GK.getLocalSyncURI({
+                            mountid: mountId,
+                            webpath: file.fullpath
+                        });
+                        $scope.reSetLocalPath = function () {
+                            var newPath = GK.selectPath({
+                                path: $scope.localURI,
+                                disable_root: true
+                            });
+                            if (newPath) {
+                                $scope.localURI = newPath;
+                            }
+                        };
+                        $scope.ok = function () {
+                            var new_local_uri = $scope.localURI;
+                            var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
+                            var currentFilename = Util.String.baseName(file.fullpath);
+                            if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行同步？')) {
+                                return;
+                            }
+                            var params = {};
+
+                            params = {
+                                webpath: file.fullpath,
+                                fullpath: new_local_uri,
+                                mountid: mountId
+                            };
+                            gkClientInterface.setLinkPath(params, function () {
+                                $scope.$apply(function(){
+                                    if (setParentFile) {
+                                        file.syncpath = file.fullpath;
+                                    } else {
+                                        file.sync = 1;
+                                    }
+                                    $modalInstance.close();
+                                    alert('同步成功');
+                                })
+                            });
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
+
+            },
             news:function(GKNews,GKApi){
                 var context = this;
                 var option = {
@@ -398,9 +527,16 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-
                         $rootScope.$on('createTeamSuccess',function(event,orgId){
-                            $modalInstance.close(orgId);
+                                gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
+                                    if (param) {
+                                        $scope.$apply(function () {
+                                            var newOrg = param;
+                                            $rootScope.$broadcast('createOrgSuccess',newOrg);
+                                        });
+                                        $modalInstance.close(orgId);
+                                    }
+                                })
                         })
                     },
                     resolve: {
@@ -447,7 +583,8 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({},defaultOption,option);
                 return $modal.open(option);
             },
-            teamMember:function(orgId){
+            teamMember:function(orgId,subscribe){
+                subscribe = angular.isDefined(subscribe)?subscribe:0;
                 var option = {
                     templateUrl: 'views/team_member_dialog.html',
                     windowClass: 'modal_frame team_member_dialog',
@@ -461,7 +598,29 @@ angular.module('gkClientIndex.services', [])
                         src: function () {
                             return gkClientInterface.getUrl({
                                 sso:1,
-                                url:'/client/get_member_dialog?org_id='+orgId
+                                url:'/client/get_member_dialog?org_id='+orgId+'&subscribe='+subscribe
+                            });
+                        }
+                    }
+                };
+                option = angular.extend({},defaultOption,option);
+                return $modal.open(option);
+            },
+            teamManage:function(orgId){
+                var option = {
+                    templateUrl: 'views/team_manage_dialog.html',
+                    windowClass: 'modal_frame team_manage_dialog',
+                    controller: function ($scope, $modalInstance,src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso:1,
+                                url:'/manage/safe?org_id='+orgId
                             });
                         }
                     }
@@ -517,7 +676,6 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({},defaultOption,option);
                 return $modal.open(option);
             }
-
         }
     }])
     .factory('GKFind',['$rootScope',function($rootScope){

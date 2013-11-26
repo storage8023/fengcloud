@@ -219,20 +219,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 })
             } else if (partition == GKPartition.teamFile) {
                 var createTeamDialog = GKModal.createTeam();
-                createTeamDialog.result.then(function (orgId) {
-                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                        if (param) {
-                            $scope.$apply(function () {
-                                var newOrg = param;
-                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
-                                $scope.orgTreeList.push(newOrg);
-                                unSelectAllBranch();
-                                selectBreanch(newOrg, GKPartition.teamFile, true);
-                            });
-
-                        }
-                    })
-                })
+//                createTeamDialog.result.then(function (orgId) {
+//                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
+//                        if (param) {
+//                            $scope.$apply(function () {
+//                                var newOrg = param;
+//                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
+//                                $scope.orgTreeList.push(newOrg);
+//                                unSelectAllBranch();
+//                                selectBreanch(newOrg, GKPartition.teamFile, true);
+//                            });
+//
+//                        }
+//                    })
+//                })
             } else if (partition == GKPartition.subscribeFile) {
                 var nearbyDialog = GKModal.nearBy();
                 nearbyDialog.result.then(function (orgId) {
@@ -382,7 +382,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 创建团队成功
          */
-        $scope.$on('createTeamSuccess',function(event,newOrg){
+        $scope.$on('createOrgSuccess',function(event,newOrg){
+            if (GKMount.checkMountExsit(newOrg.mountid)) {
+                return;
+            }
             newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
             $scope.orgTreeList.push(newOrg);
             unSelectAllBranch();
@@ -581,61 +584,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
                 });
             } else {
-                var syncDialog = $modal.open({
-                    templateUrl: 'views/set_sync.html',
-                    backdrop: false,
-                    windowClass: 'sync_settiong_dialog',
-                    controller: function ($scope, $modalInstance) {
-                        $scope.filename = file.filename || file.name;
-                        $scope.localURI = GK.getLocalSyncURI({
-                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
-                            webpath: file.fullpath
-                        });
-                        $scope.reSetLocalPath = function () {
-                            var newPath = GK.selectPath({
-                                path: $scope.localURI,
-                                disable_root: true
-                            });
-                            if (newPath) {
-                                $scope.localURI = newPath;
-                            }
-                        };
-                        $scope.ok = function () {
-                            $modalInstance.close($scope.localURI);
-                        };
-
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-                    },
-                    resolve: {
-
-                    }
-                });
-
-                syncDialog.result.then(function (new_local_uri) {
-                    var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
-                    var currentFilename = Util.String.baseName(file.fullpath);
-                    if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行同步？')) {
-                        return;
-                    }
-                    var params = {};
-
-                    params = {
-                        webpath: file.fullpath,
-                        fullpath: new_local_uri,
-                        mountid: $rootScope.PAGE_CONFIG.mount.mount_id
-                    };
-                    gkClientInterface.setLinkPath(params, function () {
-                        if (setParentFile) {
-                            file.syncpath = file.fullpath;
-                        } else {
-                            file.sync = 1;
-                        }
-                        alert('同步成功');
-                    });
-
-                });
+                var syncDialog =GKModal.sync(GKFileList.getOptFileMountId($scope, $rootScope),file,setParentFile);
             }
 
         };
@@ -1373,17 +1322,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 item: "创建云库",
                 menuclick: function () {
                     var createTeamDialog = GKModal.createTeam();
-                    createTeamDialog.result.then(function (orgId) {
-                        gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                            if (param) {
-                                $scope.$apply(function () {
-                                    var newOrg = param;
-                                    $rootScope.$broadcast('createTeamSuccess',newOrg);
-                                });
 
-                            }
-                        })
-                    })
                 }
             },
             {
