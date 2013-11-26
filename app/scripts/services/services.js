@@ -997,18 +997,20 @@ angular.module('gkClientIndex.services', [])
 
                 if (mountId) {
                     var mount = GKMount.getMountById(mountId);
-                    var item = {
-                        name: mount['name'],
-                        filter:'',
-                        url: '#' + this.getPath(partition, '', view,mountId,filter)
-                    }
+                    if(mount){
+                        var item = {
+                            name: mount['name'],
+                            filter:'',
+                            url: '#' + this.getPath(partition, '', view,mountId,filter)
+                        }
 
-                    if(mount.org_id==0){
-                        item.icon = 'icon_myfolder';
-                    }else{
-                        item.logo = mount['logo'];
+                        if(mount.org_id==0){
+                            item.icon = 'icon_myfolder';
+                        }else{
+                            item.logo = mount['logo'];
+                        }
+                        breads.unshift(item);
                     }
-                    breads.unshift(item);
                 }
                 return breads;
             }
@@ -2400,7 +2402,7 @@ angular.module('gkClientIndex.services', [])
         });
        var GKMount = {
            isAdmin:function(mount){
-               return mount.type < 2;
+               return mount&&mount.type < 2;
            },
            formatMountItem:formatMountItem,
            /**

@@ -70,10 +70,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt) {
         $scope.GKPartition = GKPartition;
-        var myMount = GKMount.getMyMount(), //我的空间
-            orgMount = GKMount.getOrgMounts(),//团队的空间
+        var orgMount = GKMount.getOrgMounts(),//团队的空间
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的团队
-
         /**
          * 个人的文件
          * @type {*}
@@ -96,15 +94,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return node;
         };
 
-        /**
-         * 个人的文件
-         * @type {*}
-         */
-        var myTreeData = GKFile.dealTreeData([myMount], GKPartition.myFile);
-//        myTreeData[0]['children'] = GKFile.dealTreeData(GKFile.getFileList(myMount.mount_id,'',1), 'myfile', myMount.mount_id);
-//        if(!myTreeData[0]['children']) myTreeData[0]['children'] = [];
-//        myTreeData[0]['children'].push(getTrashNode(myMount.mount_id));
-        $scope.treeList = myTreeData;
 
         /**
          * 团队的文件
@@ -119,7 +108,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
         $scope.selectedBranch = null;
-        $scope.initSelectedBranch = $scope.treeList[0];
+        $scope.initSelectedBranch = $scope.orgTreeList[0];
         var unSelectAllBranch = function () {
             if ($scope.selectedBranch) {
                 $scope.selectedBranch.selected = false;
@@ -152,7 +141,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     return false;
                 }
             });
-            selectBreanch($scope.treeList[0], GKPartition.myFile, true);
+            selectBreanch($scope.orgTreeList[0], GKPartition.myFile, true);
         })
 
         $scope.$on('addSmartFolder', function ($event, name, code) {
@@ -308,14 +297,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$on('unSubscribeTeam', function ($event, orgId) {
             GKMount.removeOrgSubscribeList($scope,orgId);
-            selectBreanch($scope.treeList[0], GKPartition.myFile, true);
+            selectBreanch($scope.orgTreeList[0], GKPartition.myFile, true);
         })
 
         $scope.$on('$locationChangeSuccess', function ($s, $current, $prev) {
             var param = $location.search();
             var branch;
             if (param.partition == GKPartition.myFile) {
-                branch = $scope.treeList[0];
+                branch = $scope.orgTreeList[0];
             } else if (param.partition == GKPartition.teamFile) {
                 angular.forEach($scope.orgTreeList, function (value) {
                     if (value.data.mount_id == param.mountid) {

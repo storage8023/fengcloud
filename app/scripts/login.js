@@ -62,7 +62,6 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 alert('请输入登录密码');
                 return;
             }
-
             if(!$scope.registUsername || !$scope.registUsername.length){
                 alert('请输入你的称呼');
                 return;

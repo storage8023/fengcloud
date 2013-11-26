@@ -3,6 +3,26 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('contextmenu', [function () {
+        return {
+            restrict: 'A',
+            link:function($scope, $element,$attrs){
+                /**
+                 * 设置右键菜单
+                 */
+                jQuery.contextMenu({
+                    selector: '.file_list .list_body',
+                    reposition: false,
+                    zIndex: 99,
+                    animation: {
+                        show: "show",
+                        hide: "hide"
+                    },
+                    items: $scope.rightOpts
+                });
+            }
+        }
+    }])
     .directive('queueItem', [function () {
         return {
             restrict: 'E',
@@ -525,80 +545,85 @@ angular.module('gkClientIndex.directives', [])
                     } else {
                         $scope.sidebar = 'nofile';
                         if (!$scope.filter) {
-                            var title = $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
-                            $scope.sidbarData = {
-                                title: $scope.PAGE_CONFIG.mount.name,
-                                tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
-                                photo: "",
-                                attrHtml: '',
-                                menus: []
-                            };
-                            if ($scope.partition == GKPartition.myFile) {
-                                $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.user.avatar;
-                                $scope.sidbarData.atrrHtml = '已经使用 ' + Util.Number.bitSize($rootScope.PAGE_CONFIG.mount.size);
-
-                            } else {
-                                $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
-                                $scope.sidbarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
-                                var visitItem = {
-                                    text: '在线访问',
-                                    icon: 'icon_earth',
-                                    name: 'visit_website',
-                                    click: function () {
-                                        var url = gkClientInterface.getUrl({
-                                            url: '/storage#!:' + $rootScope.PAGE_CONFIG.mount.mount_id,
-                                            sso: 1
-                                        });
-                                        gkClientInterface.openUrl(url);
-                                    }
+                            if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id){
+                                var title = $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
+                                $scope.sidbarData = {
+                                    title: $scope.PAGE_CONFIG.mount?$scope.PAGE_CONFIG.mount.name:'',
+                                    tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
+                                    photo: "",
+                                    attrHtml: '',
+                                    menus: []
                                 };
-
-                                var qrItem = {
-                                    text: '团队二维码',
-                                    icon: 'icon_qr',
-                                    name: 'team_qr',
-                                    click: function () {
-                                        GKModal.teamQr($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                };
-                                $scope.sidbarData.menus.push(visitItem);
-                                $scope.sidbarData.menus.push(qrItem);
-                                if ($scope.partition == GKPartition.teamFile) {
-                                    $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                                    $scope.sidbarData.menus.push({
-                                        text: '成员与分组',
-                                        icon: 'icon_team',
-                                        name: 'member_group',
-                                        click: function () {
-                                            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
-                                        }
-                                    });
-
-                                    $scope.sidbarData.menus.push({
-                                        text: '订阅者',
-                                        icon: 'icon_pin',
-                                        name: 'subscriber',
+                                if ($scope.partition == GKPartition.myFile) {
+                                    $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.user.avatar;
+                                    $scope.sidbarData.atrrHtml = '已经使用 ' + Util.Number.bitSize($rootScope.PAGE_CONFIG.mount.size);
+                                } else{
+                                    $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
+                                    $scope.sidbarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
+                                    var visitItem = {
+                                        text: '在线访问',
+                                        icon: 'icon_earth',
+                                        name: 'visit_website',
                                         click: function () {
                                             var url = gkClientInterface.getUrl({
-                                                url: '/manage/subscribers',
+                                                url: '/storage#!:' + $rootScope.PAGE_CONFIG.mount.mount_id,
                                                 sso: 1
                                             });
                                             gkClientInterface.openUrl(url);
                                         }
-                                    });
+                                    };
 
-                                    $scope.sidbarData.menus.push({
-                                        text: '管理团队',
-                                        icon: 'icon_manage',
-                                        name: 'manage_team',
+                                    var qrItem = {
+                                        text: '团队二维码',
+                                        icon: 'icon_qr',
+                                        name: 'team_qr',
                                         click: function () {
-                                            GKOpen.manage($rootScope.PAGE_CONFIG.mount.org_id);
+                                            GKModal.teamQr($rootScope.PAGE_CONFIG.mount.org_id);
                                         }
-                                    });
+                                    };
+                                    if($scope.partition == GKPartition.teamFile || $scope.partition == GKPartition.subscribeFile){
+                                        $scope.sidbarData.menus.push(visitItem);
+                                        $scope.sidbarData.menus.push(qrItem);
+                                    }
+
+                                    if ($scope.partition == GKPartition.teamFile) {
+                                        $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
+                                        $scope.sidbarData.menus.push({
+                                            text: '成员与分组',
+                                            icon: 'icon_team',
+                                            name: 'member_group',
+                                            click: function () {
+                                                GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+                                            }
+                                        });
+
+                                        $scope.sidbarData.menus.push({
+                                            text: '订阅者',
+                                            icon: 'icon_pin',
+                                            name: 'subscriber',
+                                            click: function () {
+                                                var url = gkClientInterface.getUrl({
+                                                    url: '/manage/subscribers',
+                                                    sso: 1
+                                                });
+                                                gkClientInterface.openUrl(url);
+                                            }
+                                        });
+
+                                        $scope.sidbarData.menus.push({
+                                            text: '管理团队',
+                                            icon: 'icon_manage',
+                                            name: 'manage_team',
+                                            click: function () {
+                                                GKOpen.manage($rootScope.PAGE_CONFIG.mount.org_id);
+                                            }
+                                        });
+                                    }
+
+
                                 }
-
-
                             }
+
                         } else {
                             $scope.sidbarData = {
                                 title: GKFilter.getFilterName($scope.filter),
