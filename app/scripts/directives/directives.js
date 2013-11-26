@@ -686,12 +686,19 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.$apply(function () {
                                     $scope.loading = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
+                                    /**
+                                     * 云端不存在
+                                     */
                                     if (errorCode == 40402) {
                                         $scope.fileExist = false;
                                         $scope.sidbarData = {
                                             icon: 'uploading'
                                         }
-                                        if ($scope.localFile.status == 1) {
+                                        /**
+                                         * 1:上传中
+                                         * 9：重新上传中
+                                         */
+                                        if ($scope.localFile.status == 1 || $scope.localFile.status == 9) {
                                             $scope.sidbarData.title = '正在上传中';
                                             var info;
                                             fileInterval = setInterval(function () {
@@ -700,7 +707,6 @@ angular.module('gkClientIndex.directives', [])
                                                         mountid: mountId,
                                                         webpath: file.fullpath
                                                     });
-                                                    console.log(info);
                                                     if(typeof info.offset !=='undefined'){
                                                         var offset = Number(info.offset);
                                                         var filesize = Number(info.filesize || 0);

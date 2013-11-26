@@ -208,7 +208,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (branch.expanded) {
                 if(branch.data.filter != 'trash'){
                     var list = GKFile.getFileList(branch.data.mount_id, branch.data.fullpath, 1);
-                    branch.children = GKFile.dealTreeData(list, $location.search().partition, branch.data.mount_id);
+                    branch.children = GKFile.dealTreeData(list, branch.data.partition, branch.data.mount_id);
                     if (!branch.children)  branch.children = [];
                 }
                 /**
