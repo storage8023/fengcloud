@@ -158,8 +158,8 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
             {
                 type:'button',
                 label:'设置代理',
+                dependon:2,
                 click:function(){
-                    console.log(1);
                     gkClientInterface.setSettings();
                 }
 

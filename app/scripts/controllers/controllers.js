@@ -379,7 +379,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     return;
                 }
                 var partition = GKPartition.teamFile;
-                if (newOrg['type'] == 3) {
+                if (mount['type'] == 3) {
                     partition = GKPartition.subscribeFile;
                 }
                 if(partition == GKPartition.teamFile){
@@ -771,9 +771,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon: 'icon_del',
                 className: "clear_trash",
                 callback: function () {
+                    if(!confirm('确定要清空该回收站？')){
+                        return;
+                    }
                     RestFile.clear($rootScope.PAGE_CONFIG.mount.mount_id).success(function () {
                         refreahData();
-                    }).error(function () {
+                    }).error(function (request) {
+                            GKException.handleAjaxException(request);
                         });
                 }
             },
