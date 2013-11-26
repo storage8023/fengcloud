@@ -378,6 +378,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
         })
+
+        /**
+         * 创建团队成功
+         */
+        $scope.$on('createTeamSuccess',function(event,newOrg){
+            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
+            $scope.orgTreeList.push(newOrg);
+            unSelectAllBranch();
+            selectBreanch(newOrg, GKPartition.teamFile, true);
+        })
+
     }])
     .controller('fileBrowser', ['GKDialog', 'GKOpen', '$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition', 'GKFileOpt', 'GKModal', 'GKFilter', function (GKDialog, GKOpen, $scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition, GKFileOpt, GKModal, GKFilter) {
         /**
@@ -1329,7 +1340,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal','GKPartition',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind,GKModal) {
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -1358,6 +1369,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.items = [
+            {
+                item: "创建云库",
+                menuclick: function () {
+                    var createTeamDialog = GKModal.createTeam();
+                    createTeamDialog.result.then(function (orgId) {
+                        gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
+                            if (param) {
+                                $scope.$apply(function () {
+                                    var newOrg = param;
+                                    $rootScope.$broadcast('createTeamSuccess',newOrg);
+                                });
+
+                            }
+                        })
+                    })
+                }
+            },
             {
                 item: "设置",
                 menuclick: function () {

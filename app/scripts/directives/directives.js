@@ -18,7 +18,16 @@ angular.module('gkClientIndex.directives', [])
                         show: "show",
                         hide: "hide"
                     },
-                    items: $scope.rightOpts
+                    build:function($trigger, e){
+                        return {
+                            callback: function(){
+
+                            },
+                            items: {
+
+                            }
+                        }
+                    }
                 });
             }
         }
