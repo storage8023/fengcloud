@@ -164,7 +164,9 @@ footer .btn{
 .device .list .item > div:nth-child(4){
 width: 112px;
 }
-
+.device .list .item > div:nth-child(4).no_del{
+    width: 56px;
+}
 .list .item .opts .btn-flat{
     height: 34px;
     line-height: 34px;

@@ -200,7 +200,6 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                 }
             });
             setting.configpath = $scope.setting.configpath;
-            console.log(setting);
             gkClientInterface.setClientInfo(setting);
         },true);
 
