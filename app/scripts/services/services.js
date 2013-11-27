@@ -93,8 +93,12 @@ angular.module('gkClientIndex.services', [])
                 return node;
             },
             editSmartNode:function(list, condition,name){
-                var node = this.findSmartNode(condition);
-                node.label = node.data.name = name;
+                var node = this.findSmartNode(list,condition);
+                console.log(node);
+                if(node){
+                    node.label = node.data.name = name;
+                }
+
             },
             removeSmartNode:function(list, condition){
                 angular.forEach(list,function(value,key){
@@ -105,7 +109,7 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             addSmartNode:function(list,node){
-                var node = this.findSmartNode(node.type);
+                var node = this.findSmartNode(list,node.type);
                 if(node){
                     this.editSmartNode(list,node.type,node.name);
                 }else{
@@ -257,6 +261,13 @@ angular.module('gkClientIndex.services', [])
                                         label.show();
                                     });
                                 })
+
+                                input.bind('keydown', function (event) {
+                                    if (event.keyCode == 13) {
+                                        input.trigger('blur');
+                                    }
+                                });
+
                                 input.on('click', function (e) {
                                     e.stopPropagation();
                                 })
