@@ -68,7 +68,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt','GKSideTree', function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt,GKSideTree) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt','GKSideTree','GKApi','$q', function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt,GKSideTree,GKApi,$q) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//团队的空间
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的团队
@@ -189,6 +189,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         };
 
+        var getFileList = function(mountId,fullpath,source){
+            var deferred = $q.defer(),list;
+            if(source == 'api'){
+                GKApi.list(mountId,fullpath,0,1000,1).success(function(data){
+                   list = GKFile.dealFileList(data['list'],'api');
+                    deferred.resolve(list);
+                });
+            }else{
+                list = GKFile.getFileList(mountId, fullpath, 1);
+                deferred.resolve(list);
+            }
+            return deferred.promise;
+        }
+
         /**
          * 选中树节点的处理函数
          * @param branch
@@ -196,9 +210,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleExpand = function (branch) {
             if (branch.expanded) {
                 if(branch.data.filter != 'trash'){
-                    var list = GKFile.getFileList(branch.data.mount_id, branch.data.fullpath, 1);
-                    branch.children = GKFile.dealTreeData(list, branch.data.partition, branch.data.mount_id);
-                    if (!branch.children)  branch.children = [];
+                    var source = 'client';
+                    if(branch.data.partition == GKPartition.subscribeFile){
+                        source = 'api';
+                    }
+                    getFileList(branch.data.mount_id, branch.data.fullpath,source).then(function(list){
+                        branch.children = GKFile.dealTreeData(list, branch.data.partition, branch.data.mount_id);
+                        if (!branch.children)  branch.children = [];
+                    })
                 }
                 /**
                  * 添加回收站

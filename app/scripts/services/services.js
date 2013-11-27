@@ -2716,7 +2716,7 @@ angular.module('gkClientIndex.services', [])
                     data:params
                 });
             },
-            list:function(mountId,fullpath,start,size){
+            list:function(mountId,fullpath,start,size,dir){
                 var params = {
                     mount_id:mountId,
                     fullpath:fullpath,
@@ -2724,6 +2724,9 @@ angular.module('gkClientIndex.services', [])
                     size:size||0,
                     token: GK.getToken(),
                 };
+                if(angular.isDefined(dir)){
+                    params.dir = dir;
+                }
                 angular.extend(params,defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
