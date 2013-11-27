@@ -100,7 +100,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
 
         $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile);
-        console.log($scope.orgTreeList);
+
+        /**
+         * 订阅的文件
+         * @type {*}
+         */
         $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.teamFile);
 
         /**
@@ -133,34 +137,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var smartFolders = GKSmartFolder.getFolders();
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder);
 
-        $scope.$on('removeSmartFolder', function ($event, code) {
+        $scope.$on('RemoveMagicObject', function ($event, param) {
+            var code = param.condition;
             GKSmartFolder.removeSmartFolderByCode(code);
-            angular.forEach($scope.smartTreeList, function (value, key) {
-                if (value.data.condition == code) {
-                    $scope.smartTreeList.splice(key, 1);
-                    return false;
-                }
-            });
-            selectBreanch($scope.orgTreeList[0], GKPartition.myFile, true);
+            GKSideTree.removeSmartNode($scope.smartTreeList,code);
         })
 
-        $scope.$on('addSmartFolder', function ($event, name, code) {
-            GKSmartFolder.addSmartFolder(name, code);
-            var newSmartFolder = GKFile.dealTreeData([
-                {name: name, condition: code}
-            ], GKPartition.smartFolder)[0];
-            $scope.smartTreeList.push(newSmartFolder);
-            selectBreanch(newSmartFolder, GKPartition.smartFolder, true);
+        $scope.$on('AddMagicObject', function ($event, param) {
+           var name = param.name,
+               code = param.condition;
+            var node = GKSmartFolder.addSmartFolder(name, code);
+            GKSideTree.addSmartNode($scope.smartTreeList,node);
         })
 
         $scope.$on('editSmartFolder', function ($event, name, code) {
-            angular.forEach($scope.smartTreeList, function (value) {
-                if (value.data.condition == code) {
-                    value.label = name;
-                    value.data.name = name;
-                    return false;
-                }
-            });
+            GKSmartFolder.editSmartFolder(name, code);
+            GKSideTree.editSmartNode($scope.smartTreeList,code,name);
         })
 
         /**

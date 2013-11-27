@@ -7,6 +7,19 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    renameSmartFolder:function(params,callback){
+        try {
+            params.condition = String(params.condition);
+            gkClient.gRenameMagic(JSON.stringify(params),function(re){
+                re = typeof re ==='object'?re:JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     getTransInfo:function(param){
         try {
             //console.log(param);

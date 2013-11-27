@@ -4,241 +4,276 @@
 //全局AJAX请求默认返回的数据格式
 jQuery.ajaxSetup({
     dataType: 'json',
-    timeout:30000
+    timeout: 30000
 });
 
 angular.module('gkClientIndex.services', [])
-    .constant('newsKey','gkNews')
-    .value('uiSelectableConfig',{
-        filter:'.file_item',
+    .constant('newsKey', 'gkNews')
+    .value('uiSelectableConfig', {
+        filter: '.file_item',
         //tolerance:'fit',
         distance: 10
     })
-    .factory('GKSideTree', [function () {
+    .factory('GKSideTree', ['GKFile','GKPartition',function (GKFile,GKPartition) {
         return {
-            getNode:function(list,mountId,fullpath){
+            getNode: function (list, mountId, fullpath) {
                 var node = null;
-                angular.forEach(list,function(value,key){
-                    if(!value.data.filter&&value.data.mount_id == mountId && value.data.fullpath === fullpath){
-                        node = [key,value];
+                angular.forEach(list, function (value, key) {
+                    if (!value.data.filter && value.data.mount_id == mountId && value.data.fullpath === fullpath) {
+                        node = [key, value];
                         return false;
                     }
                 })
                 return node;
             },
-            findNode:function(list,mountId,fullpath){
+            findNode: function (list, mountId, fullpath) {
                 var context = this;
                 var fullpathArr = fullpath.split('/');
                 fullpathArr.unshift('');
                 var node = null;
                 var children = list;
-                angular.forEach(fullpathArr,function(path,key){
+                angular.forEach(fullpathArr, function (path, key) {
                     var checkPath = '';
-                    for(var i=0;i<=key;i++){
-                        checkPath+=fullpathArr[i]+'/';
+                    for (var i = 0; i <= key; i++) {
+                        checkPath += fullpathArr[i] + '/';
                     }
-                    checkPath = Util.String.ltrim(Util.String.rtrim(checkPath,'/'),'/');
-                    var parentNode = context.getNode(children,mountId,checkPath)[1];
-                    if(!parentNode){
+                    checkPath = Util.String.ltrim(Util.String.rtrim(checkPath, '/'), '/');
+                    var parentNode = context.getNode(children, mountId, checkPath)[1];
+                    if (!parentNode) {
                         return false;
-                    }else{
-                        if(checkPath === fullpath){
+                    } else {
+                        if (checkPath === fullpath) {
                             node = parentNode;
                             return false;
-                        }else{
+                        } else {
                             children = parentNode['children'];
                         }
                     }
                 })
                 return node;
             },
-            removeNode:function(list,mountId,fullpath){
+            removeNode: function (list, mountId, fullpath) {
                 var context = this;
                 var fullpathArr = fullpath.split('/');
                 fullpathArr.unshift('');
                 var children = list;
-                angular.forEach(fullpathArr,function(path,key){
+                angular.forEach(fullpathArr, function (path, key) {
                     var checkPath = '';
-                    for(var i=0;i<=key;i++){
-                        checkPath+=fullpathArr[i]+'/';
+                    for (var i = 0; i <= key; i++) {
+                        checkPath += fullpathArr[i] + '/';
                     }
-                    checkPath = Util.String.ltrim(Util.String.rtrim(checkPath,'/'),'/');
-                    var parent = context.getNode(children,mountId,checkPath);
-                    if(!parent){
+                    checkPath = Util.String.ltrim(Util.String.rtrim(checkPath, '/'), '/');
+                    var parent = context.getNode(children, mountId, checkPath);
+                    if (!parent) {
                         return false;
-                    }else{
-                        if(checkPath === fullpath){
-                            children.splice(parent[0],1);
+                    } else {
+                        if (checkPath === fullpath) {
+                            children.splice(parent[0], 1);
                             return false;
-                        }else{
+                        } else {
                             children = parent[1]['children'];
                         }
                     }
                 })
             },
-            editNode:function(list,mountId,fullpath,param){
-                var node = this.findNode(list,mountId,fullpath);
-                if(node){
-                    angular.extend(node.data,param);
+            editNode: function (list, mountId, fullpath, param) {
+                var node = this.findNode(list, mountId, fullpath);
+                if (node) {
+                    angular.extend(node.data, param);
                 }
-            }
+            },
+            findSmartNode:function(list, condition){
+                var node = null;
+                angular.forEach(list,function(value){
+                    if(value.data.type == condition){
+                        node = value;
+                        return false;
+                    }
+                });
+                return node;
+            },
+            editSmartNode:function(list, condition,name){
+                var node = this.findSmartNode(condition);
+                node.label = node.data.name = name;
+            },
+            removeSmartNode:function(list, condition){
+                angular.forEach(list,function(value,key){
+                    if(value.data.type == condition){
+                        list.splice(key,1);
+                        return false;
+                    }
+                });
+            },
+            addSmartNode:function(list,node){
+                var node = this.findSmartNode(node.type);
+                if(node){
+                    this.editSmartNode(list,node.type,node.name);
+                }else{
+                    var formatNode = GKFile.dealTreeData([node], GKPartition.smartFolder)[0]
+                    list.push(formatNode);
+                }
+            },
 
         };
     }])
     .factory('GKOpen', [function ($q) {
         return {
-            manage:function(orgId){
+            manage: function (orgId) {
                 var url = gkClientInterface.getUrl({
-                    url:'/manage?org_id='+orgId,
-                    sso:1
+                    url: '/manage?org_id=' + orgId,
+                    sso: 1
                 });
                 gkClientInterface.openUrl(url);
             },
-            move:function(){
+            move: function () {
 
             }
         };
     }])
-    .factory('GKContextMenu', ['GKPartition','GKModal','GKOpt',function (GKPartition,GKModal,GKOpt) {
+    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', function (GKPartition, GKModal, GKOpt) {
         return {
-           getSidebarMenu:function($trigger){
-               var data = $trigger.data('branch');
-               var partition = data.partition,
-                   fullpath = data.fullpath,
-                   mountId = data.mount_id,
-                   orgId = data.org_id,
-                   items;
-               if(partition == GKPartition.teamFile){
-                   if(!fullpath){
-                       if(data.filter =='trash'){
-                           items = {
-                               'clear_trash':{
-                                   name:'清空回收站',
-                                   callback:function(){
-                                    GKOpt.clearTrash(mountId);
-                                   }
-                               },
-                           }
-                       }else{
-                           items = {
-                               'view_dashboard':{
-                                   name:'云库资料',
-                                   callback:function(){
-                                       GKModal.teamMember(data.org_id);
-                                   }
-                               },
-                               'view_member':{
-                                   name:'云库成员',
-                                   callback:function(){
-                                       GKModal.teamMember(data.org_id);
-                                   }
-                               },
-                               'view_subscriber':{
-                                   name:'云库订阅者',
-                                   callback:function(){
-                                       GKModal.teamSubscribe(data.org_id);
-                                   }
-                               },
-                               'manage':{
-                                   name:'云库安全设置',
-                                   callback:function(){
-                                       GKModal.teamManage(data.org_id);
-                                   }
-                               }
-                           };
-                       }
+            getSidebarMenu: function ($trigger) {
+                var data = $trigger.data('branch');
+                var partition = data.partition,
+                    fullpath = data.fullpath,
+                    mountId = data.mount_id,
+                    orgId = data.org_id,
+                    items;
+                if (partition == GKPartition.teamFile) {
+                    if (!fullpath) {
+                        if (data.filter == 'trash') {
+                            items = {
+                                'clear_trash': {
+                                    name: '清空回收站',
+                                    callback: function () {
+                                        GKOpt.clearTrash(mountId);
+                                    }
+                                },
+                            }
+                        } else {
+                            items = {
+                                'view_dashboard': {
+                                    name: '云库资料',
+                                    callback: function () {
+                                        GKModal.teamMember(data.org_id);
+                                    }
+                                },
+                                'view_member': {
+                                    name: '云库成员',
+                                    callback: function () {
+                                        GKModal.teamMember(data.org_id);
+                                    }
+                                },
+                                'view_subscriber': {
+                                    name: '云库订阅者',
+                                    callback: function () {
+                                        GKModal.teamSubscribe(data.org_id);
+                                    }
+                                },
+                                'manage': {
+                                    name: '云库安全设置',
+                                    callback: function () {
+                                        GKModal.teamManage(data.org_id);
+                                    }
+                                }
+                            };
+                        }
 
-                   }else {
-                       items = {};
-                       items['new_folder'] = {
-                           name:'新建文件夹',
-                           callback:function(){
+                    } else {
+                        items = {};
+                        items['new_folder'] = {
+                            name: '新建文件夹',
+                            callback: function () {
 
-                           }
-                       };
-                       if(data.sync ==0){
-                           items['sync'] = {
-                               name:'创建同步目录',
-                               callback:function(){
-                                   var syncDialog = GKModal.sync(mountId,fullpath);
-                                   syncDialog.result.then(function(){
+                            }
+                        };
+                        if (data.sync == 0) {
+                            items['sync'] = {
+                                name: '创建同步目录',
+                                callback: function () {
+                                    var syncDialog = GKModal.sync(mountId, fullpath);
+                                    syncDialog.result.then(function () {
 
-                                   });
-                               }
-                           };
-                       }
-                       if(fullpath.split('/').length==1){
-                           items['create_team_folder'] = {
-                               name:'创建公开文件夹',
-                               callback:function(){
+                                    });
+                                }
+                            };
+                        }
+                        if (fullpath.split('/').length == 1) {
+                            items['create_team_folder'] = {
+                                name: '创建公开文件夹',
+                                callback: function () {
 
-                               }
-                           };
-                       }
-                       items['del'] = {
-                           name:'删除',
-                           callback:function(){
-                               GKOpt.del(mountId,[fullpath]);
-                           }
-                       };
-                   }
+                                }
+                            };
+                        }
+                        items['del'] = {
+                            name: '删除',
+                            callback: function () {
+                                GKOpt.del(mountId, [fullpath]);
+                            }
+                        };
+                    }
 
-               }else if(data.partition == GKPartition.subscribeFile){
-                   items = {
-                       'unsubscribe':{
-                           name:'取消订阅',
-                           callback:function(){
-                               GKOpt.unsubscribe(orgId);
-                           }
-                       }
-                   };
-               }else if(data.partition == GKPartition.smartFolder){
-                   items = {
-                       'rename':{
-                           name:'修改命名',
-                           callback:function(){
-                               var label =  $trigger.find('.tree-label');
-                               label.hide();
-                               var input = $('<input class="form-control" name="new_name" />');
-                               input.css({
-                                   'width':$trigger.width()-50,
-                                   'display':'inline-block',
-                                   'height':'28px',
-                                   'line-height':'18px',
-                                   'padding':'0 5px',
-                                   'vertical-align':'top'
-                               })
-                               var oldName =  jQuery.trim(label.text());
-                               input.val(oldName).insertAfter(label).focus();
-                               input.on('blur',function(){
-                                   var newName = jQuery.trim(jQuery(this).val());
-                                   if(!newName){
-                                       alert('名称不能为空');
-                                       return;
-                                   }
-                                   if(newName === oldName){
-                                       input.remove();
-                                       label.show();
-                                       return;
-                                   }
-                               })
-                               input.on('click',function(e){
-                                   e.stopPropagation();
-                               })
-                           }
-                       }
-                   };
-               }
-               return items;
-           }
+                } else if (data.partition == GKPartition.subscribeFile) {
+                    items = {
+                        'unsubscribe': {
+                            name: '取消订阅',
+                            callback: function () {
+                                GKOpt.unsubscribe(orgId);
+                            }
+                        }
+                    };
+                } else if (data.partition == GKPartition.smartFolder) {
+                    items = {
+                        'rename': {
+                            name: '修改命名',
+                            callback: function () {
+                                var label = $trigger.find('.tree-label');
+                                label.hide();
+                                var input = $('<input class="form-control" name="new_name" />');
+                                input.css({
+                                    'width': $trigger.width() - 50,
+                                    'display': 'inline-block',
+                                    'height': '28px',
+                                    'line-height': '18px',
+                                    'padding': '0 5px',
+                                    'vertical-align': 'top'
+                                })
+                                var oldName = jQuery.trim(label.text());
+                                input.val(oldName).insertAfter(label).focus();
+                                input.on('blur', function () {
+                                    var newName = jQuery.trim(jQuery(this).val());
+                                    if (!newName) {
+                                        alert('名称不能为空');
+                                        return;
+                                    }
+                                    if (newName === oldName) {
+                                        input.remove();
+                                        label.show();
+                                        return;
+                                    }
+                                    GKOpt.renameSmartFolder(data.type,newName).then(function(){
+                                        input.remove();
+                                        label.show();
+                                    });
+                                })
+                                input.on('click', function (e) {
+                                    e.stopPropagation();
+                                })
+                            }
+                        }
+                    };
+                }
+                return items;
+            }
         };
     }])
-    .factory('GKFileOpt',['$q','GK',function($q,GK){
-         var GKFileOpt = {};
-         return {
-            copy:function(toFullpath,toMountId,fromFullpathes,fromMountId){
-                if(!angular.isArray(fromFullpathes)){
-                    fromFullpathes  = [fromFullpathes];
+    .factory('GKFileOpt', ['$q', 'GK', function ($q, GK) {
+        var GKFileOpt = {};
+        return {
+            copy: function (toFullpath, toMountId, fromFullpathes, fromMountId) {
+                if (!angular.isArray(fromFullpathes)) {
+                    fromFullpathes = [fromFullpathes];
                 }
                 var params = {
                     target: toFullpath,
@@ -254,33 +289,33 @@ angular.module('gkClientIndex.services', [])
                 });
                 return deferred.promise;
             },
-             move:function(toFullpath,toMountId,fromFullpathes,fromMountId){
-                 if(!angular.isArray(fromFullpathes)){
-                     fromFullpathes  = [fromFullpathes];
-                 }
-                 var params = {
-                     target: toFullpath,
-                     targetmountid: toMountId,
-                     frommountid: fromMountId,
-                     fromlist: fromFullpathes
-                 };
-                 var deferred = $q.defer();
-                 GK.move(params).then(function () {
-                     deferred.resolve();
-                 }, function (error) {
-                     deferred.reject(error);
-                 });
-                 return deferred.promise;
-             }
-         };
+            move: function (toFullpath, toMountId, fromFullpathes, fromMountId) {
+                if (!angular.isArray(fromFullpathes)) {
+                    fromFullpathes = [fromFullpathes];
+                }
+                var params = {
+                    target: toFullpath,
+                    targetmountid: toMountId,
+                    frommountid: fromMountId,
+                    fromlist: fromFullpathes
+                };
+                var deferred = $q.defer();
+                GK.move(params).then(function () {
+                    deferred.resolve();
+                }, function (error) {
+                    deferred.reject(error);
+                });
+                return deferred.promise;
+            }
+        };
     }])
-    .factory('GKModal',['$rootScope','$modal','GK','GKMount','GKPartition','$location','$timeout','GKException','GKDialog','GKPath',function($rootScope,$modal,GK,GKMount,GKPartition,$location,$timeout,GKException,GKDialog,GKPath){
+    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath) {
         var defaultOption = {
             backdrop: 'static',
-            keyboard:false,
+            keyboard: false,
         };
         return{
-            sync:function(mountId,fullpath){
+            sync: function (mountId, fullpath) {
                 var option = {
                     templateUrl: 'views/set_sync.html',
                     windowClass: 'sync_settiong_dialog',
@@ -315,7 +350,7 @@ angular.module('gkClientIndex.services', [])
                             };
                             gkClientInterface.setLinkPath(params, function () {
                                 alert('同步设置成功');
-                                $rootScope.$broadcast('editFileSuccess','sync',mountId,fullpath);
+                                $rootScope.$broadcast('editFileSuccess', 'sync', mountId, fullpath);
                                 $modalInstance.close();
                             });
                         };
@@ -326,24 +361,24 @@ angular.module('gkClientIndex.services', [])
                     }
                 };
 
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
 
             },
-            news:function(GKNews,GKApi){
+            news: function (GKNews, GKApi) {
                 var context = this;
                 var option = {
                     templateUrl: 'views/news_dialog.html',
                     windowClass: 'news_dialog',
-                    controller: function ($scope, $modalInstance,classifyNews) {
+                    controller: function ($scope, $modalInstance, classifyNews) {
 
-                        $scope.cancel = function(){
+                        $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $timeout(function(){
+                        $timeout(function () {
                             $scope.showList = true;
-                        },500)
+                        }, 500)
                         $scope.classifyNews = classifyNews;
                         $scope.loading = false;
                         var requestDateline = 0;
@@ -351,7 +386,7 @@ angular.module('gkClientIndex.services', [])
                             $scope.loading = true;
 
                             GKApi.update(100, requestDateline).success(function (data) {
-                                $scope.$apply(function(){
+                                $scope.$apply(function () {
                                     $scope.loading = false;
                                     var renews = data['updates'] || [];
                                     var classifyNews = GKNews.classify(renews);
@@ -364,47 +399,47 @@ angular.module('gkClientIndex.services', [])
                                 })
                         };
 
-                        $scope.getBtnClasses = function(opt){
+                        $scope.getBtnClasses = function (opt) {
                             var successBtn = ['invite_accept'];
                             var dangerBtn = ['invite_reject'];
-                            if(dangerBtn.indexOf(opt.opt)>=0){
+                            if (dangerBtn.indexOf(opt.opt) >= 0) {
                                 return 'btn-danger';
-                            }else if(successBtn.indexOf(opt.opt)>=0){
+                            } else if (successBtn.indexOf(opt.opt) >= 0) {
                                 return 'btn-success';
-                            }else if(opt.type == 'view'){
+                            } else if (opt.type == 'view') {
                                 return 'btn-primary';
-                            }else if(opt.type == 'url'){
-                                if(!opt.btn_class){
+                            } else if (opt.type == 'url') {
+                                if (!opt.btn_class) {
                                     return 'btn-primary';
-                                }else{
-                                    if(opt.btn_class == 'blue'){
+                                } else {
+                                    if (opt.btn_class == 'blue') {
                                         return 'btn-primary';
-                                    }else if(opt.btn_class == 'red'){
+                                    } else if (opt.btn_class == 'red') {
                                         return 'btn-danger';
-                                    }else if(opt.btn_class == 'green'){
+                                    } else if (opt.btn_class == 'green') {
                                         return 'btn-success';
-                                    }else if(opt.btn_class == 'yellow'){
+                                    } else if (opt.btn_class == 'yellow') {
                                         return 'btn-warning';
-                                    }else{
+                                    } else {
                                         return 'btn-default';
                                     }
                                 }
-                            }else{
+                            } else {
                                 return 'btn-default';
                             }
                         };
 
-                        $scope.handleOpt = function(opt,item){
-                            if(opt.type=='request'){
-                                if(opt.opt == 'invite_accept' || opt.opt == 'invite_reject'){
-                                    if(!confirm('你确定要'+opt.name+'该团队的邀请？')){
+                        $scope.handleOpt = function (opt, item) {
+                            if (opt.type == 'request') {
+                                if (opt.opt == 'invite_accept' || opt.opt == 'invite_reject') {
+                                    if (!confirm('你确定要' + opt.name + '该团队的邀请？')) {
                                         return;
                                     }
                                 }
-                                GKApi.updateAct(item.id,opt.opt).success(function (data) {
-                                    $scope.$apply(function(){
+                                GKApi.updateAct(item.id, opt.opt).success(function (data) {
+                                    $scope.$apply(function () {
                                         item.opts = [];
-                                        if(data && data.updates){
+                                        if (data && data.updates) {
                                             var newItem = data.updates[0];
                                             item.render_content = newItem.render_content;
                                         }
@@ -414,45 +449,46 @@ angular.module('gkClientIndex.services', [])
                                 }).error(function (request) {
                                         GKException.handleAjaxException(request);
                                     });
-                            }else if(opt.type=='url'){
+                            } else if (opt.type == 'url') {
                                 var url = gkClientInterface.getUrl({
-                                    url:opt.url,
-                                    sso:Number(opt.sso)
+                                    url: opt.url,
+                                    sso: Number(opt.sso)
                                 });
-                                if(opt.browser == 1){
+                                if (opt.browser == 1) {
                                     gkClientInterface.openUrl(url);
-                                }else{
+                                } else {
                                     var data = {
-                                        url:url,
-                                        type:"sole",
-                                        width:794,
-                                        resize:1,
-                                        height:490
+                                        url: url,
+                                        type: "sole",
+                                        width: 794,
+                                        resize: 1,
+                                        height: 490
                                     }
                                     gkClientInterface.setMain(data);
-                                };
+                                }
+                                ;
                                 $modalInstance.close();
-                            }else if(opt.type=='view'){
-                                if(opt.opt == 'view_file'){
-                                    var fullpath = item.dir == 1?item.fullpath: Util.String.dirName(item.fullpath);
-                                    var selectPath = item.dir == 1?'':item.fullpath;
-                                    GKPath.gotoFile(item.mount_id, fullpath,selectPath);
-                                }else if(opt.opt == 'view_org_root'){
-                                    if(!item.org_id){
+                            } else if (opt.type == 'view') {
+                                if (opt.opt == 'view_file') {
+                                    var fullpath = item.dir == 1 ? item.fullpath : Util.String.dirName(item.fullpath);
+                                    var selectPath = item.dir == 1 ? '' : item.fullpath;
+                                    GKPath.gotoFile(item.mount_id, fullpath, selectPath);
+                                } else if (opt.opt == 'view_org_root') {
+                                    if (!item.org_id) {
                                         return;
                                     }
                                     var mount = GKMount.getMountByOrgId(item.org_id);
-                                    if(!mount){
+                                    if (!mount) {
                                         return;
                                     }
                                     GKPath.gotoFile(mount.mount_id, '');
-                                }else if(opt.opt == 'view_org_member'){
-                                    if(!item.org_id){
+                                } else if (opt.opt == 'view_org_member') {
+                                    if (!item.org_id) {
                                         return;
                                     }
                                     context.teamMember(item.org_id);
                                 }
-                                else if(opt.opt == 'view_device'){
+                                else if (opt.opt == 'view_device') {
                                     GKDialog.openSetting('device');
                                 }
                                 $modalInstance.close();
@@ -466,7 +502,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.handleTeamInvite = function (accept, item) {
                             if (accept) {
                                 GKApi.teamInviteJoin(item['org_id'], item['property']['invite_code']).success(function () {
-                                    $scope.$apply(function(){
+                                    $scope.$apply(function () {
                                         item.handled = true;
                                     });
 
@@ -475,7 +511,7 @@ angular.module('gkClientIndex.services', [])
                                     });
                             } else {
                                 GKApi.teamInviteReject(item['org_id'], item['property']['invite_code']).success(function () {
-                                    $scope.$apply(function(){
+                                    $scope.$apply(function () {
                                         item.handled = true;
                                     });
 
@@ -493,8 +529,8 @@ angular.module('gkClientIndex.services', [])
 
                         };
                     },
-                    resolve:{
-                        classifyNews:function(){
+                    resolve: {
+                        classifyNews: function () {
                             var news = GKNews.getNews();
                             var getLastDateline = function (news, lastDateline) {
                                 var dateline = lastDateline;
@@ -508,103 +544,103 @@ angular.module('gkClientIndex.services', [])
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            backUp:function(){
+            backUp: function () {
                 var option = {
                     templateUrl: 'views/backup.html',
                     windowClass: 'backup_dialog',
                     controller: function ($scope, $modalInstance) {
                         var tips = {
                             'desktop': {
-                                mac:'同步桌面上的文件到够快',
-                                windows:'同步桌面上的文件到够快'
+                                mac: '同步桌面上的文件到够快',
+                                windows: '同步桌面上的文件到够快'
                             },
                             'documents': {
-                                mac:'同步finder中的文档文件夹（路径）到够快',
-                                windows:'同步电脑中的文档文件夹（库\\文档）到够快'
+                                mac: '同步finder中的文档文件夹（路径）到够快',
+                                windows: '同步电脑中的文档文件夹（库\\文档）到够快'
                             },
                             'pictures': {
-                                mac:'同步finder中的图片文件夹（路径）到够快',
-                                windows:'同步电脑中的图片文件夹（库\\图片）到够快'
+                                mac: '同步finder中的图片文件夹（路径）到够快',
+                                windows: '同步电脑中的图片文件夹（库\\图片）到够快'
                             },
                             'music': {
-                                mac:'同步finder中的音乐文件夹（路径）到够快',
-                                windows:'同步电脑中的音乐文件夹（库\\音乐）到够快'
+                                mac: '同步finder中的音乐文件夹（路径）到够快',
+                                windows: '同步电脑中的音乐文件夹（库\\音乐）到够快'
                             },
                             'video': {
-                                mac:'同步finder中的视频文件夹（路径）到够快',
-                                windows:'同步电脑中的视频文件夹（库\\视频）到够快'
+                                mac: '同步finder中的视频文件夹（路径）到够快',
+                                windows: '同步电脑中的视频文件夹（库\\视频）到够快'
                             },
                             'other': {
-                                mac:'自定义计算机中的文件夹同步到够快',
-                                windows:'自定义计算机中的文件夹同步到够快'
+                                mac: '自定义计算机中的文件夹同步到够快',
+                                windows: '自定义计算机中的文件夹同步到够快'
                             }
                         };
                         var os = gkClientInterface.getClientOS().toLowerCase();
                         $scope.backupList = [
                             {
-                                name:'desktop',
-                                text:'桌面',
-                                tip:tips['desktop'][os]
+                                name: 'desktop',
+                                text: '桌面',
+                                tip: tips['desktop'][os]
                             },
                             {
-                                name:'documents',
-                                text:'文档',
-                                tip:tips['documents'][os]
+                                name: 'documents',
+                                text: '文档',
+                                tip: tips['documents'][os]
                             },
                             {
-                                name:'pictures',
-                                text:'照片',
-                                tip:tips['pictures'][os]
+                                name: 'pictures',
+                                text: '照片',
+                                tip: tips['pictures'][os]
                             },
                             {
-                                name:'music',
-                                text:'音乐',
-                                tip:tips['music'][os]
+                                name: 'music',
+                                text: '音乐',
+                                tip: tips['music'][os]
                             },
                             {
-                                name:'video',
-                                text:'视频',
-                                tip:tips['video'][os]
+                                name: 'video',
+                                text: '视频',
+                                tip: tips['video'][os]
                             },
                             {
-                                name:'other',
-                                text:'文件夹',
-                                tip:tips['other'][os]
+                                name: 'other',
+                                text: '文件夹',
+                                tip: tips['other'][os]
                             }
                         ];
-                        $scope.backUp = function(item){
-                            var localUri = '',defaultName = '';
-                            if(item.name=='other'){
+                        $scope.backUp = function (item) {
+                            var localUri = '', defaultName = '';
+                            if (item.name == 'other') {
                                 localUri = gkClientInterface.selectPath({
-                                    disable_root:1
+                                    disable_root: 1
                                 });
-                                if(!localUri){
+                                if (!localUri) {
                                     return;
                                 }
-                                defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri,'/'),'\\\\'));
-                            }else{
+                                defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri, '/'), '\\\\'));
+                            } else {
                                 localUri = gkClientInterface.getComputePath({
-                                    type:item.name
+                                    type: item.name
                                 });
                                 defaultName = item.text;
                             }
-                            if(!defaultName) return;
+                            if (!defaultName) return;
                             var myMount = GKMount.getMyMount();
-                            var  params = {
+                            var params = {
                                 webpath: defaultName,
                                 fullpath: localUri,
                                 mountid: myMount['mount_id']
                             };
-                            gkClientInterface.setLinkPath(params,function(){
+                            gkClientInterface.setLinkPath(params, function () {
                                 $modalInstance.close({
-                                    mountid:myMount['mount_id'],
-                                    partition:GKPartition.myFile,
-                                    path:'',
-                                    view:$location.search().view,
-                                    selectedpath:''
+                                    mountid: myMount['mount_id'],
+                                    partition: GKPartition.myFile,
+                                    path: '',
+                                    view: $location.search().view,
+                                    selectedpath: ''
                                 });
                             })
                         };
@@ -614,14 +650,14 @@ angular.module('gkClientIndex.services', [])
                         };
                     }
                 };
-                option = angular.extend({},option,defaultOption);
+                option = angular.extend({}, option, defaultOption);
                 return $modal.open(option);
             },
-            nearBy:function(){
+            nearBy: function () {
                 var option = {
                     templateUrl: 'views/nearby_dialog.html',
                     windowClass: 'modal_frame nearby_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
@@ -635,62 +671,62 @@ angular.module('gkClientIndex.services', [])
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/org/neighbour'
+                                sso: 1,
+                                url: '/org/neighbour'
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            createTeam:function(){
+            createTeam: function () {
                 var option = {
                     templateUrl: 'views/create_team_dialog.html',
                     windowClass: 'modal_frame create_team_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-                        $rootScope.$on('createTeamSuccess',function(event,orgId){
-                                gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                                    if (param) {
-                                        $scope.$apply(function () {
-                                            var newOrg = param;
-                                            $rootScope.$broadcast('createOrgSuccess',newOrg);
-                                        });
-                                        $modalInstance.close(orgId);
-                                    }
-                                })
+                        $rootScope.$on('createTeamSuccess', function (event, orgId) {
+                            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
+                                if (param) {
+                                    $scope.$apply(function () {
+                                        var newOrg = param;
+                                        $rootScope.$broadcast('createOrgSuccess', newOrg);
+                                    });
+                                    $modalInstance.close(orgId);
+                                }
+                            })
                         })
                     },
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/org/regist'
+                                sso: 1,
+                                url: '/org/regist'
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            addShare:function(mountId,fullpath){
+            addShare: function (mountId, fullpath) {
                 var option = {
                     templateUrl: 'views/add_share_dialog.html',
                     windowClass: 'modal_frame add_share_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $scope.$on('addShareDone',function(isCancel){
-                            if(isCancel==1){
+                        $scope.$on('addShareDone', function (isCancel) {
+                            if (isCancel == 1) {
                                 $modalInstance.dismiss('cancel');
-                            }else{
+                            } else {
                                 $modalInstance.close('done');
                                 $rootScope.$broadcast('refreshSidebar');
                             }
@@ -700,20 +736,20 @@ angular.module('gkClientIndex.services', [])
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/client/set_share_dialog?fullpath='+fullpath+'&mount_id='+mountId
+                                sso: 1,
+                                url: '/client/set_share_dialog?fullpath=' + fullpath + '&mount_id=' + mountId
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            teamMember:function(orgId){
+            teamMember: function (orgId) {
                 var option = {
                     templateUrl: 'views/team_member_dialog.html',
                     windowClass: 'modal_frame team_member_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
@@ -722,20 +758,20 @@ angular.module('gkClientIndex.services', [])
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/manage/members?org_id='+orgId
+                                sso: 1,
+                                url: '/manage/members?org_id=' + orgId
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            teamSubscribe:function(orgId){
+            teamSubscribe: function (orgId) {
                 var option = {
                     templateUrl: 'views/team_subscriber_dialog.html',
                     windowClass: 'modal_frame team_subscriber_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
@@ -744,20 +780,20 @@ angular.module('gkClientIndex.services', [])
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/manage/subscribers?org_id='+orgId
+                                sso: 1,
+                                url: '/manage/subscribers?org_id=' + orgId
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            teamManage:function(orgId){
+            teamManage: function (orgId) {
                 var option = {
                     templateUrl: 'views/team_manage_dialog.html',
                     windowClass: 'modal_frame team_manage_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
@@ -766,20 +802,20 @@ angular.module('gkClientIndex.services', [])
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/manage/safe?org_id='+orgId
+                                sso: 1,
+                                url: '/manage/safe?org_id=' + orgId
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            teamQr:function(orgId,width){
+            teamQr: function (orgId, width) {
                 var option = {
                     templateUrl: 'views/team_qr_dialog.html',
                     windowClass: 'modal_frame team_qr_dialog',
-                    controller: function ($scope, $modalInstance,src) {
+                    controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
@@ -788,16 +824,16 @@ angular.module('gkClientIndex.services', [])
                     resolve: {
                         src: function () {
                             return gkClientInterface.getUrl({
-                                sso:1,
-                                url:'/org/qr_subscribe?org_id='+orgId+'&width='+600
+                                sso: 1,
+                                url: '/org/qr_subscribe?org_id=' + orgId + '&width=' + 600
                             });
                         }
                     }
                 };
-                option =angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            createTeamFolder:function(){
+            createTeamFolder: function () {
                 var option = {
                     templateUrl: 'views/create_teamfolder_dialog.html',
                     windowClass: 'create_teamfolder',
@@ -808,114 +844,114 @@ angular.module('gkClientIndex.services', [])
 
                         $scope.filename = '';
                         $scope.shareToSubscriber = false;
-                        $scope.ok = function(filename,shareToSubscriber){
-                            if(!filename || !filename.length){
+                        $scope.ok = function (filename, shareToSubscriber) {
+                            if (!filename || !filename.length) {
                                 alert('请输入文件夹名称');
                                 return;
                             }
                             $modalInstance.close({
-                                filename:filename,
-                                shareToSubscriber:shareToSubscriber
+                                filename: filename,
+                                shareToSubscriber: shareToSubscriber
                             });
                         }
                     }
                 };
-                option = angular.extend({},defaultOption,option);
+                option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             }
         }
     }])
-    .factory('GKFind',['$rootScope',function($rootScope){
+    .factory('GKFind', ['$rootScope', function ($rootScope) {
         return {
-            toogleFind:function(){
+            toogleFind: function () {
                 $rootScope.showNearBy = !$rootScope.showNearBy;
-                if($rootScope.showNearBy){
+                if ($rootScope.showNearBy) {
                     gkClientInterface.startFind();
-                }else{
+                } else {
                     gkClientInterface.stopFind();
                 }
             }
         }
     }])
-    .factory('GKNews',['localStorageService','GKApi','$filter','GKDialog','GKPath','GKException',function(localStorageService,GKApi,$filter,GKDialog,GKPath,GKException){
-        var newsKey = 'gknews_'+gkClientInterface.getUser()['member_id'];
+    .factory('GKNews', ['localStorageService', 'GKApi', '$filter', 'GKDialog', 'GKPath', 'GKException', function (localStorageService, GKApi, $filter, GKDialog, GKPath, GKException) {
+        var newsKey = 'gknews_' + gkClientInterface.getUser()['member_id'];
         var GKNews = {
-            getOptsByItem:function(item){
+            getOptsByItem: function (item) {
                 var opts = [];
-                switch(item.act){
+                switch (item.act) {
                     case 'file':
                         opts.push({
-                            classes:'btn-primary',
-                            text:'查看',
-                            click:function(item){
+                            classes: 'btn-primary',
+                            text: '查看',
+                            click: function (item) {
                                 var orgId = item.org_id,
                                     mountId = item.mount_id,
                                     fullpath = item.fullpath;
-                                GKPath.gotoFile(mountId,fullpath);
+                                GKPath.gotoFile(mountId, fullpath);
                             }
                         });
                         break;
                     case 'invite':
                         opts.push({
-                            classes:'btn-default',
-                            text:'接收',
-                            click:function(item){
+                            classes: 'btn-default',
+                            text: '接收',
+                            click: function (item) {
                                 var orgId = item.orgId;
                                 var code = item.code;
-                                GKApi.teamInviteJoin(orgId,code).success(function(){
+                                GKApi.teamInviteJoin(orgId, code).success(function () {
 
-                                }).error(function(request){
+                                }).error(function (request) {
                                         GKException.handleAjaxException(request);
                                     });
                             }
                         });
                         opts.push({
-                            classes:'btn-danger',
-                            text:'拒绝',
-                            click:function(item){
-                                GKApi.teamInviteReject(orgId,code).success(function(){
+                            classes: 'btn-danger',
+                            text: '拒绝',
+                            click: function (item) {
+                                GKApi.teamInviteReject(orgId, code).success(function () {
 
-                                }).error(function(request){
+                                }).error(function (request) {
                                         GKException.handleAjaxException(request);
                                     });
                             }
                         });
                     case 'accepted':
                         opts.push({
-                            classes:'btn-primary',
-                            text:'查看',
-                            click:function(item){
+                            classes: 'btn-primary',
+                            text: '查看',
+                            click: function (item) {
                                 GKDialog.openTeamMember();
                             }
                         });
                     case 'join_success':
                         opts.push({
-                            classes:'btn-primary',
-                            text:'查看',
-                            click:function(item){
+                            classes: 'btn-primary',
+                            text: '查看',
+                            click: function (item) {
                                 var orgId = item.org_id,
                                     mountId = item.mount_id,
                                     fullpath = '';
-                                GKPath.gotoFile(mountId,fullpath);
+                                GKPath.gotoFile(mountId, fullpath);
                             }
                         });
                     case 'new_device':
                         opts.push({
-                            classes:'btn-primary',
-                            text:'查看',
-                            click:function(item){
+                            classes: 'btn-primary',
+                            text: '查看',
+                            click: function (item) {
                                 GKDialog.openSetting('device');
                             }
                         });
                     case 'product':
                         opts.push({
-                            classes:'btn-primary',
-                            text:'查看',
-                            click:function(item){
-                               var url = item.url;
+                            classes: 'btn-primary',
+                            text: '查看',
+                            click: function (item) {
+                                var url = item.url;
                                 url = gkClientInterface.getUrl({
-                                    url:url,
-                                    sso:1
+                                    url: url,
+                                    sso: 1
                                 });
                                 gkClientInterface.openUrl();
                             }
@@ -923,205 +959,208 @@ angular.module('gkClientIndex.services', [])
                         break;
                 }
             },
-            classify:function(news){
+            classify: function (news) {
                 var classifyNews = [],
                     context = this;
-                    ;
+                ;
                 var now = new Date().valueOf();
-                var today = $filter('date')(now,'yyyy-MM-dd');
-                var yesterdayTimestamp = now-24*3600*1000;
-                var yesterday = $filter('date')(yesterdayTimestamp,'yyyy-MM-dd');
-                angular.forEach(news,function(value){
+                var today = $filter('date')(now, 'yyyy-MM-dd');
+                var yesterdayTimestamp = now - 24 * 3600 * 1000;
+                var yesterday = $filter('date')(yesterdayTimestamp, 'yyyy-MM-dd');
+                angular.forEach(news, function (value) {
                     var date = value.date;
                     //value.opts = context.getOptsByItem(value);
-                    var dateText = $filter('date')(value.dateline*1000,'yyyy年M月d日');
-                    if(date == today){
-                        dateText = '今天，'+$filter('date')(now,'yyyy年M月d日');
-                    }else if(date == yesterday){
-                        dateText = '昨天，'+$filter('date')(yesterdayTimestamp,'yyyy年M月d日');;
+                    var dateText = $filter('date')(value.dateline * 1000, 'yyyy年M月d日');
+                    if (date == today) {
+                        dateText = '今天，' + $filter('date')(now, 'yyyy年M月d日');
+                    } else if (date == yesterday) {
+                        dateText = '昨天，' + $filter('date')(yesterdayTimestamp, 'yyyy年M月d日');
+                        ;
                     }
-                    var existClassifyItem = context.getClassifyItemByDate(date,classifyNews);
-                    if(!existClassifyItem){
+                    var existClassifyItem = context.getClassifyItemByDate(date, classifyNews);
+                    if (!existClassifyItem) {
                         existClassifyItem = {
-                            date:date,
-                            date_text:dateText,
-                            list:[value]
+                            date: date,
+                            date_text: dateText,
+                            list: [value]
                         }
                         classifyNews.push(existClassifyItem);
-                    }else{
+                    } else {
                         existClassifyItem['list'].push(value);
                     }
                 });
                 return classifyNews;
             },
-            getClassifyItemByDate:function(date,classifyNews){
-                if(!classifyNews || !classifyNews.length){
+            getClassifyItemByDate: function (date, classifyNews) {
+                if (!classifyNews || !classifyNews.length) {
                     return null;
                 }
-                for(var i=0;i<classifyNews.length;i++){
+                for (var i = 0; i < classifyNews.length; i++) {
                     var value = classifyNews[i];
-                    if(value['date'] == date){
+                    if (value['date'] == date) {
                         return value;
                         break;
                     }
                 }
                 return null;
             },
-            requestNews:function(dateline){
+            requestNews: function (dateline) {
                 var context = this;
                 var dateline = 0;
                 var oldNews = this.getNews();
-                if(oldNews && oldNews.length){
-                    dateline = oldNews[0]['dateline']+1;
+                if (oldNews && oldNews.length) {
+                    dateline = oldNews[0]['dateline'] + 1;
                 }
-                 GKApi.newUpdate(dateline).success(function(data){
+                GKApi.newUpdate(dateline).success(function (data) {
                     var news = data['updates'] || [];
                     var dateline = data['dateline'];
                     gkClientInterface.setMessageDate(dateline);
                     context.addNews(news);
                 })
             },
-            getNews:function(){
+            getNews: function () {
                 var news = localStorageService.get(newsKey);
                 return news;
             },
-            concatNews:function(oldClassifyNews,newClassifyNews){
+            concatNews: function (oldClassifyNews, newClassifyNews) {
                 var context = this;
-                if(!newClassifyNews || !newClassifyNews.length){
+                if (!newClassifyNews || !newClassifyNews.length) {
                     return oldClassifyNews;
                 }
                 var existItem;
-                angular.forEach(newClassifyNews,function(value){
+                angular.forEach(newClassifyNews, function (value) {
                     existItem = context.getClassifyItemByDate(value['date']);
-                    if(existItem){
-                        existItem['list'] =  existItem['list'].concat(value['list']);
-                    }else{
+                    if (existItem) {
+                        existItem['list'] = existItem['list'].concat(value['list']);
+                    } else {
                         oldClassifyNews.push(value);
                     }
 
                 });
                 return oldClassifyNews;
             },
-            addNews:function(news){
-                if(!news || !news.length){
+            addNews: function (news) {
+                if (!news || !news.length) {
                     return;
                 }
                 var oldNews = this.getNews();
-                if(!oldNews || !oldNews.length){
-                    localStorageService.add(newsKey,JSON.stringify(news));
-                }else{
-                   var newOldNews = news.concat(oldNews);
-                    newOldNews = newOldNews.slice(0,100);
-                    localStorageService.add(newsKey,JSON.stringify(newOldNews));
+                if (!oldNews || !oldNews.length) {
+                    localStorageService.add(newsKey, JSON.stringify(news));
+                } else {
+                    var newOldNews = news.concat(oldNews);
+                    newOldNews = newOldNews.slice(0, 100);
+                    localStorageService.add(newsKey, JSON.stringify(newOldNews));
                 }
             },
-            appendNews:function(data){
-                if(!data['list'] || !data['list'].length){
-                    if(data['count']>0){
+            appendNews: function (data) {
+                if (!data['list'] || !data['list'].length) {
+                    if (data['count'] > 0) {
                         this.requestNews()
                     }
-                }else{
+                } else {
                     this.addNews(data['list']);
                 }
             }
         };
         return GKNews;
     }])
-    .factory('GKSmartFolder',['GKFilter',function(GKFilter){
-        var smartFolders = [
-            {
-                name: GKFilter.getFilterName('recent'),
-                icon:'icon_clock',
-                filter:'recent'
-            },
-            {
-                name: GKFilter.getFilterName('star'),
-                icon:'icon_star',
-                filter:'star'
-            },
-            {
-                name: GKFilter.getFilterName('moon'),
-                icon:'icon_moon',
-                filter:'moon'
-            },
-            {
-                name: GKFilter.getFilterName('heart'),
-                icon:'icon_heart',
-                filter:'heart'
-            },
-            {
-                name: GKFilter.getFilterName('diamond'),
-                icon:'icon_diamond',
-                filter:'diamond'
-            },
-            {
-                name: GKFilter.getFilterName('triangle'),
-                icon:'icon_triangle',
-                filter:'triangle'
-            },
-            {
-                name: GKFilter.getFilterName('flower'),
-                icon:'icon_flower',
-                filter:'flower'
-            }
-        ];
+    .factory('GKSmartFolder', ['GKFilter', function (GKFilter) {
+
+        var formartSmartFolder = function(value){
+            var condition = Number(value.condition);
+            var filter = GKFilter.getFilterByType(condition);
+            var item =  {
+                name:value.name,
+                type:condition,
+                filter:filter,
+                icon: 'icon_'+filter,
+            };
+            return item;
+        };
+
+        var reSmartFolders = gkClientInterface.getSideTreeList({sidetype: 'magic'})['list'];
+        if(!reSmartFolders){
+            reSmartFolders = [];
+        }
+        reSmartFolders.unshift({
+            condition:0,
+            name:'最近修改的文件'
+        })
+        var smartFolders = [],item;
+        angular.forEach(reSmartFolders,function(value){
+            smartFolders.push(formartSmartFolder(value))
+        });
         var GKSmartFolder = {
-            getFolders:function(exclue){
-                if(exclue){
-                  if(!angular.isArray(exclue)) exclue = [exclue];
-                  angular.forEach(exclue,function(value){
-                    angular.forEach(smartFolders,function(smart,key){
-                        if(smart.filter == value){
-                            smartFolders.splice(key,1);
-                            return false
-                        }
-                    })
-                  });
+            getFolders: function (exclue) {
+                if (exclue) {
+                    if (!angular.isArray(exclue)) exclue = [exclue];
+                    angular.forEach(exclue, function (value) {
+                        angular.forEach(smartFolders, function (smart, key) {
+                            if (smart.filter == value) {
+                                smartFolders.splice(key, 1);
+                                return false
+                            }
+                        })
+                    });
                 }
                 return smartFolders;
             },
-            getFolderByCode:function(code){
-                var value,smartFolder=null;
-                for(var i=0;i<smartFolders.length;i++){
+            getFolderByCode: function (code) {
+                var value, smartFolder = null;
+                for (var i = 0; i < smartFolders.length; i++) {
                     value = smartFolders[i];
-                    if(value.condition == code){
+                    if (value.type == code) {
                         smartFolder = value
                     }
                 }
                 return smartFolder
             },
-            removeSmartFolderByCode:function(code){
-               angular.forEach(smartFolders,function(value,key){
-                   if(code == value.code){
-                       smartFolders.splice(key,1);
-                   }
-               });
-            },
-            addSmartFolder:function(name,code){
-                smartFolders.push({
-                    name:name,
-                    condition:code,
-                    filter:'search'
+            removeSmartFolderByCode: function (code) {
+                angular.forEach(smartFolders, function (value, key) {
+                    if (code == value.code) {
+                        smartFolders.splice(key, 1);
+                    }
                 });
             },
+            addSmartFolder: function (name, code) {
+                var newNode = formartSmartFolder({
+                    name:name,
+                    condition:code
+                });
+                var smartFolder = this.getFolderByCode(code);
+                if(smartFolder){
+                    this.editSmartFolder(name,code);
+                }else{
+                    smartFolders.push(newNode)
+                }
+                return newNode;
+            },
+            editSmartFolder:function(name, code){
+                angular.forEach(smartFolders,function(value){
+                    if(value.type == code){
+                        value.name = name;
+                        return false;
+                    }
+                })
+            }
         };
         return GKSmartFolder;
     }])
     .factory('GKFilter', [function () {
-        var GKFilter =  {
-            trash:'trash',
-            inbox:'inbox',
-            star:'star',
-            recent:'recent',
-            triangle:'triangle',
-            diamond:'diamond',
-            flower:'flower',
-            moon:'moon',
-            heart:'heart',
-            search:'search',
-            getFilterName:function(filter){
+        var GKFilter = {
+            trash: 'trash',
+            inbox: 'inbox',
+            star: 'star',
+            recent: 'recent',
+            triangle: 'triangle',
+            diamond: 'diamond',
+            flower: 'flower',
+            moon: 'moon',
+            heart: 'heart',
+            search: 'search',
+            getFilterName: function (filter) {
                 var filterName = '';
-                switch(filter){
+                switch (filter) {
                     case this.trash:
                         filterName = '回收站';
                         break;
@@ -1155,9 +1194,9 @@ angular.module('gkClientIndex.services', [])
                 }
                 return filterName;
             },
-            getFilterType:function(filter){
+            getFilterType: function (filter) {
                 var filterType = '';
-                switch(filter){
+                switch (filter) {
                     case this.star:
                         filterType = 1;
                         break;
@@ -1179,9 +1218,36 @@ angular.module('gkClientIndex.services', [])
                 }
                 return filterType;
             },
-            getFilterTip:function(filter){
+            getFilterByType: function (type) {
+                var filter = '';
+                switch (type) {
+                    case 0:
+                        filter = this.recent;
+                        break;
+                    case 1:
+                        filter = this.star;
+                        break;
+                    case 2:
+                        filter = this.moon;
+                        break;
+                    case 3:
+                        filter = this.heart;
+                        break;
+                    case 4:
+                        filter = this.flower;
+                        break;
+                    case 5:
+                        filter = this.triangle;
+                        break;
+                    case 6:
+                        filter = this.diamond;
+                        break;
+                }
+                return filter;
+            },
+            getFilterTip: function (filter) {
                 var tip = '';
-                switch(filter){
+                switch (filter) {
                     case this.trash:
                         tip = '';
                         break;
@@ -1200,19 +1266,19 @@ angular.module('gkClientIndex.services', [])
                 }
                 return tip;
             },
-            isTrash:function(filter){
+            isTrash: function (filter) {
                 return filter == this.trash;
             },
-            isInbox:function(filter){
+            isInbox: function (filter) {
                 return filter == this.inbox;
             },
-            isRecent:function(filter){
+            isRecent: function (filter) {
                 return filter == this.recent;
             },
-            isSearch:function(filter){
+            isSearch: function (filter) {
                 return filter == this.search;
             },
-            isStar:function(filter){
+            isStar: function (filter) {
                 return filter == this.star;
             }
 
@@ -1220,19 +1286,19 @@ angular.module('gkClientIndex.services', [])
 
         return GKFilter;
     }])
-    .factory('GKPath', ['$location','GKMount','GKSmartFolder','GKFilter','GKPartition',function ($location,GKMount,GKSmartFolder,GKFilter,GKPartition) {
-        var GKPath =  {
-            gotoFile:function(mountId,path,selectFile){
-                selectFile = angular.isDefined(selectFile)?selectFile:'';
+    .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition) {
+        var GKPath = {
+            gotoFile: function (mountId, path, selectFile) {
+                selectFile = angular.isDefined(selectFile) ? selectFile : '';
                 var mount = GKMount.getMountById(mountId);
                 var search = {
-                    partition:mount['type']==3?GKPartition.subscribeFile:GKPartition.teamFile,
-                    mountid:mountId,
-                    path:path,
-                    view:$location.search().view,
-                    selectedpath:selectFile
+                    partition: mount['type'] == 3 ? GKPartition.subscribeFile : GKPartition.teamFile,
+                    mountid: mountId,
+                    path: path,
+                    view: $location.search().view,
+                    selectedpath: selectFile
                 };
-                if(mount){
+                if (mount) {
                     $location.search(search);
                 }
             },
@@ -1240,19 +1306,19 @@ angular.module('gkClientIndex.services', [])
             getPath: function () {
                 var paramArr = Array.prototype.slice.call(arguments);
                 var params = {
-                    partition:paramArr[0],
-                    path: paramArr[1]|'',
+                    partition: paramArr[0],
+                    path: paramArr[1] | '',
                     view: paramArr[2],
-                    mountid:paramArr[3] || 0,
-                    filter:paramArr[4] || '',
-                    keyword:paramArr[5] || '',
+                    mountid: paramArr[3] || 0,
+                    filter: paramArr[4] || '',
+                    keyword: paramArr[5] || '',
                 };
                 return '/file?' + jQuery.param(params);
             },
-            getBread:function(){
+            getBread: function () {
                 var path = $location.search().path || '';
-                var partition =  $location.search().partition || GKPartition.myFile;
-                var view =  $location.search().view || 'list';
+                var partition = $location.search().partition || GKPartition.myFile;
+                var view = $location.search().view || 'list';
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
                 var keyword = $location.search().keyword;
@@ -1271,7 +1337,7 @@ angular.module('gkClientIndex.services', [])
                         fullpath = Util.String.rtrim(fullpath, '/');
                         bread.path = fullpath;
                         bread.filter = '',
-                        bread.url = '#' + this.getPath(partition, bread.path, view,mountId,filter);
+                            bread.url = '#' + this.getPath(partition, bread.path, view, mountId, filter);
                         breads.push(bread);
                     }
                 }
@@ -1279,39 +1345,39 @@ angular.module('gkClientIndex.services', [])
                 /**
                  * 搜索不需要bread
                  */
-                if(filter && filter !='search'){
+                if (filter && filter != 'search') {
                     breads.unshift({
                         name: GKFilter.getFilterName(filter),
-                        url: '#' + this.getPath(partition, '',view,mountId,filter),
-                        filter:filter,
-                        icon:filter!='trash'?'icon_'+filter:''
+                        url: '#' + this.getPath(partition, '', view, mountId, filter),
+                        filter: filter,
+                        icon: filter != 'trash' ? 'icon_' + filter : ''
                     });
                 }
                 /**
                  * 智能文件夹
                  */
-                if(filter =='search' && partition =='smartfolder'){
+                if (filter == 'search' && partition == 'smartfolder') {
                     var item = {
-                        name:  GKSmartFolder.getFolderByCode(keyword)['name'] ,
-                        url: '#' + this.getPath(partition, '',view,mountId,filter,keyword),
-                        filter:filter,
-                        icon:'icon_'+partition
+                        name: GKSmartFolder.getFolderByCode(keyword)['name'],
+                        url: '#' + this.getPath(partition, '', view, mountId, filter, keyword),
+                        filter: filter,
+                        icon: 'icon_' + partition
                     };
                     breads.unshift(item);
                 }
 
                 if (mountId) {
                     var mount = GKMount.getMountById(mountId);
-                    if(mount){
+                    if (mount) {
                         var item = {
                             name: mount['name'],
-                            filter:'',
-                            url: '#' + this.getPath(partition, '', view,mountId,filter)
+                            filter: '',
+                            url: '#' + this.getPath(partition, '', view, mountId, filter)
                         }
 
-                        if(mount.org_id==0){
+                        if (mount.org_id == 0) {
                             item.icon = 'icon_myfolder';
-                        }else{
+                        } else {
                             item.logo = mount['logo'];
                         }
                         breads.unshift(item);
@@ -1328,7 +1394,7 @@ angular.module('gkClientIndex.services', [])
  */
     .factory('GKException', [function () {
         var GKException = {
-            getAjaxErrorMsg:function(request){
+            getAjaxErrorMsg: function (request) {
                 var errorMsg = '';
                 if (request.responseText) {
                     var result = JSON.parse(request.responseText);
@@ -1339,7 +1405,7 @@ angular.module('gkClientIndex.services', [])
                             errorMsg = '网络未连接';
                             break;
                         case 401:
-                            errorMsg ='网络连接超时';
+                            errorMsg = '网络连接超时';
                             break;
                         case 501:
                         case 502:
@@ -1356,7 +1422,7 @@ angular.module('gkClientIndex.services', [])
                 }
                 return errorMsg;
             },
-            getAjaxErroCode:function(request){
+            getAjaxErroCode: function (request) {
                 var code = 0;
                 if (request.responseText) {
                     var result = JSON.parse(request.responseText);
@@ -1369,7 +1435,7 @@ angular.module('gkClientIndex.services', [])
             handleClientException: function (error) {
                 alert(error.message);
             },
-            handleAjaxException:function(request){
+            handleAjaxException: function (request) {
                 var errorMsg = this.getAjaxErrorMsg(request);
                 alert(errorMsg);
             }
@@ -1379,9 +1445,9 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GK', ['$q', function ($q) {
         return {
-            recover:function(params){
+            recover: function (params) {
                 var deferred = $q.defer();
-                gkClientInterface.recover(params,function(re){
+                gkClientInterface.recover(params, function (re) {
                     if (re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1392,7 +1458,7 @@ angular.module('gkClientIndex.services', [])
             },
             addFile: function (params) {
                 var deferred = $q.defer();
-                gkClientInterface.addFile(params,function(re){
+                gkClientInterface.addFile(params, function (re) {
                     if (re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1403,7 +1469,7 @@ angular.module('gkClientIndex.services', [])
             },
             createFolder: function (params) {
                 var deferred = $q.defer();
-                gkClientInterface.createFolder(params,function(re){
+                gkClientInterface.createFolder(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1415,7 +1481,7 @@ angular.module('gkClientIndex.services', [])
             lock: function (params) {
                 params.status = 1;
                 var deferred = $q.defer();
-                gkClientInterface.toggleLock(params,function(re){
+                gkClientInterface.toggleLock(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1426,7 +1492,7 @@ angular.module('gkClientIndex.services', [])
             unlock: function (params) {
                 params.status = 0;
                 var deferred = $q.defer();
-                gkClientInterface.lock(params,function(re){
+                gkClientInterface.lock(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1442,7 +1508,7 @@ angular.module('gkClientIndex.services', [])
             },
             del: function (params) {
                 var deferred = $q.defer();
-                var re = gkClientInterface.del(params,function(re){
+                var re = gkClientInterface.del(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1453,7 +1519,7 @@ angular.module('gkClientIndex.services', [])
             },
             rename: function (params) {
                 var deferred = $q.defer();
-                var re = gkClientInterface.rename(params,function(re){
+                var re = gkClientInterface.rename(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1464,7 +1530,7 @@ angular.module('gkClientIndex.services', [])
             },
             copy: function (params) {
                 var deferred = $q.defer();
-                var re = gkClientInterface.copy(params,function(re){
+                var re = gkClientInterface.copy(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1476,7 +1542,7 @@ angular.module('gkClientIndex.services', [])
             },
             move: function (params) {
                 var deferred = $q.defer();
-                 gkClientInterface.move(params,function(re){
+                gkClientInterface.move(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1494,7 +1560,7 @@ angular.module('gkClientIndex.services', [])
             },
             removeLinkPath: function (params) {
                 var deferred = $q.defer();
-                gkClientInterface.removeLinkPath(params,function(re){
+                gkClientInterface.removeLinkPath(params, function (re) {
                     if (re && re.error == 0) {
                         deferred.resolve(re);
                     } else {
@@ -1534,35 +1600,35 @@ angular.module('gkClientIndex.services', [])
         'SORT_EXE': ['exe', 'bat', 'com']
     })
     .constant('GKPartition', {
-        myFile:'myfile',
-        teamFile:'teamfile',
-        smartFolder:'smartfolder',
-        subscribeFile:'subscribefile'
+        myFile: 'myfile',
+        teamFile: 'teamfile',
+        smartFolder: 'smartfolder',
+        subscribeFile: 'subscribefile'
     })
-    .factory('GKFile', ['FILE_SORTS','GKPartition', function (FILE_SORTS,GKPartition) {
+    .factory('GKFile', ['FILE_SORTS', 'GKPartition', function (FILE_SORTS, GKPartition) {
         var GKFile = {
             /**
              * 获取单文件信息
              */
-            getFileInfo:function(mountId,fullpath){
-                var file =  gkClientInterface.getFileInfo({
-                    mountid:mountId,
-                    webpath:fullpath
+            getFileInfo: function (mountId, fullpath) {
+                var file = gkClientInterface.getFileInfo({
+                    mountid: mountId,
+                    webpath: fullpath
                 });
-                if(!file.path){
+                if (!file.path) {
                     file.path = '';
                 }
-                var formatedFile = this.formatFileItem(file,'client');
-                   angular.extend(formatedFile,{
-                       mount_id:mountId
-                   });
+                var formatedFile = this.formatFileItem(file, 'client');
+                angular.extend(formatedFile, {
+                    mount_id: mountId
+                });
 
                 return formatedFile;
             },
-            getFileList:function(mountId,fullpath,dir){
-                dir = angular.isDefined(dir)?dir:0;
+            getFileList: function (mountId, fullpath, dir) {
+                dir = angular.isDefined(dir) ? dir : 0;
                 var list = gkClientInterface.getFileList({webpath: fullpath, dir: dir, mountid: mountId})['list'];
-                var formatedList = this.dealFileList(list,'client');
+                var formatedList = this.dealFileList(list, 'client');
                 return formatedList;
             },
             /**
@@ -1571,14 +1637,14 @@ angular.module('gkClientIndex.services', [])
              * @param file
              * @returns {boolean}
              */
-            isSynced:function(parentFile,file){
-                 if(!parentFile){
-                     return false;
-                 }
-                if(parentFile.syncpath){
+            isSynced: function (parentFile, file) {
+                if (!parentFile) {
+                    return false;
+                }
+                if (parentFile.syncpath) {
                     return true;
                 }
-                if(file && file.sync==1){
+                if (file && file.sync == 1) {
                     return true;
                 }
                 return false;
@@ -1589,23 +1655,23 @@ angular.module('gkClientIndex.services', [])
              * @param file
              * @returns {boolean}
              */
-            isSyncable:function(parentFile,file){
+            isSyncable: function (parentFile, file) {
                 /**
                  * 根目录不允许同步
                  */
-                if(!file.fullpath){
+                if (!file.fullpath) {
                     return false;
                 }
                 /**
                  * 未同步的允许进行同步、不同步 操作
                  */
-                if(!this.isSynced(parentFile,file)){
+                if (!this.isSynced(parentFile, file)) {
                     return true;
                 }
                 /**
                  * 同步的目录 就是当前操作目录
                  */
-                if(parentFile.syncpath === file.fullpath || file.sync==1){
+                if (parentFile.syncpath === file.fullpath || file.sync == 1) {
                     return true;
                 }
                 return false;
@@ -1616,10 +1682,10 @@ angular.module('gkClientIndex.services', [])
                     label,
                     context = this;
                 angular.forEach(data, function (value) {
-                     angular.extend(value,{
-                         partition:type
-                     });
-                    if(type==GKPartition.myFile || type==GKPartition.teamFile || type==GKPartition.subscribeFile){
+                    angular.extend(value, {
+                        partition: type
+                    });
+                    if (type == GKPartition.myFile || type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
                         if (!value.fullpath) {
                             label = value.name;
 
@@ -1630,7 +1696,7 @@ angular.module('gkClientIndex.services', [])
                             });
                         }
                         var dropAble = false;
-                        if(type==GKPartition.myFile || type==GKPartition.teamFile){
+                        if (type == GKPartition.myFile || type == GKPartition.teamFile) {
                             dropAble = true;
                         }
 
@@ -1640,19 +1706,19 @@ angular.module('gkClientIndex.services', [])
                             isParent: true,
                             data: value
                         };
-                        if(type==GKPartition.teamFile || type==GKPartition.subscribeFile){
+                        if (type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
                             item.nodeImg = value.logo;
                         }
-                    }else{
-                        if(!value.filter){
-                            value.filter =  'search';
+                    } else {
+                        if (!value.filter) {
+                            value.filter = 'search';
                         }
                         item = {
                             label: value.name,
                             isParent: false,
                             data: value,
-                            iconNodeExpand:value.icon,
-                            iconNodeCollapse:value.icon
+                            iconNodeExpand: value.icon,
+                            iconNodeCollapse: value.icon
                         };
                     }
                     newData.push(item);
@@ -1677,10 +1743,10 @@ angular.module('gkClientIndex.services', [])
                         last_member_name: value.last_member_name || '',
                         creator_member_name: value.create_member_name || '',
                         creator_member_id: value.create_member_id || '',
-                        cmd:value.cmd,
-                        favorite:value.favorite,
-                        filehash:value.filehash,
-                        hash:value.hash
+                        cmd: value.cmd,
+                        favorite: value.favorite,
+                        filehash: value.filehash,
+                        hash: value.hash
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -1700,15 +1766,15 @@ angular.module('gkClientIndex.services', [])
                         creator_member_name: value.creatorname,
                         creator_member_id: value.creatorid,
                         status: value.status,
-                        sync:value.sync,
-                        cmd:1,
-                        sharepath:value.sharepath||'',
-                        syncpath:value.syncpath||'',
-                        share:value.share,
-                        auth:value.auth,
-                        cache:value.have,
-                        filehash:value.filehash,
-                        hash:value.uuidhash
+                        sync: value.sync,
+                        cmd: 1,
+                        sharepath: value.sharepath || '',
+                        syncpath: value.syncpath || '',
+                        share: value.share,
+                        auth: value.auth,
+                        cache: value.have,
+                        filehash: value.filehash,
+                        hash: value.uuidhash
                     };
                 }
                 return file;
@@ -1764,22 +1830,22 @@ angular.module('gkClientIndex.services', [])
              * @param local
              * @returns {string}
              */
-            getFileIconSuffix: function (filename, dir, share,sync) {
+            getFileIconSuffix: function (filename, dir, share, sync) {
                 var suffix = '';
                 var sorts = FILE_SORTS;
-                if (dir==1) {
+                if (dir == 1) {
                     suffix = 'folder';
-                    if(sync==1){
-                        suffix = 'sync_'+suffix;
+                    if (sync == 1) {
+                        suffix = 'sync_' + suffix;
                     }
                     if (share > 0) {
                         suffix = 'shared_' + suffix;
                     }
                 } else {
                     var ext = Util.String.getExt(filename);
-                    if(jQuery.inArray(ext, sorts['SORT_SPEC']) > -1){
+                    if (jQuery.inArray(ext, sorts['SORT_SPEC']) > -1) {
                         suffix = ext;
-                    }else if (jQuery.inArray(ext, sorts['SORT_MOVIE']) > -1) {
+                    } else if (jQuery.inArray(ext, sorts['SORT_MOVIE']) > -1) {
                         suffix = 'movie';
                     } else if (jQuery.inArray(ext, sorts['SORT_MUSIC']) > -1) {
                         suffix = 'music';
@@ -1812,13 +1878,13 @@ angular.module('gkClientIndex.services', [])
             clearData: function () {
                 this.data = null;
             },
-            isEmpty:function(){
+            isEmpty: function () {
                 return !this.data;
             }
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition','GKMount','$rootScope','GK','GKException','RestFile',function (GKCilpboard,GKFile,GKPartition,GKMount,$rootScope,GK,GKException,RestFile) {
+    .factory('GKOpt', ['GKCilpboard', 'GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'GKException', 'RestFile', '$q',function (GKCilpboard, GKFile, GKPartition, GKMount, $rootScope, GK, GKException, RestFile,$q) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -1826,19 +1892,19 @@ angular.module('gkClientIndex.services', [])
              * @param parentFile 夫目录
              * @param file 设置的目录
              */
-            setSyncOpt:function(opts,parentFile,file){
-                this.disableOpt(opts,'unsync');
-                if(!GKFile.isSyncable(parentFile,file)){
-                    this.disableOpt(opts,'sync','unsync');
-                }else{
-                    if(GKFile.isSynced(parentFile,file)){
-                        this.disableOpt(opts,'sync');
-                    }else{
-                        this.disableOpt(opts,'unsync');
+            setSyncOpt: function (opts, parentFile, file) {
+                this.disableOpt(opts, 'unsync');
+                if (!GKFile.isSyncable(parentFile, file)) {
+                    this.disableOpt(opts, 'sync', 'unsync');
+                } else {
+                    if (GKFile.isSynced(parentFile, file)) {
+                        this.disableOpt(opts, 'sync');
+                    } else {
+                        this.disableOpt(opts, 'unsync');
                     }
                 }
             },
-            getOpts: function (currentFile, selectedFiles, partition, filter,mount) {
+            getOpts: function (currentFile, selectedFiles, partition, filter, mount) {
                 var opts,
                     partitionOpts,
                     multiOpts,
@@ -1846,44 +1912,44 @@ angular.module('gkClientIndex.services', [])
                     currentOpts,
                     authOpts;
 
-                partitionOpts =  this.getPartitionOpts(partition,filter,mount);
-                authOpts = this.getAuthOpts(currentFile,selectedFiles,partition,mount);
-                if(!selectedFiles || !selectedFiles.length){
-                    currentOpts =  this.getCurrentOpts(currentFile,partition);
-                    opts =  this.getFinalOpts(partitionOpts, currentOpts, authOpts);
-                }else{
-                        multiOpts = this.getMultiSelectOpts(selectedFiles);
-                        singleOpts = this.getSelectOpts(currentFile,selectedFiles);
-                       opts =  this.getFinalOpts(partitionOpts, multiOpts, singleOpts,authOpts);
-               }
+                partitionOpts = this.getPartitionOpts(partition, filter, mount);
+                authOpts = this.getAuthOpts(currentFile, selectedFiles, partition, mount);
+                if (!selectedFiles || !selectedFiles.length) {
+                    currentOpts = this.getCurrentOpts(currentFile, partition);
+                    opts = this.getFinalOpts(partitionOpts, currentOpts, authOpts);
+                } else {
+                    multiOpts = this.getMultiSelectOpts(selectedFiles);
+                    singleOpts = this.getSelectOpts(currentFile, selectedFiles);
+                    opts = this.getFinalOpts(partitionOpts, multiOpts, singleOpts, authOpts);
+                }
                 return opts;
             },
             /**
              * 所有默认操作
              * */
-            getDefaultOpts:function(){
-               return [
-                   'goto', //打开位置
-                   //'nearby', //附近
-                   'unsubscribe', //取消订阅
-                   'new_folder', //新建
-                   'create', //创建
-                   'add', //添加
-                   'clear_trash', //清空回收站
-                   //'lock',  //锁定
-                   //'unlock', //解锁
-                   'sync',  //同步
-                   'unsync',//不同步
-                   'save',  //保存到
-                   'rename', //重命名
-                   'del',   //删除
-                   'paste', //粘贴
-                   'cut', //剪切
-                   'copy', //复制
-                   'del_completely', //彻底删除
-                   'revert', //还原
-                   'order_by' //排序
-               ];
+            getDefaultOpts: function () {
+                return [
+                    'goto', //打开位置
+                    //'nearby', //附近
+                    'unsubscribe', //取消订阅
+                    'new_folder', //新建
+                    'create', //创建
+                    'add', //添加
+                    'clear_trash', //清空回收站
+                    //'lock',  //锁定
+                    //'unlock', //解锁
+                    'sync',  //同步
+                    'unsync',//不同步
+                    'save',  //保存到
+                    'rename', //重命名
+                    'del',   //删除
+                    'paste', //粘贴
+                    'cut', //剪切
+                    'copy', //复制
+                    'del_completely', //彻底删除
+                    'revert', //还原
+                    'order_by' //排序
+                ];
             },
             /**
              * 根据各个条件的命令计算出所有命令
@@ -1897,7 +1963,7 @@ angular.module('gkClientIndex.services', [])
                     var value = opts[i];
                     for (var j = 0; j < optsArrLen; j++) {
                         var index = opts.indexOf(value);
-                        if(optsArr[j].indexOf(value) < 0 && index>=0){
+                        if (optsArr[j].indexOf(value) < 0 && index >= 0) {
                             opts.splice(index, 1);
                         }
                     }
@@ -1908,54 +1974,54 @@ angular.module('gkClientIndex.services', [])
             /**
              * 获取分区的命令
              * */
-            getPartitionOpts:function(partition,filter,mount){
+            getPartitionOpts: function (partition, filter, mount) {
                 var opts = this.getDefaultOpts();
-                switch (partition){
+                switch (partition) {
                     case GKPartition.myFile:
                     case GKPartition.teamFile:
-                        this.disableOpt(opts,'nearby','unsubscribe');
-                        if(filter =='trash'){
-                            this.disableOpt(opts,"add","new_folder","sync","unsync","paste", "rename", "save","del","cut", "copy", "lock", "unlock","order_by",'manage','create');
-                        }else{
-                            this.disableOpt(opts,"clear_trash","revert","del_completely");
-                            if(partition == GKPartition.myFile){
-                                this.disableOpt(opts,"manage","create",'lock','unlock');
+                        this.disableOpt(opts, 'nearby', 'unsubscribe');
+                        if (filter == 'trash') {
+                            this.disableOpt(opts, "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                        } else {
+                            this.disableOpt(opts, "clear_trash", "revert", "del_completely");
+                            if (partition == GKPartition.myFile) {
+                                this.disableOpt(opts, "manage", "create", 'lock', 'unlock');
                             }
                         }
-                        if(GKCilpboard.isEmpty()){
-                            this.disableOpt(opts,'paste');
+                        if (GKCilpboard.isEmpty()) {
+                            this.disableOpt(opts, 'paste');
                         }
-                        this.disableOpt(opts,'goto');
+                        this.disableOpt(opts, 'goto');
 
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts,'goto',"new_folder","manage","create",'add','clear_trash','sync','unsync','rename','del','paste','cut','lock','unlock','del_completely','revert');
+                        this.disableOpt(opts, 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
-                    case (GKPartition.smartFolder || filter =='search'):
-                        this.disableOpt(opts,'revert','del_completely','del','rename','nearby','unsubscribe','create','add','clear_trash','manage','new_folder','sync','unsync','paste','copy','cut');
-                        if(partition == GKPartition.smartFolder){
-                            this.disableOpt(opts,'del','rename');
+                    case (GKPartition.smartFolder || filter == 'search'):
+                        this.disableOpt(opts, 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        if (partition == GKPartition.smartFolder) {
+                            this.disableOpt(opts, 'del', 'rename');
                         }
                         break;
                 }
-                if(filter == 'search'){
-                    this.disableOpt(opts,'new_folder','add','create','paste','manage');
+                if (filter == 'search') {
+                    this.disableOpt(opts, 'new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },
             /**
              * 获取权限的命令
              * */
-            getAuthOpts:function(currentFile,files,partition,mount){
+            getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
-                if(partition == GKPartition.teamFile){
-                    if(!currentFile.fullpath){
-                        this.disableOpt(opts,'cut','add','paste');
-                        if(!GKMount.isAdmin(mount)){
-                            this.disableOpt(opts,'manage','create','del','rename');
+                if (partition == GKPartition.teamFile) {
+                    if (!currentFile.fullpath) {
+                        this.disableOpt(opts, 'cut', 'add', 'paste');
+                        if (!GKMount.isAdmin(mount)) {
+                            this.disableOpt(opts, 'manage', 'create', 'del', 'rename');
                         }
-                    }else{
-                        this.disableOpt(opts,'create','manage');
+                    } else {
+                        this.disableOpt(opts, 'create', 'manage');
                     }
 
                 }
@@ -1964,18 +2030,18 @@ angular.module('gkClientIndex.services', [])
             /**
              * 获取当前文件夹的命令
              * */
-            getCurrentOpts: function (currentFile,partition) {
+            getCurrentOpts: function (currentFile, partition) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, "goto", "rename", "save", "cut", "copy","lock", "unlock", "del",'revert','del_completely');
-                if(GKCilpboard.isEmpty()){
-                    this.disableOpt(opts,'paste');
+                this.disableOpt(opts, "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
+                if (GKCilpboard.isEmpty()) {
+                    this.disableOpt(opts, 'paste');
                 }
-                this.setSyncOpt(opts,currentFile,currentFile);
+                this.setSyncOpt(opts, currentFile, currentFile);
                 /**
                  * 团队文件的跟目录不允许添加
                  */
-                if(!currentFile.fullpath && partition==GKPartition.teamFile){
-                    this.disableOpt(opts,'add');
+                if (!currentFile.fullpath && partition == GKPartition.teamFile) {
+                    this.disableOpt(opts, 'add');
                 }
                 return opts;
             },
@@ -1985,31 +2051,31 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts,"goto","save","sync","unsync", "rename" ,"lock", "unlock");
+                    this.disableOpt(opts, "goto", "save", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
             /**
              * 获取选中的命令
              * */
-            getSelectOpts: function (currentFile,files) {
+            getSelectOpts: function (currentFile, files) {
                 var opts = this.getDefaultOpts();
                 var context = this;
-                angular.forEach(files,function(file){
-                    context.disableOpt(opts,"add","new_folder","order_by",'clear_trash','create','manage','nearby','unsubscribe');
+                angular.forEach(files, function (file) {
+                    context.disableOpt(opts, "add", "new_folder", "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
                         context.disableOpt(opts, 'lock', 'unlock');
-                        context.setSyncOpt(opts,currentFile,file);
+                        context.setSyncOpt(opts, currentFile, file);
                     } else {
-                        context.disableOpt(opts, 'sync','unsync');
+                        context.disableOpt(opts, 'sync', 'unsync');
                         if (file.lock == 1) {
                             context.disableOpt(opts, 'lock');
                         } else {
                             context.disableOpt(opts, 'unlock');
                         }
                     }
-                    if(file.auth<1){
-                        context.disableOpt(opts, 'del','rename');
+                    if (file.auth < 1) {
+                        context.disableOpt(opts, 'del', 'rename');
                     }
                 });
                 return opts;
@@ -2026,11 +2092,11 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
             },
-            del:function(mountId,fullpathes){
-                var files=[];
+            del: function (mountId, fullpathes) {
+                var files = [];
                 angular.forEach(fullpathes, function (value) {
                     files.push({
-                        webpath:value
+                        webpath: value
                     })
                 });
                 var params = {
@@ -2042,12 +2108,12 @@ angular.module('gkClientIndex.services', [])
                     return;
                 }
                 GK.del(params).then(function () {
-                    $rootScope.$broadcast('editFileSuccess','del',mountId,fullpathes);
+                    $rootScope.$broadcast('editFileSuccess', 'del', mountId, fullpathes);
                 }, function (error) {
                     GKException.handleClientException(error);
                 });
             },
-            unsubscribe:function(org_id){
+            unsubscribe: function (org_id) {
                 if (!confirm('你确定要取消订阅改云库？')) {
                     return;
                 }
@@ -2060,8 +2126,8 @@ angular.module('gkClientIndex.services', [])
                         GKException.handleAjaxException(request);
                     });
             },
-            clearTrash:function(mountId){
-                if(!confirm('确定要清空该回收站？')){
+            clearTrash: function (mountId) {
+                if (!confirm('确定要清空该回收站？')) {
                     return;
                 }
                 RestFile.clear(mountId).success(function () {
@@ -2069,13 +2135,30 @@ angular.module('gkClientIndex.services', [])
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
+            },
+            renameSmartFolder:function(condition,name){
+                var deferred = $q.defer();
+                var param = {
+                    condition:condition,
+                    name:name
+                };
+                gkClientInterface.renameSmartFolder(param,function(re){
+                    if(re.error==0){
+                        $rootScope.$broadcast('editSmartFolder', name,condition);
+                        deferred.resolve();
+                    }else{
+                        GKException.handleClientException(re);
+                        deferred.reject();
+                    }
+                });
+                return deferred.promise;
             }
         };
         return GKOpt
     }])
     .factory('RestFile', ['GK', '$http', function (GK, $http) {
         var restFile = {
-            orgShare : function(mount_id,fullpath,collaboration){
+            orgShare: function (mount_id, fullpath, collaboration) {
                 var date = new Date().toUTCString();
                 var method = 'ORG_SHARE';
                 var webpath = Util.String.encodeRequestUri(fullpath);
@@ -2088,8 +2171,8 @@ angular.module('gkClientIndex.services', [])
                         'Date': date,
                         'Authorization': authorization,
                     },
-                    data:{
-                        collaboration:collaboration
+                    data: {
+                        collaboration: collaboration
                     }
                 })
             },
@@ -2129,24 +2212,24 @@ angular.module('gkClientIndex.services', [])
                     })
                 })
             },
-            recycle:function(mount_id, fullpath,order,start,size){
+            recycle: function (mount_id, fullpath, order, start, size) {
                 var date = new Date().toUTCString();
                 var method = 'RECYCLE';
                 var webpath = Util.String.encodeRequestUri(fullpath);
                 var authorization = GK.getAuthorization(method, webpath, date, mount_id);
                 var headers = {
-                        'x-gk-mount': mount_id,
-                        'Date': date,
-                        'Authorization': authorization,
-                        'Content-Type': "application/x-www-form-urlencoded"
-                    };
-                if(angular.isDefined(order)){
+                    'x-gk-mount': mount_id,
+                    'Date': date,
+                    'Authorization': authorization,
+                    'Content-Type': "application/x-www-form-urlencoded"
+                };
+                if (angular.isDefined(order)) {
                     headers['x-gk-order'] = order;
                 }
-                if(angular.isDefined(start)){
+                if (angular.isDefined(start)) {
                     headers['x-gk-start'] = start;
                 }
-                if(angular.isDefined(size)){
+                if (angular.isDefined(size)) {
                     headers['x-gk-size'] = size;
                 }
                 return jQuery.ajax({
@@ -2155,7 +2238,7 @@ angular.module('gkClientIndex.services', [])
                     headers: headers
                 })
             },
-            clear:function(mount_id){
+            clear: function (mount_id) {
                 var date = new Date().toUTCString();
                 var method = 'CLEAR';
                 var webpath = Util.String.encodeRequestUri('');
@@ -2168,10 +2251,10 @@ angular.module('gkClientIndex.services', [])
                     'Accept': '*/*'
                 };
                 return jQuery.ajax({
-                    url:GK.getRestHost() + webpath,
-                    dataType:'text',
-                    type:method,
-                    headers:headers
+                    url: GK.getRestHost() + webpath,
+                    dataType: 'text',
+                    type: method,
+                    headers: headers
                 });
 //                return $http({
 //                    method: method,
@@ -2180,18 +2263,18 @@ angular.module('gkClientIndex.services', [])
 //                    responseType:'text'
 //                })
             },
-            delCompletely:function(mount_id,fullpaths){
+            delCompletely: function (mount_id, fullpaths) {
                 var date = new Date().toUTCString();
                 var method = 'DELETECOMPLETELY';
                 var webpath = Util.String.encodeRequestUri('');
                 var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                if(angular.isArray(fullpaths)){
+                if (angular.isArray(fullpaths)) {
                     fullpaths = fullpaths.join('|');
                 }
                 var headers = {
                     'x-gk-mount': mount_id,
                     'Date': date,
-                    'x-gk-fullpaths':encodeURIComponent(fullpaths),
+                    'x-gk-fullpaths': encodeURIComponent(fullpaths),
                     'Authorization': authorization,
                     'Content-Type': "application/x-www-form-urlencoded"
                 };
@@ -2202,27 +2285,27 @@ angular.module('gkClientIndex.services', [])
                     headers: headers
                 })
             },
-            recover:function(mount_id,fullpaths,machine){
+            recover: function (mount_id, fullpaths, machine) {
                 var date = new Date().toUTCString();
                 var method = 'RECOVER';
                 var webpath = Util.String.encodeRequestUri('');
                 var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                if(angular.isArray(fullpaths)){
+                if (angular.isArray(fullpaths)) {
                     fullpaths = fullpaths.join('|');
                 }
                 var headers = {
                     'x-gk-mount': mount_id,
                     'Date': date,
-                    'x-gk-machine':machine,
-                    'x-gk-fullpaths':encodeURIComponent(fullpaths),
+                    'x-gk-machine': machine,
+                    'x-gk-fullpaths': encodeURIComponent(fullpaths),
                     'Authorization': authorization,
                     'Content-Type': "application/x-www-form-urlencoded"
                 };
                 return jQuery.ajax({
-                    url:GK.getRestHost() + webpath,
-                    dataType:'text',
-                    type:method,
-                    headers:headers
+                    url: GK.getRestHost() + webpath,
+                    dataType: 'text',
+                    type: method,
+                    headers: headers
                 });
 //                return $http({
 //                    method: method,
@@ -2239,43 +2322,43 @@ angular.module('gkClientIndex.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
-            addToFav: function (mountId, fullpath,type) {
+            addToFav: function (mountId, fullpath, type) {
                 var params = {
-                    mount_id:mountId,
-                    fullpath:fullpath,
-                    favorite_type:type,
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    favorite_type: type,
                     token: GK.getToken()
                 };
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/file/favorites_add',
-                    dataType:'json',
-                    data:params
+                    url: GK.getApiHost() + '/1/file/favorites_add',
+                    dataType: 'json',
+                    data: params
                 })
             },
-            removeFromFav: function (mountId, fullpath,type) {
+            removeFromFav: function (mountId, fullpath, type) {
                 var params = {
-                    mount_id:mountId,
-                    fullpath:fullpath,
-                    favorite_type:type,
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    favorite_type: type,
                     token: GK.getToken()
                 };
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/file/favorites_delete',
-                    dataType:'json',
-                    data:params
+                    url: GK.getApiHost() + '/1/file/favorites_delete',
+                    dataType: 'json',
+                    data: params
                 })
             },
-            delCollaboration:function(mountId,fullpath,collaboration){
+            delCollaboration: function (mountId, fullpath, collaboration) {
                 var params = {
-                    mount_id:mountId,
-                    fullpath:fullpath,
-                    collaboration:collaboration,
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    collaboration: collaboration,
                     token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -2283,12 +2366,12 @@ angular.module('gkClientIndex.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    dataType:'json',
+                    dataType: 'json',
                     url: GK.getApiHost() + '/1/file/delete_collaboration',
-                    data:params
+                    data: params
                 });
             },
-            userInfo:function(){
+            userInfo: function () {
                 var params = {
                     token: GK.getToken()
                 };
@@ -2298,26 +2381,26 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'GET',
                     url: GK.getApiHost() + '/1/account/info',
-                    data:params
+                    data: params
                 });
             },
-            regist:function(name,email,password,user_license_check){
+            regist: function (name, email, password, user_license_check) {
                 var params = {
                     name: name,
-                    email:email,
-                    password:password,
-                    user_license_chk:user_license_check,
-                    disable_next_login:1,
+                    email: email,
+                    password: password,
+                    user_license_chk: user_license_check,
+                    disable_next_login: 1,
                     token: GK.getToken()
                 };
                 return jQuery.ajax({
                     type: 'POST',
-                    dataType:'json',
+                    dataType: 'json',
                     url: gkClientInterface.getSiteDomain() + '/account/regist_submit',
-                    data:jQuery.param(params)
+                    data: jQuery.param(params)
                 });
             },
-            getSmartFolder:function(code){
+            getSmartFolder: function (code) {
                 var params = {
                     code: code,
                     token: GK.getToken()
@@ -2328,10 +2411,10 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     method: 'GET',
                     url: GK.getApiHost() + '/1/file/search_condition',
-                    data:params
+                    data: params
                 });
             },
-            removeSmartFolder:function(code){
+            removeSmartFolder: function (code) {
                 var params = {
                     code: code,
                     token: GK.getToken()
@@ -2342,7 +2425,7 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/file/remove_search',
-                    data:params
+                    data: params
                 })
             },
             updateSmartFolder: function (code, name, condition, description) {
@@ -2350,7 +2433,7 @@ angular.module('gkClientIndex.services', [])
                     code: code,
                     name: name,
                     condition: condition,
-                    description: description||'',
+                    description: description || '',
                     token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -2359,7 +2442,7 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/file/edit_search',
-                    data:params
+                    data: params
                 })
             },
             createSmartFolder: function (mount_id, name, condition, description) {
@@ -2367,7 +2450,7 @@ angular.module('gkClientIndex.services', [])
                     mount_id: mount_id,
                     name: name,
                     condition: condition,
-                    description: description||'',
+                    description: description || '',
                     token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -2376,7 +2459,7 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/file/save_search',
-                    data:params
+                    data: params
                 })
             },
             searchFile: function (condition, mount_id) {
@@ -2394,7 +2477,7 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            smartFolderList:function(code){
+            smartFolderList: function (code) {
                 var params = {
                     code: code,
                     token: GK.getToken()
@@ -2408,9 +2491,9 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            starFileList:function(type){
+            starFileList: function (type) {
                 var params = {
-                    favorite_type:type,
+                    favorite_type: type,
                     token: GK.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -2422,7 +2505,7 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            recentFileList:function(){
+            recentFileList: function () {
                 var params = {
                     token: GK.getToken()
                 };
@@ -2435,7 +2518,7 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            inboxFileList:function(){
+            inboxFileList: function () {
                 var params = {
                     token: GK.getToken()
                 };
@@ -2448,7 +2531,7 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            sideBar: function (mount_id, fullpath, type,cache, start, date) {
+            sideBar: function (mount_id, fullpath, type, cache, start, date) {
                 var params = {
                     mount_id: mount_id,
                     fullpath: fullpath,
@@ -2461,9 +2544,9 @@ angular.module('gkClientIndex.services', [])
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
-                    cache:cache||true,
+                    cache: cache || true,
                     type: 'GET',
-                    dataType:'json',
+                    dataType: 'json',
                     url: GK.getApiHost() + '/1/file/client_sidebar',
                     data: params
                 });
@@ -2482,19 +2565,19 @@ angular.module('gkClientIndex.services', [])
                     type: 'POST',
                     url: GK.getApiHost() + '/1/file/keyword',
                     data: params,
-                    dataType:'text'
+                    dataType: 'text'
                 });
             },
-            update: function (size,dateline) {
-                size = angular.isDefined(size)?size:100;
+            update: function (size, dateline) {
+                size = angular.isDefined(size) ? size : 100;
                 var params = {
-                    size:size,
+                    size: size,
                     token: GK.getToken()
                 };
-                if(angular.isDefined(dateline)){
+                if (angular.isDefined(dateline)) {
                     params['dateline'] = dateline;
                 }
-               angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
@@ -2503,12 +2586,12 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-           newUpdate: function (dateline) {
+            newUpdate: function (dateline) {
                 var params = {
-                    dateline:dateline||0,
+                    dateline: dateline || 0,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
@@ -2517,13 +2600,13 @@ angular.module('gkClientIndex.services', [])
                     data: params
                 });
             },
-            updateAct: function (id,opt) {
+            updateAct: function (id, opt) {
                 var params = {
-                    id:id,
-                    opt:opt,
+                    id: id,
+                    opt: opt,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
@@ -2542,7 +2625,7 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'GET',
                     url: GK.getApiHost() + '/1/team/invite_pending',
-                    data:params
+                    data: params
                 });
             },
             teamManage: function (data) {
@@ -2555,8 +2638,8 @@ angular.module('gkClientIndex.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/updates/',
-                    data:params
+                    url: GK.getApiHost() + '/1/updates/',
+                    data: params
                 });
             },
             teamQuit: function (org_id) {
@@ -2570,7 +2653,7 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/team/quit',
-                    data:params
+                    data: params
                 });
             },
             teamInviteReject: function (orgId, code) {
@@ -2585,7 +2668,7 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/team/invite_reject',
-                    data:params
+                    data: params
                 });
             },
             teamInviteJoin: function (orgId, code) {
@@ -2600,50 +2683,50 @@ angular.module('gkClientIndex.services', [])
                 return jQuery.ajax({
                     type: 'POST',
                     url: GK.getApiHost() + '/1/team/invite_accept',
-                    data:params
+                    data: params
                 });
             },
-            teamGroupsMembers:function(orgId){
+            teamGroupsMembers: function (orgId) {
                 var params = {
-                    org_id:orgId,
+                    org_id: orgId,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost()+'/1/team/groups_and_members',
-                    data:params
+                    url: GK.getApiHost() + '/1/team/groups_and_members',
+                    data: params
                 });
             },
-            groupMember:function(data){
+            groupMember: function (data) {
                 var params = {
-                    org_id:data,
+                    org_id: data,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost()+'/1/team/group_member',
-                    data:params
+                    url: GK.getApiHost() + '/1/team/group_member',
+                    data: params
                 });
             },
-            teamsearch:function(org_id,keyword){
+            teamsearch: function (org_id, keyword) {
                 var params = {
-                    org_id:org_id,
-                    key:keyword,
+                    org_id: org_id,
+                    key: keyword,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost()+'/1/team/search',
-                    data:params
+                    url: GK.getApiHost() + '/1/team/search',
+                    data: params
 
                 });
             },
@@ -2651,17 +2734,17 @@ angular.module('gkClientIndex.services', [])
              * 获取设备列表
              * @returns {*}
              */
-            devicelist:function(){
+            devicelist: function () {
                 var params = {
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/account/device_list',
-                    data:params
+                    url: GK.getApiHost() + '/1/account/device_list',
+                    data: params
 
                 });
             },
@@ -2669,71 +2752,71 @@ angular.module('gkClientIndex.services', [])
              * 启用禁止设备
              * @returns {*}
              */
-            toggleDevice:function(device_id,state){
+            toggleDevice: function (device_id, state) {
                 var params = {
-                    state:state,
-                    device_id:device_id,
+                    state: state,
+                    device_id: device_id,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/account/toggle_device',
-                    data:params
+                    url: GK.getApiHost() + '/1/account/toggle_device',
+                    data: params
                 });
             },
             /**
              * 删除设备
              * @returns {*}
              */
-            delDevice:function(device_id){
+            delDevice: function (device_id) {
                 var params = {
-                    device_id:device_id,
+                    device_id: device_id,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/account/del_device',
-                    data:params
+                    url: GK.getApiHost() + '/1/account/del_device',
+                    data: params
                 });
             },
-            disableNewDevice:function(state){
+            disableNewDevice: function (state) {
                 var params = {
-                    state:state,
+                    state: state,
                     token: GK.getToken()
                 };
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost()+'/1/account/disable_new_device',
-                    data:params
+                    url: GK.getApiHost() + '/1/account/disable_new_device',
+                    data: params
                 });
             },
-            list:function(mountId,fullpath,start,size,dir){
+            list: function (mountId, fullpath, start, size, dir) {
                 var params = {
-                    mount_id:mountId,
-                    fullpath:fullpath,
-                    start:start||0,
-                    size:size||0,
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    start: start || 0,
+                    size: size || 0,
                     token: GK.getToken(),
                 };
-                if(angular.isDefined(dir)){
+                if (angular.isDefined(dir)) {
                     params.dir = dir;
                 }
-                angular.extend(params,defaultParams);
+                angular.extend(params, defaultParams);
                 var sign = GK.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost()+'/1/file/ls',
-                    data:params
+                    url: GK.getApiHost() + '/1/file/ls',
+                    data: params
                 });
             }
         }
@@ -2744,7 +2827,7 @@ angular.module('gkClientIndex.services', [])
          * 格式化mount数据
          * @param mount
          */
-        var formatMountItem = function(mount){
+        var formatMountItem = function (mount) {
             var newMount = {
                 mount_id: mount.mountid,
                 name: mount.name ? mount.name : '我的文件',
@@ -2755,9 +2838,9 @@ angular.module('gkClientIndex.services', [])
                 org_size: mount.orguse,
                 type: mount.type,
                 fullpath: '',
-                logo:mount.orgphoto,
-                member_count:mount.membercount,
-                subscriber_count:mount.subscribecount
+                logo: mount.orgphoto,
+                member_count: mount.membercount,
+                subscriber_count: mount.subscribecount
             };
             return newMount;
         };
@@ -2765,131 +2848,131 @@ angular.module('gkClientIndex.services', [])
         var mounts = [];
         var gkMounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'],
             mountItem;
-        angular.forEach(gkMounts,function(value){
+        angular.forEach(gkMounts, function (value) {
             mountItem = formatMountItem(value);
-            if(mountItem.name=='测试团队'){
+            if (mountItem.name == '测试团队') {
                 mountItem.type = 3;
             }
             mounts.push(mountItem);
         });
-       var GKMount = {
-           isAdmin:function(mount){
-               return mount&&mount.type < 2;
-           },
-           formatMountItem:formatMountItem,
-           /**
-            * 获取所有的mount
-            * @returns {Array}
-            */
-           getMounts:function(){
-               return mounts;
-           },
-           /**
-            * 根据id获取mount
-            * @param id
-            * @returns {null}
-            */
-           getMountById:function(id){
-               var mount = null;
-                angular.forEach(mounts,function(value){
-                    if(value.mount_id == id){
+        var GKMount = {
+            isAdmin: function (mount) {
+                return mount && mount.type < 2;
+            },
+            formatMountItem: formatMountItem,
+            /**
+             * 获取所有的mount
+             * @returns {Array}
+             */
+            getMounts: function () {
+                return mounts;
+            },
+            /**
+             * 根据id获取mount
+             * @param id
+             * @returns {null}
+             */
+            getMountById: function (id) {
+                var mount = null;
+                angular.forEach(mounts, function (value) {
+                    if (value.mount_id == id) {
                         mount = value;
                         return false;
                     }
                 })
-               return mount;
-           },
-           checkMountExsit:function(id){
-               return !!this.getMountById(id);
-           },
-           /**
-            * 根据团队id获取mount
-            * @param orgId
-            * @returns {null}
-            */
-           getMountByOrgId:function(orgId){
-               var mount = null;
-               angular.forEach(mounts,function(value){
-                   if(value.org_id == orgId){
-                       mount = value;
-                       return false;
-                   }
-               })
-               return mount;
-           },
-           /**
-            * 获取个人的mount
-            * @returns {null}
-            */
-           getMyMount:function(){
-               var myMount = null;
-               angular.forEach(mounts,function(value){
-                   if(value.org_id == 0){
-                       myMount = value;
-                       return false;
-                   }
-               })
-               return myMount;
-           },
-           /**
-            * 获取团队的mount
-            * @returns {Array}
-            */
-           getOrgMounts:function(){
-               var orgMounts = [];
-               angular.forEach(mounts,function(value){
-                   if(value.type!=3){
-                       orgMounts.push(value);
-                   }
-               })
-               return orgMounts;
-           },
-           getSubscribeMounts:function(){
-               var subscribeMounts = [];
-               angular.forEach(mounts,function(value){
-                   if(value.org_id != 0 && value.type==3){
-                       subscribeMounts.push(value);
-                   }
-               })
-               return subscribeMounts;
-           },
-           addMount:function(newMount,$scope){
-               var mountItem = formatMountItem(newMount);
-               mounts.push(mountItem);
-               return mountItem;
-           },
-           removeMountByOrgId:function(orgId){
-               var mount = this.getMountByOrgId(orgId);
-               if(mount){
-                   Util.Array.removeByValue(mounts,mount);
-               }
-               return mount;
-           },
-           removeOrgSubscribeList:function($scope,orgId){
-               var mount = this.removeMountByOrgId(orgId);
-               if(!mount) return;
-               angular.forEach($scope.orgSubscribeList, function (value, key) {
-                   if (value.data.org_id == orgId) {
-                       $scope.orgSubscribeList.splice(key, 1);
-                       return false;
-                   }
-               });
+                return mount;
+            },
+            checkMountExsit: function (id) {
+                return !!this.getMountById(id);
+            },
+            /**
+             * 根据团队id获取mount
+             * @param orgId
+             * @returns {null}
+             */
+            getMountByOrgId: function (orgId) {
+                var mount = null;
+                angular.forEach(mounts, function (value) {
+                    if (value.org_id == orgId) {
+                        mount = value;
+                        return false;
+                    }
+                })
+                return mount;
+            },
+            /**
+             * 获取个人的mount
+             * @returns {null}
+             */
+            getMyMount: function () {
+                var myMount = null;
+                angular.forEach(mounts, function (value) {
+                    if (value.org_id == 0) {
+                        myMount = value;
+                        return false;
+                    }
+                })
+                return myMount;
+            },
+            /**
+             * 获取团队的mount
+             * @returns {Array}
+             */
+            getOrgMounts: function () {
+                var orgMounts = [];
+                angular.forEach(mounts, function (value) {
+                    if (value.type != 3) {
+                        orgMounts.push(value);
+                    }
+                })
+                return orgMounts;
+            },
+            getSubscribeMounts: function () {
+                var subscribeMounts = [];
+                angular.forEach(mounts, function (value) {
+                    if (value.org_id != 0 && value.type == 3) {
+                        subscribeMounts.push(value);
+                    }
+                })
+                return subscribeMounts;
+            },
+            addMount: function (newMount, $scope) {
+                var mountItem = formatMountItem(newMount);
+                mounts.push(mountItem);
+                return mountItem;
+            },
+            removeMountByOrgId: function (orgId) {
+                var mount = this.getMountByOrgId(orgId);
+                if (mount) {
+                    Util.Array.removeByValue(mounts, mount);
+                }
+                return mount;
+            },
+            removeOrgSubscribeList: function ($scope, orgId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                angular.forEach($scope.orgSubscribeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.orgSubscribeList.splice(key, 1);
+                        return false;
+                    }
+                });
 
-           },
-           removeTeamList:function($scope,orgId){
-               var mount = this.removeMountByOrgId(orgId);
-               if(!mount) return;
-               angular.forEach($scope.orgTreeList, function (value, key) {
-                   if (value.data.org_id == orgId) {
-                       $scope.orgTreeList.splice(key, 1);
-                       return false;
-                   }
-               });
+            },
+            removeTeamList: function ($scope, orgId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                angular.forEach($scope.orgTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.orgTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
 
-           }
-       };
+            }
+        };
 
-      return GKMount;
+        return GKMount;
 
     }
     ])
@@ -2898,20 +2981,20 @@ angular.module('gkClientIndex.services', [])
         var selectedIndex = [];
         var selectedPath = '';
         var GKFileList = {
-            select:function($scope,index,multiSelect){
+            select: function ($scope, index, multiSelect) {
                 multiSelect = !angular.isDefined(multiSelect) ? false : multiSelect;
                 if (!multiSelect && selectedFile && selectedFile.length) {
                     this.unSelectAll($scope);
                 }
                 $scope.fileData[index].selected = true;
-                if(selectedIndex.indexOf(index)<0){
+                if (selectedIndex.indexOf(index) < 0) {
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $scope.selectedFile = selectedFile;
                 }
             },
-            unSelect:function($scope,index){
-                if($scope.fileData[index]){
+            unSelect: function ($scope, index) {
+                if ($scope.fileData[index]) {
                     $scope.fileData[index].selected = false;
                 }
 
@@ -2922,20 +3005,20 @@ angular.module('gkClientIndex.services', [])
                     $scope.selectedFile = selectedFile;
                 }
             },
-            unSelectAll:function($scope){
+            unSelectAll: function ($scope) {
                 for (var i = selectedIndex.length - 1; i >= 0; i--) {
-                    this.unSelect($scope,selectedIndex[i]);
+                    this.unSelect($scope, selectedIndex[i]);
                 }
             },
-            selectByPath:function($scope,path){
+            selectByPath: function ($scope, path) {
                 var context = this;
                 angular.forEach($scope.fileData, function (value, index) {
                     if (value.fullpath === path) {
-                        context.select($scope,index, true);
+                        context.select($scope, index, true);
                     }
                 });
             },
-            reIndex:function(fileData){
+            reIndex: function (fileData) {
                 var newSelectedIndex = [];
                 var newSelectedFile = [];
                 angular.forEach(fileData, function (value, key) {
@@ -2949,50 +3032,50 @@ angular.module('gkClientIndex.services', [])
                 selectedIndex = newSelectedIndex;
                 selectedFile = newSelectedFile;
             },
-            getSelectedIndex:function(){
-              return selectedIndex;
+            getSelectedIndex: function () {
+                return selectedIndex;
             },
-            getSelectedFile:function(){
+            getSelectedFile: function () {
                 return selectedFile;
             },
-            getOptFileMountId:function($scope,$rootScope){
+            getOptFileMountId: function ($scope, $rootScope) {
                 var mountID;
-                if($scope.selectedFile.length>1){
+                if ($scope.selectedFile.length > 1) {
                     mountID = $rootScope.PAGE_CONFIG.mount.mount_id;
-                }else{
+                } else {
                     mountID = $scope.selectedFile[0]['mount_id'] || $rootScope.PAGE_CONFIG.mount.mount_id
                 }
                 return Number(mountID);
             },
-            remove:function($scope,value){
+            remove: function ($scope, value) {
                 angular.forEach($scope.fileData, function (file, key) {
                     if (value == file) {
                         $scope.fileData.splice(key, 1);
                     }
                 })
             },
-            removeAllSelectFile:function($scope){
+            removeAllSelectFile: function ($scope) {
                 var context = this;
                 angular.forEach($scope.selectedFile, function (value) {
-                    context.remove($scope,value);
+                    context.remove($scope, value);
                 });
                 $scope.selectedFile = [];
                 $scope.selectedIndex = [];
             },
-            getDefualtNewName:function($scope){
+            getDefualtNewName: function ($scope) {
                 var preName = '新建文件夹';
                 var count = 0;
-                do{
-                  var exist = false;
-                  var defaultFileName =preName + (!count?'':'('+count+')');
-                  angular.forEach($scope.fileData,function(value){
-                      if(String(value.filename) === defaultFileName){
-                          exist = true;
-                          return false;
-                      }
-                  });
-                  count++;
-                }while(exist);
+                do {
+                    var exist = false;
+                    var defaultFileName = preName + (!count ? '' : '(' + count + ')');
+                    angular.forEach($scope.fileData, function (value) {
+                        if (String(value.filename) === defaultFileName) {
+                            exist = true;
+                            return false;
+                        }
+                    });
+                    count++;
+                } while (exist);
                 return defaultFileName;
             }
         };
@@ -3004,55 +3087,55 @@ angular.module('gkClientIndex.services', [])
     .factory('GKSearch', [function () {
         var searchState = '',
             searchCondition = '',
-            keyword ='',
+            keyword = '',
             JSONCondition;
         return {
-            checkExist:function(field){
-                if(!JSONCondition || !JSONCondition['include'] || !JSONCondition['include'][field]){
+            checkExist: function (field) {
+                if (!JSONCondition || !JSONCondition['include'] || !JSONCondition['include'][field]) {
                     return false;
                 }
                 return true;
             },
-            getKeyWord:function(){
-                if(!this.checkExist('keywords')){
+            getKeyWord: function () {
+                if (!this.checkExist('keywords')) {
                     return '';
                 }
                 return JSONCondition['include']['keywords'][1] || '';
             },
-            setSearchState:function(state){
+            setSearchState: function (state) {
                 searchState = state;
             },
-            getSearchState:function(){
+            getSearchState: function () {
                 return searchState;
             },
-            setCondition:function(condition){
+            setCondition: function (condition) {
                 searchCondition = condition;
                 JSONCondition = JSON.parse(searchCondition);
             },
-            getConditionField:function(field){
-                if(!this.checkExist(field)){
+            getConditionField: function (field) {
+                if (!this.checkExist(field)) {
                     return null;
                 }
                 var value = JSONCondition['include'][field];
                 var reValue;
-                if(value[0] == 'in'){
-                    reValue =  JSONCondition['include'][field][1];
-                }else if(value[0] == 'lt'){
-                    reValue = [0,dateline[1]];
+                if (value[0] == 'in') {
+                    reValue = JSONCondition['include'][field][1];
+                } else if (value[0] == 'lt') {
+                    reValue = [0, dateline[1]];
                 }
-                else if(value[0] == 'gt'){
-                    reValue = [value[1],0];
-                }else if(value[0] == 'eq'){
+                else if (value[0] == 'gt') {
+                    reValue = [value[1], 0];
+                } else if (value[0] == 'eq') {
                     reValue = value[1];
-                }else{
+                } else {
                     reValue = value[1];
                 }
                 return reValue;
             },
-            getCondition:function(){
+            getCondition: function () {
                 return searchCondition;
             },
-            reset:function(){
+            reset: function () {
                 searchState = '';
                 searchCondition = '';
                 keyword = '';
@@ -3067,108 +3150,108 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKDialog', [function () {
         return {
-            openTeamMember:function(){
+            openTeamMember: function () {
 
             },
             /**
              * 打开设置框
              */
-            openSetting:function(tab){
-                tab = angular.isDefined(tab)?tab:'';
+            openSetting: function (tab) {
+                tab = angular.isDefined(tab) ? tab : '';
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/setting.html#/?tab='+tab;
+                var url = 'file:///' + UIPath + '/setting.html#/?tab=' + tab;
                 var data = {
-                    url:url,
-                    type:"sole",
-                    width:794,
-                    resize:1,
-                    height:490
+                    url: url,
+                    type: "sole",
+                    width: 794,
+                    resize: 1,
+                    height: 490
                 }
                 gkClientInterface.setMain(data);
             },
             /**
              * 打开传输列表
              */
-            openTransfer:function(){
+            openTransfer: function () {
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///'+UIPath+'/transfer.html';
+                var url = 'file:///' + UIPath + '/transfer.html';
                 var data = {
-                    url:url,
-                    type:"sole",
-                    width:794,
-                    height:490,
-                    resize:1
+                    url: url,
+                    type: "sole",
+                    width: 794,
+                    height: 490,
+                    resize: 1
                 }
                 gkClientInterface.setMain(data);
             }
         }
     }
     ])
-    .factory('GKQueue', ['$rootScope','$interval',function ($rootScope,$interval) {
-        var dealList = function(oldList,newList,type){
-            angular.forEach(oldList,function(value){
+    .factory('GKQueue', ['$rootScope', '$interval', function ($rootScope, $interval) {
+        var dealList = function (oldList, newList, type) {
+            angular.forEach(oldList, function (value) {
                 var localUri = '';
-                if(['download','syncdownload'].indexOf(type)>=0){
+                if (['download', 'syncdownload'].indexOf(type) >= 0) {
                     localUri = value.path;
                 }
                 var mountId = value.mountid;
-                var fullpath =  value.webpath;
-                angular.forEach(newList,function(newItem,key){
-                    if(newItem.mountid==mountId && newItem.webpath == fullpath){
+                var fullpath = value.webpath;
+                angular.forEach(newList, function (newItem, key) {
+                    if (newItem.mountid == mountId && newItem.webpath == fullpath) {
                         value.time = newItem.time;
                         value.pos = newItem.pos;
                         value.status = newItem.status;
-                        newList.splice(key,1);
+                        newList.splice(key, 1);
                         return false;
                     }
                 });
             });
         };
         return {
-            getQueueList:function($scope,type){
+            getQueueList: function ($scope, type) {
                 $rootScope.downloadSpeed = 0;
                 $rootScope.uploadSpeed = 0;
-                var getFileList = function(isUpdate){
-                    isUpdate = angular.isDefined(isUpdate)?isUpdate:false;
-                    var re = gkClientInterface.getTransList({type:type});
-                    var list = re['list']||[];
+                var getFileList = function (isUpdate) {
+                    isUpdate = angular.isDefined(isUpdate) ? isUpdate : false;
+                    var re = gkClientInterface.getTransList({type: type});
+                    var list = re['list'] || [];
                     $rootScope.downloadSpeed = re['download'];
                     $rootScope.uploadSpeed = re['upload'];
 
                     var syncList;
                     var hasSyncList = false;
-                    if(['download','upload'].indexOf(type)>=0){
+                    if (['download', 'upload'].indexOf(type) >= 0) {
                         hasSyncList = true;
-                        var syncRe = gkClientInterface.getTransList({type:'sync'+type});
+                        var syncRe = gkClientInterface.getTransList({type: 'sync' + type});
                         var syncList = syncRe['list'] || [];
                         $rootScope.downloadSpeed = syncRe['download'];
                         $rootScope.uploadSpeed = syncRe['upload'];
                     }
 
-                    if(isUpdate){
-                        var newList = angular.extend([],list);
-                        dealList($scope.fileList,newList,type);
-                        if(newList && newList.length){
-                           $scope.fileList = $scope.fileList.concat(newList);
+                    if (isUpdate) {
+                        var newList = angular.extend([], list);
+                        dealList($scope.fileList, newList, type);
+                        if (newList && newList.length) {
+                            $scope.fileList = $scope.fileList.concat(newList);
                         }
-                        if(hasSyncList){
-                            var newSyncList = angular.extend([],syncList);
-                            dealList($scope.syncFileList,newSyncList,'sync'+type);
-                            if(newSyncList && newSyncList.length){
+                        if (hasSyncList) {
+                            var newSyncList = angular.extend([], syncList);
+                            dealList($scope.syncFileList, newSyncList, 'sync' + type);
+                            if (newSyncList && newSyncList.length) {
                                 $scope.syncFileList = $scope.syncFileList.concat(newSyncList);
                             }
                         }
-                    }else{
+                    } else {
                         $scope.fileList = list;
-                        if(hasSyncList){
+                        if (hasSyncList) {
                             $scope.syncFileList = syncList;
                         }
                     }
                 }
                 getFileList();
-                $interval(function(){
-                  getFileList(true);
-                },1000)
+                $interval(function () {
+                    getFileList(true);
+                }, 1000)
 
             }
         }
@@ -3182,16 +3265,16 @@ angular.module('gkClientIndex.services', [])
  * @param name
  * @param params
  */
-var gkClientCallback = function(name,param){
-    if(typeof name !=='string'){
+var gkClientCallback = function (name, param) {
+    if (typeof name !== 'string') {
         name = String(name);
     }
     var rootScope = jQuery(document).scope();
     var JSONparam;
-    if(param){
+    if (param) {
         JSONparam = JSON.parse(param);
     }
-    rootScope.$broadcast(name,JSONparam);
+    rootScope.$broadcast(name, JSONparam);
 };
 
 /**
@@ -3199,13 +3282,13 @@ var gkClientCallback = function(name,param){
  * @param name
  * @param params
  */
-var gkSiteCallback = function(name,params){
-     console.log(arguments);
-    if(typeof name !=='string'){
+var gkSiteCallback = function (name, params) {
+    console.log(arguments);
+    if (typeof name !== 'string') {
         name = String(name);
     }
     var rootScope = jQuery(document).scope();
-    rootScope.$broadcast(name,params);
+    rootScope.$broadcast(name, params);
 };
 
 /**
@@ -3214,10 +3297,10 @@ var gkSiteCallback = function(name,params){
  */
 function GKFileSearch() {
     this.includeCondition = {};
-    this.iexcludeCondition={};
-    this.condition={};
-    this.limit={};
-    this.order={};
+    this.iexcludeCondition = {};
+    this.condition = {};
+    this.limit = {};
+    this.order = {};
 }
 GKFileSearch.prototype = {
     includeCondition: {},
@@ -3245,10 +3328,10 @@ GKFileSearch.prototype.conditionIncludeKeyword = function (keyword) {
     this.includeCondition['keywords'] = ['text', keyword];
 };
 GKFileSearch.prototype.conditionIncludeDir = function (dir) {
-    this.includeCondition['dir'] = ['eq',dir];
+    this.includeCondition['dir'] = ['eq', dir];
 };
 GKFileSearch.prototype.conditionIncludeMountId = function (mountId) {
-    this.includeCondition['mount_id'] = ['eq',mountId];
+    this.includeCondition['mount_id'] = ['eq', mountId];
 };
 
 GKFileSearch.prototype.conditionIncludePath = function (path) {
@@ -3364,7 +3447,8 @@ function GKHistory($q, $location, $rootScope) {
                 current = history.length - 1;
             }
             update = true;
-        };
+        }
+        ;
     });
 
     reset();
