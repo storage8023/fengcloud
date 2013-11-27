@@ -2,7 +2,7 @@
     <div class="file_browser">
         <toolbar></toolbar>
         <div class="file_list_wrapper" ng-dblclick="handleDblClick($event)">
-            <finder error-msg="{{errorMsg}}" show-hint = "showHint" selected-Path="selectedpath"  filter="{{filter}}" file-data="fileData" view="view" partition="partition" order="order" selected-file="selectedFile" right-opts="rightOpts" keyword="{{keyword}}"></finder>
+            <finder scroll-load="scrollLoad()" error-msg="{{errorMsg}}" show-hint = "showHint" selected-Path="selectedpath"  filter="{{filter}}" file-data="fileData" view="view" partition="partition" order="order" selected-file="selectedFile" right-opts="rightOpts" keyword="{{keyword}}"></finder>
         </div>
     </div>
     <right-sidebar selected-file="selectedFile" path="path" partition="partition" filter="filter" keyword="keyword" mount-id="mountId"></right-sidebar>

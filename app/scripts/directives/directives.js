@@ -27,8 +27,7 @@ angular.module('gkClientIndex.directives', [])
                       }
                     },
                     build:function($trigger, e){
-                        var data = $trigger.data('branch');
-                        var items = GKContextMenu.getSidebarMenu(data);
+                        var items = GKContextMenu.getSidebarMenu($trigger);
                         return {
                             callback: function(){
 
@@ -1001,7 +1000,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', 'GKFileList', function ($location, GKPath, $filter, $templateCache, $compile, $rootScope, GKFileList) {
+    .directive('finder', ['$location', 'GKPath', '$filter', '$templateCache', '$compile', '$rootScope', 'GKFileList','$parse', function ($location, GKPath, $filter, $templateCache, $compile, $rootScope, GKFileList,$parse) {
         return {
             replace: true,
             restrict: 'E',
@@ -1017,7 +1016,8 @@ angular.module('gkClientIndex.directives', [])
                 keyword: '@',
                 selectedPath: '=',
                 showHint: '=',
-                errorMsg: '@'
+                errorMsg: '@',
+                scrollLoad:'&'
             },
             link: function ($scope, $element, $attrs) {
                 $scope.PAGE_CONFIG = $rootScope.PAGE_CONFIG;
@@ -1464,6 +1464,10 @@ angular.module('gkClientIndex.directives', [])
                     $scope.$emit('showSyncSetting');
                 }
 
+                $scope.handleScrollLoad = function(){
+                    var fn = $parse($attrs.scrollLoad);
+                    fn($scope);
+                }
             }
         };
     }])

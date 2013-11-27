@@ -14,10 +14,6 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 alert('请输入用户名');
                 return;
             }
-            if(!Util.Validation.isEmail($scope.username)){
-                alert('用户名必须是有效的邮箱地址');
-                return;
-            }
             if(!$scope.password || !$scope.password.length){
                 alert('请输入密码');
                 return;
