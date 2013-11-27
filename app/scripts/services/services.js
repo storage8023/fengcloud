@@ -110,32 +110,44 @@ angular.module('gkClientIndex.services', [])
                    items;
                if(partition == GKPartition.teamFile){
                    if(!fullpath){
-                       items = {
-                           'view_dashboard':{
-                               name:'云库资料',
-                               callback:function(){
-                                   GKModal.teamMember(data.org_id);
-                               }
-                           },
-                           'view_member':{
-                               name:'云库成员',
-                               callback:function(){
-                                   GKModal.teamMember(data.org_id);
-                               }
-                           },
-                           'view_subscriber':{
-                               name:'云库订阅者',
-                               callback:function(){
-                                   GKModal.teamSubscribe(data.org_id);
-                               }
-                           },
-                           'manage':{
-                               name:'云库安全设置',
-                               callback:function(){
-                                   GKModal.teamManage(data.org_id);
-                               }
+                       if(data.filter =='trash'){
+                           items = {
+                               'clear_trash':{
+                                   name:'清空回收站',
+                                   callback:function(){
+                                    GKOpt.clearTrash(mountId);
+                                   }
+                               },
                            }
-                       };
+                       }else{
+                           items = {
+                               'view_dashboard':{
+                                   name:'云库资料',
+                                   callback:function(){
+                                       GKModal.teamMember(data.org_id);
+                                   }
+                               },
+                               'view_member':{
+                                   name:'云库成员',
+                                   callback:function(){
+                                       GKModal.teamMember(data.org_id);
+                                   }
+                               },
+                               'view_subscriber':{
+                                   name:'云库订阅者',
+                                   callback:function(){
+                                       GKModal.teamSubscribe(data.org_id);
+                                   }
+                               },
+                               'manage':{
+                                   name:'云库安全设置',
+                                   callback:function(){
+                                       GKModal.teamManage(data.org_id);
+                                   }
+                               }
+                           };
+                       }
+
                    }else {
                        items = {};
                        items['new_folder'] = {
@@ -1806,7 +1818,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition','GKMount','$rootScope','GK','GKException',function (GKCilpboard,GKFile,GKPartition,GKMount,$rootScope,GK,GKException) {
+    .factory('GKOpt', ['GKCilpboard','GKFile','GKPartition','GKMount','$rootScope','GK','GKException','RestFile',function (GKCilpboard,GKFile,GKPartition,GKMount,$rootScope,GK,GKException,RestFile) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -2044,6 +2056,16 @@ angular.module('gkClientIndex.services', [])
                         $rootScope.$broadcast('unSubscribeTeam', $rootScope.PAGE_CONFIG.mount.org_id);
                     });
 
+                }).error(function (request) {
+                        GKException.handleAjaxException(request);
+                    });
+            },
+            clearTrash:function(mountId){
+                if(!confirm('确定要清空该回收站？')){
+                    return;
+                }
+                RestFile.clear(mountId).success(function () {
+                    $rootScope.$broadcast('clearTrashSuccess', mountId);
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });

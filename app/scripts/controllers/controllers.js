@@ -743,14 +743,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon: 'icon_del',
                 className: "clear_trash",
                 callback: function () {
-                    if(!confirm('确定要清空该回收站？')){
-                        return;
-                    }
-                    RestFile.clear($rootScope.PAGE_CONFIG.mount.mount_id).success(function () {
-                        refreahData();
-                    }).error(function (request) {
-                            GKException.handleAjaxException(request);
-                        });
+                    GKOpt.clearTrash($scope.PAGE_CONFIG.mount.mount_id);
                 }
             },
             'revert': {
@@ -1380,6 +1373,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.fileData =  $scope.fileData.concat(list);
             })
         }
+
+        $scope.$on('clearTrashSuccess',function(event,mountId){
+            if($scope.mountId != mountId || $scope.filter != 'trash'){
+                return;
+            }
+            refreahData();
+        })
 
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal','GKPartition',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind,GKModal) {
