@@ -109,8 +109,8 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             addSmartNode:function(list,node){
-                var node = this.findSmartNode(list,node.type);
-                if(node){
+                var exist = this.findSmartNode(list,node.type);
+                if(exist){
                     this.editSmartNode(list,node.type,node.name);
                 }else{
                     var formatNode = GKFile.dealTreeData([node], GKPartition.smartFolder)[0]
@@ -274,10 +274,11 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                     };
+                    if(data.type == 0){
+                        items['rename']['disabled'] = true;
+                    }
                 }
-                if(data.type == 0){
-                    items['rename']['disabled'] = true;
-                }
+
                 return items;
             }
         };
@@ -1131,7 +1132,7 @@ angular.module('gkClientIndex.services', [])
             },
             removeSmartFolderByCode: function (code) {
                 angular.forEach(smartFolders, function (value, key) {
-                    if (code == value.code) {
+                    if (code == value.type) {
                         smartFolders.splice(key, 1);
                     }
                 });
