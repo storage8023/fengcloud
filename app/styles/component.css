@@ -921,14 +921,15 @@ button.close_window{
     margin-right: 5px;
     background-position: 100px 100px;
 }
-.context-menu-item:hover,
-.context-menu-item:focus {
+.context-menu-item:not(.disabled).hover,
+.context-menu-item:not(.disabled):hover,
+.context-menu-item:not(.disabled):focus {
     text-decoration: none;
     background: #5394f5;
 }
-.context-menu-item.hover > span,
-.context-menu-item:focus > span,
-.context-menu-item:hover > span{
+.context-menu-item:not(.disabled).hover > span,
+.context-menu-item:not(.disabled):focus > span,
+.context-menu-item:not(.disabled):hover > span{
     color: #fff;
 }
 .context-menu-separator {
@@ -939,7 +940,7 @@ button.close_window{
 }
 
 .context-menu-item.disabled {
-    color: #666;
+    color: #ccc;
 }
 
 .context-menu-input > label > textarea {

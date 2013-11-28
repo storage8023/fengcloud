@@ -275,6 +275,9 @@ angular.module('gkClientIndex.services', [])
                         }
                     };
                 }
+                if(data.type == 0){
+                    items['rename']['disabled'] = true;
+                }
                 return items;
             }
         };
