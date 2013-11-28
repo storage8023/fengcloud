@@ -213,14 +213,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     getFileList(branch.data.mount_id, branch.data.fullpath,source).then(function(list){
                         branch.children = GKFile.dealTreeData(list, branch.data.partition, branch.data.mount_id);
                         if (!branch.children)  branch.children = [];
+                        /**
+                         * 添加回收站
+                         */
+                        if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
+                            var trashNode = getTrashNode(branch.data.mount_id,branch.data.partition);
+                            branch.children.push(trashNode);
+                        }
                     })
                 }
-                /**
-                 * 添加回收站
-                 */
-                if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
-                    branch.children.push(getTrashNode(branch.data.mount_id,branch.data.partition));
-                }
+
             }
         };
 

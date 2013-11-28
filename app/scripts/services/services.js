@@ -875,7 +875,7 @@ angular.module('gkClientIndex.services', [])
                                     gkClientInterface.setFilePublic({
                                         mountid:mountId,
                                         webpath:path,
-                                        public:1
+                                        open:1
                                     },function(re){
                                         if(re.error==0){
                                             callback();
@@ -1784,7 +1784,8 @@ angular.module('gkClientIndex.services', [])
                         cmd: value.cmd,
                         favorite: value.favorite,
                         filehash: value.filehash,
-                        hash: value.hash
+                        hash: value.hash,
+                        open:value.open
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -1812,7 +1813,8 @@ angular.module('gkClientIndex.services', [])
                         auth: value.auth,
                         cache: value.have,
                         filehash: value.filehash,
-                        hash: value.uuidhash
+                        hash: value.uuidhash,
+                        open:value.publish
                     };
                 }
                 return file;
