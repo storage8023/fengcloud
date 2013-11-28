@@ -1968,10 +1968,11 @@ angular.module('gkClientIndex.services', [])
             getDefaultOpts: function () {
                 return [
                     'goto', //打开位置
+                    'new_file',
                     //'nearby', //附近
                     'unsubscribe', //取消订阅
                     'new_folder', //新建
-                    'create', //创建
+                    //'create', //创建
                     'add', //添加
                     'clear_trash', //清空回收站
                     //'lock',  //锁定
@@ -2022,9 +2023,6 @@ angular.module('gkClientIndex.services', [])
                             this.disableOpt(opts, "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
-                            if (partition == GKPartition.myFile) {
-                                this.disableOpt(opts, "manage", "create", 'lock', 'unlock');
-                            }
                         }
                         if (GKCilpboard.isEmpty()) {
                             this.disableOpt(opts, 'paste');
@@ -2033,10 +2031,10 @@ angular.module('gkClientIndex.services', [])
 
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts, 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
+                        this.disableOpt(opts, 'new_file','goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
                     case (GKPartition.smartFolder || filter == 'search'):
-                        this.disableOpt(opts, 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        this.disableOpt(opts, 'new_file','revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         if (partition == GKPartition.smartFolder) {
                             this.disableOpt(opts, 'del', 'rename');
                         }
@@ -2053,13 +2051,13 @@ angular.module('gkClientIndex.services', [])
             getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
                 if (partition == GKPartition.teamFile) {
+                    /**
+                     * 团队文件夹的根目录
+                     */
                     if (!currentFile.fullpath) {
-                        this.disableOpt(opts, 'cut', 'add', 'paste');
-                        if (!GKMount.isAdmin(mount)) {
-                            this.disableOpt(opts, 'manage', 'create', 'del', 'rename');
-                        }
+
                     } else {
-                        this.disableOpt(opts, 'create', 'manage');
+
                     }
 
                 }
@@ -2075,12 +2073,6 @@ angular.module('gkClientIndex.services', [])
                     this.disableOpt(opts, 'paste');
                 }
                 this.setSyncOpt(opts, currentFile, currentFile);
-                /**
-                 * 云库文件的跟目录不允许添加
-                 */
-                if (!currentFile.fullpath && partition == GKPartition.teamFile) {
-                    this.disableOpt(opts, 'add');
-                }
                 return opts;
             },
             /**

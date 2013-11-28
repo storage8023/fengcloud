@@ -1,11 +1,13 @@
 <div class="toolbar">
     <span class="filter_name" ng-show="(!opts||!opts.length)&&listName">{{listName}}</span>
-    <button ng-repeat="opt in opts" class="f_l dropdown">
+    <button ng-repeat="opt in opts | orderBy:'+index'" class="f_l dropdown">
         <a dropdown-toggle class="opt" ng-mouseenter="" href="javascript:void(0);" ng-class="opt.className?opt.className:'opt_'+opt.key" ng-click="opt.callback($event)">
-            <i class="icon16x16" ng-class="opt.icon"></i><span>{{opt.name}}</span>
+            <i class="icon16x16" ng-class="opt.icon"></i>
+            <span>{{opt.name}}</span>
+            <i class="gk_down_arrow" ng-show="opt.items"></i>
         </a>
         <ul class="dropdown-menu" ng-if="opt.items">
-            <li ng-repeat="subOpt in opt.items">
+            <li ng-repeat="subOpt in opt.items | orderBy:'+index'">
                 <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.key"
                    ng-click="subOpt.callback($event)">
                     <i></i><span>{{subOpt.name}}</span>

@@ -685,6 +685,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var allOpts = {
             'goto': {
                 name: '位置',
+                index:0,
                 icon: 'icon_location',
                 className: "goto",
                 callback: function () {
@@ -695,16 +696,57 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GKPath.gotoFile(mountId, upPath, fullpath);
                 }
             },
-            'create': {
-                name: '创建',
-                icon: 'icon_add',
-                className: "create",
-                callback: function () {
-                  GKModal.createTeamFolder(GKFileList.getOptFileMountId($scope,$rootScope),'');
-
+            'new_file':{
+                name: '新建',
+                className: "new_folder",
+                icon: 'icon_newfolder',
+                index:1,
+                items: {
+                    'new_folder': {
+                        name: '新建文件夹',
+                        index:0,
+                        className: "new_folder",
+                        icon: 'icon_newfolder',
+                        callback: function () {
+                            var isShare = $scope.partition == GKPartition.teamFile ? 1 : 0;
+                            $scope.$broadcast('fileNewFolderStart', isShare, function (new_file_name) {
+                                var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
+                                var params = {
+                                    webpath: webpath,
+                                    dir: 1,
+                                    mountid: $scope.mountId
+                                };
+                                GK.createFolder(params).then(function () {
+                                    $scope.$broadcast('fileNewFolderEnd');
+                                    $rootScope.$broadcast('editFileSuccess','create',$scope.mountId,$scope.path,{fullpath:webpath})
+                                }, function (error) {
+                                    GKException.handleClientException(error);
+                                });
+                            });
+                        }
+                    },
+                    'create':{
+                        name: '创建公开文件夹',
+                        index:1,
+                        icon: 'icon_create',
+                        className: "create",
+                        callback: function () {
+                            GKModal.createTeamFolder($scope.mountId,'');
+                        }
+                    },
+                    'create_sync_folder': {
+                        name: '创建同步文件夹',
+                        index:2,
+                        className: "sync_folder",
+                        icon: 'create_sync_folder',
+                        callback: function () {
+                            GKModal.backUp($scope.mountId);
+                        }
+                    }
                 }
             },
             'unsubscribe': {
+                index:2,
                 name: '取消订阅',
                 icon: 'icon_remove',
                 className: "unsubscribe",
@@ -713,6 +755,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'nearby': {
+                index:3,
                 name: '附近',
                 icon: 'icon_location',
                 className: "nearby",
@@ -721,6 +764,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'manage': {
+                index:4,
                 name: '管理',
                 icon: 'icon_setting',
                 className: "manage",
@@ -729,6 +773,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'clear_trash': {
+                index:5,
                 name: '清空回收站',
                 icon: 'icon_del',
                 className: "clear_trash",
@@ -737,6 +782,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'revert': {
+                index:6,
                 name: '还原',
                 icon: 'icon_recover',
                 className: "revert",
@@ -765,6 +811,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'del_completely': {
+                index:7,
                 name: '彻底删除',
                 className: "del_completely",
                 icon: 'icon_disable',
@@ -789,6 +836,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'sync': {
+                index:8,
                 name: '同步',
                 className: "sync",
                 icon: 'icon_sync',
@@ -797,6 +845,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'unsync': {
+                index:9,
                 name: '取消同步',
                 className: "unsync",
                 icon: 'icon_disable',
@@ -805,6 +854,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'paste': {
+                index:10,
                 name: '粘贴',
                 className: "paste",
                 icon: 'icon_paste',
@@ -836,6 +886,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'cut': {
+                index:11,
                 name: '剪切',
                 className: "cut",
                 icon: 'icon_cut',
@@ -849,6 +900,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'copy': {
+                index:12,
                 name: '复制',
                 className: "copy",
                 icon: 'icon_copy',
@@ -863,6 +915,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'add': {
+                index:13,
                 name: '添加',
                 className: "add",
                 icon: 'icon_download',
@@ -884,29 +937,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     })
                 }
             },
-            'new_folder': {
-                name: '新建',
-                className: "new_folder",
-                icon: 'icon_newfolder',
-                callback: function () {
-                    var isShare = $scope.partition == GKPartition.teamFile ? 1 : 0;
-                    $scope.$broadcast('fileNewFolderStart', isShare, function (new_file_name) {
-                        var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
-                        var params = {
-                            webpath: webpath,
-                            dir: 1,
-                            mountid: $scope.mountId
-                        };
-                        GK.createFolder(params).then(function () {
-                            $scope.$broadcast('fileNewFolderEnd');
-                            $rootScope.$broadcast('editFileSuccess','create',$scope.mountId,$scope.path,{fullpath:webpath})
-                        }, function (error) {
-                            GKException.handleClientException(error);
-                        });
-                    });
-                }
-            },
             'lock': {
+                index:14,
                 name: '锁定',
                 className: "lock",
                 icon: 'icon_lock',
@@ -923,6 +955,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'unlock': {
+                index:15,
                 name: '解锁',
                 className: "unlock",
                 icon: 'icon_unlock',
@@ -943,6 +976,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'save': {
+                index:16,
                 name: '保存',
                 className: "save",
                 icon: 'icon_save',
@@ -962,8 +996,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'del': {
+                index: 17,
                 name: '删除',
-                index: 5,
                 className: "del",
                 icon: 'icon_trash',
                 callback: function () {
@@ -976,9 +1010,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'rename': {
+                index: 18,
                 name: '重命名',
                 className: "rename",
-                index: 6,
                 icon: 'icon_rename',
                 callback: function () {
                     var file = $scope.selectedFile[0];
@@ -1006,9 +1040,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'order_by': {
+                index: 19,
                 name: '排序方式',
                 className: "order_by",
-                index: 7,
                 items: {
                     'order_by_file_name': {
                         name: '文件名',
@@ -1077,6 +1111,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         currentOpts.splice(index, 1);
                     }
                 })
+
                 /**
                  * 如果是订阅的文件就不用合并当前的操作和选中的操作
                  */
@@ -1090,6 +1125,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 topOptKeys = optKeys;
             }
 
+            /**
+             * 扩展操作的值
+             */
             var extendOpt = function (opt, key, isRightOpt) {
                 var extendParam = {};
                 if (!isRightOpt) {
@@ -1098,25 +1136,42 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return angular.extend(opt, extendParam);
             }
 
+            var checkSubOpt = function(optKeys,subOpts){
+                var enableLen = 0;
+                angular.forEach(subOpts,function(value,key){
+                    if(optKeys.indexOf(key)>=0){
+                        enableLen+=1;
+                        return;
+                    }
+                });
+                return enableLen>0;
+            };
 
-            /**
-             * unique后会顺序会反转，所以要reverse
-             * @type {*}
-             */
             angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
-                    if (allOpts[value]) {
-                        var item = extendOpt(allOpts[value], value, false);
+                    var opt = allOpts[value];
+                    if (opt) {
+                        if(opt.items && !checkSubOpt(topOptKeys,opt.items )){
+                           return;
+                        }
+                        var item = extendOpt(opt, value, false);
                         $scope.opts.push(item);
                     }
 
                 }
             });
 
+            /**
+             * 右键的操作
+             */
             angular.forEach(optKeys, function (value) {
                 if (excludeRightOpts.indexOf(value) < 0) {
-                    if (allOpts[value]) {
-                        var item = extendOpt(allOpts[value], value, true);
+                    var opt = allOpts[value];
+                    if (opt) {
+                        if(opt.items && !checkSubOpt(optKeys,opt.items )){
+                            return;
+                        }
+                        var item = extendOpt(opt, value, true);
                         $scope.rightOpts[value] = item;
                     }
                 }

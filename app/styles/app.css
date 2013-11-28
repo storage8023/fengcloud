@@ -472,11 +472,6 @@ footer {
     margin-top: 9px;
 }
 
-.toolbar button:hover,
-.toolbar button:active{
-    border-color: transparent;
-}
-
 .toolbar button {
     background-color: transparent;
     cursor: default;
@@ -484,6 +479,20 @@ footer {
     border-radius: 3px;
 }
 
+.toolbar button:hover a,
+.toolbar button:active a,
+.toolbar button.open a{
+    color: #fff;
+}
+.toolbar button:hover{
+    background: #539CF5;
+    border-color:#539CF5;
+}
+.toolbar button.open,
+.toolbar button:active{
+    background: #3c7ecf;
+    border-color:#3c7ecf;
+}
 .toolbar .f_l {
     margin-left: 10px;
 }
@@ -497,6 +506,14 @@ footer {
     padding: 3px 12px;
     border-radius: 3px;
 }
+.toolbar .opt .gk_down_arrow{
+    vertical-align: middle;
+}
+.toolbar button:hover .opt .gk_down_arrow,
+.toolbar button.open .opt .gk_down_arrow,
+.toolbar button:active .opt .gk_down_arrow{
+    border-top-color: #fff;
+}
 .toolbar .opt.opt_sync .cancel_sync{
     display: none;
 }
@@ -506,20 +523,13 @@ footer {
 .toolbar .opt.opt_sync:hover .synced{
     display: none;
 }
-.toolbar .f_l .opt i {
+.toolbar .f_l .opt i.icon16x16 {
     margin-right: 4px;
 }
 .toolbar .opt.opt_view_change{
     margin-top: 7px;
 }
-.toolbar button .opt:hover{
-    background: #539CF5;
-    color: #fff;
-}
-.toolbar button .opt:active{
-    color: #fff;
-    background: #3c7ecf;
-}
+
 .toolbar .opt.opt_view_change > a {
     display: inline-block;
     height: 24px;
@@ -531,87 +541,127 @@ footer {
 
 
 .context-menu-item.add:hover i,
-.toolbar .opt.add:hover i
+.toolbar button:hover .opt.add i,
+.toolbar button:active .opt.add i,
+.toolbar button.open .opt.add i
 {
     background-position: -24px -164px;
 }
 .context-menu-item.new_folder:hover i,
-.toolbar .opt.new_folder:hover i {
+.toolbar button:hover .opt.new_folder i,
+.toolbar button:active .opt.new_folder i,
+.toolbar button.open .opt.new_folder i{
     background-position: -24px -144px;
 }
 .context-menu-item.lock:hover i,
-.toolbar .opt.lock:hover i {
+.toolbar button:hover .opt.lock i,
+.toolbar button:active .opt.lock i,
+.toolbar button.open .opt.lock i{
     background-position: -24px -284px;
 }
 .context-menu-item.unlock:hover i,
-.toolbar .opt.unlock:hover i {
+.toolbar button:hover .opt.unlock i,
+.toolbar button:active .opt.unlock i,
+.toolbar button.open .opt.unlock i{
     background-position: -24px -304px;
 }
 .context-menu-item.save:hover i,
-.toolbar .opt.save:hover i {
+.toolbar button:hover .opt.save i,
+.toolbar button:active .opt.save i,
+.toolbar button.open .opt.save i{
     background-position: -24px -184px;
 }
 .context-menu-item.del:hover i,
-.toolbar .opt.del:hover i {
+.toolbar button:hover .opt.del i,
+.toolbar button:active .opt.del i,
+.toolbar button.open .opt.del i{
     background-position: -24px -124px;
 }
 .context-menu-item.rename:hover i,
-.toolbar .opt.rename:hover i {
+.toolbar button:hover .opt.rename i,
+.toolbar button:active .opt.rename i,
+.toolbar button.open .opt.rename i {
     background-position: -24px -204px;
 }
 .context-menu-item.sync:hover i,
-.toolbar .opt.sync:hover i{
+.toolbar button:hover .opt.sync i,
+.toolbar button:active .opt.sync i,
+.toolbar button.open .opt.sync i{
     background-position: -24px -344px;
 }
 .context-menu-item.unsync:hover i,
-.toolbar .opt.unsync:hover i{
+.toolbar button:hover .opt.unsync i,
+.toolbar button:active .opt.unsync i,
+.toolbar button.open .opt.unsync i{
     background-position: -24px -504px;
 }
 .context-menu-item.clear_trash:hover i,
-.toolbar .opt.clear_trash:hover i{
+.toolbar button:hover .opt.clear_trash i,
+.toolbar button:active .opt.clear_trash i,
+.toolbar button.open .opt.clear_trash i{
     background-position: -24px -484px;
 }
 .context-menu-item.del_completely:hover i,
-.toolbar .opt.del_completely:hover i{
+.toolbar button:hover .opt.del_completely i,
+.toolbar button:active .opt.del_completely i,
+.toolbar button.open .opt.del_completely i{
     background-position: -24px -504px;
 }
 .context-menu-item.revert:hover i,
-.toolbar .opt.revert:hover i{
+.toolbar button:hover .opt.revert i,
+.toolbar button:active .opt.revert i,
+.toolbar button.open .opt.revert i{
     background-position: -24px -464px;
 }
 .context-menu-item.cut:hover i,
-.toolbar .opt.cut:hover i{
+.toolbar button:hover .opt.cut i,
+.toolbar button:active .opt.cut i,
+.toolbar button.open .opt.cut i{
     background-position: -24px -264px;
 }
 .context-menu-item.copy:hover i,
-.toolbar .opt.copy:hover i{
+.toolbar button:hover .opt.copy i,
+.toolbar button:active .opt.copy i,
+.toolbar button.open .opt.copy i{
     background-position: -24px -244px;
 }
 .context-menu-item.paste:hover i,
-.toolbar .opt.paste:hover i{
+.toolbar button:hover .opt.paste i,
+.toolbar button:active .opt.paste i,
+.toolbar button.open .opt.paste i{
     background-position: -24px -224px;
 }
 .context-menu-item.create:hover i,
-.toolbar .opt.create:hover i{
+.toolbar button:hover .opt.create i,
+.toolbar button:active .opt.create i,
+.toolbar button.open .opt.create i{
     background-position: -24px -924px;
 }
 
 .context-menu-item.unsubscribe:hover i,
-.toolbar .opt.unsubscribe:hover i{
+.toolbar button:hover .opt.unsubscribe i,
+.toolbar button:active .opt.unsubscribe i,
+.toolbar button.open .opt.unsubscribe i{
     background-position: -24px -944px;
 }
 
 .context-menu-item.manage:hover i,
-.toolbar .opt.manage:hover i{
+.toolbar button:hover .opt.manage i,
+.toolbar button:active .opt.manage i,
+.toolbar button.open .opt.manage i{
     background-position: -24px -324px;
 }
 
 .context-menu-item.nearby:hover i,
-.toolbar .opt.nearby:hover i{
+.toolbar button:hover .opt.nearby i,
+.toolbar button:active .opt.nearby i,
+.toolbar button.open .opt.nearby i{
     background-position: -24px -1084px;
 }
 .context-menu-item.goto:hover i,
-.toolbar .opt.goto:hover i{
+.toolbar button:hover .opt.goto i,
+.toolbar button:active .opt.goto i,
+.toolbar button.open .opt.goto i{
     background-position: -24px -1244px;
 }
 .toolbar .opt.opt_view_change > a:hover{

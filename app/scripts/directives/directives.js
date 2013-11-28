@@ -13,7 +13,7 @@ angular.module('gkClientIndex.directives', [])
                 jQuery.contextMenu({
                     selector: '.abn-tree .abn-tree-row',
                     reposition: false,
-                    zIndex: 99,
+                    zIndex: 9999,
                     className:'sidebar_contextmenu',
                     animation: {
                         show: "show",
