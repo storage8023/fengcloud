@@ -1,3 +1,50 @@
 <div class="modal-body">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <section>
+        <div class="file_item">
+        <div class="file_name">
+                <span>
+                  <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
+                       error-src="{{file.filename | getFileThumb:file.dir:(file.open||(parentFile.sharepath?1:0)):file.sync}}"
+                       ng-src="{{file.hash | getThumbUrl:file.filehash}}"/>
+                  <i ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
+                     class="file_icon {{file.filename | getFileIcon:file.dir:(file.open||(parentFile.sharepath?1:0)):file.sync}}">
+                  </i>
+                </span>
+            <span title="{{file.fullpath}}" class="name" ng-bind="file.filename"></span>
+        </div>
+        </div>
+        <div class="publish_opt">
+            <button class="btn btn-primary" ng-show="publishEnable && file.open==0" ng-click="setFilePublic(1,mountId)">公共该文件夹</button>
+            <button class="btn btn-danger"  ng-show="publishEnable && file.open==1" ng-click="setFilePublic(0,mountId)">取消公开改文件夹</button>
+            <button class="btn btn-default" ng-show="!publishEnable && parentFile.sharepath" disabled>该文件{{file.dir==1?'夹':''}}已公开</button>
+        </div>
+        <div class="create_time">
+            <avatar class="avatar avatar_mini" gk-src="{{file.creator_member_id|getAvatarUrl}}"></avatar>
+            <span>{{file.creator_member_name}} 创建于 {{file.creator_time*1000 | date:'yyyy/M/d H:m:s'}}</span>
+        </div>
+        <div class="last_edit_time">
+            <avatar class="avatar avatar_mini" gk-src="{{file.last_member_id|getAvatarUrl}}"></avatar>
+            <span>{{file.last_member_name}} 最后修改于 {{file.last_edit_time*1000 | date:'yyyy/M/d H:m:s'}}</span>
+        </div>
+        <div class="file_size" ng-show="file.dir==1">
+            <span>占用 {{file.filesize|bitSize}} 空间</span>
+        </div>
+        <div>
+            <label for="inner_link">链接</label>
+            <div class="input-group">
+                <input readonly name="inner_link" ng-click="handleInputFocus($event)" id="inner_link" type="text" class="form-control" ng-model="innerLink"
+                       autocomplete="off"/>
+                <button class="btn btn-default" ng-click="copy(innerLink)">复制</button>
+            </div>
+        </div>
+        <div ng-if="localUri">
+            <label for="inner_link">同步位置</label>
+            <div class="input-group">
+                <input name="local_uri" readonly id="local_uri" ng-click="handleInputFocus($event)" type="text" class="form-control" ng-model="localUri"autocomplete="off"/>
+                <button class="btn btn-default" ng-click="goto(localUri)">打开</button>
+            </div>
+        </div>
+
+    </section>
 </div>

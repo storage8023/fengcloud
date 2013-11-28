@@ -7,8 +7,16 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    copyToClipboard:function(text){
+        try {
+            gkClient.gSetClipboardData(text);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     setFilePublic:function(params,callback){
         try {
+
             gkClient.gPublic(JSON.stringify(params),function(re){
                 re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){

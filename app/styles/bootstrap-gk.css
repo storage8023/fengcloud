@@ -354,6 +354,7 @@ input[type="password"] {
     color: #b4b4b4;
 }
 
+
 /* 分页 */
 .pagination > li {
     border-radius: 2px;
@@ -426,11 +427,15 @@ input[type="password"] {
     border-top-right-radius: 3px;
 }
 
-.modal-header .close {
+.modal .close {
     color: #fff;
     text-shadow: none;
     opacity: 1;
     margin-top: -2px;
+    float: none;
+    position: absolute;
+    top:12px;
+    right: 10px;
 }
 
 .modal .modal-header h4 {
@@ -563,7 +568,11 @@ input[type="password"] {
     border-color: #E1E3E7;
     background-color: #F1F1F2;
 }
-
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control{
+    cursor: default;
+}
 .form-control:-moz-placeholder {
     color: #ACB4BF;
 }

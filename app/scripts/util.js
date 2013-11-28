@@ -552,7 +552,7 @@ Util.Number = {
             j++;
         }
         if (num == 0) {
-            return num;
+            return num + 'B';
         } else {
             var dec = 1;
             for (var i = 0; i < decimal; i++) {

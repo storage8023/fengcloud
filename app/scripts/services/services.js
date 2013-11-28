@@ -14,6 +14,21 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
+        return {
+            getSyncByMountIdFullpath:function(mountId,fullpath){
+                var syncedFiles = gkClientInterface.getLinkPath()['list'] || [];
+                var syncItem = null;
+                angular.forEach(syncedFiles,function(value){
+                   if(value.mountid == mountId && value.webpath == fullpath){
+                       syncItem = value;
+                       return false;
+                   }
+                })
+                return syncItem;
+            }
+        };
+    }])
     .factory('GKSideTree', ['GKFile','GKPartition',function (GKFile,GKPartition) {
         return {
             getNode: function (list, mountId, fullpath) {
@@ -320,12 +335,101 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath) {
+    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync',function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath,GKSync) {
         var defaultOption = {
             backdrop: 'static',
             keyboard: false,
         };
         return{
+            filePropery: function (mountId,file, parentFile) {
+                var option = {
+                    templateUrl: 'views/file_property_dialog.html',
+                    windowClass: 'file_property_dialog',
+                    controller: function ($scope, $modalInstance,mountId,file,parentFile) {
+                        $scope.file = file;
+                        $scope.mountId = mountId;
+                        $scope.parentFile = parentFile;
+                        $scope.publishEnable = false;
+                        if(!$scope.parentFile.fullpath){
+                            $scope.publishEnable = true;
+                        }
+                        $scope.innerLink = gkClientInterface.getSiteDomain()+'/'+mountId+'/'+encodeURIComponent(file.fullpath);
+                        $scope.localUri = '';
+                        if($scope.file.sync==1 || $scope.parentFile.syncpath){
+                            var syncPath = $scope.parentFile.syncpath || $scope.file.fullpath;
+                            var syncItem = GKSync.getSyncByMountIdFullpath(mountId,syncPath);
+                            if(syncItem){
+                                var rePath = ($scope.file.fullpath+'/').replace(syncItem.webpath+'/','');
+                                var grid = gkClientInterface.isWindowsClient()?'\\':'/';
+                                if(gkClientInterface.isWindowsClient()){
+                                    rePath = rePath.replace('/','\\');
+                                }
+                                $scope.localUri = syncItem.fullpath+rePath;
+                            }
+                        }
+                        $scope.setFilePublic = function(open,mountId){
+                           var msg  = '你确定要'+(open==1?'公开':'取消公开')+'该文件夹？';
+                           if(!confirm(msg)){
+                               return;
+                           }
+                           var mountId =  file.mount_id||mountId;
+                            var param = {
+                                mountid:mountId,
+                                webpath:file.fullpath,
+                                open:open
+                            };
+                           gkClientInterface.setFilePublic(param,function(re){
+                               $scope.$apply(function(){
+                                   if(re.error==0){
+                                       $scope.file.open = open;
+                                       $rootScope.$broadcast('editFileSuccess','set_open',mountId,file.fullpath,{
+                                           open:open
+                                       })
+                                   }else{
+                                       GKException.handleClientException(re);
+                                   }
+                               })
+                           })
+                        }
+
+                        $scope.handleInputFocus = function($event){
+                           jQuery($event.target).select();
+                        }
+
+                        $scope.copy = function(innerLink){
+                            gkClientInterface.copyToClipboard(innerLink);
+                            alert('已复制到剪切板');
+                        };
+
+                        $scope.goto = function(localUri){
+                            gkClientInterface.open({
+                                mountid:0,
+                                webpath: localUri
+                            });
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                    },
+                    resolve: {
+                         mountId:function(){
+                             return mountId
+                         },
+                        file:function(){
+                            return file;
+                        },
+                        parentFile:function(){
+                            return parentFile;
+                        }
+                    }
+                };
+
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+
+            },
             sync: function (mountId, fullpath) {
                 var option = {
                     templateUrl: 'views/set_sync.html',
@@ -558,7 +662,8 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            backUp: function (mountId) {
+            backUp: function (mountId,fullpath) {
+                fullpath = angular.isDefined(fullpath)?fullpath:'';
                 var option = {
                     templateUrl: 'views/backup.html',
                     windowClass: 'backup_dialog',
@@ -639,14 +744,14 @@ angular.module('gkClientIndex.services', [])
                                 defaultName = item.text;
                             }
                             if (!defaultName) return;
-
+                            var syncPath =  fullpath+'/'+defaultName;
                             var params = {
-                                webpath: defaultName,
+                                webpath: syncPath,
                                 fullpath: localUri,
                                 mountid: mountId
                             };
                             gkClientInterface.setLinkPath(params, function () {
-                                $rootScope.$broadcast('editFileSuccess','create',mountId,'',{fullpath:defaultName});
+                                $rootScope.$broadcast('editFileSuccess','create',mountId,fullpath,{fullpath:syncPath});
                                 $modalInstance.close();
                             })
                         };
@@ -1779,9 +1884,9 @@ angular.module('gkClientIndex.services', [])
                     file = {
                         mount_id: value.mount_id || 0,
                         filename: value.filename,
-                        filesize: parseInt(value.filesize),
+                        filesize: Number(value.filesize),
                         ext: ext,
-                        last_edit_time: parseInt(value.last_dateline),
+                        last_edit_time: Number(value.last_dateline),
                         fullpath: Util.String.rtrim(value.fullpath, '/'),
                         lock: value.lock || 0,
                         lock_member_name: value.lock_member_name || '',
@@ -1790,11 +1895,12 @@ angular.module('gkClientIndex.services', [])
                         last_member_name: value.last_member_name || '',
                         creator_member_name: value.create_member_name || '',
                         creator_member_id: value.create_member_id || '',
+                        creator_time: Number(value.create_dateline),
                         cmd: value.cmd,
                         favorite: value.favorite,
                         filehash: value.filehash,
                         hash: value.hash,
-                        open:value.open
+                        open:value.publish||0
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -1802,9 +1908,9 @@ angular.module('gkClientIndex.services', [])
                     file = {
                         mount_id: value.mount_id || 0,
                         filename: fileName,
-                        filesize: parseInt(value.filesize),
+                        filesize: Number(value.filesize),
                         ext: ext,
-                        last_edit_time: parseInt(value.lasttime),
+                        last_edit_time: Number(value.lasttime),
                         fullpath: value.path,
                         lock: value.lock,
                         lock_member_name: value.lockname,
@@ -1813,6 +1919,7 @@ angular.module('gkClientIndex.services', [])
                         last_member_name: value.lastname,
                         creator_member_name: value.creatorname,
                         creator_member_id: value.creatorid,
+                        creator_time: Number(value.creatortime),
                         status: value.status,
                         sync: value.sync,
                         cmd: 1,
@@ -1823,7 +1930,7 @@ angular.module('gkClientIndex.services', [])
                         cache: value.have,
                         filehash: value.filehash,
                         hash: value.uuidhash,
-                        open:value.publish
+                        open:value.open||0
                     };
                 }
                 return file;
@@ -1983,7 +2090,8 @@ angular.module('gkClientIndex.services', [])
                     //'nearby', //附近
                     'unsubscribe', //取消订阅
                     'new_folder', //新建
-                    //'create', //创建
+                    'create', //创建
+                    'create_sync_folder',
                     'add', //添加
                     'clear_trash', //清空回收站
                     //'lock',  //锁定
@@ -1998,6 +2106,7 @@ angular.module('gkClientIndex.services', [])
                     'copy', //复制
                     'del_completely', //彻底删除
                     'revert', //还原
+                    'view_property',
                     'order_by' //排序
                 ];
             },
@@ -2031,7 +2140,7 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
-                            this.disableOpt(opts, "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            this.disableOpt(opts, 'create_sync_folder',"add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
                         }
@@ -2042,10 +2151,10 @@ angular.module('gkClientIndex.services', [])
 
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts, 'new_file','goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
+                        this.disableOpt(opts, 'create_sync_folder','new_file','goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
                     case (GKPartition.smartFolder || filter == 'search'):
-                        this.disableOpt(opts, 'new_file','revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        this.disableOpt(opts, 'create_sync_folder','new_file','revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         if (partition == GKPartition.smartFolder) {
                             this.disableOpt(opts, 'del', 'rename');
                         }
@@ -2068,7 +2177,10 @@ angular.module('gkClientIndex.services', [])
                     if (!currentFile.fullpath) {
 
                     } else {
-
+                        this.disableOpt(opts, 'create');
+                        if(currentFile.syncpath){
+                            this.disableOpt(opts,'create_sync_folder')
+                        }
                     }
 
                 }

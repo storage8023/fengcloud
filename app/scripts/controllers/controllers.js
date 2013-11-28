@@ -430,6 +430,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             $scope.handleExpand(node);
                         }
                         break;
+                    case 'set_open':
+                        var node = GKSideTree.findNode($scope.orgTreeList,mountId,path);
+                        /**
+                         * 已展开的node才刷新数据
+                         */
+                        if(node){
+                            node.data.open=1;
+                            node.iconNodeCollapse =node.iconNodeExpand= 'icon_teamfolder';
+                        }
+                        break;
 
                 }
             })
@@ -742,7 +752,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: "sync_folder",
                         icon: 'create_sync_folder',
                         callback: function () {
-                            GKModal.backUp($scope.mountId);
+                            GKModal.backUp($scope.mountId,$rootScope.PAGE_CONFIG.file.fullpath);
                         }
                     }
                 }
@@ -1041,8 +1051,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                 }
             },
-            'order_by': {
+            'view_property':{
                 index: 19,
+                name: '属性',
+                className: "file_propery",
+                icon: 'icon_file_propery',
+                callback: function () {
+                    var file = $scope.selectedFile[0],
+                        parentFile = $rootScope.PAGE_CONFIG.file;
+                    GKModal.filePropery($scope.mountId,file,parentFile);
+                }
+            },
+            'order_by': {
+                index: 20,
                 name: '排序方式',
                 className: "order_by",
                 items: {
@@ -1143,7 +1164,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 angular.forEach(subOpts,function(value,key){
                     if(optKeys.indexOf(key)>=0){
                         enableLen+=1;
-                        return;
+                    }else{
+                       delete subOpts[key];
                     }
                 });
                 return enableLen>0;
@@ -1154,7 +1176,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var opt = allOpts[value];
                     if (opt) {
                         if(opt.items && !checkSubOpt(topOptKeys,opt.items )){
-                           return;
+                            return;
                         }
                         var item = extendOpt(opt, value, false);
                         $scope.opts.push(item);
@@ -1373,6 +1395,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             });
                             break;
                         case 'create':
+                            console.log(extraParam.fullpath);
                             refreahData(extraParam.fullpath);
                             break;
                     }
@@ -1402,6 +1425,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         case 'del':
                             forEachFile(function(value){
                                 GKFileList.remove($scope,value);
+                            })
+                            break;
+                        case 'set_open':
+                            forEachFile(function(value){
+                                value.open = extraParam.open;
                             })
                             break;
 

@@ -3,6 +3,12 @@
 /* Filters */
 
 angular.module('gkClientIndex.filters', [])
+    .filter('getAvatarUrl', function () {
+        return function (memberId,isThumb) {
+            isThumb = angular.isDefined(isThumb)?isThumb:1;
+            return gkClientInterface.getSiteDomain()+'/index/avatar?id='+memberId+'&thumb='+isThumb;
+        }
+    })
     .filter('formatFileSize', function () {
         return function (filesize, dir) {
             return dir == 1 ? '-' : Util.Number.bitSize(filesize);

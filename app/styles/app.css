@@ -1920,3 +1920,46 @@ body.resizing *{
 .sidebar_contextmenu.context-menu-list > li:focus > span {
     color: #FFF;
 }
+
+.file_property_dialog{
+    width: 298px;
+    margin-left: -189px;
+}
+.file_property_dialog .modal-body{
+    padding:20px 15px;
+}
+.file_property_dialog .form-control{
+    width: 208px;
+}
+
+.file_property_dialog .input-group .btn{
+    border-top-left-radius:0;
+    border-bottom-left-radius:0;
+     display: table-cell;
+    vertical-align: top;
+    height: 29px;
+}
+.file_property_dialog section > div{
+    margin: 10px 0;
+}
+.file_property_dialog section .file_item .file_icon{
+    margin-left: 0;
+    margin-top: -6px;
+    margin-right: 4px;
+}
+.file_property_dialog section .file_item .name{
+     font-size: 15px;
+}
+.file_property_dialog section > div label{
+    margin-bottom: 8px;
+}
+.file_property_dialog section > div.publish_opt{
+    margin-top: -4px;
+    margin-bottom: 12px;
+}
+.file_property_dialog section .publish_opt .btn{
+    width: 120px;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 40px;
+}
