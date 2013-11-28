@@ -7,6 +7,18 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    setFilePublic:function(params,callback){
+        try {
+            gkClient.gPublic(JSON.stringify(params),function(re){
+                re = typeof re ==='object'?re:JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     renameSmartFolder:function(params,callback){
         try {
             params.condition = String(params.condition);

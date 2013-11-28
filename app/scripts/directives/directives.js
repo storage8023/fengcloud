@@ -14,6 +14,7 @@ angular.module('gkClientIndex.directives', [])
                     selector: '.abn-tree .abn-tree-row',
                     reposition: false,
                     zIndex: 99,
+                    className:'sidebar_contextmenu',
                     animation: {
                         show: "show",
                         hide: "hide"
@@ -1357,14 +1358,7 @@ angular.module('gkClientIndex.directives', [])
                      * 新建文件结束
                      */
                     $scope.$on('fileNewFolderEnd', function (event, newFileData, newFilePath) {
-                        //jQuery(document).off('mousedown.newfile');
                         newFileItem.remove();
-                        $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-                        angular.forEach($scope.fileData, function (value, key) {
-                            if (value.fullpath === newFilePath) {
-                                GKFileList.select($scope, key);
-                            }
-                        });
                     });
 
                 });

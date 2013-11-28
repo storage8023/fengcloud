@@ -158,7 +158,7 @@ angular.module('gkClientIndex.services', [])
                             'new_folder':{
                                 name: '新建文件夹',
                                 callback: function () {
-
+                                    GKModal.createTeamFolder(mountId,fullpath);
                                 }
                             }
                         };
@@ -167,13 +167,13 @@ angular.module('gkClientIndex.services', [])
                                 'sync':{
                                     name: '创建同步目录',
                                     callback: function () {
-                                        GKModal.backUp();
+                                        GKModal.backUp(mountId);
                                     }
                                 },
                                 'create_team_folder':{
                                     name: '创建公开文件夹',
                                     callback: function () {
-                                        GKModal.createTeamFolder();
+                                        GKModal.createTeamFolder(mountId,'',1);
                                     }
                                 },
                                 'view_dashboard': {
@@ -558,7 +558,7 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            backUp: function () {
+            backUp: function (mountId) {
                 var option = {
                     templateUrl: 'views/backup.html',
                     windowClass: 'backup_dialog',
@@ -639,20 +639,15 @@ angular.module('gkClientIndex.services', [])
                                 defaultName = item.text;
                             }
                             if (!defaultName) return;
-                            var myMount = GKMount.getMyMount();
+
                             var params = {
                                 webpath: defaultName,
                                 fullpath: localUri,
-                                mountid: myMount['mount_id']
+                                mountid: mountId
                             };
                             gkClientInterface.setLinkPath(params, function () {
-                                $modalInstance.close({
-                                    mountid: myMount['mount_id'],
-                                    partition: GKPartition.myFile,
-                                    path: '',
-                                    view: $location.search().view,
-                                    selectedpath: ''
-                                });
+                                $rootScope.$broadcast('editFileSuccess','create',mountId,'',{fullpath:defaultName});
+                                $modalInstance.close();
                             })
                         };
 
@@ -844,7 +839,8 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            createTeamFolder: function () {
+            createTeamFolder: function (mountId,fullpath,publish) {
+                publish = angular.isDefined(publish)?publish:0;
                 var option = {
                     templateUrl: 'views/create_teamfolder_dialog.html',
                     windowClass: 'create_teamfolder',
@@ -852,18 +848,49 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-
                         $scope.filename = '';
+                        $scope.disableCheck = false;
                         $scope.shareToSubscriber = false;
+                        if(publish){
+                            $scope.disableCheck = true;
+                            $scope.shareToSubscriber = true;
+                        }
                         $scope.ok = function (filename, shareToSubscriber) {
                             if (!filename || !filename.length) {
                                 alert('请输入文件夹名称');
                                 return;
                             }
-                            $modalInstance.close({
-                                filename: filename,
-                                shareToSubscriber: shareToSubscriber
+                            var path = fullpath?fullpath+'/'+filename:filename;
+                            var params = {
+                                webpath: path,
+                                dir: 1,
+                                mountid: mountId
+                            };
+                            var callback = function(){
+                                $rootScope.$broadcast('editFileSuccess','create',mountId,fullpath,{fullpath:path});
+                            };
+
+                            GK.createFolder(params).then(function () {
+                                if(shareToSubscriber){
+                                    gkClientInterface.setFilePublic({
+                                        mountid:mountId,
+                                        webpath:path,
+                                        public:1
+                                    },function(re){
+                                        if(re.error==0){
+                                            callback();
+                                        }else{
+                                            GKException.handleClientException(re);
+                                        }
+                                    });
+                                }else{
+                                    callback();
+                                }
+                            }, function (error) {
+                                GKException.handleClientException(error);
                             });
+
+                            $modalInstance.close();
                         }
                     }
                 };

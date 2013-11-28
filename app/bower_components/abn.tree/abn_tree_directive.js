@@ -213,7 +213,7 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
             label: branch.label,
             tree_icon: tree_icon,
             visible: visible,
-            node_icon:node_icon,
+              node_icon:node_icon,
               node_img:node_img
           });
           if (branch.children != null) {
@@ -235,6 +235,7 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
         }
         return _results;
       };
+
         /**
          * 初始选择
           */

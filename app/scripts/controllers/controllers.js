@@ -226,13 +226,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.handleAdd = function (partition) {
-            if (partition == GKPartition.myFile) {
-                var backupDialog = GKModal.backUp();
-                backupDialog.result.then(function (param) {
-                    alert('同步成功');
-                    $location.search(param);
-                })
-            } else if (partition == GKPartition.teamFile) {
+           if (partition == GKPartition.teamFile) {
                 var createTeamDialog = GKModal.createTeam();
 //                createTeamDialog.result.then(function (orgId) {
 //                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
@@ -424,6 +418,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         GKSideTree.editNode($scope.orgTreeList,mountId,path,{
                             sync:0
                         });
+                        break;
+                    case 'create':
+                        var node = GKSideTree.findNode($scope.orgTreeList,mountId,path);
+                        /**
+                         * 已展开的node才刷新数据
+                         */
+                        if(node.expanded){
+                            $scope.handleExpand(node);
+                        }
                         break;
 
                 }
@@ -697,36 +700,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 icon: 'icon_add',
                 className: "create",
                 callback: function () {
-                    var createTeamFolderDialog = GKModal.createTeamFolder();
-                    createTeamFolderDialog.result.then(function (param) {
-                        var myAuth = 2;
-                        var name = param.filename,
-                            shareToSubscriber = param.shareToSubscriber;
-                        var collaborations = ['member|' + $rootScope.PAGE_CONFIG.user.member_id + '|' + myAuth, 'group|0|1'];
-                        if (shareToSubscriber) {
-                            collaborations.push('member|0|0');
-                        }
-                        RestFile.orgShare($rootScope.PAGE_CONFIG.mount.mount_id, name, collaborations.join(','))
-                            .success(function (data) {
-                                var params = {
-                                    webpath: name,
-                                    dir: 1,
-                                    mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
-                                    org: 1,
-                                    orgtype: myAuth
-                                };
-                                GK.createFolder(params).then(function () {
-                                    refreahData(name);
-                                    var addShareModal = GKModal.addShare($rootScope.PAGE_CONFIG.mount.mount_id, name + '/');
-                                }, function (error) {
-                                    GKException.handleClientException(error);
-                                });
+                  GKModal.createTeamFolder(GKFileList.getOptFileMountId($scope,$rootScope),'');
 
-                            })
-                            .error(function (request) {
-                                GKException.handleAjaxException(request);
-                            });
-                    });
                 }
             },
             'unsubscribe': {
@@ -923,10 +898,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             mountid: $scope.mountId
                         };
                         GK.createFolder(params).then(function () {
-                            getFileData().then(function (newFileData) {
-                                //console.log(newFileData);
-                                $scope.$broadcast('fileNewFolderEnd', newFileData, webpath);
-                            })
+                            $scope.$broadcast('fileNewFolderEnd');
+                            $rootScope.$broadcast('editFileSuccess','create',$scope.mountId,$scope.path,{fullpath:webpath})
                         }, function (error) {
                             GKException.handleClientException(error);
                         });
@@ -1309,7 +1282,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 监听对文件的操作事件,同步文件列表和左侧的树
          */
-        $scope.$on('editFileSuccess',function(event,opt,mountId,fullpath){
+        $scope.$on('editFileSuccess',function(event,opt,mountId,fullpath,extraParam){
                 if(!$rootScope.PAGE_CONFIG.mount || $rootScope.PAGE_CONFIG.mount.mount_id != mountId){
                     return;
                 }
@@ -1341,6 +1314,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             forEachFullpath(function(fullpath){
                                 GKPath.gotoFile(mountId,Util.String.dirName(fullpath));
                             });
+                            break;
+                        case 'create':
+                            refreahData(extraParam.fullpath);
+                            break;
                     }
                 }else{
                     var forEachFile = function(callback){
@@ -1369,6 +1346,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             forEachFile(function(value){
                                 GKFileList.remove($scope,value);
                             })
+                            break;
+
                     }
 
                 }

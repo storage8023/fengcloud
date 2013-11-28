@@ -1847,3 +1847,26 @@ body.resizing *{
 .team_qr_dialog .modal-body{
     height: 410px;
 }
+
+/*左侧的右键*/
+.sidebar_contextmenu{
+
+}
+.sidebar_contextmenu.context-menu-list {
+    background-color: #3D434A;
+    border: 0 none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    min-width: 160px;
+}
+.sidebar_contextmenu.context-menu-list > li i{
+    display: none;
+}
+.sidebar_contextmenu.context-menu-list > li > span{
+    color: #fff;
+}
+
+.sidebar_contextmenu.context-menu-list > li:hover > span,
+.sidebar_contextmenu.context-menu-list > li:focus > span {
+    color: #FFF;
+}
