@@ -37,7 +37,7 @@ angular.module('gkClientIndex.filters', [])
                     partitionName = '我的文件';
                     break;
                 case 'teamfile':
-                    partitionName = '团队的文件';
+                    partitionName = '云库的文件';
                     break;
                 case 'smartfolder':
                     partitionName = '智能文件夹';

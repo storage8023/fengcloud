@@ -193,7 +193,7 @@
      * @param params
      * exp.
      * {
-     *      “sidetype”:<org:团队的文件夹|other:其他存储|magic:智能文件夹c>
+     *      “sidetype”:<org:云库的文件夹|other:其他存储|magic:智能文件夹c>
      * }
      */
     getSideTreeList: function (params) {

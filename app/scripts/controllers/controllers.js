@@ -70,8 +70,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt','GKSideTree','GKApi','$q', function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt,GKSideTree,GKApi,$q) {
         $scope.GKPartition = GKPartition;
-        var orgMount = GKMount.getOrgMounts(),//团队的空间
-            subscribeMount = GKMount.getSubscribeMounts(); //订阅的团队
+        var orgMount = GKMount.getOrgMounts(),//云库的空间
+            subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
         /**
          * 个人的文件
          * @type {*}
@@ -96,7 +96,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         /**
-         * 团队的文件
+         * 云库的文件
          */
 
         $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile);
@@ -345,7 +345,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         /**
-         * 监控增加团队的回调
+         * 监控增加云库的回调
          */
         $scope.$on('AddOrgObject', function (event, param) {
             if (!param) {
@@ -370,7 +370,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         /**
-         * 监控删除团队的回调
+         * 监控删除云库的回调
          */
         $scope.$on('RemoveOrgObject', function (event, param) {
             $scope.$apply(function () {
@@ -396,7 +396,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         /**
-         * 创建团队成功
+         * 创建云库成功
          */
         $scope.$on('createOrgSuccess',function(event,newOrg){
             if (GKMount.checkMountExsit(newOrg.mountid)) {
@@ -464,7 +464,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 deferred = $q.defer();
             $scope.errorMsg = '';
             /**
-             * 我的文件和团队文件夹
+             * 我的文件和云库文件夹
              */
             if ($scope.partition == GKPartition.myFile || $scope.partition == GKPartition.teamFile || $scope.partition == GKPartition.subscribeFile) {
                 /**

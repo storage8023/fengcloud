@@ -590,7 +590,7 @@ angular.module('gkClientIndex.directives', [])
                                     };
 
                                     var qrItem = {
-                                        text: '团队二维码',
+                                        text: '云库二维码',
                                         icon: 'icon_qr',
                                         name: 'team_qr',
                                         click: function () {
@@ -627,7 +627,7 @@ angular.module('gkClientIndex.directives', [])
                                         });
 
                                         $scope.sidbarData.menus.push({
-                                            text: '管理团队',
+                                            text: '管理云库',
                                             icon: 'icon_manage',
                                             name: 'manage_team',
                                             click: function () {

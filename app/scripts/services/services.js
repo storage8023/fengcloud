@@ -144,18 +144,38 @@ angular.module('gkClientIndex.services', [])
                     orgId = data.org_id,
                     items;
                 if (partition == GKPartition.teamFile) {
-                    if (!fullpath) {
-                        if (data.filter == 'trash') {
-                            items = {
-                                'clear_trash': {
-                                    name: '清空回收站',
+                    if (data.filter == 'trash') {
+                        items = {
+                            'clear_trash': {
+                                name: '清空回收站',
+                                callback: function () {
+                                    GKOpt.clearTrash(mountId);
+                                }
+                            },
+                        }
+                    } else {
+                        items = {
+                            'new_folder':{
+                                name: '新建文件夹',
+                                callback: function () {
+
+                                }
+                            }
+                        };
+                        if(!fullpath){
+                            angular.extend(items,{
+                                'sync':{
+                                    name: '创建同步目录',
                                     callback: function () {
-                                        GKOpt.clearTrash(mountId);
+                                        GKModal.backUp();
                                     }
                                 },
-                            }
-                        } else {
-                            items = {
+                                'create_team_folder':{
+                                    name: '创建公开文件夹',
+                                    callback: function () {
+                                        GKModal.createTeamFolder();
+                                    }
+                                },
                                 'view_dashboard': {
                                     name: '云库资料',
                                     callback: function () {
@@ -180,42 +200,18 @@ angular.module('gkClientIndex.services', [])
                                         GKModal.teamManage(data.org_id);
                                     }
                                 }
-                            };
-                        }
-
-                    } else {
-                        items = {};
-                        items['new_folder'] = {
-                            name: '新建文件夹',
-                            callback: function () {
-
-                            }
-                        };
-                        if (data.sync == 0) {
-                            items['sync'] = {
-                                name: '创建同步目录',
-                                callback: function () {
-                                    var syncDialog = GKModal.sync(mountId, fullpath);
-                                    syncDialog.result.then(function () {
-
-                                    });
+                            });
+                        }else{
+                            angular.extend(items,{
+                                'del':{
+                                    name: '删除',
+                                    callback: function () {
+                                        GKOpt.del(mountId, [fullpath]);
+                                    }
                                 }
-                            };
+                            });
                         }
-                        if (fullpath.split('/').length == 1) {
-                            items['create_team_folder'] = {
-                                name: '创建公开文件夹',
-                                callback: function () {
 
-                                }
-                            };
-                        }
-                        items['del'] = {
-                            name: '删除',
-                            callback: function () {
-                                GKOpt.del(mountId, [fullpath]);
-                            }
-                        };
                     }
 
                 } else if (data.partition == GKPartition.subscribeFile) {
@@ -447,7 +443,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.handleOpt = function (opt, item) {
                             if (opt.type == 'request') {
                                 if (opt.opt == 'invite_accept' || opt.opt == 'invite_reject') {
-                                    if (!confirm('你确定要' + opt.name + '该团队的邀请？')) {
+                                    if (!confirm('你确定要' + opt.name + '该云库的邀请？')) {
                                         return;
                                     }
                                 }
@@ -511,7 +507,7 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         /**
-                         *处理邀请加入团队的请求
+                         *处理邀请加入云库的请求
                          * @param accept
                          */
                         $scope.handleTeamInvite = function (accept, item) {
@@ -538,7 +534,7 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         /**
-                         * 处理申请加入团队的请求
+                         * 处理申请加入云库的请求
                          */
                         $scope.handleTeamRequest = function (agree) {
 
@@ -2053,7 +2049,7 @@ angular.module('gkClientIndex.services', [])
                 }
                 this.setSyncOpt(opts, currentFile, currentFile);
                 /**
-                 * 团队文件的跟目录不允许添加
+                 * 云库文件的跟目录不允许添加
                  */
                 if (!currentFile.fullpath && partition == GKPartition.teamFile) {
                     this.disableOpt(opts, 'add');
@@ -2901,7 +2897,7 @@ angular.module('gkClientIndex.services', [])
                 return !!this.getMountById(id);
             },
             /**
-             * 根据团队id获取mount
+             * 根据云库id获取mount
              * @param orgId
              * @returns {null}
              */
@@ -2930,7 +2926,7 @@ angular.module('gkClientIndex.services', [])
                 return myMount;
             },
             /**
-             * 获取团队的mount
+             * 获取云库的mount
              * @returns {Array}
              */
             getOrgMounts: function () {
