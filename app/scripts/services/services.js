@@ -1720,33 +1720,42 @@ angular.module('gkClientIndex.services', [])
                     label,
                     context = this;
                 angular.forEach(data, function (value) {
+                    item = {};
                     angular.extend(value, {
                         partition: type
                     });
+                    /**
+                     * 我的云库，订阅的云库
+                     */
                     if (type == GKPartition.myFile || type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
+                        var icon = '';
                         if (!value.fullpath) {
                             label = value.name;
-
+                            if (type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
+                                item.nodeImg = value.logo;
+                            }
                         } else {
                             label = value.filename;
                             mountId && angular.extend(value, {
                                 mount_id: mountId
                             });
+                            if(type == GKPartition.myFile || type == GKPartition.teamFile ){
+                                icon = value.sharepath||value.open==1?'icon_teamfolder':'icon_myfolder';
+                            }
                         }
                         var dropAble = false;
                         if (type == GKPartition.myFile || type == GKPartition.teamFile) {
                             dropAble = true;
                         }
-
-                        item = {
+                        angular.extend(item, {
                             dropAble: dropAble,
                             label: label,
                             isParent: true,
-                            data: value
-                        };
-                        if (type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
-                            item.nodeImg = value.logo;
-                        }
+                            data: value,
+                            iconNodeExpand:icon,
+                            iconNodeCollapse:icon
+                        });
+
                     } else {
                         if (!value.filter) {
                             value.filter = 'search';
@@ -2882,9 +2891,9 @@ angular.module('gkClientIndex.services', [])
             mountItem;
         angular.forEach(gkMounts, function (value) {
             mountItem = formatMountItem(value);
-            if (mountItem.name == '测试团队') {
-                mountItem.type = 3;
-            }
+//            if (mountItem.name == '测试团队') {
+//                mountItem.type = 3;
+//            }
             mounts.push(mountItem);
         });
         var GKMount = {

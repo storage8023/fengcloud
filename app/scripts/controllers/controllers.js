@@ -710,7 +710,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         className: "new_folder",
                         icon: 'icon_newfolder',
                         callback: function () {
-                            var isShare = $scope.partition == GKPartition.teamFile ? 1 : 0;
+                            var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
                             $scope.$broadcast('fileNewFolderStart', isShare, function (new_file_name) {
                                 var webpath = $scope.path ? $scope.path + '/' + new_file_name : new_file_name;
                                 var params = {
