@@ -198,7 +198,7 @@ angular.module('gkClientIndex.services', [])
                                 'view_dashboard': {
                                     name: '云库资料',
                                     callback: function () {
-                                        GKModal.teamMember(data.org_id);
+                                        GKModal.teamOverview(orgId);
                                     }
                                 },
                                 'view_member': {
@@ -345,6 +345,28 @@ angular.module('gkClientIndex.services', [])
             keyboard: false,
         };
         return{
+            teamOverview: function (orgId) {
+                var option = {
+                    templateUrl: 'views/team_overview_dialog.html',
+                    windowClass: 'modal_frame team_overview_dialog',
+                    controller: function ($scope, $modalInstance, src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/manage/overview?org_id='+orgId
+                            });
+                        }
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
             filePropery: function (mountId,file, parentFile) {
                 var option = {
                     templateUrl: 'views/file_property_dialog.html',
