@@ -722,7 +722,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         name: '新建文件夹',
                         index:0,
                         className: "new_folder",
-                        icon: 'icon_newfolder',
                         callback: function () {
                             var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
                             $scope.$broadcast('fileNewFolderStart', isShare, function (new_file_name) {
@@ -744,7 +743,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     'create':{
                         name: '创建公开文件夹',
                         index:1,
-                        icon: 'icon_create',
                         className: "create",
                         callback: function () {
                             GKModal.createTeamFolder($scope.mountId,'');
@@ -754,7 +752,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         name: '创建同步文件夹',
                         index:2,
                         className: "sync_folder",
-                        icon: 'create_sync_folder',
                         callback: function () {
                             GKModal.backUp($scope.mountId,$rootScope.PAGE_CONFIG.file.fullpath);
                         }
@@ -827,7 +824,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'del_completely': {
-                index:7,
+                index:20,
                 name: '彻底删除',
                 className: "del_completely",
                 icon: 'icon_disable',
@@ -874,6 +871,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 name: '粘贴',
                 className: "paste",
                 icon: 'icon_paste',
+                accesskeyText:'Ctrl+V',
                 callback: function () {
                     var data = GKCilpboard.getData();
                     if (!data || !data.files || !data.mount_id) return;
@@ -906,7 +904,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 name: '剪切',
                 className: "cut",
                 icon: 'icon_cut',
+                accesskeyText:'Ctrl+X',
                 callback: function () {
+                    if(!$scope.selectedFile || !$scope.selectedFile.length){
+                        return;
+                    }
                     var data = {
                         code: 'ctrlX',
                         mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -920,7 +922,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 name: '复制',
                 className: "copy",
                 icon: 'icon_copy',
+                accesskeyText:'Ctrl+C',
                 callback: function () {
+                    if(!$scope.selectedFile || !$scope.selectedFile.length){
+                        return;
+                    }
                     var data = {
                         code: 'ctrlC',
                         mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -996,7 +1002,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 name: '保存',
                 className: "save",
                 icon: 'icon_save',
+                accesskeyText:'Ctrl+S',
                 callback: function () {
+                    if(!$scope.selectedFile || !$scope.selectedFile.length){
+                        return;
+                    }
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
                         files.push({
@@ -1012,11 +1022,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'del': {
-                index: 17,
+                index: 21,
                 name: '删除',
                 className: "del",
                 icon: 'icon_trash',
+                accesskeyText:'Delete',
                 callback: function () {
+                    if(!$scope.selectedFile || !$scope.selectedFile.length){
+                        return;
+                    }
                     var fullpathes=[];
                     var mountId = GKFileList.getOptFileMountId($scope, $rootScope);
                     angular.forEach($scope.selectedFile, function (value) {
@@ -1060,7 +1074,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 name: '属性',
                 className: "file_property",
                 icon: 'icon_file_property',
+                accesskeyText:'Ctrl+P',
                 callback: function () {
+                    if($scope.selectedFile.length!=1){
+                        return;
+                    }
                     var file = $scope.selectedFile[0],
                         parentFile = $rootScope.PAGE_CONFIG.file;
                     GKModal.filePropery($scope.mountId,file,parentFile);
@@ -1125,7 +1143,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.rightOpts = {};
             var topOptKeys = [];
             var excludeRightOpts = []; //右键要排除的操作
-            var excludeOpts = ['order_by', 'paste', 'copy', 'cut']; // 顶部要排除的操作
+            var excludeOpts = ['view_property','order_by', 'paste', 'copy', 'cut']; // 顶部要排除的操作
 
             /**
              * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
@@ -1247,25 +1265,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return files;
         };
 
-        /**
-         * ctrl-C的 处理函数
-         */
-        $scope.$on('ctrlC', function () {
-            allOpts['copy']['callback']();
-        });
-
-        /**
-         * ctrl-X的 处理函数
-         */
-        $scope.$on('ctrlX', function () {
-            allOpts['cut']['callback']();
-        });
-
-        /**
-         * ctrl-V的 处理函数
-         */
-        $scope.$on('ctrlV', function () {
-            allOpts['paste']['callback']();
+        $scope.$on('shortCuts', function (event,shortcut) {
+            var opt = GKOpt.getOptByShortCut(allOpts,shortcut);
+            if(opt){
+                opt['callback']();
+            }
         });
 
         /**

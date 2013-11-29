@@ -1308,19 +1308,35 @@ angular.module('gkClientIndex.directives', [])
                             case 40: //right
                                 $scope.downRightPress($event);
                                 break;
+                            case 46: //c
+                                if (ctrlKeyOn) {
+                                    $scope.$emit('shortCuts','Delete');
+                                }
+                                break;
                             case 67: //c
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('ctrlC');
+                                    $scope.$emit('shortCuts','Ctrl+C');
+                                }
+                                break;
+                            case 80: //p
+                                if (ctrlKeyOn) {
+                                    $scope.$emit('shortCuts','Ctrl+P');
+                                }
+                                break;
+                            case 83: //s
+                                if (ctrlKeyOn) {
+                                    $scope.$emit('shortCuts','Ctrl+S');
                                 }
                                 break;
                             case 86: //v
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('ctrlV');
+                                    $scope.$emit('shortCuts','Ctrl+V');
+
                                 }
                                 break;
                             case 88: //x
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('ctrlX');
+                                    $scope.$emit('shortCuts','Ctrl+X');
                                 }
                                 break;
                         }

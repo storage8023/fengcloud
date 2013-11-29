@@ -1056,8 +1056,11 @@ var // currently active contextMenu trigger
                         
                         case 'sub':
                             // FIXME: shouldn't this .html() be a .text()?
-                            var icon = '<i class="icon16x16 '+item.icon+'"></i>';
-                            var accesskey = '<span class="accesskey">'+(item.accesskey||'')+'</span>';
+                            var icon = '';
+                            if(typeof item.icon !=='undefined'){
+                                icon = '<i class="icon16x16 '+item.icon+'"></i>';
+                            }
+                            var accesskey = '<span class="accesskey">'+(item.accesskeyText||'')+'</span>';
                             var text = '<span>'+(item._name || item.name || "")+'</span>';
                             $(icon+text+accesskey).appendTo($t);
                             item.appendTo = item.$node;
@@ -1078,8 +1081,11 @@ var // currently active contextMenu trigger
                                 }
                             });
                             // FIXME: shouldn't this .html() be a .text()?
-                            var icon = '<i class="icon16x16 '+item.icon+'"></i>';
-                            var accesskey = '<span class="accesskey">'+(item.accesskey||'')+'</span>';
+                            var icon = '';
+                            if(typeof item.icon !=='undefined'){
+                                icon = '<i class="icon16x16 '+item.icon+'"></i>';
+                            }
+                            var accesskey = '<span class="accesskey">'+(item.accesskeyText||'')+'</span>';
                             var text = '<span>'+(item._name || item.name || "")+'</span>';
 
                             $(icon+text+accesskey).appendTo($t);

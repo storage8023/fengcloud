@@ -2271,6 +2271,25 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
             },
+            getOptByShortCut:function(allOpt,shortCut){
+                var context=this,
+                    opt = null,
+                    shortCut = shortCut.toLowerCase();
+                angular.forEach(allOpt,function(value){
+                    if(!value.accesskeyText){
+                        return;
+                    }
+                    if(value.items){
+                        opt = context.getOptByShortCut(value.items,shortCut);
+                    }else{
+                        if(value.accesskeyText.toLowerCase() === shortCut){
+                            opt = value;
+                            return false;
+                        }
+                    }
+                });
+                return opt;
+            },
             del: function (mountId, fullpathes) {
                 var files = [];
                 angular.forEach(fullpathes, function (value) {
