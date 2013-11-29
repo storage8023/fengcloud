@@ -1389,7 +1389,12 @@ footer {
     -webkit-transition:height linear 0.1s;
     background: #F7f7f7;
 }
-
+.right_sidebar .file_detail_wrapper .post_wrapper .add_member{
+    width: 120px;
+    display: block;
+    padding: 5px 0;
+    margin: 20px auto 0;
+}
 .right_sidebar .file_detail_wrapper .post_wrapper textarea {
     width: 90%;
     margin: 16px auto 0;

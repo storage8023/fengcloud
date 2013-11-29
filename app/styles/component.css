@@ -1030,3 +1030,19 @@ text-align: center;
 .network_unconnected{
 
 }
+
+.plus{
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
+    display: inline-block;
+    padding: 0;
+    font-size: 20px;
+    color: #fff;
+    font-family: Courier;
+    font-weight: bold;
+    vertical-align: middle;
+    font-style: normal;
+    margin-top: -2px;
+}

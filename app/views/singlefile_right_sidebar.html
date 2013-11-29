@@ -14,26 +14,31 @@
                 <section class="scrollbar">
                     <div class="file_icon">
                         <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
-                             ng-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" />
+                             ng-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"/>
                         <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
                              error-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
-                             ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
+                             ng-src="{{file.hash | getThumbUrl:file.filehash}}"/>
                     </div>
                     <div class="file_attrs">
                         <div class="file_name">
                             <span title="{{file.filename}}">{{file.filename}}</span>
                         </div>
-                        <div title="创建人：{{file.creator_member_name}}">创建人：<span ng-bind="file.creator_member_name"></span></div>
-                        <div title="最后修改人：{{file.last_member_name}}">最后修改人：<span ng-bind="file.last_member_name"></span></div>
+                        <div title="创建人：{{file.creator_member_name}}">创建人：<span
+                                ng-bind="file.creator_member_name"></span></div>
+                        <div title="最后修改人：{{file.last_member_name}}">最后修改人：<span ng-bind="file.last_member_name"></span>
+                        </div>
                         <div class="smart">
-                            <a href="javascript:void(0)" ng-repeat="smart in smarts" ng-class="isSmartAdd(file.favorite,smart.filter)?'active':''" ng-click="toggleSmart(smart.filter,file.favorite)">
+                            <a href="javascript:void(0)" ng-repeat="smart in smarts"
+                               ng-class="isSmartAdd(file.favorite,smart.filter)?'active':''"
+                               ng-click="toggleSmart(smart.filter,file.favorite)">
                                 <i class="icon16x16 {{smart.icon}}" title="{{smart.name}}"></i>
                             </a>
                         </div>
                     </div>
 
                     <div class="tags" ng-if="file.cmd>0">
-                        <tags-input ng-model="file.formatTag" allowed-tags-pattern="^[a-zA-Z0-9\u4e00-\u9fa5\s]+$" class="" name="file_tag" id="file_tag" placeholder="+ 添加注释"></tags-input>
+                        <tags-input ng-model="file.formatTag" allowed-tags-pattern="^[a-zA-Z0-9\u4e00-\u9fa5\s]+$"
+                                    class="" name="file_tag" id="file_tag" placeholder="+ 添加注释"></tags-input>
                     </div>
                 </section>
             </div>
@@ -55,15 +60,25 @@
                                 </li>
                             </ul>
                             <div class="post_wrapper">
-                                <textarea class="form-control" ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="handleFocus()"
-                                          ng-model="remarkText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"></textarea>
+                                <div ng-if="remindMembers && remindMembers.length">
+                                    <textarea class="form-control" ng-keydown="handleKeyDown($event)" placeholder="参与讨论"
+                                              ng-focus="handleFocus()"
+                                              ng-model="remarkText" input-tip="@" input-tip-list="remindMembers"
+                                              input-tip-placement="top right"></textarea>
 
-                                <div class="post_opts">
+                                    <div class="post_opts">
                             <span ng-show="remindMembers && remindMembers.length">
                                 <a href="javascript:void(0)" ng-click="insertAt('@')" class="f_l" title="提醒">@</a>
-                            <a href="javascript:void(0)" ng-click="insertAt('@all ')" class="f_l" title="提醒所有共享者">@全部</a>
+                            <a href="javascript:void(0)" ng-click="insertAt('@all ')" class="f_l"
+                               title="提醒所有共享者">@全部</a>
                             </span>
-                                    <button class="btn btn-primary f_r" ng-click="postRemark(remarkText)">确定</button>
+                                        <button class="btn btn-primary f_r" ng-click="postRemark(remarkText)">确定</button>
+                                    </div>
+                                </div>
+                                <div ng-if="!remindMembers || !remindMembers.length">
+                                    <button class="btn btn-primary add_member" ng-click="showAddMember()">
+                                        <i class="plus">+</i>添加成员
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -75,8 +90,10 @@
                             <li class="item c_f_after" ng-class="'act_'+history.act" ng-repeat="history in histories">
                                 <div class="act_name"><span>{{history.act_name}}</span></div>
                                 <div class="act_info">
-                                    <div> <span class="filename">{{history.fullpath|baseName}}</span></div>
-                                    <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span class="act_dateline">{{history.dateline*1000 | date:'yyyy/M/d H:m'}}</span></div>
+                                    <div><span class="filename">{{history.fullpath|baseName}}</span></div>
+                                    <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span
+                                            class="act_dateline">{{history.dateline*1000 | date:'yyyy/M/d H:m'}}</span>
+                                    </div>
                                 </div>
                                 <!--<div class="act_opts dropdown">-->
                                 <!--<a dropdown-toggle href="javascript:void(0);">-->

@@ -855,6 +855,10 @@ angular.module('gkClientIndex.directives', [])
                         });
                 };
 
+                $scope.showAddMember = function(){
+                  GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+                };
+
                 $scope.insertAt = function (input) {
                     var val = $scope.remarkText;
                     var jqTextarea = $element.find('.post_wrapper textarea');
