@@ -730,7 +730,6 @@ angular.module('gkClientIndex.directives', [])
                             });
 
                         }).error(function (request) {
-                                console.log(request);
                                 $scope.$apply(function () {
                                     $scope.loading = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
@@ -1420,6 +1419,7 @@ angular.module('gkClientIndex.directives', [])
                     if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
                         GKFileList.unSelectAll($scope);
                     }
+                    document.activeElement.blur();
                 };
 
                 /**drag drop **/

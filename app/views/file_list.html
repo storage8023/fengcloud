@@ -34,7 +34,10 @@
     </div>
 
     <div class="scrollbar list_body" ng-drop="handleSysDrop($event)" ng-mousedown="handleMouseDown($event)"
-         ng-right-click="handleRightClick($event)" ng-model="testModel" scroll-load= "handleScrollLoad()">
+         ng-right-click="handleRightClick($event)" ng-model="testModel" scroll-load= "handleScrollLoad()"
+         ng-model="testModel"
+         ui-selectable
+            >
         <div class="empty" ng-if="errorMsg">
             <span>{{errorMsg}}</span>
         </div>

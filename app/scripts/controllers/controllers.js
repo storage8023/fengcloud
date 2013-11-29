@@ -931,7 +931,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             'add': {
-                index:13,
+                index:2,
                 name: '添加',
                 className: "add",
                 icon: 'icon_download',
@@ -1167,22 +1167,26 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
              * 检测subopt是否允许
              */
             var checkSubOpt = function(optKeys,subOpts){
-                var enableLen = 0;
-                angular.forEach(subOpts,function(value,key){
-                    if(optKeys.indexOf(key)>=0){
-                        enableLen+=1;
-                    }else{
-                       delete subOpts[key];
+                var cloneOpt  = angular.extend({},subOpts);
+                angular.forEach(cloneOpt,function(value,key){
+                    if(optKeys.indexOf(key)<0){
+                        delete cloneOpt[key];
                     }
                 });
-                return enableLen>0;
+                return cloneOpt;
             };
+
             angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     var opt = allOpts[value];
                     if (opt) {
-                        if(opt.items && !checkSubOpt(topOptKeys,opt.items )){
-                            return;
+                        if(opt.items){
+                            var subItems = checkSubOpt(topOptKeys,opt.items);
+                            if(jQuery.isEmptyObject(subItems)){
+                                return;
+                            }else{
+                                opt.items = subItems;
+                            }
                         }
                         var item = extendOpt(opt, value, false);
                         $scope.opts.push(item);
@@ -1402,7 +1406,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             });
                             break;
                         case 'create':
-                            console.log(extraParam.fullpath);
                             refreahData(extraParam.fullpath);
                             break;
                     }

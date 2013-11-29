@@ -53,7 +53,11 @@ angular.module('gkClientIndex.services', [])
                         checkPath += fullpathArr[i] + '/';
                     }
                     checkPath = Util.String.ltrim(Util.String.rtrim(checkPath, '/'), '/');
-                    var parentNode = context.getNode(children, mountId, checkPath)[1];
+                    var cNode  =context.getNode(children, mountId, checkPath);
+                    var parentNode = null;
+                    if(cNode && cNode.length){
+                        parentNode = context.getNode(children, mountId, checkPath)[1];
+                    }
                     if (!parentNode) {
                         return false;
                     } else {
@@ -2191,7 +2195,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getCurrentOpts: function (currentFile, partition) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
+                this.disableOpt(opts, 'view_property',"goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
                 if (GKCilpboard.isEmpty()) {
                     this.disableOpt(opts, 'paste');
                 }
