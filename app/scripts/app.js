@@ -3,7 +3,7 @@ angular.module('LocalStorageModule').value('prefix', 'gkClientIndex');
 angular.module('gkClientIndex', ['ngDragDrop','gkClientIndex.controllers', 'gkClientIndex.filters', 'gkClientIndex.directives', 'gkClientIndex.services', 'ngRoute', 'LocalStorageModule', 'ui.directives', 'ui.utils', 'ui.bootstrap', 'ngSanitize', 'tags-input', 'LocalStorageModule', 'ngAnimate'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
-            when('/file?', {
+            when('/file', {
                 templateUrl: 'views/file_browser.html',
                 controller: 'fileBrowser'
             }).

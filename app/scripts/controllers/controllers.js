@@ -448,6 +448,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }])
     .controller('fileBrowser', ['GKDialog', 'GKOpen', '$scope', '$routeParams', '$location', '$filter', 'GKPath', 'GK', 'GKException', 'GKFile', 'GKCilpboard', 'GKOpt', '$rootScope', '$modal', 'GKApi', '$q', 'GKSearch', 'RestFile', 'GKFileList', 'GKPartition', 'GKFileOpt', 'GKModal', 'GKFilter', function (GKDialog, GKOpen, $scope, $routeParams, $location, $filter, GKPath, GK, GKException, GKFile, GKCilpboard, GKOpt, $rootScope, $modal, GKApi, $q, GKSearch, RestFile, GKFileList, GKPartition, GKFileOpt, GKModal, GKFilter) {
+
         /**
          * 打开时会有一次空跳转
          */
@@ -458,7 +459,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
-        $scope.partition = $routeParams.partition || GKPartition.myFile; //当前的分区
+        $scope.partition = $routeParams.partition || GKPartition.teamFile; //当前的分区
         $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
         $scope.order = '+file_name'; //当前的排序
         $scope.filter = $routeParams.filter || ''; //当前的筛选 [search|trash]
@@ -469,6 +470,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.keyword = $routeParams.keyword || '';
         $scope.errorMsg = '';
         var totalCount = 0;
+
+        //console.log(12);
+
         /**
          * 文件列表数据
          */
@@ -647,7 +651,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 });
 
             } else {
-               GKModal.sync(GKFileList.getOptFileMountId($scope, $rootScope),file.fullpath);
+               GKModal.sync($rootScope.PAGE_CONFIG.mount.mount_id,file.fullpath);
             }
         };
 
@@ -1141,9 +1145,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if ($scope.partition == GKPartition.subscribeFile) {
                     topOptKeys = optKeys;
                 } else {
-                    topOptKeys = jQuery.unique(currentOpts.concat(optKeys)).reverse();
+                    var re = currentOpts.concat(optKeys);
+                    topOptKeys =jQuery.unique(jQuery.unique(re));
                 }
-
             } else {
                 topOptKeys = optKeys;
             }
@@ -1159,6 +1163,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return angular.extend(opt, extendParam);
             }
 
+            /**
+             * 检测subopt是否允许
+             */
             var checkSubOpt = function(optKeys,subOpts){
                 var enableLen = 0;
                 angular.forEach(subOpts,function(value,key){
@@ -1170,7 +1177,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 });
                 return enableLen>0;
             };
-
             angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     var opt = allOpts[value];
@@ -1184,6 +1190,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
                 }
             });
+
 
             /**
              * 右键的操作

@@ -27,7 +27,7 @@
             <avatar class="avatar avatar_mini" gk-src="{{file.last_member_id|getAvatarUrl}}"></avatar>
             <span>{{file.last_member_name}} 最后修改于 {{file.last_edit_time*1000 | date:'yyyy/M/d H:m:s'}}</span>
         </div>
-        <div class="file_size" ng-show="file.dir==1">
+        <div class="file_size" ng-show="file.dir==0">
             <span>占用 {{file.filesize|bitSize}} 空间</span>
         </div>
         <div>

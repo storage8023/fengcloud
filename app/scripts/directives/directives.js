@@ -725,13 +725,14 @@ angular.module('gkClientIndex.directives', [])
                             });
 
                         }).error(function (request) {
+                                console.log(request);
                                 $scope.$apply(function () {
                                     $scope.loading = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
                                     /**
                                      * 云端不存在
                                      */
-                                    if (errorCode == 40402) {
+                                    if (String(errorCode).slice(0,3)=='404') {
                                         $scope.fileExist = false;
                                         $scope.sidbarData = {
                                             icon: 'uploading'
