@@ -1922,22 +1922,27 @@ body.resizing *{
 }
 
 .file_property_dialog{
-    width: 298px;
-    margin-left: -189px;
+    width: 338px;
+    margin-left: -169px;
 }
 .file_property_dialog .modal-body{
     padding:20px 15px;
 }
 .file_property_dialog .form-control{
-    width: 208px;
+    width: 248px;
 }
-
+.file_property_dialog .input-group{
+    width: 100%;
+}
 .file_property_dialog .input-group .btn{
     border-top-left-radius:0;
     border-bottom-left-radius:0;
      display: table-cell;
     vertical-align: top;
     height: 29px;
+}
+.file_property_dialog section{
+    text-align: center;
 }
 .file_property_dialog section > div{
     margin: 10px 0;
@@ -1961,5 +1966,4 @@ body.resizing *{
     width: 120px;
     padding-left: 0;
     padding-right: 0;
-    margin-left: 40px;
 }
