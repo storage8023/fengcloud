@@ -664,6 +664,12 @@ footer {
 .toolbar button.open .opt.goto i{
     background-position: -24px -1244px;
 }
+.context-menu-item.file_property:hover i,
+.toolbar button:hover .opt.file_property i,
+.toolbar button:active .opt.file_property i,
+.toolbar button.open .opt.file_property i{
+    background-position: -24px -384px;
+}
 .toolbar .opt.opt_view_change > a:hover{
     background: #9AA5B8;
 }

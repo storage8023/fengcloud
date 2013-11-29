@@ -1058,8 +1058,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             'view_property':{
                 index: 19,
                 name: '属性',
-                className: "file_propery",
-                icon: 'icon_file_propery',
+                className: "file_property",
+                icon: 'icon_file_property',
                 callback: function () {
                     var file = $scope.selectedFile[0],
                         parentFile = $rootScope.PAGE_CONFIG.file;
@@ -1164,7 +1164,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
 
             /**
-             * 检测subopt是否允许
+         * 检测subopt是否允许
              */
             var checkSubOpt = function(optKeys,subOpts){
                 var cloneOpt  = angular.extend({},subOpts);

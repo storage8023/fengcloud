@@ -183,6 +183,15 @@
     background-position: -24px -384px;
 }
 
+.icon16x16.icon_file_property{
+    background-position: -4px -384px;
+}
+.active .icon16x16.icon_file_property,
+.icon16x16.icon_file_property_white{
+    background-position: -24px -384px;
+}
+
+
 .icon16x16.icon_computer{
     background-position: -4px -404px;
 }
