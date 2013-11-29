@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" ng-app="gkClientIndex" prevent-drag-drop>
+<html lang="zh-CN" ng-app="gkClientIndex" ng-controller="initClient" prevent-drag-drop ng-mouseleave="handleMouseLeave()">
 <head>
     <meta charset="utf-8">
     <title>够快云库</title>
@@ -36,7 +36,7 @@
     <script src="scripts/services/services.js"></script>
     <script src="scripts/app.js"></script>
 </head>
-<body ng-controller="initClient" ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''">
+<body ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''">
 <div ng-include="'views/left_sidebar.html'"></div>
 <div class="main">
     <div ng-include="'views/header.html'"></div>

@@ -177,6 +177,7 @@ angular.module('gkClientIndex.directives', [])
             });
         };
     }])
+
     .directive('ngDrop', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngDrop);
@@ -649,7 +650,11 @@ angular.module('gkClientIndex.directives', [])
                             };
                         }
                     }
-                }, true)
+                }, true);
+
+                $scope.handleDragEnd = function(){
+                  console.log(1);
+                };
             }
         }
     }])
@@ -1487,6 +1492,17 @@ angular.module('gkClientIndex.directives', [])
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngRightClick);
             $element.bind('contextmenu', function (event) {
+                $scope.$apply(function () {
+                    event.preventDefault();
+                    fn($scope, {$event: event});
+                });
+            });
+        };
+    }])
+    .directive('ngDragend', ['$parse', function ($parse) {
+        return function ($scope, $element, $attrs) {
+            var fn = $parse($attrs.ngDragend);
+            $element.on('dragend', function (event) {
                 $scope.$apply(function () {
                     event.preventDefault();
                     fn($scope, {$event: event});
