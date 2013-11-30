@@ -5,6 +5,7 @@ module = angular.module('angularBootstrapNavTree', []);
 module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$parse,$window) {
   return {
     restrict: 'E',
+    replace:true,
     templateUrl: 'bower_components/abn.tree/abn_tree_template.html',
     scope: {
       treeData: '=',

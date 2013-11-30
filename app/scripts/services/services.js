@@ -14,6 +14,9 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .factory('GKGuiders', [function () {
+        return guiders;
+    }])
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath:function(mountId,fullpath){

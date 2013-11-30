@@ -3,6 +3,19 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('gkGuider', ['GKGuiders','$parse',function (GKGuiders,$parse) {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                $scope.GKGuiders = GKGuiders;
+                var option = $scope.$eval($attrs.gkGuider);
+                angular.extend(option,{
+                    attachTo: $element[0]
+                });
+                GKGuiders.createGuider(option);
+            }
+        }
+    }])
     .directive('contextmenu', ['GKContextMenu', function (GKContextMenu) {
         return {
             restrict: 'A',

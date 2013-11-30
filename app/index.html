@@ -6,17 +6,19 @@
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="styles/bootstrap-gk.css"/>
     <link rel="stylesheet" href="styles/jquery-ui-gk.css" />
-    <link rel="stylesheet" href="styles/base.css"/>
-    <link rel="stylesheet" href="styles/component.css"/>
     <link rel="stylesheet" href="styles/ng-animation.css"/>
     <link rel="stylesheet" href="bower_components/abn.tree/abn_tree_style.css"/>
     <link rel="stylesheet" href="bower_components/tags-input/ng-tags-input.css"/>
+    <link rel="stylesheet" href="bower_components/guiders/guiders.css"/>
+    <link rel="stylesheet" href="styles/base.css"/>
+    <link rel="stylesheet" href="styles/component.css"/>
     <link rel="stylesheet" href="styles/app.css"/>
     <script src="scripts/util.js"></script>
     <script src="scripts/interface.js"></script>
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/jquery/context-menu/jquery.contextMenu.js"></script>
     <script src="bower_components/jquery-ui/js/jquery-ui-1.10.3.custom.js"></script>
+    <script src="bower_components/guiders/guiders.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-drag-drop/angular-dragdrop.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
@@ -36,7 +38,13 @@
     <script src="scripts/services/services.js"></script>
     <script src="scripts/app.js"></script>
 </head>
-<body ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''">
+<body ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''"
+      ng-intro-options="IntroOptions"
+      ng-intro-method="showIntro"
+      ng-intro-oncomplete="CompletedEvent"
+      ng-intro-onexit="ExitEvent"
+      ng-intro-onchange="ChangeEvent"
+      ng-intro-onbeforechange="BeforeChangeEvent">>
 <div ng-include="'views/left_sidebar.html'"></div>
 <div class="main">
     <div ng-include="'views/header.html'"></div>

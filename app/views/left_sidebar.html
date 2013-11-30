@@ -2,32 +2,44 @@
 <aside class="left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user"></member>
     <div class="scrollbar tree_wrapper" contextmenu>
-        <abn-tree tree-data="orgTreeList"
-                  header="我的云库"
-                  icon-leaf="icon_file"
-                  icon-expand="icon_fold"
-                  icon-collapse="icon_unfold"
-                  icon-node-expand="icon_teamfolder"
-                  icon-node-collapse="icon_teamfolder"
-                  selected-branch="selectedBranch"
-                  on-add="handleAdd(GKPartition.teamFile)"
-                  on-select="handleSelect(branch,GKPartition.teamFile)"
-                  on-expand="handleExpand(branch,GKPartition.teamFile)"
-                  on-drop="handleDrop(branch)"
-                >
-        </abn-tree>
-        <abn-tree tree-data="orgSubscribeList"
-                  header="订阅的云库"
-                  icon-leaf="icon_file"
-                  icon-expand="icon_fold"
-                  icon-collapse="icon_unfold"
-                  icon-node-expand="icon_subscribefolder"
-                  icon-node-collapse="icon_subscribefolder"
-                  selected-branch="selectedBranch"
-                  on-select="handleSelect(branch,GKPartition.subscribeFile)"
-                  on-expand="handleExpand(branch,GKPartition.subscribeFile)"
-                >
-        </abn-tree>
+        <div gk-guider='{
+                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
+                  description: "云库可以存放你所有的资料。“我的云库”是你创建或参与的云库，可以编辑其中的文件。“订阅的云库”是他人共享的，但只能查看文件。",
+                  id: "guide_1",
+                  next: "guide_2",
+                  position: 3,
+                  title: "云库",
+                  width: 280
+                  }'>
+            <abn-tree tree-data="orgTreeList"
+                      header="我的云库"
+                      icon-leaf="icon_file"
+                      icon-expand="icon_fold"
+                      icon-collapse="icon_unfold"
+                      icon-node-expand="icon_teamfolder"
+                      icon-node-collapse="icon_teamfolder"
+                      selected-branch="selectedBranch"
+                      on-add="handleAdd(GKPartition.teamFile)"
+                      on-select="handleSelect(branch,GKPartition.teamFile)"
+                      on-expand="handleExpand(branch,GKPartition.teamFile)"
+                      on-drop="handleDrop(branch)"
+
+                    >
+            </abn-tree>
+            <abn-tree tree-data="orgSubscribeList"
+                      header="订阅的云库"
+                      icon-leaf="icon_file"
+                      icon-expand="icon_fold"
+                      icon-collapse="icon_unfold"
+                      icon-node-expand="icon_subscribefolder"
+                      icon-node-collapse="icon_subscribefolder"
+                      selected-branch="selectedBranch"
+                      on-select="handleSelect(branch,GKPartition.subscribeFile)"
+                      on-expand="handleExpand(branch,GKPartition.subscribeFile)"
+                    >
+            </abn-tree>
+        </div>
+
         <abn-tree tree-data="smartTreeList"
                   header="智能文件夹"
                   icon-leaf="icon_file"
@@ -40,6 +52,15 @@
                   on-select="handleSelect(branch,GKPartition.smartFolder)"
                   on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
+                  gk-guider='{
+                  buttons: [{name: "完成",onclick:GKGuiders.hideAll}],
+                  description: "智能文件夹中将记录最近修改过的文件。用不同的图形标记的文件，也可以在这里快速找到。",
+                  id: "guide_5",
+                  next: "guide_6",
+                  position: 3,
+                  title: "智能文件夹",
+                  width: 280
+                  }'
                 >
         </abn-tree>
     </div>

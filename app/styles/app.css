@@ -461,14 +461,17 @@ footer {
     padding: 0 5px;
     font-size: 13px;
 }
+.toolbar .opt_tool{
+    display: inline-block;
+}
 .toolbar .filter_name{
     line-height: 45px;
     font-size: 18px;
     margin:0 0 0 10px ;
 }
 
-.toolbar > button,
-.toolbar > span {
+.toolbar .f_l,
+.toolbar .f_l {
     margin-top: 9px;
 }
 
