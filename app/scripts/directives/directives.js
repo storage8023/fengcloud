@@ -643,7 +643,7 @@ angular.module('gkClientIndex.directives', [])
                 }, true);
 
                 $scope.handleDragEnd = function () {
-                    console.log(1);
+
                 };
             }
         }
@@ -1023,8 +1023,6 @@ angular.module('gkClientIndex.directives', [])
                 $scope.PAGE_CONFIG = $rootScope.PAGE_CONFIG;
                 var shiftLastIndex = 0; //shift键盘的起始点
 
-                var isDraging = false;
-
                 $scope.$watch('selectedPath', function (newValue, oldValue) {
                     if (!newValue || newValue == oldValue) {
                         return;
@@ -1046,44 +1044,29 @@ angular.module('gkClientIndex.directives', [])
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
-                            GKFileList.unSelect($scope, index);
-                        }
-                        else {
-                            GKFileList.select($scope, index, true);
+                            GKFileList.unSelect($scope,index);
+                        } else {
+                            GKFileList.select($scope,index, true);
                         }
                     } else if ($event.shiftKey) {
                         var lastIndex = shiftLastIndex;
                         GKFileList.unSelectAll($scope)
                         if (index > lastIndex) {
                             for (var i = lastIndex; i <= index; i++) {
-                                GKFileList.select($scope, i, true);
+                                GKFileList.select($scope,i, true);
                             }
                         } else if (index < lastIndex) {
                             for (var i = index; i <= lastIndex; i++) {
-                                GKFileList.select($scope, i, true);
+                                GKFileList.select($scope,i, true);
                             }
                         }
 
                     } else {
-                        GKFileList.select($scope, index, false);
+                        GKFileList.select($scope,index);
                     }
                     if (!$event.shiftKey) {
                         shiftLastIndex = index;
                     }
-                };
-
-                $scope.handleMouseUp = function ($event, index) {
-                    var file = $scope.fileData[index];
-                    if (!isDraging) {
-                        if (!($event.ctrlKey || $event.metaKey || $event.shiftKey)) {
-                            if ($scope.selectedFile.length > 1) {
-                                GKFileList.select($scope, index);
-                            }
-                        }
-                    } else {
-                        isDraging = false;
-                    }
-
                 };
 
                 /**
@@ -1440,12 +1423,23 @@ angular.module('gkClientIndex.directives', [])
                     return '<div class="helper">' + selectFileName + moreInfo + '</div>';
 
                 };
-                $scope.dragBegin = function (event, ui, $index) {
-                    isDraging = true;
+                $scope.dragBegin = function (event, ui, index) {
+                   var file = $scope.fileData[index];
+                    if(!file){
+                        return;
+                    }
+                    if(!file.selected){
+                        GKFileList.select($scope,index);
+                    }
+                    angular.forEach($scope.selectedFile,function(value){
+                        value.disableDrop = true;
+                    });
                 };
 
-                $scope.dragEnd = function (event, ui, $index) {
-                    isDraging = false;
+                $scope.dragEnd = function (event, ui, index) {
+                    angular.forEach($scope.selectedFile,function(value){
+                        value.disableDrop = false;
+                    });
                 };
 
                 $scope.handleOver = function (event, ui, file) {

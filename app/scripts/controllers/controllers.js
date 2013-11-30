@@ -1331,6 +1331,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 file.hover = false;
                 return;
             }
+
             GKFileOpt.move(toFullpath, toMountId, fromFullpathes, fromMountId).then(function () {
                 refreahData();
             }, function () {
@@ -1375,7 +1376,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.$on('dropSysFile', function (event, files) {
             if (
-                $scope.partition == GKPartition.subscribeFile || ($scope.partition == GKPartition.teamFile && !$scope.path)
+                $scope.partition == GKPartition.subscribeFile
                 ) {
                 alert('不能在当前路径添加文件');
                 return;
