@@ -100,7 +100,7 @@ var guiders = (function($) {
       guiderButtonsContainer.remove();
       return;
     }
-  
+      guiderButtonsContainer.empty();
     for (var i = myGuider.buttons.length - 1; i >= 0; i--) {
       var thisButton = myGuider.buttons[i];
       var thisButtonElem = $(guiders._buttonElement,
@@ -158,6 +158,7 @@ var guiders = (function($) {
       "role" : "button"
     });
       xButton.addClass('close');
+      xButtonContainer.empty();
     xButtonContainer.append(xButton);
     xButton.click(function() {
       guiders.hideAll();

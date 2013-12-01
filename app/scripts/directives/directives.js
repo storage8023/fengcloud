@@ -1481,6 +1481,7 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             templateUrl: "views/toolbar.html",
             link: function ($scope, $element) {
+               console.log(1);
                 if ($scope.partition == GKPartition.smartFolder && $scope.filter) {
                     $scope.listName = GKFilter.getFilterName($scope.filter)
                 } else {

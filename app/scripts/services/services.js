@@ -344,8 +344,7 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync',function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath,GKSync) {
         var defaultOption = {
-            backdrop: 'static',
-            keyboard: false,
+            backdrop: 'static'
         };
         return{
             teamOverview: function (orgId) {
