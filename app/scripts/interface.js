@@ -130,7 +130,7 @@
         return JSON.parse(re);
     },
     getLinkDomain:function(){
-        return gkClient.gSiteDomain().replace(/(gkdev|wwww)/,'link');
+        return gkClient.gSiteDomain()+'/link';
     },
     getSiteDomain:function(){
         return gkClient.gSiteDomain();

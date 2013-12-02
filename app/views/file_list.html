@@ -78,7 +78,7 @@
                       ng-bind-html="file.filename|highlight:keyword"></span>
             </div>
             <div class="last_edit_time" ng-show="view=='list'">
-                <span>{{file.last_edit_time*1000 | date:'yyyy/M/d H:m'}}</span></div>
+                <span>{{file.last_edit_time*1000 | date:'yyyy/M/d HH:mm'}}</span></div>
             <div class="file_type" ng-show="view=='list'"><span>{{file.filename | getFileType:file.dir:file.ext}}</span>
             </div>
             <div class="file_size" ng-show="view=='list'"><span>{{file.dir==1?'-':(file.filesize|bitSize)}}</span></div>

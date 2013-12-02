@@ -259,7 +259,21 @@ width: 112px;
 .sync .list .item .icon_sync_done{
     background-position: -84px -64px;
 }
-.account img{
+.account .photo_wrapper{
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+    position: relative;
+}
+.account .photo_wrapper .loading{
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin: -8px 0 0 -8px;
+    width: 16px;
+    height: 16px;
+}
+.account img.avatar{
     width: 64px;
     height: 64px;
     border-radius: 64px;

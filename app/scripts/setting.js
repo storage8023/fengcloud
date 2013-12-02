@@ -315,6 +315,9 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                 $scope.uploading = false;
                 $scope.setPhoto = function(){
                     var path = gkClientInterface.selectPhotoPath();
+                    if(!path){
+                        return;
+                    }
                     $scope.uploading = true
                     gkClientInterface.setUserInfo({
                         path:path
