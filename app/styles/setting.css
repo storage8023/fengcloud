@@ -264,6 +264,7 @@ width: 112px;
     width: 64px;
     height: 64px;
     position: relative;
+    margin: 0 5px 0 0;
 }
 .account .photo_wrapper .loading{
     position: absolute;
@@ -277,7 +278,7 @@ width: 112px;
     width: 64px;
     height: 64px;
     border-radius: 64px;
-    margin: 0 5px 0 0;
+    margin: 0;
 }
 .account section{
     padding: 15px;
