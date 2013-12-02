@@ -338,19 +338,19 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                 $scope.editName = false;
                 $scope.handleBlur = function(newName){
                     if(!newName){
-                        alert('帐号名不能为空');
+                        alert('用户名不能为空');
                         return;
                     }
                     if(newName.length<2){
-                        alert('帐号名的长度必须在2到16之间');
+                        alert('用户名的长度必须在2到16之间');
                         return;
                     }
                     if(newName.length>16){
-                        alert('帐号名的长度必须在2到16之间');
+                        alert('用户名的长度必须在2到16之间');
                         return;
                     }
                     if(!Util.Validation.isRegName(newName)){
-                        alert('帐号名的只能包含中文、英文、数字、下划线');
+                        alert('用户名的只能包含中文、英文、数字、下划线');
                         return;
                     }
 

@@ -1315,7 +1315,7 @@ angular.module('gkClientIndex.services', [])
             appendNews: function (data) {
                 if (!data['list'] || !data['list'].length) {
                     if (data['count'] > 0) {
-                        this.requestNews()
+                        this.requestNews();
                     }
                 } else {
                     this.addNews(data['list']);
