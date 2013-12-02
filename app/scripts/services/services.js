@@ -505,10 +505,9 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         $scope.goto = function(localUri){
-                            console.log(1);
                             gkClientInterface.openLocation({
                                 mountid:0,
-                                webpath: localUri
+                                webpath: Util.String.ltrim(Util.String.rtrim(localUri,'\\\\'),'/')
                             });
                         };
 
@@ -663,6 +662,7 @@ angular.module('gkClientIndex.services', [])
                                         if (data && data.updates) {
                                             var newItem = data.updates[0];
                                             item.render_content = newItem.render_content;
+                                            GKNews.updateNews(item.id,newItem);
                                         }
 
                                     });
@@ -1288,6 +1288,16 @@ angular.module('gkClientIndex.services', [])
 
                 });
                 return oldClassifyNews;
+            },
+            updateNews:function(newsId,param){
+                var news = this.getNews();
+                angular.forEach(news,function(value){
+                    if(value.id == newsId){
+                        angular.extend(value,param);
+                        return false;
+                    }
+                });
+                localStorageService.add(newsKey, JSON.stringify(news));
             },
             addNews: function (news) {
                 if (!news || !news.length) {

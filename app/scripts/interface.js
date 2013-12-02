@@ -367,7 +367,6 @@
     open:function(params){
         try {
             params.opentype = 'open';
-            //console.log(params);
             gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
@@ -376,6 +375,7 @@
     openLocation:function(params){
         try {
             params.opentype = 'select';
+            console.log(params);
             return gkClient.gOpen(params);
         } catch (e) {
             this._handleException(e);
