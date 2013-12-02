@@ -279,7 +279,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
 /**
  * 设置-账号
  */
-    .directive('tabAccount',['$rootScope','GKMount',function($rootScope,GKMount){
+    .directive('tabAccount',['$rootScope','GKMount','GKException',function($rootScope,GKMount,GKException){
         return {
             restrict: 'E',
             templateUrl:'views/tab_account.html',
@@ -311,6 +311,60 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                     });
                     gkClientInterface.openUrl(url);
                 };
+
+                $scope.uploading = false;
+                $scope.setPhoto = function(){
+                    var path = gkClientInterface.selectPhotoPath();
+                    $scope.uploading = true
+                    gkClientInterface.setUserInfo({
+                        path:path
+                    },function(re){
+                        $scope.uploading = false;
+                        if(re.error==0){
+                            alert('上传成功');
+                        }else{
+                            GKException.handleClientException(re);
+                        }
+                    });
+                };
+
+                $scope.newName = $rootScope.PAGE_CONFIG.user.member_name;
+                $scope.editName = false;
+                $scope.handleBlur = function(newName){
+                    if(!newName){
+                        alert('帐号名不能为空');
+                        return;
+                    }
+                    if(newName.length<2){
+                        alert('帐号名的长度必须在2到16之间');
+                        return;
+                    }
+                    if(newName.length>16){
+                        alert('帐号名的长度必须在2到16之间');
+                        return;
+                    }
+                    if(!Util.Validation.isRegName(newName)){
+                        alert('帐号名的只能包含中文、英文、数字、下划线');
+                        return;
+                    }
+
+                    if(newName === $rootScope.PAGE_CONFIG.user.member_name){
+                        $scope.editName = false;
+                        return;
+                    }
+                    gkClientInterface.setUserInfo({
+                        name:newName
+                    },function(re){
+                        $scope.$apply(function(){
+                            if(re.error==0){
+                                $rootScope.PAGE_CONFIG.user.member_name=newName;
+                            }else{
+                                GKException.handleClientException(re);
+                            }
+                        })
+                    });
+                }
+
             }
         }
     }])

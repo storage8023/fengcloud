@@ -57,6 +57,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
             gkClientInterface.openUrl(url);
         })
+
         $scope.$on('addMember',function(){
             if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
                return;
@@ -64,6 +65,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
 
         })
+
         $scope.$on('viewSubscriber',function(){
             if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
                return;
@@ -71,6 +73,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
 
         })
+
         $scope.$on('qr',function(){
             if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
                return;
@@ -78,6 +81,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.teamQr($rootScope.PAGE_CONFIG.mount.org_id);
         })
 
+        $scope.$on('UserInfo',function(event,param){
+            $scope.$apply(function(){
+                $rootScope.PAGE_CONFIG.user = param;
+            });
+        })
 
         /**
          * 监听路径的改变

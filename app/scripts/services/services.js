@@ -568,9 +568,11 @@ angular.module('gkClientIndex.services', [])
                                 mountid: mountId
                             };
                             gkClientInterface.setLinkPath(params, function () {
+                                $scope.$apply(function(){
+                                    $rootScope.$broadcast('editFileSuccess', 'sync', mountId, fullpath);
+                                    $modalInstance.close();
+                                })
                                 alert('同步设置成功');
-                                $rootScope.$broadcast('editFileSuccess', 'sync', mountId, fullpath);
-                                $modalInstance.close();
                             });
                         };
 

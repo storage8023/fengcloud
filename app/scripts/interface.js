@@ -7,6 +7,25 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    selectPhotoPath:function(params){
+        try {
+            return gkClient.gGetUserImagePath();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    setUserInfo:function(params,callback){
+        try {
+            gkClient.gSetUserInfo(JSON.stringify(params),function(re){
+                re = typeof re ==='object'?re:JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     getOpenWithMenu:function(param){
         try {
             var re = gkClient.gGetOpenWithMenu(JSON.stringify(param));

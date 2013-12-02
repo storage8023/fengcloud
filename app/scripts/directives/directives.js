@@ -3,13 +3,25 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
-    .directive('gkGuider', ['GKGuiders','$parse',function (GKGuiders,$parse) {
+    .directive('focusMe', function ($timeout) {
+        return {
+            link: function (scope, element, attrs) {
+                scope.$watch(attrs.focusMe, function (value) {
+                    if (value === true) {
+                        element[0].focus();
+                        scope[attrs.focusMe] = false;
+                    }
+                });
+            }
+        };
+    })
+    .directive('gkGuider', ['GKGuiders', '$parse', function (GKGuiders, $parse) {
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
                 $scope.GKGuiders = GKGuiders;
                 var option = $scope.$eval($attrs.gkGuider);
-                angular.extend(option,{
+                angular.extend(option, {
                     attachTo: $element[0]
                 });
                 GKGuiders.createGuider(option);
@@ -598,19 +610,19 @@ angular.module('gkClientIndex.directives', [])
                                             GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
                                         }
                                     },
-                                   {
+                                    {
                                         text: '库名片',
-                                       icon: 'icon_teamcard',
-                                       name: 'team_card',
-                                       click: function () {
-                                        GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                },
+                                        icon: 'icon_teamcard',
+                                        name: 'team_card',
+                                        click: function () {
+                                            GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
+                                        }
+                                    },
                                 ];
 
                                 if ($scope.partition == GKPartition.teamFile) {
                                     $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                                    if(GKMount.isMember($rootScope.PAGE_CONFIG.mount)){
+                                    if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
                                         $scope.sidbarData.menus.push({
                                             text: '库成员',
                                             icon: 'icon_team',
@@ -628,7 +640,7 @@ angular.module('gkClientIndex.directives', [])
                                             }
                                         });
                                     }
-                                    if(GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)){
+                                    if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
                                         $scope.sidbarData.menus.push({
                                             text: '库安全设置',
                                             icon: 'icon_manage',
@@ -651,7 +663,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                 }, true);
 
-                $scope.headClick = function(){
+                $scope.headClick = function () {
                     $scope.sidbarData.menus[0].click();
                 };
             }
@@ -877,8 +889,8 @@ angular.module('gkClientIndex.directives', [])
                         });
                 };
 
-                $scope.showAddMember = function(){
-                  GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+                $scope.showAddMember = function () {
+                    GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
                 };
 
                 $scope.insertAt = function (input) {
@@ -1053,25 +1065,25 @@ angular.module('gkClientIndex.directives', [])
                     var file = $scope.fileData[index];
                     if ($event.ctrlKey || $event.metaKey) {
                         if (file.selected) {
-                            GKFileList.unSelect($scope,index);
+                            GKFileList.unSelect($scope, index);
                         } else {
-                            GKFileList.select($scope,index, true);
+                            GKFileList.select($scope, index, true);
                         }
                     } else if ($event.shiftKey) {
                         var lastIndex = shiftLastIndex;
                         GKFileList.unSelectAll($scope)
                         if (index > lastIndex) {
                             for (var i = lastIndex; i <= index; i++) {
-                                GKFileList.select($scope,i, true);
+                                GKFileList.select($scope, i, true);
                             }
                         } else if (index < lastIndex) {
                             for (var i = index; i <= lastIndex; i++) {
-                                GKFileList.select($scope,i, true);
+                                GKFileList.select($scope, i, true);
                             }
                         }
 
                     } else {
-                        GKFileList.select($scope,index);
+                        GKFileList.select($scope, index);
                     }
                     if (!$event.shiftKey) {
                         shiftLastIndex = index;
@@ -1315,33 +1327,33 @@ angular.module('gkClientIndex.directives', [])
                                 break;
                             case 46: //c
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts','Delete');
+                                    $scope.$emit('shortCuts', 'Delete');
                                 }
                                 break;
                             case 67: //c
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts','Ctrl+C');
+                                    $scope.$emit('shortCuts', 'Ctrl+C');
                                 }
                                 break;
                             case 80: //p
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts','Ctrl+P');
+                                    $scope.$emit('shortCuts', 'Ctrl+P');
                                 }
                                 break;
                             case 83: //s
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts','Ctrl+S');
+                                    $scope.$emit('shortCuts', 'Ctrl+S');
                                 }
                                 break;
                             case 86: //v
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts','Ctrl+V');
+                                    $scope.$emit('shortCuts', 'Ctrl+V');
 
                                 }
                                 break;
                             case 88: //x
                                 if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts','Ctrl+X');
+                                    $scope.$emit('shortCuts', 'Ctrl+X');
                                 }
                                 break;
                         }
@@ -1433,20 +1445,20 @@ angular.module('gkClientIndex.directives', [])
 
                 };
                 $scope.dragBegin = function (event, ui, index) {
-                   var file = $scope.fileData[index];
-                    if(!file){
+                    var file = $scope.fileData[index];
+                    if (!file) {
                         return;
                     }
-                    if(!file.selected){
-                        GKFileList.select($scope,index);
+                    if (!file.selected) {
+                        GKFileList.select($scope, index);
                     }
-                    angular.forEach($scope.selectedFile,function(value){
+                    angular.forEach($scope.selectedFile, function (value) {
                         value.disableDrop = true;
                     });
                 };
 
                 $scope.dragEnd = function (event, ui, index) {
-                    angular.forEach($scope.selectedFile,function(value){
+                    angular.forEach($scope.selectedFile, function (value) {
                         value.disableDrop = false;
                     });
                 };
