@@ -553,12 +553,19 @@ a:hover > .icon16x16.icon_manage,
 .icon16x16.icon_location_white{
     background-position: -24px -1244px;
 }
+.icon16x16.icon_teamcard{
+    background-position: -4px -1264px;
+}
+.icon16x16.icon_teamcard_white{
+    background-position: -24px -1264px;
+}
 .icon16x16.icon_open_with{
     background-position: -4px -1304px;
 }
 .icon16x16.icon_open_with_white{
     background-position: -24px -1304px;
 }
+
 /*32x32*/
 .icon32x32{
     width: 32px;

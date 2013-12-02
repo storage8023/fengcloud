@@ -592,7 +592,7 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.sidbarData.menus = [
                                     {
                                         text: '库资料',
-                                        icon: 'icon_earth',
+                                        icon: 'icon_info',
                                         name: 'visit_website',
                                         click: function () {
                                             GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
