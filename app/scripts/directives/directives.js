@@ -591,44 +591,53 @@ angular.module('gkClientIndex.directives', [])
 
                                 $scope.sidbarData.menus = [
                                     {
-                                        text: '云库资料',
+                                        text: '库资料',
                                         icon: 'icon_earth',
                                         name: 'visit_website',
                                         click: function () {
                                             GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
                                         }
+                                    },
+                                   {
+                                        text: '库名片',
+                                       icon: 'icon_teamcard',
+                                       name: 'team_card',
+                                       click: function () {
+                                        GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
                                     }
+                                },
                                 ];
 
                                 if ($scope.partition == GKPartition.teamFile) {
                                     $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                                    $scope.sidbarData.menus = $scope.sidbarData.menus.concat([
-                                        {
-                                            text: '云库成员',
+                                    if(GKMount.isMember($rootScope.PAGE_CONFIG.mount)){
+                                        $scope.sidbarData.menus.push({
+                                            text: '库成员',
                                             icon: 'icon_team',
                                             name: 'member_group',
                                             click: function () {
                                                 GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
                                             }
-                                        },
-                                        {
-                                            text: '云库订阅者',
+                                        });
+                                        $scope.sidbarData.menus.push({
+                                            text: '库订阅者',
                                             icon: 'icon_pin',
                                             name: 'subscriber',
                                             click: function () {
-                                               GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+                                                GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
                                             }
-                                        },
-                                        {
-                                            text: '云库安全设置',
+                                        });
+                                    }
+                                    if(GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)){
+                                        $scope.sidbarData.menus.push({
+                                            text: '库安全设置',
                                             icon: 'icon_manage',
                                             name: 'manage_team',
                                             click: function () {
-                                               GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
+                                                GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
                                             }
-                                        }
-
-                                    ]);
+                                        })
+                                    }
                                 }
                             }
 
@@ -1481,6 +1490,7 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             templateUrl: "views/toolbar.html",
             link: function ($scope, $element) {
+
                 if ($scope.partition == GKPartition.smartFolder && $scope.filter) {
                     $scope.listName = GKFilter.getFilterName($scope.filter)
                 } else {

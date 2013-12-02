@@ -156,7 +156,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', function (GKPartition, GKModal, GKOpt) {
+    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt','GKFile','GKMount', function (GKPartition, GKModal, GKOpt,GKFile,GKMount) {
         return {
             getSidebarMenu: function ($trigger) {
                 var data = $trigger.data('branch');
@@ -165,6 +165,10 @@ angular.module('gkClientIndex.services', [])
                     mountId = data.mount_id,
                     orgId = data.org_id,
                     items;
+                var mount = null;
+                if(mountId){
+                   mount = GKMount.getMountById(mountId);
+                }
                 if (partition == GKPartition.teamFile) {
                     if (data.filter == 'trash') {
                         items = {
@@ -199,32 +203,62 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 },
                                 'view_dashboard': {
-                                    name: '云库资料',
+                                    name: '库资料',
                                     callback: function () {
                                         GKModal.teamOverview(orgId);
                                     }
                                 },
-                                'view_member': {
-                                    name: '云库成员',
+                                'view_card': {
+                                    name: '库名片',
                                     callback: function () {
-                                        GKModal.teamMember(data.org_id);
-                                    }
-                                },
-                                'view_subscriber': {
-                                    name: '云库订阅者',
-                                    callback: function () {
-                                        GKModal.teamSubscribe(data.org_id);
-                                    }
-                                },
-                                'manage': {
-                                    name: '云库安全设置',
-                                    callback: function () {
-                                        GKModal.teamManage(data.org_id);
+                                        GKModal.teamCard(orgId);
                                     }
                                 }
+
                             });
+                            if(GKMount.isMember(mount)){
+                                angular.extend(items,{
+                                    'view_member': {
+                                        name: '库成员',
+                                        callback: function () {
+                                            GKModal.teamMember(data.org_id);
+                                        }
+                                    },
+                                    'view_subscriber': {
+                                        name: '库订阅者',
+                                        callback: function () {
+                                            GKModal.teamSubscribe(data.org_id);
+                                        }
+                                    }
+                                });
+                            }
+                            if(GKMount.isAdmin(mount)){
+                                angular.extend(items,{
+                                    'manage': {
+                                        name: '库安全设置',
+                                        callback: function () {
+                                            GKModal.teamManage(data.org_id);
+                                        }
+                                    }
+                                })
+                            }
                         }else{
                             angular.extend(items,{
+
+                                'view_property':{
+                                    name: '属性',
+                                    callback: function () {
+                                        var parentFile = {
+                                            mount_id:mountId,
+                                            fullpath:''
+                                        }
+                                        var upPath = Util.String.dirName(fullpath);
+                                        if(upPath){
+                                            parentFile = GKFile.getFileInfo(mountId,upPath);
+                                        }
+                                        GKModal.filePropery(mountId,data, parentFile);
+                                    }
+                                },
                                 'del':{
                                     name: '删除',
                                     callback: function () {
@@ -238,6 +272,18 @@ angular.module('gkClientIndex.services', [])
 
                 } else if (data.partition == GKPartition.subscribeFile) {
                     items = {
+                        'view_dashboard': {
+                            name: '库资料',
+                            callback: function () {
+                                GKModal.teamOverview(orgId);
+                            }
+                        },
+                        'view_card': {
+                            name: '库名片',
+                            callback: function () {
+                                GKModal.teamCard(orgId);
+                            }
+                        },
                         'unsubscribe': {
                             name: '取消订阅',
                             callback: function () {
@@ -347,6 +393,31 @@ angular.module('gkClientIndex.services', [])
             backdrop: 'static'
         };
         return{
+            teamCard: function (orgId) {
+                var context = this;
+                var option = {
+                    templateUrl: 'views/team_card_dialog.html',
+                    windowClass: 'modal_frame team_card_dialog',
+                    controller: function ($scope, $modalInstance, src) {
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/manage/info?org_id='+orgId
+                            });
+                        }
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
             teamOverview: function (orgId) {
                 var context = this;
                 var option = {
@@ -2239,7 +2310,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts, 'new_file','view_property','open_with',"goto", "save", "sync", "unsync", "rename", "lock", "unlock");
+                    this.disableOpt(opts, 'new_file','view_property','open_with',"goto", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
@@ -3063,6 +3134,9 @@ angular.module('gkClientIndex.services', [])
             mounts.push(mountItem);
         });
         var GKMount = {
+            isMember: function (mount) {
+                return mount && mount.type < 3;
+            },
             isAdmin: function (mount) {
                 return mount && mount.type < 2;
             },
