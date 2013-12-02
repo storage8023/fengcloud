@@ -2233,7 +2233,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts, 'open_with',"goto", "save", "sync", "unsync", "rename", "lock", "unlock");
+                    this.disableOpt(opts, 'new_file','view_property','open_with',"goto", "save", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
