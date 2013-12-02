@@ -378,10 +378,11 @@ angular.module('gkClientIndex.services', [])
                         $scope.mountId = mountId;
                         $scope.parentFile = parentFile;
                         $scope.publishEnable = false;
-                        if(!$scope.parentFile.fullpath){
+                        var mount=GKMount.getMountById(mountId);
+                        if(!$scope.parentFile.fullpath && mount && mount.type<3){
                             $scope.publishEnable = true;
                         }
-                        $scope.innerLink = gkClientInterface.getSiteDomain()+'/'+mountId+'/'+encodeURIComponent(file.fullpath);
+                        $scope.innerLink = gkClientInterface.getLinkDomain()+'/'+mountId+'/'+encodeURIComponent(file.fullpath);
                         $scope.localUri = '';
                         if($scope.file.sync==1 || $scope.parentFile.syncpath){
                             var syncPath = $scope.parentFile.syncpath || $scope.file.fullpath;
@@ -2190,7 +2191,7 @@ angular.module('gkClientIndex.services', [])
                         break;
                 }
                 if (filter == 'search') {
-                    this.disableOpt(opts, 'new_folder', 'add', 'create', 'paste', 'manage');
+                    this.disableOpt(opts, 'new_file','new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },

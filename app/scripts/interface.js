@@ -110,6 +110,9 @@
         var re = gkClient.gComputerInfo();
         return JSON.parse(re);
     },
+    getLinkDomain:function(){
+        return gkClient.gSiteDomain().replace(/(gkdev|wwww)/,'link');
+    },
     getSiteDomain:function(){
         return gkClient.gSiteDomain();
     },
