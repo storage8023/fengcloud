@@ -513,7 +513,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
         $scope.partition = $routeParams.partition || GKPartition.teamFile; //当前的分区
         $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
-        $scope.order = '+file_name'; //当前的排序
+        $scope.order = '+filename'; //当前的排序
         $scope.filter = $routeParams.filter || ''; //当前的筛选 [search|trash]
         $scope.selectedpath = $routeParams.selectedpath || ''; //当前目录已选中的文件的路径，允许多选，用|分割
         $scope.fileData = []; //文件列表的数据
@@ -645,8 +645,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         var refreahData = function (selectPath) {
             getFileData().then(function (newFileData) {
-                $scope.fileData = $filter('orderBy')(newFileData, $scope.order);
-                //console.log($scope.fileData);
+                var order = $scope.order;
+                if($scope.order.indexOf('filename')>=0){
+                    var desc = $scope.order.indexOf('-')?'-':'+';
+                    order = [desc+'dir',$scope.order];
+                }
+                $scope.fileData = $filter('orderBy')(newFileData, order);
                 if (selectPath) {
                     $scope.selectedpath = selectPath;
                 }

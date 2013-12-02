@@ -322,12 +322,15 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                     gkClientInterface.setUserInfo({
                         path:path
                     },function(re){
-                        $scope.uploading = false;
-                        if(re.error==0){
-                            alert('上传成功');
-                        }else{
-                            GKException.handleClientException(re);
-                        }
+                        $scope.$apply(function(){
+                            $scope.uploading = false;
+                            if(re.error==0){
+                                $rootScope.PAGE_CONFIG.user = gkClientInterface.getUser();
+                                alert('上传成功');
+                            }else{
+                                GKException.handleClientException(re);
+                            }
+                        })
                     });
                 };
 
@@ -359,6 +362,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                         name:newName
                     },function(re){
                         $scope.$apply(function(){
+                            $scope.editName = false;
                             if(re.error==0){
                                 $rootScope.PAGE_CONFIG.user.member_name=newName;
                             }else{

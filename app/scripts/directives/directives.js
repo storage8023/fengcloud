@@ -1153,7 +1153,12 @@ angular.module('gkClientIndex.directives', [])
                  * 监听order的变化
                  */
                 $scope.$watch('order', function () {
-                    $scope.fileData = $filter('orderBy')($scope.fileData, $scope.order);
+                    var order = $scope.order;
+                    if($scope.order.indexOf('filename')>=0){
+                        var desc = $scope.order.indexOf('-')?'-':'+';
+                        order = [desc+'dir',$scope.order];
+                    }
+                    $scope.fileData = $filter('orderBy')($scope.fileData, order);
                     GKFileList.reIndex($scope.fileData);
                 });
 
