@@ -125,7 +125,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 订阅的文件
          * @type {*}
          */
-        $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.teamFile);
+        $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.subscribeFile);
 
         /**
          * 初始选中

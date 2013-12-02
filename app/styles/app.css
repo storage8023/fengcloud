@@ -1932,8 +1932,6 @@ body.resizing *{
 .sidebar_contextmenu.context-menu-list {
     background-color: #3D434A;
     border: 0 none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
     min-width: 160px;
 }
 .sidebar_contextmenu.context-menu-list > li i{
