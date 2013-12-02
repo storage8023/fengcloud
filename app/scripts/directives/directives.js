@@ -651,8 +651,8 @@ angular.module('gkClientIndex.directives', [])
                     }
                 }, true);
 
-                $scope.handleDragEnd = function () {
-
+                $scope.headClick = function(){
+                    $scope.sidbarData.menus[0].click();
                 };
             }
         }
