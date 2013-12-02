@@ -7,6 +7,14 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getOpenWithMenu:function(param){
+        try {
+            var re = gkClient.gGetOpenWithMenu(JSON.stringify(param));
+            return JSON.parse(re);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     copyToClipboard:function(text){
         try {
             gkClient.gSetClipboardData(text);
@@ -337,6 +345,7 @@
     open:function(params){
         try {
             params.opentype = 'open';
+            console.log(params);
             gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);

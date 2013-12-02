@@ -2114,6 +2114,7 @@ angular.module('gkClientIndex.services', [])
             getDefaultOpts: function () {
                 return [
                     'goto', //打开位置
+                    'open_with', //打开方式
                     'new_file',
                     //'nearby', //附近
                     'unsubscribe', //取消订阅
@@ -2168,7 +2169,7 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
-                            this.disableOpt(opts, 'create_sync_folder',"add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            this.disableOpt(opts, 'open_with','create_sync_folder',"add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
                         }
@@ -2232,7 +2233,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts, "goto", "save", "sync", "unsync", "rename", "lock", "unlock");
+                    this.disableOpt(opts, 'open_with',"goto", "save", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
@@ -2245,7 +2246,7 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach(files, function (file) {
                     context.disableOpt(opts, "add", "new_folder", "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
-                        context.disableOpt(opts, 'lock', 'unlock');
+                        context.disableOpt(opts, 'open_with','lock', 'unlock');
                         context.setSyncOpt(opts, currentFile, file);
                     } else {
                         context.disableOpt(opts, 'sync', 'unsync');

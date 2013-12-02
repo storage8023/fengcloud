@@ -538,7 +538,7 @@ footer {
 .toolbar .opt.opt_view_change > a {
     display: inline-block;
     height: 24px;
-    width: 40px;
+    width: 36px;
     border-radius: 3px;
     text-align: center;
     background-color: #7F8999;
@@ -674,6 +674,17 @@ footer {
 .toolbar button:active .opt.file_property i,
 .toolbar button.open .opt.file_property i{
     background-position: -24px -384px;
+}
+.toolbar .opt.opt_view_change > a{
+    margin-left: 1px;
+}
+.toolbar .opt.opt_view_change > a.list_view{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.toolbar .opt.opt_view_change > a.thumb_view{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 .toolbar .opt.opt_view_change > a:hover{
     background: #9AA5B8;

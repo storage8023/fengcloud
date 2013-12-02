@@ -732,6 +732,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GKPath.gotoFile(mountId, upPath, fullpath);
                 }
             },
+            'open_with': {
+                name: '打开方式',
+                index:0,
+                icon: 'icon_open_with',
+                className: "open_with",
+                items:{}
+            },
             'new_file':{
                 name: '新建',
                 className: "new_folder",
@@ -1152,6 +1159,36 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.rightOpts = [];
 
+        var getOpenWithMenu = function(mountId,file,allOpts){
+            allOpts['open_with']['items'] = {};
+            var ext = '.'+file.ext;
+            var re = gkClientInterface.getOpenWithMenu({
+                'ext':ext
+            });
+            if(!re){
+                return;
+            }
+            var list = re['list'];
+            if(!list || !list.length){
+                return;
+            }
+            var subMenu = {};
+            angular.forEach(list,function(value,key){
+                var item = {
+                    name:value['name'],
+                    callback:function(){
+                        gkClientInterface.open({
+                            webpath:file.fullpath,
+                            mountid:mountId,
+                            openpath:value.openpath
+                        });
+                    }
+                }
+                subMenu['open_with_'+key] = item;
+            })
+            allOpts['open_with']['items'] = subMenu;
+        };
+
         var setOpts = function () {
             $rootScope.selectedFile = $scope.selectedFile;
             var isSearch = $scope.keyword.length ? true : false;
@@ -1163,7 +1200,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.rightOpts = {};
             var topOptKeys = [];
             var excludeRightOpts = []; //右键要排除的操作
-            var excludeOpts = ['view_property','order_by', 'paste', 'copy', 'cut']; // 顶部要排除的操作
+            var excludeOpts = ['open_with','view_property','order_by', 'paste', 'copy', 'cut']; // 顶部要排除的操作
 
             /**
              * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
@@ -1185,6 +1222,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 } else {
                     var re = currentOpts.concat(optKeys);
                     topOptKeys =jQuery.unique(jQuery.unique(re));
+                }
+                if($scope.selectedFile.length==1 && $scope.selectedFile[0].dir==0){
+                    getOpenWithMenu(GKFileList.getOptFileMountId($scope,$rootScope),$scope.selectedFile[0],allOpts);
                 }
             } else {
                 topOptKeys = optKeys;
@@ -1241,7 +1281,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (excludeRightOpts.indexOf(value) < 0) {
                     var opt = allOpts[value];
                     if (opt) {
-                        if(opt.items && !checkSubOpt(optKeys,opt.items )){
+                        if(value=='open_with' && jQuery.isEmptyObject(opt.items)){
+                            return;
+                        }
+                        if(value!='open_with'&&!!opt.items && jQuery.isEmptyObject(checkSubOpt(optKeys,opt.items))){
                             return;
                         }
                         var item = extendOpt(opt, value, true);
