@@ -250,20 +250,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleAdd = function (partition) {
            if (partition == GKPartition.teamFile) {
                 var createTeamDialog = GKModal.createTeam();
-//                createTeamDialog.result.then(function (orgId) {
-//                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-//                        if (param) {
-//                            $scope.$apply(function () {
-//                                var newOrg = param;
-//                                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
-//                                $scope.orgTreeList.push(newOrg);
-//                                unSelectAllBranch();
-//                                selectBreanch(newOrg, GKPartition.teamFile, true);
-//                            });
-//
-//                        }
-//                    })
-//                })
             } else if (partition == GKPartition.subscribeFile) {
                 var nearbyDialog = GKModal.nearBy();
                 nearbyDialog.result.then(function (orgId) {
