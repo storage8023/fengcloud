@@ -551,6 +551,5 @@
     getClientVersion:function(){
         return this.getUserAgent()[1].toLowerCase();
     }
-
 };
 

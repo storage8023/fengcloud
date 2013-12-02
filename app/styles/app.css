@@ -28,13 +28,13 @@ header {
 header .menu{
     position: absolute;
     right: 0;
-    top:7px;
+    top:10px;
     width: 250px;
     text-align: right;
 }
 header .menu > span,
 header .menu > a{
-    margin: 0 20px 0 0;
+    margin: 0 15px 0 0;
 }
 header .more_menu{
     display: inline-block;
@@ -700,7 +700,12 @@ footer {
 .toolbar .opt.opt_view_change > a.active.thumb_view > i {
     background-position: -24px -604px;
 }
-
+.context-menu-item.open_with:hover i,
+.toolbar button:hover .opt.open_with i,
+.toolbar button:active .opt.open_with i,
+.toolbar button.open .opt.open_with i{
+    background-position: -24px -1304px;
+}
 .bread {
     height: 26px;
     line-height: 26px;

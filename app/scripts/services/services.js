@@ -165,7 +165,6 @@ angular.module('gkClientIndex.services', [])
                     mountId = data.mount_id,
                     orgId = data.org_id,
                     items;
-                console.log(partition);
                 if (partition == GKPartition.teamFile) {
                     if (data.filter == 'trash') {
                         items = {
@@ -349,6 +348,7 @@ angular.module('gkClientIndex.services', [])
         };
         return{
             teamOverview: function (orgId) {
+                var context = this;
                 var option = {
                     templateUrl: 'views/team_overview_dialog.html',
                     windowClass: 'modal_frame team_overview_dialog',
@@ -357,6 +357,8 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+
                     },
                     resolve: {
                         src: function () {
@@ -432,7 +434,8 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         $scope.goto = function(localUri){
-                            gkClientInterface.open({
+                            console.log(1);
+                            gkClientInterface.openLocation({
                                 mountid:0,
                                 webpath: localUri
                             });
@@ -953,6 +956,7 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open(option);
             },
             teamQr: function (orgId, width) {
+                width = angular.isDefined(width)?width:400;
                 var option = {
                     templateUrl: 'views/team_qr_dialog.html',
                     windowClass: 'modal_frame team_qr_dialog',
@@ -1910,7 +1914,6 @@ angular.module('gkClientIndex.services', [])
             formatFileItem: function (value, source) {
                 var file;
                 if (source == 'api') {
-                    console.log(value);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
                     file = {
                         mount_id: value.mount_id || 0,

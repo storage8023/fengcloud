@@ -553,6 +553,12 @@ a:hover > .icon16x16.icon_manage,
 .icon16x16.icon_location_white{
     background-position: -24px -1244px;
 }
+.icon16x16.icon_open_with{
+    background-position: -4px -1304px;
+}
+.icon16x16.icon_open_with_white{
+    background-position: -24px -1304px;
+}
 /*32x32*/
 .icon32x32{
     width: 32px;
@@ -600,7 +606,7 @@ a:hover > .icon16x16.icon_manage,
     background-position: -76px -256px;
 }
 .icon32x32.icon_menu{
-    background-position: -4px -288px;
+    background-position: -4px -292px;
 }
 .icon32x32.icon_menu_white{
     background-position: -40px -288px;
@@ -611,7 +617,9 @@ a:hover > .icon16x16.icon_manage,
 .icon32x32.icon_logo_white{
     background-position: -40px -328px;
 }
-
+.icon32x32.icon_what{
+    background-position: -4px -400px;
+}
 .icon128x128{
     width: 128px;
     height:128px;

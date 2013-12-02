@@ -41,6 +41,44 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
+        $scope.$on('teamSecurity',function(){
+            if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
+                GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
+            }
+        })
+
+        $scope.$on('expandSpace',function(){
+            if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
+                return;
+            }
+            var url = gkClientInterface.getUrl({
+                sso: 1,
+                url: '/help'
+            });
+            gkClientInterface.openUrl(url);
+        })
+        $scope.$on('addMember',function(){
+            if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
+               return;
+            }
+            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+
+        })
+        $scope.$on('viewSubscriber',function(){
+            if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
+               return;
+            }
+            GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+
+        })
+        $scope.$on('qr',function(){
+            if(!$rootScope.PAGE_CONFIG.mount || !$rootScope.PAGE_CONFIG.mount.org_id){
+               return;
+            }
+            GKModal.teamQr($rootScope.PAGE_CONFIG.mount.org_id);
+        })
+
+
         /**
          * 监听路径的改变
          */

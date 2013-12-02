@@ -297,11 +297,6 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                         icon:'icon_computer',
                         name:'mail',
                         text:'当前使用设备：'+(device?device:'')
-                    },
-                    {
-                        icon:'icon_pie',
-                        name:'mail',
-                        text:'使用空间：'
                     }
                 ];
 
