@@ -113,26 +113,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-        $rootScope.CompletedEvent = function () { console.log("Completed Event called"); };
-
-        $rootScope.ExitEvent = function () { console.log("Exit Event called");};
-
-        $rootScope.ChangeEvent = function () { console.log("Change Event called"); };
-
-        $rootScope.BeforeChangeEvent = function () { console.log("Before Change Event called"); };
-
-        $rootScope.IntroOptions = {
-            steps:[
-            ],
-            showStepNumbers: false,
-            exitOnOverlayClick: true,
-            exitOnEsc:true,
-            nextLabel: '<strong>NEXT!</strong>',
-            prevLabel: '<span style="color:green">Previous</span>',
-            skipLabel: 'Exit',
-            doneLabel: 'Thanks'
-        };
-
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt','GKSideTree','GKApi','$q',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt,GKSideTree,GKApi,$q) {
         $scope.GKPartition = GKPartition;
@@ -513,7 +493,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
         $scope.partition = $routeParams.partition || GKPartition.teamFile; //当前的分区
         $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
-        $scope.order = '+filename'; //当前的排序
         $scope.filter = $routeParams.filter || ''; //当前的筛选 [search|trash]
         $scope.selectedpath = $routeParams.selectedpath || ''; //当前目录已选中的文件的路径，允许多选，用|分割
         $scope.fileData = []; //文件列表的数据
@@ -521,6 +500,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.mountId = Number($routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
         $scope.keyword = $routeParams.keyword || '';
         $scope.errorMsg = '';
+        $scope.order = '+filename'; //当前的排序
+        if( $scope.partition == GKPartition.smartFolder && $scope.filter=='recent'){
+            $scope.order = '-last_edit_time'; //当前的排序
+        }
         var totalCount = 0;
 
         //console.log(12);
