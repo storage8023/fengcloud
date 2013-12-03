@@ -1371,6 +1371,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 打开文件位置
          */
         $scope.$on('goToFile', function ($event, file) {
+            //console.log(file);
             GKPath.gotoFile(GKFileList.getOptFileMountId($scope, $rootScope), file.fullpath);
         })
 

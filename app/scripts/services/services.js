@@ -1995,6 +1995,7 @@ angular.module('gkClientIndex.services', [])
             formatFileItem: function (value, source) {
                 var file;
                 if (source == 'api') {
+                    //console.log(value);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
                     file = {
                         mount_id: value.mount_id || 0,

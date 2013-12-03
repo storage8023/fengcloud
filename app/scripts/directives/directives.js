@@ -1103,7 +1103,6 @@ angular.module('gkClientIndex.directives', [])
                         return;
                     }
                     if (file.dir == 1) {
-                        var params = $location.search();
                         $scope.$emit('goToFile', file);
                     } else {
                         $scope.$emit('openFile', file);
@@ -1334,9 +1333,7 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.downRightPress($event);
                                 break;
                             case 46: //c
-                                if (ctrlKeyOn) {
-                                    $scope.$emit('shortCuts', 'Delete');
-                                }
+                                $scope.$emit('shortCuts', 'Delete');
                                 break;
                             case 67: //c
                                 if (ctrlKeyOn) {
