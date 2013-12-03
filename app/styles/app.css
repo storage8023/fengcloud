@@ -1945,7 +1945,10 @@ body.resizing *{
 .sidebar_contextmenu.context-menu-list > li > span{
     color: #fff;
 }
-
+.sidebar_contextmenu.context-menu-list > li.disabled:hover > span,
+.sidebar_contextmenu.context-menu-list > li.disabled > span{
+    color: #cbcbcb;
+}
 .sidebar_contextmenu.context-menu-list > li:hover > span,
 .sidebar_contextmenu.context-menu-list > li:focus > span {
     color: #FFF;
