@@ -1951,51 +1951,49 @@ angular.module('gkClientIndex.services', [])
                 }
                 return false;
             },
+            getTrashNode:function(mount_id,partition){
+                var node = {
+                    label: GKFilter.getFilterName('trash'),
+                    isParent: false,
+                    dropAble: false,
+                    data: {
+                        fullpath: '',
+                        filter: 'trash',
+                        mount_id: mount_id,
+                        partition:partition
+                    },
+                    iconNodeExpand: 'icon_trash',
+                    iconNodeCollapse: 'icon_trash'
+                };
+                return node;
+            },
+            getChildNode:function(branch){
+                var context = this;
+                var deferred = $q.defer(),children;
+                if(branch.data.filter != 'trash'){
+                    var source = 'client';
+                    if(branch.data.partition == GKPartition.subscribeFile){
+                        source = 'api';
+                    }
+                    context.getFileList(branch.data.mount_id, branch.data.fullpath,source).then(function(list){
+                        children = context.dealTreeData(list, branch.data.partition, branch.data.mount_id);
+                        /**
+                         * 添加回收站
+                         */
+                        if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
+                            var trashNode = context.getTrashNode(branch.data.mount_id,branch.data.partition);
+                            children.push(trashNode);
+                        }
+                        deferred.resolve(children);
+                    })
+                }
+                return deferred.promise;
+            },
             dealTreeData: function (data, type, mountId) {
                 var newData = [],
                     item,
                     label,
                     context = this;
-
-                var getTrashNode = function (mount_id,partition) {
-                    var node = {
-                        label: GKFilter.getFilterName('trash'),
-                        isParent: false,
-                        dropAble: false,
-                        data: {
-                            fullpath: '',
-                            filter: 'trash',
-                            mount_id: mount_id,
-                            partition:partition
-                        },
-                        iconNodeExpand: 'icon_trash',
-                        iconNodeCollapse: 'icon_trash'
-                    };
-                    return node;
-                };
-
-                var getChildren = function(branch){
-                    var deferred = $q.defer(),children;
-                    if(branch.data.filter != 'trash'){
-                        var source = 'client';
-                        if(branch.data.partition == GKPartition.subscribeFile){
-                            source = 'api';
-                        }
-                        context.getFileList(branch.data.mount_id, branch.data.fullpath,source).then(function(list){
-                            children = context.dealTreeData(list, branch.data.partition, branch.data.mount_id);
-                            /**
-                             * 添加回收站
-                             */
-                            if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
-                                var trashNode = getTrashNode(branch.data.mount_id,branch.data.partition);
-                                children.push(trashNode);
-                            }
-                            deferred.resolve(children);
-                        })
-                    }
-                    return deferred.promise;
-                };
-
                 angular.forEach(data, function (value) {
                     item = {};
                     angular.extend(value, {
@@ -2030,8 +2028,7 @@ angular.module('gkClientIndex.services', [])
                             isParent: true,
                             data: value,
                             iconNodeExpand:icon,
-                            iconNodeCollapse:icon,
-                            children:getChildren
+                            iconNodeCollapse:icon
                         });
 
                     } else {
@@ -2043,8 +2040,7 @@ angular.module('gkClientIndex.services', [])
                             isParent: false,
                             data: value,
                             iconNodeExpand: value.icon,
-                            iconNodeCollapse: value.icon,
-                            children:getChildren
+                            iconNodeCollapse: value.icon
                         };
                     }
                     newData.push(item);

@@ -194,8 +194,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleSelect = function (branch, partition) {
-            //unSelectAllBranch();
-            return;
             var pararm = {
                 view: 'list',
                 partition: partition
@@ -221,6 +219,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleExpand = function (branch) {
+            if(branch.expanded){
+                GKFile.getChildNode(branch).then(function(children){
+                    branch.children = children;
+                });
+            }else{
+
+            }
         };
 
 
@@ -513,12 +518,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                      * 获取文件列表
                      */
                 } else {
-//                    var re = gkClientInterface.getFileList({
-//                        webpath: $scope.path,
-//                        mountid: $scope.mountId
-//                    });
-//                    fileList = re['list'];
-                    fileList = [];
+                    var re = gkClientInterface.getFileList({
+                        webpath: $scope.path,
+                        mountid: $scope.mountId
+                    });
+                    fileList = re['list'];
                     deferred.resolve(GKFile.dealFileList(fileList, source));
                 }
 
