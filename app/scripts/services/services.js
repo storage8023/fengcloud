@@ -191,7 +191,7 @@ angular.module('gkClientIndex.services', [])
                         if(!fullpath){
                             angular.extend(items,{
                                 'sync':{
-                                    name: '创建同步目录',
+                                    name: '创建同步文件夹',
                                     callback: function () {
                                         GKModal.backUp(mountId);
                                     }
@@ -2278,7 +2278,11 @@ angular.module('gkClientIndex.services', [])
                     'del_completely', //彻底删除
                     'revert', //还原
                     'view_property',
-                    'order_by' //排序
+                    'order_by', //排序
+                    'order_by_file_name',
+                    'order_by_file_size',
+                    'order_by_file_type',
+                    'order_by_last_edit_time'
                 ];
             },
             /**
@@ -2457,7 +2461,7 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             unsubscribe: function (org_id) {
-                if (!confirm('你确定要取消订阅改云库？')) {
+                if (!confirm('你确定要取消订阅该云库？')) {
                     return;
                 }
                 GKApi.teamQuit(org_id).success(function () {

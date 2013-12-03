@@ -108,12 +108,12 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                 name:'prompt',
                 model:$scope.setting['prompt']
             },
-            {
-                type:'checkbox',
-                label:'别人删除与我共享的文件时，也进入我电脑的回收站',
-                name:'recycle',
-                model:$scope.setting['recycle']
-            },
+//            {
+//                type:'checkbox',
+//                label:'别人删除与我共享的文件时，也进入我电脑的回收站',
+//                name:'recycle',
+//                model:$scope.setting['recycle']
+//            },
             {
                 type:'select',
                 label:'语言切换：',

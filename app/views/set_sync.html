@@ -9,7 +9,7 @@
         <p>将 "{{filename}}" 同步到本地。开启同步后，本地文件夹内的文件将自动与云端同步。</p>
         <div>
             <label for="local_uri">本地位置：</label>
-            <input class="form-control" ng-model="localURI" type="text" name="local_uri" id="local_uri"/><button class="btn btn-default reset_local_uri" ng-click="reSetLocalPath()">更改</button>
+            <input class="form-control" readonly ng-model="localURI" type="text" name="local_uri" id="local_uri"/><button class="btn btn-default reset_local_uri" ng-click="reSetLocalPath()">更改</button>
         </div>
     </div>
 </div>

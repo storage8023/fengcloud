@@ -625,14 +625,7 @@ angular.module('gkClientIndex.directives', [])
             replace: true,
             restrict: 'E',
             templateUrl: "views/singlefile_right_sidebar.html",
-            link: function ($originalScope, $element) {
-                var $scope = $originalScope.$new();
-                $originalScope.$on('$destroy', function() {
-                    delete $scope.file;
-                    delete $scope.smarts;
-                    delete $scope.localFile;
-                    $scope.$destroy();
-                });
+            link: function ($scope, $element) {
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
                 $scope.enableAddShare = false; //是否允许编辑共享参与人
