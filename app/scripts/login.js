@@ -11,7 +11,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
          */
         $scope.loginSubmit = function(){
             if(!$scope.username||!$scope.username.length){
-                alert('请输入用户名');
+                alert('请输入账号或邮箱');
                 return;
             }
             if(!$scope.password || !$scope.password.length){
@@ -59,7 +59,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 return;
             }
             if(!$scope.registUsername || !$scope.registUsername.length){
-                alert('请输入你的称呼');
+                alert('请输入账号');
                 return;
             }
             var password = $scope.registPassword;

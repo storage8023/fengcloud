@@ -372,55 +372,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('nearbySidebar', ['$rootScope', 'GKFind', function ($rootScope, GKFind) {
-        return {
-            replace: true,
-            restrict: 'E',
-            templateUrl: 'views/nearby_sidebar.html',
-            link: function (scope) {
-                scope.nearbyMembers = [
-                    {
-                        ip: "10.0.0.12",
-                        name: "郑中周",
-                        photo: "http://oss.aliyuncs.com/gkavatar2/a6/a6b08af6549a31c50f4d26754dfe93a82129ea56.jpg",
-                        port: 1001,
-                        type: "user",
-                        userid: 167
-                    }
-                ];
-                scope.nearbyTeams = [];
-
-                scope.$on('AddFindObject', function (event, obj) {
-                    scope.$apply(function () {
-                        var type = obj['type'];
-                        if (type == 'user') {
-                            scope.nearbyMembers.unshift(obj)
-                        } else if (type = 'org') {
-                            scope.nearbyTeams.unshift(obj);
-                        }
-                        //scope.$digest();
-                    })
-
-                })
-
-                scope.$on('removeFindObject', function (event, obj) {
-                    var type = obj['type'];
-                    if (type == 'user') {
-                        scope.nearbyTeams.unshift(obj)
-                    } else if (type = 'org') {
-                        scope.nearbyTeams.unshift(obj);
-                    }
-                    scope.$digest();
-                })
-
-                scope.toogleFind = function () {
-                    GKFind.toogleFind();
-                };
-
-
-            }
-        }
-    }])
     .directive('nearbyMember', [function () {
         return {
             replace: true,
@@ -674,7 +625,14 @@ angular.module('gkClientIndex.directives', [])
             replace: true,
             restrict: 'E',
             templateUrl: "views/singlefile_right_sidebar.html",
-            link: function ($scope, $element) {
+            link: function ($originalScope, $element) {
+                var $scope = $originalScope.$new();
+                $originalScope.$on('$destroy', function() {
+                    delete $scope.file;
+                    delete $scope.smarts;
+                    delete $scope.localFile;
+                    $scope.$destroy();
+                });
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
                 $scope.enableAddShare = false; //是否允许编辑共享参与人
@@ -908,6 +866,7 @@ angular.module('gkClientIndex.directives', [])
                         } else {
                             Util.Input.moveCur(jqTextarea[0], val.length);
                         }
+                        return null;
                     }, 0);
 
                 }
@@ -1498,6 +1457,8 @@ angular.module('gkClientIndex.directives', [])
                     var fn = $parse($attrs.scrollLoad);
                     fn($scope);
                 }
+
+
             }
         };
     }])
@@ -1887,6 +1848,7 @@ angular.module('gkClientIndex.directives', [])
                     $element.find('.bread_list .bread_item:hidden').show();
                     $timeout(function () {
                         setBreadUI();
+                        return null;
                     }, 0);
                 })
 
@@ -1905,6 +1867,7 @@ angular.module('gkClientIndex.directives', [])
                         } else {
                             $timeout(function () {
                                 setBreadUI();
+                                return null;
                             }, 0)
                         }
                     })

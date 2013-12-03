@@ -123,22 +123,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
 
-        var getTrashNode = function (mount_id,partition) {
-            var node = {
-                label: GKFilter.getFilterName('trash'),
-                isParent: false,
-                dropAble: false,
-                data: {
-                    fullpath: '',
-                    filter: 'trash',
-                    mount_id: mount_id,
-                    partition:partition
-                },
-                iconNodeExpand: 'icon_trash',
-                iconNodeCollapse: 'icon_trash'
-            };
-            return node;
-        };
 
 
         /**
@@ -211,6 +195,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleSelect = function (branch, partition) {
             //unSelectAllBranch();
+            return;
             var pararm = {
                 view: 'list',
                 partition: partition
@@ -231,45 +216,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         };
 
-        var getFileList = function(mountId,fullpath,source){
-            var deferred = $q.defer(),list;
-            if(source == 'api'){
-                GKApi.list(mountId,fullpath,0,1000,1).success(function(data){
-                   list = GKFile.dealFileList(data['list'],'api');
-                    deferred.resolve(list);
-                });
-            }else{
-                list = GKFile.getFileList(mountId, fullpath, 1);
-                deferred.resolve(list);
-            }
-            return deferred.promise;
-        }
-
         /**
          * 选中树节点的处理函数
          * @param branch
          */
         $scope.handleExpand = function (branch) {
-            if (branch.expanded) {
-                if(branch.data.filter != 'trash'){
-                    var source = 'client';
-                    if(branch.data.partition == GKPartition.subscribeFile){
-                        source = 'api';
-                    }
-                    getFileList(branch.data.mount_id, branch.data.fullpath,source).then(function(list){
-                        branch.children = GKFile.dealTreeData(list, branch.data.partition, branch.data.mount_id);
-                        if (!branch.children)  branch.children = [];
-                        /**
-                         * 添加回收站
-                         */
-                        if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
-                            var trashNode = getTrashNode(branch.data.mount_id,branch.data.partition);
-                            branch.children.push(trashNode);
-                        }
-                    })
-                }
-
-            }
         };
 
 
@@ -562,11 +513,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                      * 获取文件列表
                      */
                 } else {
-                    var re = gkClientInterface.getFileList({
-                        webpath: $scope.path,
-                        mountid: $scope.mountId
-                    });
-                    fileList = re['list'];
+//                    var re = gkClientInterface.getFileList({
+//                        webpath: $scope.path,
+//                        mountid: $scope.mountId
+//                    });
+//                    fileList = re['list'];
+                    fileList = [];
                     deferred.resolve(GKFile.dealFileList(fileList, source));
                 }
 
@@ -1645,7 +1597,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if(!localStorageService.get('guiders_shown')){
             $timeout(function(){
                 $scope.showGuider();
-
+                return null;
             },200)
         }
     }]);
