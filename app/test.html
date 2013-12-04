@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN" ng-app="leakApp">
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+    <style>
+
+        /* Styles go here */.fade {  -webkit-transition:all linear 0.01s;  -moz-transition:all linear 0.01s;  -o-transition:all linear 0.01s;  transition:all linear 0.01s;} .fade.ng-enter,.fade.ng-leave.ng-leave-active {  opacity:0;} .fade.ng-enter-active,.fade.ng-leave {  opacity:1;}
+    </style>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script>
+        var leakApp = angular.module('leakApp', ['ngRoute', 'ngAnimate']);leakApp.config(function($routeProvider) {  $routeProvider    .when('/view1', {      templateUrl: 'view1.html',      controller: 'Controller1'    })    .when('/view2', {      templateUrl: 'view2.html',      controller: 'Controller2'    })    .otherwise({      redirectTo: '/view1'    });});leakApp.constant('counter', {val: 0});leakApp.controller('Controller1', function(counter) {  var string = "LEAK1-" + leakApp.pad(counter.val) + "!";  counter.val += 1;  this.leak1 = new Array(1000).join(new Array(1000).join(string));});leakApp.controller('Controller2', function(counter) {  var string = "LEAK2-" + leakApp.pad(counter.val) + "!";  counter.val += 1;  this.leak2 = new Array(1000).join(new Array(1000).join(string));});leakApp.controller('MenuController', function($interval, $location, counter) {  var intervalPromise;    this.toggleCycle = function() {    if (!intervalPromise) {      intervalPromise = $interval(function() {        if ($location.path() === '/view1') {          $location.path('/view2');        } else {          $location.path('/view1');        }      }, 100);    } else {      $interval.cancel(intervalPromise);      intervalPromise = null;    }      };    this.counter = counter;});leakApp.pad = function(number) {  var bigNum = 1000000 + number;  var string = bigNum.toString();  return string.substr(1);}
+    </script>
+</head>
+<body>
+<h1>Leak test app!</h1><div ng-controller="MenuController as menu">[<a href="#/view1">view1</a>] [<a href="#/view2">view2</a>] [<a href ng-click="menu.toggleCycle()">toggle cycle</a>] cycle: {{menu.counter.val}}</div><div>Animations: <input type="checkbox" ng-model="animationsEnabled"></div><hr><ng-view ng-class="{fade: animationsEnabled}"></ng-view>
+</body>
+</html>
