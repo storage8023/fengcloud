@@ -9,12 +9,6 @@ angular.module('gkClientIndex', ['ngDragDrop','gkClientIndex.controllers', 'gkCl
             }).
             otherwise({
                 redirectTo: function () {
-//                    $location.search({
-//                        path:'',
-//                        partition:'myfile',
-//                        mountid:myMount.mountid,
-//                        view:'thumb'
-//                    });
                     return '/file'
                 }
             });

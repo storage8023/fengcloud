@@ -372,44 +372,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('nearbyMember', [function () {
-        return {
-            replace: true,
-            restrict: 'E',
-            scope: {
-                photo: '@',
-                name: '@',
-                uid: '@',
-                ip: '@',
-                port: '@'
-            },
-            template: '<div class="slide-down member">'
-                + '<img class="photo" ng-src="{{photo}}" alt="{{name}}"/>'
-                + '<span class="name" title="{{name}}" ng-bind="name"></span>'
-                + '</div>',
-            link: function () {
-
-            }
-        }
-    }])
-    .directive('nearbyTeam', [function () {
-        return {
-            replace: true,
-            restrict: 'E',
-            scope: {
-                name: '@',
-                orgId: '@',
-                logo: '@'
-            },
-            template: '<div class="slide-down group">'
-                + '<img class="photo" ng-src="{{logo}}" alt="{{name}}"/>'
-                + '<span class="name" title="{{name}}" ng-bind="name"></span>'
-                + '</div>',
-            link: function () {
-
-            }
-        }
-    }])
     .directive('scrollLoad', ['$rootScope', function ($rootScope) {
         return {
             restrict: 'A',
