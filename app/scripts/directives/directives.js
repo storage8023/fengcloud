@@ -565,7 +565,7 @@ angular.module('gkClientIndex.directives', [])
                                     }
                                     if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
                                         $scope.sidbarData.menus.push({
-                                            text: '云库升级',
+                                            text: '库升级',
                                             icon: 'icon_team_upgrade',
                                             name: 'team_upgrade',
                                             click: function () {

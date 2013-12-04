@@ -246,7 +246,7 @@ angular.module('gkClientIndex.services', [])
                             if(GKMount.isSuperAdmin(mount)){
                                 angular.extend(items,{
                                     'team_upgrade': {
-                                        name: '云库升级',
+                                        name: '库升级',
                                         callback: function () {
                                             var url = gkClientInterface.getUrl({
                                                 sso:1,
