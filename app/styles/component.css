@@ -5,7 +5,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=6);
+    background-image: url(../images/icon/icon16x16.png?v=7);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -182,7 +182,10 @@
 .icon16x16.icon_info_white{
     background-position: -24px -384px;
 }
-
+a:hover > .icon16x16.icon_info,
+.icon16x16.icon_info_color{
+    background-position: -44px -384px;
+}
 .icon16x16.icon_file_property{
     background-position: -4px -384px;
 }
@@ -402,8 +405,6 @@ a:hover > .icon16x16.icon_manage,
     background-position: -44px -324px;
 }
 
-
-
 .icon16x16.icon_add{
     background-position: -4px -924px;
 }
@@ -559,13 +560,26 @@ a:hover > .icon16x16.icon_manage,
 .icon16x16.icon_teamcard_white{
     background-position: -24px -1264px;
 }
+a:hover > .icon16x16.icon_teamcard,
+.icon16x16.icon_teamcard_color{
+    background-position: -44px -1264px;
+}
 .icon16x16.icon_open_with{
     background-position: -4px -1304px;
 }
 .icon16x16.icon_open_with_white{
     background-position: -24px -1304px;
 }
-
+.icon16x16.icon_team_upgrade{
+    background-position: -4px -1364px;
+}
+.icon16x16.icon_team_upgrade_white{
+    background-position: -24px -1364px;
+}
+a:hover > .icon16x16.icon_team_upgrade,
+.icon16x16.icon_team_upgrade_color{
+    background-position: -44px -1364px;
+}
 /*32x32*/
 .icon32x32{
     width: 32px;

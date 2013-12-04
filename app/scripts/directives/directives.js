@@ -563,6 +563,20 @@ angular.module('gkClientIndex.directives', [])
                                             }
                                         })
                                     }
+                                    if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
+                                        $scope.sidbarData.menus.push({
+                                            text: '云库升级',
+                                            icon: 'icon_team_upgrade',
+                                            name: 'team_upgrade',
+                                            click: function () {
+                                                var url = gkClientInterface.getUrl({
+                                                    sso:1,
+                                                    url:'/pay/order?org_id='+orgId
+                                                })
+                                                gkClientInterface.openUrl(url);
+                                            }
+                                        })
+                                    }
                                 }
                             }
 

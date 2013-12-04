@@ -215,6 +215,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 }
 
+
                             });
                             if(GKMount.isMember(mount)){
                                 angular.extend(items,{
@@ -238,6 +239,20 @@ angular.module('gkClientIndex.services', [])
                                         name: '库安全设置',
                                         callback: function () {
                                             GKModal.teamManage(data.org_id);
+                                        }
+                                    }
+                                })
+                            }
+                            if(GKMount.isSuperAdmin(mount)){
+                                angular.extend(items,{
+                                    'team_upgrade': {
+                                        name: '云库升级',
+                                        callback: function () {
+                                            var url = gkClientInterface.getUrl({
+                                                sso:1,
+                                                url:'/pay/order?org_id='+orgId
+                                            })
+                                            gkClientInterface.openUrl(url);
                                         }
                                     }
                                 })
@@ -3208,6 +3223,9 @@ angular.module('gkClientIndex.services', [])
             },
             isAdmin: function (mount) {
                 return mount && mount.type < 2;
+            },
+            isSuperAdmin: function (mount) {
+                return mount && mount.type < 1;
             },
             formatMountItem: formatMountItem,
             /**
