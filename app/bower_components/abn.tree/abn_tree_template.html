@@ -1,12 +1,8 @@
-
 <ul class="nav nav-list abn-tree">
   <li ng-show="header" class="nav-header"><span>{{ header }}</span><a ng-click="handleAddBtn()" ng-if="showAdd" href="javascript:void(0)">+</a></li>
-  <li ng-repeat="row in tree_rows | filter:{visible:true} track by row.branch.uid"
+  <li ng-repeat="row in tree_rows | filter:{visible:true}"
       data-branch="{{row.branch.data}}"
-      ng-animate="'abn-tree-animate'"
       ng-class="{'hover':row.branch.hover,'active':row.branch.selected}"
-      data-drop="{{row.branch.dropAble}}"
-      jqyoui-droppable="{onDrop:'drop(row.branch)',onOver:'dropOver(row.branch)',onOut:'dropOut(row.branch)'}"
       class="abn-tree-row level-{{row.level}}">
       <a ng-click="user_clicks_branch($event,row.branch)" ng-dblclick="user_dblclicks_branch(row.branch)">
           <span ng-class="row.tree_icon" ng-show="row.tree_icon" class="indented tree-icon" ng-style="{'margin-left':(row.level-1)*20}"><i></i></span>

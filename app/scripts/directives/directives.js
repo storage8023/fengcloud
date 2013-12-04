@@ -1064,22 +1064,22 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 根据rightOpts的变化重置右键
                  */
-                $scope.$watch('rightOpts', function () {
-                    jQuery.contextMenu('destroy', '.file_list .list_body');
-                    /**
-                     * 设置右键菜单
-                     */
-                    jQuery.contextMenu({
-                        selector: '.file_list .list_body',
-                        reposition: false,
-                        zIndex: 99,
-                        animation: {
-                            show: "show",
-                            hide: "hide"
-                        },
-                        items: $scope.rightOpts
-                    });
-                });
+//                $scope.$watch('rightOpts', function () {
+//                    jQuery.contextMenu('destroy', '.file_list .list_body');
+//                    /**
+//                     * 设置右键菜单
+//                     */
+//                    jQuery.contextMenu({
+//                        selector: '.file_list .list_body',
+//                        reposition: false,
+//                        zIndex: 99,
+//                        animation: {
+//                            show: "show",
+//                            hide: "hide"
+//                        },
+//                        items: $scope.rightOpts
+//                    });
+//                });
 
                 /**
                  * 右键文件
@@ -1846,7 +1846,7 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 var oldBreadWidth = $element.find('.bread').width();
-                jQuery(window).bind('resize', function () {
+                jQuery(window).off('resize').on('resize', function () {
                     $scope.$apply(function () {
                         var grid = $element.find('.bread').width() - oldBreadWidth;
                         if (grid > 0) {
@@ -1941,7 +1941,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                 };
 
-                $('body').bind('mousedown', function (event) {
+                $('body').off('mousedown.resetsearch').on('mousedown.resetsearch', function (event) {
                     $scope.$apply(function () {
                         if (
                             $(event.target).hasClass('bread_and_search_wrapper')
@@ -1954,6 +1954,7 @@ angular.module('gkClientIndex.directives', [])
                         resetSearch();
                     })
                 })
+
                 $scope.disableSearch = false;
                 $scope.$on('$routeChangeSuccess', function (event, current, previous) {
                     if (!previous || !current) {
@@ -2294,7 +2295,7 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element, $attrs) {
                 $scope.moving = false;
 
-                $element.bind('mousedown', function (e) {
+                $element.off('mousedown').on('mousedown', function (e) {
                     $scope.$apply(function () {
                         $scope.moving = true;
                         $document.find('body').addClass('resizing');
@@ -2340,7 +2341,7 @@ angular.module('gkClientIndex.directives', [])
                     });
                 })
 
-                jQuery(window).bind('resize', function () {
+                jQuery(window).off('resize.resizeLeft').on('resize.resizeLeft', function () {
                     var max = jQuery(window).width() - 650;
                     if (max < 0) {
                         return;
@@ -2353,6 +2354,9 @@ angular.module('gkClientIndex.directives', [])
                     }
                 })
 
+                $scope.$on('$destory',function(){
+                    jQuery(window).off('.resizeLeft');
+                })
             }
         }
     }])

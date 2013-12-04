@@ -120,16 +120,16 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
           //console.log(branch);return;
           branch.expanded = !branch.expanded;
           if (branch.onExpand != null) {
-              return $timeout(function() {
+              //return $timeout(function() {
                   return branch.onExpand(branch);
-              });
+              //});
           } else {
               if (scope.onExpand != null) {
-                  return $timeout(function() {
+                 // return $timeout(function() {
                       return scope.onExpand({
                           branch: branch
                       });
-                  });
+                 // });
               }
           }
       }
