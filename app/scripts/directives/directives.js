@@ -428,7 +428,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('member', ['$compile', '$rootScope', 'GKDialog', 'GKModal', 'GKNews', 'GKApi', function ($compile, $rootScope, GKDialog, GKModal, GKNews, GKApi) {
+    .directive('member', ['$compile', '$rootScope', 'GKDialog', 'GKModal', 'GKNews', 'GKApi', '$location','$interval',function ($compile, $rootScope, GKDialog, GKModal, GKNews, GKApi,$location,$interval) {
         return {
             replace: true,
             restrict: 'E',
@@ -441,9 +441,28 @@ angular.module('gkClientIndex.directives', [])
                 $scope.newsOpen = function () {
                     GKModal.news(GKNews, GKApi);
                 };
-
+                var intervalPromise;
                 $scope.personalOpen = function ($scope) {
-                    GKDialog.openSetting('account');
+                    if (!intervalPromise) {
+                        intervalPromise = $interval(function () {
+                            if ($location.search().mountid =='3') {
+                                $location.search({
+                                    mountid:'17',
+                                    webpath:'',
+                                    partition:'teamfile'
+                                });
+                            } else {
+                                $location.search({
+                                    mountid:'3',
+                                    webpath:'',
+                                    partition:'teamfile'
+                                });
+                            }
+                        }, 100);
+                    } else {
+                        $interval.cancel(intervalPromise);
+                        intervalPromise = null;
+                    }
                 };
             }
         }

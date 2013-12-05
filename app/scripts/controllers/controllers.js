@@ -522,6 +522,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     });
                     fileList = re['list'];
                     deferred.resolve(GKFile.dealFileList(fileList, source));
+                    re=null;
                 }
 
             } else {

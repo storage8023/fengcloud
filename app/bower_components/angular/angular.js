@@ -11621,8 +11621,6 @@ function $RootScopeProvider(){
         if ($rootScope == this || this.$$destroyed) return;
 
         var parent = this.$parent;
-          console.log(parent);
-        this.$broadcast('$destroy');
         this.$$destroyed = true;
 
         if (parent.$$childHead == this) parent.$$childHead = this.$$nextSibling;
