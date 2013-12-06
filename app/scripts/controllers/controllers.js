@@ -118,12 +118,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//云库的空间
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
-        /**
-         * 个人的文件
-         * @type {*}
-         */
-
-
 
         /**
          * 云库的文件
@@ -1255,6 +1249,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
         });
 
+        $scope.$on('editSmartFolder', function ($event, name, code,filter) {
+           angular.forEach($scope.breads,function(value){
+               if(value.filter == filter){
+                   value.name = name;
+               }
+           });
+        })
+
         /**
          * 前进 后退
          * @param forward
@@ -1330,7 +1332,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },200)
         }
     }])
-    .controller('rightSidebar',['$scope','GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount',function($scope,GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount){
+    .controller('rightSidebar',['$scope','GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount','GKSmartFolder',function($scope,GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount,GKSmartFolder){
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1450,14 +1452,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
 
                 } else {
+                    var type = GKFilter.getFilterType($scope.filter);
+                    var smartFolder = GKSmartFolder.getFolderByCode(type);
                     $scope.sidbarData = {
-                        title: GKFilter.getFilterName($scope.filter),
+                        title:smartFolder['name'],
                         tip: GKFilter.getFilterTip($scope.filter),
                         icon: $scope.filter
                     };
                 }
             }
         }, true);
+
+        $scope.$on('editSmartFolder', function ($event, name, code,filter) {
+            if($scope.filter == filter){
+                $scope.sidbarData.title = name;
+            }
+        })
 
         $scope.headClick = function () {
             $scope.sidbarData.menus[0].click();

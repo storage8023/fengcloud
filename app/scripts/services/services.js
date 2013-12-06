@@ -309,7 +309,7 @@ angular.module('gkClientIndex.services', [])
                 } else if (data.partition == GKPartition.smartFolder) {
                     items = {
                         'rename': {
-                            name: '修改命名',
+                            name: '修改名称',
                             callback: function () {
                                 var label = $trigger.find('.tree-label');
                                 label.hide();
@@ -1619,26 +1619,19 @@ angular.module('gkClientIndex.services', [])
                 /**
                  * 搜索不需要bread
                  */
-                if (filter && filter != 'search') {
-                    breads.unshift({
-                        name: GKFilter.getFilterName(filter),
-                        url: '#' + this.getPath(partition, '', view, mountId, filter),
-                        filter: filter,
-                        icon: filter != 'trash' ? 'icon_' + filter : ''
-                    });
+                if (filter) {
+                    var type =  GKFilter.getFilterType(filter)
+                    var smartFolder = GKSmartFolder.getFolderByCode(type);
+                    if(smartFolder){
+                        breads.unshift({
+                            name:smartFolder['name'],
+                            url: '#' + this.getPath(partition, '', view, mountId, filter),
+                            filter: filter,
+                            icon: filter != 'trash' ? 'icon_' + filter : ''
+                        });
+                    }
                 }
-                /**
-                 * 智能文件夹
-                 */
-                if (filter == 'search' && partition == 'smartfolder') {
-                    var item = {
-                        name: GKSmartFolder.getFolderByCode(keyword)['name'],
-                        url: '#' + this.getPath(partition, '', view, mountId, filter, keyword),
-                        filter: filter,
-                        icon: 'icon_' + partition
-                    };
-                    breads.unshift(item);
-                }
+
 
                 if (mountId) {
                     var mount = GKMount.getMountById(mountId);
@@ -2225,7 +2218,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi','GKFilter',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi,GKFilter) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -2503,7 +2496,8 @@ angular.module('gkClientIndex.services', [])
                 };
                 gkClientInterface.renameSmartFolder(param,function(re){
                     if(re.error==0){
-                        $rootScope.$broadcast('editSmartFolder', name,condition);
+                        var filter = GKFilter.getFilterByType(condition);
+                        $rootScope.$broadcast('editSmartFolder',name,condition,filter);
                         deferred.resolve();
                     }else{
                         GKException.handleClientException(re);

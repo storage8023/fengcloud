@@ -1,7 +1,7 @@
 <!-- 左侧边栏 -->
 <aside class="left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user"></member>
-    <div class="scrollbar tree_wrapper">
+    <div class="scrollbar tree_wrapper" contextmenu>
         <div gk-guider='{
                   buttons: [{name: "下一步",onclick:GKGuiders.next}],
                   description: "云库可以存放你所有的资料。“我的云库”是你创建或参与的云库，可以编辑其中的文件。“订阅的云库”是他人共享的，但只能查看文件。",
@@ -24,7 +24,6 @@
                       on-select="handleSelect(branch,GKPartition.teamFile)"
                       on-expand="handleExpand(branch,GKPartition.teamFile)"
                       on-drop="handleDrop(branch)"
-
                     >
             </abn-tree>
             <abn-tree tree-data="orgSubscribeList"
