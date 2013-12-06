@@ -584,7 +584,9 @@ angular.module('gkClientIndex.directives', [])
                                     /**
                                      * 云端不存在
                                      */
-                                    if (String(errorCode).slice(0, 3) == '404') {
+                                    if(errorCode == 404024){
+                                        $scope.sidbarData.title = '云端已删除';
+                                    }else if (String(errorCode).slice(0, 3) == '404') {
                                         $scope.fileExist = false;
                                         $scope.sidbarData = {
                                             icon: 'uploading'
@@ -619,8 +621,6 @@ angular.module('gkClientIndex.directives', [])
                                                         }
                                                     }
                                             }, 1000);
-                                        } else {
-                                            $scope.sidbarData.title = '云端已删除';
                                         }
                                     }
                                 })
