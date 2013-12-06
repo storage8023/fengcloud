@@ -647,6 +647,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
            setOpts();
+        }, true);
+
+        $scope.$watch('rightOpts',function(){
             jQuery.contextMenu('destroy', '.file_list .list_body');
             /**
              * 设置右键菜单
@@ -661,8 +664,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 },
                 items: $scope.rightOpts
             });
-        }, true);
-
+        })
 
         $scope.$watch('selectedpath', function (newValue, oldValue) {
             if (!newValue ) {
