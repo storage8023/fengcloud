@@ -553,7 +553,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     topOptKeys =jQuery.unique(jQuery.unique(re));
                 }
                 if($scope.selectedFile.length==1 && $scope.selectedFile[0].dir==0){
-                    getOpenWithMenu(GKFileList.getOptFileMountId($scope,$rootScope),$scope.selectedFile[0],$scope.allOpts);
+                    getOpenWithMenu(GKFileList.getOptFileMountId($scope.selectedFile[0]),$scope.selectedFile[0],$scope.allOpts);
                 }
             } else {
                 topOptKeys = optKeys;
@@ -803,7 +803,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.renameFileSubmit = function(filename,file){
-            var mountId = GKFileList.getOptFileMountId($scope,$rootScope);
+            var mountId = GKFileList.getOptFileMountId(file);
             if (filename === file.filename) {
                 file.rename = false;
             } else {
@@ -902,13 +902,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             if (file.dir == 1) {
-                GKPath.gotoFile(GKFileList.getOptFileMountId($scope, $rootScope), file.fullpath);
+                GKPath.gotoFile(GKFileList.getOptFileMountId(file), file.fullpath);
             } else {
                 if (!$scope.PAGE_CONFIG.networkConnected && !file.cache) {
                     return;
                 }
                 GK.open({
-                    mountid: GKFileList.getOptFileMountId($scope, $rootScope),
+                    mountid: GKFileList.getOptFileMountId(file),
                     webpath: file.fullpath
                 });
             }

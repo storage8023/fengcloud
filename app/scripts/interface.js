@@ -308,7 +308,7 @@
     },
     saveToLocal:function(params){
         try {
-            //console.log(params);
+            console.log(params);
            gkClient.gSaveToLocal(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);

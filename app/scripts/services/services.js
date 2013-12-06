@@ -2533,7 +2533,7 @@ angular.module('gkClientIndex.services', [])
                             mountid: $rootScope.PAGE_CONFIG.mount.mount_id
                         }
                         GK.removeLinkPath(params).then(function () {
-                            $rootScope.$broadcast('editFileSuccess','unsync',GKFileList.getOptFileMountId($scope, $rootScope),file.fullpath)
+                            $rootScope.$broadcast('editFileSuccess','unsync',GKFileList.getOptFileMountId(file),file.fullpath)
                         });
 
                     } else {
@@ -2558,10 +2558,11 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_location',
                         className: "goto",
                         callback: function () {
-                            var mountId = GKFileList.getOptFileMountId($scope, $rootScope);
-                            var fullpath = $scope.selectedFile[0].fullpath;
+                            var file = $scope.selectedFile[0];
+                            var mountId = GKFileList.getOptFileMountId(file);
+                            var fullpath = file.fullpath;
                             var upPath = Util.String.dirName(fullpath);
-                            var filename = $scope.selectedFile[0].filename;
+                            var filename = file.filename;
                             GKPath.gotoFile(mountId, upPath, fullpath);
                         }
                     },
@@ -2854,14 +2855,13 @@ angular.module('gkClientIndex.services', [])
                             var files = [];
                             angular.forEach($scope.selectedFile, function (value) {
                                 files.push({
-                                    webpath: value.fullpath
+                                    webpath: value.fullpath,
+                                    mountid:GKFileList.getOptFileMountId(value)
                                 })
                             });
                             var params = {
-                                list: files,
-                                mountid: GKFileList.getOptFileMountId($scope, $rootScope)
+                                list: files
                             };
-
                             GK.saveToLocal(params);
                         }
                     },
@@ -2876,7 +2876,7 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             var fullpathes=[];
-                            var mountId = GKFileList.getOptFileMountId($scope, $rootScope);
+                            var mountId = GKFileList.getOptFileMountId();
                             angular.forEach($scope.selectedFile, function (value) {
                                 fullpathes.push(value.fullpath);
                             });
@@ -3784,7 +3784,7 @@ angular.module('gkClientIndex.services', [])
 
     }
     ])
-    .factory('GKFileList', ['$q','GKFile','GKApi','GKPartition','$filter','GKException','RestFile','GKSearch','GKFilter',function ($q,GKFile,GKApi,GKPartition,$filter,GKException,RestFile,GKSearch,GKFilter) {
+    .factory('GKFileList', ['$q','GKFile','GKApi','GKPartition','$filter','GKException','RestFile','GKSearch','GKFilter','$rootScope',function ($q,GKFile,GKApi,GKPartition,$filter,GKException,RestFile,GKSearch,GKFilter,$rootScope) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -3846,16 +3846,12 @@ angular.module('gkClientIndex.services', [])
             getSelectedFile: function () {
                 return selectedFile;
             },
-            getOptFileMountId: function ($scope, $rootScope) {
-                var mountID;
-                if ($scope.selectedFile.length > 1) {
-                    mountID = $rootScope.PAGE_CONFIG.mount.mount_id;
-                } else {
-                    if($scope.selectedFile && $scope.selectedFile.length && $scope.selectedFile[0]['mount_id'] ){
-                        mountID = $scope.selectedFile[0]['mount_id'];
-                    }else{
-                        mountID =$rootScope.PAGE_CONFIG.mount.mount_id
-                    }
+            getOptFileMountId: function (file) {
+                var mountID = 0;
+                if(file && file.mount_id){
+                    mountID = file.mount_id;
+                }else if($rootScope.PAGE_CONFIG.mount){
+                    mountID = $rootScope.PAGE_CONFIG.mount.mount_id || 0;
                 }
                 return Number(mountID);
             },
