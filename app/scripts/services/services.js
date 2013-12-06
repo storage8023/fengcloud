@@ -606,21 +606,30 @@ angular.module('gkClientIndex.services', [])
                     templateUrl: 'views/news_dialog.html',
                     windowClass: 'news_dialog',
                     controller: function ($scope, $modalInstance, classifyNews) {
+                        $rootScope.showNews = true;
 
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $timeout(function () {
+                        var showTimer = $timeout(function () {
                             $scope.showList = true;
                             return null;
                         }, 500);
+
+                        $scope.$on('$destroy',function(){
+                            $rootScope.showNews = false;
+                            if(showTimer){
+                                $timeout.cancel(showTimer);
+                                showTimer = null;
+                            }
+                        })
+
                         $scope.classifyNews = classifyNews;
                         $scope.loading = false;
                         var requestDateline = 0;
                         $scope.getMoreNews = function () {
                             $scope.loading = true;
-
                             GKApi.update(100, requestDateline).success(function (data) {
                                 $scope.$apply(function () {
                                     $scope.loading = false;
