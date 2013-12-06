@@ -1390,12 +1390,10 @@ $.contextMenu = function(operation, options) {
                     if (o.context !== context) {
                         return true;
                     }
-                    
                     $visibleMenu = $('.context-menu-list').filter(':visible');
                     if ($visibleMenu.length && $visibleMenu.data().contextMenuRoot.$trigger.is($(o.context).find(o.selector))) {
                         $visibleMenu.trigger('contextmenu:hide', {force: true});
                     }
-
                     try {
                         if (menus[o.ns].$menu) {
                             menus[o.ns].$menu.remove();

@@ -1879,7 +1879,7 @@ angular.module('gkClientIndex.services', [])
         smartFolder: 'smartfolder',
         subscribeFile: 'subscribefile'
     })
-    .factory('GKFile', ['FILE_SORTS', 'GKPartition','GKFilter','$q',function (FILE_SORTS, GKPartition,GKFilter,$q) {
+    .factory('GKFile', ['FILE_SORTS', 'GKPartition','GKFilter','$q','GKApi',function (FILE_SORTS, GKPartition,GKFilter,$q,GKApi) {
         var GKFile = {
             /**
              * 获取单文件信息
@@ -2225,7 +2225,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKCilpboard', 'GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'GKException', 'RestFile', '$q',function (GKCilpboard, GKFile, GKPartition, GKMount, $rootScope, GK, GKException, RestFile,$q) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -2480,10 +2480,7 @@ angular.module('gkClientIndex.services', [])
                     return;
                 }
                 GKApi.teamQuit(org_id).success(function () {
-                    $scope.$apply(function () {
-                        $rootScope.$broadcast('unSubscribeTeam', $rootScope.PAGE_CONFIG.mount.org_id);
-                    });
-
+                   $rootScope.$broadcast('unSubscribeTeam', $rootScope.PAGE_CONFIG.mount.org_id);
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
@@ -2514,6 +2511,455 @@ angular.module('gkClientIndex.services', [])
                     }
                 });
                 return deferred.promise;
+            },
+            setOrder:function($scope,type, asc){
+                var orderAsc = $scope.order.slice(0, 1);
+                if (asc === undefined) {
+                    asc = orderAsc == '+' ? '-' : '+';
+                }
+                $scope.order = asc + type;
+            },
+            getAllOpts:function($scope){
+                var toggleSync = function(isSync){
+                    var params,
+                        setParentFile = true,
+                        file;
+                    if ($scope.selectedFile && $scope.selectedFile.length == 1) {
+                        setParentFile = false;
+                        file = $scope.selectedFile[0];
+                    } else {
+                        file = $rootScope.PAGE_CONFIG.file;
+                    }
+                    if (isSync) { //取消同步
+                        if (!confirm('确定取消同步"' + file.filename + '" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
+                            return;
+                        }
+                        params = {
+                            webpath: file.fullpath,
+                            mountid: $rootScope.PAGE_CONFIG.mount.mount_id
+                        }
+                        GK.removeLinkPath(params).then(function () {
+                            $rootScope.$broadcast('editFileSuccess','unsync',GKFileList.getOptFileMountId($scope, $rootScope),file.fullpath)
+                        });
+
+                    } else {
+                        GKModal.sync($rootScope.PAGE_CONFIG.mount.mount_id,file.fullpath);
+                    }
+                };
+
+                var getCilpFileData = function(){
+                    var files = [];
+                    angular.forEach($scope.selectedFile, function (value) {
+                        files.push({
+                            webpath: value.fullpath
+                        })
+                    });
+                    return files;
+                }
+
+                var allOpt = {
+                    'goto': {
+                        name: '位置',
+                        index:0,
+                        icon: 'icon_location',
+                        className: "goto",
+                        callback: function () {
+                            var mountId = GKFileList.getOptFileMountId($scope, $rootScope);
+                            var fullpath = $scope.selectedFile[0].fullpath;
+                            var upPath = Util.String.dirName(fullpath);
+                            var filename = $scope.selectedFile[0].filename;
+                            GKPath.gotoFile(mountId, upPath, fullpath);
+                        }
+                    },
+                    'open_with': {
+                        name: '打开方式',
+                        index:0,
+                        icon: 'icon_open_with',
+                        className: "open_with",
+                        items:{}
+                    },
+                    'new_file':{
+                        name: '新建',
+                        className: "new_folder",
+                        icon: 'icon_newfolder',
+                        index:1,
+                        items: {
+                            'new_folder': {
+                                name: '新建文件夹',
+                                index:0,
+                                className: "new_folder",
+                                callback: function () {
+                                    var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
+                                    $scope.createNewFolder = true;
+                                }
+                            },
+                            'create':{
+                                name: '创建公开文件夹',
+                                index:1,
+                                className: "create",
+                                callback: function () {
+                                    GKModal.createTeamFolder($scope.mountId,'');
+                                }
+                            },
+                            'create_sync_folder': {
+                                name: '创建同步文件夹',
+                                index:2,
+                                className: "sync_folder",
+                                callback: function () {
+                                    GKModal.backUp($scope.mountId,$rootScope.PAGE_CONFIG.file.fullpath);
+                                }
+                            }
+                        }
+                    },
+                    'unsubscribe': {
+                        index:2,
+                        name: '取消订阅',
+                        icon: 'icon_remove',
+                        className: "unsubscribe",
+                        callback: function () {
+                            GKOpt.unsubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+                        }
+                    },
+                    'nearby': {
+                        index:3,
+                        name: '附近',
+                        icon: 'icon_location',
+                        className: "nearby",
+                        callback: function () {
+                            GKModal.nearBy();
+                        }
+                    },
+                    'manage': {
+                        index:4,
+                        name: '管理',
+                        icon: 'icon_setting',
+                        className: "manage",
+                        callback: function () {
+                            GKOpen.manage($rootScope.PAGE_CONFIG.mount.org_id);
+                        }
+                    },
+                    'clear_trash': {
+                        index:5,
+                        name: '清空回收站',
+                        icon: 'icon_del',
+                        className: "clear_trash",
+                        callback: function () {
+                            GKOpt.clearTrash($scope.PAGE_CONFIG.mount.mount_id);
+                        }
+                    },
+                    'revert': {
+                        index:6,
+                        name: '还原',
+                        icon: 'icon_recover',
+                        className: "revert",
+                        callback: function () {
+                            var list = [];
+                            angular.forEach($scope.selectedFile, function (value) {
+                                list.push({
+                                    webpath: value.fullpath
+                                });
+                            });
+                            var param = {
+                                mountid: $rootScope.PAGE_CONFIG.mount.mount_id,
+                                list: list
+                            };
+                            GK.recover(param).then(function () {
+                                angular.forEach($scope.selectedFile, function (value) {
+                                    angular.forEach($scope.fileData, function (file, key) {
+                                        if (value == file) {
+                                            $scope.fileData.splice(key, 1);
+                                        }
+                                    })
+                                });
+                                $scope.selectedFile = [];
+                                $scope.selectedIndex = [];
+                            })
+                        }
+                    },
+                    'del_completely': {
+                        index:20,
+                        name: '彻底删除',
+                        className: "del_completely",
+                        icon: 'icon_disable',
+                        callback: function () {
+                            var fullpaths = [];
+                            angular.forEach($scope.selectedFile, function (value) {
+                                fullpaths.push(value.dir == 1 ? value.fullpath + '/' : value.fullpath);
+                            });
+                            RestFile.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths).success(function () {
+                                angular.forEach($scope.selectedFile, function (value) {
+                                    angular.forEach($scope.fileData, function (file, key) {
+                                        if (value == file) {
+                                            $scope.fileData.splice(key, 1);
+                                        }
+                                    })
+                                });
+                                $scope.selectedFile = [];
+                                $scope.selectedIndex = [];
+                            }).error(function () {
+
+                                });
+                        }
+                    },
+                    'sync': {
+                        index:8,
+                        name: '同步',
+                        className: "sync",
+                        icon: 'icon_sync',
+                        callback: function () {
+                           toggleSync(0);
+                        }
+                    },
+                    'unsync': {
+                        index:9,
+                        name: '取消同步',
+                        className: "unsync",
+                        icon: 'icon_disable',
+                        callback: function () {
+                           toggleSync(1);
+                        }
+                    },
+                    'paste': {
+                        index:10,
+                        name: '粘贴',
+                        className: "paste",
+                        icon: 'icon_paste',
+                        accesskeyText:'Ctrl+V',
+                        callback: function () {
+                            var data = GKCilpboard.getData();
+                            if (!data || !data.files || !data.mount_id) return;
+                            var target = $rootScope.PAGE_CONFIG.file.fullpath;
+                            if ($scope.selectedFile.length == 1) {
+                                target = $scope.selectedFile[0].fullpath;
+                            }
+
+                            if (data.code == 'ctrlC') {
+                                GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
+                                    $scope.refreahData();
+                                }, function (error) {
+                                    GKException.handleClientException(error);
+                                });
+                            } else if (data.code == 'ctrlX') {
+                                GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
+                                    $scope.refreahData();
+                                    GKCilpboard.clearData();
+                                }, function (error) {
+                                    GKException.handleClientException(error);
+                                });
+                            }
+                        }
+                    },
+                    'cut': {
+                        index:11,
+                        name: '剪切',
+                        className: "cut",
+                        icon: 'icon_cut',
+                        accesskeyText:'Ctrl+X',
+                        callback: function () {
+                            if(!$scope.selectedFile || !$scope.selectedFile.length){
+                                return;
+                            }
+                            var data = {
+                                code: 'ctrlX',
+                                mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                                files: getCilpFileData()
+                            }
+                            GKCilpboard.setData(data);
+                        }
+                    },
+                    'copy': {
+                        index:12,
+                        name: '复制',
+                        className: "copy",
+                        icon: 'icon_copy',
+                        accesskeyText:'Ctrl+C',
+                        callback: function () {
+                            if(!$scope.selectedFile || !$scope.selectedFile.length){
+                                return;
+                            }
+                            var data = {
+                                code: 'ctrlC',
+                                mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                                files: getCilpFileData()
+                            };
+
+                            GKCilpboard.setData(data);
+                        }
+                    },
+                    'add': {
+                        index:2,
+                        name: '添加',
+                        className: "add",
+                        icon: 'icon_download',
+                        callback: function () {
+                            var addFiles = gkClientInterface.addFileDialog();
+                            if (!addFiles || !addFiles.list || !addFiles.list.length) {
+                                return;
+                            }
+                            var params = {
+                                parent: $scope.path,
+                                type: 'save',
+                                list: addFiles.list,
+                                mountid: $scope.mountId
+                            };
+                            GK.addFile(params).then(function () {
+                                GKFileList.refreahData($scope);
+                            }, function (error) {
+                                GKException.handleClientException(error);
+                            })
+                        }
+                    },
+                    'lock': {
+                        index:14,
+                        name: '锁定',
+                        className: "lock",
+                        icon: 'icon_lock',
+                        callback: function () {
+                            var file = $scope.selectedFile[0];
+                            GK.lock({
+                                webpath: file.fullpath,
+                                mountid: $scope.mountId
+                            }).then(function () {
+                                    file.lock = 1;
+                                    file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
+                                })
+
+                        }
+                    },
+                    'unlock': {
+                        index:15,
+                        name: '解锁',
+                        className: "unlock",
+                        icon: 'icon_unlock',
+                        callback: function () {
+                            var file = $scope.selectedFile[0];
+                            if (file.lock_member_id != $rootScope.PAGE_CONFIG.member_id) {
+                                alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
+                                return;
+                            }
+                            GK.unlock({
+                                webpath: file.fullpath,
+                                mountid: $scope.mountId
+                            }).then(function () {
+                                    file.lock = 0;
+                                    file.lock_member_name = '';
+                                })
+
+                        }
+                    },
+                    'save': {
+                        index:16,
+                        name: '保存',
+                        className: "save",
+                        icon: 'icon_save',
+                        accesskeyText:'Ctrl+S',
+                        callback: function () {
+                            if(!$scope.selectedFile || !$scope.selectedFile.length){
+                                return;
+                            }
+                            var files = [];
+                            angular.forEach($scope.selectedFile, function (value) {
+                                files.push({
+                                    webpath: value.fullpath
+                                })
+                            });
+                            var params = {
+                                list: files,
+                                mountid: GKFileList.getOptFileMountId($scope, $rootScope)
+                            };
+
+                            GK.saveToLocal(params);
+                        }
+                    },
+                    'del': {
+                        index: 21,
+                        name: '删除',
+                        className: "del",
+                        icon: 'icon_trash',
+                        accesskeyText:'Delete',
+                        callback: function () {
+                            if(!$scope.selectedFile || !$scope.selectedFile.length){
+                                return;
+                            }
+                            var fullpathes=[];
+                            var mountId = GKFileList.getOptFileMountId($scope, $rootScope);
+                            angular.forEach($scope.selectedFile, function (value) {
+                                fullpathes.push(value.fullpath);
+                            });
+                            GKOpt.del(mountId,fullpathes);
+                        }
+                    },
+                    'rename': {
+                        index: 18,
+                        name: '重命名',
+                        className: "rename",
+                        icon: 'icon_rename',
+                        callback: function () {
+                            var file = $scope.selectedFile[0];
+                            file.rename = true;
+                        }
+                    },
+                    'view_property':{
+                        index: 19,
+                        name: '属性',
+                        className: "file_property",
+                        icon: 'icon_file_property',
+                        accesskeyText:'Ctrl+P',
+                        callback: function () {
+                            if($scope.selectedFile.length!=1){
+                                return;
+                            }
+                            var file = $scope.selectedFile[0],
+                                parentFile = $rootScope.PAGE_CONFIG.file;
+                            GKModal.filePropery($scope.mountId,file,parentFile);
+                        }
+                    },
+                    'order_by': {
+                        index: 20,
+                        name: '排序方式',
+                        className: "order_by",
+                        items: {
+                            'order_by_file_name': {
+                                name: '文件名',
+                                className: 'order_by_file_name' + ($scope.order.indexOf('file_name') >= 0 ? 'current' : ''),
+                                callback: function () {
+                                    $scope.$apply(function () {
+                                        GKOpt.setOrder($scope,'filename');
+                                    });
+                                }
+                            },
+                            'order_by_file_size': {
+                                name: '大小',
+                                className: 'order_by_file_size' + ($scope.order.indexOf('file_size') >= 0 ? 'current' : ''),
+                                callback: function () {
+                                    $scope.$apply(function () {
+                                        GKOpt.setOrder($scope,'filesize');
+                                    });
+                                }
+                            },
+                            'order_by_file_type': {
+                                name: '类型',
+                                className: 'order_by_file_type' + ($scope.order.indexOf('file_type') >= 0 ? 'current' : ''),
+                                callback: function () {
+                                    $scope.$apply(function () {
+                                        GKOpt.setOrder($scope,'ext');
+                                    });
+                                }
+                            },
+                            'order_by_last_edit_time': {
+                                name: '最后修改时间',
+                                className: 'order_by_last_edit_time' + ($scope.order.indexOf('last_edit_time') >= 0 ? 'current' : ''),
+                                callback: function () {
+                                    $scope.$apply(function () {
+                                        GKOpt.setOrder($scope,'last_edit_time');
+                                    })
+
+                                }
+                            }
+                        }
+                    }
+                };
+                return allOpt;
             }
         };
         return GKOpt
@@ -3344,7 +3790,7 @@ angular.module('gkClientIndex.services', [])
 
     }
     ])
-    .factory('GKFileList', [function ($q,GKFile,GKApi) {
+    .factory('GKFileList', ['$q','GKFile','GKApi','GKPartition','$filter','GKException','RestFile','GKSearch','GKFilter',function ($q,GKFile,GKApi,GKPartition,$filter,GKException,RestFile,GKSearch,GKFilter) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -3411,7 +3857,11 @@ angular.module('gkClientIndex.services', [])
                 if ($scope.selectedFile.length > 1) {
                     mountID = $rootScope.PAGE_CONFIG.mount.mount_id;
                 } else {
-                    mountID = $scope.selectedFile[0]['mount_id'] || $rootScope.PAGE_CONFIG.mount.mount_id
+                    if($scope.selectedFile && $scope.selectedFile.length && $scope.selectedFile[0]['mount_id'] ){
+                        mountID = $scope.selectedFile[0]['mount_id'];
+                    }else{
+                        mountID =$rootScope.PAGE_CONFIG.mount.mount_id
+                    }
                 }
                 return Number(mountID);
             },
@@ -3445,6 +3895,137 @@ angular.module('gkClientIndex.services', [])
                     count++;
                 } while (exist);
                 return defaultFileName;
+            },
+            getFileData:function($scope,start){
+                var totalCount = 0;
+                start = angular.isDefined(start)?start:0;
+                var fileList,
+                    source = 'client',
+                    deferred = $q.defer();
+                $scope.errorMsg = '';
+                /**
+                 * 我的文件和云库文件夹
+                 */
+                if ($scope.partition == GKPartition.myFile || $scope.partition == GKPartition.teamFile || $scope.partition == GKPartition.subscribeFile) {
+                    /**
+                     * 回收站
+                     */
+                    if ($scope.filter == 'trash') {
+                        source = 'api';
+                        RestFile.recycle($scope.mountId, '').success(function (data) {
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            })
+                        /**
+                         * 搜索
+                         */
+                    } else if ($scope.filter == 'search') {
+                        source = 'api';
+                        GKSearch.setSearchState('loading');
+                        var condition = GKSearch.getCondition();
+                        GKApi.searchFile(condition, $scope.mountId).success(function (data) {
+                            GKSearch.setSearchState('end');
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                GKSearch.setSearchState('end');
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            });
+
+                    }else if($scope.partition == GKPartition.subscribeFile){
+                        source = 'api';
+                        GKApi.list($scope.mountId,$scope.path,start,400).success(function(data){
+                            fileList = data['list'];
+                            totalCount =  data['count'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+
+                        }).error(function(request){
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            });
+                        /**
+                         * 获取文件列表
+                         */
+                    } else {
+                        var re = gkClientInterface.getFileList({
+                            webpath: $scope.path,
+                            mountid: $scope.mountId
+                        });
+                        fileList = re['list'];
+                        deferred.resolve(GKFile.dealFileList(fileList, source));
+                        re=null;
+                    }
+
+                } else {
+                    source = 'api';
+                    /**
+                     * 我接收的文件
+                     */
+                    if ($scope.filter == 'inbox') {
+                        GKApi.inboxFileList($scope.filter).success(function (data) {
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            });
+
+                        /**
+                         * 加星标的文件
+                         */
+                    } else if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf($scope.filter) >= 0) {
+                        var type = GKFilter.getFilterType($scope.filter);
+
+                        GKApi.starFileList(type).success(function (data) {
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            });
+
+
+                        /**
+                         * 最近访问的文件
+                         */
+                    } else if ($scope.filter == 'recent') {
+                        GKApi.recentFileList($scope.filter).success(function (data) {
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            });
+                    } else {
+                        /**
+                         * 智能文件夹
+                         */
+                        GKApi.smartFolderList($scope.keyword).success(function (data) {
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            });
+                    }
+                }
+                return deferred.promise;
+            },
+            refreahData:function($scope,selectPath){
+                GKFileList.getFileData($scope).then(function (newFileData) {
+                    var order = $scope.order;
+                    if($scope.order.indexOf('filename')>=0){
+                        var desc = $scope.order.indexOf('-')?'-':'+';
+                        order = [desc+'dir',$scope.order];
+                    }
+                    $scope.fileData = null;
+                    $scope.fileData = $filter('orderBy')(newFileData, order);
+                    if (selectPath) {
+                        $scope.selectedpath = selectPath;
+                    }
+                    if ((!$scope.fileData || !$scope.fileData.length)) {
+                        $scope.errorMsg = '该文件夹为空';
+                    }
+                }, function (errorMsg) {
+                    $scope.errorMsg = errorMsg;
+                })
             }
         };
         return GKFileList;
@@ -3777,6 +4358,7 @@ function GKHistory($q, $location, $rootScope) {
         update = true,
         history = [],
         current,
+        maxLen=100,
         reset = function () {
             history = [$location.search()];
             current = 0;
@@ -3811,7 +4393,12 @@ function GKHistory($q, $location, $rootScope) {
                 cwd = params;
             if (update) {
                 current >= 0 && l > current + 1 && history.splice(current + 1);
-                history[history.length - 1] != cwd && history.push(cwd);
+                if(history[history.length - 1] != cwd){
+                    history.push(cwd);
+                    if(history.length>maxLen){
+                        history.splice(0,1);
+                    }
+                }
                 current = history.length - 1;
             }
             update = true;

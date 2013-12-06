@@ -25,7 +25,7 @@
  *                                             is pressed and the input box is empty.
  */
 
-angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
+angular.module('tags-input', []).directive('tagsInput',function($interpolate,$timeout) {
     function loadOptions(scope, attrs) {
         function getStr(name, defaultValue) {
             return attrs[name] ? $interpolate(attrs[name])(scope.$parent) : defaultValue;
@@ -58,17 +58,17 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
     }
 
     return {
-        restrict: 'A,E',
+        restrict: 'AE',
         scope: { tags: '=ngModel' },
         replace: false,
-        template: '<div tabindex="-1" class="ngTagsInput {{ options.cssClass }}" ng-class="editing?\'editing\':\'\'">' +
+        template: '<div tabindex="-1" ng-click="handleClick()" class="ngTagsInput {{ options.cssClass }}" ng-class="editing?\'editing\':\'\'">' +
                   '  <ul>' +
                   '    <li ng-repeat="tag in tags" ng-class="getCssClass($index)">' +
                   '      <span>{{ tag }}</span>' +
                   '      <button type="button" ng-click="remove($index)">&times;</button>' +
                   '    </li>' +
                   '  </ul>' +
-                  '  <input type="text" placeholder="{{ options.placeholder }}" size="{{ options.placeholder.length }}" maxlength="{{ options.maxLength }}" tabindex="{{ options.tabindex }}" ng-model="newTag">' +
+                  '  <input type="text" ng-keydown="handleKeyDown($event)" ng-blur="handleBlur()" ng-focus="handleFocus()" placeholder="{{ options.placeholder }}" size="{{ options.placeholder.length }}" maxlength="{{ options.maxLength }}" tabindex="{{ options.tabindex }}" ng-model="newTag">' +
                   '</div>',
 
         controller: function($scope, $attrs) {
@@ -80,7 +80,6 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
             $scope.tryAdd = function() {
                 var changed = false;
                 var tag = $scope.newTag;
-                console.log(tag.length >= $scope.options.minLength);
                 if (tag.length >= $scope.options.minLength && $scope.options.allowedTagsPattern.test(tag)) {
                     if ($scope.options.replaceSpacesWithDashes) {
                         tag = tag.replace(/\s/g, '-');
@@ -131,44 +130,38 @@ angular.module('tags-input', []).directive('tagsInput', function($interpolate) {
             });
 
         },
-        link: function(scope, element) {
-            //console.log(1);
+        link: function($scope, element) {
             var ENTER = 13, COMMA = 188, SPACE = 32, BACKSPACE = 8;
-
-            element.find('input')
-                .bind('keydown', function(e) {
-                    if (e.keyCode === ENTER && scope.options.addOnEnter ||
-                        e.keyCode === COMMA && scope.options.addOnComma ||
-                        e.keyCode === SPACE && scope.options.addOnSpace) {
-
-                        if (scope.tryAdd()) {
-                            scope.$apply();
-                        }
+            $scope.handleKeyDown = function(e){
+                if (e.keyCode === ENTER && $scope.options.addOnEnter ||
+                    e.keyCode === COMMA && $scope.options.addOnComma ||
+                    e.keyCode === SPACE && $scope.options.addOnSpace) {
+                    $scope.tryAdd()
+                    e.preventDefault();
+                }
+                else if (e.keyCode === BACKSPACE && this.value.length === 0) {
+                    if ($scope.tryRemoveLast()) {
                         e.preventDefault();
                     }
-                    else if (e.keyCode === BACKSPACE && this.value.length === 0) {
-                        if (scope.tryRemoveLast()) {
-                            scope.$apply();
+                }
+            }
+            $scope.editing = false;
 
-                            e.preventDefault();
-                        }
-                    }
-                });
-            scope.editing = false;
-            element.find('input').on('focus',function(){
-                scope.$apply(function(){
-                    scope.editing = true;
-                })
-            });
-            element.find('input').on('blur',function(){
-                scope.$apply(function(){
-                    scope.editing = false;
-                    scope.tryAdd();
-                })
-            });
-            element.find('div').bind('click', function() {
-                element.find('input')[0].focus();
-            });
+            $scope.handleFocus = function(){
+                $scope.editing = true;
+            };
+
+            $scope.handleBlur = function(){
+                $scope.editing = false;
+                $scope.tryAdd();
+            };
+
+            $scope.handleClick = function(){
+                $timeout(function(){
+                    jQuery(element).find('input').focus();
+                },0)
+            }
+
         }
     };
 });
