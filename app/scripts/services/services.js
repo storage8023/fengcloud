@@ -875,7 +875,7 @@ angular.module('gkClientIndex.services', [])
                                 defaultName = item.text;
                             }
                             if (!defaultName) return;
-                            var syncPath =  fullpath+'/'+defaultName;
+                            var syncPath =  fullpath+(fullpath?'/':'')+defaultName;
                             var params = {
                                 webpath: syncPath,
                                 fullpath: localUri,
