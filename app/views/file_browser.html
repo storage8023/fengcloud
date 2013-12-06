@@ -1,7 +1,7 @@
 <div class="content">
     <div class="file_browser">
         <toolbar></toolbar>
-        <div class="file_list_wrapper" ng-dblclick="handleDblClick($event)">
+        <div class="file_list_wrapper" ng-dblclick="handleDblClick($event)" fix-scroll>
             <div class="file_list {{view}}_view" ng-class="showHint?'has_hint':''">
                 <div class="c_f_after file_list_hint" ng-show="showHint">
                     <span class="f_l">同步的文件夹</span>
@@ -45,6 +45,8 @@
                      ng-model="testModel"
                      create-new-folder="createNewFolder"
                      create-file-submit="createFileNameSubmit(filename)"
+                     keybroad-nav
+
                     >
                     <div class="empty" ng-if="errorMsg">
                         <span>{{errorMsg}}</span>

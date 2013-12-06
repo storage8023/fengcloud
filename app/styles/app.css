@@ -737,12 +737,12 @@ footer {
     font-size: 12px;
     height: 32px;
     line-height: 32px;
-    position: relative;
-    background: #fff;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1;
+    background: #fff;
     border-top:1px solid #fff;
 }
 .file_list_wrapper .file_list_hint{

@@ -435,7 +435,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 打开时会有一次空跳转
          */
         if (!$routeParams.partition) return;
-        var shiftLastIndex = 0; //shift键盘的起始点
+
         /**
          * 分析路径获取参数
          * @type {*}
@@ -454,11 +454,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if( $scope.partition == GKPartition.smartFolder && $scope.filter=='recent'){
             $scope.order = '-last_edit_time'; //当前的排序
         }
+        $scope.allOpts = null;
         $scope.rightOpts = [];
         $scope.showHint = false;
         if ($rootScope.PAGE_CONFIG.file.syncpath) {
             $scope.showHint = true;
         }
+        $scope.shiftLastIndex = 0; //shift键盘的起始点
         var intervalPromise;
         $scope.test = function(){
             if (!intervalPromise) {
@@ -476,8 +478,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 intervalPromise = null;
             }
         }
-
-        //$scope.allOpts = GKOpt.getAllOpts($scope);
 
         GKFileList.refreahData($scope);
 
@@ -624,6 +624,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.allOpts = null;
         }
 
+        $scope.triggleOptByShortCut = function(shortcut){
+            var opt = GKOpt.getOptByShortCut($scope.rightOpts,shortcut);
+            if(opt){
+                opt['callback']();
+            }
+        };
+
         /**
          * 改变视图
          */
@@ -665,7 +672,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 angular.forEach(newValue.split('|'), function (value) {
                     GKFileList.selectByPath($scope, value);
             });
-
         })
 
         $scope.$watch('PAGE_CONFIG.file',  setOpts, true);
@@ -694,22 +700,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.reIndex($scope.fileData);
         })
 
-        $scope.$on('shortCuts', function (event,shortcut) {
-            var opt = GKOpt.getOptByShortCut($scope.allOpts,shortcut);
-            if(opt){
-                opt['callback']();
-            }
-        });
-
-
         /**
          * 取消收藏
          */
         $scope.$on('unFav', function ($event) {
             GKFileList.removeAllSelectFile($scope);
         })
-
-
 
         $scope.$on('UpdateWebpath', function (event, param) {
             $scope.$apply(function () {
@@ -719,7 +715,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
         })
-
 
         /**
          * 监听对文件的操作事件,同步文件列表和左侧的树
@@ -800,7 +795,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
         })
 
-
         $scope.$on('clearTrashSuccess',function(event,mountId){
             if($scope.mountId != mountId || $scope.filter != 'trash'){
                 return;
@@ -875,7 +869,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GKFileList.select($scope, index, true);
                 }
             } else if ($event.shiftKey) {
-                var lastIndex = shiftLastIndex;
+                var lastIndex = $scope.shiftLastIndex;
                 GKFileList.unSelectAll($scope)
                 if (index > lastIndex) {
                     for (var i = lastIndex; i <= index; i++) {
@@ -891,7 +885,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKFileList.select($scope, index);
             }
             if (!$event.shiftKey) {
-                shiftLastIndex = index;
+                $scope.shiftLastIndex = index;
             }
         };
 
@@ -938,7 +932,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-
         /**
          * 设置order
          * @param order
@@ -946,143 +939,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.setOrder = function (order) {
             GKFileList.setOrder($scope,order);
         };
-
-        /**
-         * enter 键
-         */
-        $scope.enterPress = function () {
-            if ($scope.selectedFile && $scope.selectedFile.length) {
-                $scope.handleDblClick($scope.selectedFile[0]);
-            }
-        };
-
-        /**
-         * fix列表出现滚动条后列表头部对不齐的问题
-         */
-        var checkScroll = function (elem) {
-            var scrollY = false;
-            var st = elem.scrollTop();
-            elem.scrollTop(st > 0 ? -1 : 1);
-            if (elem.scrollTop() !== st) {
-                scrollY = scrollY || true;
-            }
-            elem.scrollTop(st);
-            return scrollY;
-        }
-        var setListHeaderWidth = function () {
-            if (checkScroll($element.find('.list_body'))) {
-                $element.find('.file_list_header,.file_list_hint').css('right', 8);
-            } else {
-                $element.find('.file_list_header,.file_list_hint').css('right', 0);
-            }
-        };
-
-
-
-        /**
-         * 获取缩略图模式下每行的列数
-         * @returns {number}
-         */
-        var getColCount = function () {
-            var colCount = 4;
-            if ($scope.view == 'thumb' && $element.find('.file_item').size()) {
-                colCount = Math.floor($element.width() / $element.find('.file_item').eq(0).outerWidth(true));
-            }
-            return colCount;
-        };
-
-        /**
-         * up left 键
-         * @param $event
-         */
-        $scope.upLeftPress = function ($event) {
-            if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
-                return;
-            }
-            /**
-             * 非所缩略图模式不激活左右键
-             */
-            if ($scope.view != 'thumb' && $event.keyCode == 37) {
-                return;
-            }
-            var step = 1;
-            if ($scope.view == 'thumb' && $event.keyCode == 38) {
-                step = getColCount();
-            }
-            /**
-             * 初始index是最后一个
-             * @type {number}
-             */
-            var initIndex = $scope.fileData.length + step - 1;
-            /**
-             * 如果已经选中，则取已选中的最小一个
-             */
-            var selectedIndex = GKFileList.getSelectedIndex();
-            if (selectedIndex.length) {
-                initIndex = Math.min.apply('', selectedIndex);
-            }
-            var newIndex = initIndex - step;
-            if (newIndex < 0) {
-                newIndex = 0;
-            }
-
-            if ($event.shiftKey) {
-                for (var i = (initIndex > ($scope.fileData.length - 1) ? $scope.fileData.length - 1 : initIndex); i >= newIndex; i--) {
-                    GKFileList.select($scope, i, true);
-                }
-            } else {
-                GKFileList.unSelectAll($scope);
-                GKFileList.select($scope, newIndex);
-                shiftLastIndex = newIndex;
-            }
-        };
-
-        /**
-         * down right 键
-         * @param $event
-         */
-        $scope.downRightPress = function ($event) {
-            if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
-                return;
-            }
-            /**
-             * 非所缩略图模式不激活左右键
-             */
-
-            if ($scope.view != 'thumb' && $event.keyCode == 39) {
-                return;
-            }
-            var step = 1;
-            if ($scope.view == 'thumb' && $event.keyCode == 40) {
-                step = getColCount();
-            }
-            /**
-             * 初始index是第一个
-             * @type {number}
-             */
-            var initIndex = -1 * step;
-            /**
-             * 如果已经选中，则取已选中的最大一个
-             */
-            var selectedIndex = GKFileList.getSelectedIndex();
-            if (selectedIndex.length) {
-                initIndex = Math.max.apply('', selectedIndex);
-            }
-            var newIndex = initIndex + step;
-            if (newIndex > $scope.fileData.length - 1) {
-                newIndex = $scope.fileData.length - 1;
-            }
-            if ($event.shiftKey) {
-                for (var i = (initIndex > 0 ? initIndex : 0); i <= newIndex; i++) {
-                    GKFileList.select($scope, i, true);
-                }
-            } else {
-                GKFileList.unSelectAll($scope);
-                GKFileList.select($scope, newIndex, true);
-                shiftLastIndex = newIndex;
-            }
-        };
-
 
         /**
          * 监听mousedown事件
@@ -1093,6 +949,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
                 GKFileList.unSelectAll($scope);
             }
+            /**
+             * 为了修复框选组件的bug
+             */
 //            $timeout(function(){
 //                document.activeElement.blur();
 //            },0)
@@ -1100,12 +959,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         /**drag drop **/
         $scope.getHelper = function () {
-            var selectFileName = $scope.fileData[shiftLastIndex].filename;
+            var selectFileName = $scope.fileData[$scope.shiftLastIndex].filename;
             var len = $scope.selectedFile.length;
             var moreInfo = len > 1 ? ' 等' + len + '个文件和文件夹' : '';
             return '<div class="helper">' + selectFileName + moreInfo + '</div>';
 
         };
+
         $scope.dragBegin = function (event, ui, index) {
             var file = $scope.fileData[index];
             if (!file) {
@@ -1187,10 +1047,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKDialog.openSetting('sync');
         }
 
-        $scope.handleScrollLoad = function () {
-            var fn = $parse($attrs.scrollLoad);
-            fn($scope);
-        }
+//        $scope.handleScrollLoad = function () {
+//            var fn = $parse($attrs.scrollLoad);
+//            fn($scope);
+//        }
 
         /**
          * ctrlV结束
@@ -1231,6 +1091,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$destroy',function(){
             jQuery.contextMenu('destroy', '.file_list .list_body');
+
         })
 
     }])

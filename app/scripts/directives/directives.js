@@ -3,6 +3,218 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('fixScroll', ['$timeout',function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function ($scope,$element,$attrs) {
+                /**
+                 * fix列表出现滚动条后列表头部对不齐的问题
+                 */
+                var checkScroll = function (elem) {
+                    var scrollY = false;
+                    var st = elem.scrollTop();
+                    elem.scrollTop(st > 0 ? -1 : 1);
+                    if (elem.scrollTop() !== st) {
+                        scrollY = scrollY || true;
+                    }
+                    elem.scrollTop(st);
+                    return scrollY;
+                }
+
+                var setListHeaderWidth = function () {
+                    if (checkScroll($element.find('.list_body'))) {
+                        $element.find('.file_list_header,.file_list_hint').css('right', 8);
+                    } else {
+                        $element.find('.file_list_header,.file_list_hint').css('right', 0);
+                    }
+                };
+
+                jQuery(window).on('resize.fixScroll', function () {
+                    setListHeaderWidth();
+                });
+
+                var fixTimer = $timeout(function () {
+                    setListHeaderWidth();
+                }, 0);
+
+                $scope.$on('$destroy',function(){
+                    jQuery(window).off('resize.fixScroll');
+                    if(fixTimer){
+                        $timeout.cancel(fixTimer);
+                        fixTimer = null;
+                    }
+                    setListHeaderWidth = checkScroll = null;
+                })
+            }
+        };
+    }])
+    .directive('keybroadNav', ['GKFileList',function (GKFileList) {
+        return {
+            restrict: 'A',
+            link: function ($scope,$element,$attrs) {
+                var getColCount = function(){
+                    var colCount = 4;
+                    if ($scope.view == 'thumb' && $element.find('.file_item').size()) {
+                        colCount = Math.floor($element.width() / $element.find('.file_item').eq(0).outerWidth(true));
+                    }
+                    return colCount;
+                };
+
+                /**
+                 * up left 键
+                 * @param $event
+                 */
+               var upLeftPress = function ($event) {
+                    if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
+                        return;
+                    }
+                    /**
+                     * 非所缩略图模式不激活左右键
+                     */
+                    if ($scope.view != 'thumb' && $event.keyCode == 37) {
+                        return;
+                    }
+                    var step = 1;
+                    if ($scope.view == 'thumb' && $event.keyCode == 38) {
+                        step = getColCount();
+                    }
+                    /**
+                     * 初始index是最后一个
+                     * @type {number}
+                     */
+                    var initIndex = $scope.fileData.length + step - 1;
+                    /**
+                     * 如果已经选中，则取已选中的最小一个
+                     */
+                    var selectedIndex = GKFileList.getSelectedIndex();
+                    if (selectedIndex.length) {
+                        initIndex = Math.min.apply('', selectedIndex);
+                    }
+                    var newIndex = initIndex - step;
+                    if (newIndex < 0) {
+                        newIndex = 0;
+                    }
+
+                    if ($event.shiftKey) {
+                        for (var i = (initIndex > ($scope.fileData.length - 1) ? $scope.fileData.length - 1 : initIndex); i >= newIndex; i--) {
+                            GKFileList.select($scope, i, true);
+                        }
+                    } else {
+                        GKFileList.unSelectAll($scope);
+                        GKFileList.select($scope, newIndex);
+                        $scope.shiftLastIndex = newIndex;
+                    }
+                };
+
+                /**
+                 * down right 键
+                 * @param $event
+                 */
+                var downRightPress = function ($event) {
+                    if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
+                        return;
+                    }
+                    /**
+                     * 非所缩略图模式不激活左右键
+                     */
+
+                    if ($scope.view != 'thumb' && $event.keyCode == 39) {
+                        return;
+                    }
+                    var step = 1;
+                    if ($scope.view == 'thumb' && $event.keyCode == 40) {
+                        step = getColCount();
+                    }
+                    /**
+                     * 初始index是第一个
+                     * @type {number}
+                     */
+                    var initIndex = -1 * step;
+                    /**
+                     * 如果已经选中，则取已选中的最大一个
+                     */
+                    var selectedIndex = GKFileList.getSelectedIndex();
+                    if (selectedIndex.length) {
+                        initIndex = Math.max.apply('', selectedIndex);
+                    }
+                    var newIndex = initIndex + step;
+                    if (newIndex > $scope.fileData.length - 1) {
+                        newIndex = $scope.fileData.length - 1;
+                    }
+                    if ($event.shiftKey) {
+                        for (var i = (initIndex > 0 ? initIndex : 0); i <= newIndex; i++) {
+                            GKFileList.select($scope, i, true);
+                        }
+                    } else {
+                        GKFileList.unSelectAll($scope);
+                        GKFileList.select($scope, newIndex, true);
+                        $scope.shiftLastIndex = newIndex;
+                    }
+                };
+
+                /**
+                 * 监听键盘事件
+                 */
+                jQuery(document).on('keydown.shortcut', function ($event) {
+                    $scope.$apply(function () {
+                        var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
+                        switch ($event.keyCode) {
+                            case 13: //enter
+                                if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) < 0) {
+                                    if ($scope.selectedFile && $scope.selectedFile.length) {
+                                        $scope.handleDblClick($scope.selectedFile[0]);
+                                    }
+                                }
+                                break;
+                            case 37: //up
+                            case 38: //left
+                                upLeftPress($event);
+                                break;
+                            case 39: //down
+                            case 40: //right
+                                downRightPress($event);
+                                break;
+                            case 46: //Delete
+                                $scope.triggleOptByShortCut('Delete');
+                                break;
+                            case 67: //c
+                                if (ctrlKeyOn) {
+                                    $scope.triggleOptByShortCut('Ctrl+C');
+                                }
+                                break;
+                            case 80: //p
+                                if (ctrlKeyOn) {
+                                    $scope.triggleOptByShortCut('Ctrl+P');
+                                }
+                                break;
+                            case 83: //s
+                                if (ctrlKeyOn) {
+                                    $scope.triggleOptByShortCut('Ctrl+S');
+                                }
+                                break;
+                            case 86: //v
+                                if (ctrlKeyOn) {
+                                    $scope.triggleOptByShortCut('Ctrl+V');
+                                }
+                                break;
+                            case 88: //x
+                                if (ctrlKeyOn) {
+                                    $scope.triggleOptByShortCut('Ctrl+X');
+                                }
+                                break;
+                        }
+                    });
+                });
+
+
+                $scope.$on('$destroy',function(){
+                    jQuery(document).off('keydown.shortcut')
+                    getColCount = upLeftPress = downRightPress = null;
+
+                })
+            }
+        };
+    }])
     .directive('renameFile', ['$parse',function ($parse) {
         return {
             restrict: 'A',

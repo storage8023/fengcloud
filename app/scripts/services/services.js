@@ -2218,7 +2218,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi','GKFilter',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi,GKFilter) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi','GKFilter','GKFileOpt',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi,GKFilter,GKFileOpt) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -2323,7 +2323,7 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
-                            this.disableOpt(opts, 'open_with','create_sync_folder',"add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            this.disableOpt(opts, 'view_property','open_with','create_sync_folder',"add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
                         }
@@ -2729,13 +2729,13 @@ angular.module('gkClientIndex.services', [])
 
                             if (data.code == 'ctrlC') {
                                 GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
-                                    $scope.refreahData();
+                                   GKFileList.refreahData($scope);
                                 }, function (error) {
                                     GKException.handleClientException(error);
                                 });
                             } else if (data.code == 'ctrlX') {
                                 GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
-                                    $scope.refreahData();
+                                    GKFileList.refreahData($scope);
                                     GKCilpboard.clearData();
                                 }, function (error) {
                                     GKException.handleClientException(error);
