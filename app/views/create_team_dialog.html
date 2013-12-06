@@ -6,7 +6,7 @@
     <div ng-if="!PAGE_CONFIG.networkConnected">
         <network-unconnect></network-unconnect>
     </div>
-    <div style="height: 100%" ng-if="PAGE_CONFIG.networkConnected">
-        <iframe height="100%" frameborder="0" ng-src="{{url}}"  ></iframe>
+    <div ng-if="PAGE_CONFIG.networkConnected">
+        <iframe frameborder="0" ng-src="{{url}}"  ></iframe>
     </div>
 </div>
