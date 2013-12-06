@@ -2593,8 +2593,14 @@ angular.module('gkClientIndex.services', [])
                                 index:0,
                                 className: "new_folder",
                                 callback: function () {
-                                    var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
-                                    $scope.createNewFolder = true;
+                                    if(arguments.length<=1){
+                                        $scope.createNewFolder = true;
+                                    }else{
+                                        $scope.$apply(function(){
+                                            $scope.createNewFolder = true;
+                                        })
+                                    }
+
                                 }
                             },
                             'create':{

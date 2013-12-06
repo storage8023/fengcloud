@@ -270,6 +270,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch($attrs.createNewFolder, function (value,oldValue) {
                     if(value == oldValue) return;
                     if (value == true) {
+                        var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
                         GKFileList.unSelectAll($scope);
                         $scope.submitNewFileName = function (filename) {
                             fn($scope,{filename:filename});
