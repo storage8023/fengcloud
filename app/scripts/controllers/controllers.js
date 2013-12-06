@@ -650,20 +650,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }, true);
 
         $scope.$watch('rightOpts',function(){
-            jQuery.contextMenu('destroy', '.file_list .list_body');
-            /**
-             * 设置右键菜单
-             */
-            jQuery.contextMenu({
-                selector: '.file_list .list_body',
-                reposition: false,
-                zIndex: 99,
-                animation: {
-                    show: "show",
-                    hide: "hide"
-                },
-                items: $scope.rightOpts
-            });
+                jQuery.contextMenu('destroy', '.file_list .list_body');
+                /**
+                 * 设置右键菜单
+                 */
+                jQuery.contextMenu({
+                    selector: '.file_list .list_body',
+                    reposition: false,
+                    zIndex: 99,
+                    animation: {
+                        show: "show",
+                        hide: "hide"
+                    },
+                    items: $scope.rightOpts
+                });
         })
 
         $scope.$watch('selectedpath', function (newValue, oldValue) {

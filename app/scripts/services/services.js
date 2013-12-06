@@ -3798,6 +3798,13 @@ angular.module('gkClientIndex.services', [])
         var selectedIndex = [];
         var selectedPath = '';
         var GKFileList = {
+            setOrder:function($scope,type,asc){
+                var orderAsc = $scope.order.slice(0, 1);
+                if (asc === undefined) {
+                    asc = orderAsc == '+' ? '-' : '+';
+                }
+                $scope.order = asc + type;
+            },
             select: function ($scope, index, multiSelect) {
                 multiSelect = !angular.isDefined(multiSelect) ? false : multiSelect;
                 if (!multiSelect && selectedFile && selectedFile.length) {
