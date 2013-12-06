@@ -3909,7 +3909,6 @@ angular.module('gkClientIndex.services', [])
                 return defaultFileName;
             },
             getFileData:function($scope,start){
-                var totalCount = 0;
                 start = angular.isDefined(start)?start:0;
                 var fileList,
                     source = 'client',
@@ -3948,9 +3947,9 @@ angular.module('gkClientIndex.services', [])
 
                     }else if($scope.partition == GKPartition.subscribeFile){
                         source = 'api';
-                        GKApi.list($scope.mountId,$scope.path,start,400).success(function(data){
+                        GKApi.list($scope.mountId,$scope.path,start,13).success(function(data){
                             fileList = data['list'];
-                            totalCount =  data['count'];
+                            $scope.totalCount = data['count'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));
 
                         }).error(function(request){

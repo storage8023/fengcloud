@@ -460,6 +460,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if ($rootScope.PAGE_CONFIG.file.syncpath) {
             $scope.showHint = true;
         }
+        $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         var intervalPromise;
         $scope.test = function(){
@@ -843,21 +844,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         /**
-         * 订阅文件的滚动加载
-         */
-        $scope.scrollLoad = function(){
-            if($scope.partition != GKPartition.subscribeFile){
-                return;
-            }
-
-            var start = $scope.fileData.length;
-            if(start>=totalCount) return;
-            GKFileList.getFileData($scope,start).then(function(list){
-                $scope.fileData =  $scope.fileData.concat(list);
-            })
-        }
-
-        /**
          * 处理点击
          * @param $event
          * @param index
@@ -1049,10 +1035,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKDialog.openSetting('sync');
         }
 
-//        $scope.handleScrollLoad = function () {
-//            var fn = $parse($attrs.scrollLoad);
-//            fn($scope);
-//        }
+        $scope.handleScrollLoad = function () {
+            if($scope.partition != GKPartition.subscribeFile){
+                return;
+            }
+            var start = $scope.fileData.length;
+            if(start>=$scope.totalCount) return;
+            GKFileList.getFileData($scope,start).then(function(list){
+                $scope.fileData =  $scope.fileData.concat(list);
+            })
+        }
 
         /**
          * ctrlV结束
