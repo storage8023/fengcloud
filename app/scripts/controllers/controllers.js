@@ -1132,7 +1132,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-
         $scope.items = [
             {
                 item: "创建云库",
@@ -1318,7 +1317,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     var type = GKFilter.getFilterType($scope.filter);
                     var smartFolder = GKSmartFolder.getFolderByCode(type);
                     $scope.sidbarData = {
-                        title:smartFolder['name'],
+                        title:smartFolder?smartFolder['name']:'',
                         tip: GKFilter.getFilterTip($scope.filter),
                         icon: $scope.filter
                     };

@@ -698,7 +698,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', 'GKModal',function (GKDialog, GKModal) {
+    .directive('member', ['GKDialog','GKModal','GKNews','GKApi',function (GKDialog, GKModal,GKNews,GKApi) {
         return {
             replace: true,
             restrict: 'E',
