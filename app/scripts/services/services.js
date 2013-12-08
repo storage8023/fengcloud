@@ -1645,16 +1645,28 @@ angular.module('gkClientIndex.services', [])
                  * 搜索不需要bread
                  */
                 if (filter) {
-                    var type =  GKFilter.getFilterType(filter)
-                    var smartFolder = GKSmartFolder.getFolderByCode(type);
-                    if(smartFolder){
-                        breads.unshift({
-                            name:smartFolder['name'],
+                    var filterItem;
+                    if(filter == 'trash'){
+                        filterItem = {
+                            name:'回收站',
                             url: '#' + this.getPath(partition, '', view, mountId, filter),
-                            filter: filter,
-                            icon: filter != 'trash' ? 'icon_' + filter : ''
-                        });
+                            filter: filter
+                        }
+                    }else{
+                        var type =  GKFilter.getFilterType(filter);
+                        var smartFolder = GKSmartFolder.getFolderByCode(type);
+                        if(smartFolder){
+                            filterItem = {
+                                name:smartFolder['name'],
+                                url: '#' + this.getPath(partition, '', view, mountId, filter),
+                                filter: filter,
+                                icon: 'icon_' + filter
+                            }
+                        }
                     }
+
+                    filterItem&&breads.unshift(filterItem);
+
                 }
 
 

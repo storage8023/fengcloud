@@ -20,12 +20,12 @@
     <i class="icon_cancel" ng-click="cancelSearch($event)">&times;</i>
     <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"  ui-keydown="{'enter':'searchFile()'}"/>
     <div class="searching_label dropdown">
-        <a href="javascript:void(0)" dropdown-toggle title="在 {{searchScope=='partition' || !path.length?breads[0]['name']:(path|baseName)}} 中搜索：">
-            <span>在 {{searchScope=='partition' || !path.length?breads[0]['name']:(path|baseName)}} 中搜索：</span><i ng-if="path.length" class="gk_down_arrow"></i>
+        <a href="javascript:void(0)" dropdown-toggle title="在 {{searchScope=='partition'?breads[0]['name']:breads[breads.length-1]['name']}} 中搜索：">
+            <span>在 {{searchScope=='partition'?breads[0]['name']:breads[breads.length-1]['name']}} 中搜索：</span><i ng-if="breads.length>1" class="gk_down_arrow"></i>
         </a>
-        <ul class="dropdown-menu" ng-if="path.length">
+        <ul class="dropdown-menu" ng-if="breads.length>1">
             <li>
-                <a href="javascript:void(0)" ng-click="setSearchScope('path')">{{path|baseName}}</a>
+                <a href="javascript:void(0)" ng-click="setSearchScope('path')">{{breads[breads.length-1]['name']}}</a>
             </li>
             <li>
                 <a href="javascript:void(0)" ng-click="setSearchScope('partition')">{{breads[0]['name']}}</a>

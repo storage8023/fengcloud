@@ -340,7 +340,6 @@
     },
     copy:function(params,callback){
         try {
-            console.log(params);
             gkClient.gCopy(JSON.stringify(params),function(re){
                 re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
@@ -375,8 +374,7 @@
     openLocation:function(params){
         try {
             params.opentype = 'select';
-            console.log(params);
-            return gkClient.gOpen(params);
+            gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
         }

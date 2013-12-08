@@ -1554,7 +1554,9 @@ angular.module('gkClientIndex.directives', [])
                     var params = {
                         keyword: $scope.keyword
                     };
-                    if ($scope.PAGE_CONFIG.partition != GKPartition.smartFolder) {
+                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || ($scope.searchScope == 'path' && $scope.PAGE_CONFIG.filter=='trash')) {
+                        $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
+                    } else {
                         var fileSearch = new GKFileSearch();
                         fileSearch.conditionIncludeKeyword($scope.keyword);
                         fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
@@ -1563,8 +1565,6 @@ angular.module('gkClientIndex.directives', [])
                         params.filter = 'search';
                         var search = $location.search();
                         $location.search(angular.extend(search, params));
-                    } else {
-                        $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
                     }
 
                 };
