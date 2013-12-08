@@ -120,16 +120,16 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
           //console.log(branch);return;
           branch.expanded = !branch.expanded;
           if (branch.onExpand != null) {
-              //return $timeout(function() {
+              return $timeout(function() {
                   return branch.onExpand(branch);
-              //});
+              });
           } else {
               if (scope.onExpand != null) {
-                 // return $timeout(function() {
+                  return $timeout(function() {
                       return scope.onExpand({
                           branch: branch
                       });
-                 // });
+                  });
               }
           }
       }
@@ -260,7 +260,8 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
       scope.drop = function(event,ui,branch){
           branch.hover = false;
           if(expandedTimer){
-              clearTimeout(expandedTimer);
+             $timeout.cancel(expandedTimer);
+              expandedTimer = null;
           }
           if (scope.onDrop != null) {
               return $timeout(function() {
@@ -272,19 +273,18 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
       };
       scope.dropOver = function(event,ui,branch){
           branch.hover = true;
-          expandedTimer = setTimeout(function(){
-              scope.$apply(function(){
+          expandedTimer = $timeout(function(){
                   if(!branch.expanded){
                       expand_branch(branch);
                   }
-              });
           },500)
       };
 
       scope.dropOut = function(event,ui,branch){
           branch.hover = false;
           if(expandedTimer){
-             clearTimeout(expandedTimer);
+              $timeout.cancel(expandedTimer);
+              expandedTimer = null;
           }
       };
       return scope.$watch('treeData', on_treeData_change, true);

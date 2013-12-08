@@ -953,9 +953,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.getHelper = function () {
             var selectFileName = $scope.fileData[$scope.shiftLastIndex].filename;
             var len = $scope.selectedFile.length;
-            var moreInfo = len > 1 ? ' 等' + len + '个文件和文件夹' : '';
+            var moreInfo = len > 1 ? ' 等' + len + '个文件或文件夹' : '';
             return '<div class="helper">' + selectFileName + moreInfo + '</div>';
-
         };
 
         $scope.dragBegin = function (event, ui, index) {

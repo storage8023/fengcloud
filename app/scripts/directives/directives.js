@@ -227,10 +227,18 @@ angular.module('gkClientIndex.directives', [])
                     if(value == oldValue) return;
                     if (value == true) {
                         var oldFileName = Util.String.baseName($attrs.fullpath);
+                        var dir = $attrs.dir;
                         input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="' + oldFileName + '" class="new_file_name form-control" />');
                         fileItem.addClass('file_item_edit');
                         nameElem = fileItem.find('.name');
-                        nameElem.hide().after(input)
+                        nameElem.hide().after(input);
+                        var selectionEnd = oldFileName.length;
+                        var extIndex = oldFileName.lastIndexOf('.');
+                        if(dir == 0 && extIndex>0){
+                            selectionEnd = extIndex;
+                        }
+                        input[0].selectionStart=0;
+                        input[0].selectionEnd=selectionEnd;
                         input.focus();
                         input.on('keydown', function (e) {
                             if (e.keyCode == 13) {
@@ -471,11 +479,20 @@ angular.module('gkClientIndex.directives', [])
         }
     }])
     .directive('preventDragDrop', [function () {
-        return function ($scope, $element, $attrs) {
-            $element.on('drop', function (event) {
-                event.preventDefault();
-            });
-        };
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                $element.on('dragover', function (event) {
+                    event.preventDefault();
+                });
+                $element.on('dragenter', function (event) {
+                    event.preventDefault();
+                });
+                $element.on('drop', function (event) {
+                    event.preventDefault();
+                });
+            }
+        }
     }])
     .directive('ngDrop', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
