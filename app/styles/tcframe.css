@@ -101,7 +101,7 @@ ul.message_list li{
 ul.message_list .dateline{
     position: absolute;
     right: 10px;
-    width: 80px;
+    width: 100px;
     color:#ACB4BF;
     top:0;
     text-align: right;
@@ -122,7 +122,7 @@ ul.message_list .photo_wrapper img{
     border-radius: 30px;
 }
 ul.message_list .msg{
-    padding:0 100px 0 80px;
+    padding:0 110px 0 80px;
     word-break: break-all;
     word-wrap: break-word;
     display: table-cell;

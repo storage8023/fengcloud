@@ -19,7 +19,7 @@
     <script src="scripts/services/services.js"></script>
     <script src="scripts/directives/directives.js"></script>
 </head>
-<body ng-controller="loginCtrl">
+<body ng-controller="loginCtrl" ng-keydown="handleKeyDown($event)">
 
 <section class="login rotate" ng-show="step=='login'">
     <header>
@@ -60,7 +60,7 @@
             <div class="input_wrapper_group">
                 <div class="input-group">
                     <label class="input-group-addon"><i class="icon16x16 icon_person"></i></label>
-                    <input name="regist_username" id="regist_username" type="text" placeholder="账号" class="form-control" ng-model="registUsername" autocomplete="off"/>
+                    <input name="regist_username" maxlength="20" id="regist_username" type="text" placeholder="账号" class="form-control" ng-model="registUsername" autocomplete="off"/>
                 </div>
                 <div class="input-group">
                     <label class="input-group-addon"><i class="icon16x16 icon_lock"></i></label>

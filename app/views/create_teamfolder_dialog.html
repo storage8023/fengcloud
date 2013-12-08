@@ -1,6 +1,7 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4>创建文件夹</h4>
+    <h4 ng-if="publish">创建公开文件夹</h4>
+    <h4 ng-if="!publish">新建文件夹</h4>
 </div>
 <div class="modal-body">
     <div ng-show="!PAGE_CONFIG.networkConnected">
@@ -10,12 +11,6 @@
         <div>
             <label id="filename">文件夹名：</label>
             <input class="form-control" type="text" name="filename" id="filename" ng-model="filename" />
-        </div>
-        <div>
-            <div class="checkbox">
-                <input id="share_to_subscriber" ng-disabled="disableCheck" name="share_to_subscriber" type="checkbox" ng-model="shareToSubscriber" />
-                <label for="share_to_subscriber">同时公开该文件夹</label>
-            </div>
         </div>
     </div>
 

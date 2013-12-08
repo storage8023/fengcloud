@@ -13,7 +13,7 @@
   outline: none;
   padding: 4px 12px;
   width: 500px;
-  z-index: 900001 !important;
+  z-index: 1002 !important;
   
   /* Shadow */
   -moz-box-shadow: 0 0px 8px #111;

@@ -1474,7 +1474,7 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 var oldBreadWidth = $element.find('.bread').width();
-                jQuery(window).off('resize').on('resize', function () {
+                jQuery(window).on('resize', function () {
                     $scope.$apply(function () {
                         var grid = $element.find('.bread').width() - oldBreadWidth;
                         if (grid > 0) {
@@ -1560,8 +1560,10 @@ angular.module('gkClientIndex.directives', [])
                 $scope.cancelSearch = function ($event) {
                     resetSearch();
                     var search = $location.search();
+                    var oldFilter =  search.filter;
+                    var filter =oldFilter=='search'?'':oldFilter;
                     $location.search(angular.extend(search, {
-                        filter: '',
+                        filter: filter,
                         keyword: ''
                     }));
                     if ($event) {
@@ -1569,7 +1571,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                 };
 
-                $('body').off('mousedown.resetsearch').on('mousedown.resetsearch', function (event) {
+                $('body').on('mousedown.resetsearch', function (event) {
                     $scope.$apply(function () {
                         if (
                             $(event.target).hasClass('bread_and_search_wrapper')
@@ -1601,6 +1603,10 @@ angular.module('gkClientIndex.directives', [])
 
                 });
 
+                $scope.$on('$destroy',function(){
+                    $('body').off('mousedown.resetsearch');
+                    jQuery(window).off('resize');
+                })
             }
         }
     }])

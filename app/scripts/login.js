@@ -62,6 +62,10 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 alert('请输入账号');
                 return;
             }
+            if(!Util.Validation.isRegName($scope.registUsername)){
+                alert('账号只允许使用中文汉字、英文字母、数字或下划线');
+                return;
+            }
             var password = $scope.registPassword;
             //$scope.step = 'device';
             GKApi.regist($scope.registUsername,$scope.registEmail,password,1).success(function(){
@@ -87,6 +91,22 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
             });
         }
 
+        $scope.handleKeyDown = function($event){
+            var keyCode = $event.keyCode;
+            if(keyCode == 13){
+                switch($scope.step){
+                    case 'login':
+                        $scope.loginSubmit();
+                        break;
+                    case 'regist':
+                        $scope.registSubmit();
+                        break;
+                    case 'device':
+                        $scope.setDevice();
+                        break;
+                }
+            }
+        }
     }])
 
 

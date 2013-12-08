@@ -3,6 +3,24 @@
 /* Filters */
 
 angular.module('gkClientIndex.filters', [])
+    .filter('dateAgo', function ($filter) {
+        return function (dateline) {
+            var now = new Date().valueOf();
+            var today = $filter('date')(now, 'yyyy-MM-dd');
+            var yesterdayTimestamp = now - 24 * 3600 * 1000;
+            var yesterday = $filter('date')(yesterdayTimestamp, 'yyyy-MM-dd');
+            var date = $filter('date')(dateline, 'yyyy-MM-dd');
+            var dateText = '';
+            if (date == today) {
+                dateText = '今天，' + $filter('date')(now, 'M月d日');
+            } else if (date == yesterday) {
+                dateText = '昨天，' + $filter('date')(yesterdayTimestamp, 'M月d日');
+            }else{
+                dateText =$filter('date')(dateline, 'yyyy年M月d日');
+            }
+            return dateText;
+        }
+    })
     .filter('getAvatarUrl', function () {
         return function (memberId,isThumb) {
             isThumb = angular.isDefined(isThumb)?isThumb:1;

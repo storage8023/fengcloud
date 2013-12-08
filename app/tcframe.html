@@ -15,6 +15,7 @@
     <script src="bower_components/angular-localstorage/angular-local-storage.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="scripts/directives/directives.js"></script>
+    <script src="scripts/filters/filters.js"></script>
     <script src="scripts/controllers/tcframe_controllers.js"></script>
     <script src="scripts/directives/tcframe_directives.js"></script>
     <script src="scripts/services/services.js"></script>
@@ -35,7 +36,7 @@
     <ul class="scrollbar message_list">
         <li ng-show="!messages || !messages.length" class="empty">没有消息</li>
         <li ng-repeat="message in messages">
-            <div class="dateline" ng-bind="message.date_txt">
+            <div class="dateline" ng-bind="message.dateline*1000|dateAgo">
             </div>
             <div class="photo_wrapper">
                 <team-logo ng-if="message.org_logo" class="avatar" gk-src="{{message.org_logo}}"></team-logo>
