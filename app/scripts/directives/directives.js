@@ -569,7 +569,6 @@ angular.module('gkClientIndex.directives', [])
                 angular.forEach(callbacks, function (value, key) {
                     opts[key] = combineCallbacks(value, opts[key]);
                 });
-                //console.log(opts);
                 element.selectable(opts);
             }
         };

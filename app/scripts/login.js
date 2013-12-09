@@ -96,12 +96,36 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
             if(keyCode == 13){
                 switch($scope.step){
                     case 'login':
+                        if(!$scope.username){
+                            $scope.focus = 'username';
+                            return;
+                        }
+                        if(!$scope.password){
+                            $scope.focus = 'password';
+                            return;
+                        }
                         $scope.loginSubmit();
                         break;
                     case 'regist':
+                        if(!$scope.registUsername){
+                            $scope.focus = 'regist_username';
+                            return;
+                        }
+                        if(!$scope.registPassword){
+                            $scope.focus = 'regist_password';
+                            return;
+                        }
+                        if(!$scope.registEmail){
+                            $scope.focus = 'regist_email';
+                            return;
+                        }
                         $scope.registSubmit();
                         break;
                     case 'device':
+                        if(!$scope.registDevice){
+                            $scope.focus = 'regist_device';
+                            return;
+                        }
                         $scope.setDevice();
                         break;
                 }

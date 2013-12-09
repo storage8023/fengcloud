@@ -30,11 +30,11 @@
         <div class="input_wrapper_group">
         <div class="input-group">
             <label for="username" class="input-group-addon"><i class="icon16x16 icon_envelope"></i></label>
-            <input name="username" type="text" id="username" placeholder="邮箱或账号" class="form-control" ng-model="username" autocomplete="off"/>
+            <input name="username" type="text" focus-me="focus=='username'" id="username" placeholder="邮箱或账号" class="form-control" ng-model="username" autocomplete="off"/>
         </div>
         <div class="input-group">
             <label class="input-group-addon" for="password"><i class="icon16x16 icon_lock"></i></label>
-            <input name="password" id="password" type="password" placeholder="密码" class="form-control" ng-model="password" autocomplete="off"/>
+            <input name="password" id="password" focus-me="focus=='password'" type="password" placeholder="密码" class="form-control" ng-model="password" autocomplete="off"/>
         </div>
         </div>
         <div class="c_f form_layer">
@@ -60,15 +60,15 @@
             <div class="input_wrapper_group">
                 <div class="input-group">
                     <label class="input-group-addon"><i class="icon16x16 icon_person"></i></label>
-                    <input name="regist_username" maxlength="20" id="regist_username" type="text" placeholder="账号" class="form-control" ng-model="registUsername" autocomplete="off"/>
+                    <input name="regist_username" focus-me="focus=='regist_username'" maxlength="16" minlength="2" id="regist_username" type="text" placeholder="账号" class="form-control" ng-model="registUsername" autocomplete="off"/>
                 </div>
                 <div class="input-group">
                     <label class="input-group-addon"><i class="icon16x16 icon_lock"></i></label>
-                    <input name="regist_password" id="regist_password" type="password" placeholder="密码" class="form-control" ng-model="registPassword" autocomplete="off"/>
+                    <input name="regist_password" focus-me="focus=='regist_password'"  id="regist_password" type="password" placeholder="密码" class="form-control" ng-model="registPassword" autocomplete="off"/>
                 </div>
                 <div class="input-group">
                     <label class="input-group-addon"><i class="icon16x16 icon_envelope"></i></label>
-                    <input name="regist_email" type="text" id="regist_email" placeholder="邮箱" class="form-control" ng-model="registEmail" autocomplete="off"/>
+                    <input name="regist_email" focus-me="focus=='regist_email'"  type="text" id="regist_email" placeholder="邮箱" class="form-control" ng-model="registEmail" autocomplete="off"/>
                 </div>
             </div>
             <div class="form_layer">
@@ -90,7 +90,7 @@
             <div class="input_wrapper_group">
                 <div class="input-group">
                     <label for="username" class="input-group-addon"><i class="icon16x16 icon_computer"></i></label>
-                    <input name="regist_device" type="text" id="regist_device" placeholder="设备名称" class="form-control" ng-model="registDevice" autocomplete="off"/>
+                    <input name="regist_device" focus-me="focus=='regist_device'" type="text" id="regist_device" placeholder="设备名称" class="form-control" ng-model="registDevice" autocomplete="off"/>
                 </div>
             </div>
             <div class="form_layer">
