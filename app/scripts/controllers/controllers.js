@@ -341,6 +341,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
+        //更新云库
+        $scope.$on('updateTeam', function (event, param) {
+            if (!param) {
+                return;
+            }
+            $scope.$apply(function () {
+                var orgId = param.orgId;
+                var mount = GKMount.getMountByOrgId(orgId);
+                if(!mount){
+                    return;
+                }
+                var newMount =  GKMount.editMount(mount['mount_id'],param);
+                if(!newMount){
+                    return;
+                }
+                var list = $scope.orgTreeList;
+                if (mount['type'] == 3) {
+                    list = $scope.orgSubscribeList;
+                }
+                GKSideTree.editNode(list, mount['mount_id'], '', param);
+
+            });
+        })
+
         /**
          * 监控删除云库的回调
          */

@@ -2591,7 +2591,8 @@ angular.module('gkClientIndex.services', [])
                     var files = [];
                     angular.forEach($scope.selectedFile, function (value) {
                         files.push({
-                            webpath: value.fullpath
+                            webpath: value.fullpath,
+                            dir:Number(value.dir)
                         })
                     });
                     return files;
@@ -3800,6 +3801,14 @@ angular.module('gkClientIndex.services', [])
                 var mountItem = formatMountItem(newMount);
                 mounts.push(mountItem);
                 return mountItem;
+            },
+            editMount: function (mountId, param) {
+                var mount = this.getMountById(mountId);
+                if(!mount){
+                    return;
+                }
+                angular.extend(mount,param);
+                return mount;
             },
             removeMountByOrgId: function (orgId) {
                 var mount = this.getMountByOrgId(orgId);

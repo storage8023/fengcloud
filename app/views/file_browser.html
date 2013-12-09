@@ -62,7 +62,7 @@
                              data-fullpath="{{file.fullpath}}"
                              data-dir="{{file.dir}}"
                              data-drag="true"
-                             data-drop="!file.disableDrop"
+                             data-drop="file.dir==1&&!file.disableDrop"
                              jqyoui-draggable="{onStart:'dragBegin($index)',onStop:'dragEnd($index)'}"
                              data-drop="file.dir==1"
                              jqyoui-droppable="{onDrop:'handleDrop(file)',onOver:'handleOver(file)',onOut:'handleOut(file)'}"
@@ -87,7 +87,7 @@
                                 <span title="{{file.fullpath}}" class="name" ng-bind="file.filename"></span>
                             </div>
                             <div class="last_edit_time" ng-show="view=='list'">
-                                <span>{{file.last_edit_time*1000 | date:'yyyy/M/d HH:mm'}}</span>
+                                <span>{{file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
                             </div>
                             <div class="file_type" ng-show="view=='list'">
                                 <span>{{file.filename | getFileType:file.dir:file.ext}}</span>
