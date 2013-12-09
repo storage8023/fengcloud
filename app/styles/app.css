@@ -901,6 +901,9 @@ footer {
 .file_list_wrapper .file_item.selected span{
     color: #fff;
 }
+.file_list_wrapper .file_item span.name{
+    white-space: pre;
+}
 .file_list_wrapper .ngViewport {
     outline: 0;
 }

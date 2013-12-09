@@ -3,6 +3,11 @@
 /* Filters */
 
 angular.module('gkClientIndex.filters', [])
+    .filter('replaceSpace', function () {
+        return function (filename) {
+            return filename.replace(/\s/g," ");
+        }
+    })
     .filter('dateAgo', function ($filter) {
         return function (dateline) {
             var now = new Date().valueOf();
