@@ -1421,8 +1421,7 @@ footer {
     display: block;
     height: 32px;
     overflow: hidden;
-    padding-top: 6px;
-    padding-bottom:6px;
+    padding: 6px;
     line-height: 18px;
     -webkit-transition:height linear 0.1s;
 }

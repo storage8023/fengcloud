@@ -431,7 +431,6 @@ angular.module('gkClientIndex.directives', [])
                 $scope.filename = $scope.defaultNewName ? $scope.defaultNewName : '新建文件夹';
                 var input = $element.find('input');
                 input.on('blur', function (event) {
-                    console.log($scope.filename);
                     if ($scope.onSubmit != null) {
                         $scope.onSubmit({
                             filename: $scope.filename
@@ -739,6 +738,7 @@ angular.module('gkClientIndex.directives', [])
         return {
             replace: true,
             restrict: 'E',
+            scope:true,
             templateUrl: "views/singlefile_right_sidebar.html",
             link: function ($scope, $element) {
                 $scope.file = {};
@@ -761,6 +761,8 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.smarts = GKSmartFolder.getFolders('recent');
 
+                $scope.inputingRemark = false;
+                $scope.remarkText = '';
                 /**
                  * 通过接口获取文件信息
                  */
@@ -884,6 +886,8 @@ angular.module('gkClientIndex.directives', [])
                     if (!file || !oldValue || file == oldValue || file.fullpath == oldValue.fullpath) {
                         return;
                     }
+                    $scope.inputingRemark = false;
+                    $scope.remarkText = '';
                     if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;
@@ -909,8 +913,7 @@ angular.module('gkClientIndex.directives', [])
                         });
                 }, true);
 
-                $scope.inputingRemark = false;
-                $scope.remarkText = '';
+
                 /**
                  * 取消发布备注
                  */
@@ -925,14 +928,14 @@ angular.module('gkClientIndex.directives', [])
                     }
                 };
 
-
                 jQuery('body').on('click.cancelRemark', function (e) {
                     if (!jQuery(e.target).hasClass('post_wrapper') && !jQuery(e.target).parents('.post_wrapper').size()) {
-                        $scope.$apply(function () {
+                        $timeout(function(){
                             if (!$scope.remarkText) {
                                 $scope.inputingRemark = false;
+                                $element.find('.post_wrapper textarea').blur();
                             }
-                        });
+                        },0)
                     }
                 })
 
@@ -1144,23 +1147,24 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'E',
             replace: true,
-            scope: { list: '=', onSelect: '&'},
-            template: '<ul class="dropdown-menu input_tip_list">'
-                + '<li ng-repeat="(key,item) in list"><a  ng-mouseenter="handleMouseEnter(key)" ng-click="handleClick(key)" ng-class="item.selected?\'active\':\'\'" title="{{item.name}}" href="javascript:void(0)">{{item.name}}</a></li>'
+            scope: { list: '=', onSelect: '&','isOpen':'&'},
+            template: '<ul class="dropdown-menu input_tip_list" ng-show="isOpen()">'
+                + '<li ng-repeat="item in list"><a  ng-mouseenter="handleMouseEnter($index)" ng-click="handleClick($event,$index)" ng-class="item.selected?\'active\':\'\'" title="{{item.member_name}}" href="javascript:void(0)">{{item.member_name}}</a></li>'
                 + '</ul>',
             link: function ($scope, $element, $attrs) {
                 var index = 0;
+
                 var selectItem = function () {
                     if (!$scope.list[index]) return;
                     if ($scope.onSelect != null) {
                         $scope.onSelect({item: $scope.list[index]})
                     }
-
                     if ($scope.list[index]) {
                         $scope.list[index].selected = false;
                         index = 0;
                     }
                 };
+
                 var preSelectItem = function (newIndex) {
                     if (!$scope.list || !$scope.list.length) return;
                     angular.forEach($scope.list, function (value) {
@@ -1172,18 +1176,19 @@ angular.module('gkClientIndex.directives', [])
                     index = newIndex;
                 };
 
-                $scope.handleMouseEnter = function (key) {
+                $scope.handleMouseEnter = function ($index) {
+                   preSelectItem($index);
 
-                    preSelectItem(key);
                 };
-                $scope.handleClick = function (key) {
+                $scope.handleClick = function ($event,$index) {
                     //preSelectItem(key);
                     selectItem();
+                    $event.stopPropagation();
                 };
                 $document.bind('keydown', function (e) {
                     $scope.$apply(function () {
                         var key_code = e.keyCode;
-                        if (!$scope.list || !$scope.list) return;
+                        if (!$scope.list || !$scope.list.length) return;
                         var listLength = $scope.list.length;
                         var step = 1;
                         if (key_code == 38 || key_code == 40) { //up
@@ -1196,6 +1201,7 @@ angular.module('gkClientIndex.directives', [])
                             } else if (newIndex > listLength - 1) {
                                 newIndex = 0;
                             }
+
                             preSelectItem(newIndex);
                             e.preventDefault();
                         } else if (key_code == 13 || key_code == 32) {
@@ -1208,11 +1214,12 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('inputTip', [ '$compile', '$parse', '$document', '$position', '$timeout', function ($compile, $parse, $document, $position, $timeout) {
+    .directive('inputTip', [ '$compile', '$parse', '$document', '$position', '$timeout','$interval', function ($compile, $parse, $document, $position, $timeout,$interval) {
         var template =
             '<input-tip-popup ' +
                 'list="it_list" ' +
-                'on-select="it_onSelect(item)"' +
+                'on-select="it_onSelect(item)" ' +
+                'is-open="it_isOpen"' +
                 '>' +
                 '</input-tip-popup>';
         return {
@@ -1234,8 +1241,6 @@ angular.module('gkClientIndex.directives', [])
                 var appendToBody = true;
                 $scope.it_isOpen = false;
                 var $body;
-
-
                 var setPosition = function (jqTextarea, hintWrapper) {
                     var position,
                         ttWidth,
@@ -1296,7 +1301,7 @@ angular.module('gkClientIndex.directives', [])
                      * 设置位置
                      */
                     $scope.it_isOpen = true;
-                    setTimeout(function () {
+                    $timeout(function () {
                         setPosition();
                         inputtip.css('display', 'block');
                     }, 0);
@@ -1307,7 +1312,6 @@ angular.module('gkClientIndex.directives', [])
                  */
                 var hide = function () {
                     $scope.it_isOpen = false;
-                    inputtip.remove();
                 };
 
                 $scope.$on('$locationChangeSuccess', function () {
@@ -1323,10 +1327,15 @@ angular.module('gkClientIndex.directives', [])
                         inputtip.remove();
                     }
                 });
+
+                $scope.$watch('remarkText', function (newValue,oldeValue) {
+                    if(!newValue &&newValue!==oldeValue){
+                        hide();
+                    }
+                });
                 var inputPos, val, lastIndex;
 
                 var checkAt = function () {
-                    $scope.$apply(function () {
                         val = $scope.remarkText;
                         var cursor = Util.Input.getCurSor($element[0]);
                         inputPos = cursor.split('|');
@@ -1351,7 +1360,7 @@ angular.module('gkClientIndex.directives', [])
                                 angular.forEach($scope.remindMembers, function (value) {
                                     if (value.short_name && value.short_name.indexOf(q) === 0) {
                                         resultList.unshift(value);
-                                    } else if (value.name.indexOf(q) != -1) {
+                                    } else if (value.member_name.indexOf(q) != -1) {
                                         resultList.push(value);
                                     }
                                 });
@@ -1363,7 +1372,6 @@ angular.module('gkClientIndex.directives', [])
                             $scope.it_list = resultList;
                             show();
                         }
-                    });
                 };
 
                 $scope.it_list = [];
@@ -1371,15 +1379,16 @@ angular.module('gkClientIndex.directives', [])
                 var timer;
                 $element.bind('focus',function () {
                     if (timer) {
-                        clearInterval(timer);
+                        $interval.cancel(timer);
                     }
-                    timer = setInterval(checkAt, 200);
+                    timer = $interval(function(){
+                        checkAt();
+                    }, 100);
                 }).bind('blur', function () {
                         if (timer) {
-                            clearInterval(timer);
+                            $interval.cancel(timer);
                         }
                     })
-
 
                 var insertChar = function (input) {
                     input += ' ';
@@ -1397,11 +1406,10 @@ angular.module('gkClientIndex.directives', [])
                     }, 0)
 
                 };
+
                 $scope.it_onSelect = function (item) {
-                    insertChar(item.name);
+                    insertChar(item.member_name);
                 };
-
-
             }
         }
     }])

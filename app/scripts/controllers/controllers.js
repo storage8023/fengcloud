@@ -1219,6 +1219,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.localFile = null;
                 $scope.showSearch = false;
             }
+
         }, true);
 
         $scope.$watch('[partition,selectedFile,filter,localFile]', function (newValue, oldValue) {

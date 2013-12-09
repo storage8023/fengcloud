@@ -13,8 +13,7 @@
                     <img class="loading" src="images/icon/loading16x16.gif" ng-show="uploading" alt />
               </span>
 
-              <span class="member_name" ng-show="!editName" ng-click="editName = true;focusMe=true;">{{PAGE_CONFIG.user.member_name}}</span>
-              <input name="new_name" class="form-control" ng-show="editName" id="new_name" focus-me="focusMe" ng-model="newName" ng-blur="handleBlur(newName)"/>
+              <span class="member_name" ng-show="!editName">{{PAGE_CONFIG.user.member_name}}</span>
           </div>
         <ul>
             <li ng-repeat="attr in attrs" class="{{attr.name}}">

@@ -809,11 +809,12 @@ a:hover > .icon16x16.icon_team_upgrade,
     left:0;
     /*display: block;*/
 }
-/*.input_tip_list.dropdown-menu > li >a.active{*/
-    /*color: white;*/
-    /*text-decoration: none;*/
-    /*background-color: #428BCA;*/
-/*}*/
+.input_tip_list.dropdown-menu > li >a:hover{
+    background-color:transparent;
+}
+.input_tip_list.dropdown-menu > li >a.active{
+    background-color: #428BCA;
+}
 .ui-match {
     background: yellow;
 }
