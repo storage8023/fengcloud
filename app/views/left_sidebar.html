@@ -52,15 +52,7 @@
                   on-select="handleSelect(branch,GKPartition.smartFolder)"
                   on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
-                  gk-guider='{
-                  buttons: [{name: "完成",onclick:GKGuiders.hideAll}],
-                  description: "智能文件夹中将记录最近修改过的文件。用不同的图形标记的文件，也可以在这里快速找到。",
-                  id: "guide_5",
-                  next: "guide_6",
-                  position: 3,
-                  title: "智能文件夹",
-                  width: 280
-                  }'
+                  gk-guider='{{smartFolderGuider}}'
                 >
         </abn-tree>
     </div>

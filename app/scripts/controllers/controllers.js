@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' ,function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi) {
+    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -41,49 +41,49 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
-        $scope.$on('teamSecurity',function($event,orgId){
-            if(!orgId){
-               return;
+        $scope.$on('teamSecurity', function ($event, orgId) {
+            if (!orgId) {
+                return;
             }
             GKModal.teamManage(orgId);
         })
 
-        $scope.$on('expandSpace',function($event,orgId){
-            if(!orgId){
+        $scope.$on('expandSpace', function ($event, orgId) {
+            if (!orgId) {
                 return;
             }
             var url = gkClientInterface.getUrl({
                 sso: 1,
-                url: '/pay/order?org_id='+orgId
+                url: '/pay/order?org_id=' + orgId
             });
             gkClientInterface.openUrl(url);
         })
 
-        $scope.$on('addMember',function($event,orgId){
-            if(!orgId){
+        $scope.$on('addMember', function ($event, orgId) {
+            if (!orgId) {
                 return;
             }
             GKModal.teamMember(orgId);
 
         })
 
-        $scope.$on('viewSubscriber',function($event,orgId){
-            if(!orgId){
+        $scope.$on('viewSubscriber', function ($event, orgId) {
+            if (!orgId) {
                 return;
             }
             GKModal.teamSubscribe(orgId);
 
         })
 
-        $scope.$on('qr',function($event,orgId){
-            if(!orgId){
+        $scope.$on('qr', function ($event, orgId) {
+            if (!orgId) {
                 return;
             }
             GKModal.teamQr(orgId);
         })
 
-        $scope.$on('UserInfo',function(event,param){
-            $scope.$apply(function(){
+        $scope.$on('UserInfo', function (event, param) {
+            $scope.$apply(function () {
                 $rootScope.PAGE_CONFIG.user = param;
             });
         })
@@ -115,7 +115,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt','GKSideTree','GKApi','$q',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt,GKSideTree,GKApi,$q) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q', 'GKGuiders','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,GKGuiders,$timeout) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//云库的空间
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
@@ -163,25 +163,25 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder);
 
         $scope.$on('RemoveMagicObject', function ($event, param) {
-            $scope.$apply(function(){
+            $scope.$apply(function () {
                 var code = param.condition;
                 GKSmartFolder.removeSmartFolderByCode(code);
-                GKSideTree.removeSmartNode($scope.smartTreeList,code);
+                GKSideTree.removeSmartNode($scope.smartTreeList, code);
             })
         })
 
         $scope.$on('AddMagicObject', function ($event, param) {
-           $scope.$apply(function(){
-               var name = param.name,
-                   code = param.condition;
-               var node = GKSmartFolder.addSmartFolder(name, code);
-               GKSideTree.addSmartNode($scope.smartTreeList,node);
-           })
+            $scope.$apply(function () {
+                var name = param.name,
+                    code = param.condition;
+                var node = GKSmartFolder.addSmartFolder(name, code);
+                GKSideTree.addSmartNode($scope.smartTreeList, node);
+            })
         })
 
         $scope.$on('editSmartFolder', function ($event, name, code) {
             GKSmartFolder.editSmartFolder(name, code);
-            GKSideTree.editSmartNode($scope.smartTreeList,code,name);
+            GKSideTree.editSmartNode($scope.smartTreeList, code, name);
         })
 
         /**
@@ -211,18 +211,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleExpand = function (branch) {
-            if(branch.expanded){
-                GKFile.getChildNode(branch).then(function(children){
+            if (branch.expanded) {
+                GKFile.getChildNode(branch).then(function (children) {
                     branch.children = children;
                 });
-            }else{
+            } else {
 
             }
         };
 
-
         $scope.handleAdd = function (partition) {
-           if (partition == GKPartition.teamFile) {
+            if (partition == GKPartition.teamFile) {
                 var createTeamDialog = GKModal.createTeam();
             } else if (partition == GKPartition.subscribeFile) {
                 var nearbyDialog = GKModal.nearBy();
@@ -285,14 +284,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 取消订阅
          */
         $scope.$on('unSubscribeTeam', function ($event, orgId) {
-            GKMount.removeOrgSubscribeList($scope,orgId);
+            GKMount.removeOrgSubscribeList($scope, orgId);
             selectBreanch($scope.orgTreeList[0], GKPartition.myFile, true);
         })
+
+        var getSmartGuide = function(guideId){
+            return  '{buttons: [{name: "完成", onclick: GKGuiders.hideAll}],description: "智能文件夹中将记录最近修改过的文件。用不同的图形标记的文件，也可以在这里快速找到。",id: "'+guideId+'",position: 3,title: "智能文件夹",width: 280}';
+        }
 
         $scope.$on('$routeChangeSuccess', function ($event, $current, $prev) {
             var param = $current.params;
             var branch;
-           if (param.partition == GKPartition.teamFile) {
+            if (param.partition == GKPartition.teamFile) {
                 angular.forEach($scope.orgTreeList, function (value) {
                     if (value.data.mount_id == param.mountid) {
                         branch = value;
@@ -314,6 +317,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 unSelectAllBranch();
                 selectBreanch(branch, param.partition);
             }
+
+            if(param.filter){
+                var guideId = 'guide_4';
+                $scope.smartFolderGuider = getSmartGuide(guideId);
+            }
+        })
+
+        $scope.$watch(function(){
+            return GKFileList.getSelectedFile().length;
+        },function(newValue){
+            $timeout(function(){
+                var guideId = '';
+                if(newValue==1){
+                    if($scope.PAGE_CONFIG.partition == GKPartition.subscribeFile){
+                        guideId = 'guide_5';
+                    }else{
+                        guideId = 'guide_6';
+                    }
+                }else{
+                    guideId = 'guide_5';
+                }
+                $scope.smartFolderGuider = getSmartGuide(guideId);
+            },0)
+
         })
 
         /**
@@ -349,11 +376,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.$apply(function () {
                 var orgId = param.orgId;
                 var mount = GKMount.getMountByOrgId(orgId);
-                if(!mount){
+                if (!mount) {
                     return;
                 }
-                var newMount =  GKMount.editMount(mount['mount_id'],param);
-                if(!newMount){
+                var newMount = GKMount.editMount(mount['mount_id'], param);
+                if (!newMount) {
                     return;
                 }
                 var list = $scope.orgTreeList;
@@ -382,10 +409,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (mount['type'] == 3) {
                     partition = GKPartition.subscribeFile;
                 }
-                if(partition == GKPartition.teamFile){
-                    GKMount.removeTeamList($scope,mount.org_id);
-                }else{
-                    GKMount.removeOrgSubscribeList($scope,mount.org_id);
+                if (partition == GKPartition.teamFile) {
+                    GKMount.removeTeamList($scope, mount.org_id);
+                } else {
+                    GKMount.removeOrgSubscribeList($scope, mount.org_id);
                 }
             });
         })
@@ -394,7 +421,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 创建云库成功
          */
-        $scope.$on('createOrgSuccess',function(event,newOrg){
+        $scope.$on('createOrgSuccess', function (event, newOrg) {
             if (GKMount.checkMountExsit(newOrg.mountid)) {
                 return;
             }
@@ -404,40 +431,40 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             selectBreanch(newOrg, GKPartition.teamFile, true);
         })
 
-        $scope.$on('editFileSuccess',function(event,opt,mountId,fullpath){
-            var fullpathArr = !angular.isArray(fullpath)?[fullpath]:fullpath;
-            angular.forEach(fullpathArr,function(path){
-                switch (opt){
+        $scope.$on('editFileSuccess', function (event, opt, mountId, fullpath) {
+            var fullpathArr = !angular.isArray(fullpath) ? [fullpath] : fullpath;
+            angular.forEach(fullpathArr, function (path) {
+                switch (opt) {
                     case 'del':
-                        GKSideTree.removeNode($scope.orgTreeList,mountId,path);
+                        GKSideTree.removeNode($scope.orgTreeList, mountId, path);
                         break;
                     case 'sync':
-                        GKSideTree.editNode($scope.orgTreeList,mountId,path,{
-                            sync:1
+                        GKSideTree.editNode($scope.orgTreeList, mountId, path, {
+                            sync: 1
                         });
                         break;
                     case 'unsync':
-                        GKSideTree.editNode($scope.orgTreeList,mountId,path,{
-                            sync:0
+                        GKSideTree.editNode($scope.orgTreeList, mountId, path, {
+                            sync: 0
                         });
                         break;
                     case 'create':
-                        var node = GKSideTree.findNode($scope.orgTreeList,mountId,path);
+                        var node = GKSideTree.findNode($scope.orgTreeList, mountId, path);
                         /**
                          * 已展开的node才刷新数据
                          */
-                        if(node&&node.expanded){
+                        if (node && node.expanded) {
                             $scope.handleExpand(node);
                         }
                         break;
                     case 'set_open':
-                        var node = GKSideTree.findNode($scope.orgTreeList,mountId,path);
+                        var node = GKSideTree.findNode($scope.orgTreeList, mountId, path);
                         /**
                          * 已展开的node才刷新数据
                          */
-                        if(node){
-                            node.data.open=1;
-                            node.iconNodeCollapse =node.iconNodeExpand= 'icon_teamfolder';
+                        if (node) {
+                            node.data.open = 1;
+                            node.iconNodeCollapse = node.iconNodeExpand = 'icon_teamfolder';
                         }
                         break;
 
@@ -446,8 +473,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         });
 
+
+
+
     }])
-    .controller('fileBrowser', ['$interval','GKDialog', '$scope', '$routeParams', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt','$timeout','GKFile','GKSearch', function ($interval,GKDialog, $scope, $routeParams, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt,$timeout,GKFile,GKSearch) {
+    .controller('fileBrowser', ['$interval', 'GKDialog', '$scope', '$routeParams', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($interval, GKDialog, $scope, $routeParams, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
 
         /**
          * 打开时会有一次空跳转
@@ -469,7 +499,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.keyword = $routeParams.keyword || '';
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
-        if( $scope.partition == GKPartition.smartFolder && $scope.filter=='recent'){
+        if ($scope.partition == GKPartition.smartFolder && $scope.filter == 'recent') {
             $scope.order = '-last_edit_time'; //当前的排序
         }
         $scope.allOpts = null;
@@ -481,7 +511,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         var intervalPromise;
-        $scope.test = function(){
+        $scope.test = function () {
             if (!intervalPromise) {
                 var count = 0;
                 intervalPromise = $interval(function () {
@@ -489,7 +519,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     if ($scope.selectedFile.length) {
                         GKFileList.unSelectAll($scope);
                     } else {
-                       GKFileList.select($scope,0);
+                        GKFileList.select($scope, 0);
                     }
                 }, 300);
             } else {
@@ -500,37 +530,37 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         GKFileList.refreahData($scope);
 
-        var getOpenWithMenu = function(mountId,file,allOpts){
+        var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
-            var ext = '.'+file.ext;
+            var ext = '.' + file.ext;
             var re = gkClientInterface.getOpenWithMenu({
-                'ext':ext
+                'ext': ext
             });
-            if(!re){
+            if (!re) {
                 return;
             }
             var list = re['list'];
-            if(!list || !list.length){
+            if (!list || !list.length) {
                 return;
             }
             var subMenu = {};
-            angular.forEach(list,function(value,key){
+            angular.forEach(list, function (value, key) {
                 var item = {
-                    name:value['name'],
-                    callback:function(){
+                    name: value['name'],
+                    callback: function () {
                         gkClientInterface.open({
-                            webpath:file.fullpath,
-                            mountid:mountId,
-                            openpath:value.openpath
+                            webpath: file.fullpath,
+                            mountid: mountId,
+                            openpath: value.openpath
                         });
                     }
                 }
-                subMenu['open_with_'+key] = item;
+                subMenu['open_with_' + key] = item;
             })
             allOpts['open_with']['items'] = subMenu;
         };
 
-        var excludeOpts = ['open_with','view_property','order_by', 'paste', 'copy', 'cut'],
+        var excludeOpts = ['open_with', 'view_property', 'order_by', 'paste', 'copy', 'cut'],
             excludeRightOpts = [], //右键要排除的操作
             optKeys,
             topOptKeys,
@@ -540,10 +570,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setOpts = function () {
             $scope.allOpts = GKOpt.getAllOpts($scope);
             var isSearch = $scope.keyword.length ? true : false;
-            optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount,isSearch);
+            optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
             $scope.opts = null;
             $scope.opts = [];
-            $scope.rightOpts =null;
+            $scope.rightOpts = null;
             $scope.rightOpts = {};
             topOptKeys = [];
 
@@ -551,7 +581,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
              * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
              */
             if ($scope.selectedFile.length) {
-                var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount,isSearch);
+                var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
                 angular.forEach(['sync', 'unsync'], function (value) {
                     var index = currentOpts.indexOf(value);
                     if (index >= 0) {
@@ -566,10 +596,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     topOptKeys = optKeys;
                 } else {
                     var re = currentOpts.concat(optKeys);
-                    topOptKeys =jQuery.unique(jQuery.unique(re));
+                    topOptKeys = jQuery.unique(jQuery.unique(re));
                 }
-                if($scope.selectedFile.length==1 && $scope.selectedFile[0].dir==0){
-                    getOpenWithMenu(GKFileList.getOptFileMountId($scope.selectedFile[0]),$scope.selectedFile[0],$scope.allOpts);
+                if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir == 0) {
+                    getOpenWithMenu(GKFileList.getOptFileMountId($scope.selectedFile[0]), $scope.selectedFile[0], $scope.allOpts);
                 }
             } else {
                 topOptKeys = optKeys;
@@ -589,10 +619,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             /**
              * 检测subopt是否允许
              */
-            var checkSubOpt = function(optKeys,subOpts){
-                var cloneOpt  = angular.extend({},subOpts);
-                angular.forEach(cloneOpt,function(value,key){
-                    if(optKeys.indexOf(key)<0){
+            var checkSubOpt = function (optKeys, subOpts) {
+                var cloneOpt = angular.extend({}, subOpts);
+                angular.forEach(cloneOpt, function (value, key) {
+                    if (optKeys.indexOf(key) < 0) {
                         delete cloneOpt[key];
                     }
                 });
@@ -603,11 +633,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (excludeOpts.indexOf(value) < 0) {
                     var opt = $scope.allOpts[value];
                     if (opt) {
-                        if(opt.items){
-                            var subItems = checkSubOpt(topOptKeys,opt.items);
-                            if(jQuery.isEmptyObject(subItems)){
+                        if (opt.items) {
+                            var subItems = checkSubOpt(topOptKeys, opt.items);
+                            if (jQuery.isEmptyObject(subItems)) {
                                 return;
-                            }else{
+                            } else {
                                 opt.items = subItems;
                             }
                         }
@@ -626,10 +656,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (excludeRightOpts.indexOf(value) < 0) {
                     var opt = $scope.allOpts[value];
                     if (opt) {
-                        if(value=='open_with' && jQuery.isEmptyObject(opt.items)){
+                        if (value == 'open_with' && jQuery.isEmptyObject(opt.items)) {
                             return;
                         }
-                        if(value!='open_with'&&!!opt.items && jQuery.isEmptyObject(checkSubOpt(optKeys,opt.items))){
+                        if (value != 'open_with' && !!opt.items && jQuery.isEmptyObject(checkSubOpt(optKeys, opt.items))) {
                             return;
                         }
                         var item = extendOpt(opt, value, true);
@@ -640,9 +670,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.allOpts = null;
         }
 
-        $scope.triggleOptByShortCut = function(shortcut){
-            var opt = GKOpt.getOptByShortCut($scope.rightOpts,shortcut);
-            if(opt){
+        $scope.triggleOptByShortCut = function (shortcut) {
+            var opt = GKOpt.getOptByShortCut($scope.rightOpts, shortcut);
+            if (opt) {
                 opt['callback']();
             }
         };
@@ -659,42 +689,42 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 操作
          * @type {Array}
          */
-        $scope.$watch('selectedFile',  function(newValue,oldValue){
+        $scope.$watch('selectedFile', function (newValue, oldValue) {
             if (!newValue || newValue === oldValue) {
                 return;
             }
-           setOpts();
+            setOpts();
         }, true);
 
-        $scope.$watch('rightOpts',function(){
-                jQuery.contextMenu('destroy', '.file_list .list_body');
-                /**
-                 * 设置右键菜单
-                 */
-                jQuery.contextMenu({
-                    selector: '.file_list .list_body',
-                    reposition: false,
-                    zIndex: 99,
-                    animation: {
-                        show: "show",
-                        hide: "hide"
-                    },
-                    items: $scope.rightOpts
-                });
-        })
-
-        $scope.$watch('selectedpath', function (newValue, oldValue) {
-            if (!newValue ) {
-                return;
-            }
-            GKFileList.unSelectAll($scope);
-                angular.forEach(newValue.split('|'), function (value) {
-                    GKFileList.selectByPath($scope, value);
+        $scope.$watch('rightOpts', function () {
+            jQuery.contextMenu('destroy', '.file_list .list_body');
+            /**
+             * 设置右键菜单
+             */
+            jQuery.contextMenu({
+                selector: '.file_list .list_body',
+                reposition: false,
+                zIndex: 99,
+                animation: {
+                    show: "show",
+                    hide: "hide"
+                },
+                items: $scope.rightOpts
             });
         })
 
-        $scope.$watch('PAGE_CONFIG.file',  setOpts, true);
-        $scope.$watch('keyword',  setOpts, true);
+        $scope.$watch('selectedpath', function (newValue, oldValue) {
+            if (!newValue) {
+                return;
+            }
+            GKFileList.unSelectAll($scope);
+            angular.forEach(newValue.split('|'), function (value) {
+                GKFileList.selectByPath($scope, value);
+            });
+        })
+
+        $scope.$watch('PAGE_CONFIG.file', setOpts, true);
+        $scope.$watch('keyword', setOpts, true);
         $scope.$watch('order', function (newValue) {
             if (!$scope.rightOpts || !$scope.rightOpts['order_by']) {
                 return;
@@ -707,13 +737,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
 
-            if(!newValue){
+            if (!newValue) {
                 return;
             }
             var order = newValue;
-            if(newValue.indexOf('filename')>=0){
-                var desc = newValue.indexOf('-')?'-':'+';
-                order = [desc+'dir',newValue];
+            if (newValue.indexOf('filename') >= 0) {
+                var desc = newValue.indexOf('-') ? '-' : '+';
+                order = [desc + 'dir', newValue];
             }
             $scope.fileData = $filter('orderBy')($scope.fileData, order);
             GKFileList.reIndex($scope.fileData);
@@ -738,91 +768,91 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 监听对文件的操作事件,同步文件列表和左侧的树
          */
-        $scope.$on('editFileSuccess',function(event,opt,mountId,fullpath,extraParam){
-                if(!$rootScope.PAGE_CONFIG.mount || $rootScope.PAGE_CONFIG.mount.mount_id != mountId){
-                    return;
+        $scope.$on('editFileSuccess', function (event, opt, mountId, fullpath, extraParam) {
+            if (!$rootScope.PAGE_CONFIG.mount || $rootScope.PAGE_CONFIG.mount.mount_id != mountId) {
+                return;
+            }
+            var fullpathArr = !angular.isArray(fullpath) ? [fullpath] : fullpath;
+            if (!fullpathArr.length) {
+                return;
+            }
+            var forEachFullpath = function (callback) {
+                angular.forEach(fullpathArr, function (path) {
+                    if (angular.isFunction(callback)) {
+                        callback(path);
+                    }
+                })
+            };
+
+            if ($rootScope.PAGE_CONFIG.file && fullpathArr[0] === $rootScope.PAGE_CONFIG.file.fullpath) {
+                switch (opt) {
+                    case 'sync':
+                        forEachFullpath(function (fullpath) {
+                            $rootScope.PAGE_CONFIG.file.syncpath = fullpath;
+                        });
+                        break;
+                    case 'unsync':
+                        forEachFullpath(function (fullpath) {
+                            $rootScope.PAGE_CONFIG.file.syncpath = '';
+                        });
+                        break;
+                    case 'del':
+                        forEachFullpath(function (fullpath) {
+                            GKPath.gotoFile(mountId, Util.String.dirName(fullpath));
+                        });
+                        break;
+                    case 'create':
+                        GKFileList.refreahData($scope, extraParam.fullpath);
+                        break;
                 }
-               var fullpathArr = !angular.isArray(fullpath)?[fullpath]:fullpath;
-               if(!fullpathArr.length) {
-                   return;
-               }
-               var forEachFullpath = function(callback){
-                   angular.forEach(fullpathArr,function(path){
-                        if(angular.isFunction(callback)){
-                            callback(path);
-                        }
-                   })
-               };
+            } else {
+                var forEachFile = function (callback) {
+                    forEachFullpath(function (path) {
+                        angular.forEach($scope.fileData, function (value) {
+                            if (value.fullpath === path && angular.isFunction(callback)) {
+                                callback(value);
+                            }
+                        });
+                    })
 
-                if($rootScope.PAGE_CONFIG.file && fullpathArr[0] === $rootScope.PAGE_CONFIG.file.fullpath){
-                    switch(opt){
-                        case 'sync':
-                            forEachFullpath(function(fullpath){
-                                $rootScope.PAGE_CONFIG.file.syncpath = fullpath;
-                            });
-                            break;
-                        case 'unsync':
-                            forEachFullpath(function(fullpath){
-                                $rootScope.PAGE_CONFIG.file.syncpath = '';
-                            });
-                            break;
-                        case 'del':
-                            forEachFullpath(function(fullpath){
-                                GKPath.gotoFile(mountId,Util.String.dirName(fullpath));
-                            });
-                            break;
-                        case 'create':
-                            GKFileList.refreahData($scope,extraParam.fullpath);
-                            break;
-                    }
-                }else{
-                    var forEachFile = function(callback){
-                        forEachFullpath(function(path){
-                            angular.forEach($scope.fileData,function(value){
-                                if(value.fullpath === path && angular.isFunction(callback)){
-                                    callback(value);
-                                }
-                            });
-                            })
-
-                    };
-                    switch(opt){
-                        case 'sync':
-                            forEachFile(function(value){
-                                value.sync = 1;
-                            })
-                            break;
-                        case 'unsync':
-                            forEachFile(function(value){
-                                value.sync = 0;
-                            })
-                            break;
-                        case 'del':
-                            GKFileList.removeAllSelectFile($scope);
-                            forEachFile(function(value){
-                                GKFileList.remove($scope,value);
-                            })
-                            break;
-                        case 'set_open':
-                            forEachFile(function(value){
-                                value.open = extraParam.open;
-                            })
-                            break;
-
-                    }
+                };
+                switch (opt) {
+                    case 'sync':
+                        forEachFile(function (value) {
+                            value.sync = 1;
+                        })
+                        break;
+                    case 'unsync':
+                        forEachFile(function (value) {
+                            value.sync = 0;
+                        })
+                        break;
+                    case 'del':
+                        GKFileList.removeAllSelectFile($scope);
+                        forEachFile(function (value) {
+                            GKFileList.remove($scope, value);
+                        })
+                        break;
+                    case 'set_open':
+                        forEachFile(function (value) {
+                            value.open = extraParam.open;
+                        })
+                        break;
 
                 }
+
+            }
         })
 
-        $scope.$on('clearTrashSuccess',function(event,mountId){
-            if($scope.mountId != mountId || $scope.filter != 'trash'){
+        $scope.$on('clearTrashSuccess', function (event, mountId) {
+            if ($scope.mountId != mountId || $scope.filter != 'trash') {
                 return;
             }
             GKFileList.refreahData($scope);
         })
 
-        $scope.renameFileSubmit = function(filename,file){
-            if(!GKFile.checkFilename(filename)){
+        $scope.renameFileSubmit = function (filename, file) {
+            if (!GKFile.checkFilename(filename)) {
                 return;
             }
             var mountId = GKFileList.getOptFileMountId(file);
@@ -830,7 +860,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 file.rename = false;
             } else {
                 var upPath = Util.String.dirName(file.fullpath);
-                var newpath  = upPath +(upPath?'/':'') + filename;
+                var newpath = upPath + (upPath ? '/' : '') + filename;
                 GK.rename({
                     oldpath: file.fullpath,
                     newpath: newpath,
@@ -847,8 +877,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-        $scope.createFileNameSubmit = function(filename){
-            if(!GKFile.checkFilename(filename)){
+        $scope.createFileNameSubmit = function (filename) {
+            if (!GKFile.checkFilename(filename)) {
                 return;
             }
             var webpath = $scope.path ? $scope.path + '/' + filename : filename;
@@ -859,7 +889,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             GK.createFolder(params).then(function () {
                 $scope.createNewFolder = false;
-                $rootScope.$broadcast('editFileSuccess','create',$scope.mountId,$scope.path,{fullpath:webpath})
+                $rootScope.$broadcast('editFileSuccess', 'create', $scope.mountId, $scope.path, {fullpath: webpath})
             }, function (error) {
                 GKException.handleClientException(error);
             });
@@ -947,7 +977,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param order
          */
         $scope.setOrder = function (order) {
-            GKFileList.setOrder($scope,order);
+            GKFileList.setOrder($scope, order);
         };
 
         /**
@@ -1057,13 +1087,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         $scope.handleScrollLoad = function () {
-            if($scope.partition != GKPartition.subscribeFile){
+            if ($scope.partition != GKPartition.subscribeFile) {
                 return;
             }
             var start = $scope.fileData.length;
-            if(start>=$scope.totalCount) return;
-            GKFileList.getFileData($scope,start).then(function(list){
-                $scope.fileData =  $scope.fileData.concat(list);
+            if (start >= $scope.totalCount) return;
+            GKFileList.getFileData($scope, start).then(function (list) {
+                $scope.fileData = $scope.fileData.concat(list);
             })
         }
 
@@ -1080,7 +1110,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 angular.forEach($scope.selectedFile, function (value) {
                     selectPath.push(value.fullpath);
                 })
-                GKFileList.refreahData($scope,selectPath.join('|'));
+                GKFileList.refreahData($scope, selectPath.join('|'));
             });
         })
 
@@ -1106,17 +1136,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.$on('cancelSearchSmartFolder', function (event, keyword) {
-             $scope.keyword = '';
-             GKFileList.refreahData($scope);
+            $scope.keyword = '';
+            GKFileList.refreahData($scope);
         })
 
-        $scope.$on('$destroy',function(){
+        $scope.$on('$destroy', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
 
         })
 
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal','GKPartition','GKGuiders','localStorageService',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind,GKModal,GKPartition,GKGuiders,localStorageService) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition', 'GKGuiders', 'localStorageService', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition, GKGuiders, localStorageService) {
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -1131,12 +1161,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
         });
 
-        $scope.$on('editSmartFolder', function ($event, name, code,filter) {
-           angular.forEach($scope.breads,function(value){
-               if(value.filter == filter){
-                   value.name = name;
-               }
-           });
+        $scope.$on('editSmartFolder', function ($event, name, code, filter) {
+            angular.forEach($scope.breads, function (value) {
+                if (value.filter == filter) {
+                    value.name = name;
+                }
+            });
         })
 
         /**
@@ -1199,21 +1229,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         ];
 
-        $scope.showGuider = function(){
+        $scope.showGuider = function () {
             GKGuiders.show('guide_1');
-            if(!localStorageService.get('guiders_shown')){
-                localStorageService.add('guiders_shown',true)
+            if (!localStorageService.get('guiders_shown')) {
+                localStorageService.add('guiders_shown', true)
             }
         }
 
-        if(!localStorageService.get('guiders_shown')){
-            $timeout(function(){
+        if (!localStorageService.get('guiders_shown')) {
+            $timeout(function () {
                 $scope.showGuider();
                 return null;
-            },200)
+            }, 200)
         }
     }])
-    .controller('rightSidebar',['$scope','GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount','GKSmartFolder',function($scope,GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount,GKSmartFolder){
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder) {
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1245,118 +1275,118 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.sidebar = 'singlefile';
             } else {
                 $scope.sidebar = 'nofile';
-                if($scope.keyword){
+                if ($scope.keyword) {
                     $scope.sidbarData = {
-                        title:'搜索结果',
+                        title: '搜索结果',
                         tip: '',
                         icon: 'search'
                     }
                 }
-                else{
-                if (!$scope.filter) {
-                    if ($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id) {
-                        var title = $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
-                        $scope.sidbarData = {
-                            title: $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '',
-                            tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
-                            photo: "",
-                            attrHtml: '',
-                            menus: []
-                        };
+                else {
+                    if (!$scope.filter) {
+                        if ($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id) {
+                            var title = $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
+                            $scope.sidbarData = {
+                                title: $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '',
+                                tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
+                                photo: "",
+                                attrHtml: '',
+                                menus: []
+                            };
 
-                        $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
-                        $scope.sidbarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
+                            $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
+                            $scope.sidbarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
 
-                        $scope.sidbarData.menus = [
-                            {
-                                text: '库资料',
-                                icon: 'icon_info',
-                                name: 'visit_website',
-                                click: function () {
-                                    GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
+                            $scope.sidbarData.menus = [
+                                {
+                                    text: '库资料',
+                                    icon: 'icon_info',
+                                    name: 'visit_website',
+                                    click: function () {
+                                        GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
+                                    }
+                                },
+                                {
+                                    text: '库名片',
+                                    icon: 'icon_teamcard',
+                                    name: 'team_card',
+                                    click: function () {
+                                        GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
+                                    }
+                                },
+                            ];
+
+                            if ($scope.partition == GKPartition.teamFile) {
+                                $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
+                                if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
+                                    $scope.sidbarData.menus.push({
+                                        text: '库成员',
+                                        icon: 'icon_team',
+                                        name: 'member_group',
+                                        click: function () {
+                                            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+                                        }
+                                    });
+                                    $scope.sidbarData.menus.push({
+                                        text: '库订阅者',
+                                        icon: 'icon_pin',
+                                        name: 'subscriber',
+                                        click: function () {
+                                            GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+                                        }
+                                    });
                                 }
-                            },
-                            {
-                                text: '库名片',
-                                icon: 'icon_teamcard',
-                                name: 'team_card',
-                                click: function () {
-                                    GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
+                                if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
+                                    $scope.sidbarData.menus.push({
+                                        text: '库安全设置',
+                                        icon: 'icon_manage',
+                                        name: 'manage_team',
+                                        click: function () {
+                                            GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
+                                        }
+                                    })
                                 }
-                            },
-                        ];
-
-                        if ($scope.partition == GKPartition.teamFile) {
-                            $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                            if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
-                                $scope.sidbarData.menus.push({
-                                    text: '库成员',
-                                    icon: 'icon_team',
-                                    name: 'member_group',
-                                    click: function () {
-                                        GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                });
-                                $scope.sidbarData.menus.push({
-                                    text: '库订阅者',
-                                    icon: 'icon_pin',
-                                    name: 'subscriber',
-                                    click: function () {
-                                        GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                });
-                            }
-                            if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
-                                $scope.sidbarData.menus.push({
-                                    text: '库安全设置',
-                                    icon: 'icon_manage',
-                                    name: 'manage_team',
-                                    click: function () {
-                                        GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                })
-                            }
-                            if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
-                                $scope.sidbarData.menus.push({
-                                    text: '库升级',
-                                    icon: 'icon_team_upgrade',
-                                    name: 'team_upgrade',
-                                    click: function () {
-                                        var url = gkClientInterface.getUrl({
-                                            sso:1,
-                                            url:'/pay/order?org_id='+orgId
-                                        })
-                                        gkClientInterface.openUrl(url);
-                                    }
-                                })
+                                if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
+                                    $scope.sidbarData.menus.push({
+                                        text: '库升级',
+                                        icon: 'icon_team_upgrade',
+                                        name: 'team_upgrade',
+                                        click: function () {
+                                            var url = gkClientInterface.getUrl({
+                                                sso: 1,
+                                                url: '/pay/order?org_id=' + orgId
+                                            })
+                                            gkClientInterface.openUrl(url);
+                                        }
+                                    })
+                                }
                             }
                         }
-                    }
 
-                } else {
-                    if($scope.filter=='trash'){
-                        $scope.sidbarData = {
-                            title:'回收站',
-                            tip: '',
-                            icon: $scope.filter
+                    } else {
+                        if ($scope.filter == 'trash') {
+                            $scope.sidbarData = {
+                                title: '回收站',
+                                tip: '',
+                                icon: $scope.filter
+                            }
+                        } else {
+                            var type = GKFilter.getFilterType($scope.filter);
+                            var smartFolder = GKSmartFolder.getFolderByCode(type);
+                            $scope.sidbarData = {
+                                title: smartFolder ? smartFolder['name'] : '',
+                                tip: GKFilter.getFilterTip($scope.filter),
+                                icon: $scope.filter
+                            };
                         }
-                    }else{
-                        var type = GKFilter.getFilterType($scope.filter);
-                        var smartFolder = GKSmartFolder.getFolderByCode(type);
-                        $scope.sidbarData = {
-                            title:smartFolder?smartFolder['name']:'',
-                            tip: GKFilter.getFilterTip($scope.filter),
-                            icon: $scope.filter
-                        };
-                    }
 
-                }
+                    }
                 }
             }
         }, true);
 
-        $scope.$on('editSmartFolder', function ($event, name, code,filter) {
-            if($scope.filter == filter){
+        $scope.$on('editSmartFolder', function ($event, name, code, filter) {
+            if ($scope.filter == filter) {
                 $scope.sidbarData.title = name;
             }
         })

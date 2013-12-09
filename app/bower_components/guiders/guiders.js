@@ -468,6 +468,10 @@ var guiders = (function($) {
     }
     return guiders._guiders[id] || null;
   };
+
+  guiders.getLastCreatedGuiderID = function() {
+    return guiders._lastCreatedGuiderID ;
+  };
   
   guiders.getCurrentGuider = function() {
     return guiders._guiders[guiders._currentGuiderID] || null;

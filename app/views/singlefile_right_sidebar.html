@@ -11,7 +11,15 @@
                         详细
                     </span>
                 </div>
-                <section class="scrollbar">
+                <section class="scrollbar" gk-guider='{
+                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
+                  description: "添加“注释”和“图形标记”，可以更方便地归整及快速查找文件。",
+                  id: "guide_4",
+                  next: "guide_5",
+                  position: 9,
+                  title: "注释和标记",
+                  width: 280
+                  }'>
                     <div class="file_icon">
                         <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
                              ng-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"/>
@@ -43,7 +51,15 @@
                 </section>
 
             </div>
-            <section class="file_detail_wrapper" ng-show="showTab">
+            <section class="file_detail_wrapper" ng-show="showTab" gk-guider='{
+                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
+                  description: "与云库中的伙伴对文件协作编辑进行讨论，并可以查看文件修改的历史版本。",
+                  id: "guide_5",
+                  next: "guide_6",
+                  position: 9,
+                  title: "讨论和历史",
+                  width: 280
+                  }'>
                 <tabset direction="blew">
                     <tab heading="讨论">
                         <div class="update_wrapper" ng-class="inputingRemark?'editing':''">

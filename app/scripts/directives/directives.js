@@ -320,11 +320,13 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
                 $scope.GKGuiders = GKGuiders;
-                var option = $scope.$eval($attrs.gkGuider);
-                angular.extend(option, {
-                    attachTo: $element[0]
-                });
-                GKGuiders.createGuider(option);
+                $attrs.$observe('gkGuider',function(newValue){
+                    var option = $scope.$eval(newValue);
+                    angular.extend(option, {
+                        attachTo: $element[0]
+                    });
+                    GKGuiders.createGuider(option);
+                })
             }
         }
     }])
@@ -1231,7 +1233,6 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-
                 var watchStr = $attrs.inputTip;
                 var placementArr = $attrs.inputTipPlacement.split(' ');
                 var placement = {

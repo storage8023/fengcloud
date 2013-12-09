@@ -1,12 +1,10 @@
 header{
     top:auto;
     bottom: 0;
-    box-shadow: inset 0 1px 0 #fff;
 }
 ul.quickmenu{
     top:auto;
     bottom: 40px;
-    border-top:1px solid #CDCED0;
 }
 .message_wrapper{
     top:0;
