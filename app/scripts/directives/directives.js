@@ -243,16 +243,19 @@ angular.module('gkClientIndex.directives', [])
                         input.on('keydown', function (e) {
                             if (e.keyCode == 13) {
                                 var newFileName = input.val();
+                                if(!newFileName.length) newFileName = oldFileName;
                                 fn($scope,{filename:newFileName});
                                 return false;
                             }
                         });
                         input.on('blur', function () {
                             var newFileName = input.val();
+                            if(!newFileName.length) newFileName = oldFileName;
                             fn($scope,{filename:newFileName});
                         })
                         input.on('dblclick', function () {
                             var newFileName = input.val();
+                            if(!newFileName.length) newFileName = oldFileName;
                             fn($scope,{filename:newFileName});
                         })
                     }else{
@@ -278,13 +281,17 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch($attrs.createNewFolder, function (value,oldValue) {
                     if(value == oldValue) return;
                     if (value == true) {
+                        var defaultNewName = GKFileList.getDefualtNewName($scope);
                         var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
                         GKFileList.unSelectAll($scope);
                         $scope.submitNewFileName = function (filename) {
+                            if(!filename.length){
+                                filename = defaultNewName
+                            }
                             fn($scope,{filename:filename});
                         };
                         var isShare = 0;
-                        var defaultNewName = GKFileList.getDefualtNewName($scope);
+
                         newFileItem = $compile(angular.element('<new-file-item view="{{view}}" default-new-name="' + defaultNewName + '" is-share="{{' + isShare + '}}" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                         newFileItem.addClass('selected').prependTo($element);
                     }else{
