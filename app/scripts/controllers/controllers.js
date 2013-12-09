@@ -199,9 +199,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['filter'] = branch.data.filter || '';
             } else if (partition == GKPartition.smartFolder) {
                 pararm['filter'] = branch.data.filter;
-                if (pararm['filter'] == 'search') {
-                    pararm['keyword'] = branch.data.condition;
-                }
             } else {
                 return;
             }
@@ -519,10 +516,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setOpts = function () {
             $scope.allOpts = GKOpt.getAllOpts($scope);
             var isSearch = $scope.keyword.length ? true : false;
-            if (isSearch) {
-                $scope.filter = 'search';
-            }
-            optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount);
+            optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount,isSearch);
             $scope.opts = null;
             $scope.opts = [];
             $scope.rightOpts =null;
@@ -533,7 +527,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
              * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
              */
             if ($scope.selectedFile.length) {
-                var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount);
+                var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount,isSearch);
                 angular.forEach(['sync', 'unsync'], function (value) {
                     var index = currentOpts.indexOf(value);
                     if (index >= 0) {
@@ -1078,13 +1072,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var fileList = $filter('filter')($scope.fileData, {filename: keyword});
+            $scope.keyword = keyword;
             if (!fileList || !fileList.length) {
                 $scope.errorMsg = '未找到相关搜索结果';
             } else {
-                $scope.keyword = keyword;
                 $scope.fileData = fileList;
             }
             GKSearch.setSearchState('end');
+        })
+
+        $scope.$on('cancelSearchSmartFolder', function (event, keyword) {
+             $scope.keyword = '';
+             GKFileList.refreahData($scope);
         })
 
         $scope.$on('$destroy',function(){
@@ -1205,24 +1204,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$watch('[selectedFile,path]', function (newValue, oldValue) {
             if (!newValue[0] || !newValue[0].length) { //未选中文件
-                if ($scope.PAGE_CONFIG.filter == 'search') {
-                    $scope.localFile = null;
-                    $scope.showSearch = true;
-                } else {
-                    $scope.localFile = $rootScope.PAGE_CONFIG.file;
-                }
-
+                $scope.localFile = $rootScope.PAGE_CONFIG.file;
             } else if (newValue[0].length == 1) { //选中了一个文件
                 $scope.localFile = newValue[0][0];
-                $scope.showSearch = false;
             } else { //多选
                 $scope.localFile = null;
-                $scope.showSearch = false;
             }
 
         }, true);
 
-        $scope.$watch('[partition,selectedFile,filter,localFile]', function (newValue, oldValue) {
+        $scope.$watch('[partition,selectedFile,filter,localFile,keyword]', function (newValue, oldValue) {
             var selected = newValue[1] || [];
             if (selected.length > 1) {
                 $scope.sidebar = 'multifile';
@@ -1230,6 +1221,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.sidebar = 'singlefile';
             } else {
                 $scope.sidebar = 'nofile';
+                if($scope.keyword){
+                    $scope.sidbarData = {
+                        title:'搜索结果',
+                        tip: '',
+                        icon: 'search'
+                    }
+                }
+                else{
                 if (!$scope.filter) {
                     if ($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id) {
                         var title = $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
@@ -1311,13 +1310,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
 
                 } else {
-                    var type = GKFilter.getFilterType($scope.filter);
-                    var smartFolder = GKSmartFolder.getFolderByCode(type);
-                    $scope.sidbarData = {
-                        title:smartFolder?smartFolder['name']:'',
-                        tip: GKFilter.getFilterTip($scope.filter),
-                        icon: $scope.filter
-                    };
+                    if($scope.filter=='trash'){
+                        $scope.sidbarData = {
+                            title:'回收站',
+                            tip: '',
+                            icon: $scope.filter
+                        }
+                    }else{
+                        var type = GKFilter.getFilterType($scope.filter);
+                        var smartFolder = GKSmartFolder.getFolderByCode(type);
+                        $scope.sidbarData = {
+                            title:smartFolder?smartFolder['name']:'',
+                            tip: GKFilter.getFilterTip($scope.filter),
+                            icon: $scope.filter
+                        };
+                    }
+
+                }
                 }
             }
         }, true);

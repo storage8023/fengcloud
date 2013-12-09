@@ -1664,7 +1664,6 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                     }
-
                     filterItem&&breads.unshift(filterItem);
 
                 }
@@ -2093,9 +2092,6 @@ angular.module('gkClientIndex.services', [])
                         });
 
                     } else {
-                        if (!value.filter) {
-                            value.filter = 'search';
-                        }
                         item = {
                             label: value.name,
                             isParent: false,
@@ -2291,7 +2287,7 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
             },
-            getOpts: function (currentFile, selectedFiles, partition, filter, mount) {
+            getOpts: function (currentFile, selectedFiles, partition, filter, mount,isSearch) {
                 var opts,
                     partitionOpts,
                     multiOpts,
@@ -2299,7 +2295,7 @@ angular.module('gkClientIndex.services', [])
                     currentOpts,
                     authOpts;
 
-                partitionOpts = this.getPartitionOpts(partition, filter, mount);
+                partitionOpts = this.getPartitionOpts(partition, filter, mount,isSearch);
                 authOpts = this.getAuthOpts(currentFile, selectedFiles, partition, mount);
                 if (!selectedFiles || !selectedFiles.length) {
                     currentOpts = this.getCurrentOpts(currentFile, partition);
@@ -2369,7 +2365,7 @@ angular.module('gkClientIndex.services', [])
             /**
              * 获取分区的命令
              * */
-            getPartitionOpts: function (partition, filter, mount) {
+            getPartitionOpts: function (partition, filter, mount,isSearch) {
                 var opts = this.getDefaultOpts();
                 switch (partition) {
                     case GKPartition.myFile:
@@ -2389,15 +2385,12 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.subscribeFile:
                         this.disableOpt(opts, 'create_sync_folder','new_file','goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
-                    case (GKPartition.smartFolder || filter == 'search'):
-                        this.disableOpt(opts, 'create_sync_folder','new_file','revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
-                        if (partition == GKPartition.smartFolder) {
-                            this.disableOpt(opts, 'del', 'rename');
-                        }
+                    case GKPartition.smartFolder:
+                        this.disableOpt(opts, 'del', 'rename','create_sync_folder','new_file','revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         break;
                 }
-                if (filter == 'search') {
-                    this.disableOpt(opts, 'new_file','new_folder', 'add', 'create', 'paste', 'manage');
+                if (isSearch) {
+                    this.disableOpt(opts,'new_file','new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },
@@ -3968,21 +3961,7 @@ angular.module('gkClientIndex.services', [])
                  * 我的文件和云库文件夹
                  */
                 if ($scope.partition == GKPartition.myFile || $scope.partition == GKPartition.teamFile || $scope.partition == GKPartition.subscribeFile) {
-                    /**
-                     * 回收站
-                     */
-                    if ($scope.filter == 'trash') {
-                        source = 'api';
-                        RestFile.recycle($scope.mountId, '').success(function (data) {
-                            fileList = data['list'];
-                            deferred.resolve(GKFile.dealFileList(fileList, source));
-                        }).error(function (request) {
-                                deferred.reject(GKException.getAjaxErrorMsg(request));
-                            })
-                        /**
-                         * 搜索
-                         */
-                    } else if ($scope.filter == 'search') {
+                    if($scope.keyword){
                         source = 'api';
                         GKSearch.setSearchState('loading');
                         var condition = GKSearch.getCondition();
@@ -3994,7 +3973,21 @@ angular.module('gkClientIndex.services', [])
                                 GKSearch.setSearchState('end');
                                 deferred.reject(GKException.getAjaxErrorMsg(request));
                             });
-
+                    }
+                    /**
+                     * 回收站
+                     */
+                    else if ($scope.filter == 'trash') {
+                        source = 'api';
+                        RestFile.recycle($scope.mountId, '').success(function (data) {
+                            fileList = data['list'];
+                            deferred.resolve(GKFile.dealFileList(fileList, source));
+                        }).error(function (request) {
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            })
+                        /**
+                         * 搜索
+                         */
                     }else if($scope.partition == GKPartition.subscribeFile){
                         source = 'api';
                         GKApi.list($scope.mountId,$scope.path,start,13).success(function(data){

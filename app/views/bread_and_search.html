@@ -1,4 +1,4 @@
-<div class="bread_and_search_wrapper" ng-class="{true:'search_disable',false:searchState?'searching '+searchState:''}[disableSearch]"  ng-click="showSearch($event)">
+<div class="bread_and_search_wrapper" ng-class="searchState?'searching '+searchState:''"  ng-click="showSearch($event)">
     <div class="dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
         <a href="javascript:void(0)" dropdown-toggle><i class="gk_down_arrow"></i></a>
         <ul class="dropdown-menu">

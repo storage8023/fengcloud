@@ -1,8 +1,8 @@
 <div class="no_file no_file_{{partition}}">
-    <div ng-if="!filter">
+    <div ng-if="!filter && !keyword">
         <common-right-sidebar class="common_right_sidebar"></common-right-sidebar>
     </div>
-    <div ng-if="filter">
+    <div ng-if="filter || keyword">
         <filter-right-sidebar class="filter_right_sidebar"></filter-right-sidebar>
     </div>
 </div>
