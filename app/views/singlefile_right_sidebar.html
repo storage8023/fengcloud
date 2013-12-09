@@ -46,7 +46,7 @@
 
                     <div class="tags" ng-if="file.cmd>0">
                         <tags-input ng-model="file.formatTag" allowed-tags-pattern="^[a-zA-Z0-9\u4e00-\u9fa5\s]+$"
-                                    class="" name="file_tag" id="file_tag" placeholder="+ 添加注释" max-length="20"></tags-input>
+                                    class="" name="file_tag" id="file_tag" placeholder="+ 添加注释" max-length="10"></tags-input>
                     </div>
                 </section>
 
@@ -106,7 +106,7 @@
                                 <div class="act_info">
                                     <div><span class="filename">{{history.fullpath|baseName}}</span></div>
                                     <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span
-                                            class="act_dateline">{{history.dateline*1000 | date:'yyyy/M/d H:m'}}</span>
+                                            class="act_dateline">{{history.dateline*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
                                     </div>
                                 </div>
                             </li>

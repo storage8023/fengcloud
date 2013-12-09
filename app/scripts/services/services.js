@@ -930,12 +930,21 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-                        $rootScope.$on('createTeamSuccess', function (event, orgId) {
+                        $rootScope.$on('createTeamSuccess', function (event, param) {
+                            var orgId = param.orgId;
+                            var pay = param.pay ||0;
                             gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $scope.$apply(function () {
                                         var newOrg = param;
                                         $rootScope.$broadcast('createOrgSuccess', newOrg);
+                                        if(pay){
+                                            var url = gkClientInterface.getUrl({
+                                                sso:1,
+                                                url:'/pay/order?org_id='+orgId
+                                            })
+                                            gkClientInterface.openUrl(url);
+                                        }
                                     });
                                     $modalInstance.close(orgId);
                                 }
@@ -1590,6 +1599,7 @@ angular.module('gkClientIndex.services', [])
                 selectFile = angular.isDefined(selectFile) ? selectFile : '';
                 var searchParam =  $location.search();
                 var mount = GKMount.getMountById(mountId);
+                if(!mount) return;
                 var search = {
                     partition: mount['type'] == 3 ? GKPartition.subscribeFile : GKPartition.teamFile,
                     mountid: mountId,

@@ -473,9 +473,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         });
 
-
-
-
+        $scope.$on('OpenMountPath',function($event,param){
+           var mountId = param.mountid,
+               fullpath = param.webpath,
+               selectFile = '',
+               path = '';
+            var lastStr = Util.String.lastChar(fullpath);
+            if(lastStr==='/'){
+                path = Util.String.rtrim(fullpath,'/');
+                selectFile = '';
+            }else{
+                path = Util.String.dirName(fullpath);
+                selectFile = fullpath;
+            }
+            $scope.$apply(function(){
+                GKPath.gotoFile(mountId, path, selectFile);
+            })
+        })
     }])
     .controller('fileBrowser', ['$interval', 'GKDialog', '$scope', '$routeParams', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($interval, GKDialog, $scope, $routeParams, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
 
@@ -528,7 +542,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         }
 
-        GKFileList.refreahData($scope);
+        GKFileList.refreahData($scope,$routeParams.selectedpath);
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
@@ -1270,7 +1284,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var selected = newValue[1] || [];
             if (selected.length > 1) {
                 $scope.sidebar = 'multifile';
-            } else if (selected.length == 1 || (newValue[3] && newValue[3].fullpath)) {
+            } else if ((selected.length == 1 || (newValue[3] && newValue[3].fullpath))&& newValue[2]!='trash') {
                 $scope.sidebar = 'singlefile';
             } else {
                 $scope.sidebar = 'nofile';
