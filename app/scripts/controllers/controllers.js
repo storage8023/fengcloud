@@ -1228,14 +1228,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-
+        //console.log(localStorageService.isSupported())
         $scope.showGuider = function () {
             GKGuiders.show('guide_1');
             if (!localStorageService.get('guiders_shown')) {
                 localStorageService.add('guiders_shown', true)
             }
         }
-
         if (!localStorageService.get('guiders_shown')) {
             $timeout(function () {
                 $scope.showGuider();

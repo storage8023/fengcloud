@@ -921,7 +921,6 @@ angular.module('gkClientIndex.directives', [])
                         });
                 }, true);
 
-
                 /**
                  * 取消发布备注
                  */
@@ -991,6 +990,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.handleKeyDown = function (e) {
                     if (e.keyCode == 13 & (e.ctrlKey || e.metaKey)) {
                         $scope.postRemark($scope.remarkText);
+                        $element.find('.post_wrapper textarea').blur();
                     }
                 };
 
@@ -1194,6 +1194,9 @@ angular.module('gkClientIndex.directives', [])
                     $event.stopPropagation();
                 };
                 $document.bind('keydown', function (e) {
+                    if(!$scope.isOpen()){
+                        return;
+                    }
                     $scope.$apply(function () {
                         var key_code = e.keyCode;
                         if (!$scope.list || !$scope.list.length) return;
