@@ -1378,7 +1378,7 @@ angular.module('gkClientIndex.services', [])
                     alert('名称不能为空');
                     return false;
                 }
-                var reg = /\/|\\\\|\:|\*|\?|\"|<|>|\|/;
+                var reg = /\/|\\|\:|\*|\?|\"|<|>|\|/;
                 if (reg.test(filename)) {
                     alert('名称不能包含下列任何字符： / \\ : * ? " < > |');
                     return false;
@@ -1916,7 +1916,7 @@ angular.module('gkClientIndex.services', [])
                     alert('文件名不能为空');
                     return false;
                 }
-                var reg = /\/|\\\\|\:|\*|\?|\"|<|>|\|/;
+                var reg = /\/|\\|\:|\*|\?|\"|<|>|\|/;
                 if (reg.test(filename)) {
                     alert('文件名不能包含下列任何字符： / \\ : * ? " < > |');
                     return false;
