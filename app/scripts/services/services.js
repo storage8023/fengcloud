@@ -2373,6 +2373,9 @@ angular.module('gkClientIndex.services', [])
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
                             this.disableOpt(opts, 'view_property','open_with','create_sync_folder',"add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            if(!GKMount.isSuperAdmin(mount)){
+                                this.disableOpt(opts,'clear_trash','del_completely')
+                            }
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
                         }
@@ -2775,6 +2778,7 @@ angular.module('gkClientIndex.services', [])
                         accesskeyText:'Ctrl+V',
                         callback: function () {
                             var data = GKCilpboard.getData();
+
                             if (!data || !data.files || !data.mount_id) return;
                             var target = $rootScope.PAGE_CONFIG.file.fullpath;
                             if ($scope.selectedFile.length == 1) {

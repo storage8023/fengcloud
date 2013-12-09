@@ -426,7 +426,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         /**
                          * 已展开的node才刷新数据
                          */
-                        if(node.expanded){
+                        if(node&&node.expanded){
                             $scope.handleExpand(node);
                         }
                         break;

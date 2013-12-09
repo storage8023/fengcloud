@@ -287,7 +287,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
             templateUrl:'views/tab_account.html',
             link:function($scope){
                 var user = $rootScope.PAGE_CONFIG.user;
-                var device = gkClientInterface.getComputerInfo()['name'];
+                var device = gkClientInterface.getClientInfo()['devicename'];
                 var myMount = GKMount.getMyMount();
                 $scope.attrs = [
                     {

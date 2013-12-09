@@ -84,7 +84,7 @@
                                   <i ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0" class="file_icon {{file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}">
                                   </i>
                                 </span>
-                                <span title="{{file.fullpath}}" class="name">{{file.filename|replaceSpace}}</span>
+                                <span title="{{file.fullpath}}" class="name">{{file.filename}}</span>
                             </div>
                             <div class="last_edit_time" ng-show="view=='list'">
                                 <span>{{file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'}}</span>

@@ -340,7 +340,7 @@
     },
     copy:function(params,callback){
         try {
-            //console.log(params);
+            console.log(params);
             gkClient.gCopy(JSON.stringify(params),function(re){
                 re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
