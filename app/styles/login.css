@@ -4,10 +4,9 @@ body{
     color: #fff;
 }
 body a{
-    color: #fff;
+    color: #448de8;
 }
 body a:hover{
-    color: #fff;
     text-decoration: underline;
 }
 header{
