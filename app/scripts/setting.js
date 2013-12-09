@@ -114,22 +114,24 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
 //                name:'recycle',
 //                model:$scope.setting['recycle']
 //            },
-            {
-                type:'select',
-                label:'语言切换：',
-                name:'language',
-                options:langOptions,
-                tip:'（软件下次启动时生效）',
-                model:selectedLang,
-                change:function(val,e){
-                    var val = Util.Array.getObjectByKeyValue( $scope.generalSetting,'name','language');
-                    var params = {
-                        type:Number(val.model.value)
-                    };
-                    gkClientInterface.setChangeLanguage(params);
-                }
-            }
+//            {
+//                type:'select',
+//                label:'语言切换：',
+//                name:'language',
+//                options:langOptions,
+//                tip:'（软件下次启动时生效）',
+//                model:selectedLang,
+//                change:function(val,e){
+//                    var val = Util.Array.getObjectByKeyValue( $scope.generalSetting,'name','language');
+//                    var params = {
+//                        type:Number(val.model.value)
+//                    };
+//                    gkClientInterface.setChangeLanguage(params);
+//                }
+//            }
         ];
+
+        var isMac = gkClientInterface.isMacClient();
 
         /**
          * 网络设置
@@ -150,7 +152,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
             },
             {
                 type:'checkbox',
-                label:'开启IE代理',
+                label:isMac?'使用系统代理':'使用IE代理',
                 name:'proxy',
                 tip:'（软件下次启动时生效）',
                 model:$scope.setting['proxy']
@@ -525,7 +527,10 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
     .directive('tabAdvance',[function(){
         return {
             restrict: 'E',
-            templateUrl: 'views/tab_advance.html'
+            templateUrl: 'views/tab_advance.html',
+            link:function($scope){
+                $scope.isMac = gkClientInterface.isMacClient();
+            }
         }
     }])
 ;

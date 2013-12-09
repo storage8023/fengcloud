@@ -565,6 +565,9 @@
     isWindowsClient:function(){
         return this.getClientOS() == 'windows';
     },
+    isMacClient:function(){
+        return this.getClientOS() == 'mac';
+    },
     getClientVersion:function(){
         return this.getUserAgent()[1].toLowerCase();
     }

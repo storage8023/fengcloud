@@ -5,11 +5,11 @@
     <section>
         <div class="form_layer">
             <div>
-                <label for="config_path">配置文件位置<span class="warning">（软件下次启动时生效）</span></label>
+                <label for="config_path">配置及缓存位置<span ng-if="!isMac" class="warning">（软件下次启动时生效）</span></label>
             </div>
             <div>
                 <input class="form-control" type="text" readonly ng-model="setting.configpath" name="config_path" id="config_path"/>
-                <button class="btn btn-default" ng-click="selectConfigPath()">移动</button>
+                <button class="btn btn-default" ng-if="!isMac"  ng-click="selectConfigPath()">移动</button>
             </div>
         </div>
         <div class="form_layer">
