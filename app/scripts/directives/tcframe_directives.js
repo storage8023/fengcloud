@@ -19,14 +19,6 @@ angular.module('gkClientFrame.directives',[])
                         }
                     },
                     {
-                        classes:'nearby',
-                        name:'附近',
-                        icon:'icon_pin_white',
-                        handleClick:function(){
-                            gkClientInterface.launchpad({type:'find'});
-                        }
-                    },
-                    {
                         classes:'trasfer',
                         name:'传输',
                         icon:'icon_transfer_white',

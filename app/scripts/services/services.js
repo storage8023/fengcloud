@@ -2915,7 +2915,8 @@ angular.module('gkClientIndex.services', [])
                             angular.forEach($scope.selectedFile, function (value) {
                                 files.push({
                                     webpath: value.fullpath,
-                                    mountid:GKFileList.getOptFileMountId(value)
+                                    mountid:GKFileList.getOptFileMountId(value),
+                                    dir:Number(value.dir)
                                 })
                             });
                             var params = {
@@ -4296,6 +4297,7 @@ angular.module('gkClientIndex.services', [])
  * @param params
  */
 var gkClientCallback = function (name, param) {
+    console.log(arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }

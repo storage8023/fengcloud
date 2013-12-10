@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    <div class="tags" ng-if="file.cmd>0">
+                    <div class="tags" ng-if="showTab">
                         <tags-input ng-model="file.formatTag" allowed-tags-pattern="^[a-zA-Z0-9\u4e00-\u9fa5\s]+$"
                                     class="" name="file_tag" id="file_tag" placeholder="+ 添加注释" max-length="10"></tags-input>
                     </div>

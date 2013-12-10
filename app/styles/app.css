@@ -2006,3 +2006,7 @@ body.resizing *{
     height: 460px;
     max-height: 460px;
 }
+.carousel_backdrop{
+   background: #24272b;
+    opacity: 1;
+}
