@@ -1,7 +1,7 @@
 body{
-    background: #40464d;
+    background: #525961;
     color: #fff;
-    cursor: default;
+    cursor: default !important;
 }
 header{
    height: 40px;
@@ -20,7 +20,7 @@ header i.icon_logo:hover{
 }
 ul.quickmenu{
     height: 60px;
-    background: #4e565e;
+    background: #434B4D;
     position: absolute;
     left: 0;
     right: 0;
