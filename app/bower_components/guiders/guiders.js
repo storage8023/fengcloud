@@ -153,7 +153,7 @@ var guiders = (function($) {
 
   guiders._addXButton = function(myGuider) {
     var xButtonContainer = myGuider.elem.find(".guiders_close");
-    var xButton = $("<div>x</div>", {
+    var xButton = $("<div>&times;</div>", {
       "class" : "guiders_x_button",
       "role" : "button"
     });

@@ -921,11 +921,16 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            createTeam: function () {
+            createTeam: function (isEdit) {
+                isEdit = angular.isDefined(isEdit)?isEdit:0;
                 var option = {
                     templateUrl: 'views/create_team_dialog.html',
                     windowClass: 'modal_frame create_team_dialog',
                     controller: function ($scope, $modalInstance, src) {
+                        $scope.title = '创建云库';
+                        if(isEdit){
+                            $scope.title = '设置云库';
+                        }
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');

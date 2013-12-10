@@ -127,7 +127,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('removeSlideGuide',function(){
             $scope.showSildeGuide = false;
             $timeout(function(){
-                var modal = GKModal.createTeam();
+                var modal = GKModal.createTeam(1);
                 modal.result.then(function(){
                     showGuider();
                 },function(){
@@ -141,7 +141,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//云库的空间
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
-
         /**
          * 云库的文件
          */
@@ -1180,8 +1179,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             jQuery.contextMenu('destroy', '.file_list .list_body');
 
         })
-
-
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition) {
         $scope.canBack = false;
