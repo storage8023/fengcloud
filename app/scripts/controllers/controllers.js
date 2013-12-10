@@ -623,15 +623,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         currentOpts.splice(index, 1);
                     }
                 })
-
                 /**
                  * 如果是订阅的文件就不用合并当前的操作和选中的操作
                  */
                 if ($scope.partition == GKPartition.subscribeFile) {
                     topOptKeys = optKeys;
                 } else {
-                    topOptKeys = jQuery.merge([],currentOpts, optKeys);
-                    topOptKeys = jQuery.unique(topOptKeys);
+                    topOptKeys = jQuery.merge(currentOpts, optKeys);
+                    topOptKeys = Util.Array.unique(topOptKeys);
                 }
                 if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir == 0) {
                     getOpenWithMenu(GKFileList.getOptFileMountId($scope.selectedFile[0]), $scope.selectedFile[0], $scope.allOpts);

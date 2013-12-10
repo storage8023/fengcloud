@@ -584,6 +584,17 @@ Util.Array = {
           }
       }
       return array;
+  },
+  unique:function(arr){
+          var newArray=[];
+          var provisionalTable = {};
+          for (var i = 0, item; (item= arr[i]) != null; i++) {
+              if (!provisionalTable[item]) {
+                  newArray.push(item);
+                  provisionalTable[item] = true;
+              }
+          }
+          return newArray;
   }
 };
 
