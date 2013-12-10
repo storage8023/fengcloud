@@ -460,7 +460,8 @@ angular.module('gkClientIndex.directives', [])
                 });
 
                 $timeout(function(){
-                    input[0].focus();
+                    input[0].select();
+                    input.focus();
                 },0)
 
                 $scope.$on('$destroy',function(){

@@ -1026,9 +1026,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             /**
              * 为了修复框选组件的bug
              */
-//            $timeout(function(){
-//                document.activeElement.blur();
-//            },0)
+            $timeout(function(){
+                document.activeElement.blur();
+            },0);
         };
 
         /**drag drop **/
