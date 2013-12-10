@@ -580,6 +580,19 @@ a:hover > .icon16x16.icon_team_upgrade,
 .icon16x16.icon_team_upgrade_color{
     background-position: -44px -1364px;
 }
+.icon16x16.icon_sina{
+    background-position: -4px -1484px;
+}
+.icon16x16.icon_sina_color{
+    background-position: -44px -1484px;
+}
+.icon16x16.icon_qq{
+    background-position: -4px -1504px;
+}
+.icon16x16.icon_qq_color{
+    background-position: -44px -1504px;
+}
+
 /*32x32*/
 .icon32x32{
     width: 32px;

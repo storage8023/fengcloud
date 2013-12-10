@@ -10,7 +10,7 @@ body a:hover{
     text-decoration: underline;
 }
 header{
-    height: 124px;
+    height: 110px;
     text-align: center;
 }
 header .logo{
@@ -145,4 +145,14 @@ font-size: 14px;
 }
 .rotate.ng-hide-add.ng-hide-add-active {
     left:100%;
+}
+
+.oauth_list li {
+    float: right;
+}
+.oauth_list li >a{
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
 }

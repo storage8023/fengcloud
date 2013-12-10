@@ -9,7 +9,7 @@
     },
     getOauthKey:function(){
         try {
-            return gkClient.gOauthKey();
+            return gkClient.gOAuthKey();
         } catch (e) {
             this._handleException(e);
         }

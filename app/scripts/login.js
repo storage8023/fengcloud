@@ -132,6 +132,42 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
             }
         }
     }])
+    .directive('oauthLogin', ['$timeout','GKDialog',function ($timeout,GKDialog) {
+        return {
+            restrict: 'E',
+            template: '<ul class="c_f oauth_list"><li ng-repeat="oauth in oauthes"><a href="javascript:void(0)" ng-click="loginByOauth(oauth)" title="{{oauth.text}}"><i class="icon16x16 icon_{{oauth.name}}_color"></i></a></li></ul>',
+            link: function ($scope,$element,$attrs) {
+                $scope.oauthes = [];
+                var oauth =['qq','sina'];
+                var getOauthTextByName = function(name){
+                    var text = '';
+                    switch (name){
+                        case 'qq':
+                            text = '腾讯QQ登录';
+                            break;
+                        case 'sina':
+                            text = '新浪微博登录';
+                            break
+                    }
+                    return text;
+                };
+                angular.forEach(oauth,function(value){
+                    $scope.oauthes.push({
+                        name:value,
+                        text:getOauthTextByName(value)
+                    });
+                })
+                $scope.loginByOauth = function(oauth){
+                    var key = gkClientInterface.getOauthKey();
+                    var url = gkClientInterface.getSiteDomain()+'/account/oauth?oauth=' + oauth.name + '&key=' + key;
+                    GKDialog.openUrl(url,{
+                        width: 700,
+                        height: 500
+                    });
+                }
+            }
+        };
+    }])
 
 
 
