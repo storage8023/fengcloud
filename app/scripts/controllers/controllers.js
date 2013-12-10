@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout) {
+    .controller('initClient', ['GKGuiders','localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout',function (GKGuiders,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -116,21 +116,28 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-
         $scope.showSildeGuide = false;
-        if (!localStorageService.get('slide_guiders_shown')) {
-            localStorageService.add('slide_guiders_shown', true)
+        if (!Number($scope.PAGE_CONFIG.user.settings['org_guide'])) {
             $scope.showSildeGuide = true;
         }
+        var showGuider = function () {
+            GKGuiders.show('guide_1');
+        }
+
         $scope.$on('removeSlideGuide',function(){
             $scope.showSildeGuide = false;
             $timeout(function(){
-                GKModal.createTeam();
+                var modal = GKModal.createTeam();
+                modal.result.then(function(){
+                    showGuider();
+                },function(){
+                    showGuider();
+                })
             },0)
         });
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q', 'GKGuiders','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,GKGuiders,$timeout) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//云库的空间
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
@@ -624,8 +631,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if ($scope.partition == GKPartition.subscribeFile) {
                     topOptKeys = optKeys;
                 } else {
-                    var re = currentOpts.concat(optKeys);
-                    topOptKeys = jQuery.unique(jQuery.unique(re));
+                    topOptKeys = jQuery.merge([],currentOpts, optKeys);
+                    topOptKeys = jQuery.unique(topOptKeys);
                 }
                 if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir == 0) {
                     getOpenWithMenu(GKFileList.getOptFileMountId($scope.selectedFile[0]), $scope.selectedFile[0], $scope.allOpts);
@@ -1174,8 +1181,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         })
 
+
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition', 'GKGuiders', 'localStorageService', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition, GKGuiders, localStorageService) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition) {
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -1257,19 +1265,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-        //console.log(localStorageService.isSupported())
-        $scope.showGuider = function () {
-            GKGuiders.show('guide_1');
-            if (!localStorageService.get('guiders_shown')) {
-                localStorageService.add('guiders_shown', true)
-            }
-        }
-        if (!localStorageService.get('guiders_shown')) {
-            $timeout(function () {
-                $scope.showGuider();
-                return null;
-            }, 200)
-        }
+
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder) {
 

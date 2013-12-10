@@ -98,14 +98,14 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
           if (branch.onSelect != null) {
             return $timeout(function() {
               return branch.onSelect(branch);
-            });
+            },0);
           } else {
             if (scope.onSelect != null) {
               return $timeout(function() {
                 return scope.onSelect({
                   branch: branch
                 });
-              });
+              },0);
             }
           }
         }
@@ -122,14 +122,14 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
           if (branch.onExpand != null) {
               return $timeout(function() {
                   return branch.onExpand(branch);
-              });
+              },0);
           } else {
               if (scope.onExpand != null) {
                   return $timeout(function() {
                       return scope.onExpand({
                           branch: branch
                       });
-                  });
+                  },0);
               }
           }
       }

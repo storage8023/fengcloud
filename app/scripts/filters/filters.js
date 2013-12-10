@@ -12,9 +12,9 @@ angular.module('gkClientIndex.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = '今天，' + $filter('date')(now, 'M月d日');
+                dateText = '今天，' + $filter('date')(now, 'HH:mm');
             } else if (date == yesterday) {
-                dateText = '昨天，' + $filter('date')(yesterdayTimestamp, 'M月d日');
+                dateText = '昨天，' + $filter('date')(yesterdayTimestamp, 'HH:mm');
             }else{
                 dateText =$filter('date')(dateline, 'yyyy年M月d日');
             }
