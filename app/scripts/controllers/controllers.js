@@ -122,7 +122,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             localStorageService.add('slide_guiders_shown', true)
             $scope.showSildeGuide = true;
         }
-
         $scope.$on('removeSlideGuide',function(){
             $scope.showSildeGuide = false;
             $timeout(function(){

@@ -46,10 +46,12 @@
     <div ng-view></div>
 </div>
 <resize></resize>
-<div class="modal-backdrop slide_backdrop" ng-if="showSildeGuide" ng-controller="slide">
+<div class="slide_backdrop" ng-if="showSildeGuide" ng-controller="slide">
    <carousel on-next="nextCallback(index)">
         <slide ng-repeat="slide in slides" active="slide.active">
-            <img ng-src="{{slide.image}}">
+            <div class="item_content" ng-class="'item_content_'+$index">
+                <img ng-src="{{slide.image}}">
+            </div>
         </slide>
     </carousel>
 </div>

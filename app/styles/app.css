@@ -2007,16 +2007,19 @@ body.resizing *{
     max-height: 460px;
 }
 .slide_backdrop{
-   background: #24272b;
-   opacity: 1;
+  position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  z-index: 9999;
 }
 .slide_backdrop .carousel{
     position: absolute;
-    width: 660px;
-    height: 360px;
-    top:50%;
-    left: 50%;
-    margin: -180px 0 0 -330px;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 .slide_backdrop .carousel-indicators{
     display: none;
@@ -2029,8 +2032,37 @@ body.resizing *{
     position: absolute;
     width: 220px;
     height: 40px;
-    top:236px;
-    left:340px;
+    top:50%;
+    left: 50%;
     text-indent: -9999px;
     cursor: pointer;
+    margin:56px 0 0 10px;
+}
+
+.slide_backdrop .carousel .carousel-inner,
+.slide_backdrop .carousel .item .item_content{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.slide_backdrop .carousel .item{
+    width: 100%;
+    height: 100%;
+}
+.slide_backdrop .carousel .item .item_content img{
+    position: absolute;
+    width: 660px;
+    height: 360px;
+    top:50%;
+    left: 50%;
+    margin: -180px 0 0 -330px;
+}
+.slide_backdrop .carousel .item .item_content_0{
+    background: #e8596f;
+}
+.slide_backdrop .carousel .item .item_content_1{
+    background: #4595e5;
+}
+.slide_backdrop .carousel .item .item_content_2{
+    background: #f7ae4d;
 }

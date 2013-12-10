@@ -3,6 +3,17 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('oauthLogin', ['$timeout',function ($timeout) {
+        return {
+            restrict: 'E',
+            template: '<ul class="oauth_list"><li ng-repeat="oauth in oauthes"><button ng-click="loginByOauth(oauth)">{{oauth.text}}</button></li></ul>',
+            link: function ($scope,$element,$attrs) {
+                $scope.loginByOauth = function(oauth){
+                    
+                }
+            }
+        };
+    }])
     .directive('fixScroll', ['$timeout',function ($timeout) {
         return {
             restrict: 'A',

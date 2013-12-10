@@ -7,6 +7,20 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getOauthKey:function(){
+        try {
+            return gkClient.gOauthKey();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    loginByKey:function(param){
+        try {
+            gkClient.gLoginByKey(param);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     selectPhotoPath:function(params){
         try {
             return gkClient.gGetUserImagePath();
