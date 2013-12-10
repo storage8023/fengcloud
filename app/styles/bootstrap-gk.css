@@ -651,3 +651,7 @@ fieldset[disabled] .form-control{
     color: #448DE8;
 }
 
+.carousel-inner .item,
+.carousel-inner .item:hover{
+    background: none;
+}

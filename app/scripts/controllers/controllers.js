@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog',function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog) {
+    .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -115,6 +115,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $rootScope.PAGE_CONFIG.networkConnected = param.link;
             });
         })
+
+
+        $scope.showSildeGuide = false;
+        if (!localStorageService.get('slide_guiders_shown')) {
+            localStorageService.add('slide_guiders_shown', true)
+            $scope.showSildeGuide = true;
+        }
+
+        $scope.$on('removeSlideGuide',function(){
+            $scope.showSildeGuide = false;
+            $timeout(function(){
+                GKModal.createTeam();
+            },0)
+        });
 
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q', 'GKGuiders','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,GKGuiders,$timeout) {
@@ -1410,6 +1424,30 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.sidbarData.menus[0].click();
         };
 
+    }])
+    .controller('slide', ['$scope',function ($scope) {
+        var currentIndex = 0;
+        $scope.slides = [];
+        for(var i=1;i<4;i++){
+            $scope.slides.push({
+                image:'images/guide_'+i+'.png'
+            });
+        }
+        $scope.handleClick = function(index){
+            if($scope.slides[currentIndex]){
+                $scope.slides[currentIndex].active = false;
+            }
+            $scope.slides[index+1].active = true;
+            currentIndex = index+1;
+        }
+        $scope.handleClick(-1);
+        $scope.nextCallback = function(index){
+            if(index==0){
+                $scope.$emit('removeSlideGuide');
+                $scope.$destroy();
+                return false;
+            }
+        }
     }])
 ;
 

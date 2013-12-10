@@ -46,12 +46,12 @@
     <div ng-view></div>
 </div>
 <resize></resize>
-<!--<div class="modal-backdrop carousel_backdrop">-->
-    <!--<carousel interval="myInterval">-->
-        <!--<slide ng-repeat="slide in slides" active="slide.active">-->
-            <!--<img ng-src="{{slide.image}}" style="margin:auto;">-->
-        <!--</slide>-->
-    <!--</carousel>-->
-<!--</div>-->
+<div class="modal-backdrop slide_backdrop" ng-if="showSildeGuide" ng-controller="slide">
+   <carousel on-next="nextCallback(index)">
+        <slide ng-repeat="slide in slides" active="slide.active">
+            <img ng-src="{{slide.image}}">
+        </slide>
+    </carousel>
+</div>
 </body>
 </html>

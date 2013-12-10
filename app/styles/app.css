@@ -2006,7 +2006,31 @@ body.resizing *{
     height: 460px;
     max-height: 460px;
 }
-.carousel_backdrop{
+.slide_backdrop{
    background: #24272b;
-    opacity: 1;
+   opacity: 1;
+}
+.slide_backdrop .carousel{
+    position: absolute;
+    width: 660px;
+    height: 360px;
+    top:50%;
+    left: 50%;
+    margin: -180px 0 0 -330px;
+}
+.slide_backdrop .carousel-indicators{
+    display: none;
+}
+.slide_backdrop .carousel-control{
+    display: none;
+}
+.slide_backdrop .carousel-control.right{
+    display: block;
+    position: absolute;
+    width: 220px;
+    height: 40px;
+    top:236px;
+    left:340px;
+    text-indent: -9999px;
+    cursor: pointer;
 }
