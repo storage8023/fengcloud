@@ -1049,7 +1049,8 @@ button.close_window{
 }
 .modal_frame .modal-body{
     padding: 0;
-    height: 640px;
+    height: 460px;
+    max-height: 460px;
     border-radius: 0 0 6px 6px;
     overflow: hidden;
 }

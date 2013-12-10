@@ -932,19 +932,11 @@ angular.module('gkClientIndex.services', [])
                         };
                         $rootScope.$on('createTeamSuccess', function (event, param) {
                             var orgId = param.orgId;
-                            var pay = param.pay ||0;
                             gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $scope.$apply(function () {
                                         var newOrg = param;
                                         $rootScope.$broadcast('createOrgSuccess', newOrg);
-                                        if(pay){
-                                            var url = gkClientInterface.getUrl({
-                                                sso:1,
-                                                url:'/pay/order?org_id='+orgId
-                                            })
-                                            gkClientInterface.openUrl(url);
-                                        }
                                     });
                                     $modalInstance.close(orgId);
                                 }
@@ -4209,6 +4201,18 @@ angular.module('gkClientIndex.services', [])
                     resize: 1
                 }
                 gkClientInterface.setMain(data);
+            },
+            openUrl:function(url,param){
+                if(!url) return;
+                var defaultParam = {
+                    type: "sole",
+                    width: 794,
+                    height: 490,
+                    resize: 1
+                };
+                var param = angular.extend({},defaultParam,param);
+                param.url = url;
+                gkClientInterface.setMain(param);
             }
         }
     }

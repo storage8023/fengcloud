@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
-    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi) {
+    .controller('initClient', ['$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog',function ($rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -48,15 +48,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.teamManage(orgId);
         })
 
-        $scope.$on('expandSpace', function ($event, orgId) {
-            if (!orgId) {
-                return;
-            }
+        $scope.$on('openUrl', function ($event, param) {
+            var sso = Number(param.sso) || 0;
             var url = gkClientInterface.getUrl({
-                sso: 1,
-                url: '/pay/order?org_id=' + orgId
+                sso: sso,
+                url: param.url
             });
-            gkClientInterface.openUrl(url);
+            if(param.browser ==1){
+                gkClientInterface.openUrl(url);
+            }else{
+                GKDialog.openUrl(url);
+            }
         })
 
         $scope.$on('addMember', function ($event, orgId) {
