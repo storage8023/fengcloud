@@ -904,6 +904,10 @@ footer {
     left: 10px;
     bottom: 2px;
 }
+.file_item[data-dir="1"] .thumb s{
+    left: 3px;
+    bottom: 13px;
+}
 .file_item .file_icon img{
     width: 32px;
     height: 32px;
@@ -922,7 +926,7 @@ footer {
     color: #fff;
 }
 .file_list_wrapper .file_item span.name{
-    white-space: pre;
+    white-space: pre; g
 }
 .file_list_wrapper .ngViewport {
     outline: 0;
