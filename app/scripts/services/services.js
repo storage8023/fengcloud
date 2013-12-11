@@ -4498,6 +4498,7 @@ function GKHistory($q, $location, $rootScope) {
 
     $rootScope.$on('$locationChangeSuccess', function () {
         var params =$location.search();
+        if(!params.partition) return;
         if (!jQuery.isEmptyObject(params)) {
             var l = history.length,
                 cwd = params;

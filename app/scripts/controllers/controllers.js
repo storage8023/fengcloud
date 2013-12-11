@@ -94,6 +94,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 监听路径的改变
          */
         $scope.$on('$locationChangeSuccess', function () {
+            setPageConfig();
+        })
+
+        var setPageConfig = function(){
             var param = $location.search();
             if(!param.partition) return;
             var extend = {
@@ -112,7 +116,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 extend.mount = {};
             }
             angular.extend($rootScope.PAGE_CONFIG, extend);
-        })
+        }
+
+        setPageConfig();
 
         $scope.$on('LinkStatus', function ($event, param) {
             $scope.$apply(function () {
@@ -531,6 +537,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.keyword = '';
         var getFileData = function(){
             var param =  $location.search();
+            if(!param.partition) return;
             $scope.path = param.path || '';
             $scope.partition = param.partition || GKPartition.teamFile;
             $scope.view = param.view || 'list';
@@ -545,7 +552,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             getFileData();
         })
 
-        //getFileData();
+        getFileData();
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
@@ -1165,16 +1172,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.canBack = false;
         $scope.canForward = false;
 
+        var setBread = function(){
+            var param = $location.search();
+            if(!param.partition) return;
+            $scope.breads = GKPath.getBread();
+            $scope.canBack = GKHistory.canBack();
+            $scope.canForward = GKHistory.canForward();
+            $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
+        }
+
         /**
          * 判断前进后退按钮的状态
          * @type {*}
          */
         $scope.$on('$locationChangeSuccess', function () {
-            $scope.breads = GKPath.getBread();
-            $scope.canBack = GKHistory.canBack();
-            $scope.canForward = GKHistory.canForward();
-            $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
+            setBread();
         });
+
+        setBread();
 
         $scope.$on('editSmartFolder', function ($event, name, code, filter) {
             angular.forEach($scope.breads, function (value) {
