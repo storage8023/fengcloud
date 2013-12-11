@@ -72,11 +72,11 @@
                                 <s ng-if="file.status==2" class="icon16x16 icon_up"></s>
                                 <s ng-if="file.status==1 || file.status==9" class="icon16x16 icon_up"></s>
                             </div>
-                            <div class="file_name">
-                                <span ng-show="view=='list'">
+                            <div class="file_icon_wrapper">
+                                   <span ng-show="view=='list'">
                                   <i class="file_icon" ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0">
                                       <img error-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
-                                              ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
+                                           ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
                                       <s ng-if="file.status==2" class="icon16x16 icon_up"></s>
                                       <s ng-if="file.status==1 || file.status==9" class="icon16x16 icon_up"></s>
                                   </i>
@@ -85,6 +85,8 @@
                                       <s ng-if="file.status==1 || file.status==9" class="icon16x16 icon_up"></s>
                                   </i>
                                 </span>
+                            </div>
+                            <div class="file_name">
                                 <span title="{{file.fullpath}}" class="name">{{file.filename}}</span>
                             </div>
                             <div class="last_edit_time" ng-show="view=='list'">

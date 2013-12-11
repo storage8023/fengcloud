@@ -783,6 +783,9 @@ footer {
 .file_list_wrapper .list_view .file_name {
     margin-right: 340px;
     height: 32px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .file_list_wrapper .thumb_view .file_name {
@@ -824,7 +827,9 @@ footer {
 .file_list_wrapper .file_list_header .file_name span {
     margin: 0 0 0 15px;
 }
-
+.file_list_wrapper .file_icon_wrapper{
+    float: left;
+}
 .file_list_wrapper .last_edit_time,
 .file_list_wrapper .file_type,
 .file_list_wrapper .file_size {
@@ -884,10 +889,24 @@ footer {
     margin: -2px 15px 0 15px;
     position: relative;
 }
+.file_item .thumb{
+    position: relative;
+    width: 128px;
+    height: 128px;
+}
 .file_item .file_icon s{
     position: absolute;
     top:22px;
     left: -2px;
+}
+.file_item .thumb s{
+    position: absolute;
+    left: 10px;
+    bottom: 2px;
+}
+.file_item .file_icon img{
+    width: 32px;
+    height: 32px;
 }
 .file_item .file_icon s.locked {
     display: inline-block;
