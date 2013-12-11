@@ -120,6 +120,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if (!Number($scope.PAGE_CONFIG.user.settings['org_guide'])) {
             $scope.showSildeGuide = true;
         }
+        $scope.showSildeGuide = true;
         var showGuider = function () {
             GKGuiders.show('guide_1');
         }
@@ -127,15 +128,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('removeSlideGuide',function(){
             $scope.showSildeGuide = false;
             $timeout(function(){
-                var modal = GKModal.createTeam(1);
-                modal.result.then(function(){
-                    showGuider();
-                },function(){
-                    showGuider();
-                })
+                showGuider();
             },0)
         });
-
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout) {
         $scope.GKPartition = GKPartition;
@@ -313,8 +308,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return  '{buttons: [{name: "完成", onclick: GKGuiders.hideAll}],description: "智能文件夹中将记录最近修改过的文件。用不同的图形标记的文件，也可以在这里快速找到。",id: "'+guideId+'",position: 3,title: "智能文件夹",width: 280}';
         }
 
-        $scope.$on('$routeChangeSuccess', function ($event, $current, $prev) {
-            var param = $current.params;
+        $scope.$on('$locationChangeSuccess', function () {
+            var param = $location.search();
             var branch;
             if (param.partition == GKPartition.teamFile) {
                 angular.forEach($scope.orgTreeList, function (value) {
@@ -512,26 +507,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             })
         })
     }])
-    .controller('fileBrowser', ['$interval', 'GKDialog', '$scope', '$routeParams', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($interval, GKDialog, $scope, $routeParams, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
 
-        /**
-         * 打开时会有一次空跳转
-         */
-        if (!$routeParams.partition) return;
-
-        /**
-         * 分析路径获取参数
-         * @type {*}
-         */
-        $scope.path = $routeParams ? $routeParams.path || '' : '';  //当前的文件路径
-        $scope.partition = $routeParams.partition || GKPartition.teamFile; //当前的分区
-        $scope.view = $routeParams ? $routeParams.view || 'list' : 'list'; //当前的视图模式
-        $scope.filter = $routeParams.filter || ''; //当前的筛选 [search|trash]
-        $scope.selectedpath = $routeParams.selectedpath || ''; //当前目录已选中的文件的路径，允许多选，用|分割
         $scope.fileData = []; //文件列表的数据
         $scope.selectedFile = []; //当前目录已选中的文件数据
-        $scope.mountId = Number($routeParams.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
-        $scope.keyword = $routeParams.keyword || '';
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
         if ($scope.partition == GKPartition.smartFolder && $scope.filter == 'recent') {
@@ -545,25 +524,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
         $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
-        var intervalPromise;
-        $scope.test = function () {
-            if (!intervalPromise) {
-                var count = 0;
-                intervalPromise = $interval(function () {
-                    count++;
-                    if ($scope.selectedFile.length) {
-                        GKFileList.unSelectAll($scope);
-                    } else {
-                        GKFileList.select($scope, 0);
-                    }
-                }, 300);
-            } else {
-                $interval.cancel(intervalPromise);
-                intervalPromise = null;
-            }
-        }
 
-        GKFileList.refreahData($scope,$routeParams.selectedpath);
+        var getFileData = function(){
+            var param =  $location.search();
+            $scope.path = param.path || '';
+            $scope.partition = param.partition || GKPartition.teamFile;
+            $scope.view = param.view || 'list';
+            $scope.filter = param.filter || '';
+            $scope.selectedpath = param.selectedpath || '';
+            $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
+            $scope.keyword = param.keyword || '';
+            GKFileList.refreahData($scope,param.selectedpath);
+        };
+
+        $scope.$on('$locationChangeSuccess',function(){
+            getFileData();
+        })
+
+        getFileData();
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
@@ -1179,7 +1157,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         })
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition', function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','GKGuiders',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,GKGuiders) {
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -1187,7 +1165,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 判断前进后退按钮的状态
          * @type {*}
          */
-        $scope.$on('$routeChangeSuccess', function () {
+        $scope.$on('$locationChangeSuccess', function () {
             $scope.breads = GKPath.getBread();
             $scope.canBack = GKHistory.canBack();
             $scope.canForward = GKHistory.canForward();
@@ -1213,6 +1191,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKHistory.forward();
             }
         };
+
+        $scope.showGuider = function(){
+            GKGuiders.show('guide_1');
+        }
 
         $scope.items = [
             {

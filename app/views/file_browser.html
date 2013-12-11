@@ -1,4 +1,4 @@
-<div class="content">
+<div class="content" ng-controller="fileBrowser">
     <div class="file_browser">
         <toolbar></toolbar>
         <div class="file_list_wrapper" fix-scroll>
@@ -61,12 +61,6 @@
                              ng-mouseup="handleMouseUp($event,$index)"
                              data-fullpath="{{file.fullpath}}"
                              data-dir="{{file.dir}}"
-                             data-drag="true"
-                             data-drop="file.dir==1&&!file.disableDrop"
-                             jqyoui-draggable="{onStart:'dragBegin($index)',onStop:'dragEnd($index)'}"
-                             data-drop="file.dir==1"
-                             jqyoui-droppable="{onDrop:'handleDrop(file)',onOver:'handleOver(file)',onOut:'handleOut(file)'}"
-                             data-jqyoui-options="{containment:'window',helper:getHelper,zIndex: 9999,distance:'8',appendTo:'body',cursorAt: { left: 5 ,top:8}}"
                                 >
                             <div class="thumb" ng-show="view=='thumb'">
                                 <img

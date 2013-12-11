@@ -1620,16 +1620,16 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $scope.disableSearch = false;
-                $scope.$on('$routeChangeSuccess', function (event, current, previous) {
-                    if (!previous || !current) {
-                        return;
-                    }
-                    var previousParams = previous.params;
-                    var currentParams = current.params;
-                    if (previousParams.partition + previousParams.filter + previousParams.mountid + previousParams.path != currentParams.partition+ currentParams.filter + currentParams.mountid + currentParams.path) {
-                        resetSearch();
-                    }
-                });
+//                $scope.$on('$locationChangeSuccess', function () {
+//                    if (!previous || !current) {
+//                        return;
+//                    }
+//                    var previousParams = previous.params;
+//                    var currentParams = current.params;
+//                    if (previousParams.partition + previousParams.filter + previousParams.mountid + previousParams.path != currentParams.partition+ currentParams.filter + currentParams.mountid + currentParams.path) {
+//                        resetSearch();
+//                    }
+//                });
 
                 $scope.$on('$destroy',function(){
                     $('body').off('mousedown.resetsearch');
