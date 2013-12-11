@@ -80,7 +80,7 @@
                                       <s ng-if="file.status==2" class="icon16x16 icon_up"></s>
                                       <s ng-if="file.status==1 || file.status==9" class="icon16x16 icon_up"></s>
                                   </i>
-                                  <i ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0" class="file_icon {{file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}">
+                                  <i ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0" class="file_icon {{file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)}}">
                                       <s ng-if="file.status==2" class="icon16x16 icon_up"></s>
                                       <s ng-if="file.status==1 || file.status==9" class="icon16x16 icon_up"></s>
                                   </i>
