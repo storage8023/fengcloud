@@ -108,7 +108,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if ([GKPartition.myFile, GKPartition.teamFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 extend.file = GKFile.getFileInfo(param.mountid, param.path);
                 if(!param.path){
-                    extend.file.filename = GKMount.getMountById(param.mountid)['name'];
+                    var mount = GKMount.getMountById(param.mountid);
+                    if(mount){
+                        extend.file.filename = mount['name'];
+                    }
+
                 }
                 extend.mount = GKMount.getMountById(param.mountid)
             } else {
@@ -426,11 +430,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (!param) {
                     return;
                 }
-                var mountid = param.mountid;
-                var mount = GKMount.getMountById(mountid);
-                if (!mount) {
-                    return;
+                var mount = null;
+                if(param.mountid){
+                     mount = GKMount.getMountById(param.mountid);
+                }else if(param.org_id){
+                    mount = GKMount.getMountByOrgId(param.org_id);
                 }
+                if(!mount) return;
                 var partition = GKPartition.teamFile;
                 if (mount['type'] == 3) {
                     partition = GKPartition.subscribeFile;
@@ -1277,7 +1283,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.localFile = null;
         $scope.sidebar = 'nofile';
 
-        $scope.$watch('[selectedFile,path]', function (newValue, oldValue) {
+        $scope.$watch('[selectedFile,path,mountId]', function (newValue, oldValue) {
             if (!newValue[0] || !newValue[0].length) { //未选中文件
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;
             } else if (newValue[0].length == 1) { //选中了一个文件
@@ -1285,7 +1291,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else { //多选
                 $scope.localFile = null;
             }
-
         }, true);
 
         $scope.$watch('[partition,selectedFile,filter,localFile,keyword]', function (newValue, oldValue) {

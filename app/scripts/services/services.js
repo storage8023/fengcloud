@@ -442,7 +442,10 @@ angular.module('gkClientIndex.services', [])
                             $modalInstance.dismiss('cancel');
                         };
 
-
+                        $rootScope.$on('removeTeam', function (event, orgId) {
+                            $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
+                            $modalInstance.close();
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -1047,6 +1050,11 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        $rootScope.$on('removeTeam', function (event, orgId) {
+                            $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
+                            $modalInstance.close();
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -4342,7 +4350,6 @@ var gkClientCallback = function (name, param) {
  * @param params
  */
 var gkSiteCallback = function (name, params) {
-    console.log(arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
