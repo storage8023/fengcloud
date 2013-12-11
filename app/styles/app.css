@@ -754,7 +754,7 @@ footer {
     position: relative;
     left: 0;
     right: 0;
-    top:0;
+    top:32px;
     z-index: 2;
 }
 

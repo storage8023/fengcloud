@@ -112,7 +112,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     if(mount){
                         extend.file.filename = mount['name'];
                     }
-
                 }
                 extend.mount = GKMount.getMountById(param.mountid)
             } else {
@@ -524,7 +523,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
     }])
     .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
-
         $scope.fileData = []; //文件列表的数据
         $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.errorMsg = '';
@@ -535,9 +533,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.allOpts = null;
         $scope.rightOpts = [];
         $scope.showHint = false;
-        if ($rootScope.PAGE_CONFIG.file.syncpath) {
-            $scope.showHint = true;
-        }
         $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         $scope.keyword = '';
@@ -551,8 +546,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.selectedpath = param.selectedpath || '';
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
             $scope.keyword = param.keyword || '';
+            $scope.showHint =!$rootScope.PAGE_CONFIG.file.syncpath?false:true;
             GKFileList.refreahData($scope,param.selectedpath);
         };
+
 
         $scope.$on('$locationChangeSuccess',function(){
             getFileData();

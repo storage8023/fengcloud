@@ -416,8 +416,6 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-
-
                     },
                     resolve: {
                         src: function () {
@@ -441,10 +439,17 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-
                         $rootScope.$on('removeTeam', function (event, orgId) {
-                            $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
-                            $modalInstance.close();
+                            $rootScope.$on('removeTeam', function (event, orgId) {
+                                gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
+                                    if (param) {
+                                        $scope.$apply(function () {
+                                            $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
+                                        });
+                                        $modalInstance.close(orgId);
+                                    }
+                                })
+                            })
                         })
                     },
                     resolve: {
@@ -1052,8 +1057,14 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         $rootScope.$on('removeTeam', function (event, orgId) {
-                            $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
-                            $modalInstance.close();
+                            gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
+                                if (param) {
+                                    $scope.$apply(function () {
+                                        $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
+                                    });
+                                    $modalInstance.close(orgId);
+                                }
+                            })
                         })
                     },
                     resolve: {
