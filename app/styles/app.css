@@ -783,9 +783,6 @@ footer {
 .file_list_wrapper .list_view .file_name {
     margin-right: 340px;
     height: 32px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 .file_list_wrapper .thumb_view .file_name {
@@ -798,8 +795,8 @@ footer {
 .file_list_wrapper .list_view .file_name img{
     width: 32px;
     vertical-align: middle;
-    margin: -2px 15px 0 15px;
 }
+
 .nonetwork .file_list_wrapper .item.nocache span{
     color: #ACB4BF;
 }
@@ -887,7 +884,11 @@ footer {
     margin: -2px 15px 0 15px;
     position: relative;
 }
-
+.file_item .file_icon s{
+    position: absolute;
+    top:22px;
+    left: -2px;
+}
 .file_item .file_icon s.locked {
     display: inline-block;
     width: 16px;

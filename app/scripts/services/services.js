@@ -4109,6 +4109,7 @@ angular.module('gkClientIndex.services', [])
             },
             refreahData:function($scope,selectPath){
                 GKFileList.getFileData($scope).then(function (newFileData) {
+                    console.log(newFileData);
                     var order = $scope.order;
                     if($scope.order.indexOf('filename')>=0){
                         var desc = $scope.order.indexOf('-')?'-':'+';
