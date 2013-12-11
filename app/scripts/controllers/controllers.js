@@ -93,8 +93,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 监听路径的改变
          */
-        $scope.$on('$locationChangeSuccess', function ($s, $current) {
+        $scope.$on('$locationChangeSuccess', function () {
             var param = $location.search();
+            if(!param.partition) return;
             var extend = {
                 filter: param.filter || '',
                 partition: param.partition,
@@ -120,7 +121,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if (!Number($scope.PAGE_CONFIG.user.settings['org_guide'])) {
             $scope.showSildeGuide = true;
         }
-        $scope.showSildeGuide = true;
+        //$scope.showSildeGuide = true;
         var showGuider = function () {
             GKGuiders.show('guide_1');
         }
@@ -524,7 +525,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
         $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
-
+        $scope.keyword = '';
         var getFileData = function(){
             var param =  $location.search();
             $scope.path = param.path || '';
@@ -541,7 +542,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             getFileData();
         })
 
-        getFileData();
+        //getFileData();
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
