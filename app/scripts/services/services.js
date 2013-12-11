@@ -552,7 +552,11 @@ angular.module('gkClientIndex.services', [])
                     templateUrl: 'views/set_sync.html',
                     windowClass: 'sync_settiong_dialog',
                     controller: function ($scope, $modalInstance) {
-                        $scope.filename = Util.String.baseName(fullpath);
+                        if(!fullpath){
+                            $scope.filename = GKMount.getMountById(mountId)['name'];
+                        }else{
+                            $scope.filename = Util.String.baseName(fullpath);
+                        }
                         $scope.localURI = GK.getLocalSyncURI({
                             mountid: mountId,
                             webpath: fullpath
@@ -570,11 +574,10 @@ angular.module('gkClientIndex.services', [])
                             var new_local_uri = $scope.localURI;
                             var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
                             var currentFilename = $scope.filename;
-                            if (!confirm('你确定要将文件夹' + currentFilename + '与' + trimPath + '进行同步？')) {
+                            if (!confirm('你确定要将 ' + currentFilename + ' 与 ' + trimPath + ' 进行同步？')) {
                                 return;
                             }
                             var params = {};
-
                             params = {
                                 webpath: fullpath,
                                 fullpath: new_local_uri,
@@ -2002,7 +2005,7 @@ angular.module('gkClientIndex.services', [])
                  * 根目录不允许同步
                  */
                 if (!file.fullpath) {
-                    return false;
+                    return true;
                 }
                 /**
                  * 未同步的允许进行同步、不同步 操作
@@ -2664,7 +2667,28 @@ angular.module('gkClientIndex.services', [])
                                 index:2,
                                 className: "sync_folder",
                                 callback: function () {
-                                    GKModal.backUp($scope.mountId,$rootScope.PAGE_CONFIG.file.fullpath);
+                                    var mountId = $scope.mountId;
+                                    var fullpath = $rootScope.PAGE_CONFIG.file.fullpath;
+                                    var localUri = '', defaultName = '';
+                                        localUri = gkClientInterface.selectPath({
+                                            disable_root: 1
+                                        });
+                                        if (!localUri) {
+                                            return;
+                                        }
+                                        defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri, '/'), '\\\\'));
+
+                                    if (!defaultName) return;
+                                    var syncPath =  fullpath+(fullpath?'/':'')+defaultName;
+                                    var params = {
+                                        webpath: syncPath,
+                                        fullpath: localUri,
+                                        mountid: mountId
+                                    };
+                                    gkClientInterface.setLinkPath(params, function () {
+                                        $rootScope.$broadcast('editFileSuccess','create',mountId,fullpath,{fullpath:syncPath});
+                                    })
+
                                 }
                             }
                         }

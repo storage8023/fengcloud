@@ -836,7 +836,7 @@ angular.module('gkClientIndex.directives', [])
                                          * 9：重新上传中
                                          */
                                         if ($scope.localFile.status == 1 || $scope.localFile.status == 9) {
-                                            $scope.sidbarData.title = '正在上传中';
+                                            $scope.sidbarData.title = '准备上传中';
                                             var info;
                                             fileInterval = $interval(function () {
                                                     info = gkClientInterface.getTransInfo({
@@ -846,12 +846,15 @@ angular.module('gkClientIndex.directives', [])
                                                     if (typeof info.offset !== 'undefined') {
                                                         var offset = Number(info.offset);
                                                         var filesize = Number(info.filesize || 0);
-                                                        var status = info.status || 0
-                                                        var str = '';
+                                                        var status = info.status || 0;
                                                         if (filesize != 0) {
-                                                            str = Math.round(offset / filesize * 100) + '%';
+                                                            if(offset != 0){
+                                                                var str =  Math.round(offset / filesize * 100) + '%';;
+                                                                $scope.sidbarData.title = '正在上传中' + str;
+                                                            }
+                                                        }else{
+                                                            $scope.sidbarData.title = '正在上传中';
                                                         }
-                                                        $scope.sidbarData.title = '正在上传中' + str;
                                                         if (status == 1) {
                                                             if(fileInterval){
                                                                $interval.cancel(fileInterval);

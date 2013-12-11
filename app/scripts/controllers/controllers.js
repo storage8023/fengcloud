@@ -103,6 +103,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             if ([GKPartition.myFile, GKPartition.teamFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                if(!param.path){
+                    extend.file.filename = GKMount.getMountById(param.mountid)['name'];
+                }
                 extend.mount = GKMount.getMountById(param.mountid)
             } else {
                 extend.file = {};
