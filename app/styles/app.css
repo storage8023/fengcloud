@@ -872,14 +872,12 @@ footer {
 .file_item .file_size {
     color: #8e98a8;
 }
-
 .list_view .file_item {
     padding: 5px 0;
     height: 42px;
     line-height: 32px;
     -webkit-transition: background-color linear 0.1s;
 }
-
 
 .file_item .file_icon {
     display: inline-block;
@@ -889,7 +887,7 @@ footer {
     margin: -2px 15px 0 15px;
     position: relative;
 }
-.file_item .thumb{
+.thumb_view .file_item .thumb{
     position: relative;
     width: 128px;
     height: 128px;

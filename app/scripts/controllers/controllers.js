@@ -120,11 +120,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-        $scope.showSildeGuide = false;
-        if (!Number($scope.PAGE_CONFIG.user.settings['org_guide'])) {
+        if(!localStorageService.get('silde_guide_shown')){
             $scope.showSildeGuide = true;
+            localStorageService.add('silde_guide_shown',true);
         }
-        //$scope.showSildeGuide = true;
+
         var showGuider = function () {
             GKGuiders.show('guide_1');
         }
@@ -1407,7 +1407,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.slides = [];
         for(var i=1;i<4;i++){
             $scope.slides.push({
-                image:'images/guide_'+i+'.png'
+                image:'images/guide_'+i+'.png?v=1'
             });
         }
         $scope.handleClick = function(index){
