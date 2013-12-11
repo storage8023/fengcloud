@@ -83,9 +83,7 @@
     },
     getTransInfo:function(param){
         try {
-            //console.log(param);
             var re = gkClient.gGetTransInfo(JSON.stringify(param));
-            //console.log(re);
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
@@ -173,7 +171,6 @@
     },
     startFind:function(){
         try {
-            //console.log('start');
             gkClient.gStartFind();
         } catch (e) {
             this._handleException(e);
@@ -181,7 +178,6 @@
     },
     stopFind:function(){
         try {
-            //console.log('stop');
             gkClient.gStopFind();
         } catch (e) {
             this._handleException(e);
@@ -206,7 +202,6 @@
      */
     getFileInfo:function(params){
         var re = gkClient.gGetFileInfo(JSON.stringify(params));
-        //console.log(JSON.parse(re));
         return JSON.parse(re);
     },
     setMessageDate:function(dateline){
@@ -231,7 +226,6 @@
     getFileList: function (params) {
         try {
            var re = gkClient.gGetFileList(JSON.stringify(params));
-            console.log(JSON.parse(re));
            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
@@ -264,7 +258,6 @@
     getSideTreeList: function (params) {
         try {
             var re = gkClient.gSideTreeList(JSON.stringify(params));
-            //console.log(JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
@@ -355,7 +348,6 @@
     },
     copy:function(params,callback){
         try {
-            console.log(params);
             gkClient.gCopy(JSON.stringify(params),function(re){
                 re = typeof re ==='object'?re:JSON.parse(re);
                 if(typeof callback === 'function'){
@@ -490,7 +482,6 @@
         for(var key in params){
             params[key] = String(params[key]);
         }
-        //console.log(params);
         return gkClient.gGetApiAuthorization(JSON.stringify(params));
     },
     setSettings:function(){
@@ -510,7 +501,6 @@
     },
     getTransList: function(param){
         var re = gkClient.gTransList(JSON.stringify(param));
-        //console.log(re);
         return JSON.parse(re);
     },
     setLogoff:function(){

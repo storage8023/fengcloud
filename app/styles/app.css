@@ -891,6 +891,7 @@ footer {
     position: relative;
     width: 128px;
     height: 128px;
+    margin: 0 auto;
 }
 .file_item .file_icon s{
     position: absolute;
@@ -924,7 +925,7 @@ footer {
     color: #fff;
 }
 .file_list_wrapper .file_item span.name{
-    white-space: pre; g
+    white-space: pre;
 }
 .file_list_wrapper .ngViewport {
     outline: 0;

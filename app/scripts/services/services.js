@@ -116,7 +116,6 @@ angular.module('gkClientIndex.services', [])
             },
             editSmartNode:function(list, condition,name){
                 var node = this.findSmartNode(list,condition);
-                console.log(node);
                 if(node){
                     node.label = node.data.name = name;
                 }
@@ -1040,7 +1039,6 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open(option);
             },
             teamManage: function (orgId) {
-                console.log(orgId);
                 var option = {
                     templateUrl: 'views/team_manage_dialog.html',
                     windowClass: 'modal_frame team_manage_dialog',
@@ -4109,7 +4107,6 @@ angular.module('gkClientIndex.services', [])
             },
             refreahData:function($scope,selectPath){
                 GKFileList.getFileData($scope).then(function (newFileData) {
-                    console.log(newFileData);
                     var order = $scope.order;
                     if($scope.order.indexOf('filename')>=0){
                         var desc = $scope.order.indexOf('-')?'-':'+';
