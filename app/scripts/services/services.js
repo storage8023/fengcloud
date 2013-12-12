@@ -4060,7 +4060,8 @@ angular.module('gkClientIndex.services', [])
                     } else {
                         var re = gkClientInterface.getFileList({
                             webpath: $scope.path,
-                            mountid: $scope.mountId
+                            mountid: $scope.mountId,
+                            current:1
                         });
                         fileList = re['list'];
                         deferred.resolve(GKFile.dealFileList(fileList, source));
