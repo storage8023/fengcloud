@@ -1,7 +1,7 @@
 <div class="item">
     <div>
         <i class="file_icon {{item.webpath|baseName|getFileIcon:(selectedTab.name=='sync'?1:item.dir)}}"></i>
-        <span class="filename" title="{{item.webpath|baseName}}">{{item.webpath|baseName}}</span>
+        <span class="filename" title="{{item.webpath|getQueueFileName:item.mountid}}">{{item.webpath|getQueueFileName:item.mountid}}</span>
     </div>
     <div ng-if="selectedTab.name!='sync'">
         <span class="filesize">{{item.filesize|bitSize}}</span>

@@ -16,7 +16,7 @@
             <div class="list">
                 <div class="empty" ng-if="!syncedFiles || !syncedFiles.length">未设置同步目录</div>
                 <div class="item" ng-repeat="file in syncedFiles">
-                    <div title="{{file.webpath|getSyncFileName}}">
+                    <div title="{{file.webpath|getSyncFileName:file.mountid}}">
                         <i class="file_icon icon_folder"></i>
                         <span>{{file.webpath|getSyncFileName:file.mountid}}</span>
                     </div>

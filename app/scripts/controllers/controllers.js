@@ -808,6 +808,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 switch (opt) {
                     case 'sync':
                         forEachFullpath(function (fullpath) {
+                            if(!fullpath) fullpath = '/';
                             $rootScope.PAGE_CONFIG.file.syncpath = fullpath;
                             $scope.showHint = true;
                         });
@@ -860,7 +861,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             value.open = extraParam.open;
                         })
                         break;
-
                 }
 
             }

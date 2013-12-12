@@ -108,5 +108,14 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
             }
         }
     }])
+    .filter('getQueueFileName',['GKMount',function(GKMount){
+        return function(webPath,mountId){
+            if(webPath){
+                return Util.String.baseName(webPath);
+            }else{
+                return GKMount.getMountById(mountId)['name'];
+            }
+        }
+    }])
 
 ;
