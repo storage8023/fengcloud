@@ -590,6 +590,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             ; // 顶部要排除的操作
 
         var setOpts = function () {
+            console.log(1111);
             $scope.allOpts = GKOpt.getAllOpts($scope);
             var isSearch = $scope.keyword.length ? true : false;
             optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
@@ -716,6 +717,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setOpts();
         }, true);
 
+        $scope.$on('$locationChangeSuccess',function(){
+            setOpts();
+        })
+
         $scope.$watch('rightOpts', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
             /**
@@ -743,8 +748,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-        $scope.$watch('PAGE_CONFIG.file', setOpts, true);
-        $scope.$watch('keyword', setOpts, true);
         $scope.$watch('order', function (newValue) {
             if (!$scope.rightOpts || !$scope.rightOpts['order_by']) {
                 return;
