@@ -3,33 +3,43 @@
 /* Controllers */
 
 angular.module('gkClientFrame.controllers',[])
-    .controller('initFrame',['$scope','GKApi','GKNews',function($scope,GKApi,GKNews){
-            var news = GKNews.getNews();
-        if(news&&news.length){
-            $scope.messages = news.slice(0,3);
+    .controller('initFrame',['$scope','GKApi','GKNews','$rootScope',function($scope,GKApi,GKNews,$rootScope){
+        $rootScope.PAGE_CONFIG  ={
+            user:gkClientInterface.getUser()
         }
-
-//        $scope.$watch(GKNews.getNews,function(value){
-//            console.log(value);
-//        });
-
-        GKApi.update(3).success(function(data){
-            $scope.$apply(function(){
-                $scope.messageCount = data.update_count;
+        if($rootScope.PAGE_CONFIG.user.member_id){
+            var getNews = function(){
+                var news = GKNews.getNews();
+                if(news&&news.length){
+                    $scope.messages = news.slice(0,4);
+                }
+            };
+            GKNews.requestNews().then(function(){
+                getNews();
             });
-        });
 
-        $scope.handleHeaderClick = function(){
-              gkClientInterface.launchpad();
-        };
+            /**
+             * 监听消息的通知
+             */
+            $scope.$on('UpdateMessage', function (e, data) {
+                GKNews.appendNews(data).then(function(){
+                    getNews();
+                });
+            })
 
-        $scope.showMessage = function(){
-            gkClientInterface.launchpad({type:'message'});
-        };
+            $scope.handleHeaderClick = function(){
+                gkClientInterface.launchpad();
+            };
 
-        $scope.logout = function(){
-            gkClientInterface.quit();
-            return false;
+            $scope.showMessage = function(){
+                gkClientInterface.launchpad({type:'message'});
+            };
+
+            $scope.logout = function(){
+                gkClientInterface.quit();
+                return false;
+            }
         }
+
     }])
 

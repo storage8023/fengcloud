@@ -67,8 +67,6 @@ ul.quickmenu li span{
     left:0;
     right: 0;
     bottom: 0;
-    padding-top: 8px;
-
 }
 .message_wrapper .message_tip{
     height: 29px;
@@ -87,46 +85,38 @@ ul.message_list{
     right: 0;
     bottom: 0;
     overflow: auto;
-
 }
 ul.message_list li{
-    margin:20px 0 0 0;
+    margin:14px 0 0 0;
     height: 30px;
-    position: relative;
-    line-height: 15px;
+    line-height: 18px;
     display: table;
     width: 100%;
 }
 
 ul.message_list .dateline{
-    position: absolute;
-    right: 10px;
-    width: 100px;
     color:#ACB4BF;
-    top:0;
-    text-align: right;
     height: 16px;
     line-height: 16px;
-    top:50%;
-    margin-top: -8px;
+    display: table-cell;
+    width: 28%;
+    padding: 0 8px;
 }
 ul.message_list .photo_wrapper{
-    position: absolute;
-    left: 10px;
-    width: 64px;
-    top:0;
+    display: table-cell;
+    width: 28%;
+    padding: 0 5px;
+    vertical-align: middle;
 }
 ul.message_list .photo_wrapper img{
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
+    margin-left: 2px;
 }
 ul.message_list .msg{
-    padding:0 110px 0 80px;
     word-break: break-all;
     word-wrap: break-word;
     display: table-cell;
     vertical-align: middle;
+    width: 44%;
 }
 
 header .logout{

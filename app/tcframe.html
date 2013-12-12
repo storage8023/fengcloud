@@ -33,11 +33,10 @@
 </header>
 <qiuckmenu></qiuckmenu>
 <div class="message_wrapper" ng-click="showMessage()">
-    <ul class="scrollbar message_list">
+    <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">账号未登录</div>
+    <ul class="scrollbar message_list" ng-if="PAGE_CONFIG.user.member_id">
         <li ng-show="!messages || !messages.length" class="empty">没有消息</li>
         <li ng-repeat="message in messages">
-            <div class="dateline" ng-bind="message.dateline*1000|dateAgo">
-            </div>
             <div class="photo_wrapper">
                 <team-logo ng-if="message.org_logo" class="avatar" gk-src="{{message.org_logo}}"></team-logo>
                 <avatar class="avatar" gk-src="{{message.member_photo}}"></avatar>
@@ -45,6 +44,7 @@
             <div class="msg">
                 <span ng-bind-html="message.render_content"></span>
             </div>
+            <div class="dateline" ng-bind="message.dateline*1000|dateAgo"></div>
         </li>
     </ul>
 </div>

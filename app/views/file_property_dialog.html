@@ -14,7 +14,7 @@
         </div>
         </div>
         <div class="publish_opt">
-            <button class="btn btn-primary" ng-show="publishEnable && file.open==0" ng-click="setFilePublic(1,mountId)">公共该文件夹</button>
+            <button class="btn btn-primary" ng-show="publishEnable && file.open==0" ng-click="setFilePublic(1,mountId)">公开该文件夹</button>
             <button class="btn btn-danger"  ng-show="publishEnable && file.open==1" ng-click="setFilePublic(0,mountId)">取消公开该文件夹</button>
             <button class="btn btn-default" ng-show="!publishEnable && parentFile.sharepath" disabled>该文件{{file.dir==1?'夹':''}}已公开</button>
         </div>

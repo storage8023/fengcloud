@@ -443,9 +443,7 @@ angular.module('gkClientIndex.services', [])
                             $rootScope.$on('removeTeam', function (event, orgId) {
                                 gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                     if (param) {
-                                        $scope.$apply(function () {
-                                            $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
-                                        });
+                                       $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
                                         $modalInstance.close(orgId);
                                     }
                                 })
@@ -1059,9 +1057,7 @@ angular.module('gkClientIndex.services', [])
                         $rootScope.$on('removeTeam', function (event, orgId) {
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
-                                    $scope.$apply(function () {
-                                        $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
-                                    });
+                                    $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
                                     $modalInstance.close(orgId);
                                 }
                             })
@@ -1174,7 +1170,7 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKNews', ['localStorageService', 'GKApi', '$filter', 'GKDialog', 'GKPath', 'GKException', function (localStorageService, GKApi, $filter, GKDialog, GKPath, GKException) {
+    .factory('GKNews', ['localStorageService', 'GKApi', '$filter', 'GKDialog', 'GKPath', 'GKException','$q', function (localStorageService, GKApi, $filter, GKDialog, GKPath, GKException,$q) {
         var newsKey = 'gknews_' + gkClientInterface.getUser()['member_id'];
         var GKNews = {
             getOptsByItem: function (item) {
@@ -1305,6 +1301,7 @@ angular.module('gkClientIndex.services', [])
                 return null;
             },
             requestNews: function (dateline) {
+                var deferred = $q.defer();
                 var context = this;
                 var dateline = 0;
                 var oldNews = this.getNews();
@@ -1316,7 +1313,11 @@ angular.module('gkClientIndex.services', [])
                     var dateline = data['dateline'];
                     gkClientInterface.setMessageDate(dateline);
                     context.addNews(news);
-                })
+                    deferred.resolve();
+                }).error(function(){
+                        deferred.resolve();
+                    })
+                return deferred.promise;
             },
             getNews: function () {
                 var news = localStorageService.get(newsKey);
@@ -1363,11 +1364,16 @@ angular.module('gkClientIndex.services', [])
                 }
             },
             appendNews: function (data) {
+                var deferred = $q.defer();
                 if (!data['list'] || !data['list'].length) {
-                        this.requestNews();
+                        this.requestNews().then(function(){
+                            deferred.resolve();
+                        });
                 } else {
                     this.addNews(data['list']);
+                    deferred.resolve();
                 }
+                return deferred.promise;
             }
         };
         return GKNews;

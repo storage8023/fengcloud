@@ -11,17 +11,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             filter: '',
             networkConnected: 1
         };
-        /**
-         * 页面载入时请求消息
-         */
-        GKNews.requestNews();
-
-        /**
-         * 监听消息的通知
-         */
-        $scope.$on('UpdateMessage', function (e, data) {
-            GKNews.appendNews(data);
-        })
 
         /**
          * 监听打开消息的通知
