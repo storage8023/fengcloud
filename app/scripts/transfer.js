@@ -43,7 +43,7 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
 /**
  * 设置-上传
  */
-    .directive('tabUpload',['GKQueue',function(GKQueue){
+    .directive('tabUpload',['GKQueue','$interval',function(GKQueue,$interval){
         return {
             restrict: 'E',
             templateUrl:'views/tab_queue.html',
@@ -52,7 +52,7 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
             },
             link:function($scope){
                 $scope.thead = ['文件','状态','剩余时间'];
-                GKQueue.getQueueList($scope,'upload');
+                var fileListTimer = GKQueue.getQueueList($scope,'upload');
                 $scope.removeTransfer = function(file){
                     var param = {
                         type:'upload',
@@ -61,13 +61,17 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
                     };
                     gkClientInterface.removeTrans(param);
                 }
+                $scope.$on('$destroy',function(){
+                    $interval.cancel(fileListTimer);
+                    fileListTimer = null;
+                })
             }
         }
     }])
 /**
  * 设置-下载
  */
-    .directive('tabDownload',['GKQueue',function(GKQueue){
+    .directive('tabDownload',['GKQueue','$interval',function(GKQueue,$interval){
         return {
             restrict: 'E',
             templateUrl:'views/tab_queue.html',
@@ -76,26 +80,31 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
             },
             link:function($scope){
                 $scope.thead = ['文件','状态','剩余时间'];
-                GKQueue.getQueueList($scope,'download');
+                var fileListTimer = GKQueue.getQueueList($scope,'download');
                 $scope.removeTransfer = function(file){
                     var param = {
                         type:'download',
                         mountid:file.mountid,
                         webpath:file.webpath
                     };
-
                     var re = gkClientInterface.removeTrans(param,function(){
                         Util.Array.removeByValue($scope.fileList,file);
                     });
-
                 }
+
+                $scope.$on('$destroy',function(){
+                    if(fileListTimer){
+                        $interval.cancel(fileListTimer);
+                        fileListTimer = null;
+                    }
+                })
             }
         }
     }])
 /**
  * 设置-同步
  */
-    .directive('tabSync',['GKQueue',function(GKQueue){
+    .directive('tabSync',['GKQueue','$interval',function(GKQueue,$interval){
         return {
             restrict: 'E',
             templateUrl:'views/tab_queue.html',
@@ -104,7 +113,13 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
             },
             link:function($scope){
                 $scope.thead = ['同步目录','同步状态','剩余时间'];
-                GKQueue.getQueueList($scope,'sync');
+                var fileListTimer =  GKQueue.getQueueList($scope,'sync');
+                $scope.$on('$destroy',function(){
+                    if(fileListTimer){
+                        $interval.cancel(fileListTimer);
+                        fileListTimer = null;
+                    }
+                })
             }
         }
     }])

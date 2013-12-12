@@ -21,8 +21,8 @@
                         <span>{{file.webpath|getSyncFileName:file.mountid}}</span>
                     </div>
                     <div class="sync_state">
-                        <i class="icon16x16 {{file.number|getSyncIcon:isAllSyncPaused}}"></i>
-                       <span>{{file.number|getSyncState:isAllSyncPaused}}</span>
+                        <i class="icon16x16 {{file.num|getSyncIcon:isAllSyncPaused}}"></i>
+                       <span>{{file.num|getSyncState:isAllSyncPaused}}</span>
                     </div>
                     <div class="opts">
                         <button class="btn btn-danger btn-flat" ng-click="cancelSync(file)">取消同步</button>

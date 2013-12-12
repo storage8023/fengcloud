@@ -4279,6 +4279,7 @@ angular.module('gkClientIndex.services', [])
                         value.time = newItem.time;
                         value.pos = newItem.pos;
                         value.status = newItem.status;
+                        value.num = newItem.num;
                         newList.splice(key, 1);
                         return false;
                     }
@@ -4327,10 +4328,10 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
                 getFileList();
-                $interval(function () {
+                var listTimer = $interval(function () {
                     getFileList(true);
-                }, 1000)
-
+                }, 1000);
+                return listTimer;
             }
         }
     }

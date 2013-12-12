@@ -375,6 +375,7 @@
     open:function(params){
         try {
             params.opentype = 'open';
+            console.log(params);
             gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
@@ -502,6 +503,7 @@
     },
     getTransList: function(param){
         var re = gkClient.gTransList(JSON.stringify(param));
+        console.log(JSON.parse(re));
         return JSON.parse(re);
     },
     setLogoff:function(){

@@ -524,33 +524,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         $scope.keyword = '';
         $scope.view = 'list';
-        var getFileData = function(){
-            var param =  $location.search();
-            if(!param.partition) return;
-            $scope.path = param.path || '';
-            $scope.partition = param.partition || GKPartition.teamFile;
-            $scope.filter = param.filter || '';
-            $scope.selectedpath = param.selectedpath || '';
-            $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
-            $scope.keyword = param.keyword || '';
-            $scope.showHint =!$rootScope.PAGE_CONFIG.file.syncpath?false:true;
-            GKFileList.unSelectAll($scope);
-            GKFileList.refreahData($scope,param.selectedpath);
-        };
-
-        $scope.$on('$locationChangeSuccess',function(){
-            getFileData();
-        })
-
-        $scope.$on('UpdateFileList',function(){
-           var selecedPath = [];
-            angular.forEach($scope.selectedFile,function(value){
-                selecedPath.push(value.fullpath);
-            })
-           GKFileList.refreahData($scope,selecedPath.join('|'));
-        })
-
-        getFileData();
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
@@ -590,7 +563,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             ; // 顶部要排除的操作
 
         var setOpts = function () {
-            console.log(1111);
             $scope.allOpts = GKOpt.getAllOpts($scope);
             var isSearch = $scope.keyword.length ? true : false;
             optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
@@ -716,10 +688,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             setOpts();
         }, true);
-
-        $scope.$on('$locationChangeSuccess',function(){
-            setOpts();
-        })
 
         $scope.$watch('rightOpts', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
@@ -875,6 +843,35 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             GKFileList.refreahData($scope);
         })
+
+        var getFileData = function(){
+            var param =  $location.search();
+            if(!param.partition) return;
+            $scope.path = param.path || '';
+            $scope.partition = param.partition || GKPartition.teamFile;
+            $scope.filter = param.filter || '';
+            $scope.selectedpath = param.selectedpath || '';
+            $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
+            $scope.keyword = param.keyword || '';
+            $scope.showHint =!$rootScope.PAGE_CONFIG.file.syncpath?false:true;
+            GKFileList.unSelectAll($scope);
+            GKFileList.refreahData($scope,param.selectedpath);
+            setOpts();
+        };
+
+        $scope.$on('$locationChangeSuccess',function(){
+            getFileData();
+        })
+
+        $scope.$on('UpdateFileList',function(){
+            var selecedPath = [];
+            angular.forEach($scope.selectedFile,function(value){
+                selecedPath.push(value.fullpath);
+            })
+            GKFileList.refreahData($scope,selecedPath.join('|'));
+        })
+
+        getFileData();
 
         $scope.renameFileSubmit = function (filename, file) {
             if (!GKFile.checkFilename(filename)) {

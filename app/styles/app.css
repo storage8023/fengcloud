@@ -757,7 +757,9 @@ footer {
     top:32px;
     z-index: 2;
 }
-
+.file_list_wrapper .thumb_view .file_list_hint{
+    top:0;
+}
 .btn.sync_opt{
     line-height: 24px;
     background-color: #428BCA;

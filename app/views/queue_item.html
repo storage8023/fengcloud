@@ -15,7 +15,7 @@
     </div>
     <div ng-if="selectedTab.name=='sync'">
         <span ng-if="selectedTab.name=='sync' && item.num>0">正在同步{{item.num}}个文件</span>
-        <span ng-if="item.num<=0" class="status_{{item.status}}">完成</span>
+        <span ng-if="item.num<=0" class="status_{{item.status}}">同步完成</span>
     </div>
     <div>
         <span ng-if="!item.time">--:--:--</span>

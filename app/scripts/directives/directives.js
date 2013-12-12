@@ -315,17 +315,19 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     })
-    .directive('gkGuider', ['GKGuiders', '$parse', function (GKGuiders, $parse) {
+    .directive('gkGuider', ['GKGuiders', '$parse', '$timeout',function (GKGuiders, $parse,$timeout) {
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
                 $scope.GKGuiders = GKGuiders;
-                $attrs.$observe('gkGuider', function (newValue) {
-                    var option = $scope.$eval(newValue);
-                    angular.extend(option, {
-                        attachTo: $element[0]
-                    });
-                    GKGuiders.createGuider(option);
+                $timeout(function(){
+                    $attrs.$observe('gkGuider', function (newValue) {
+                        var option = $scope.$eval(newValue);
+                        angular.extend(option, {
+                            attachTo: $element[0]
+                        });
+                        GKGuiders.createGuider(option);
+                    })
                 })
             }
         }
@@ -772,6 +774,36 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.inputingRemark = false;
                 $scope.remarkText = '';
+
+                var getFileState = function(mountId,fullpath){
+                    var info = gkClientInterface.getTransInfo({
+                        mountid: mountId,
+                        webpath: fullpath
+                    });
+                    if (info.offset ==0 ) {
+                        $scope.sidbarData.title = '准备上传中';
+                    }else{
+                        var status = info.status;
+                        if (status == 1) {
+                            if (fileInterval) {
+                                $interval.cancel(fileInterval);
+                                fileInterval = null;
+                            }
+                            getFileInfo($scope.localFile);
+                        } else{
+                            var offset = Number(info.offset);
+                            var filesize = Number(info.filesize || 0);
+                            if (filesize != 0) {
+                                if (offset != 0) {
+                                    var str = Math.round(offset / filesize * 100) + '%';
+                                    $scope.sidbarData.title = '正在上传中' + str;
+                                }
+                            } else {
+                                $scope.sidbarData.title = '正在上传中';
+                            }
+                        }
+                    }
+                };
                 /**
                  * 通过接口获取文件信息
                  */
@@ -811,8 +843,7 @@ angular.module('gkClientIndex.directives', [])
                                 /**
                                  * 如果是管理员，并且在根目录允许共享操作
                                  */
-                                if (GKMount.isAdmin(mount) && !$rootScope.PAGE_CONFIG.file.fullpath
-                                    ) {
+                                if (GKMount.isAdmin(mount) && !$rootScope.PAGE_CONFIG.file.fullpath) {
                                     $scope.enableAddShare = true;
                                 }
                             });
@@ -821,53 +852,21 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.$apply(function () {
                                     $scope.loading = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
-                                    /**
-                                     * 云端不存在
-                                     */
-                                    if (errorCode == 404024) {
-                                        $scope.sidbarData.title = '云端已删除';
-                                    } else if (String(errorCode).slice(0, 3) == '404') {
-                                        $scope.fileExist = false;
-                                        $scope.sidbarData = {
-                                            icon: 'uploading'
-                                        }
-                                        /**
-                                         * 1:上传中
-                                         * 9：重新上传中
-                                         */
-                                        console.log($scope.localFile.status);
-                                        if ($scope.localFile.status == 1 || $scope.localFile.status == 9) {
-                                            $scope.sidbarData.title = '准备上传中';
-                                            var info;
-                                            fileInterval = $interval(function () {
-                                                info = gkClientInterface.getTransInfo({
-                                                    mountid: mountId,
-                                                    webpath: file.fullpath
-                                                });
-                                                if (typeof info.offset !== 'undefined') {
-                                                    var offset = Number(info.offset);
-                                                    var filesize = Number(info.filesize || 0);
-                                                    var status = info.status || 0;
-                                                    if (filesize != 0) {
-                                                        if (offset != 0) {
-                                                            var str = Math.round(offset / filesize * 100) + '%';
-                                                            ;
-                                                            $scope.sidbarData.title = '正在上传中' + str;
-                                                        }
-                                                    } else {
-                                                        $scope.sidbarData.title = '正在上传中';
-                                                    }
-                                                    if (status == 1) {
-                                                        if (fileInterval) {
-                                                            $interval.cancel(fileInterval);
-                                                            fileInterval = null;
-                                                        }
-                                                        getFileInfo($scope.localFile);
-                                                    }
-                                                }
-                                            }, 1000);
-                                        }
+                                    if (String(errorCode).slice(0, 3) != '404') {
+                                        return;
                                     }
+                                    $scope.fileExist = false;
+                                    $scope.sidbarData = {
+                                        icon: 'uploading'
+                                    };
+                                    if (errorCode == 404024 && $scope.localFile.status != 1) {
+                                        $scope.sidbarData.title = '云端已删除';
+                                        return;
+                                    }
+                                    getFileState(mountId,file.fullpath);
+                                    fileInterval = $interval(function () {
+                                        getFileState(mountId,file.fullpath);
+                                    }, 1000);
                                 })
                             });
                     }

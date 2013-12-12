@@ -471,13 +471,12 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
 /**
  * 设置-同步
  */
-    .directive('tabSync',['GK','GKException',function(GK,GKException){
+    .directive('tabSync',['GK','GKException','$interval',function(GK,GKException,$interval){
         return {
             restrict: 'E',
             templateUrl:'views/tab_sync.html',
             link:function(scope){
                 scope.syncedFiles = gkClientInterface.getLinkPath()['list'] || [];
-
                 scope.isAllSyncPaused = scope.clientInfo['startsync']==1?false:true;
                 scope.toggleAllSync = function(){
                     if(scope.isAllSyncPaused){
@@ -489,7 +488,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                         gkClientInterface.stopSync();
                     }
                     scope.isAllSyncPaused = !scope.isAllSyncPaused;
-                }
+                };
 
                 scope.cancelSync = function(file){
                     if(!confirm('你确定要取消“'+file.webpath+'“与'+'”'+file.fullpath+'“的同步？')){
@@ -505,7 +504,48 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
                     },function(error){
                         GKException.handleClientException(error);
                     })
-                }
+                };
+
+                var dealList = function (oldList, newList) {
+                    angular.forEach(oldList, function (value) {
+                        var mountId = value.mountid;
+                        var fullpath = value.webpath;
+                        angular.forEach(newList, function (newItem, key) {
+                            if (newItem.mountid == mountId && newItem.webpath === fullpath) {
+                                value.num = newItem.num;
+                                newList.splice(key, 1);
+                                return false;
+                            }
+                        });
+                    });
+                };
+
+                var getSyncList = function (isUpdate) {
+                    isUpdate = angular.isDefined(isUpdate) ? isUpdate : false;
+                    var re = gkClientInterface.getTransList({type: 'sync'});
+                    var list = re['list'] || [];
+                    var syncList;
+                    if (isUpdate) {
+                        var newList = angular.extend([], list);
+                        dealList(scope.syncedFiles, newList);
+                        if (newList && newList.length) {
+                            scope.syncedFiles = $scope.fileList.concat(newList);
+                        }
+                        console.log( scope.syncedFiles);
+                    } else {
+                        scope.syncedFiles = list;
+                    }
+                };
+
+                getSyncList();
+                var listTimer = $interval(function () {
+                    getSyncList(true);
+                }, 1000);
+
+                scope.$on('$destroy',function(){
+                    $interval.cancel(listTimer);
+                    listTimer = null;
+                })
             }
         }
     }])
