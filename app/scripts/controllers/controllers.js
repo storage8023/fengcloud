@@ -102,8 +102,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(!param.partition) return;
             var extend = {
                 filter: param.filter || '',
-                partition: param.partition,
-                view: param.view
+                partition: param.partition
             };
             if ([GKPartition.myFile, GKPartition.teamFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 extend.file = GKFile.getFileInfo(param.mountid, param.path);
@@ -219,7 +218,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleSelect = function (branch, partition) {
             var pararm = {
-                view: 'list',
                 partition: partition
             };
             if (partition == GKPartition.myFile || partition == GKPartition.teamFile || partition == GKPartition.subscribeFile) {
@@ -536,20 +534,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         $scope.keyword = '';
+        $scope.view = 'list';
         var getFileData = function(){
             var param =  $location.search();
             if(!param.partition) return;
             $scope.path = param.path || '';
             $scope.partition = param.partition || GKPartition.teamFile;
-            $scope.view = param.view || 'list';
             $scope.filter = param.filter || '';
             $scope.selectedpath = param.selectedpath || '';
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
             $scope.keyword = param.keyword || '';
             $scope.showHint =!$rootScope.PAGE_CONFIG.file.syncpath?false:true;
+            GKFileList.unSelectAll($scope);
             GKFileList.refreahData($scope,param.selectedpath);
         };
-
 
         $scope.$on('$locationChangeSuccess',function(){
             getFileData();
@@ -707,8 +705,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 改变视图
          */
         $scope.changeView = function (view) {
-            GKFileList.changeView(view);
-
+            GKFileList.changeView($scope,view);
         };
 
         /**

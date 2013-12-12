@@ -1621,7 +1621,6 @@ angular.module('gkClientIndex.services', [])
                     partition: mount['type'] == 3 ? GKPartition.subscribeFile : GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
-                    view: searchParam.view,
                     selectedpath: selectFile
                 };
                 if (mount) {
@@ -1634,7 +1633,6 @@ angular.module('gkClientIndex.services', [])
                 var params = {
                     partition: paramArr[0],
                     path: paramArr[1] | '',
-                    view: paramArr[2],
                     mountid: paramArr[3] || 0,
                     filter: paramArr[4] || '',
                     keyword: paramArr[5] || '',
@@ -1644,7 +1642,6 @@ angular.module('gkClientIndex.services', [])
             getBread: function () {
                 var path = $location.search().path || '';
                 var partition = $location.search().partition || GKPartition.myFile;
-                var view = $location.search().view || 'list';
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
                 var keyword = $location.search().keyword;
@@ -1663,7 +1660,7 @@ angular.module('gkClientIndex.services', [])
                         fullpath = Util.String.rtrim(fullpath, '/');
                         bread.path = fullpath;
                         bread.filter = '',
-                            bread.url = '#' + this.getPath(partition, bread.path, view, mountId, filter);
+                            bread.url = '#' + this.getPath(partition, bread.path, mountId, filter);
                         breads.push(bread);
                     }
                 }
@@ -1676,7 +1673,7 @@ angular.module('gkClientIndex.services', [])
                     if(filter == 'trash'){
                         filterItem = {
                             name:'回收站',
-                            url: '#' + this.getPath(partition, '', view, mountId, filter),
+                            url: '#' + this.getPath(partition, '', mountId, filter),
                             filter: filter
                         }
                     }else{
@@ -1685,7 +1682,7 @@ angular.module('gkClientIndex.services', [])
                         if(smartFolder){
                             filterItem = {
                                 name:smartFolder['name'],
-                                url: '#' + this.getPath(partition, '', view, mountId, filter),
+                                url: '#' + this.getPath(partition, '', mountId, filter),
                                 filter: filter,
                                 icon: 'icon_' + filter
                             }
@@ -1702,7 +1699,7 @@ angular.module('gkClientIndex.services', [])
                         var item = {
                             name: mount['name'],
                             filter: '',
-                            url: '#' + this.getPath(partition, '', view, mountId, filter)
+                            url: '#' + this.getPath(partition, '', mountId, filter)
                         }
 
                         if (mount.org_id == 0) {
@@ -2420,7 +2417,7 @@ angular.module('gkClientIndex.services', [])
                         break;
                 }
                 if (isSearch) {
-                    this.disableOpt(opts,'new_file','new_folder', 'add', 'create', 'paste', 'manage');
+                    this.disableOpt(opts,'sync','unsync','new_file','new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },
@@ -3967,11 +3964,8 @@ angular.module('gkClientIndex.services', [])
             getSelectedFile: function () {
                 return selectedFile;
             },
-            changeView:function(view){
-                var searchParam = $location.search();
-                $location.search(angular.extend(searchParam,{
-                    view:view
-                }))
+            changeView:function($scope,view){
+                $scope.view = view;
             },
             getOptFileMountId: function (file) {
                 var mountID = 0;

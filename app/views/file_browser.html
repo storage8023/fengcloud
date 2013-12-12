@@ -65,7 +65,7 @@
                             <div class="thumb" ng-show="view=='thumb'">
                                 <img
                                      ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
-                                     ng-src="{{ file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}" />
+                                     ng-src="{{ file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)}}" />
                                 <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
                                      error-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
                                      ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
