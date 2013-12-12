@@ -471,7 +471,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
 /**
  * 设置-同步
  */
-    .directive('tabSync',['GK',function(GK){
+    .directive('tabSync',['GK','GKException',function(GK,GKException){
         return {
             restrict: 'E',
             templateUrl:'views/tab_sync.html',
@@ -502,8 +502,8 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
 
                     GK.removeLinkPath(params).then(function(){
                         Util.Array.removeByValue(scope.syncedFiles,file);
-                    },function(){
-
+                    },function(error){
+                        GKException.handleClientException(error);
                     })
                 }
             }

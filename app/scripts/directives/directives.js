@@ -835,6 +835,7 @@ angular.module('gkClientIndex.directives', [])
                                          * 1:上传中
                                          * 9：重新上传中
                                          */
+                                        console.log($scope.localFile.status);
                                         if ($scope.localFile.status == 1 || $scope.localFile.status == 9) {
                                             $scope.sidbarData.title = '准备上传中';
                                             var info;

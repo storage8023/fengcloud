@@ -85,7 +85,6 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 alert('请输入设备名');
                 return;
             }
-
             gkClientInterface.setDevice({
                 name:$scope.registDevice
             });

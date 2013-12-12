@@ -542,6 +542,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             getFileData();
         })
 
+        $scope.$on('UpdateFileList',function(){
+           var selecedPath = [];
+            angular.forEach($scope.selectedFile,function(value){
+                selecedPath.push(value.fullpath);
+            })
+           GKFileList.refreahData($scope,selecedPath.join('|'));
+        })
+
         getFileData();
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
@@ -801,11 +809,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     case 'sync':
                         forEachFullpath(function (fullpath) {
                             $rootScope.PAGE_CONFIG.file.syncpath = fullpath;
+                            $scope.showHint = true;
                         });
                         break;
                     case 'unsync':
                         forEachFullpath(function (fullpath) {
                             $rootScope.PAGE_CONFIG.file.syncpath = '';
+                            $scope.showHint = true;
                         });
                         break;
                     case 'del':
