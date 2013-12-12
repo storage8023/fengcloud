@@ -258,7 +258,6 @@ angular.module('gkClientIndex.services', [])
                             }
                         }else{
                             angular.extend(items,{
-
                                 'view_property':{
                                     name: '属性',
                                     callback: function () {
@@ -342,6 +341,7 @@ angular.module('gkClientIndex.services', [])
                                 input.bind('keydown', function (event) {
                                     if (event.keyCode == 13) {
                                         input.trigger('blur');
+                                        event.preventDefault();
                                     }
                                 });
 

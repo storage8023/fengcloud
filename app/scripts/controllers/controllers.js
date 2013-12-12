@@ -1011,6 +1011,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleMouseDown = function (event) {
             var $target = jQuery(event.target);
+            if((['TEXTAREA','INPUT','BUTTON'].indexOf(event.target.nodeName))>=0){
+                return;
+            }
             if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
                 GKFileList.unSelectAll($scope);
             }
