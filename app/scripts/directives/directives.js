@@ -1110,24 +1110,31 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', function (GKFilter, GKPartition, GKSmartFolder, GKMount) {
+    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount','$location', function (GKFilter, GKPartition, GKSmartFolder, GKMount,$location) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/toolbar.html",
             link: function ($scope, $element) {
-                if ($scope.partition == GKPartition.smartFolder && $scope.filter) {
-                    var type = GKFilter.getFilterType($scope.filter);
-                    var smartFolder = GKSmartFolder.getFolderByCode(type);
-                    if (smartFolder) {
-                        $scope.listName = smartFolder['name'];
+                $scope.$on('$locationChangeSuccess',function(){
+                    var param = $location.search(),listName = '';
+                    if (param.partition == GKPartition.smartFolder && param.filter) {
+                        listName = GKFilter.getFilterName(param.filter);
+                        if(!listName){
+                            var type = GKFilter.getFilterType(param.filter);
+                            var smartFolder = GKSmartFolder.getFolderByCode(type);
+                            if (smartFolder) {
+                                listName = smartFolder['name'];
+                            }
+                        }
+                        $scope.listName = listName;
+                    } else {
+                        var mount = GKMount.getMountById(param.mountid);
+                        if (mount) {
+                            $scope.listName = mount['name'];
+                        }
                     }
-                } else {
-                    var mount = GKMount.getMountById($scope.mountId);
-                    if (mount) {
-                        $scope.listName = mount['name'];
-                    }
-                }
+                })
 
                 $scope.$on('editSmartFolder', function ($event, name, code, filter) {
                     if ($scope.listName && $scope.filter == filter) {

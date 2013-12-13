@@ -1492,29 +1492,8 @@ angular.module('gkClientIndex.services', [])
                     case this.trash:
                         filterName = '回收站';
                         break;
-                    case this.inbox:
-                        filterName = '我接收的文件';
-                        break;
-                    case this.star:
-                        filterName = '星形';
-                        break;
                     case this.recent:
                         filterName = '最近修改的文件';
-                        break;
-                    case this.triangle:
-                        filterName = '三角形';
-                        break;
-                    case this.diamond:
-                        filterName = '钻石';
-                        break;
-                    case this.flower:
-                        filterName = '幸运草';
-                        break;
-                    case this.heart:
-                        filterName = '爱心';
-                        break;
-                    case this.moon:
-                        filterName = '月亮';
                         break;
                     case this.search:
                         filterName = '搜索结果';

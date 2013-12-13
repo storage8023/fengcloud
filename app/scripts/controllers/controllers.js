@@ -1374,21 +1374,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         }
 
                     } else {
-                        if ($scope.filter == 'trash') {
-                            $scope.sidbarData = {
-                                title: '回收站',
-                                tip: '',
-                                icon: $scope.filter
-                            }
-                        } else {
+                        var filterName = '';
+                        filterName  =GKFilter.getFilterName($scope.filter);
+                        if(!filterName){
                             var type = GKFilter.getFilterType($scope.filter);
                             var smartFolder = GKSmartFolder.getFolderByCode(type);
-                            $scope.sidbarData = {
-                                title: smartFolder ? smartFolder['name'] : '',
-                                tip: GKFilter.getFilterTip($scope.filter),
-                                icon: $scope.filter
-                            };
+                            if(smartFolder){
+                                filterName = smartFolder['name'];
+                            }
                         }
+                        $scope.sidbarData = {
+                            title: filterName,
+                            tip: GKFilter.getFilterTip($scope.filter),
+                            icon: $scope.filter
+                        };
 
                     }
                 }
