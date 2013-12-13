@@ -296,13 +296,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-        /**
-         * 取消订阅
-         */
-        $scope.$on('unSubscribeTeam', function ($event, orgId) {
-            GKMount.removeOrgSubscribeList($scope, orgId);
-            selectBreanch($scope.orgTreeList[0], GKPartition.myFile, true);
-        })
 
         var getSmartGuide = function(guideId){
             return  '{buttons: [{name: "完成", onclick: GKGuiders.hideAll}],description: "智能文件夹中将记录最近修改过的文件。用不同的图形标记的文件，也可以在这里快速找到。",id: "'+guideId+'",position: 3,title: "智能文件夹",width: 280}';
@@ -432,6 +425,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 } else {
                     GKMount.removeOrgSubscribeList($scope, mount.org_id);
                 }
+                var currentMountId = $location.search().mountid;
+                if(currentMountId==mount.mount_id && $scope.orgTreeList && $scope.orgTreeList.length){
+                    selectBreanch($scope.orgTreeList[0], GKPartition.teamFile, true);
+                }
+
             });
         })
 

@@ -440,14 +440,12 @@ angular.module('gkClientIndex.services', [])
                             $modalInstance.dismiss('cancel');
                         };
                         $rootScope.$on('removeTeam', function (event, orgId) {
-                            $rootScope.$on('removeTeam', function (event, orgId) {
                                 gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                     if (param) {
                                        $rootScope.$broadcast('RemoveOrgObject', {'org_id':orgId});
                                         $modalInstance.close(orgId);
                                     }
                                 })
-                            })
                         })
                     },
                     resolve: {
@@ -2552,7 +2550,7 @@ angular.module('gkClientIndex.services', [])
                     return;
                 }
                 GKApi.teamQuit(org_id).success(function () {
-                   $rootScope.$broadcast('unSubscribeTeam', $rootScope.PAGE_CONFIG.mount.org_id);
+                    $rootScope.$broadcast('RemoveOrgObject', {'org_id':org_id});
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
@@ -4363,6 +4361,7 @@ var gkClientCallback = function (name, param) {
  * @param params
  */
 var gkSiteCallback = function (name, params) {
+    console.log(arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
