@@ -15,7 +15,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
             },
             {
                 name:'account',
-                title:'账号',
+                title:'帐号',
                 icon:'icon_person',
                 directive:'tabAccount'
             },
@@ -279,7 +279,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
         }
     }])
 /**
- * 设置-账号
+ * 设置-帐号
  */
     .directive('tabAccount',['$rootScope','GKMount','GKException',function($rootScope,GKMount,GKException){
         return {

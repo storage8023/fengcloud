@@ -85,7 +85,8 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
                     var param = {
                         type:'download',
                         mountid:file.mountid,
-                        webpath:file.webpath
+                        webpath:file.webpath,
+                        fullpath:file.fullpath
                     };
                     var re = gkClientInterface.removeTrans(param,function(){
                         Util.Array.removeByValue($scope.fileList,file);
