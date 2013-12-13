@@ -1378,9 +1378,37 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKSmartFolder', ['GKFilter', function (GKFilter) {
 
+        var getFolderAliasByType = function(type){
+            var filter = '';
+            switch (type) {
+                case 0:
+                    filter = GKFilter.recent;
+                    break;
+                case 1:
+                    filter = GKFilter.star;
+                    break;
+                case 2:
+                    filter = GKFilter.moon;
+                    break;
+                case 3:
+                    filter = GKFilter.heart;
+                    break;
+                case 4:
+                    filter = GKFilter.flower;
+                    break;
+                case 5:
+                    filter = GKFilter.triangle;
+                    break;
+                case 6:
+                    filter = GKFilter.diamond;
+                    break;
+            }
+            return filter;
+        }
+
         var formartSmartFolder = function(value){
             var condition = Number(value.condition);
-            var filter = GKFilter.getFilterByType(condition);
+            var filter = getFolderAliasByType(condition);
             var item =  {
                 name:value.name,
                 type:condition,
@@ -1403,6 +1431,7 @@ angular.module('gkClientIndex.services', [])
             smartFolders.push(formartSmartFolder(value))
         });
         var GKSmartFolder = {
+            getFolderAliasByType:getFolderAliasByType,
             checkFolderName:function(filename){
                 if(!filename.length){
                     alert('名称不能为空');
@@ -1418,6 +1447,28 @@ angular.module('gkClientIndex.services', [])
                     return false;
                 }
                 return true;
+            },
+            getSmartFoldeName: function (filter) {
+                var filterName = '';
+                switch (filter) {
+                    case GKFilter.trash:
+                        filterName = '回收站';
+                        break;
+                    case GKFilter.recent:
+                        filterName = '最近修改的文件';
+                        break;
+                    case GKFilter.search:
+                        filterName = '搜索结果';
+                        break;
+                }
+                if(!filterName){
+                    var type = GKFilter.getFilterType(filter);
+                    var smartFolder = this.getFolderByCode(type);
+                    if (smartFolder) {
+                        filterName = smartFolder['name'];
+                    }
+                }
+                return filterName;
             },
             getFolders: function (exclue) {
                 if (exclue) {
@@ -1486,21 +1537,6 @@ angular.module('gkClientIndex.services', [])
             moon: 'moon',
             heart: 'heart',
             search: 'search',
-            getFilterName: function (filter) {
-                var filterName = '';
-                switch (filter) {
-                    case this.trash:
-                        filterName = '回收站';
-                        break;
-                    case this.recent:
-                        filterName = '最近修改的文件';
-                        break;
-                    case this.search:
-                        filterName = '搜索结果';
-                        break;
-                }
-                return filterName;
-            },
             getFilterType: function (filter) {
                 var filterType = '';
                 switch (filter) {
@@ -1524,33 +1560,6 @@ angular.module('gkClientIndex.services', [])
                         break;
                 }
                 return filterType;
-            },
-            getFilterByType: function (type) {
-                var filter = '';
-                switch (type) {
-                    case 0:
-                        filter = this.recent;
-                        break;
-                    case 1:
-                        filter = this.star;
-                        break;
-                    case 2:
-                        filter = this.moon;
-                        break;
-                    case 3:
-                        filter = this.heart;
-                        break;
-                    case 4:
-                        filter = this.flower;
-                        break;
-                    case 5:
-                        filter = this.triangle;
-                        break;
-                    case 6:
-                        filter = this.diamond;
-                        break;
-                }
-                return filter;
             },
             getFilterTip: function (filter) {
                 var tip = '';
@@ -1652,27 +1661,17 @@ angular.module('gkClientIndex.services', [])
                  * 搜索不需要bread
                  */
                 if (filter) {
-                    var filterItem;
-                    if(filter == 'trash'){
-                        filterItem = {
-                            name:'回收站',
-                            url: '#' + this.getPath(partition, '', mountId, filter),
-                            filter: filter
-                        }
-                    }else{
-                        var type =  GKFilter.getFilterType(filter);
-                        var smartFolder = GKSmartFolder.getFolderByCode(type);
-                        if(smartFolder){
-                            filterItem = {
-                                name:smartFolder['name'],
-                                url: '#' + this.getPath(partition, '', mountId, filter),
-                                filter: filter,
-                                icon: 'icon_' + filter
-                            }
-                        }
+                    var filterItem,icon,filterName;
+                    filterName = GKSmartFolder.getSmartFoldeName(filter);
+                    filterItem = {
+                        name:filterName,
+                        url: '#' + this.getPath(partition, '', mountId, filter),
+                        filter: filter
                     }
-                    filterItem&&breads.unshift(filterItem);
-
+                    if(filter!=GKFilter.trash){
+                        filterItem.icon  = 'icon_' + filter;
+                    }
+                    breads.unshift(filterItem);
                 }
 
 
@@ -1915,7 +1914,7 @@ angular.module('gkClientIndex.services', [])
         smartFolder: 'smartfolder',
         subscribeFile: 'subscribefile'
     })
-    .factory('GKFile', ['FILE_SORTS', 'GKPartition','GKFilter','$q','GKApi',function (FILE_SORTS, GKPartition,GKFilter,$q,GKApi) {
+    .factory('GKFile', ['FILE_SORTS', 'GKPartition','GKFilter','$q','GKApi','GKSmartFolder',function (FILE_SORTS, GKPartition,GKFilter,$q,GKApi,GKSmartFolder) {
         var GKFile = {
             checkFilename:function(filename){
                 if(!filename.length){
@@ -2020,7 +2019,7 @@ angular.module('gkClientIndex.services', [])
             },
             getTrashNode:function(mount_id,partition){
                 var node = {
-                    label: GKFilter.getFilterName('trash'),
+                    label: GKSmartFolder.getSmartFoldeName(GKFilter.trash),
                     isParent: false,
                     dropAble: false,
                     data: {
@@ -2274,7 +2273,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi','GKFilter','GKFileOpt',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi,GKFilter,GKFileOpt) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q','GKFileList','GKPath','GKModal','GKOpen','GKCilpboard','GKException','GKApi','GKFilter','GKFileOpt','GKSmartFolder',function (GKFile,GKPartition, GKMount,$rootScope, GK,RestFile, $q,GKFileList,GKPath,GKModal,GKOpen,GKCilpboard,GKException,GKApi,GKFilter,GKFileOpt,GKSmartFolder) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -2552,7 +2551,7 @@ angular.module('gkClientIndex.services', [])
                 };
                 gkClientInterface.renameSmartFolder(param,function(re){
                     if(re.error==0){
-                        var filter = GKFilter.getFilterByType(condition);
+                        var filter = GKSmartFolder.getFolderAliasByType(condition);
                         $rootScope.$broadcast('editSmartFolder',name,condition,filter);
                         deferred.resolve();
                     }else{
@@ -4069,7 +4068,6 @@ angular.module('gkClientIndex.services', [])
                          */
                     } else if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf($scope.filter) >= 0) {
                         var type = GKFilter.getFilterType($scope.filter);
-
                         GKApi.starFileList(type).success(function (data) {
                             fileList = data['list'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));

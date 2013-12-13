@@ -1374,15 +1374,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         }
 
                     } else {
-                        var filterName = '';
-                        filterName  =GKFilter.getFilterName($scope.filter);
-                        if(!filterName){
-                            var type = GKFilter.getFilterType($scope.filter);
-                            var smartFolder = GKSmartFolder.getFolderByCode(type);
-                            if(smartFolder){
-                                filterName = smartFolder['name'];
-                            }
-                        }
+                        var filterName = GKSmartFolder.getSmartFoldeName($scope.filter);
                         $scope.sidbarData = {
                             title: filterName,
                             tip: GKFilter.getFilterTip($scope.filter),

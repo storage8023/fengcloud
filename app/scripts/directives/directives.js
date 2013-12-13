@@ -1119,14 +1119,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$on('$locationChangeSuccess',function(){
                     var param = $location.search(),listName = '';
                     if (param.partition == GKPartition.smartFolder && param.filter) {
-                        listName = GKFilter.getFilterName(param.filter);
-                        if(!listName){
-                            var type = GKFilter.getFilterType(param.filter);
-                            var smartFolder = GKSmartFolder.getFolderByCode(type);
-                            if (smartFolder) {
-                                listName = smartFolder['name'];
-                            }
-                        }
+                        listName = GKSmartFolder.getSmartFoldeName(param.filter);
                         $scope.listName = listName;
                     } else {
                         var mount = GKMount.getMountById(param.mountid);
