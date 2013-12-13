@@ -318,6 +318,14 @@ aside ul li.active i.icon_sync2_white{
 .transfer_page .list .item > div > *{
     display: inline-block;
 }
+.transfer_page .list .item > div .btn-flat{
+    height: 40px;
+    line-height: 40px;
+}
+.transfer_page .download .list .item > div.opts{
+width: 56px;
+    padding: 0;
+}
 .transfer_page .list .item > div .progress{
     width: 62%;
     margin: -2px 0 0 0;

@@ -1516,7 +1516,7 @@ footer {
     color: #3f4754;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .act_member{
-    width: 35%;
+    width: 34%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1525,7 +1525,7 @@ footer {
     margin-right: 5%;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .act_dateline{
-    width: 60%;
+    width: 61%;
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;

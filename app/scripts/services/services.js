@@ -2092,6 +2092,7 @@ angular.module('gkClientIndex.services', [])
                             dropAble: dropAble,
                             label: label,
                             isParent: true,
+                            hasChildren:value.hasFolder==1,
                             data: value,
                             iconNodeExpand:icon,
                             iconNodeCollapse:icon
@@ -2102,6 +2103,7 @@ angular.module('gkClientIndex.services', [])
                             label: value.name,
                             isParent: false,
                             data: value,
+                            hasChildren:false,
                             iconNodeExpand: value.icon,
                             iconNodeCollapse: value.icon
                         };
@@ -2133,7 +2135,8 @@ angular.module('gkClientIndex.services', [])
                         favorite: value.favorite,
                         filehash: value.filehash,
                         hash: value.hash,
-                        open:value.publish||0
+                        open:value.publish||0,
+                        hasFolder:1
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -2163,7 +2166,8 @@ angular.module('gkClientIndex.services', [])
                         cache: value.have,
                         filehash: value.filehash,
                         hash: value.uuidhash,
-                        open:value.open||0
+                        open:value.open||0,
+                        hasFolder:value.hasfolder||0
                     };
                 }
                 return file;
@@ -3727,7 +3731,9 @@ angular.module('gkClientIndex.services', [])
                 fullpath: '',
                 logo: mount.orgphoto,
                 member_count: mount.membercount,
-                subscriber_count: mount.subscribecount
+                subscriber_count: mount.subscribecount,
+                hasFolder:1
+                //hasFolder:mount.hasfolder||0
             };
             return newMount;
         };
@@ -4286,7 +4292,6 @@ angular.module('gkClientIndex.services', [])
                         $rootScope.downloadSpeed = syncRe['download'];
                         $rootScope.uploadSpeed = syncRe['upload'];
                     }
-
                     if (isUpdate) {
                         var newList = angular.extend([], list);
                         dealList($scope.fileList, newList, type);
@@ -4306,11 +4311,13 @@ angular.module('gkClientIndex.services', [])
                             $scope.syncFileList = syncList;
                         }
                     }
-                }
+
+                };
+
                 getFileList();
                 var listTimer = $interval(function () {
                     getFileList(true);
-                }, 1000);
+                }, 500);
                 return listTimer;
             }
         }

@@ -117,7 +117,7 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
          * @returns {*}
          */
       expand_branch = function(branch){
-          //console.log(branch);return;
+          if(!branch.hasChildren) return;
           branch.expanded = !branch.expanded;
           if (branch.onExpand != null) {
               return $timeout(function() {

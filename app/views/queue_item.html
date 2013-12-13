@@ -21,7 +21,7 @@
         <span ng-if="!item.time">--:--:--</span>
         <span ng-if="item.time">{{item.time}}</span>
     </div>
-    <div class="opts" ng-if="selectedTab.name=='download'">
+    <div class="opts" ng-if="selectedTab.name=='download' && item.status!=3">
         <button class="btn btn-danger btn-flat remove" ng-click="removeTransfer(item)">取消</button>
     </div>
 </div>
