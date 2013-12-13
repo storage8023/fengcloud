@@ -704,16 +704,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-        $scope.$watch('selectedpath', function (newValue, oldValue) {
-            if (!newValue) {
-                return;
-            }
-            GKFileList.unSelectAll($scope);
-            angular.forEach(newValue.split('|'), function (value) {
-                GKFileList.selectByPath($scope, value);
-            });
-        })
-
         $scope.$watch('order', function (newValue) {
             if (!$scope.rightOpts || !$scope.rightOpts['order_by']) {
                 return;

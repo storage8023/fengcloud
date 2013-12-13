@@ -4133,7 +4133,12 @@ angular.module('gkClientIndex.services', [])
                     $scope.fileData = null;
                     $scope.fileData = $filter('orderBy')(newFileData, order);
                     if (selectPath) {
+                        GKFileList.unSelectAll($scope);
+                        angular.forEach(selectPath.split('|'), function (value) {
+                            GKFileList.selectByPath($scope, value);
+                        });
                         $scope.selectedpath = selectPath;
+
                     }
                     if ((!$scope.fileData || !$scope.fileData.length)) {
                         $scope.errorMsg = '该文件夹为空';

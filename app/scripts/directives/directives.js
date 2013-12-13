@@ -780,17 +780,17 @@ angular.module('gkClientIndex.directives', [])
                         mountid: mountId,
                         webpath: fullpath
                     });
+                    if(info.status ==1){
+                        if (fileInterval) {
+                            $interval.cancel(fileInterval);
+                            fileInterval = null;
+                        }
+                        getFileInfo($scope.localFile);
+                        return;
+                    }
                     if (info.offset ==0 ) {
                         $scope.sidbarData.title = '准备上传中';
                     }else{
-                        var status = info.status;
-                        if (status == 1) {
-                            if (fileInterval) {
-                                $interval.cancel(fileInterval);
-                                fileInterval = null;
-                            }
-                            getFileInfo($scope.localFile);
-                        } else{
                             var offset = Number(info.offset);
                             var filesize = Number(info.filesize || 0);
                             if (filesize != 0) {
@@ -801,13 +801,16 @@ angular.module('gkClientIndex.directives', [])
                             } else {
                                 $scope.sidbarData.title = '正在上传中';
                             }
-                        }
                     }
                 };
                 /**
                  * 通过接口获取文件信息
                  */
-                var getFileInfo = function (file, options) {
+                var getFileInfo = function (file, options){
+                    if(fileInterval){
+                        $interval.cancel(fileInterval);
+                        fileInterval = null;
+                    }
                     var defaultOptions = {
                         data: '',
                         cache: true

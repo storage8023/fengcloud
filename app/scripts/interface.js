@@ -361,6 +361,7 @@
         }
     },
     move:function(params,callback){
+        console.log(arguments);
         try {
             gkClient.gMove(JSON.stringify(params),function(re){
                 re = typeof re ==='object'?re:JSON.parse(re);
@@ -375,7 +376,6 @@
     open:function(params){
         try {
             params.opentype = 'open';
-            console.log(params);
             gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);
