@@ -44,9 +44,8 @@
                         </div>
                     </div>
 
-                    <div class="tags" ng-if="showTab">
-                        <tags-input ng-model="file.formatTag" allowed-tags-pattern="^[a-zA-Z0-9\u4e00-\u9fa5\s]+$"
-                                    class="" name="file_tag" id="file_tag" placeholder="+ 添加注释" max-length="10"></tags-input>
+                    <div class="tags" ng-show="showTab">
+                        <textarea size-adjust focus-me="focusPostTextarea" ng-blur="postTag(file.tag)" maxlength="280" ng-keydown="handlePostKeyDown($event,file.tag)" class="form-control" placeholder="+添加注释" ng-model="file.tag"></textarea>
                     </div>
                 </section>
 

@@ -2125,6 +2125,7 @@ angular.module('gkClientIndex.services', [])
             formatFileItem: function (value, source) {
                 var file;
                 if (source == 'api') {
+                    console.log(value);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
                     file = {
                         mount_id: value.mount_id || 0,
@@ -2146,7 +2147,8 @@ angular.module('gkClientIndex.services', [])
                         filehash: value.filehash,
                         hash: value.hash,
                         open: value.publish || 0,
-                        hasFolder: 1
+                        hasFolder: 1,
+                        tag:value.tag
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -4538,3 +4540,27 @@ function GKHistory($q, $location, $rootScope) {
     reset();
 }
 
+
+// 获取一个元素的所有css属性的patch, $(el).css()
+jQuery.fn.css2 = jQuery.fn.css;
+jQuery.fn.css = function() {
+    if (arguments.length) return jQuery.fn.css2.apply(this, arguments);
+    var attr = ['font-family','font-size','font-weight','font-style','color',
+        'text-transform','text-decoration','letter-spacing', 'box-shadow',
+        'line-height','text-align','vertical-align','direction','background-color',
+        'background-image','background-repeat','background-position',
+        'background-attachment','opacity','width','height','top','right','bottom',
+        'left','margin-top','margin-right','margin-bottom','margin-left',
+        'padding-top','padding-right','padding-bottom','padding-left',
+        'border-top-width','border-right-width','border-bottom-width',
+        'border-left-width','border-top-color','border-right-color',
+        'border-bottom-color','border-left-color','border-top-style',
+        'border-right-style','border-bottom-style','border-left-style','position',
+        'display','visibility','z-index','overflow-x','overflow-y','white-space',
+        'clip','float','clear','cursor','list-style-image','list-style-position',
+        'list-style-type','marker-offset'];
+    var len = attr.length, obj = {};
+    for (var i = 0; i < len; i++)
+        obj[attr[i]] = jQuery.fn.css2.call(this, attr[i]);
+    return obj;
+};

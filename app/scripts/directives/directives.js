@@ -3,6 +3,41 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('sizeAdjust',['$timeout','$compile',function($timeout,$compile){
+        return {
+            restrict: 'A',
+            link:function($scope, $element,$attrs){
+                var fakeDiv = $compile(angular.element('<div ng-bind-html="content"></div>'))($scope);
+                fakeDiv.css($element.css()).css({
+                   'display'   :   'none',
+                    'word-wrap' :   'break-word',
+                    'min-height':   $element.height(),
+                    'height'    :   'auto'
+                }).insertAfter($element.css('overflow-y', 'hidden'));
+                $element.before(fakeDiv);
+                $scope.$watch($attrs.ngModel,function(value){
+                    value = String(value);
+                    $scope.content =  value.replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/'/g, '&#039;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/ /g, '&nbsp;')
+                        .replace(/((&nbsp;)*)&nbsp;/g, '$1 ')
+                        .replace(/\n/g, '<br/>')
+                        .replace(/<br \/>[ ]*$/, '<br />-')
+                        .replace(/<br \/> /g, '<br />&nbsp;');
+                        $timeout(function(){
+                            $element.height(fakeDiv.height());
+                        })
+                })
+            
+                $scope.$on('$destroy',function(){
+                    fakeDiv.remove();
+                })
+            }
+        };
+    }])
     .directive('fixScroll', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',
@@ -758,8 +793,6 @@ angular.module('gkClientIndex.directives', [])
                 $scope.loading = true;
                 $scope.fileExist = false;
                 var fileInterval;
-                var gird = /[,;；，\s]/g;
-
                 var getOptMountId = function (file) {
                     var mountID;
                     if (!file) {
@@ -828,14 +861,8 @@ angular.module('gkClientIndex.directives', [])
                             $scope.$apply(function () {
                                 $scope.loading = false;
                                 $scope.fileExist = true;
-                                angular.forEach(jQuery.trim(data.tag).split(gird), function (value) {
-                                    if (value && formatTag.indexOf(value) < 0) {
-                                        formatTag.push(value);
-                                    }
-                                });
                                 var formatFile = GKFile.formatFileItem(data, 'api');
                                 angular.extend($scope.file, formatFile);
-                                $scope.file.formatTag = formatTag;
                                 if (mount['org_id'] > 0 && $scope.file.cmd > 0 && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile) {
                                     $scope.showTab = true;
                                 } else {
@@ -854,11 +881,11 @@ angular.module('gkClientIndex.directives', [])
                         }).error(function (request) {
                                 $scope.$apply(function () {
                                     $scope.loading = false;
+                                    $scope.fileExist = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
                                     if (String(errorCode).slice(0, 3) != '404') {
                                         return;
                                     }
-                                    $scope.fileExist = false;
                                     $scope.sidbarData = {
                                         icon: 'uploading'
                                     };
@@ -913,21 +940,21 @@ angular.module('gkClientIndex.directives', [])
 
                 getFileInfo($scope.localFile);
 
-                $scope.$watch('file.formatTag', function (value, oldValue) {
-                    if (!angular.isDefined(value)
-                        || !angular.isDefined(oldValue)
-                        || value == oldValue) {
-                        return;
-                    }
-                    var fullpath = $scope.file ? $scope.file.fullpath || '' : '';
-                    if (!value) {
-                        value = '';
-                    }
-
-                    GKApi.setTag(getOptMountId($scope.file), fullpath, value.join(' ')).error(function (request) {
+                $scope.postTag = function(tag){
+                    tag = String(tag);
+                    GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
-                }, true);
+                }
+
+                $scope.handlePostKeyDown = function($event,tag){
+                    tag = String(tag);
+                    var keyCode = $event.keyword;
+                    if(keyCode==13){
+                        $scope.postTag(tag);
+                        $scope.focusPostTextarea = false;
+                    }
+                }
 
                 /**
                  * 取消发布备注

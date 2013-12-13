@@ -1198,9 +1198,29 @@ footer {
 }
 
 .right_sidebar .tags {
-    margin:8px 12px 0 12px;
+    margin:8px 12px 10px 12px;
 }
 
+.right_sidebar .tags textarea{
+    border-color:transparent;
+    background: transparent;
+    box-shadow: none;
+    resize:none;
+    padding: 5px;
+    color: #7F8999;
+    overflow: hidden;
+    min-height: 32px;
+    width: 225px;
+}
+.right_sidebar .tags textarea:hover{
+    border-color:#acb4bf;
+    background: #fff;
+}
+.right_sidebar .tags textarea:active,
+.right_sidebar .tags textarea:focus{
+    border-color:#448de8;
+    background: #fff;
+}
 .right_sidebar .tagsinput-add {
     background: #e5eaee;
     border-radius: 3px;
