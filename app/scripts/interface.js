@@ -7,6 +7,13 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    openAbout:function(){
+        try {
+            return gkClient.gAbout();
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
     getOauthKey:function(){
         try {
             return gkClient.gOAuthKey();

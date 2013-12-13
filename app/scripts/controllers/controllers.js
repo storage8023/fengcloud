@@ -1238,11 +1238,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             {
                 item: "关于",
                 menuclick: function () {
-                    var url = gkClientInterface.getUrl({
-                        sso: 1,
-                        url: '/about'
-                    });
-                    gkClientInterface.openUrl(url);
+                    gkClientInterface.openAbout();
                 }
             },
             {
