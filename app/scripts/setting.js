@@ -213,7 +213,7 @@ angular.module('gkClientSetting', ['gkClientIndex.services','gkClientIndex.direc
     })
     .filter('getDeviceName',function(){
         return function(device_name){
-            return device_name?device_name:'-';
+            return device_name?device_name:'通用设备';
         }
     })
     .filter('getDeviceStateIcon',function(){
