@@ -553,6 +553,7 @@
         gkClient.gStopSync();
     },
     removeTrans: function(params,callback){
+        console.log(arguments);
         gkClient.gRemoveTrans(JSON.stringify(params),function(re){
             re = typeof re ==='object'?re: JSON.parse(re);
             if(re && re.error==0){
