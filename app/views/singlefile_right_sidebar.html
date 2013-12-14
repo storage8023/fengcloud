@@ -44,8 +44,11 @@
                         </div>
                     </div>
 
-                    <div class="tags" ng-show="showTab">
-                        <textarea size-adjust focus-me="focusPostTextarea" ng-blur="postTag(file.tag)" maxlength="280" ng-keydown="handlePostKeyDown($event,file.tag)" class="form-control" placeholder="+添加注释" ng-model="file.tag"></textarea>
+                    <div class="tags">
+                        <div ng-if="!showTab">
+                            {{file.tag}}
+                        </div>
+                        <textarea ng-if="showTab" size-adjust focus-me="focusPostTextarea" ng-blur="postTag(file.tag)" maxlength="280" ng-keydown="handlePostKeyDown($event,file.tag)" class="form-control" placeholder="+添加注释" ng-model="file.tag"></textarea>
                     </div>
                 </section>
 
