@@ -736,7 +736,6 @@ footer {
 
 .file_list_wrapper .file_list_header {
     font-size: 12px;
-    height: 32px;
     line-height: 32px;
     position: absolute;
     top: 0;
@@ -752,11 +751,6 @@ footer {
     line-height: 30px;
     background: #428BCA;
     color:#fff;
-    position: relative;
-    left: 0;
-    right: 0;
-    top:32px;
-    z-index: 2;
 }
 .file_list_wrapper .thumb_view .file_list_hint{
     top:0;
@@ -777,9 +771,9 @@ footer {
     outline: 0;
 }
 .file_list_wrapper .has_hint .list_body{
-    padding-top: 56px;
+    padding-top: 63px;
 }
-.file_list_wrapper .file_list_header > div:hover {
+.file_list_wrapper .file_list_header .list_header > div:hover {
     background: -webkit-gradient(linear, 0 0, 0 85%, from(#dfe4ea), to(rgb(255, 255, 255)));
 }
 
@@ -806,28 +800,28 @@ footer {
 .nonetwork .file_list_wrapper .item.nocache span{
     color: #ACB4BF;
 }
-.file_list_wrapper .file_list_header i:first-child {
+.file_list_wrapper .file_list_header .list_header i:first-child {
     float: left;
     height: 30px;
     width: 1px;
     background: -webkit-gradient(linear, 0 0, 0 90%, from(#aebcd4), to(rgb(255, 255, 255)));
 }
 
-.file_list_wrapper .file_list_header i:last-child {
+.file_list_wrapper .file_list_header .list_header i:last-child {
     float: right;
     margin: 8px 8px 0 0;
     display: none;
 }
 
-.file_list_wrapper .file_list_header i:last-child.gk_down_arrow {
+.file_list_wrapper .file_list_header .list_header i:last-child.gk_down_arrow {
     margin-top: 12px;
 }
 
-.file_list_wrapper .file_list_header .current i:last-child {
+.file_list_wrapper .file_list_header .list_header .current i:last-child {
     display: inline-block;
 }
 
-.file_list_wrapper .file_list_header .file_name span {
+.file_list_wrapper .file_list_header .list_header .file_name span {
     margin: 0 0 0 15px;
 }
 .file_list_wrapper .file_icon_wrapper{

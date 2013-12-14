@@ -3,37 +3,39 @@
         <toolbar></toolbar>
         <div class="file_list_wrapper" fix-scroll>
             <div class="file_list {{view}}_view" ng-class="showHint?'has_hint':''">
-                <div class="c_f_after file_list_hint" ng-show="showHint">
-                    <span class="f_l">同步的文件夹</span>
-                    <a class="f_r go_to_local sync_opt btn btn-default" href="javascript:void(0)" ng-click="showSyncSetting()">
-                        <i class="icon16x16 icon_sync_setting"></i>
-                        <span>设置</span>
-                    </a>
-                    <a class="f_r go_to_local sync_opt btn btn-default " href="javascript:void(0)" ng-click="goToLocal()">
-                        <i class="icon16x16 icon_open_local"></i>
-                        <span>前往</span>
-                    </a>
-                </div>
                 <div class="file_list_header" ng-show="view=='list'">
-                    <div class="file_name" ng-class="order.indexOf('filename')>=0?'current':''" ng-click="setOrder('filename')">
-                        <span>文件名</span>
-                        <i ng-class="order=='-filename'?'gk_down_arrow':'gk_up_arrow'"></i>
+                    <div class="list_header">
+                        <div class="file_name" ng-class="order.indexOf('filename')>=0?'current':''" ng-click="setOrder('filename')">
+                            <span>文件名</span>
+                            <i ng-class="order=='-filename'?'gk_down_arrow':'gk_up_arrow'"></i>
+                        </div>
+                        <div class="last_edit_time" ng-class="order.indexOf('last_edit_time')>=0?'current':''"
+                             ng-click="setOrder('last_edit_time')">
+                            <i class="grid_line"></i>
+                            <span>最后修改时间</span>
+                            <i ng-class="order=='-last_edit_time'?'gk_down_arrow':'gk_up_arrow'"></i>
+                        </div>
+                        <div class="file_type" ng-class="order.indexOf('ext')>=0?'current':''" ng-click="setOrder('ext')">
+                            <i class="grid_line"></i>
+                            <span>类型</span>
+                            <i ng-class="order=='-ext'?'gk_down_arrow':'gk_up_arrow'"></i>
+                        </div>
+                        <div class="file_size" ng-class="order.indexOf('filesize')>=0?'current':''" ng-click="setOrder('filesize')">
+                            <i class="grid_line"></i>
+                            <span>大小</span>
+                            <i ng-class="order=='-filesize'?'gk_down_arrow':'gk_up_arrow'"></i>
+                        </div>
                     </div>
-                    <div class="last_edit_time" ng-class="order.indexOf('last_edit_time')>=0?'current':''"
-                         ng-click="setOrder('last_edit_time')">
-                        <i class="grid_line"></i>
-                        <span>最后修改时间</span>
-                        <i ng-class="order=='-last_edit_time'?'gk_down_arrow':'gk_up_arrow'"></i>
-                    </div>
-                    <div class="file_type" ng-class="order.indexOf('ext')>=0?'current':''" ng-click="setOrder('ext')">
-                        <i class="grid_line"></i>
-                        <span>类型</span>
-                        <i ng-class="order=='-ext'?'gk_down_arrow':'gk_up_arrow'"></i>
-                    </div>
-                    <div class="file_size" ng-class="order.indexOf('filesize')>=0?'current':''" ng-click="setOrder('filesize')">
-                        <i class="grid_line"></i>
-                        <span>大小</span>
-                        <i ng-class="order=='-filesize'?'gk_down_arrow':'gk_up_arrow'"></i>
+                    <div class="c_f_after file_list_hint" ng-show="showHint">
+                        <span class="f_l">同步的文件夹</span>
+                        <a class="f_r go_to_local sync_opt btn btn-default" href="javascript:void(0)" ng-click="showSyncSetting()">
+                            <i class="icon16x16 icon_sync_setting"></i>
+                            <span>设置</span>
+                        </a>
+                        <a class="f_r go_to_local sync_opt btn btn-default " href="javascript:void(0)" ng-click="goToLocal()">
+                            <i class="icon16x16 icon_open_local"></i>
+                            <span>前往</span>
+                        </a>
                     </div>
                 </div>
                 <div class="scrollbar list_body"
