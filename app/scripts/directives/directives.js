@@ -1137,7 +1137,7 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount','$location', function (GKFilter, GKPartition, GKSmartFolder, GKMount,$location) {
+    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount','$location','$compile','$timeout', function (GKFilter, GKPartition, GKSmartFolder, GKMount,$location,$compile,$timeout) {
         return {
             replace: true,
             restrict: 'E',
@@ -1159,6 +1159,75 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$on('editSmartFolder', function ($event, name, code, filter) {
                     if ($scope.listName && $scope.filter == filter) {
                         $scope.listName = name;
+                    }
+                })
+
+                var moreBtn;
+                var toolOpt = $element.find('.opt_tool');
+                var setUI = function(){
+                    var grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
+                    var count = 0;
+                    while(grid<0){
+                        if(count>50) break;
+                        if(!moreBtn){
+                            var moreBtnHtml = '<button class="f_l dropdown">';
+                            moreBtnHtml += '<a dropdown-toggle class="opt" href="javascript:void(0);" ng-class="">';
+                            moreBtnHtml += '<span>更多</span>';
+                            moreBtnHtml += '<i class="gk_down_arrow"></i>';
+                            moreBtnHtml += '</a>';
+                            moreBtnHtml += '<ul class="dropdown-menu">';
+                            moreBtnHtml += '</ul>';
+                            moreBtnHtml += '</button>';
+                            moreBtn = $compile(angular.element(moreBtnHtml))($scope);
+                        }
+                        var lastBtn = toolOpt.find('button.opt_btn:visible:last');
+                        var lastBtnClone = jQuery('<li/>').append(lastBtn.find('> a').clone(true));
+                        lastBtn.hide();
+                        moreBtn.appendTo(toolOpt).find('.dropdown-menu').prepend(lastBtnClone);
+                        grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
+                        count ++;
+                    }
+                }
+                var oldWidth = $element.width();
+                jQuery(window).on('resize.tool',function(){
+                    var grid = $element.width() - oldWidth;
+                    if (grid > 0) {
+                        var lastHideBtn = toolOpt.find('button.opt_btn:hidden:first');
+                        if(lastHideBtn.size() && grid>lastHideBtn.outerWidth(true)){
+                            lastHideBtn.show();
+                            if(moreBtn){
+                                moreBtn.find('.dropdown-menu li:first').remove();
+                                if(moreBtn.find('.dropdown-menu li').size()==0){
+                                    moreBtn.remove();
+                                    moreBtn = null;
+                                }
+                            }
+                        }
+                    } else {
+                        setUI();
+                    }
+                    //TODO:resize完应该重新赋值oldWidth，但无法知道resize end事件
+                    //oldWidth = $element.width();
+                })
+                $scope.$watch('opts',function(){
+                    $timeout(function(){
+                        if(moreBtn && moreBtn.size()){
+                            moreBtn.remove();
+                            moreBtn = null;
+
+                        }
+                        setUI();
+                    })
+                })
+                $timeout(function(){
+                    setUI();
+                })
+                $scope.$on('$destroy',function(){
+                    jQuery(window).off('resize.tool');
+                    if(moreBtn && moreBtn.size()){
+                        moreBtn.remove();
+                        moreBtn = null;
+                        toolOpt = null;
                     }
                 })
             }

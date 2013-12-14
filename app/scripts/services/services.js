@@ -2125,7 +2125,6 @@ angular.module('gkClientIndex.services', [])
             formatFileItem: function (value, source) {
                 var file;
                 if (source == 'api') {
-                    console.log(value);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(value.filename);
                     file = {
                         mount_id: value.mount_id || 0,
@@ -2821,7 +2820,6 @@ angular.module('gkClientIndex.services', [])
                         accesskeyText: 'Ctrl+V',
                         callback: function () {
                             var data = GKCilpboard.getData();
-
                             if (!data || !data.files || !data.mount_id) return;
                             var target = $rootScope.PAGE_CONFIG.file.fullpath;
                             if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir==1) {

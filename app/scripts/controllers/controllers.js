@@ -298,7 +298,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         var getSmartGuide = function(guideId){
-            return  '{buttons: [{name: "完成", onclick: GKGuiders.hideAll}],description: "智能文件夹中将记录最近修改过的文件。用不同的图形标记的文件，也可以在这里快速找到。",id: "'+guideId+'",position: 3,title: "智能文件夹",width: 280}';
+            return  '{buttons: [{name: "完成", onclick: GKGuiders.hideAll}],description: "智能文件夹中将记录最近修改过的文件。不同图形标记的文件（夹）也能在这里快速找到",id: "'+guideId+'",position: 3,title: "智能文件夹",width: 280}';
         }
 
         $scope.$on('$locationChangeSuccess', function () {
@@ -469,8 +469,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         /**
                          * 已展开的node才刷新数据
                          */
-                        if (node && node.expanded) {
-                            $scope.handleExpand(node);
+                        if(node){
+                            if (node.expanded) {
+                                $scope.handleExpand(node);
+                            }else{
+                                node.hasChildren = true;
+                            }
                         }
                         break;
                     case 'set_open':

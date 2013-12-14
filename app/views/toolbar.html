@@ -1,7 +1,7 @@
 <div class="toolbar">
     <div class="opt_tool" gk-guider='{
                   buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "在这里新建、复制、删除云库中的文件（夹），也可以通过右键操作",
+                  description: "在这里可以进行文件（夹）新建、复制、删除、重命名等操作。“同步”可以将云库中的文件夹与本地文件夹保持一致。你也可以通过鼠标右键菜单操作文件（夹）",
                   id: "guide_3",
                   next: "guide_4",
                   position: 6,
@@ -9,7 +9,7 @@
                   width: 280
                   }'>
     <span class="filter_name" ng-show="(!opts||!opts.length)&&listName">{{listName}}</span>
-    <button ng-repeat="opt in opts | orderBy:'+index'" class="f_l dropdown">
+    <button ng-repeat="opt in opts | orderBy:'+index'" class="f_l dropdown opt_btn">
         <a dropdown-toggle class="opt" href="javascript:void(0);" ng-class="opt.className?opt.className:'opt_'+opt.key" ng-click="opt.callback($event)">
             <i class="icon16x16" ng-class="opt.icon"></i>
             <span>{{opt.name}}</span>

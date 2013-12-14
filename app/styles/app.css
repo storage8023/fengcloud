@@ -465,6 +465,7 @@ footer {
 }
 .toolbar .opt_tool{
     display: inline-block;
+    white-space: nowrap;
 }
 .toolbar .filter_name{
     line-height: 45px;
