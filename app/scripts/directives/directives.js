@@ -31,7 +31,7 @@ angular.module('gkClientIndex.directives', [])
                             $element.height(fakeDiv.height());
                         })
                 })
-            
+
                 $scope.$on('$destroy',function(){
                     fakeDiv.remove();
                 })

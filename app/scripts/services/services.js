@@ -2824,7 +2824,7 @@ angular.module('gkClientIndex.services', [])
 
                             if (!data || !data.files || !data.mount_id) return;
                             var target = $rootScope.PAGE_CONFIG.file.fullpath;
-                            if ($scope.selectedFile.length == 1) {
+                            if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir==1) {
                                 target = $scope.selectedFile[0].fullpath;
                             }
 
