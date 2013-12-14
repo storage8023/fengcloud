@@ -1162,6 +1162,15 @@ angular.module('gkClientIndex.directives', [])
                     }
                 })
 
+                $scope.$on('editOrgObjectSuccess', function (event, mount) {
+                    if (!mount) {
+                        return;
+                    }
+                    if($scope.listName && $rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
+                        $scope.listName = mount.name;
+                    }
+                })
+
                 var moreBtn;
                 var toolOpt = $element.find('.opt_tool');
                 var setUI = function(){

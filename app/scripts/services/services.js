@@ -101,7 +101,7 @@ angular.module('gkClientIndex.services', [])
             editNode: function (list, mountId, fullpath, param) {
                 var node = this.findNode(list, mountId, fullpath);
                 if (node) {
-                    angular.extend(node.data, param);
+                    angular.extend(node, param);
                 }
             },
             findSmartNode: function (list, condition) {
@@ -444,6 +444,21 @@ angular.module('gkClientIndex.services', [])
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
                                     $modalInstance.close(orgId);
+                                }
+                            })
+                        })
+
+                        //更新云库
+                        $rootScope.$on('updateTeam', function (event, param) {
+                            if (!param) {
+                                return;
+                            }
+                            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(param.orgId)}, function (newMount) {
+                                if (newMount) {
+                                    console.log(newMount);
+                                    $scope.$apply(function () {
+                                        $rootScope.$broadcast('EditOrgObject', newMount);
+                                    });
                                 }
                             })
                         })

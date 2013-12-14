@@ -132,6 +132,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 showGuider();
             },0)
         });
+
+        $scope.$on('editOrgObjectSuccess', function (event, mount) {
+            if (!mount) {
+                return;
+            }
+            if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
+                angular.extend($rootScope.PAGE_CONFIG.mount,mount)
+            }
+        })
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout) {
         $scope.GKPartition = GKPartition;
@@ -377,28 +386,27 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-        //更新云库
-        $scope.$on('updateTeam', function (event, param) {
+        $scope.$on('EditOrgObject', function (event, param) {
             if (!param) {
                 return;
             }
-            $scope.$apply(function () {
-                var orgId = param.orgId;
-                var mount = GKMount.getMountByOrgId(orgId);
-                if (!mount) {
-                    return;
-                }
-                var newMount = GKMount.editMount(mount['mount_id'], param);
-                if (!newMount) {
-                    return;
-                }
-                var list = $scope.orgTreeList;
-                if (mount['type'] == 3) {
-                    list = $scope.orgSubscribeList;
-                }
-                GKSideTree.editNode(list, mount['mount_id'], '', param);
-
-            });
+            if (!GKMount.checkMountExsit(param.mountid)) {
+                return;
+            }
+            var editMount = GKMount.formatMountItem(param);
+            var newMount = GKMount.editMount(param.mountid, editMount);
+            if (!newMount) {
+                return;
+            }
+            var list = $scope.orgTreeList;
+            var type = GKPartition.teamFile;
+            if (newMount['type'] == 3) {
+                list = $scope.orgSubscribeList;
+                type = GKPartition.subscribeFile;
+            }
+            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'])[0];
+            GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
+            $rootScope.$broadcast('editOrgObjectSuccess',newMount);
         })
 
         /**
@@ -1193,6 +1201,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
+        $scope.$on('editOrgObjectSuccess', function (event, mount) {
+            if (!mount) {
+                return;
+            }
+            if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
+                if($scope.breads && $scope.breads.length){
+                    angular.extend($scope.breads[0],{
+                        logo:mount.logo,
+                        name:mount.name
+                    })
+                }
+            }
+        })
+
         /**
          * 前进 后退
          * @param forward
@@ -1389,6 +1411,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('editSmartFolder', function ($event, name, code, filter) {
             if ($scope.filter == filter) {
                 $scope.sidbarData.title = name;
+            }
+        })
+
+        $scope.$on('editOrgObjectSuccess', function (event, mount) {
+            if (!mount) {
+                return;
+            }
+            if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
+                angular.extend($scope.sidbarData,{
+                    photo:mount.logo,
+                    title:mount.name
+                })
             }
         })
 
