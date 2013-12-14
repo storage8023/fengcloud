@@ -74,8 +74,8 @@
                             </div>
                             <div class="file_icon_wrapper">
                                    <span ng-show="view=='list'">
-                                  <i class="file_icon" ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0">
-                                      <img error-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
+                                  <i class="file_icon {{file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)}}" ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0">
+                                      <img error-src=""
                                            ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
                                       <s ng-if="file.status==2" class="icon16x16 icon_down"></s>
                                       <s ng-if="file.status==1" class="icon16x16 icon_up"></s>

@@ -624,8 +624,14 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
+                var errorSrc = attrs.errorSrc;
                 element.on('error', function () {
-                    element.attr('src', attrs.errorSrc);
+                    if(errorSrc){
+                        element.attr('src', attrs.errorSrc);
+                    }else{
+                        element.css('display','none');
+                    }
+
                 });
             }
         }

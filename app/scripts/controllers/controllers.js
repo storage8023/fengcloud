@@ -328,12 +328,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                 })
             }
+            //console.log(branch);
             /**
              * 如果当前的路径分区与选择的节点分区不同，则需要手动unselect已选择的节点
              */
-            if (branch && $scope.selectedBranch && branch.data.partition != $scope.selectedBranch.data.partition) {
-                unSelectAllBranch();
-                selectBreanch(branch, param.partition);
+            //if (branch && $scope.selectedBranch && branch.data.partition != $scope.selectedBranch.data.partition) {
+            if (branch) {
+                if(branch != $scope.selectedBranch){
+                    unSelectAllBranch();
+                    selectBreanch(branch, param.partition);
+                }
             }
 
             if(param.filter){

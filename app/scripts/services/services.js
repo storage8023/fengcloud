@@ -3025,6 +3025,7 @@ angular.module('gkClientIndex.services', [])
                     'order_by': {
                         index: 20,
                         name: '排序方式',
+                        icon: 'icon_order',
                         className: "order_by",
                         items: {
                             'order_by_file_name': {
