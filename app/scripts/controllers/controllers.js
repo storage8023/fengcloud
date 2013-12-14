@@ -328,7 +328,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                 })
             }
-            //console.log(branch);
             /**
              * 如果当前的路径分区与选择的节点分区不同，则需要手动unselect已选择的节点
              */

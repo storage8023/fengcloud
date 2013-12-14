@@ -820,6 +820,7 @@ angular.module('gkClientIndex.directives', [])
                         webpath: fullpath
                     });
                     if(info.status ==1){
+                        $scope.sidbarData.icon = '';
                         if (fileInterval) {
                             $interval.cancel(fileInterval);
                             fileInterval = null;
@@ -827,19 +828,20 @@ angular.module('gkClientIndex.directives', [])
                         getFileInfo($scope.localFile);
                         return;
                     }
-                    if (info.offset ==0 ) {
+
+                    if (info.offset ==0  || info.offset === undefined) {
                         $scope.sidbarData.title = '准备上传中';
                     }else{
-                            var offset = Number(info.offset);
-                            var filesize = Number(info.filesize || 0);
-                            if (filesize != 0) {
-                                if (offset != 0) {
-                                    var str = Math.round(offset / filesize * 100) + '%';
-                                    $scope.sidbarData.title = '正在上传中' + str;
-                                }
-                            } else {
-                                $scope.sidbarData.title = '正在上传中';
+                        var offset = Number(info.offset);
+                        var filesize = Number(info.filesize || 0);
+                        if (filesize != 0) {
+                            if (offset != 0) {
+                                var str = Math.round(offset / filesize * 100) + '%';
+                                $scope.sidbarData.title = '正在上传中' + str;
                             }
+                        } else {
+                            $scope.sidbarData.title = '正在上传中';
+                        }
                     }
                 };
                 /**
@@ -892,13 +894,16 @@ angular.module('gkClientIndex.directives', [])
                                     if (String(errorCode).slice(0, 3) != '404') {
                                         return;
                                     }
+                                    if (errorCode == 404024 && $scope.localFile.status != 1) {
+                                        $scope.sidbarData = {
+                                            icon: 'trash',
+                                            title:'云端已删除'
+                                        };
+                                        return;
+                                    }
                                     $scope.sidbarData = {
                                         icon: 'uploading'
                                     };
-                                    if (errorCode == 404024 && $scope.localFile.status != 1) {
-                                        $scope.sidbarData.title = '云端已删除';
-                                        return;
-                                    }
                                     getFileState(mountId,file.fullpath);
                                     fileInterval = $interval(function () {
                                         getFileState(mountId,file.fullpath);
