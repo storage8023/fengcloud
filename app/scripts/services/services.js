@@ -1401,7 +1401,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKNews;
     }])
-    .factory('GKSmartFolder', ['GKFilter', function (GKFilter) {
+    .factory('GKSmartFolder', ['GKFilter','$filter', function (GKFilter,$filter) {
 
         var getFolderAliasByType = function (type) {
             var filter = '';
@@ -1447,8 +1447,9 @@ angular.module('gkClientIndex.services', [])
         if (!reSmartFolders) {
             reSmartFolders = [];
         }
+        reSmartFolders = $filter('orderBy')(reSmartFolders, '+condition');
         reSmartFolders.unshift({
-            condition: 0,
+            condition: '0',
             name: '最近修改的文件'
         })
         var smartFolders = [], item;

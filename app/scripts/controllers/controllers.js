@@ -187,6 +187,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         var smartFolders = GKSmartFolder.getFolders();
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder);
+        console.log($scope.smartTreeList);
 
         $scope.$on('RemoveMagicObject', function ($event, param) {
             $scope.$apply(function () {
