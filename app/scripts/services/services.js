@@ -4152,7 +4152,6 @@ angular.module('gkClientIndex.services', [])
                         var desc = $scope.order.indexOf('-') ? '-' : '+';
                         order = [desc + 'dir', $scope.order];
                     }
-                    $scope.fileData = null;
                     $scope.fileData = $filter('orderBy')(newFileData, order);
                     //$scope.fileData = newFileData;
                     if (selectPath) {

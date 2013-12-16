@@ -739,7 +739,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var desc = newValue.indexOf('-') ? '-' : '+';
                 order = [desc + 'dir', newValue];
             }
-            $scope.fileData = GKFileList.ref
             $scope.fileData = $filter('orderBy')($scope.fileData, order);
             GKFileList.reIndex($scope.fileData);
         })
