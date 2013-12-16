@@ -1335,7 +1335,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
                             $scope.sidbarData.menus = [
                                 {
-                                    text: '库资料',
+                                    text: '资料',
                                     icon: 'icon_info',
                                     name: 'visit_website',
                                     click: function () {
@@ -1343,7 +1343,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                     }
                                 },
                                 {
-                                    text: '库名片',
+                                    text: '名片',
                                     icon: 'icon_teamcard',
                                     name: 'team_card',
                                     click: function () {
@@ -1356,7 +1356,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
                                 if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
                                     $scope.sidbarData.menus.push({
-                                        text: '库成员',
+                                        text: '成员',
                                         icon: 'icon_team',
                                         name: 'member_group',
                                         click: function () {
@@ -1364,7 +1364,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                         }
                                     });
                                     $scope.sidbarData.menus.push({
-                                        text: '库订阅者',
+                                        text: '订阅者',
                                         icon: 'icon_pin',
                                         name: 'subscriber',
                                         click: function () {
@@ -1374,7 +1374,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 }
                                 if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
                                     $scope.sidbarData.menus.push({
-                                        text: '库安全设置',
+                                        text: '安全设置',
                                         icon: 'icon_manage',
                                         name: 'manage_team',
                                         click: function () {
@@ -1384,7 +1384,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 }
                                 if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
                                     $scope.sidbarData.menus.push({
-                                        text: '库升级',
+                                        text: '升级',
                                         icon: 'icon_team_upgrade',
                                         name: 'team_upgrade',
                                         click: function () {

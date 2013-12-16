@@ -179,53 +179,32 @@ angular.module('gkClientIndex.services', [])
                             },
                         }
                     } else {
-                        items = {
-                            'new_folder': {
-                                name: '新建文件夹',
-                                callback: function () {
-                                    GKModal.createTeamFolder(mountId, fullpath);
-                                }
-                            }
-                        };
+                        items = {};
                         if (!fullpath) {
                             angular.extend(items, {
-                                'sync': {
-                                    name: '创建同步文件夹',
-                                    callback: function () {
-                                        GKModal.backUp(mountId);
-                                    }
-                                },
-                                'create_team_folder': {
-                                    name: '创建公开文件夹',
-                                    callback: function () {
-                                        GKModal.createTeamFolder(mountId, '', 1);
-                                    }
-                                },
                                 'view_dashboard': {
-                                    name: '库资料',
+                                    name: '资料',
                                     callback: function () {
                                         GKModal.teamOverview(orgId);
                                     }
                                 },
                                 'view_card': {
-                                    name: '库名片',
+                                    name: '名片',
                                     callback: function () {
                                         GKModal.teamCard(orgId);
                                     }
                                 }
-
-
                             });
                             if (GKMount.isMember(mount)) {
                                 angular.extend(items, {
                                     'view_member': {
-                                        name: '库成员',
+                                        name: '成员',
                                         callback: function () {
                                             GKModal.teamMember(data.org_id);
                                         }
                                     },
                                     'view_subscriber': {
-                                        name: '库订阅者',
+                                        name: '订阅者',
                                         callback: function () {
                                             GKModal.teamSubscribe(data.org_id);
                                         }
@@ -235,7 +214,7 @@ angular.module('gkClientIndex.services', [])
                             if (GKMount.isAdmin(mount)) {
                                 angular.extend(items, {
                                     'manage': {
-                                        name: '库安全设置',
+                                        name: '安全设置',
                                         callback: function () {
                                             GKModal.teamManage(data.org_id);
                                         }
@@ -245,7 +224,7 @@ angular.module('gkClientIndex.services', [])
                             if (GKMount.isSuperAdmin(mount)) {
                                 angular.extend(items, {
                                     'team_upgrade': {
-                                        name: '库升级',
+                                        name: '升级',
                                         callback: function () {
                                             var url = gkClientInterface.getUrl({
                                                 sso: 1,
@@ -286,13 +265,13 @@ angular.module('gkClientIndex.services', [])
                 } else if (data.partition == GKPartition.subscribeFile) {
                     items = {
                         'view_dashboard': {
-                            name: '库资料',
+                            name: '资料',
                             callback: function () {
                                 GKModal.teamOverview(orgId);
                             }
                         },
                         'view_card': {
-                            name: '库名片',
+                            name: '名片',
                             callback: function () {
                                 GKModal.teamCard(orgId);
                             }
