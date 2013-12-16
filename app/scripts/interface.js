@@ -162,9 +162,14 @@
         }
 
     },
-    logOff:function(){
+    logOff:function(param){
         try {
-            gkClient.gLogoff();
+            if(!param){
+                gkClient.gLogoff();
+            }else{
+                gkClient.gLogoff(JSON.stringify(param));
+            }
+
         } catch (e) {
             this._handleException(e);
         }

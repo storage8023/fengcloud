@@ -3242,6 +3242,34 @@ angular.module('gkClientIndex.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            editPassword:function (oldPassword,newPassword) {
+            var params = {
+                password:oldPassword,
+                newpassword:newPassword,
+                token: GK.getToken()
+            };
+            var sign = GK.getApiAuthorization(params);
+            params.sign = sign;
+            return jQuery.ajax({
+                type: 'POST',
+                url: GK.getApiHost() + '/1/account/set_password',
+                dataType: 'json',
+                data: params
+            })
+        },
+            mounts: function () {
+                var params = {
+                    token: GK.getToken()
+                };
+                var sign = GK.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: GK.getApiHost() + '/1/account/mount',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             addToFav: function (mountId, fullpath, type) {
                 var params = {
                     mount_id: mountId,
@@ -4249,7 +4277,7 @@ angular.module('gkClientIndex.services', [])
                     url: url,
                     type: "sole",
                     width: 794,
-                    resize: 1,
+                    resize: 0,
                     height: 490
                 }
                 gkClientInterface.setMain(data);
@@ -4265,7 +4293,7 @@ angular.module('gkClientIndex.services', [])
                     type: "sole",
                     width: 794,
                     height: 490,
-                    resize: 1
+                    resize: 0,
                 }
                 gkClientInterface.setMain(data);
             },

@@ -37,8 +37,10 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 if(params.error!=0){
                     alert(params.message);
                     return;
+                }else{
+                    $scope.showStep('device');
                 }
-                $scope.showStep('device');
+
             })
         })
 

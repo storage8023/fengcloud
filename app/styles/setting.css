@@ -253,12 +253,21 @@ width: 112px;
 .sync .list .item .icon_sync_done{
     background-position: -84px -64px;
 }
+.account .member_info{
+    height: 94px;
+    padding: 15px;
+}
+.account .member_info > div{
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .account .photo_wrapper{
-    display: inline-block;
     width: 64px;
     height: 64px;
     position: relative;
-    margin: 0 5px 0 0;
+    margin: 0 10px 0 0;
 }
 .account .photo_wrapper .loading{
     position: absolute;
@@ -268,29 +277,113 @@ width: 112px;
     width: 16px;
     height: 16px;
 }
+.account .other_info{
+    width: 140px;
+}
+.account .other_info a:hover,
+.account .other_info a:active{
+    color: #738295;
+}
 .account img.avatar{
     width: 64px;
     height: 64px;
     border-radius: 64px;
     margin: 0;
 }
-.account section{
-    padding: 15px;
+.other_info .member_role i{
+   display: inline-block;
+    width: 13px;
+    height: 13px;
+    background: #7F8999;
+    color: #fff;
+    font-family: sans-serif;
+    font-style: normal;
+    border-radius: 2px;
+    line-height: 13px;
+    text-align: center;
+}
+.other_info .member_role .vip i{
+    background: #448DE8;
+}
+.account h3{
+font-size: 14px;
 }
 
 .account section .member_name{
     font-size: 26px;
 }
-.account section ul{
-    margin-left: 75px;
+.account section ul.info_list{
+    margin-left: 214px;
     color: #7F8999;
     font-size: 13px;
+    margin-top: -83px;
 }
-.account section ul li{
-    margin: 15px 0;
+.account section ul.info_list li{
+    margin: 1px 0;
+    line-height: 24px;
 }
-.account section ul li .icon16x16{
+.account section ul.info_list li .icon16x16{
     margin-right: 5px;
+}
+.account section ul.info_list li a{
+    color: #5595e9;
+}
+.account section ul.info_list .form-control{
+    padding:3px 5px;
+    height: 26px;
+    width: 120px;
+}
+.account section .mount_list_wrapper{
+    clear: both;
+    background: #f1f1f1;
+    border-top:1px solid #cecece;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:94px;
+    bottom: 90px;
+    overflow: auto;
+    padding: 10px;
+}
+.account section.vip_account .mount_list_wrapper{
+    bottom: 0;
+}
+.account section .mount_list li{
+    width: 100px;
+    float: left;
+    text-align: center;
+    margin: 10px 10px 0 10px;
+    font-size: 12px;
+}
+.account section .mount_list li .name{
+    font-size: 14px;
+}
+.account section .mount_list li > img{
+
+}
+.account section .mount_list li > div{
+    height: 20px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.account section .mount_list li .remain_day{
+    cursor: pointer;
+}
+.account section .mount_list li .expired{
+    color: #f00;
+}
+.account section .view_banner{
+   cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background:#33b59f url(../images/vip_banner.png) no-repeat 50%;
+}
+.account section.vip_account .view_banner{
+    display: none;
 }
 .advance .form_layer > div{
     margin-top: 5px;
@@ -298,6 +391,7 @@ width: 112px;
 .advance input[type="text"]{
     width: 50%;
 }
+
 /*传输队列的样式*/
 
 aside ul li.active i.icon_download_white{

@@ -94,5 +94,6 @@ angular.module('gkClientIndex.filters', [])
             return dir==1 ? '文件夹' : ext+GKFile.getFileTypeName(type);
         }
     }])
+
 ;
 
