@@ -53,10 +53,10 @@
                         <span>{{errorMsg}}</span>
                     </div>
                     <div ng-if="!errorMsg">
-                        <div class="item file_item"
+                        <div class="item file_item {{file.cache==0 && file.dir==0?'nocache':''}}"
                              rename-file="file.rename"
                              rename-file-submit = "renameFileSubmit(filename,file)"
-                             ng-class="{'nocache':file.cache==0 && file.dir==0,'selected':selectedFile.indexOf(file)>=0}"
+                             ng-class="{'selected':selectedFile.indexOf(file)>=0}"
                              sly-repeat="file in fileData"
                              ng-dblclick="handleDblClick(file)"
                              ng-click="handleClick($event,$index)"

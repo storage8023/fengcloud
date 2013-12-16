@@ -4048,9 +4048,11 @@ angular.module('gkClientIndex.services', [])
                         source = 'api';
                         GKSearch.setSearchState('loading');
                         var condition = GKSearch.getCondition();
-                        GKApi.searchFile(condition, $scope.mountId).success(function (data) {
+                        var mountId = GKSearch.getMountId();
+                        GKApi.searchFile(condition, mountId).success(function (data) {
                             GKSearch.setSearchState('end');
                             fileList = data['list'];
+                            //console.log(fileList);
                             deferred.resolve(GKFile.dealFileList(fileList, source));
                         }).error(function (request) {
                                 GKSearch.setSearchState('end');
@@ -4192,6 +4194,12 @@ angular.module('gkClientIndex.services', [])
                     return '';
                 }
                 return JSONCondition['include']['keywords'][1] || '';
+            },
+            getMountId:function(){
+                if (!this.checkExist('mount_id')) {
+                    return 0;
+                }
+                return JSONCondition['include']['mount_id'][1] || 0;
             },
             setSearchState: function (state) {
                 searchState = state;

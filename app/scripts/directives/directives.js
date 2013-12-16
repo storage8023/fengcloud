@@ -3,21 +3,21 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
-    .directive('sizeAdjust',['$timeout','$compile',function($timeout,$compile){
+    .directive('sizeAdjust', ['$timeout', '$compile', function ($timeout, $compile) {
         return {
             restrict: 'A',
-            link:function($scope, $element,$attrs){
+            link: function ($scope, $element, $attrs) {
                 var fakeDiv = $compile(angular.element('<div ng-bind-html="content"></div>'))($scope);
                 fakeDiv.css($element.css()).css({
-                   'display'   :   'none',
-                    'word-wrap' :   'break-word',
-                    'min-height':   $element.height(),
-                    'height'    :   'auto'
+                    'display': 'none',
+                    'word-wrap': 'break-word',
+                    'min-height': $element.height(),
+                    'height': 'auto'
                 }).insertAfter($element.css('overflow-y', 'hidden'));
                 $element.before(fakeDiv);
-                $scope.$watch($attrs.ngModel,function(value){
+                $scope.$watch($attrs.ngModel, function (value) {
                     value = String(value);
-                    $scope.content =  value.replace(/&/g, '&amp;')
+                    $scope.content = value.replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
                         .replace(/>/g, '&gt;')
                         .replace(/'/g, '&#039;')
@@ -27,12 +27,12 @@ angular.module('gkClientIndex.directives', [])
                         .replace(/\n/g, '<br/>')
                         .replace(/<br \/>[ ]*$/, '<br />-')
                         .replace(/<br \/> /g, '<br />&nbsp;');
-                        $timeout(function(){
-                            $element.height(fakeDiv.height());
-                        })
+                    $timeout(function () {
+                        $element.height(fakeDiv.height());
+                    })
                 })
 
-                $scope.$on('$destroy',function(){
+                $scope.$on('$destroy', function () {
                     fakeDiv.remove();
                 })
             }
@@ -350,12 +350,12 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     })
-    .directive('gkGuider', ['GKGuiders', '$parse', '$timeout',function (GKGuiders, $parse,$timeout) {
+    .directive('gkGuider', ['GKGuiders', '$parse', '$timeout', function (GKGuiders, $parse, $timeout) {
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
                 $scope.GKGuiders = GKGuiders;
-                $timeout(function(){
+                $timeout(function () {
                     $attrs.$observe('gkGuider', function (newValue) {
                         var option = $scope.$eval(newValue);
                         angular.extend(option, {
@@ -626,10 +626,10 @@ angular.module('gkClientIndex.directives', [])
             link: function (scope, element, attrs) {
                 var errorSrc = attrs.errorSrc;
                 element.on('error', function () {
-                    if(errorSrc){
+                    if (errorSrc) {
                         element.attr('src', attrs.errorSrc);
-                    }else{
-                        element.css('display','none');
+                    } else {
+                        element.css('display', 'none');
                     }
 
                 });
@@ -814,12 +814,12 @@ angular.module('gkClientIndex.directives', [])
                 $scope.inputingRemark = false;
                 $scope.remarkText = '';
 
-                var getFileState = function(mountId,fullpath){
+                var getFileState = function (mountId, fullpath) {
                     var info = gkClientInterface.getTransInfo({
                         mountid: mountId,
                         webpath: fullpath
                     });
-                    if(info.status ==1){
+                    if (info.status == 1) {
                         $scope.sidbarData.icon = '';
                         if (fileInterval) {
                             $interval.cancel(fileInterval);
@@ -829,9 +829,9 @@ angular.module('gkClientIndex.directives', [])
                         return;
                     }
 
-                    if (info.offset ==0  || info.offset === undefined) {
+                    if (info.offset == 0 || info.offset === undefined) {
                         $scope.sidbarData.title = '准备上传中';
-                    }else{
+                    } else {
                         var offset = Number(info.offset);
                         var filesize = Number(info.filesize || 0);
                         if (filesize != 0) {
@@ -847,8 +847,8 @@ angular.module('gkClientIndex.directives', [])
                 /**
                  * 通过接口获取文件信息
                  */
-                var getFileInfo = function (file, options){
-                    if(fileInterval){
+                var getFileInfo = function (file, options) {
+                    if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;
                     }
@@ -858,7 +858,6 @@ angular.module('gkClientIndex.directives', [])
                     };
 
                     options = angular.extend({}, defaultOptions, options);
-
                     var mountId = getOptMountId(file);
                     var mount = GKMount.getMountById(mountId);
                     var fullpath = file.dir == 1 ? file.fullpath + '/' : file.fullpath;
@@ -897,16 +896,16 @@ angular.module('gkClientIndex.directives', [])
                                     if (errorCode == 404024 && $scope.localFile.status != 1) {
                                         $scope.sidbarData = {
                                             icon: 'trash',
-                                            title:'云端已删除'
+                                            title: '云端已删除'
                                         };
                                         return;
                                     }
                                     $scope.sidbarData = {
                                         icon: 'uploading'
                                     };
-                                    getFileState(mountId,file.fullpath);
+                                    getFileState(mountId, file.fullpath);
                                     fileInterval = $interval(function () {
-                                        getFileState(mountId,file.fullpath);
+                                        getFileState(mountId, file.fullpath);
                                     }, 1000);
                                 })
                             });
@@ -951,17 +950,17 @@ angular.module('gkClientIndex.directives', [])
 
                 getFileInfo($scope.localFile);
 
-                $scope.postTag = function(tag){
+                $scope.postTag = function (tag) {
                     tag = String(tag);
                     GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
                 }
 
-                $scope.handlePostKeyDown = function($event,tag){
+                $scope.handlePostKeyDown = function ($event, tag) {
                     tag = String(tag);
                     var keyCode = $event.keyword;
-                    if(keyCode==13){
+                    if (keyCode == 13) {
                         $scope.postTag(tag);
                         $scope.focusPostTextarea = false;
                     }
@@ -1148,17 +1147,17 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount','$location','$compile','$timeout', function (GKFilter, GKPartition, GKSmartFolder, GKMount,$location,$compile,$timeout) {
+    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/toolbar.html",
             link: function ($scope, $element) {
-                $scope.$on('$locationChangeSuccess',function(){
-                    var param = $location.search(),listName = '';
-                    if(param.keyword){
+                $scope.$on('$locationChangeSuccess', function () {
+                    var param = $location.search(), listName = '';
+                    if (param.keyword) {
                         listName = '搜索结果';
-                    }else{
+                    } else {
                         if (param.partition == GKPartition.smartFolder && param.filter) {
                             listName = GKSmartFolder.getSmartFoldeName(param.filter);
                         } else {
@@ -1182,19 +1181,19 @@ angular.module('gkClientIndex.directives', [])
                     if (!mount) {
                         return;
                     }
-                    if($scope.listName && $rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
+                    if ($scope.listName && $rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
                         $scope.listName = mount.name;
                     }
                 })
 
                 var moreBtn;
                 var toolOpt = $element.find('.opt_tool');
-                var setUI = function(){
+                var setUI = function () {
                     var grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
                     var count = 0;
-                    while(grid<0){
-                        if(count>50) break;
-                        if(!moreBtn){
+                    while (grid < 0) {
+                        if (count > 50) break;
+                        if (!moreBtn) {
                             var moreBtnHtml = '<button class="f_l dropdown">';
                             moreBtnHtml += '<a dropdown-toggle class="opt" href="javascript:void(0);" ng-class="">';
                             moreBtnHtml += '<span>更多</span>';
@@ -1210,19 +1209,19 @@ angular.module('gkClientIndex.directives', [])
                         lastBtn.hide();
                         moreBtn.appendTo(toolOpt).find('.dropdown-menu').prepend(lastBtnClone);
                         grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
-                        count ++;
+                        count++;
                     }
                 }
                 var oldWidth = $element.width();
-                jQuery(window).on('resize.tool',function(){
+                jQuery(window).on('resize.tool', function () {
                     var grid = $element.width() - oldWidth;
                     if (grid > 0) {
                         var lastHideBtn = toolOpt.find('button.opt_btn:hidden:first');
-                        if(lastHideBtn.size() && grid>lastHideBtn.outerWidth(true)){
+                        if (lastHideBtn.size() && grid > lastHideBtn.outerWidth(true)) {
                             lastHideBtn.show();
-                            if(moreBtn){
+                            if (moreBtn) {
                                 moreBtn.find('.dropdown-menu li:first').remove();
-                                if(moreBtn.find('.dropdown-menu li').size()==0){
+                                if (moreBtn.find('.dropdown-menu li').size() == 0) {
                                     moreBtn.remove();
                                     moreBtn = null;
                                 }
@@ -1234,9 +1233,9 @@ angular.module('gkClientIndex.directives', [])
                     //TODO:resize完应该重新赋值oldWidth，但无法知道resize end事件
                     //oldWidth = $element.width();
                 })
-                $scope.$watch('opts',function(){
-                    $timeout(function(){
-                        if(moreBtn && moreBtn.size()){
+                $scope.$watch('opts', function () {
+                    $timeout(function () {
+                        if (moreBtn && moreBtn.size()) {
                             moreBtn.remove();
                             moreBtn = null;
 
@@ -1244,12 +1243,12 @@ angular.module('gkClientIndex.directives', [])
                         setUI();
                     })
                 })
-                $timeout(function(){
+                $timeout(function () {
                     setUI();
                 })
-                $scope.$on('$destroy',function(){
+                $scope.$on('$destroy', function () {
                     jQuery(window).off('resize.tool');
-                    if(moreBtn && moreBtn.size()){
+                    if (moreBtn && moreBtn.size()) {
                         moreBtn.remove();
                         moreBtn = null;
                         toolOpt = null;
@@ -1577,7 +1576,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', '$rootScope', 'GKSmartFolder',function ($location, $timeout, GKSearch, GKPartition, $rootScope,GKSmartFolder) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', '$rootScope', 'GKSmartFolder', function ($location, $timeout, GKSearch, GKPartition, $rootScope, GKSmartFolder) {
         return {
             replace: true,
             restrict: 'E',
@@ -1587,6 +1586,7 @@ angular.module('gkClientIndex.directives', [])
                 var searchIcon = $element.find('.icon-search');
                 var eleWidth = $element.width();
                 var hideBread = $element.find('.hide_bread');
+                $scope.currentSearchScope = null;
                 /**
                  * 显示搜索模式
                  * @param $event
@@ -1675,14 +1675,6 @@ angular.module('gkClientIndex.directives', [])
                     $event.stopPropagation();
                 };
 
-                /**
-                 * 搜索的范围
-                 * @type {string}
-                 */
-                $scope.searchScope = 'path';
-                $scope.setSearchScope = function (searchScope) {
-                    $scope.searchScope = searchScope;
-                }
 
                 $scope.$watch(function () {
                     return GKSearch.getSearchState();
@@ -1697,6 +1689,9 @@ angular.module('gkClientIndex.directives', [])
                     if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                         return;
                     }
+                    if(!$scope.currentSearchScope){
+                        return;
+                    }
                     if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || ($scope.searchScope == 'path' && $scope.PAGE_CONFIG.filter == 'trash')) {
                         $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
                     } else {
@@ -1705,8 +1700,14 @@ angular.module('gkClientIndex.directives', [])
                         };
                         var fileSearch = new GKFileSearch();
                         fileSearch.conditionIncludeKeyword($scope.keyword);
-                        fileSearch.conditionIncludePath($scope.searchScope == 'path' ? $scope.path : '');
+                        if(['mount','path'].indexOf($scope.currentSearchScope.name)>=0){
+                            fileSearch.conditionIncludeMountId($scope.PAGE_CONFIG.mount.mount_id);
+                        }
+                        if($scope.currentSearchScope.name == 'path'){
+                            fileSearch.conditionIncludePath($scope.path);
+                        }
                         var condition = fileSearch.getCondition();
+
                         GKSearch.setCondition(condition);
                         var search = $location.search();
                         $location.search(angular.extend(search, params));
@@ -1731,7 +1732,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                     $event.stopPropagation();
                 };
-//
+
                 $('body').on('mousedown.resetsearch', function (event) {
                     $scope.$apply(function () {
                         if (
@@ -1748,35 +1749,41 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.disableSearch = false;
 
-                var getSearchScopes = function(){
+                var getSearchScopes = function () {
                     var searchScopes = [];
                     var params = $location.search();
-                    if(params.filter){
+                    if (params.filter) {
                         searchScopes.push({
-                            name:'filter',
-                            text:GKSmartFolder.getSmartFoldeName(params.filter)
+                            name: 'filter',
+                            text: GKSmartFolder.getSmartFoldeName(params.filter)
                         })
-                    }else{
-                        searchScopes = [
-                            {
-                                name:'partition',
-                                text:'我的云库'
-                            },
-                            {
-                                name:'mount',
-                                text:$rootScope.PAGE_CONFIG.mount['name']
-                            },
-                        ];
-
-                        if(params.path){
+                    } else {
+                        if(params.partition == GKPartition.teamFile){
                             searchScopes.push({
-                                name:'path',
-                                text:Util.String.baseName(params.path)
+                                name: 'partition',
+                                text: '我的云库'
+                            });
+                        }
+                        searchScopes.push({
+                            name: 'mount',
+                            text: $rootScope.PAGE_CONFIG.mount['name']
+                        });
+
+                        if (params.path) {
+                            searchScopes.push({
+                                name: 'path',
+                                text: Util.String.baseName(params.path)
                             })
                         }
                     }
-                    return searchScopes;
-                }
+                    $scope.searchScopes = searchScopes;
+                    var len = $scope.searchScopes.length;
+                    if (len) {
+                        $scope.currentSearchScope = $scope.searchScopes[len - 1];
+                    }
+                };
+
+
                 $scope.$on('$locationChangeSuccess', function ($e, $new, $old) {
                     var keyStr = '&keyword=';
                     var strArr = $new.split(keyStr);
@@ -1789,11 +1796,16 @@ angular.module('gkClientIndex.directives', [])
                     }
                     if (newStr != $old) {
                         resetSearch();
-                        $scope.searchScopes = getSearchScopes();
+                        getSearchScopes();
+
                     }
                 });
-                $scope.searchScopes = getSearchScopes();
-                console.log($scope.searchScopes);
+                getSearchScopes();
+
+                $scope.setSearchScope = function (searchScope) {
+                    $scope.currentSearchScope = searchScope;
+                }
+
                 $scope.$on('$destroy', function () {
                     $('body').off('mousedown.resetsearch');
                     jQuery(window).off('resize');

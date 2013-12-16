@@ -11543,13 +11543,14 @@ function $RootScopeProvider(){
         beginPhase('$digest');
 
         lastDirtyWatch = null;
-
+        var count = 0;
         do { // "while dirty" loop
           dirty = false;
           current = target;
 
           while(asyncQueue.length) {
             try {
+                count++;
               asyncTask = asyncQueue.shift();
               asyncTask.scope.$eval(asyncTask.expression);
             } catch (e) {
@@ -11562,6 +11563,7 @@ function $RootScopeProvider(){
           traverseScopesLoop:
           do { // "traverse the scopes" loop
             if ((watchers = current.$$watchers)) {
+                count++;
               // process our watches
               length = watchers.length;
               while (length--) {
@@ -11629,11 +11631,13 @@ function $RootScopeProvider(){
 
         while(postDigestQueue.length) {
           try {
+              count++;
             postDigestQueue.shift()();
           } catch (e) {
             $exceptionHandler(e);
           }
         }
+          //console.log(count);
       },
 
 
