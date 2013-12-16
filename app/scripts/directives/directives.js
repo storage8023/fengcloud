@@ -1156,15 +1156,20 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
                 $scope.$on('$locationChangeSuccess',function(){
                     var param = $location.search(),listName = '';
-                    if (param.partition == GKPartition.smartFolder && param.filter) {
-                        listName = GKSmartFolder.getSmartFoldeName(param.filter);
-                        $scope.listName = listName;
-                    } else {
-                        var mount = GKMount.getMountById(param.mountid);
-                        if (mount) {
-                            $scope.listName = mount['name'];
+                    if(param.keyword){
+                        listName = '搜索结果';
+                    }else{
+                        if (param.partition == GKPartition.smartFolder && param.filter) {
+                            listName = GKSmartFolder.getSmartFoldeName(param.filter);
+                        } else {
+                            var mount = GKMount.getMountById(param.mountid);
+                            if (mount) {
+                                listName = mount['name'];
+                            }
                         }
                     }
+
+                    $scope.listName = listName;
                 })
 
                 $scope.$on('editSmartFolder', function ($event, name, code, filter) {
@@ -1572,7 +1577,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', '$rootScope', function ($location, $timeout, GKSearch, GKPartition, $rootScope) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', '$rootScope', 'GKSmartFolder',function ($location, $timeout, GKSearch, GKPartition, $rootScope,GKSmartFolder) {
         return {
             replace: true,
             restrict: 'E',
@@ -1743,6 +1748,35 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.disableSearch = false;
 
+                var getSearchScopes = function(){
+                    var searchScopes = [];
+                    var params = $location.search();
+                    if(params.filter){
+                        searchScopes.push({
+                            name:'filter',
+                            text:GKSmartFolder.getSmartFoldeName(params.filter)
+                        })
+                    }else{
+                        searchScopes = [
+                            {
+                                name:'partition',
+                                text:'我的云库'
+                            },
+                            {
+                                name:'mount',
+                                text:$rootScope.PAGE_CONFIG.mount['name']
+                            },
+                        ];
+
+                        if(params.path){
+                            searchScopes.push({
+                                name:'path',
+                                text:Util.String.baseName(params.path)
+                            })
+                        }
+                    }
+                    return searchScopes;
+                }
                 $scope.$on('$locationChangeSuccess', function ($e, $new, $old) {
                     var keyStr = '&keyword=';
                     var strArr = $new.split(keyStr);
@@ -1755,9 +1789,11 @@ angular.module('gkClientIndex.directives', [])
                     }
                     if (newStr != $old) {
                         resetSearch();
+                        $scope.searchScopes = getSearchScopes();
                     }
                 });
-
+                $scope.searchScopes = getSearchScopes();
+                console.log($scope.searchScopes);
                 $scope.$on('$destroy', function () {
                     $('body').off('mousedown.resetsearch');
                     jQuery(window).off('resize');

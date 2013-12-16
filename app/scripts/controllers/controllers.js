@@ -739,6 +739,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var desc = newValue.indexOf('-') ? '-' : '+';
                 order = [desc + 'dir', newValue];
             }
+            $scope.fileData = GKFileList.ref
             $scope.fileData = $filter('orderBy')($scope.fileData, order);
             GKFileList.reIndex($scope.fileData);
         })
@@ -1120,7 +1121,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var start = $scope.fileData.length;
             if (start >= $scope.totalCount) return;
-            GKFileList.getFileData($scope, start).then(function (list) {
+            GKFileList.getFileData($scope, {start:start}).then(function (list) {
                 $scope.fileData = $scope.fileData.concat(list);
             })
         }

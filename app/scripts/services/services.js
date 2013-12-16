@@ -2419,7 +2419,9 @@ angular.module('gkClientIndex.services', [])
                         if (GKCilpboard.isEmpty()) {
                             this.disableOpt(opts, 'paste');
                         }
+                        if(!isSearch){
                         this.disableOpt(opts, 'goto');
+                        }
 
                         break;
                     case GKPartition.subscribeFile:
@@ -3927,7 +3929,7 @@ angular.module('gkClientIndex.services', [])
                 if (!multiSelect && selectedFile && selectedFile.length) {
                     this.unSelectAll($scope);
                 }
-                $scope.fileData[index].selected = true;
+                //$scope.fileData[index].selected = true;
                 if (selectedIndex.indexOf(index) < 0) {
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
@@ -4022,8 +4024,11 @@ angular.module('gkClientIndex.services', [])
                 } while (exist);
                 return defaultFileName;
             },
-            getFileData: function ($scope, start) {
-                start = angular.isDefined(start) ? start : 0;
+            getFileData: function ($scope, options) {
+                var defaultOptions = {
+                    start:0
+                }
+                options = angular.extend({},defaultOptions,options);
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
@@ -4061,7 +4066,7 @@ angular.module('gkClientIndex.services', [])
                          */
                     } else if ($scope.partition == GKPartition.subscribeFile) {
                         source = 'api';
-                        GKApi.list($scope.mountId, $scope.path, start, 13).success(function (data) {
+                        GKApi.list($scope.mountId, $scope.path, options.start, 100).success(function (data) {
                             fileList = data['list'];
                             $scope.totalCount = data['count'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));
@@ -4142,6 +4147,7 @@ angular.module('gkClientIndex.services', [])
                     }
                     $scope.fileData = null;
                     $scope.fileData = $filter('orderBy')(newFileData, order);
+                    //$scope.fileData = newFileData;
                     if (selectPath) {
                         GKFileList.unSelectAll($scope);
                         angular.forEach(selectPath.split('|'), function (value) {

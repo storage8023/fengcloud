@@ -100,7 +100,7 @@ header .bread_and_search_wrapper .searching_label > a {
 }
 
 header .bread_and_search_wrapper .searching_label > a > .gk_down_arrow{
-    border-top-color: #333;
+    border-top-color: #fff;
     position: absolute;
     top:9px;
     right: 8px;
