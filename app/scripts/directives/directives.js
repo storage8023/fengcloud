@@ -342,6 +342,10 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch($attrs.createNewFolder, function (value, oldValue) {
                     if (value == oldValue) return;
                     if (value == true) {
+                        var dir = 0;
+                        if(!newFileExt){
+                            dir = 1 ;
+                        }
                         $element.scrollTop(0);
                         var newFileExt = $attrs.createNewFileExt;
                         var defaultNewName = GKFileList.getDefualtNewName($scope,newFileExt);
@@ -358,12 +362,9 @@ angular.module('gkClientIndex.directives', [])
                                 }
                             }
 
-                            fn($scope, {filename: filename});
+                            fn($scope, {filename: filename,dir:dir});
                         };
-                        var dir = 0;
-                        if(!newFileExt){
-                            dir = 1 ;
-                        }
+
                         newFileItem = $compile(angular.element('<new-file-item dir="{{'+dir+'}}" view="{{view}}" default-new-name="' + defaultNewName + '" is-share="{{' + isShare + '}}" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                         newFileItem.addClass('selected').prependTo($element);
                     } else {
@@ -531,8 +532,7 @@ angular.module('gkClientIndex.directives', [])
                 input.on('blur', function (event) {
                     if ($scope.onSubmit != null) {
                         $scope.onSubmit({
-                            filename: $scope.filename,
-                            dir:$scope.dir
+                            filename: $scope.filename
                         });
                     }
                 })
@@ -542,8 +542,7 @@ angular.module('gkClientIndex.directives', [])
                         $scope.$apply(function () {
                             if ($scope.onSubmit != null) {
                                 $scope.onSubmit({
-                                    filename: $scope.filename,
-                                    dir:$scope.dir
+                                    filename: $scope.filename
                                 });
                             }
                         });

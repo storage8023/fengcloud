@@ -910,6 +910,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.createFileNameSubmit = function (filename,dir) {
+            console.log(arguments);
             if (!GKFile.checkFilename(filename)) {
                 return;
             }
