@@ -3943,7 +3943,7 @@ angular.module('gkClientIndex.services', [])
                 if (selectedIndex.indexOf(index) < 0) {
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
-                    //$scope.selectedFile = selectedFile;
+                    $scope.selectedFile = selectedFile;
                 }
             },
             unSelect: function ($scope, index) {

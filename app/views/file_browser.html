@@ -42,7 +42,7 @@
                      ng-drop="handleSysDrop($event)"
                      ng-mousedown="handleMouseDown($event)"
                      ng-right-click="handleRightClick($event)"
-                     ng-class="{'selected':selectedFile.indexOf(file)>=0}"
+
                      ng-model="testModel"
                      scroll-load= "handleScrollLoad()"
                      ng-model="testModel"
@@ -54,10 +54,10 @@
                         <span>{{errorMsg}}</span>
                     </div>
                     <div ng-if="!errorMsg">
-                        <div class="item file_item {{file.cache==0 && file.dir==0?'nocache':''}}"
+                        <div class="item file_item"
                              rename-file="file.rename"
                              rename-file-submit = "renameFileSubmit(filename,file)"
-
+                             ng-class="{'nocache':file.cache==0 && file.dir==0,'selected':selectedFile.indexOf(file)>=0}"
                              ng-repeat="file in fileData | limitTo:limit"
                              ng-dblclick="handleDblClick(file)"
                              ng-click="handleClick($event,$index)"
