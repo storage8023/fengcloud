@@ -675,7 +675,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
             $scope.allOpts = null;
-            console.log($scope.opts);
+            //console.log($scope.opts);
         }
 
         $scope.triggleOptByShortCut = function (shortcut) {
