@@ -342,18 +342,29 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch($attrs.createNewFolder, function (value, oldValue) {
                     if (value == oldValue) return;
                     if (value == true) {
-                        var defaultNewName = GKFileList.getDefualtNewName($scope);
+                        $element.scrollTop(0);
+                        var newFileExt = $attrs.createNewFileExt;
+                        var defaultNewName = GKFileList.getDefualtNewName($scope,newFileExt);
                         var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
                         GKFileList.unSelectAll($scope);
                         $scope.submitNewFileName = function (filename) {
                             if (!filename.length) {
                                 filename = defaultNewName
                             }
+                            if(newFileExt){
+                                var ext = Util.String.getExt(filename);
+                                if(ext != newFileExt){
+                                    filename+='.'+newFileExt;
+                                }
+                            }
+
                             fn($scope, {filename: filename});
                         };
-                        var isShare = 0;
-
-                        newFileItem = $compile(angular.element('<new-file-item view="{{view}}" default-new-name="' + defaultNewName + '" is-share="{{' + isShare + '}}" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
+                        var dir = 0;
+                        if(!newFileExt){
+                            dir = 1 ;
+                        }
+                        newFileItem = $compile(angular.element('<new-file-item dir="{{'+dir+'}}" view="{{view}}" default-new-name="' + defaultNewName + '" is-share="{{' + isShare + '}}" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                         newFileItem.addClass('selected').prependTo($element);
                     } else {
                         if (newFileItem) {
@@ -511,7 +522,8 @@ angular.module('gkClientIndex.directives', [])
                 'onSubmit': '&',
                 'view': '@',
                 'isShare': '@',
-                'defaultNewName': '@'
+                'defaultNewName': '@',
+                'dir':'@'
             },
             link: function ($scope, $element, $attrs) {
                 $scope.filename = $scope.defaultNewName ? $scope.defaultNewName : '新建文件夹';
@@ -519,7 +531,8 @@ angular.module('gkClientIndex.directives', [])
                 input.on('blur', function (event) {
                     if ($scope.onSubmit != null) {
                         $scope.onSubmit({
-                            filename: $scope.filename
+                            filename: $scope.filename,
+                            dir:$scope.dir
                         });
                     }
                 })
@@ -529,7 +542,8 @@ angular.module('gkClientIndex.directives', [])
                         $scope.$apply(function () {
                             if ($scope.onSubmit != null) {
                                 $scope.onSubmit({
-                                    filename: $scope.filename
+                                    filename: $scope.filename,
+                                    dir:$scope.dir
                                 });
                             }
                         });
@@ -538,6 +552,13 @@ angular.module('gkClientIndex.directives', [])
 
                 $timeout(function () {
                     input[0].select();
+                    var selectionEnd = $scope.defaultNewName.length;
+                    var extIndex = $scope.defaultNewName.lastIndexOf('.');
+                    if ($scope.dir == 0 && extIndex > 0) {
+                        selectionEnd = extIndex;
+                    }
+                    input[0].selectionStart = 0;
+                    input[0].selectionEnd = selectionEnd;
                     input.focus();
                 }, 0)
 

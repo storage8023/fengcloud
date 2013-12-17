@@ -675,6 +675,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
             $scope.allOpts = null;
+            console.log($scope.opts);
         }
 
         $scope.triggleOptByShortCut = function (shortcut) {
@@ -908,14 +909,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-        $scope.createFileNameSubmit = function (filename) {
+        $scope.createFileNameSubmit = function (filename,dir) {
             if (!GKFile.checkFilename(filename)) {
                 return;
             }
             var webpath = $scope.path ? $scope.path + '/' + filename : filename;
             var params = {
                 webpath: webpath,
-                dir: 1,
+                dir: Number(dir),
                 mountid: $scope.mountId
             };
             GK.createFolder(params).then(function () {
@@ -1379,7 +1380,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             click: function () {
                                 var url = gkClientInterface.getUrl({
                                     sso: 1,
-                                    url: '/pay/order?org_id=' + orgId
+                                    url: '/pay/order?org_id=' + $rootScope.PAGE_CONFIG.mount.org_id
                                 })
                                 gkClientInterface.openUrl(url);
                             }

@@ -1384,7 +1384,6 @@ angular.module('gkClientIndex.services', [])
         return GKNews;
     }])
     .factory('GKSmartFolder', ['GKFilter','$filter', function (GKFilter,$filter) {
-
         var getFolderAliasByType = function (type) {
             var filter = '';
             switch (type) {
@@ -2334,6 +2333,10 @@ angular.module('gkClientIndex.services', [])
                     'goto', //打开位置
                     'open_with', //打开方式
                     'new_file',
+                    'new_doc_file',
+                    'new_xls_file',
+                    'new_ppt_file',
+                    'new_txt_file',
                     //'nearby', //附近
                     'unsubscribe', //取消订阅
                     'new_folder', //新建
@@ -2386,6 +2389,12 @@ angular.module('gkClientIndex.services', [])
              * */
             getPartitionOpts: function (partition, filter, mount, isSearch) {
                 var opts = this.getDefaultOpts();
+                if(gkClientInterface.isWindowsClient()){
+                    this.disableOpt(opts, 'new_txt_file');
+                }else{
+                    this.disableOpt(opts, 'new_doc_file', 'new_ppt_file', 'new_xls_file');
+                }
+
                 switch (partition) {
                     case GKPartition.myFile:
                     case GKPartition.teamFile:
@@ -2407,14 +2416,14 @@ angular.module('gkClientIndex.services', [])
 
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts, 'create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
+                        this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
                     case GKPartition.smartFolder:
-                        this.disableOpt(opts, 'del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         break;
                 }
                 if (isSearch) {
-                    this.disableOpt(opts, 'sync', 'unsync', 'new_file', 'new_folder', 'add', 'create', 'paste', 'manage');
+                    this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','sync', 'unsync', 'new_file', 'new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },
@@ -2655,14 +2664,16 @@ angular.module('gkClientIndex.services', [])
                                 index: 0,
                                 className: "new_folder",
                                 callback: function () {
+
                                     if (arguments.length <= 1) {
+                                        $scope.createNewFileExt = '';
                                         $scope.createNewFolder = true;
                                     } else {
                                         $scope.$apply(function () {
+                                            $scope.createNewFileExt = '';
                                             $scope.createNewFolder = true;
                                         })
                                     }
-
                                 }
                             },
                             'create': {
@@ -2701,7 +2712,75 @@ angular.module('gkClientIndex.services', [])
                                     })
 
                                 }
-                            }
+                            },
+                            'new_doc_file': {
+                                name: '新建Word文档',
+                                index: 3,
+                                className: "new_doc_file",
+                                callback: function () {
+                                    if (arguments.length <= 1) {
+                                        $scope.createNewFileExt = 'doc';
+                                        $scope.createNewFolder = true;
+                                    } else {
+                                        $scope.$apply(function () {
+                                            $scope.createNewFileExt = 'doc';
+                                            $scope.createNewFolder = true;
+                                        })
+                                    }
+
+                                }
+                            },
+                            'new_ppt_file': {
+                                name: '新建PPT文档',
+                                index: 4,
+                                className: "new_ppt_file",
+                                callback: function () {
+                                    if (arguments.length <= 1) {
+                                        $scope.createNewFileExt = 'ppt';
+                                        $scope.createNewFolder = true;
+                                    } else {
+                                        $scope.$apply(function () {
+                                            $scope.createNewFileExt = 'ppt';
+                                            $scope.createNewFolder = true;
+                                        })
+                                    }
+
+                                }
+                            },
+                            'new_xls_file': {
+                                name: '新建Excel文档',
+                                index: 5,
+                                className: "new_xls_file",
+                                callback: function () {
+                                    if (arguments.length <= 1) {
+                                        $scope.createNewFileExt = 'xls';
+                                        $scope.createNewFolder = true;
+                                    } else {
+                                        $scope.$apply(function () {
+                                            $scope.createNewFileExt = 'xls';
+                                            $scope.createNewFolder = true;
+                                        })
+                                    }
+
+                                }
+                            },
+                            'new_txt_file': {
+                                name: '新建文本文档',
+                                index: 6,
+                                className: "new_txt_file",
+                                callback: function () {
+                                    if (arguments.length <= 1) {
+                                        $scope.createNewFileExt = 'txt';
+                                        $scope.createNewFolder = true;
+                                    } else {
+                                        $scope.$apply(function () {
+                                            $scope.createNewFileExt = 'txt';
+                                            $scope.createNewFolder = true;
+                                        })
+                                    }
+
+                                }
+                            },
                         }
                     },
                     'unsubscribe': {
@@ -4021,12 +4100,35 @@ angular.module('gkClientIndex.services', [])
                 $scope.selectedFile = [];
                 $scope.$broadcast('selectedFileChange',selectedFile);
             },
-            getDefualtNewName: function ($scope) {
-                var preName = '新建文件夹';
+            getPreNameByExt:function(ext){
+                console.log(ext);
+                var preName = '';
+                switch (ext){
+                    case 'doc':
+                        preName = '新建 Microsoft Word 文档';
+                        break;
+                    case 'xls':
+                        preName = '新建 Microsoft Excel 工作表';
+                        break;
+                    case 'ppt':
+                        preName = '新建 Microsoft PowerPoint 演示文稿';
+                        break;
+                    case 'txt':
+                        preName = '新建文本文档';
+                        break;
+                    default :
+                        preName = '新建文件夹';
+                        break;
+                }
+                return preName;
+            },
+            getDefualtNewName: function ($scope,ext) {
+                ext = angular.isDefined(ext)?ext:'';
+                var preName = this.getPreNameByExt(ext);
                 var count = 0;
                 do {
                     var exist = false;
-                    var defaultFileName = preName + (!count ? '' : '(' + count + ')');
+                    var defaultFileName = preName + (!count ? '' : '(' + count + ')')+(ext?'.'+ext:'');
                     angular.forEach($scope.fileData, function (value) {
                         if (String(value.filename) === defaultFileName) {
                             exist = true;

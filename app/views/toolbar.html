@@ -16,7 +16,7 @@
             <i class="gk_down_arrow" ng-show="opt.items"></i>
         </a>
         <ul class="dropdown-menu" ng-if="opt.items">
-            <li ng-repeat="subOpt in opt.items | orderBy:'+index'">
+            <li ng-repeat="subOpt in opt.items | orderObjectBy:'index'">
                 <a href="javascript:;" ng-class="subOpt.className?subOpt.className:'opt_'+subOpt.key"
                    ng-click="subOpt.callback($event)">
                     <i></i><span>{{subOpt.name}}</span>
