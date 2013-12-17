@@ -342,7 +342,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch($attrs.createNewFolder, function (value, oldValue) {
                     if (value == oldValue) return;
                     if (value == true) {
-                        $element.scrol;lTop(0);
+                        $element.scrollTop(0);
                         var newFileExt = $attrs.createNewFileExt;
                         var dir = 0;
                         if(!newFileExt){
