@@ -441,6 +441,9 @@ angular.module('gkClientIndex.services', [])
                                 }
                             })
                         })
+                        $rootScope.$on('closeModal', function () {
+                            $modalInstance.dismiss('cancel');
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -3940,7 +3943,7 @@ angular.module('gkClientIndex.services', [])
                 if (selectedIndex.indexOf(index) < 0) {
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
-                    $scope.selectedFile = selectedFile;
+                    //$scope.selectedFile = selectedFile;
                 }
             },
             unSelect: function ($scope, index) {
@@ -4093,6 +4096,7 @@ angular.module('gkClientIndex.services', [])
                             current: 1
                         });
                         fileList = re['list'];
+                        $scope.totalCount = fileList.length||0;
                         deferred.resolve(GKFile.dealFileList(fileList, source));
                         re = null;
                     }

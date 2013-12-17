@@ -861,8 +861,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
         };
-
+        $scope.limit = 50;
         $scope.$on('$locationChangeSuccess',function(){
+            $scope.limit = 50;
             getFileData();
         })
 
@@ -1115,14 +1116,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         $scope.handleScrollLoad = function () {
-            if ($scope.partition != GKPartition.subscribeFile) {
-                return;
+
+            if ($scope.partition == GKPartition.subscribeFile) {
+                var start = $scope.fileData.length;
+                if (start >= $scope.totalCount) return;
+
+                GKFileList.getFileData($scope, {start:start}).then(function (list) {
+                    $scope.fileData = $scope.fileData.concat(list);
+                })
+            }else if($scope.partition == GKPartition.teamFile){
+                $scope.limit += 50;
             }
-            var start = $scope.fileData.length;
-            if (start >= $scope.totalCount) return;
-            GKFileList.getFileData($scope, {start:start}).then(function (list) {
-                $scope.fileData = $scope.fileData.concat(list);
-            })
+
         }
 
         /**

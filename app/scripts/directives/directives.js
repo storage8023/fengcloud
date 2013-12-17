@@ -68,9 +68,21 @@ angular.module('gkClientIndex.directives', [])
                     setListHeaderWidth();
                 });
 
-                var fixTimer = $timeout(function () {
+                var fixTimer;
+
+                fixTimer = $timeout(function () {
                     setListHeaderWidth();
                 }, 0);
+
+                $scope.$on('$locationChangeSuccess',function(){
+                    if (fixTimer) {
+                        $timeout.cancel(fixTimer);
+                        fixTimer = null;
+                    }
+                     fixTimer = $timeout(function () {
+                        setListHeaderWidth();
+                    }, 0);
+                })
 
                 $scope.$on('$destroy', function () {
                     jQuery(window).off('resize.fixScroll');
@@ -258,6 +270,18 @@ angular.module('gkClientIndex.directives', [])
                     input,
                     nameElem;
                 var fn = $parse($attrs.renameFileSubmit);
+
+                var clear = function(){
+                    fileItem.removeClass('file_item_edit');
+                    if (input) {
+                        input.remove();
+                        input = null;
+                    }
+                    if (nameElem) {
+                        nameElem.show();
+                        nameElem = null;
+                    }
+                }
                 $scope.$watch($attrs.renameFile, function (value, oldValue) {
                     if (value == oldValue) return;
                     if (value == true) {
@@ -294,16 +318,18 @@ angular.module('gkClientIndex.directives', [])
                             fn($scope, {filename: newFileName});
                         })
                     } else {
-                        fileItem.removeClass('file_item_edit');
-                        if (input) {
-                            input.remove();
-                        }
-                        if (nameElem) {
-                            nameElem.show();
-                            nameElem = null;
-                        }
+                        clear();
                     }
                 });
+
+
+                $scope.$on('$destroy',function(){
+                    clear();
+                })
+
+                $scope.$on('$locationChangeSuccess',function(){
+                    clear();
+                })
             }
         };
     }])
@@ -335,6 +361,20 @@ angular.module('gkClientIndex.directives', [])
                         }
                     }
                 });
+
+                $scope.$on('$destroy',function(){
+                  if(newFileItem){
+                      newFileItem.remove();
+                      newFileItem = null;
+                  }
+                })
+
+                $scope.$on('$locationChangeSuccess',function(){
+                    if(newFileItem){
+                        newFileItem.remove();
+                        newFileItem = null;
+                    }
+                })
             }
         };
     }])

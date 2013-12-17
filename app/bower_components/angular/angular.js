@@ -11563,6 +11563,7 @@ function $RootScopeProvider(){
           traverseScopesLoop:
           do { // "traverse the scopes" loop
             if ((watchers = current.$$watchers)) {
+                console.log(watchers);
                 count++;
               // process our watches
               length = watchers.length;
