@@ -57,7 +57,7 @@
                         <div class="item file_item"
                              rename-file="file.rename"
                              rename-file-submit = "renameFileSubmit(filename,file)"
-                             ng-class="{'nocache':file.cache==0 && file.dir==0,'selected':selectedFile.indexOf(file)>=0}"
+                             ng-class="getItemClasses(file)"
                              ng-repeat="file in fileData | limitTo:limit"
                              ng-dblclick="handleDblClick(file)"
                              ng-click="handleClick($event,$index)"

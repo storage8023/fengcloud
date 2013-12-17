@@ -1186,6 +1186,7 @@ footer {
 }
 .right_sidebar .file_icon {
     margin: 15px 0 0 10px;
+    height: 64px;
 }
 
 .right_sidebar .file_icon img {

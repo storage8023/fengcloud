@@ -695,12 +695,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 操作
          * @type {Array}
          */
-        $scope.$watch('selectedFile', function (newValue, oldValue) {
-            if (!newValue || newValue === oldValue) {
-                return;
-            }
+        $scope.$on('selectedFileChange',function($event,selectedFile){
             setOpts();
-        }, true);
+        })
 
         $scope.$watch('rightOpts', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
@@ -876,6 +873,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         getFileData();
+
+        $scope.getItemClasses = function(file){
+            var classes = {
+                'nocache' : file.cache==0 && file.dir==0,
+                'selected':$scope.selectedFile.indexOf(file)>=0
+            };
+            return classes;
+        };
 
         $scope.renameFileSubmit = function (filename, file) {
             if (!GKFile.checkFilename(filename)) {
@@ -1296,125 +1301,122 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.remindMembers = [];//可@的成员列表
         $scope.localFile = null;
         $scope.sidebar = 'nofile';
+        $scope.localFile = $rootScope.PAGE_CONFIG.file;
+        var getSidbarData = function(params){
+            var sideBarData;
+            if(params.keyword){
+                sideBarData =  {
+                    title: '搜索结果',
+                    tip: '',
+                    icon: 'search'
+                };
+            }else if(!params.filter){
+                var title = $rootScope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
+                sideBarData = {
+                    title:title,
+                    tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
+                    photo: "",
+                    attrHtml: '',
+                    menus: []
+                };
 
-        $scope.$watch('[selectedFile,path,mountId]', function (newValue, oldValue) {
-            if (!newValue[0] || !newValue[0].length) { //未选中文件
-                $scope.localFile = $rootScope.PAGE_CONFIG.file;
-            } else if (newValue[0].length == 1) { //选中了一个文件
-                $scope.localFile = newValue[0][0];
-            } else { //多选
-                $scope.localFile = null;
-            }
-        }, true);
-
-        $scope.$watch('[partition,selectedFile,filter,localFile,keyword]', function (newValue, oldValue) {
-            var selected = newValue[1] || [];
-            if (selected.length > 1) {
-                $scope.sidebar = 'multifile';
-            } else if ((selected.length == 1 || (newValue[3] && newValue[3].fullpath))&& newValue[2]!='trash') {
-                $scope.sidebar = 'singlefile';
-            } else {
-                $scope.sidebar = 'nofile';
-                if ($scope.keyword) {
-                    $scope.sidbarData = {
-                        title: '搜索结果',
-                        tip: '',
-                        icon: 'search'
-                    }
-                }
-                else {
-                    if (!$scope.filter) {
-                        if ($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id) {
-                            var title = $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
-                            $scope.sidbarData = {
-                                title: $scope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '',
-                                tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
-                                photo: "",
-                                attrHtml: '',
-                                menus: []
-                            };
-
-                            $scope.sidbarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
-                            $scope.sidbarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
-
-                            $scope.sidbarData.menus = [
-                                {
-                                    text: '资料',
-                                    icon: 'icon_info',
-                                    name: 'visit_website',
-                                    click: function () {
-                                        GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                },
-                                {
-                                    text: '名片',
-                                    icon: 'icon_teamcard',
-                                    name: 'team_card',
-                                    click: function () {
-                                        GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
-                                    }
-                                },
-                            ];
-
-                            if ($scope.partition == GKPartition.teamFile) {
-                                $scope.sidbarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                                if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
-                                    $scope.sidbarData.menus.push({
-                                        text: '成员',
-                                        icon: 'icon_team',
-                                        name: 'member_group',
-                                        click: function () {
-                                            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
-                                        }
-                                    });
-                                    $scope.sidbarData.menus.push({
-                                        text: '订阅者',
-                                        icon: 'icon_pin',
-                                        name: 'subscriber',
-                                        click: function () {
-                                            GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
-                                        }
-                                    });
-                                }
-                                if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
-                                    $scope.sidbarData.menus.push({
-                                        text: '安全设置',
-                                        icon: 'icon_manage',
-                                        name: 'manage_team',
-                                        click: function () {
-                                            GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
-                                        }
-                                    })
-                                }
-                                if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
-                                    $scope.sidbarData.menus.push({
-                                        text: '升级',
-                                        icon: 'icon_team_upgrade',
-                                        name: 'team_upgrade',
-                                        click: function () {
-                                            var url = gkClientInterface.getUrl({
-                                                sso: 1,
-                                                url: '/pay/order?org_id=' + orgId
-                                            })
-                                            gkClientInterface.openUrl(url);
-                                        }
-                                    })
-                                }
-                            }
+                sideBarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
+                sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
+                sideBarData.menus = [
+                    {
+                        text: '资料',
+                        icon: 'icon_info',
+                        name: 'visit_website',
+                        click: function () {
+                            GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
                         }
+                    },
+                    {
+                        text: '名片',
+                        icon: 'icon_teamcard',
+                        name: 'team_card',
+                        click: function () {
+                            GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
+                        }
+                    },
+                ];
 
-                    } else {
-                        var filterName = GKSmartFolder.getSmartFoldeName($scope.filter);
-                        $scope.sidbarData = {
-                            title: filterName,
-                            tip: GKFilter.getFilterTip($scope.filter),
-                            icon: $scope.filter
-                        };
-
+                if (params.partition == GKPartition.teamFile) {
+                    sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
+                    if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
+                        sideBarData.menus.push({
+                            text: '成员',
+                            icon: 'icon_team',
+                            name: 'member_group',
+                            click: function () {
+                                GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+                            }
+                        });
+                        sideBarData.menus.push({
+                            text: '订阅者',
+                            icon: 'icon_pin',
+                            name: 'subscriber',
+                            click: function () {
+                                GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+                            }
+                        });
+                    }
+                    if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
+                        sideBarData.menus.push({
+                            text: '安全设置',
+                            icon: 'icon_manage',
+                            name: 'manage_team',
+                            click: function () {
+                                GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
+                            }
+                        })
+                    }
+                    if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
+                        sideBarData.menus.push({
+                            text: '升级',
+                            icon: 'icon_team_upgrade',
+                            name: 'team_upgrade',
+                            click: function () {
+                                var url = gkClientInterface.getUrl({
+                                    sso: 1,
+                                    url: '/pay/order?org_id=' + orgId
+                                })
+                                gkClientInterface.openUrl(url);
+                            }
+                        })
                     }
                 }
+            }else if(params.filter){
+                var filterName = GKSmartFolder.getSmartFoldeName(params.filter);
+                sideBarData = {
+                    title: filterName,
+                    tip: GKFilter.getFilterTip(params.filter),
+                    icon: params.filter
+                };
             }
-        }, true);
+            return sideBarData;
+        };
+
+        $scope.sidbarData = getSidbarData($location.search());
+        $scope.$on('$locationChangeSuccess',function(){
+            var param = $location.search();
+            $scope.localFile = $rootScope.PAGE_CONFIG.file;
+            $scope.sidbarData = getSidbarData(param);
+        })
+
+        $scope.$on('selectedFileChange',function($event,selectedFile){
+           if(!selectedFile.length){
+               $scope.localFile = $rootScope.PAGE_CONFIG.file;
+               $scope.sidebar = 'nofile';
+
+           }else if(selectedFile.length ==1){
+               $scope.localFile = selectedFile[0];
+               $scope.sidebar = 'singlefile';
+           }else{
+               $scope.localFile = null;
+               $scope.sidebar = 'multifile';
+           }
+        })
 
         $scope.$on('editSmartFolder', function ($event, name, code, filter) {
             if ($scope.filter == filter) {

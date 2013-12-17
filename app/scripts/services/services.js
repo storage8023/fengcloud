@@ -3944,6 +3944,7 @@ angular.module('gkClientIndex.services', [])
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $scope.selectedFile = selectedFile;
+                    $scope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelect: function ($scope, index) {
@@ -3956,6 +3957,7 @@ angular.module('gkClientIndex.services', [])
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
                     $scope.selectedFile = selectedFile;
+                    $scope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelectAll: function ($scope) {
@@ -4012,11 +4014,12 @@ angular.module('gkClientIndex.services', [])
             },
             removeAllSelectFile: function ($scope) {
                 var context = this;
-                angular.forEach($scope.selectedFile, function (value) {
+                angular.forEach(selectedFile, function (value) {
                     context.remove($scope, value);
                 });
+                selectedFile = [];
                 $scope.selectedFile = [];
-                $scope.selectedIndex = [];
+                $scope.$broadcast('selectedFileChange',selectedFile);
             },
             getDefualtNewName: function ($scope) {
                 var preName = '新建文件夹';

@@ -259,6 +259,8 @@ width: 112px;
 }
 .account .member_info > div{
     float: left;
+}
+.account .member_info > div > div{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -313,7 +315,7 @@ font-size: 14px;
     font-size: 26px;
 }
 .account section ul.info_list{
-    margin-left: 214px;
+    margin-left: 240px;
     color: #7F8999;
     font-size: 13px;
     margin-top: -83px;
