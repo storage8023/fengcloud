@@ -2390,7 +2390,7 @@ angular.module('gkClientIndex.services', [])
             getPartitionOpts: function (partition, filter, mount, isSearch) {
                 var opts = this.getDefaultOpts();
                 if(gkClientInterface.isWindowsClient()){
-                    this.disableOpt(opts, 'new_txt_file');
+                    //this.disableOpt(opts, 'new_txt_file');
                 }else{
                     this.disableOpt(opts, 'new_doc_file', 'new_ppt_file', 'new_xls_file');
                 }
