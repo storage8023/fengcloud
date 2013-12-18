@@ -4023,7 +4023,7 @@ angular.module('gkClientIndex.services', [])
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $scope.selectedFile = selectedFile;
-                    $scope.$broadcast('selectedFileChange',selectedFile);
+                    $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelect: function ($scope, index) {
@@ -4036,7 +4036,7 @@ angular.module('gkClientIndex.services', [])
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
                     $scope.selectedFile = selectedFile;
-                    $scope.$broadcast('selectedFileChange',selectedFile);
+                    $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelectAll: function ($scope) {
@@ -4098,7 +4098,7 @@ angular.module('gkClientIndex.services', [])
                 });
                 selectedFile = [];
                 $scope.selectedFile = [];
-                $scope.$broadcast('selectedFileChange',selectedFile);
+                $rootScope.$broadcast('selectedFileChange',selectedFile);
             },
             getPreNameByExt:function(ext){
                 console.log(ext);

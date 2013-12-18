@@ -308,7 +308,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var getSmartGuide = function(guideId){
             return  '{buttons: [{name: "完成", onclick: GKGuiders.hideAll}],description: "智能文件夹中将记录最近修改过的文件。不同图形标记的文件（夹）也能在这里快速找到",id: "'+guideId+'",position: 3,title: "智能文件夹",width: 280}';
-        }
+        };
+
+        $timeout(function(){
+            $scope.smartFolderGuider = getSmartGuide('guide_5');
+        },500);
 
         $scope.$on('$locationChangeSuccess', function () {
             var param = $location.search();
@@ -345,12 +349,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
-        $scope.$watch(function(){
-            return GKFileList.getSelectedFile().length;
-        },function(newValue){
+        $scope.$on('selectedFileChange',function($event,selectedFile){
             $timeout(function(){
                 var guideId = '';
-                if(newValue==1){
+                if(selectedFile.length==1){
                     if($scope.PAGE_CONFIG.partition == GKPartition.subscribeFile){
                         guideId = 'guide_5';
                     }else{
@@ -361,7 +363,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
                 $scope.smartFolderGuider = getSmartGuide(guideId);
             },0)
-
         })
 
         /**
@@ -910,7 +911,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.createFileNameSubmit = function (filename,dir) {
-            console.log(arguments);
             if (!GKFile.checkFilename(filename)) {
                 return;
             }
