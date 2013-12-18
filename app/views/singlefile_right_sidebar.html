@@ -97,7 +97,7 @@
                     </tab>
                     <tab heading='历史'>
                         <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
-                        <ul class="scrollbar history_list" gk-version-contextmenu="localFile">
+                        <ul class="scrollbar history_list" gk-version-contextmenu>
                             <li class="item c_f_after" ng-class="'act_'+history.act" ng-repeat="history in histories" data-version="{{history.property.version}}">
                                 <div class="act_name"><span>{{history.act_name}}</span></div>
                                 <div class="act_info">

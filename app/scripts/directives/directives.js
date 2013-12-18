@@ -7,15 +7,12 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-
-                var file = $scope.$eval($attrs.gkVersionContextmenu);
-
-                var mountId = file.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id;
-
                 var getVersion =  function(triggerElem){
                     return Number(triggerElem.data('version'));
-
-                }
+                };
+                var getMountId = function(){
+                    return $scope.localFile.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id;
+                };
                 /**
                  * 设置右键菜单
                  */
@@ -41,10 +38,11 @@ angular.module('gkClientIndex.directives', [])
                                 if(!version){
                                     return;
                                 }
+                                var mountId = getMountId();
                                 if(!mountId) return;
                                 gkClientInterface.open({
                                     mountid:mountId,
-                                    webpath:file.fullpath,
+                                    webpath:$scope.localFile.fullpath,
                                     version:version
                                 });
                             }
@@ -57,10 +55,11 @@ angular.module('gkClientIndex.directives', [])
                                 if(!version){
                                     return;
                                 }
+                                var mountId = getMountId();
                                 if(!mountId) return;
                                 gkClientInterface.revert({
                                     mountid:mountId,
-                                    webpath:file.fullpath,
+                                    webpath:$scope.localFile.fullpath,
                                     version:version
                                 },function(msg){
                                     if(!msg.error){
@@ -80,11 +79,12 @@ angular.module('gkClientIndex.directives', [])
                                 if(!version){
                                     return;
                                 }
+                                var mountId = getMountId();
                                 if(!mountId) return;
                                 var param = {
                                     list:[{
                                         mountid:mountId,
-                                        webpath:file.fullpath,
+                                        webpath:$scope.localFile.fullpath,
                                         version:version
                                     }]
                                 }
