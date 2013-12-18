@@ -4160,6 +4160,7 @@ angular.module('gkClientIndex.services', [])
                         var condition = GKSearch.getCondition();
                         var mountId = GKSearch.getMountId();
                         GKApi.searchFile(condition, mountId).success(function (data) {
+                            $scope.errorMsg = '';
                             GKSearch.setSearchState('end');
                             fileList = data['list'];
                             //console.log(fileList);
@@ -4259,7 +4260,9 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
             refreahData: function ($scope, selectPath) {
+                $scope.loadingFileData = true;
                 GKFileList.getFileData($scope).then(function (newFileData) {
+                    $scope.loadingFileData = false;
                     var order = $scope.order;
                     if ($scope.order.indexOf('filename') >= 0) {
                         var desc = $scope.order.indexOf('-') ? '-' : '+';
@@ -4276,9 +4279,14 @@ angular.module('gkClientIndex.services', [])
 
                     }
                     if ((!$scope.fileData || !$scope.fileData.length)) {
-                        $scope.errorMsg = '该文件夹为空';
+                        if($scope.keyword){
+                            $scope.errorMsg = '未找到相关搜索结果';
+                        }else{
+                            $scope.errorMsg = '该文件夹为空';
+                        }
                     }
                 }, function (errorMsg) {
+                    $scope.loadingFileData = false;
                     $scope.errorMsg = errorMsg;
                 })
             }

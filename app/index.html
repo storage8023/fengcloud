@@ -189,10 +189,13 @@
                          create-file-submit="createFileNameSubmit(filename,dir)"
                          keybroad-nav
                             >
-                        <div class="empty" ng-if="errorMsg">
+                        <div class="empty" ng-if="loadingFileData">
+                            <span>正在加载...</span>
+                        </div>
+                        <div class="empty" ng-if="errorMsg && !loadingFileData">
                             <span>{{errorMsg}}</span>
                         </div>
-                        <div ng-if="!errorMsg">
+                        <div ng-if="!errorMsg && !loadingFileData">
                             <div class="item file_item"
                                  rename-file="file.rename"
                                  rename-file-submit="renameFileSubmit(filename,file)"
