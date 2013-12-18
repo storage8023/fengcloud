@@ -3177,8 +3177,9 @@ angular.module('gkClientIndex.services', [])
                 var method = 'REMIND';
                 var webpath = Util.String.encodeRequestUri(fullpath);
                 var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return $http({
-                    method: method,
+                return jQuery.ajax({
+                    type: method,
+                    dataType:'json',
                     url: GK.getRestHost() + webpath,
                     headers: {
                         'x-gk-mount': mount_id,
@@ -3187,9 +3188,9 @@ angular.module('gkClientIndex.services', [])
                         'Authorization': authorization,
                         'Content-Type': "application/x-www-form-urlencoded"
                     },
-                    data: jQuery.param({
+                    data:{
                         message: message
-                    })
+                    }
                 })
             },
             recycle: function (mount_id, fullpath, order, start, size) {

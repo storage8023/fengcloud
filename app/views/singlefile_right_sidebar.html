@@ -88,7 +88,7 @@
                             <a href="javascript:void(0)" ng-click="insertAt('@all ')" class="f_l"
                                title="提醒所有共享者">@全部</a>
                             </span>
-                                        <button class="btn btn-primary f_r" ng-click="postRemark(remarkText)">确定</button>
+                                        <button class="btn btn-primary f_r" ng-disabled="posting" ng-click="postRemark(remarkText)">确定</button>
                                     </div>
                                 </div>
                             </div>

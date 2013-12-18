@@ -1058,21 +1058,30 @@ angular.module('gkClientIndex.directives', [])
                         }, 0)
                     }
                 })
-
+                $scope.posting = false;
                 /**
                  * 发布讨论
                  */
                 $scope.postRemark = function (remarkText) {
+                    if($scope.posting){
+                        return;
+                    }
                     if (!remarkText || !remarkText.length) return;
                     var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
+                    $scope.posting = true;
                     RestFile.remind(getOptMountId($scope.file), fullpath, remarkText).success(function (data) {
-                        $scope.cancelPostRemark();
-                        if (data && data.length) {
-                            $scope.remarks.unshift(data[0]);
-                        }
-
+                        $scope.$apply(function(){
+                            $scope.posting = false;
+                            $scope.cancelPostRemark();
+                            if (data && data.length) {
+                                $scope.remarks.unshift(data[0]);
+                            }
+                        })
                     }).error(function (request) {
+                            $scope.$apply(function(){
+                            $scope.posting = false;
                             GKException.handleAjaxException(request);
+                            })
                         });
                 };
 
