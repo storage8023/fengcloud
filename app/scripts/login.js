@@ -72,7 +72,6 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 return;
             }
             var password = $scope.registPassword;
-            //$scope.step = 'device';
             $scope.loading = true;
             GKApi.regist($scope.registUsername,$scope.registEmail,password,1).success(function(){
                 gkClientInterface.login({

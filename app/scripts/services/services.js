@@ -2394,13 +2394,12 @@ angular.module('gkClientIndex.services', [])
                 }else{
                     this.disableOpt(opts, 'new_doc_file', 'new_ppt_file', 'new_xls_file');
                 }
-
                 switch (partition) {
                     case GKPartition.myFile:
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
-                            this.disableOpt(opts, 'view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                             if (!GKMount.isSuperAdmin(mount)) {
                                 this.disableOpt(opts, 'clear_trash', 'del_completely')
                             }
@@ -2421,9 +2420,9 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.smartFolder:
                         this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         break;
-                }
+                };
                 if (isSearch) {
-                    this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','sync', 'unsync', 'new_file', 'new_folder', 'add', 'create', 'paste', 'manage');
+                    this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','sync', 'unsync', 'new_file','new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },
@@ -4013,6 +4012,9 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.order = asc + type;
             },
+            checkIsSelectedByIndex:function(index){
+                return selectedIndex.indexOf(index) >=0;
+            },
             select: function ($scope, index, multiSelect) {
                 multiSelect = !angular.isDefined(multiSelect) ? false : multiSelect;
                 if (!multiSelect && selectedFile && selectedFile.length) {
@@ -4027,10 +4029,9 @@ angular.module('gkClientIndex.services', [])
                 }
             },
             unSelect: function ($scope, index) {
-                if ($scope.fileData[index]) {
-                    $scope.fileData[index].selected = false;
-                }
-
+//                if ($scope.fileData[index]) {
+//                    $scope.fileData[index].selected = false;
+//                }
                 var i = selectedIndex.indexOf(index);
                 if (i >= 0) {
                     selectedIndex.splice(i, 1);

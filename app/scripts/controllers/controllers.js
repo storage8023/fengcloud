@@ -335,8 +335,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             /**
              * 如果当前的路径分区与选择的节点分区不同，则需要手动unselect已选择的节点
              */
-            //if (branch && $scope.selectedBranch && branch.data.partition != $scope.selectedBranch.data.partition) {
-            if (branch) {
+            if (branch && $scope.selectedBranch && branch.data.partition != $scope.selectedBranch.data.partition) {
+            //if (branch) {
                 if(branch != $scope.selectedBranch){
                     unSelectAllBranch();
                     selectBreanch(branch, param.partition);
@@ -612,6 +612,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else {
                 topOptKeys = optKeys;
             }
+            //console.log(topOptKeys);
 
             /**
              * 扩展操作的值
@@ -936,7 +937,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleClick = function ($event, index) {
             var file = $scope.fileData[index];
             if ($event.ctrlKey || $event.metaKey) {
-                if (file.selected) {
+                if ($scope.selectedFile.indexOf(file)>=0) {
                     GKFileList.unSelect($scope, index);
                 } else {
                     GKFileList.select($scope, index, true);
@@ -997,7 +998,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var fileItem = jqTarget.hasClass('file_item') ? jqTarget : jqTarget.parents('.file_item');
             if (fileItem.size()) {
                 var index = fileItem.index();
-                if (!$scope.fileData[index].selected) {
+                if (!GKFileList.checkIsSelectedByIndex(index)) {
                     GKFileList.select($scope, index);
                 }
             } else {
@@ -1046,7 +1047,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!file) {
                 return;
             }
-            if (!file.selected) {
+            if (!$scope.selectedFile.indexOf(file)) {
                 GKFileList.select($scope, index);
             }
             angular.forEach($scope.selectedFile, function (value) {
