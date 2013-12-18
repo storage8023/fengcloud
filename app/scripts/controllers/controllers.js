@@ -1141,8 +1141,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var isSelected = false;
             $scope.$apply(function(){
                 angular.forEach($scope.fileData,function(value){
-                    if(value.hash == fileItem.hash){
-
+                    if(value.fullpath === fileItem.fullpath){
                         angular.extend(value,fileItem);
                         if($scope.selectedFile.indexOf(value)>=0){
                             isSelected = true;
