@@ -434,7 +434,6 @@ angular.module('gkClientIndex.services', [])
                             }
                             gkClientInterface.notice({type: 'getOrg', 'org_id': Number(param.orgId)}, function (newMount) {
                                 if (newMount) {
-                                    console.log(newMount);
                                     $scope.$apply(function () {
                                         $rootScope.$broadcast('EditOrgObject', newMount);
                                     });
@@ -4075,7 +4074,6 @@ angular.module('gkClientIndex.services', [])
                 $rootScope.$broadcast('selectedFileChange',selectedFile);
             },
             getPreNameByExt:function(ext){
-                console.log(ext);
                 var preName = '';
                 switch (ext){
                     case 'doc':
@@ -4135,7 +4133,6 @@ angular.module('gkClientIndex.services', [])
                             $scope.errorMsg = '';
                             GKSearch.setSearchState('end');
                             fileList = data['list'];
-                            //console.log(fileList);
                             deferred.resolve(GKFile.dealFileList(fileList, source));
                         }).error(function (request) {
                                 GKSearch.setSearchState('end');

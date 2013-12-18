@@ -612,7 +612,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else {
                 topOptKeys = optKeys;
             }
-            //console.log(topOptKeys);
 
             /**
              * 扩展操作的值
@@ -677,7 +676,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             });
             $scope.allOpts = null;
-            //console.log($scope.opts);
         }
 
         $scope.triggleOptByShortCut = function (shortcut) {

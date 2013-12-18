@@ -246,7 +246,6 @@
     getFileList: function (params) {
         try {
            var re = gkClient.gGetFileList(JSON.stringify(params));
-           //console.log(JSON.parse(re));
            return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
@@ -381,7 +380,6 @@
         }
     },
     move:function(params,callback){
-        console.log(arguments);
         try {
             gkClient.gMove(JSON.stringify(params),function(re){
                 re = typeof re ==='object'?re:JSON.parse(re);
@@ -572,7 +570,6 @@
         gkClient.gStopSync();
     },
     removeTrans: function(params,callback){
-        console.log(arguments);
         gkClient.gRemoveTrans(JSON.stringify(params),function(re){
             re = typeof re ==='object'?re: JSON.parse(re);
             if(re && re.error==0){
