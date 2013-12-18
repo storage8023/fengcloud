@@ -1764,7 +1764,8 @@ angular.module('gkClientIndex.directives', [])
                         $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
                     } else {
                         var params = {
-                            keyword: $scope.keyword
+                            keyword: $scope.keyword,
+                            searchscope:$scope.currentSearchScope.name
                         };
                         var fileSearch = new GKFileSearch();
                         fileSearch.conditionIncludeKeyword($scope.keyword);
@@ -1795,7 +1796,8 @@ angular.module('gkClientIndex.directives', [])
                     } else {
                         var search = $location.search();
                         $location.search(angular.extend(search, {
-                            keyword: ''
+                            keyword: '',
+                            searchscope:''
                         }));
                     }
                     $event.stopPropagation();
@@ -1853,19 +1855,10 @@ angular.module('gkClientIndex.directives', [])
 
 
                 $scope.$on('$locationChangeSuccess', function ($e, $new, $old) {
-                    var keyStr = '&keyword=';
-                    var strArr = $new.split(keyStr);
-                    var newStr = strArr[0];
-                    if (strArr[1]) {
-                        var anIndex = strArr[1].indexOf('&');
-                        if (anIndex >= 0) {
-                            newStr += strArr[1].slice(anIndex);
-                        }
-                    }
-                    if (newStr != $old) {
+                    var params = $location.search();
+                    if (!params.keyword) {
                         resetSearch();
                         getSearchScopes();
-
                     }
                 });
                 getSearchScopes();
