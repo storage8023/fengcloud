@@ -4,12 +4,13 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
     .controller('loginCtrl',['$scope','md5','GKApi','GKException',function($scope,md5,GKApi,GKException){
         $scope.step = 'login';
         $scope.registDevice = gkClientInterface.getComputerInfo()['name'];
-
         $scope.siteDomain = gkClientInterface.getSiteDomain();
+        $scope.loading = false;
         /**
          * 登录
          */
         $scope.loginSubmit = function(){
+            if($scope.loading) return;
             if(!$scope.username||!$scope.username.length){
                 alert('请输入帐号或邮箱');
                 return;
@@ -18,6 +19,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 alert('请输入密码');
                 return;
             }
+            $scope.loading = true;
             gkClientInterface.login({
                 username:$scope.username,
                 password:md5.createHash($scope.password)
@@ -34,13 +36,13 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
          */
         $scope.$on('LoginResult',function($event,params){
             $scope.$apply(function(){
+                $scope.loading = false;
                 if(params.error!=0){
                     alert(params.message);
                     return;
                 }else{
                     $scope.showStep('device');
                 }
-
             })
         })
 
@@ -48,6 +50,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
          * 注册
          */
         $scope.registSubmit = function(){
+            if($scope.loading) return;
             if(!$scope.registEmail || !$scope.registEmail.length){
                 alert('请输入邮箱');
                 return;
@@ -70,26 +73,30 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
             }
             var password = $scope.registPassword;
             //$scope.step = 'device';
+            $scope.loading = true;
             GKApi.regist($scope.registUsername,$scope.registEmail,password,1).success(function(){
                 gkClientInterface.login({
                     username:$scope.registEmail,
                     password:md5.createHash($scope.registPassword)
                 });
-
             }).error(function(request){
+                    $scope.loading = false;
                     GKException.handleAjaxException(request);
                 });
 
         }
 
         $scope.setDevice = function(){
+            if($scope.loading) return;
             if(!$scope.registDevice.length){
                 alert('请输入设备名');
                 return;
             }
+            $scope.loading = true;
             gkClientInterface.setDevice({
                 name:$scope.registDevice
             });
+            $scope.loading = false;
         }
 
         $scope.handleKeyDown = function($event){
