@@ -960,6 +960,10 @@ angular.module('gkClientIndex.services', [])
                                 }
                             })
                         })
+
+                        $rootScope.$on('closeModal', function (event, param) {
+                            $modalInstance.dismiss('cancel');
+                        })
                     },
                     resolve: {
                         src: function () {
