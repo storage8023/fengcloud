@@ -7,6 +7,14 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    revert:function(params,callback){
+        gkClient.gRevert(JSON.stringify(params),function(re){
+            re = typeof re ==='object'?re:JSON.parse(re);
+            if(typeof callback === 'function'){
+                callback(re);
+            }
+        });
+    },
     openAbout:function(){
         try {
             return gkClient.gAbout();

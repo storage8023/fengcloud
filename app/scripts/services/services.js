@@ -977,38 +977,6 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            addShare: function (mountId, fullpath) {
-                var option = {
-                    templateUrl: 'views/add_share_dialog.html',
-                    windowClass: 'modal_frame add_share_dialog',
-                    controller: function ($scope, $modalInstance, src) {
-                        $scope.url = src;
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-
-                        $scope.$on('addShareDone', function (isCancel) {
-                            if (isCancel == 1) {
-                                $modalInstance.dismiss('cancel');
-                            } else {
-                                $modalInstance.close('done');
-                                $rootScope.$broadcast('refreshSidebar');
-                            }
-
-                        })
-                    },
-                    resolve: {
-                        src: function () {
-                            return gkClientInterface.getUrl({
-                                sso: 1,
-                                url: '/client/set_share_dialog?fullpath=' + fullpath + '&mount_id=' + mountId
-                            });
-                        }
-                    }
-                };
-                option = angular.extend({}, defaultOption, option);
-                return $modal.open(option);
-            },
             teamMember: function (orgId) {
                 var option = {
                     templateUrl: 'views/team_member_dialog.html',

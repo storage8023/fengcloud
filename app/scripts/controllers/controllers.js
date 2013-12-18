@@ -867,14 +867,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             getFileData();
         })
 
-        $scope.$on('UpdateFileList',function(){
-            var selecedPath = [];
-            angular.forEach($scope.selectedFile,function(value){
-                selecedPath.push(value.fullpath);
-            })
-            GKFileList.refreahData($scope,selecedPath.join('|'));
-        })
-
         getFileData();
 
         $scope.getItemClasses = function(file){
@@ -1138,6 +1130,34 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         }
 
+        $scope.$on('UpdateFileList',function(){
+            var selecedPath = [];
+            angular.forEach($scope.selectedFile,function(value){
+                selecedPath.push(value.fullpath);
+            })
+            GKFileList.refreahData($scope,selecedPath.join('|'));
+        })
+
+        $scope.$on('UpdateFileInfo',function($event,file){
+            var fileItem = GKFile.formatFileItem(file,'client');
+            var isSelected = false;
+            $scope.$apply(function(){
+                angular.forEach($scope.fileData,function(value){
+                    if(value.hash == fileItem.hash){
+
+                        angular.extend(value,fileItem);
+                        if($scope.selectedFile.indexOf(value)>=0){
+                            isSelected = true;
+                        }
+                        return false;
+                    }
+                })
+            })
+            if(isSelected){
+                $scope.$broadcast('refreshSidebar','');
+            }
+        })
+
         /**
          * ctrlV结束
          */
@@ -1183,7 +1203,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$destroy', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
-
         })
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','GKGuiders',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,GKGuiders) {

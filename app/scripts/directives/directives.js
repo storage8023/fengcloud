@@ -3,6 +3,100 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException',function ($timeout,$rootScope,GKException) {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+
+                var file = $scope.$eval($attrs.gkVersionContextmenu);
+
+                var mountId = file.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id;
+
+                var getVersion =  function(triggerElem){
+                    return Number(triggerElem.data('version'));
+
+                }
+                /**
+                 * 设置右键菜单
+                 */
+                jQuery.contextMenu({
+                    selector: '.history_list > .item',
+                    reposition: true,
+                    zIndex: 9999,
+                    className: 'version_contextmenu',
+                    events: {
+                        show: function () {
+                            this.addClass('hover');
+                        },
+                        hide: function () {
+                            this.removeClass('hover');
+                        }
+                    },
+                    items:{
+                        'open': {
+                            name: '打开',
+                            callback: function (key,opt) {
+                                var triggerElem = jQuery(opt.$trigger);
+                                var version = getVersion(triggerElem);
+                                if(!version){
+                                    return;
+                                }
+                                if(!mountId) return;
+                                gkClientInterface.open({
+                                    mountid:mountId,
+                                    webpath:file.fullpath,
+                                    version:version
+                                });
+                            }
+                        },
+                        'recover': {
+                            name: '还原',
+                            callback: function (key,opt) {
+                                var triggerElem = jQuery(opt.$trigger);
+                                var version = getVersion(triggerElem);
+                                if(!version){
+                                    return;
+                                }
+                                if(!mountId) return;
+                                gkClientInterface.revert({
+                                    mountid:mountId,
+                                    webpath:file.fullpath,
+                                    version:version
+                                },function(msg){
+                                    if(!msg.error){
+                                        alert('恢复成功');
+                                        $rootScope.$broadcast('UpdateFileInfo',msg);
+                                    }else{
+                                        GKException.handleClientException(msg);
+                                    }
+                                });
+                            }
+                        },
+                        'saveto': {
+                            name: '另存为',
+                            callback: function (key,opt) {
+                                var triggerElem = jQuery(opt.$trigger);
+                                var version = getVersion(triggerElem);
+                                if(!version){
+                                    return;
+                                }
+                                if(!mountId) return;
+                                gkClientInterface.saveToLocal({
+                                    mountid:mountId,
+                                    webpath:file.fullpath,
+                                    version:version
+                                });
+                            }
+                        }
+                    }
+                });
+
+                $scope.$on('$destroy',function(){
+                    jQuery.contextMenu('destroy', '.history_list > .item');
+                })
+            }
+        }
+    }])
     .directive('sizeAdjust', ['$timeout', '$compile', function ($timeout, $compile) {
         return {
             restrict: 'A',
@@ -1188,21 +1282,10 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 /**
-                 * 添加共享
-                 */
-                $scope.showEditShareDialog = function () {
-                    var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
-                    var addShareModal = GKModal.addShare(getOptMountId($scope.file), fullpath);
-                    addShareModal.result.then(function () {
-
-                    })
-                };
-
-                /**
                  * 监听刷新事件
                  */
-                $scope.$on('refreshSidebar', function () {
-                    getFileInfo($scope.localFile, {data: 'sidebar', type: 'share', cache: false});
+                $scope.$on('refreshSidebar', function ($event,type) {
+                    getFileInfo($scope.localFile, {data: 'sidebar', type: type, cache: false});
                 })
 
                 $scope.$on('$destroy', function () {

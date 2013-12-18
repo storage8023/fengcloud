@@ -1523,13 +1523,26 @@ footer {
 .right_sidebar .file_detail_wrapper .history_list > li > div{
     display: table-cell;
 }
+
 .right_sidebar .file_detail_wrapper .history_list > li .act_info{
 
+}
+.right_sidebar .file_detail_wrapper .history_list > li .act_info .filename_wrapper{
+    margin: -18px 50px 0 0;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .filename{
     font-size: 14px;
     line-height: 18px;
     color: #3f4754;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.right_sidebar .file_detail_wrapper .history_list > li .act_info .version_size{
+    text-align: right;
+    color:#ACB4BF;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .act_member{
     width: 34%;
