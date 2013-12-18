@@ -81,11 +81,14 @@ angular.module('gkClientIndex.directives', [])
                                     return;
                                 }
                                 if(!mountId) return;
-                                gkClientInterface.saveToLocal({
-                                    mountid:mountId,
-                                    webpath:file.fullpath,
-                                    version:version
-                                });
+                                var param = {
+                                    list:[{
+                                        mountid:mountId,
+                                        webpath:file.fullpath,
+                                        version:version
+                                    }]
+                                }
+                                gkClientInterface.saveToLocal(param);
                             }
                         }
                     }
