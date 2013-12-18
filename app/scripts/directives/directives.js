@@ -858,7 +858,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.enableAddShare = false; //是否允许编辑共享参与人
                 $scope.loading = true;
                 $scope.fileExist = false;
-                var fileInterval;
+                var fileInterval,lastGetRequest,lastClientSidebarRequest;
                 var getOptMountId = function (file) {
                     var mountID;
                     if (!file) {
@@ -912,6 +912,14 @@ angular.module('gkClientIndex.directives', [])
                         $interval.cancel(fileInterval);
                         fileInterval = null;
                     }
+                    if(lastGetRequest){
+                        lastGetRequest.abort();
+                        lastGetRequest = null;
+                    }
+                    if(lastClientSidebarRequest){
+                        lastClientSidebarRequest.abort();
+                        lastClientSidebarRequest = null;
+                    }
                     var defaultOptions = {
                         data: '',
                         cache: true
@@ -924,7 +932,7 @@ angular.module('gkClientIndex.directives', [])
                     var formatTag = [];
 
                     if (options.data != 'sidebar') {
-                        RestFile.get(mountId, fullpath).success(function (data) {
+                        lastGetRequest = RestFile.get(mountId, fullpath).success(function (data) {
                             $scope.$apply(function () {
                                 $scope.loading = false;
                                 $scope.fileExist = true;
@@ -972,7 +980,7 @@ angular.module('gkClientIndex.directives', [])
                     }
 
                     if (options.data != 'file') {
-                        GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
+                        lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
                             $scope.$apply(function () {
                                 if (data.share_members) {
                                     $scope.shareMembers = data.share_members;

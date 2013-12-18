@@ -2071,13 +2071,13 @@ body.resizing *{
 .slide_backdrop .carousel-control.right{
     display: block;
     position: absolute;
-    width: 220px;
-    height: 40px;
+    width: 260px;
+    height: 43px;
     top:50%;
     left: 50%;
     text-indent: -9999px;
     cursor: pointer;
-    margin:56px 0 0 10px;
+    margin:136px 0 0 -330px;
 }
 
 .slide_backdrop .carousel .carousel-inner,
@@ -2099,11 +2099,11 @@ body.resizing *{
     margin: -180px 0 0 -330px;
 }
 .slide_backdrop .carousel .item .item_content_0{
-    background: #e8596f;
+    background: #feae47;
 }
 .slide_backdrop .carousel .item .item_content_1{
-    background: #4595e5;
+    background: #fe9447;
 }
 .slide_backdrop .carousel .item .item_content_2{
-    background: #f7ae4d;
+    background: #fe7f47;
 }
