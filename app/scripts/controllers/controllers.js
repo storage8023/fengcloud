@@ -1439,7 +1439,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.$on('selectedFileChange',function($event,selectedFile){
-            $scope.selectedFileLength = selectedFile.length;
+           if($rootScope.PAGE_CONFIG.filter == 'trash'){
+               return;
+           }
            if(!selectedFile.length){
                $scope.localFile = $rootScope.PAGE_CONFIG.file;
                $scope.sidebar = 'nofile';
