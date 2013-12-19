@@ -1581,7 +1581,7 @@ position: absolute;
     border-radius: 3px;
 }
 .right_sidebar .file_detail_wrapper .history_list > li.act_0 .act_name span{
-    background: #7f8999;
+    background: #d9534f;
 }
 .right_sidebar .file_detail_wrapper .history_list > li.act_0 .act_info .filename{
     text-decoration: line-through;
@@ -1590,7 +1590,9 @@ position: absolute;
 .right_sidebar .file_detail_wrapper .history_list > li.act_1 .act_name span{
     background: #52AE75;
 }
-
+.right_sidebar .file_detail_wrapper .history_list > li.act_6 .act_name span{
+    background: #eea236;
+}
 .right_sidebar .file_detail_wrapper .history_list > li .act_opts .dropdown-menu{
     right: 0;
     left: auto;
