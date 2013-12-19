@@ -170,13 +170,15 @@ angular.module('gkClientIndex.services', [])
                 }
                 if (partition == GKPartition.teamFile) {
                     if (data.filter == 'trash') {
-                        items = {
-                            'clear_trash': {
-                                name: '清空回收站',
-                                callback: function () {
-                                    GKOpt.clearTrash(mountId);
-                                }
-                            },
+                        if(GKMount.isSuperAdmin(mount)){
+                            items = {
+                                'clear_trash': {
+                                    name: '清空回收站',
+                                    callback: function () {
+                                        GKOpt.clearTrash(mountId);
+                                    }
+                                },
+                            }
                         }
                     } else {
                         items = {};
@@ -3052,7 +3054,8 @@ angular.module('gkClientIndex.services', [])
                             }
                             var file = selectedFile[0],
                                 parentFile = $rootScope.PAGE_CONFIG.file;
-                            GKModal.filePropery($scope.mountId, file, parentFile);
+                            var mountId = GKFileList.getOptFileMountId(file);
+                            GKModal.filePropery(mountId, file, parentFile);
                         }
                     },
                     'order_by': {

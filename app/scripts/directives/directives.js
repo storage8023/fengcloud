@@ -422,19 +422,19 @@ angular.module('gkClientIndex.directives', [])
                         input.focus();
                         input.on('keydown', function (e) {
                             if (e.keyCode == 13) {
-                                var newFileName = input.val();
+                                var newFileName = jQuery.trim(input.val());
                                 if (!newFileName.length) newFileName = oldFileName;
                                 fn($scope, {filename: newFileName});
                                 return false;
                             }
                         });
                         input.on('blur', function () {
-                            var newFileName = input.val();
+                            var newFileName = jQuery.trim(input.val());
                             if (!newFileName.length) newFileName = oldFileName;
                             fn($scope, {filename: newFileName});
                         })
                         input.on('dblclick', function () {
-                            var newFileName = input.val();
+                            var newFileName = jQuery.trim(input.val());
                             if (!newFileName.length) newFileName = oldFileName;
                             fn($scope, {filename: newFileName});
                         })
