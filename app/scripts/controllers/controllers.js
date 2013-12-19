@@ -718,22 +718,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.$watch('order', function (newValue) {
-            if (!$scope.rightOpts || !$scope.rightOpts['order_by']) {
-                return;
+            if ($scope.rightOpts && $scope.rightOpts['order_by'] && $scope.rightOpts['order_by']['items']) {
+                angular.forEach($scope.rightOpts['order_by']['items'], function (value, key) {
+                    if (key == 'order_by_' + $scope.order.slice(1)) {
+                        value['className'] = 'current';
+                    } else {
+                        value['className'] = '';
+                    }
+                });
             }
-            angular.forEach($scope.rightOpts['order_by']['items'], function (value, key) {
-                if (key == 'order_by_' + $scope.order.slice(1)) {
-                    value['className'] = 'current';
-                } else {
-                    value['className'] = '';
-                }
-            });
-
             if (!newValue) {
                 return;
             }
             var order = newValue;
-
             if (newValue.indexOf('filename') >= 0) {
                 var desc = newValue.indexOf('-') ? '-' : '+';
                 order = [desc + 'dir', newValue];
