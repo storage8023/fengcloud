@@ -3972,13 +3972,16 @@ angular.module('gkClientIndex.services', [])
     }
     ])
     .factory('GKFileListView', ['$compile','$filter','$rootScope',function ($compile,$filter,$rootScope) {
-        var fileListElem = angular.element('.file_list');
+        var fileListElem = angular.element('.file_list .list_body');
         var GKFileListView = {
             getFileItem:function(index){
-                return fileListElem.find('.item:eq('+index+')');
+                return fileListElem.find('> div > .item:eq('+index+')');
             },
-            addFileItem:function(){
-
+            selectItem:function(index){
+                this.getFileItem(index).addClass('selected');
+            },
+            unselectItem:function(index){
+                this.getFileItem(index).removeClass('selected');
             },
             removeFileItem:function(index){
                 this.getFileItem(index).remove();
@@ -4027,7 +4030,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'RestFile', 'GKSearch', 'GKFilter', '$rootScope', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, RestFile, GKSearch, GKFilter, $rootScope) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'RestFile', 'GKSearch', 'GKFilter', '$rootScope','GKFileListView','$timeout',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, RestFile, GKSearch, GKFilter, $rootScope,GKFileListView,$timeout) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -4049,7 +4052,7 @@ angular.module('gkClientIndex.services', [])
                     this.unSelectAll($scope);
                 }
                 if (selectedIndex.indexOf(index) < 0) {
-                    fileListElem.find('.item:eq('+index+')').addClass('selected');
+                    GKFileListView.selectItem(index);
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $rootScope.$broadcast('selectedFileChange',selectedFile);
@@ -4058,14 +4061,13 @@ angular.module('gkClientIndex.services', [])
             unSelect: function ($scope, index) {
                 var i = selectedIndex.indexOf(index);
                 if (i >= 0) {
-                    fileListElem.find('.item:eq('+index+')').removeClass('selected');
+                    GKFileListView.unselectItem(index);
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
                     $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelectAll: function ($scope) {
-                fileListElem.find('.item.selected').removeClass('selected');
                 for (var i = selectedIndex.length - 1; i >= 0; i--) {
                     this.unSelect($scope, selectedIndex[i]);
                 }
@@ -4292,6 +4294,7 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
             refreahData: function ($scope, selectPath) {
+                var context = this;
                 $scope.loadingFileData = true;
                 GKFileList.getFileData($scope).then(function (newFileData) {
                     $scope.loadingFileData = false;
@@ -4302,12 +4305,16 @@ angular.module('gkClientIndex.services', [])
                     }
                     $scope.fileData = $filter('orderBy')(newFileData, order);
                     if (selectPath) {
-                        GKFileList.unSelectAll($scope);
-                        angular.forEach(selectPath.split('|'), function (value) {
-                            GKFileList.selectByPath($scope, value);
-                        });
+                        $timeout(function(){
+                            GKFileList.unSelectAll($scope);
+                            var selectedPathArr = selectPath.split('|');
+                            angular.forEach($scope.fileData, function (value,key) {
+                                if(selectedPathArr.indexOf(value.fullpath)>=0){
+                                    context.select($scope,key);
+                                }
+                            });
+                        })
                         $scope.selectedpath = selectPath;
-
                     }
                     if ((!$scope.fileData || !$scope.fileData.length)) {
                         if($scope.keyword){
