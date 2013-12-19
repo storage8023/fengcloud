@@ -869,11 +869,27 @@ footer {
 .file_item .file_size {
     color: #8e98a8;
 }
+
+
 .list_view .file_item {
     padding: 5px 0;
     height: 42px;
     line-height: 32px;
     -webkit-transition: background-color linear 0.1s;
+}
+
+.thumb_view .file_item .last_edit_time,
+.thumb_view .file_item .file_type,
+.thumb_view .file_item .file_size,
+.thumb_view .file_item .file_icon_wrapper{
+    display: none;
+}
+
+.list_view .file_item .last_edit_time,
+.list_view .file_item .file_type,
+.list_view .file_item .file_size,
+.list_view .file_item .file_icon_wrapper{
+    display: block;
 }
 
 .file_item .file_icon {
@@ -884,8 +900,16 @@ footer {
     margin: -2px 15px 0 15px;
     position: relative;
 }
+.file_item .file_icon128x128{
+    display: inline-block;
+    width: 128px;
+    height: 128px;
+}
+.list_view .file_item .thumb{
+    display: none;
+}
 .thumb_view .file_item .thumb{
-    position: relative;
+    display: block;
     width: 128px;
     height: 128px;
     margin: 0 auto;

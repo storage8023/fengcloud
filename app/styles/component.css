@@ -737,6 +737,77 @@ a:hover > .icon16x16.icon_team_upgrade,
     background-image: url(../images/icon/folder_share32x32.png);
 }
 
+/*********文件图标 128x128*******/
+
+/*其他文件*/
+.file_icon128x128.icon_other {
+    background-image: url(../images/icon/other128x128.png);
+}
+
+/*视频文件*/
+.file_icon128x128.icon_movie {
+    background-image: url(../images/icon/movie128x128.png);
+}
+
+/*声音文件*/
+.file_icon128x128.icon_music {
+    background-image: url(../images/icon/music128x128.png);
+}
+
+/*图片文件*/
+.file_icon128x128.icon_image {
+    background-image: url(../images/icon/image128x128.png);
+}
+
+/*文档文件*/
+.file_icon128x128.icon_document {
+    background-image: url(../images/icon/document128x128.png);
+}
+
+/*压缩文件*/
+.file_icon128x128.icon_compress {
+    background-image: url(../images/icon/compress128x128.png);
+}
+.file_icon128x128.icon_docx,
+.file_icon128x128.icon_doc {
+    background-image: url(../images/icon/doc128x128.png);
+}
+.file_icon128x128.icon_xlsx,
+.file_icon128x128.icon_xls {
+    background-image: url(../images/icon/xls128x128.png);
+}
+.file_icon128x128.icon_pptx,
+.file_icon128x128.icon_ppt {
+    background-image: url(../images/icon/ppt128x128.png);
+}
+
+.file_icon128x128.icon_pdf {
+    background-image: url(../images/icon/pdf128x128.png);
+}
+
+/*可执行文件*/
+.file_icon128x128.icon_execute {
+    background-image: url(../images/icon/exe128x128.png);
+}
+
+/*文件夹*/
+.file_icon128x128.icon_folder {
+    background-image: url(../images/icon/folder128x128.png);
+}
+.file_icon128x128.icon_sync_folder {
+    background-image: url(../images/icon/folder_sync128x128.png);
+}
+.file_icon128x128.icon_shared_sync_folder {
+    background-image: url(../images/icon/folder_share_sync128x128.png);
+}
+.file_icon128x128.icon_local_folder {
+    background-image: url(../images/icon/local_folder128x128.png);
+}
+
+.file_icon128x128.icon_shared_folder {
+    background-image: url(../images/icon/shared_folder128x128.png);
+}
+
 
 /*通过border实现的箭头*/
 
