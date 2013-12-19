@@ -198,6 +198,8 @@
                     </div>
                     <div ng-if="!errorMsg && !loadingFileData">
                         <div class="item file_item"
+                             rename-file="file.rename"
+                             rename-file-submit="renameFileSubmit(filename,$index)"
                              ng-repeat="file in fileData | limitTo:limit"
                              ng-dblclick="handleDblClick(file)"
                              ng-click="handleClick($event,$index)"

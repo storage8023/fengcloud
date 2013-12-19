@@ -22,8 +22,11 @@ var Util = {
 Util.String = {
     getExt: function(filename) {
         filename =  String(filename);
-        var ext = filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
-        return ext;
+        var lastIndex =  filename.lastIndexOf('.');
+        if(lastIndex<0){
+            return '';
+        }
+        return filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
     },
     baseName: function(path) {
         path = String(path);

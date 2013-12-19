@@ -3986,9 +3986,7 @@ angular.module('gkClientIndex.services', [])
             updateFileItem:function(index,file){
                 var PAGE_CONFIG = $rootScope.PAGE_CONFIG;
                 var oldFileItem = this.getFileItem(index);
-                oldFileItem.prop({
-                    'data-fullpath':file.fullpath,
-                })
+                oldFileItem.data('fullpath',file.fullpath);
                 oldFileItem.find('.file_name span').prop({
                     'title':file.fullpath
                 }).text(file.filename);
@@ -4113,9 +4111,13 @@ angular.module('gkClientIndex.services', [])
                 return Number(mountID);
             },
             remove: function ($scope, value) {
+                var context = this;
                 angular.forEach($scope.fileData, function (file, key) {
                     if (value == file) {
                         $scope.fileData.splice(key, 1);
+                        if(selectedIndex.indexOf(key)>=0){
+                            context.unSelect($scope,key);
+                        }
                     }
                 })
             },

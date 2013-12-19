@@ -406,8 +406,8 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$watch($attrs.renameFile, function (value, oldValue) {
                     if (value == oldValue) return;
                     if (value == true) {
-                        var oldFileName = Util.String.baseName($attrs.fullpath);
-                        var dir = $attrs.dir;
+                        var oldFileName = Util.String.baseName($element.data('fullpath'));
+                        var dir = $element.data('dir');
                         input = jQuery('<input name="new_file_name" type="text" id="new_file_name" value="' + oldFileName + '" class="new_file_name form-control" />');
                         fileItem.addClass('file_item_edit');
                         nameElem = fileItem.find('.name');

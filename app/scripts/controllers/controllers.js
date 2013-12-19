@@ -806,9 +806,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else {
                 var forEachFile = function (callback) {
                     forEachFullpath(function (path) {
-                        angular.forEach($scope.fileData, function (value) {
+                        angular.forEach($scope.fileData, function (value,key) {
                             if (value.fullpath === path && angular.isFunction(callback)) {
-                                callback(value);
+                                callback(value,key);
                             }
                         });
                     })
@@ -816,24 +816,28 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 };
                 switch (opt) {
                     case 'sync':
-                        forEachFile(function (value) {
+                        forEachFile(function (value,key) {
                             value.sync = 1;
+                            GKFileListView.updateFileItem(key,value);
                         })
                         break;
                     case 'unsync':
-                        forEachFile(function (value) {
+                        forEachFile(function (value,key) {
                             value.sync = 0;
+                            GKFileListView.updateFileItem(key,value);
                         })
                         break;
                     case 'del':
                         GKFileList.removeAllSelectFile($scope);
                         forEachFile(function (value) {
                             GKFileList.remove($scope, value);
+
                         })
                         break;
                     case 'set_open':
-                        forEachFile(function (value) {
+                        forEachFile(function (value,key) {
                             value.open = extraParam.open;
+                            GKFileListView.updateFileItem(key,value);
                         })
                         break;
                 }
@@ -878,10 +882,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return classes;
         };
 
-        $scope.renameFileSubmit = function (filename, file) {
+        $scope.renameFileSubmit = function (filename, index) {
             if (!GKFile.checkFilename(filename)) {
                 return;
             }
+            var file = $scope.fileData[index];
+            if(!file) return;
             var mountId = GKFileList.getOptFileMountId(file);
             if (filename === file.filename) {
                 file.rename = false;
@@ -897,6 +903,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         file.filename = filename;
                         file.ext = Util.String.getExt(filename);
                         file.rename = false;
+                        GKFileListView.updateFileItem(index,file);
                     }, function (error) {
                         file.rename = false;
                         GKException.handleClientException(error);
@@ -1432,6 +1439,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.$on('selectedFileChange',function($event,selectedFile){
+            $scope.selectedFileLength = selectedFile.length;
            if(!selectedFile.length){
                $scope.localFile = $rootScope.PAGE_CONFIG.file;
                $scope.sidebar = 'nofile';
