@@ -1,0 +1,38 @@
+<div class="item file_item"
+     ng-dblclick="handleDblClick(file)"
+     ng-click="handleClick($event,$index)"
+     bo-class="getItemClasses(file)"
+     bo-attr
+     bo-attr-data-dir="file.dir"
+     bo-attr-data-fullpath="file.fullpath"
+     bindonce>
+    <div class="thumb">
+        <i class="file_icon128x128" bo-class="file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
+            <img bo-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0" error-src="" src="{{file.hash | getThumbUrl:file.filehash}}"/>
+            <s bo-if="file.status==2" class="icon16x16 icon_down"></s>
+            <s bo-if="file.status==1" class="icon16x16 icon_up"></s>
+        </i>
+    </div>
+    <div class="file_icon_wrapper">
+                                <span>
+                                    <i class="file_icon"
+                                       bo-class="file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
+                                        <img error-src="" src="{{file.hash | getThumbUrl:file.filehash}}" bo-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0" />
+                                        <s bo-if="file.status==2" class="icon16x16 icon_down"></s>
+                                        <s bo-if="file.status==1" class="icon16x16 icon_up"></s>
+                                    </i>
+                                </span>
+    </div>
+    <div class="file_name">
+        <span bo-title="file.fullpath" class="name" bo-text="file.filename"></span>
+    </div>
+    <div class="last_edit_time">
+        <span bo-text="file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'"></span>
+    </div>
+    <div class="file_type">
+        <span bo-text="file.filename | getFileType:file.dir:file.ext"></span>
+    </div>
+    <div class="file_size">
+        <span bo-text="file.dir==1?'-':(file.filesize|bitSize)"></span>
+    </div>
+</div>

@@ -2592,7 +2592,7 @@ angular.module('gkClientIndex.services', [])
 
                 var getCilpFileData = function () {
                     var files = [];
-                    angular.forEach($scope.selectedFile, function (value) {
+                    angular.forEach(selectedFile, function (value) {
                         files.push({
                             webpath: value.fullpath,
                             dir: Number(value.dir)
@@ -2796,7 +2796,7 @@ angular.module('gkClientIndex.services', [])
                         className: "revert",
                         callback: function () {
                             var list = [];
-                            angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach(selectedFile, function (value) {
                                 list.push({
                                     webpath: value.fullpath
                                 });
@@ -2806,7 +2806,7 @@ angular.module('gkClientIndex.services', [])
                                 list: list
                             };
                             GK.recover(param).then(function () {
-                                angular.forEach($scope.selectedFile, function (value) {
+                                angular.forEach(selectedFile, function (value) {
                                     angular.forEach($scope.fileData, function (file, key) {
                                         if (value == file) {
                                             $scope.fileData.splice(key, 1);
@@ -2824,11 +2824,11 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_disable',
                         callback: function () {
                             var fullpaths = [];
-                            angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach(selectedFile, function (value) {
                                 fullpaths.push(value.dir == 1 ? value.fullpath + '/' : value.fullpath);
                             });
                             RestFile.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths).success(function () {
-                                angular.forEach($scope.selectedFile, function (value) {
+                                angular.forEach(selectedFile, function (value) {
                                     angular.forEach($scope.fileData, function (file, key) {
                                         if (value == file) {
                                             $scope.fileData.splice(key, 1);
@@ -2897,7 +2897,7 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_cut',
                         accesskeyText: 'Ctrl+X',
                         callback: function () {
-                            if (!$scope.selectedFile || !$scope.selectedFile.length) {
+                            if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
                             var data = {
@@ -2915,7 +2915,7 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_copy',
                         accesskeyText: 'Ctrl+C',
                         callback: function () {
-                            if (!$scope.selectedFile || !$scope.selectedFile.length) {
+                            if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
                             var data = {
@@ -2995,11 +2995,11 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_save',
                         accesskeyText: 'Ctrl+S',
                         callback: function () {
-                            if (!$scope.selectedFile || !$scope.selectedFile.length) {
+                            if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
                             var files = [];
-                            angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach(selectedFile, function (value) {
                                 files.push({
                                     webpath: value.fullpath,
                                     mountid: GKFileList.getOptFileMountId(value),
@@ -3019,12 +3019,12 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_trash',
                         accesskeyText: 'Delete',
                         callback: function () {
-                            if (!$scope.selectedFile || !$scope.selectedFile.length) {
+                            if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
                             var fullpathes = [];
                             var mountId = GKFileList.getOptFileMountId();
-                            angular.forEach($scope.selectedFile, function (value) {
+                            angular.forEach(selectedFile, function (value) {
                                 fullpathes.push(value.fullpath);
                             });
                             GKOpt.del(mountId, fullpathes);
@@ -3971,10 +3971,69 @@ angular.module('gkClientIndex.services', [])
 
     }
     ])
+    .factory('GKFileListView', ['$compile','$filter','$rootScope',function ($compile,$filter,$rootScope) {
+        var fileListElem = angular.element('.file_list');
+        var GKFileListView = {
+            getFileItem:function(index){
+                return fileListElem.find('.item:eq('+index+')');
+            },
+            addFileItem:function(){
+
+            },
+            removeFileItem:function(index){
+                this.getFileItem(index).remove();
+            },
+            updateFileItem:function(index,file){
+                var PAGE_CONFIG = $rootScope.PAGE_CONFIG;
+                var oldFileItem = this.getFileItem(index);
+                oldFileItem.prop({
+                    'data-fullpath':file.fullpath,
+                })
+                oldFileItem.find('.file_name span').prop({
+                    'title':file.fullpath
+                }).text(file.filename);
+                var icon = $filter('getFileIcon')(file.filename,file.dir,(file.open||(PAGE_CONFIG.file.sharepath?1:0)),(file.sync||PAGE_CONFIG.file.syncpath?1:0)),
+                    thumbUrl = $filter('getThumbUrl')(file.hash,file.filehash);
+                var thumbIcon = oldFileItem.find('.thumb i'),
+                    fionIcon = oldFileItem.find('.file_icon_wrapper i');
+
+                angular.forEach([thumbIcon,fionIcon],function(elem){
+                    elem.removeClass();
+                    if(thumbIcon == elem){
+                        thumbIcon.addClass('file_icon128x128 '+icon);
+                    }else{
+                        fionIcon.addClass('file_icon '+icon);
+                    }
+                    var thumbImg = elem.find('img');
+                    if(!thumbImg.size()){
+                        thumbImg = jQuery('<img />');
+                    }
+                    thumbImg.prop('src',thumbUrl);
+                    elem.find('s').remove();
+                    if(file.status ==1){
+                        elem.append('<s class="icon16x16 icon_up"></s>');
+                    }else if(file.status==2){
+                        elem.append('<s class="icon16x16 icon_down"></s>');
+                    }
+                })
+                var atts = {
+                    'last_edit_time':$filter('date')(file.last_edit_time*1000,'yyyy/MM/dd HH:mm'),
+                    'file_type':$filter('getFileType')(file.filename,file.dir,file.ext),
+                    'file_size':file.dir==1?'-':$filter('bitSize')(file.filesize)
+                };
+                angular.forEach(atts,function(value,key){
+                    oldFileItem.find('.' +key+ ' span').text(value);
+                })
+                return oldFileItem;
+            }
+        };
+        return GKFileListView;
+    }])
     .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'RestFile', 'GKSearch', 'GKFilter', '$rootScope', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, RestFile, GKSearch, GKFilter, $rootScope) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
+        var fileListElem = jQuery('.file_list');
         var GKFileList = {
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
@@ -3992,23 +4051,23 @@ angular.module('gkClientIndex.services', [])
                     this.unSelectAll($scope);
                 }
                 if (selectedIndex.indexOf(index) < 0) {
+                    fileListElem.find('.item:eq('+index+')').addClass('selected');
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelect: function ($scope, index) {
-//                if ($scope.fileData[index]) {
-//                    $scope.fileData[index].selected = false;
-//                }
                 var i = selectedIndex.indexOf(index);
                 if (i >= 0) {
+                    fileListElem.find('.item:eq('+index+')').removeClass('selected');
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
                     $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelectAll: function ($scope) {
+                fileListElem.find('.item.selected').removeClass('selected');
                 for (var i = selectedIndex.length - 1; i >= 0; i--) {
                     this.unSelect($scope, selectedIndex[i]);
                 }
@@ -4240,7 +4299,6 @@ angular.module('gkClientIndex.services', [])
                         order = [desc + 'dir', $scope.order];
                     }
                     $scope.fileData = $filter('orderBy')(newFileData, order);
-                    //$scope.fileData = newFileData;
                     if (selectPath) {
                         GKFileList.unSelectAll($scope);
                         angular.forEach(selectPath.split('|'), function (value) {
@@ -4264,6 +4322,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileList;
     }])
+
 /**
  * 客户端的回调函数
  */

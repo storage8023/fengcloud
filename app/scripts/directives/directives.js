@@ -3,6 +3,20 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
+    .directive('fileItem',[function(){
+        return {
+            restrict: 'E',
+            replace:true,
+            scope:{
+               file:'=',
+               $index:'=index'
+            },
+            templateUrl:'views/file_item.html',
+            link:function($scope){
+                console.log($scope.file);
+            }
+        }
+    }])
     .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException',function ($timeout,$rootScope,GKException) {
         return {
             restrict: 'A',
@@ -316,7 +330,7 @@ angular.module('gkClientIndex.directives', [])
                                 if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) < 0) {
                                     var selectedFile = GKFileList.getSelectedFile();
                                     if (selectedFile && selectedFile.length) {
-                                        $scope.handleDblClick($scope.selectedFile[0]);
+                                        $scope.handleDblClick(selectedFile[0]);
                                     }
                                 }
                                 break;

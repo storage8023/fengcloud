@@ -523,7 +523,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             })
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', 'GKFileListView',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch,GKFileListView) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
@@ -932,10 +932,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var fileItem = jQuery($event.target).hasClass('file_item')?jQuery($event.target):jQuery($event.target).parents('.file_item');
             if ($event.ctrlKey || $event.metaKey) {
                 if (fileItem.hasClass('selected')) {
-                    fileItem.removeClass('selected');
                     GKFileList.unSelect($scope, index);
                 } else {
-                    fileItem.addClass('selected');
                     GKFileList.select($scope, index, true);
                 }
             } else if ($event.shiftKey) {
@@ -952,8 +950,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
 
             } else {
-                jQuery('.file_item.selected').removeClass('selected');
-                fileItem.addClass('selected');
                 GKFileList.select($scope, index);
             }
             if (!$event.shiftKey) {
@@ -1045,16 +1041,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!file) {
                 return;
             }
-            if (!$scope.selectedFile.indexOf(file)) {
+            if (!GKFileList.checkIsSelectedByIndex(index)) {
                 GKFileList.select($scope, index);
             }
-            angular.forEach($scope.selectedFile, function (value) {
+            angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 value.disableDrop = true;
             });
         };
 
         $scope.dragEnd = function (event, ui, index) {
-            angular.forEach($scope.selectedFile, function (value) {
+            angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 value.disableDrop = false;
             });
         };
@@ -1073,7 +1069,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 fromMountId = $scope.mountId,
                 fromFullpathes = [];
 
-            angular.forEach($scope.selectedFile, function (value) {
+            angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 fromFullpathes.push({
                     webpath: value.fullpath
                 });
@@ -1138,7 +1134,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('UpdateFileList',function(){
             var selecedPath = [];
-            angular.forEach($scope.selectedFile,function(value){
+            angular.forEach(GKFileList.getSelectedFile(),function(value){
                 selecedPath.push(value.fullpath);
             })
             GKFileList.refreahData($scope,selecedPath.join('|'));
@@ -1147,19 +1143,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('UpdateFileInfo',function($event,file){
             var fileItem = GKFile.formatFileItem(file,'client');
             var isSelected = false;
+            var index;
             $scope.$apply(function(){
-                angular.forEach($scope.fileData,function(value){
+                angular.forEach($scope.fileData,function(value,key){
                     if(value.fullpath === fileItem.fullpath){
                         angular.extend(value,fileItem);
-                        if($scope.selectedFile.indexOf(value)>=0){
-                            isSelected = true;
-                        }
+                        index = key;
                         return false;
                     }
                 })
             })
-            if(isSelected){
-                $scope.$broadcast('refreshSidebar','');
+
+            if(index !== undefined){
+                isSelected = GKFileList.checkIsSelectedByIndex(index);
+                GKFileListView.updateFileItem(index,fileItem);
+                if(isSelected){
+                    $scope.$broadcast('refreshSidebar','');
+                }
             }
         })
 
@@ -1173,7 +1173,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('LinkStatus', function () {
             $scope.$apply(function () {
                 var selectPath = [];
-                angular.forEach($scope.selectedFile, function (value) {
+                angular.forEach(GKFileList.getSelectedFile(), function (value) {
                     selectPath.push(value.fullpath);
                 })
                 GKFileList.refreahData($scope, selectPath.join('|'));
