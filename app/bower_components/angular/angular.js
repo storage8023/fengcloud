@@ -11550,7 +11550,7 @@ function $RootScopeProvider(){
 
           while(asyncQueue.length) {
             try {
-                //count++;
+                 count++;
               asyncTask = asyncQueue.shift();
               asyncTask.scope.$eval(asyncTask.expression);
             } catch (e) {
@@ -11564,7 +11564,7 @@ function $RootScopeProvider(){
           do { // "traverse the scopes" loop
             if ((watchers = current.$$watchers)) {
                 //console.log(watchers);
-                //count++;
+                count++;
               // process our watches
               length = watchers.length;
               while (length--) {
@@ -11632,13 +11632,13 @@ function $RootScopeProvider(){
 
         while(postDigestQueue.length) {
           try {
-              //count++;
+             count++;
             postDigestQueue.shift()();
           } catch (e) {
             $exceptionHandler(e);
           }
         }
-          //console.log(count);
+          console.log(count);
       },
 
 

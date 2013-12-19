@@ -2562,14 +2562,14 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.order = asc + type;
             },
-            getAllOpts: function ($scope) {
+            getAllOpts: function ($scope,selectedFile) {
                 var toggleSync = function (isSync) {
                     var params,
                         setParentFile = true,
                         file;
-                    if ($scope.selectedFile && $scope.selectedFile.length == 1) {
+                    if (selectedFile && selectedFile.length == 1) {
                         setParentFile = false;
-                        file = $scope.selectedFile[0];
+                        file = selectedFile[0];
                     } else {
                         file = $rootScope.PAGE_CONFIG.file;
                     }
@@ -2608,7 +2608,7 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_location',
                         className: "goto",
                         callback: function () {
-                            var file = $scope.selectedFile[0];
+                            var file = selectedFile[0];
                             var mountId = GKFileList.getOptFileMountId(file);
                             var fullpath = file.fullpath;
                             var upPath = Util.String.dirName(fullpath);
@@ -2813,8 +2813,7 @@ angular.module('gkClientIndex.services', [])
                                         }
                                     })
                                 });
-                                $scope.selectedFile = [];
-                                $scope.selectedIndex = [];
+                                GKFileList.unSelectAll($scope);
                             })
                         }
                     },
@@ -2836,8 +2835,8 @@ angular.module('gkClientIndex.services', [])
                                         }
                                     })
                                 });
-                                $scope.selectedFile = [];
-                                $scope.selectedIndex = [];
+
+                                GKFileList.unSelectAll();
                             }).error(function () {
 
                                 });
@@ -2871,8 +2870,8 @@ angular.module('gkClientIndex.services', [])
                             var data = GKCilpboard.getData();
                             if (!data || !data.files || !data.mount_id) return;
                             var target = $rootScope.PAGE_CONFIG.file.fullpath;
-                            if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir==1) {
-                                target = $scope.selectedFile[0].fullpath;
+                            if (selectedFile.length == 1 && selectedFile[0].dir==1) {
+                                target = selectedFile[0].fullpath;
                             }
 
                             if (data.code == 'ctrlC') {
@@ -2957,7 +2956,7 @@ angular.module('gkClientIndex.services', [])
                         className: "lock",
                         icon: 'icon_lock',
                         callback: function () {
-                            var file = $scope.selectedFile[0];
+                            var file = selectedFile[0];
                             GK.lock({
                                 webpath: file.fullpath,
                                 mountid: $scope.mountId
@@ -2974,7 +2973,7 @@ angular.module('gkClientIndex.services', [])
                         className: "unlock",
                         icon: 'icon_unlock',
                         callback: function () {
-                            var file = $scope.selectedFile[0];
+                            var file = selectedFile[0];
                             if (file.lock_member_id != $rootScope.PAGE_CONFIG.member_id) {
                                 alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
                                 return;
@@ -3037,7 +3036,7 @@ angular.module('gkClientIndex.services', [])
                         className: "rename",
                         icon: 'icon_rename',
                         callback: function () {
-                            var file = $scope.selectedFile[0];
+                            var file = selectedFile[0];
                             file.rename = true;
                         }
                     },
@@ -3048,10 +3047,10 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_file_property',
                         accesskeyText: 'Ctrl+P',
                         callback: function () {
-                            if ($scope.selectedFile.length != 1) {
+                            if (selectedFile.length != 1) {
                                 return;
                             }
-                            var file = $scope.selectedFile[0],
+                            var file = selectedFile[0],
                                 parentFile = $rootScope.PAGE_CONFIG.file;
                             GKModal.filePropery($scope.mountId, file, parentFile);
                         }
@@ -3992,11 +3991,9 @@ angular.module('gkClientIndex.services', [])
                 if (!multiSelect && selectedFile && selectedFile.length) {
                     this.unSelectAll($scope);
                 }
-                //$scope.fileData[index].selected = true;
                 if (selectedIndex.indexOf(index) < 0) {
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
-                    $scope.selectedFile = selectedFile;
                     $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
@@ -4008,7 +4005,6 @@ angular.module('gkClientIndex.services', [])
                 if (i >= 0) {
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
-                    $scope.selectedFile = selectedFile;
                     $rootScope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
@@ -4030,7 +4026,7 @@ angular.module('gkClientIndex.services', [])
                 var newSelectedFile = [];
                 angular.forEach(fileData, function (value, key) {
                     angular.forEach(selectedFile, function (file) {
-                        if (value == file) {
+                        if (value.fullpath == file.fullpath) {
                             newSelectedIndex.push(key);
                             newSelectedFile.push(file);
                         }
@@ -4069,9 +4065,7 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach(selectedFile, function (value) {
                     context.remove($scope, value);
                 });
-                selectedFile = [];
-                $scope.selectedFile = [];
-                $rootScope.$broadcast('selectedFileChange',selectedFile);
+                GKFileList.unSelectAll($scope);
             },
             getPreNameByExt:function(ext){
                 var preName = '';
@@ -4167,11 +4161,19 @@ angular.module('gkClientIndex.services', [])
                          * 获取文件列表
                          */
                     } else {
-                        var re = gkClientInterface.getFileList({
+                        var param = {
                             webpath: $scope.path,
                             mountid: $scope.mountId,
                             current: 1
-                        });
+                        };
+                        if(options.order){
+                            var orderArr = options.order.split(' ');
+                            angular.extend(param,{
+                                sort:orderArr[0],
+                                sorttype:orderArr[1]
+                            });
+                        }
+                        var re = gkClientInterface.getFileList(param);
                         fileList = re['list'];
                         $scope.totalCount = fileList.length||0;
                         deferred.resolve(GKFile.dealFileList(fileList, source));

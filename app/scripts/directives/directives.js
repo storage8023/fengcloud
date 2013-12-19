@@ -314,7 +314,8 @@ angular.module('gkClientIndex.directives', [])
                         switch ($event.keyCode) {
                             case 13: //enter
                                 if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) < 0) {
-                                    if ($scope.selectedFile && $scope.selectedFile.length) {
+                                    var selectedFile = GKFileList.getSelectedFile();
+                                    if (selectedFile && selectedFile.length) {
                                         $scope.handleDblClick($scope.selectedFile[0]);
                                     }
                                 }

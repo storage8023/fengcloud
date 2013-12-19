@@ -199,9 +199,9 @@
                     <div ng-if="!errorMsg && !loadingFileData">
                         <div class="item file_item"
                              ng-repeat="file in fileData | limitTo:limit"
-                             ng-class="getItemClasses(file)"
                              ng-dblclick="handleDblClick(file)"
                              ng-click="handleClick($event,$index)"
+                             bo-class="getItemClasses(file)"
                              bo-attr
                              bo-attr-data-dir="file.dir"
                              bo-attr-data-fullpath="file.fullpath"

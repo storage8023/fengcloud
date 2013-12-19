@@ -525,7 +525,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch) {
         $scope.fileData = []; //文件列表的数据
-        $scope.selectedFile = []; //当前目录已选中的文件数据
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
         if ($scope.partition == GKPartition.smartFolder && $scope.filter == 'recent') {
@@ -576,10 +575,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             excludeRightOpts
             ; // 顶部要排除的操作
 
-        var setOpts = function () {
-            $scope.allOpts = GKOpt.getAllOpts($scope);
+        var setOpts = function (selectedFile) {
+            selectedFile = angular.isDefined(selectedFile)?selectedFile:[];
+            $scope.allOpts = GKOpt.getAllOpts($scope,selectedFile);
             var isSearch = $scope.keyword.length ? true : false;
-            optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, $scope.selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
+            optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
             $scope.opts = null;
             $scope.opts = [];
             $scope.rightOpts = null;
@@ -589,7 +589,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             /**
              * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
              */
-            if ($scope.selectedFile.length) {
+            if (selectedFile.length) {
                 var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
                 angular.forEach(['sync', 'unsync'], function (value) {
                     var index = currentOpts.indexOf(value);
@@ -606,8 +606,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     topOptKeys = jQuery.merge(currentOpts, optKeys);
                     topOptKeys = Util.Array.unique(topOptKeys);
                 }
-                if ($scope.selectedFile.length == 1 && $scope.selectedFile[0].dir == 0) {
-                    getOpenWithMenu(GKFileList.getOptFileMountId($scope.selectedFile[0]), $scope.selectedFile[0], $scope.allOpts);
+                if (selectedFile.length == 1 && selectedFile[0].dir == 0) {
+                    getOpenWithMenu(GKFileList.getOptFileMountId(selectedFile[0]), selectedFile[0], $scope.allOpts);
                 }
             } else {
                 topOptKeys = optKeys;
@@ -697,7 +697,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {Array}
          */
         $scope.$on('selectedFileChange',function($event,selectedFile){
-            setOpts();
+            setOpts(selectedFile);
         })
 
         $scope.$watch('rightOpts', function () {
@@ -733,11 +733,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var order = newValue;
+
             if (newValue.indexOf('filename') >= 0) {
                 var desc = newValue.indexOf('-') ? '-' : '+';
                 order = [desc + 'dir', newValue];
             }
-            $scope.fileData = $filter('orderBy')($scope.fileData, order);
+            var newFileData= $filter('orderBy')($scope.fileData, order).concat();
+            $scope.fileData = null;
+            $scope.fileData = newFileData;
             GKFileList.reIndex($scope.fileData);
         })
 
@@ -859,6 +862,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
         };
+
         $scope.limit = 50;
         $scope.$on('$locationChangeSuccess',function(){
             $scope.limit = 50;
@@ -869,8 +873,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.getItemClasses = function(file){
             var classes = {
-                'nocache' : file.cache==0 && file.dir==0,
-                'selected':$scope.selectedFile.indexOf(file)>=0
+                'nocache' : file.cache==0 && file.dir==0
             };
             return classes;
         };
@@ -926,10 +929,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleClick = function ($event, index) {
             var file = $scope.fileData[index];
+            var fileItem = jQuery($event.target).hasClass('file_item')?jQuery($event.target):jQuery($event.target).parents('.file_item');
             if ($event.ctrlKey || $event.metaKey) {
-                if ($scope.selectedFile.indexOf(file)>=0) {
+                if (fileItem.hasClass('selected')) {
+                    fileItem.removeClass('selected');
                     GKFileList.unSelect($scope, index);
                 } else {
+                    fileItem.addClass('selected');
                     GKFileList.select($scope, index, true);
                 }
             } else if ($event.shiftKey) {
@@ -946,6 +952,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
 
             } else {
+                jQuery('.file_item.selected').removeClass('selected');
+                fileItem.addClass('selected');
                 GKFileList.select($scope, index);
             }
             if (!$event.shiftKey) {
@@ -1027,7 +1035,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**drag drop **/
         $scope.getHelper = function () {
             var selectFileName = $scope.fileData[$scope.shiftLastIndex].filename;
-            var len = $scope.selectedFile.length;
+            var len =GKFileList.getSelectedFile().length;;
             var moreInfo = len > 1 ? ' 等' + len + '个文件或文件夹' : '';
             return '<div class="helper">' + selectFileName + moreInfo + '</div>';
         };
