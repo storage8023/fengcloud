@@ -466,7 +466,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.parentFile = parentFile;
                         $scope.publishEnable = false;
                         var mount = GKMount.getMountById(mountId);
-                        if (!$scope.parentFile.fullpath && mount && mount.type < 3 && file.dir == 1) {
+                        if (!$scope.parentFile.fullpath && mount && mount.type < 3 && file.dir == 1 && GKMount.isAdmin(mount)) {
                             $scope.publishEnable = true;
                         }
                         $scope.innerLink = gkClientInterface.getLinkDomain() + '/' + mountId + '/' + encodeURIComponent(file.fullpath);
