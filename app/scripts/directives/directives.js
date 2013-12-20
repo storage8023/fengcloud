@@ -11,7 +11,7 @@ angular.module('gkClientIndex.directives', [])
                     return Number(triggerElem.data('version'));
                 };
                 var getMountId = function(){
-                    return $scope.localFile.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id;
+                    return Number($scope.localFile.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id);
                 };
 
                 $scope.$watch($attrs.gkVersionContextmenu,function(newValue){
