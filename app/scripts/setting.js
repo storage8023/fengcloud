@@ -515,7 +515,7 @@ angular.module('gkClientSetting', ['angular-md5','gkClientIndex.services', 'gkCl
                     if (scope.isAllSyncPaused) {
                         gkClientInterface.startSync();
                     } else {
-                        if (!confirm('确定要暂定所有同步？')) {
+                        if (!confirm('确定要暂停所有同步？')) {
                             return;
                         }
                         gkClientInterface.stopSync();
