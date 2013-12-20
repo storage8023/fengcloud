@@ -1859,7 +1859,7 @@ angular.module('gkClientIndex.directives', [])
                     if(!$scope.currentSearchScope){
                         return;
                     }
-                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || ($scope.searchScope == 'path' && $scope.PAGE_CONFIG.filter == 'trash')) {
+                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || $rootScope.PAGE_CONFIG.filter == 'trash') {
                         $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
                     } else {
                         var params = {
@@ -1890,7 +1890,7 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.cancelSearch = function ($event) {
                     resetSearch();
-                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || ($scope.searchScope == 'path' && $scope.PAGE_CONFIG.filter == 'trash')) {
+                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder ||  $rootScope.PAGE_CONFIG.filter == 'trash') {
                         $rootScope.$broadcast('cancelSearchSmartFolder');
                     } else {
                         var search = $location.search();
