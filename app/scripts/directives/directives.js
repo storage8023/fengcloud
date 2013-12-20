@@ -953,7 +953,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', function (GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval) {
         return {
             replace: true,
             restrict: 'E',
@@ -976,9 +976,17 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.smarts = GKSmartFolder.getFolders('recent');
-
                 $scope.inputingRemark = false;
                 $scope.remarkText = '';
+                var postRemarkCache = $angularCacheFactory.get('postRemarkCache');
+                if(!postRemarkCache){
+                    postRemarkCache = $angularCacheFactory('postRemarkCache',{
+                        maxAge: 10000, //10秒后过期，因为client_sidebar的缓存是10秒
+                        deleteOnExpire: 'aggressive',
+                        storageMode: 'localStorage'
+                    });
+                }
+
 
                 var getFileState = function (mountId, fullpath) {
                     var info = gkClientInterface.getTransInfo({
@@ -1078,6 +1086,9 @@ angular.module('gkClientIndex.directives', [])
                     }
 
                     if (options.data != 'file') {
+                       if(options.cache && postRemarkCache.get(mountId+':'+fullpath)){
+                           options.cache = false;
+                       }
                         lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
                             $scope.$apply(function () {
                                 if (data.share_members) {
@@ -1111,6 +1122,7 @@ angular.module('gkClientIndex.directives', [])
                         $interval.cancel(fileInterval);
                         fileInterval = null;
                     }
+                    var option = {};
                     getFileInfo(file);
                 });
 
@@ -1167,7 +1179,9 @@ angular.module('gkClientIndex.directives', [])
                     if (!remarkText || !remarkText.length) return;
                     var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
                     $scope.posting = true;
-                    RestFile.remind(getOptMountId($scope.file), fullpath, remarkText).success(function (data) {
+                    var mountId = getOptMountId($scope.file);
+                    RestFile.remind(mountId, fullpath, remarkText).success(function (data) {
+                        postRemarkCache.put(mountId+':'+fullpath,1);
                         $scope.$apply(function(){
                             $scope.posting = false;
                             $scope.cancelPostRemark();
