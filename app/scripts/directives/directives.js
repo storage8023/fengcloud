@@ -3,20 +3,6 @@
 /* Directives */
 
 angular.module('gkClientIndex.directives', [])
-    .directive('fileItem',[function(){
-        return {
-            restrict: 'E',
-            replace:true,
-            scope:{
-               file:'=',
-               $index:'=index'
-            },
-            templateUrl:'views/file_item.html',
-            link:function($scope){
-                console.log($scope.file);
-            }
-        }
-    }])
     .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException',function ($timeout,$rootScope,GKException) {
         return {
             restrict: 'A',

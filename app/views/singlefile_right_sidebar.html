@@ -101,7 +101,7 @@
                             <li class="item c_f_after" ng-class="'act_'+history.act" ng-repeat="history in histories" data-version="{{history.property.version}}">
                                 <div class="act_name"><span>{{history.act_name}}</span></div>
                                 <div class="act_info">
-                                    <div class="version_size" title="{{history.property.filesize|bitSize}}"><span>{{history.property.filesize|bitSize}}</span></div>
+                                    <div class="version_size" title="{{history.property.filesize|bitSize}}"><span >{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}</span></div>
                                     <div class="filename_wrapper"><span class="filename">{{history.fullpath|baseName}}</span></div>
                                     <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span
                                             class="act_dateline">{{history.dateline*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
