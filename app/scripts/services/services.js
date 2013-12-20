@@ -646,6 +646,16 @@ angular.module('gkClientIndex.services', [])
                                     $scope.loading = false;
                                 })
                         };
+                        var updateClassifyNews = function(id,newData){
+                            angular.forEach($scope.classifyNews,function(value){
+                                angular.forEach(value.list,function(item){
+                                    if(item.id == id){
+                                        angular.extend(item,newData);
+                                        return false;
+                                    }
+                                })
+                            })
+                        };
 
                         $scope.getBtnClasses = function (opt) {
                             var successBtn = ['invite_accept'];
@@ -698,9 +708,10 @@ angular.module('gkClientIndex.services', [])
                                     $scope.$apply(function () {
                                         item.opts = [];
                                         if (data && data.updates) {
-                                            var newItem = data.updates[0];
-                                            item.render_content = newItem.render_content;
-                                            GKNews.updateNews(item.id, newItem);
+                                            angular.forEach(data.updates,function(newItem){
+                                                updateClassifyNews(newItem.id, newItem);
+                                                GKNews.updateNews(newItem.id, newItem);
+                                            })
                                         }
 
                                     });
