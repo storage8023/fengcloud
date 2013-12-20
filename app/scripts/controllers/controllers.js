@@ -94,7 +94,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 partition: param.partition
             };
             if ([GKPartition.myFile, GKPartition.teamFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
-                extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                if(!param.filter){
+                    extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                }else{
+                    extend.file = {};
+                }
                 if(!param.path){
                     var mount = GKMount.getMountById(param.mountid);
                     if(mount){
@@ -858,7 +862,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.selectedpath = param.selectedpath || '';
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
             $scope.keyword = param.keyword || '';
-            $scope.showHint =!$rootScope.PAGE_CONFIG.file.syncpath?false:true;
+            $scope.showHint =$rootScope.PAGE_CONFIG.file.syncpath?true:false;
             GKFileList.unSelectAll($scope);
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
