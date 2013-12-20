@@ -4497,6 +4497,7 @@ angular.module('gkClientIndex.services', [])
             getQueueList: function ($scope, type) {
                 $rootScope.downloadSpeed = 0;
                 $rootScope.uploadSpeed = 0;
+
                 var getFileList = function (isUpdate) {
                     isUpdate = angular.isDefined(isUpdate) ? isUpdate : false;
                     var re = gkClientInterface.getTransList({type: type});
@@ -4532,7 +4533,6 @@ angular.module('gkClientIndex.services', [])
                             $scope.syncFileList = syncList;
                         }
                     }
-
                 };
 
                 getFileList();

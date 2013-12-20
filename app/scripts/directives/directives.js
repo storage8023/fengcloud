@@ -570,6 +570,13 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: 'views/queue_item.html'
         }
     }])
+    .directive('queueSyncItem', [function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            templateUrl: 'views/queue_sync_item.html'
+        }
+    }])
     .directive('inputGroup', [function () {
         return {
             restrict: 'C',
