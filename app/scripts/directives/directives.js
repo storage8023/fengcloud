@@ -962,7 +962,6 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
-                $scope.enableAddShare = false; //是否允许编辑共享参与人
                 $scope.loading = true;
                 $scope.fileExist = false;
                 var fileInterval,lastGetRequest,lastClientSidebarRequest;
@@ -1045,18 +1044,10 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.fileExist = true;
                                 var formatFile = GKFile.formatFileItem(data, 'api');
                                 angular.extend($scope.file, formatFile);
-                                if (mount['org_id'] > 0 && $scope.file.cmd > 0 && $scope.PAGE_CONFIG.partition != GKPartition.subscribeFile) {
+                                if ($scope.file.cmd > 0 && mount && GKMount.isMember(mount)) {
                                     $scope.showTab = true;
                                 } else {
                                     $scope.showTab = false;
-                                }
-
-                                $scope.enableAddShare = false;
-                                /**
-                                 * 如果是管理员，并且在根目录允许共享操作
-                                 */
-                                if (GKMount.isAdmin(mount) && !$rootScope.PAGE_CONFIG.file.fullpath) {
-                                    $scope.enableAddShare = true;
                                 }
                             });
 
