@@ -1310,6 +1310,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             {
+                item: "论坛",
+                menuclick: function () {
+                    var url = gkClientInterface.getUrl({
+                        sso:1,
+                        url: '/account/bbs'
+                    });
+                    gkClientInterface.openUrl(url);
+                }
+            },
+            {
                 item: "帮助",
                 menuclick: function () {
                     var url = gkClientInterface.getUrl({
