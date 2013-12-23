@@ -48,7 +48,7 @@
                 <li ng-repeat="mount in mounts">
                     <team-logo gk-src="{{mount.org_log_url}}" class="avatar"></team-logo>
                     <div class="name">
-                        <span ng-bind="mount.org_name"></span>
+                        <span title="{{mount.org_name}}" ng-bind="mount.org_name"></span>
                     </div>
                     <div>
                         <span ng-bind="mount.product_name"></span>

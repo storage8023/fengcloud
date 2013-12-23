@@ -20,11 +20,11 @@
         </div>
         <div class="create_time">
             <avatar class="avatar avatar_mini" gk-src="{{file.creator_member_id|getAvatarUrl}}"></avatar>
-            <span>{{file.creator_member_name}} 创建于 {{file.creator_time*1000 | date:'yyyy/M/d H:m:s'}}</span>
+            <span>{{file.creator_member_name}} 创建于 {{file.creator_time*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
         </div>
         <div class="last_edit_time">
             <avatar class="avatar avatar_mini" gk-src="{{file.last_member_id|getAvatarUrl}}"></avatar>
-            <span>{{file.last_member_name}} 最后修改于 {{file.last_edit_time*1000 | date:'yyyy/M/d H:m:s'}}</span>
+            <span>{{file.last_member_name}} 最后修改于 {{file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
         </div>
         <div class="file_size" ng-show="file.dir==0">
             <span>占用 {{file.filesize|bitSize}} 空间</span>

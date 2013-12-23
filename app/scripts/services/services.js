@@ -2132,6 +2132,7 @@ angular.module('gkClientIndex.services', [])
                         tag:value.tag
                     };
                 } else {
+                    //console.log(value);
                     var fileName = Util.String.baseName(value.path);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
                     file = {
