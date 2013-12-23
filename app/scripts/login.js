@@ -12,7 +12,7 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
         $scope.loginSubmit = function(){
             if($scope.loading) return;
             if(!$scope.username||!$scope.username.length){
-                alert('请输入帐号或邮箱');
+                alert('请输入用户名或邮箱');
                 return;
             }
             if(!$scope.password || !$scope.password.length){
@@ -64,11 +64,11 @@ angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.servic
                 return;
             }
             if(!$scope.registUsername || !$scope.registUsername.length){
-                alert('请输入帐号');
+                alert('请输入用户名');
                 return;
             }
             if(!Util.Validation.isRegName($scope.registUsername)){
-                alert('帐号只允许使用中文汉字、英文字母、数字或下划线');
+                alert('用户名只允许使用中文汉字、英文字母、数字或下划线');
                 return;
             }
             var password = $scope.registPassword;

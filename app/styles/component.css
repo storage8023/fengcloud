@@ -795,10 +795,10 @@ a:hover > .icon16x16.icon_team_upgrade,
     background-image: url(../images/icon/folder128x128.png);
 }
 .file_icon128x128.icon_sync_folder {
-    background-image: url(../images/icon/folder_sync128x128.png);
+    background-image: url(../images/icon/sync_folder128x128.png);
 }
 .file_icon128x128.icon_shared_sync_folder {
-    background-image: url(../images/icon/folder_share_sync128x128.png);
+    background-image: url(../images/icon/shared_sync_folder128x128.png);
 }
 .file_icon128x128.icon_local_folder {
     background-image: url(../images/icon/local_folder128x128.png);

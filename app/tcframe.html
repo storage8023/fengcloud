@@ -33,7 +33,7 @@
 </header>
 <qiuckmenu></qiuckmenu>
 <div class="message_wrapper" ng-click="showMessage()">
-    <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">账号未登录</div>
+    <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">帐号未登陆或正在登录</div>
     <ul class="scrollbar message_list" ng-if="PAGE_CONFIG.user.member_id">
         <li ng-show="!messages || !messages.length" class="empty">没有消息</li>
         <li ng-repeat="message in messages">

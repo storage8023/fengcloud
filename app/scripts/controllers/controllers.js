@@ -385,7 +385,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (newOrg['type'] == 3) {
                     partition = GKPartition.subscribeFile;
                 }
-                console.log(partition);
                 newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
                 if (partition == GKPartition.teamFile) {
                     $scope.orgTreeList.push(newOrg);
@@ -458,8 +457,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (GKMount.checkMountExsit(newOrg.mountid)) {
                 return;
             }
-            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.teamFile)[0];
-            $scope.orgTreeList.push(newOrg);
+            var partition = GKPartition.teamFile;
+            if (newOrg['type'] == 3) {
+                partition = GKPartition.subscribeFile;
+            }
+            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
+            if (partition == GKPartition.teamFile) {
+                $scope.orgTreeList.push(newOrg);
+            } else {
+                $scope.orgSubscribeList.push(newOrg);
+            }
             unSelectAllBranch();
             selectBreanch(newOrg, GKPartition.teamFile, true);
         })
@@ -736,11 +743,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var order = newValue;
+            var localCompare = false;
             if (newValue.indexOf('filename') >= 0) {
+                localCompare = true;
                 var desc = newValue.indexOf('-') ? '-' : '+';
                 order = [desc + 'dir', newValue];
             }
-            var newFileData= $filter('orderBy')($scope.fileData, order).concat();
+            var newFileData= $filter('orderBy')($scope.fileData, order,localCompare).concat();
             $scope.fileData = null;
             $scope.fileData = newFileData;
             GKFileList.reIndex($scope.fileData);
