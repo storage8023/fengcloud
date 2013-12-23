@@ -93,6 +93,7 @@ angular.module('gkClientIndex.directives', [])
                                                 version:version
                                             }]
                                         }
+                                        console.log(param);
                                         gkClientInterface.saveToLocal(param);
                                     }
                                 }
