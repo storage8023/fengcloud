@@ -385,6 +385,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (newOrg['type'] == 3) {
                     partition = GKPartition.subscribeFile;
                 }
+                console.log(partition);
                 newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
                 if (partition == GKPartition.teamFile) {
                     $scope.orgTreeList.push(newOrg);
