@@ -1166,6 +1166,9 @@ footer {
     color: #3f4754;
     margin-bottom: 2px;
 }
+.right_sidebar .file_attrs .file_name span{
+    white-space: pre;
+}
 .right_sidebar .file_attrs .smart{
     margin-top: 5px;
 }
@@ -1455,6 +1458,9 @@ footer {
 .right_sidebar .file_detail_wrapper .update_list > li > span{
     display: table-cell;
 }
+.right_sidebar .file_detail_wrapper .update_list > li .update_text span{
+    white-space: pre;
+}
 .right_sidebar .file_detail_wrapper .update_list > li .update_member{
     margin-right: 10px;
     text-align: right;
@@ -1559,6 +1565,7 @@ footer {
     color: #3f4754;
     word-break: break-all;
     word-wrap: break-word;
+    white-space: pre;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .version_size{
     text-align: right;
