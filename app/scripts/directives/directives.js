@@ -407,23 +407,28 @@ angular.module('gkClientIndex.directives', [])
                         input[0].selectionStart = 0;
                         input[0].selectionEnd = selectionEnd;
                         input.focus();
+                        var submit = function(){
+                            var newFileName = jQuery.trim(input.val());
+                            if (!newFileName.length) newFileName = oldFileName;
+                            var extIndex = newFileName.lastIndexOf('.');
+                            if(extIndex>=0 && !jQuery.trim(newFileName.slice(0,extIndex))){
+                                alert('请输入文件名');
+                                newFileName = oldFileName;
+                            }
+                            fn($scope, {filename: newFileName});
+                        };
+
                         input.on('keydown', function (e) {
                             if (e.keyCode == 13) {
-                                var newFileName = jQuery.trim(input.val());
-                                if (!newFileName.length) newFileName = oldFileName;
-                                fn($scope, {filename: newFileName});
+                                submit();
                                 return false;
                             }
                         });
                         input.on('blur', function () {
-                            var newFileName = jQuery.trim(input.val());
-                            if (!newFileName.length) newFileName = oldFileName;
-                            fn($scope, {filename: newFileName});
+                            submit();
                         })
                         input.on('dblclick', function () {
-                            var newFileName = jQuery.trim(input.val());
-                            if (!newFileName.length) newFileName = oldFileName;
-                            fn($scope, {filename: newFileName});
+                            submit();
                         })
                     } else {
                         clear();
@@ -464,6 +469,7 @@ angular.module('gkClientIndex.directives', [])
                                 filename = defaultNewName
                             }
                             if(newFileExt){
+
                                 var ext = Util.String.getExt(filename);
                                 if(ext != newFileExt){
                                     filename+='.'+newFileExt;
@@ -644,37 +650,46 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element, $attrs) {
                 $scope.filename = $scope.defaultNewName ? $scope.defaultNewName : '新建文件夹';
                 var input = $element.find('input');
-                input.on('blur', function (event) {
+                var submit = function(){
                     if ($scope.onSubmit != null) {
+                        var extIndex = $scope.filename.lastIndexOf('.');
+                        if(extIndex>=0 && !jQuery.trim($scope.filename.slice(0,extIndex))){
+                            alert('请输入文件名');
+                            $scope.filename = $scope.defaultNewName;
+                            reset();
+                            return;
+                        }
                         $scope.onSubmit({
                             filename: $scope.filename
                         });
                     }
+                };
+                input.on('blur', function (event) {
+                    submit();
                 })
 
                 input.on('keydown', function (event) {
                     if (event.keyCode == 13) {
                         $scope.$apply(function () {
-                            if ($scope.onSubmit != null) {
-                                $scope.onSubmit({
-                                    filename: $scope.filename
-                                });
-                            }
+                            submit();
                         });
                     }
                 });
+                var reset = function(){
+                    $timeout(function () {
+                        input[0].select();
+                        var selectionEnd = $scope.defaultNewName.length;
+                        var extIndex = $scope.defaultNewName.lastIndexOf('.');
+                        if ($scope.dir == 0 && extIndex > 0) {
+                            selectionEnd = extIndex;
+                        }
+                        input[0].selectionStart = 0;
+                        input[0].selectionEnd = selectionEnd;
+                        input.focus();
+                    }, 0)
+                };
 
-                $timeout(function () {
-                    input[0].select();
-                    var selectionEnd = $scope.defaultNewName.length;
-                    var extIndex = $scope.defaultNewName.lastIndexOf('.');
-                    if ($scope.dir == 0 && extIndex > 0) {
-                        selectionEnd = extIndex;
-                    }
-                    input[0].selectionStart = 0;
-                    input[0].selectionEnd = selectionEnd;
-                    input.focus();
-                }, 0)
+                reset();
 
                 $scope.$on('$destroy', function () {
                     input.off('blur').off('keydown');
