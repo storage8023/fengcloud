@@ -468,7 +468,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.parentFile = parentFile;
                         $scope.publishEnable = false;
                         var mount = GKMount.getMountById(mountId);
-                        if (!$scope.parentFile.fullpath && mount && mount.type < 3 && file.dir == 1 && GKMount.isAdmin(mount)) {
+                        if (!$scope.parentFile.fullpath && mount && file.dir == 1 && GKMount.isAdmin(mount)) {
                             $scope.publishEnable = true;
                         }
                         $scope.innerLink = gkClientInterface.getLinkDomain() + '/' + mountId + '/' + encodeURIComponent(file.fullpath);
@@ -717,7 +717,13 @@ angular.module('gkClientIndex.services', [])
                                     });
 
                                 }).error(function (request) {
-                                        GKException.handleAjaxException(request);
+                                        var code = GKException.getAjaxErroCode(request);
+                                        if(code==403322){
+                                            context.createTeam('加入云库');
+                                        }else{
+                                            GKException.handleAjaxException(request);
+                                        }
+
                                     });
                             } else if (opt.type == 'url') {
                                 var url = gkClientInterface.getUrl({
@@ -735,8 +741,7 @@ angular.module('gkClientIndex.services', [])
                                         height: 490
                                     }
                                     gkClientInterface.setMain(data);
-                                }
-                                ;
+                                };
                                 $modalInstance.close();
                             } else if (opt.type == 'view') {
                                 if (opt.opt == 'view_file') {
@@ -946,16 +951,13 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            createTeam: function (isEdit) {
-                isEdit = angular.isDefined(isEdit) ? isEdit : 0;
+            createTeam: function (title) {
+                title = angular.isDefined(title) ? title : '创建云库';
                 var option = {
                     templateUrl: 'views/create_team_dialog.html',
                     windowClass: 'modal_frame create_team_dialog',
                     controller: function ($scope, $modalInstance, src) {
-                        $scope.title = '创建云库';
-                        if (isEdit) {
-                            $scope.title = '设置云库';
-                        }
+                        $scope.title = title;
                         $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
@@ -1721,6 +1723,16 @@ angular.module('gkClientIndex.services', [])
                     }
                 }
                 return errorMsg;
+            },
+            getAjaxErrorCode: function (request) {
+                var code = 0;
+                if (request.responseText) {
+                    var result = JSON.parse(request.responseText);
+                    code =result.error_code ? result.error_code : 0;
+                } else {
+                    code = request.status || 0;
+                }
+                return code;
             },
             getAjaxErroCode: function (request) {
                 var code = 0;

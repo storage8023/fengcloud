@@ -1294,7 +1294,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 item: "创建云库",
                 menuclick: function () {
                     var createTeamDialog = GKModal.createTeam();
-
                 }
             },
             {
