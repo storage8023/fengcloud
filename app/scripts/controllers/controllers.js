@@ -1204,12 +1204,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('invokeSearch', function ($event) {
             GKFileList.refreahData($scope);
         })
-
+        var tmpData;
         $scope.$on('searchSmartFolder', function (event, keyword) {
             if (!keyword) {
                 return;
             }
-            var fileList = $filter('filter')($scope.fileData, {filename: keyword});
+            if(!tmpData){
+                tmpData = $scope.fileData;
+            }
+            var fileList = $filter('filter')(tmpData, {filename: keyword});
             $scope.keyword = keyword;
             if (!fileList || !fileList.length) {
                 $scope.errorMsg = '未找到相关搜索结果';
@@ -1222,6 +1225,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('cancelSearchSmartFolder', function (event, keyword) {
             $scope.keyword = '';
             GKFileList.refreahData($scope);
+            tmpData = null;
         })
 
         $scope.$on('$destroy', function () {

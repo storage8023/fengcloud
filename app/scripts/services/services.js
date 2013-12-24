@@ -3236,12 +3236,6 @@ angular.module('gkClientIndex.services', [])
                     type: method,
                     headers: headers
                 });
-//                return $http({
-//                    method: method,
-//                    url: GK.getRestHost() + webpath,
-//                    headers: headers,
-//                    responseType:'text'
-//                })
             },
             delCompletely: function (mount_id, fullpaths) {
                 var date = new Date().toUTCString();
@@ -4303,16 +4297,6 @@ angular.module('gkClientIndex.services', [])
                          */
                     } else if ($scope.filter == 'recent') {
                         GKApi.recentFileList($scope.filter).success(function (data) {
-                            fileList = data['list'];
-                            deferred.resolve(GKFile.dealFileList(fileList, source));
-                        }).error(function (request) {
-                                deferred.reject(GKException.getAjaxErrorMsg(request));
-                            });
-                    } else {
-                        /**
-                         * 智能文件夹
-                         */
-                        GKApi.smartFolderList($scope.keyword).success(function (data) {
                             fileList = data['list'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));
                         }).error(function (request) {

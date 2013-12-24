@@ -43,3 +43,7 @@ footer {
     background: #CDCED0;
     border-radius: 3px;
 }
+footer textarea{
+    height: 200px;
+    border:2px solid #ccc;
+}

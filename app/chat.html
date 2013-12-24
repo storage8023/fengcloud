@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" ng-app="gkChat" prevent-drag-drop>
 <head>
     <meta charset="utf-8">
     <title>够快云库</title>
@@ -12,14 +12,42 @@
     <script src="scripts/util.js"></script>
     <script src="scripts/interface.js"></script>
     <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="scripts/chat.js"></script>
+    <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
 </head>
-<body>
-   <div class="container">
-        <header></header>
-        <section></section>
+<body ng-controller="initChat">
+<div class="container">
+    <div class="main">
+        <header>
+            <img ng-src="{{team.logo}}" alt="{{team.name}}"/>
+            <span ng-bind="team.name"></span>
+            <i class="icon16x16 icon_person" ng-click="showMembers"></i>
+        </header>
+        <section class="scrollbar">
+            <div class="chat_item" ng-repeat="msg in msg_list">
+                <div class="avatar">
+                    <img src=""/>
+                </div>
+                <div class="chat_main">
+                    <div class="chat_member">
+                        <span ng-bind="msg.member_name"></span>
+                    </div>
+                    <div class="chat_text">
+                        <span ng-bind="msg.text"></span>
+                    </div>
+                    <div class="chat_file" ng-click="goToFile(msg)">
+                        <i class="icon16x16"></i>
+                        <span class="filename" ng-bind="msg.filename"></span>
+                        <span class="version"><i>V</i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
         <footer>
-           <textarea class="post_text"></textarea>
-       </footer>
-   </div>
+            <textarea class="post_text" ng-model="postText"></textarea>
+        </footer>
+    </div>
+</div>
 </body>
 </html>
