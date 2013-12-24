@@ -89,7 +89,8 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
          * @returns {*}
          */
       select_branch = function(branch) {
-        if (branch !== scope.selectedBranch) {
+          console.log(123);
+        //if (branch !== scope.selectedBranch) {
           if (scope.selectedBranch != null) {
               scope.selectedBranch.selected = false;
           }
@@ -97,18 +98,20 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
             scope.selectedBranch = branch;
           if (branch.onSelect != null) {
             return $timeout(function() {
+                console.log(12);
               return branch.onSelect(branch);
             },0);
           } else {
             if (scope.onSelect != null) {
               return $timeout(function() {
+                  console.log(12);
                 return scope.onSelect({
                   branch: branch
                 });
               },0);
             }
           }
-        }
+        //}
       };
 
         /**
@@ -143,9 +146,9 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
         if(angular.element($event.target).hasClass('tree-icon') || angular.element($event.target).parents('.tree-icon').size()){
             return expand_branch(branch);
         }else{
-            if (branch !== scope.selectedBranch) {
+            //if (branch !== scope.selectedBranch) {
                 return select_branch(branch);
-            }
+            //}
         }
 
       };
