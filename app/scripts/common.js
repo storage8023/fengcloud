@@ -120,7 +120,7 @@ angular.module('GKCommon.directives', [])
                 var disableScroll = false;
                 if (attrs.triggerDistance != null) {
                     $scope.$watch(attrs.triggerDistance, function (value) {
-                        return triggerDistance = parseInt(value, 10);
+                        return triggerDistance = parseInt(value||0, 10);
                     });
                 }
 
@@ -131,8 +131,10 @@ angular.module('GKCommon.directives', [])
                 }
 
                 var direction = 'down';
-                direction = attrs.triggerDirection;
-                var startScrollTop = $element.scrollTop();
+                if(attrs.triggerDirection){
+                    direction = attrs.triggerDirection;
+                }
+                var startScrollTop = 0;
                 $element.on('scroll.scrollLoad', function (e) {
                     var _self = jQuery(this),
                         realDistance = 0,
@@ -143,17 +145,15 @@ angular.module('GKCommon.directives', [])
                     scrollT = _self.scrollTop();
                     isScrollDown = scrollT > startScrollTop;
                     var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
-                    realDistance = scrollH - scrollT - clientHeight;
+                    realDistance = direction =='down'?(scrollH - scrollT - clientHeight):scrollT;
                     if(realDistance <= triggerDistance && !disableScroll){
-                        if(!isScrollDown //向下滚动才触发
-                            && direction == 'up'){
+                        if(!isScrollDown && direction == 'up'){
                             if ($rootScope.$$phase) {
                                 return $scope.$eval(attrs.scrollLoad);
                             } else {
                                 return $scope.$apply(attrs.scrollLoad);
                             }
-                        }else{
-                            console.log(123);
+                        }else if(isScrollDown && direction == 'down'){
                             if ($rootScope.$$phase) {
                                 return $scope.$eval(attrs.scrollLoad);
                             } else {

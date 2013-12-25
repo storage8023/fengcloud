@@ -66,7 +66,7 @@ angular.module('gkChat', ['GKCommon'])
         };
 
         $scope.handleScrollLoad = function(){
-            console.log(1);
+            console.log(123);
         }
 
         var connect = function(){
