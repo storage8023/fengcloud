@@ -998,7 +998,6 @@ angular.module('gkClientIndex.services', [])
                                         var newOrg = param;
                                         $rootScope.$broadcast('createOrgSuccess', newOrg);
                                     });
-                                    $modalInstance.close(orgId);
                                 }
                             })
                         })
