@@ -387,6 +387,30 @@ angular.module('gkClientIndex.services', [])
             backdrop: 'static'
         };
         return{
+            openNew: function (url,title) {
+                var context = this;
+                var option = {
+                    templateUrl: 'views/new_unname_dialog.html',
+                    windowClass: 'modal_frame new_unname_dialog',
+                    controller: function ($scope, $modalInstance, src,title) {
+                        $scope.url = src;
+                        $scope.title = title;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    },
+                    resolve: {
+                        src: function () {
+                            return url;
+                        },
+                        title:function(){
+                            return title;
+                        }
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
             teamCard: function (orgId) {
                 var context = this;
                 var option = {

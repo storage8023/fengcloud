@@ -43,10 +43,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 sso: sso,
                 url: param.url
             });
-            if(param.browser ==1){
+            var type = param.type;
+            var title = param.title;
+            if(type == 'browser'){
                 gkClientInterface.openUrl(url);
-            }else{
+            }else if(type == 'dialog'){
                 GKDialog.openUrl(url);
+            }else if(type == 'modal'){
+                GKModal.openNew(url,title);
             }
         })
 
