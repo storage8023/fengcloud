@@ -5,7 +5,14 @@ angular.module('gkClientIndex', ['GKCommon','jmdobry.angular-cache','pasvaz.bind
         var siteDomain = gkClientInterface.getSiteDomain();
         $sceDelegateProvider.resourceUrlWhitelist([
             'self',
-            siteDomain+'/**'
+            'http://*.goukuai.cn/**',
+            'https://*.goukuai.cn/**',
+            'http://*.gokuai.cn/**',
+            'https://*.gokuai.cn/**',
+            'http://*.gokuai.com/**',
+            'https://*.gokuai.com/**',
+            'http://*.yunku.cn/**',
+            'https://*.yunku.cn/**'
         ]);
     }])
 ;
