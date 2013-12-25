@@ -398,6 +398,10 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        $rootScope.$on('closeModal', function () {
+                            $modalInstance.dismiss('cancel');
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -467,7 +471,7 @@ angular.module('gkClientIndex.services', [])
                             })
                         })
                         $rootScope.$on('closeModal', function () {
-                            $modalInstance.dismiss('cancel');
+                             $modalInstance.dismiss('cancel');
                         })
                     },
                     resolve: {
