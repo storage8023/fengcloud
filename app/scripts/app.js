@@ -5,6 +5,8 @@ angular.module('gkClientIndex', ['jmdobry.angular-cache','pasvaz.bindonce','gkCl
         var siteDomain = gkClientInterface.getSiteDomain();
         $sceDelegateProvider.resourceUrlWhitelist([
             'self',
+            'http://127.0.0.1/**',
+            'http://localhost/**',
             'http://*.goukuai.cn/**',
             'https://*.goukuai.cn/**',
             'http://*.gokuai.cn/**',
