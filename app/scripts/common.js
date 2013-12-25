@@ -130,6 +130,8 @@ angular.module('GKCommon.directives', [])
                     });
                 }
 
+                var direction = 'down';
+                direction = attrs.triggerDirection;
                 var startScrollTop = $element.scrollTop();
                 $element.on('scroll.scrollLoad', function (e) {
                     var _self = jQuery(this),
@@ -142,12 +144,21 @@ angular.module('GKCommon.directives', [])
                     isScrollDown = scrollT > startScrollTop;
                     var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
                     realDistance = scrollH - scrollT - clientHeight;
-                    if (isScrollDown //向下滚动才触发
-                        && realDistance <= triggerDistance && !disableScroll) {
-                        if ($rootScope.$$phase) {
-                            return $scope.$eval(attrs.scrollLoad);
-                        } else {
-                            return $scope.$apply(attrs.scrollLoad);
+                    if(realDistance <= triggerDistance && !disableScroll){
+                        if(!isScrollDown //向下滚动才触发
+                            && direction == 'up'){
+                            if ($rootScope.$$phase) {
+                                return $scope.$eval(attrs.scrollLoad);
+                            } else {
+                                return $scope.$apply(attrs.scrollLoad);
+                            }
+                        }else{
+                            console.log(123);
+                            if ($rootScope.$$phase) {
+                                return $scope.$eval(attrs.scrollLoad);
+                            } else {
+                                return $scope.$apply(attrs.scrollLoad);
+                            }
                         }
                     }
                     startScrollTop = scrollT;
@@ -812,6 +823,7 @@ angular.module('GKCommon.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
+                    async:false,
                     dataType:'json',
                     url: gkClientInterface.getApiHost() + '/1/team/groups_and_members',
                     data: params
@@ -966,7 +978,7 @@ angular.module('GKCommon.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = '今天，' + $filter('date')(dateline, 'HH:mm');
+                dateText = $filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             }else{

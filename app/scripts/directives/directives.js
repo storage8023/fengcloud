@@ -100,9 +100,6 @@ angular.module('gkClientIndex.directives', [])
                         });
                     }
                 })
-
-
-
                 $scope.$on('$destroy',function(){
                     jQuery.contextMenu('destroy', '.history_list > .item');
                 })
