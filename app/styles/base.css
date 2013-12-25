@@ -104,14 +104,15 @@ textarea {
 
 /* 滚动条样式 */
 .scrollbar::-webkit-scrollbar {
-    height:16px;
+    height:10px;
     overflow:visible;
     width:8px;
     -webkit-transition:all linear 0.1s;
 }
 .scrollbar::-webkit-scrollbar-button {
     height:0;
-    width:0
+    width:0;
+    display: none;
 }
 .scrollbar::-webkit-scrollbar-track {
     background-clip:padding-box;
@@ -145,7 +146,7 @@ textarea {
 
 }
 .scrollbar::-webkit-scrollbar-thumb:horizontal {
-    border-width:6px 1px 1px;
+    border-width:1px;
     padding:0 0 0 100px;
     box-shadow:inset 1px 1px 0 rgba(0,0,0,.1),inset -1px 0 0 rgba(0,0,0,.07)
 }
@@ -157,7 +158,14 @@ textarea {
     background-color:rgba(0,0,0,0.4);
     box-shadow:inset 1px 1px 3px rgba(0,0,0,0.3)
 }
-
+.scrollbar::-webkit-scrollbar-corner {
+    height: 0;
+    width: 0;
+}
+.scrollbar::-webkit-resizer{
+    height: 0;
+    width: 0;
+}
 input[type="radio"], input[type="checkbox"]{
     margin:0;
 }

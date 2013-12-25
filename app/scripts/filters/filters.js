@@ -3,63 +3,7 @@
 /* Filters */
 
 angular.module('gkClientIndex.filters', [])
-   .filter('orderObjectBy', function(){
-    return function(input, attribute) {
-        if (!angular.isObject(input)) return input;
 
-        var array = [];
-        for(var objectKey in input) {
-            array.push(input[objectKey]);
-        }
-
-        array.sort(function(a, b){
-            a = parseInt(a[attribute]);
-            b = parseInt(b[attribute]);
-            return a - b;
-        });
-        return array;
-    }
-})
-    .filter('dateAgo', function ($filter) {
-        return function (dateline) {
-            var now = new Date().valueOf();
-            var today = $filter('date')(now, 'yyyy-MM-dd');
-            var yesterdayTimestamp = now - 24 * 3600 * 1000;
-            var yesterday = $filter('date')(yesterdayTimestamp, 'yyyy-MM-dd');
-            var date = $filter('date')(dateline, 'yyyy-MM-dd');
-            var dateText = '';
-            if (date == today) {
-                dateText = '今天，' + $filter('date')(dateline, 'HH:mm');
-            } else if (date == yesterday) {
-                dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
-            }else{
-                dateText =$filter('date')(dateline, 'yyyy年M月d日');
-            }
-            return dateText;
-        }
-    })
-    .filter('getAvatarUrl', function () {
-        return function (memberId,isThumb) {
-            isThumb = angular.isDefined(isThumb)?isThumb:1;
-            return gkClientInterface.getSiteDomain()+'/index/avatar?id='+memberId+'&thumb='+isThumb;
-        }
-    })
-    .filter('formatFileSize', function () {
-        return function (filesize, dir) {
-            return dir == 1 ? '-' : Util.Number.bitSize(filesize);
-        }
-    })
-    .filter('bitSize', function(){
-        return Util.Number.bitSize;
-    })
-    .filter('baseName', function(){
-        return Util.String.baseName;
-    })
-    .filter('getPercent',function(){
-        return function(val,total){
-            return Math.round(val/total * 100)+'%';
-        }
-    })
     .filter('getSmartIcon',['GKFilter',function(GKFilter){
         return function(favorites,filter){
           var type = GKFilter.getFilterType(filter);
@@ -110,7 +54,5 @@ angular.module('gkClientIndex.filters', [])
             var type =  GKFile.getFileIconSuffix(filename,dir);
             return dir==1 ? '文件夹' : ext+GKFile.getFileTypeName(type);
         }
-    }])
-
-;
+    }]);
 

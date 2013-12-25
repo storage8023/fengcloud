@@ -7,6 +7,14 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getMount:function(params){
+        var re = gkClient.gGetMountInfo(JSON.stringify(params));
+        if(re){
+            return JSON.parse(re);
+        }else{
+            return '';
+        }
+    },
     revert:function(params,callback){
         gkClient.gRevert(JSON.stringify(params),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);

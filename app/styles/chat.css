@@ -1,0 +1,59 @@
+header,
+section,
+footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    background: #f7f7f7;
+
+}
+
+header {
+    top: 0;
+    height: 66px;
+    border-bottom: 1px solid #ccc;
+    line-height: 66px;
+}
+header .header_left{
+    margin: 0 30px 0 15px;
+
+}
+header .icon_person{
+    position: absolute;
+    top:25px;
+    right: 10px;
+}
+section {
+    top: 66px;
+}
+
+footer {
+    bottom: 0;
+    height: 74px;
+    border-top: 1px solid #ccc;
+}
+.chat_item{
+
+}
+.chat_item .chat_avatar{
+
+}
+.chat_item .chat_main{
+    margin: -40px 0 0 40px;
+}
+.chat_item .chat_main .chat_member{
+
+}
+.chat_item .chat_main .chat_text{
+    background: #448DE8;
+    border-radius: 3px;
+}
+.chat_item .chat_main .chat_file{
+    background: #CDCED0;
+    border-radius: 3px;
+}
+footer textarea{
+    height: 100%;
+    width: 100%;
+    border:0 none;
+}

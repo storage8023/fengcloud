@@ -1,7 +1,6 @@
 'use strict';
 
 /* Directives */
-
 angular.module('gkClientIndex.directives', [])
     .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException',function ($timeout,$rootScope,GKException) {
         return {
@@ -504,18 +503,6 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('focusMe', function ($timeout) {
-        return {
-            link: function (scope, element, attrs) {
-                scope.$watch(attrs.focusMe, function (value) {
-                    if (value === true) {
-                        element[0].focus();
-                        scope[attrs.focusMe] = false;
-                    }
-                });
-            }
-        };
-    })
     .directive('gkGuider', ['GKGuiders', '$parse', '$timeout', function (GKGuiders, $parse, $timeout) {
         return {
             restrict: 'A',
@@ -584,55 +571,11 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: 'views/queue_sync_item.html'
         }
     }])
-    .directive('inputGroup', [function () {
-        return {
-            restrict: 'C',
-            link: function ($scope, $element) {
-                $element.find('input[type="text"],input[type="password"]').on('focus', function () {
-                    $element.addClass('input-group-focus');
-                })
-                $element.find('input[type="text"],input[type="password"]').on('blur', function () {
-                    $element.removeClass('input-group-focus');
-                })
-            }
-        }
-    }])
     .directive('networkUnconnect', [function () {
         return {
             restrict: 'E',
             replace: true,
             templateUrl: 'views/network_unconnect.html'
-        }
-    }])
-    .directive('avatar', [function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                gkSrc: '@'
-            },
-            template: '<img src="images/default_photo.png" error-src="images/default_photo.png" ng-src="{{gkSrc}}" />'
-        }
-    }])
-    .directive('groupPhoto', [function () {
-        return {
-            restrict: 'E',
-            replace: true,
-
-            scope: {
-                gkSrc: '@'
-            },
-            template: '<img src="images/default_group.png" error-src="images/default_group.png" ng-src="{{gkSrc}}" />'
-        }
-    }])
-    .directive('teamLogo', [function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                gkSrc: '@'
-            },
-            template: '<img src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{gkSrc}}" />'
         }
     }])
     .directive('newFileItem', ['$timeout', function ($timeout) {
@@ -714,32 +657,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('preventDragDrop', [function () {
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                $element.on('dragover', function (event) {
-                    event.preventDefault();
-                });
-                $element.on('dragenter', function (event) {
-                    event.preventDefault();
-                });
-                $element.on('drop', function (event) {
-                    event.preventDefault();
-                });
-            }
-        }
-    }])
-    .directive('ngDrop', ['$parse', function ($parse) {
-        return function ($scope, $element, $attrs) {
-            var fn = $parse($attrs.ngDrop);
-            $element.on('drop', function (event) {
-                $scope.$apply(function () {
-                    fn($scope, {$event: event});
-                });
-            });
-        };
-    }])
     .directive('uiSelectable', ['uiSelectableConfig', 'GKFileList', function (uiSelectableConfig, GKFileList) {
         return {
             restrict: 'A',
@@ -810,22 +727,6 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('errorSrc', [function () {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var errorSrc = attrs.errorSrc;
-                element.on('error', function () {
-                    if (errorSrc) {
-                        element.attr('src', attrs.errorSrc);
-                    } else {
-                        element.css('display', 'none');
-                    }
-
-                });
-            }
-        }
-    }])
     .directive('href', ['$rootScope', function ($rootScope) {
         return {
             restrict: 'A',
@@ -874,17 +775,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('closeWindowButton', [function () {
-        return {
-            restrict: 'E',
-            template: '<button class="close_window"><i class="icon16x16 icon_close_window"></i></button>',
-            link: function (scope, element) {
-                element.on('click', function () {
-                    gkClientInterface.closeWindow();
-                })
-            }
-        }
-    }])
     .directive('loadingEllipsis', ['$interval', function ($interval) {
         return {
             replace: true,
@@ -901,52 +791,6 @@ angular.module('gkClientIndex.directives', [])
                         $scope.ellipsis += cell;
                     }
                 }, 500)
-            }
-        }
-    }])
-    .directive('scrollLoad', ['$rootScope', function ($rootScope) {
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, attrs) {
-                var triggerDistance = 0;
-                var disableScroll = false;
-                if (attrs.triggerDistance != null) {
-                    $scope.$watch(attrs.triggerDistance, function (value) {
-                        return triggerDistance = parseInt(value, 10);
-                    });
-                }
-
-                if (attrs.disableScroll != null) {
-                    $scope.$watch(attrs.disableScroll, function (value) {
-                        return disableScroll = !!value;
-                    });
-                }
-
-                var startScrollTop = $element.scrollTop();
-                $element.on('scroll.scrollLoad', function (e) {
-                    var _self = jQuery(this),
-                        realDistance = 0,
-                        scrollH = 0,
-                        scrollT = 0,
-                        isScrollDown = false;
-                    scrollH = jQuery.isWindow(this) ? document.body.scrollHeight : $element[0].scrollHeight;
-                    scrollT = _self.scrollTop();
-                    isScrollDown = scrollT > startScrollTop;
-                    var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
-                    realDistance = scrollH - scrollT - clientHeight;
-                    if (isScrollDown //向下滚动才触发
-                        && realDistance <= triggerDistance && !disableScroll) {
-                        if ($rootScope.$$phase) {
-                            return $scope.$eval(attrs.scrollLoad);
-                        } else {
-                            return $scope.$apply(attrs.scrollLoad);
-                        }
-                    }
-                    startScrollTop = scrollT;
-                });
-                $scope.$on('$destroy', function () {
-                    $element.off('scroll.scrollLoad');
-                })
             }
         }
     }])
@@ -1460,28 +1304,6 @@ angular.module('gkClientIndex.directives', [])
                 })
             }
         }
-    }])
-    .directive('ngRightClick', ['$parse', function ($parse) {
-        return function ($scope, $element, $attrs) {
-            var fn = $parse($attrs.ngRightClick);
-            $element.bind('contextmenu', function (event) {
-                $scope.$apply(function () {
-                    event.preventDefault();
-                    fn($scope, {$event: event});
-                });
-            });
-        };
-    }])
-    .directive('ngDragend', ['$parse', function ($parse) {
-        return function ($scope, $element, $attrs) {
-            var fn = $parse($attrs.ngDragend);
-            $element.on('dragend', function (event) {
-                $scope.$apply(function () {
-                    event.preventDefault();
-                    fn($scope, {$event: event});
-                });
-            });
-        };
     }])
     .directive('inputTipPopup', ['$document', '$parse', '$timeout', function ($document, $parse, $timeout) {
         return {
