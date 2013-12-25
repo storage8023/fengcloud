@@ -1459,7 +1459,7 @@ footer {
     display: table-cell;
 }
 .right_sidebar .file_detail_wrapper .update_list > li .update_text span{
-    white-space: pre;
+    white-space: pre-wrap;
 }
 .right_sidebar .file_detail_wrapper .update_list > li .update_member{
     margin-right: 10px;
