@@ -66,7 +66,13 @@ angular.module('gkChat', ['GKCommon'])
         };
 
         $scope.handleScrollLoad = function(){
-            console.log(123);
+            var minDateline = 0;
+            if($scope.msg_list.length){
+                minDateline = $scope.msg_list[0]['time'];
+            }
+            chatService.search($scope.org.orgid,minDateline).success(function(){
+
+            })
         }
 
         var connect = function(){
@@ -113,12 +119,13 @@ angular.module('gkChat', ['GKCommon'])
                     dataType: 'text'
                 });
             },
-            search:function(){
+            search:function(orgId,dateline){
              return jQuery.ajax({
+                    type:'GET',
                     url: host + '/search',
                     dataType: 'json',
-                    type: method,
                     data:{
+                        'dateline':dateline,
                         'team-id':orgId,
                         'token':gkClientInterface.getToken()
                     }
