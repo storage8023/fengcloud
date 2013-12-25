@@ -89,6 +89,22 @@ angular.module('gkChat', ['GKCommon'])
                 })
             })
         }
+
+        $scope.goToFile = function(msg){
+            var fullpath = msg.fullpath;
+            var mountId = $scope.PAGE_CONFIG.mount.mountid;
+        };
+
+        $scope.openFile = function(msg){
+            var fullpath = msg.fullpath;
+            var mountId = $scope.PAGE_CONFIG.mount.mountid;
+            var params = {
+                mountid:Number(mountId),
+                webpath:fullpath
+            }
+            gkClientInterface.open(params);
+        }
+
         var data = [
             {
                 sender:4,

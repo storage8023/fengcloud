@@ -162,10 +162,24 @@ footer {
     color: #7f8999;
     white-space: nowrap;
     overflow: hidden;
+    line-height: 32px;
     text-overflow: ellipsis;
+}
+.chat_item .chat_main .chat_file >div{
+    float: left;
+}
+.chat_item .chat_main .chat_file .filename_wrapper{
+    max-width: 85%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.chat_item .chat_main .chat_file .filename_wrapper span{
+    white-space: pre;
 }
 .chat_item .chat_main .chat_file .version_wrapper{
     margin: 0 0 0 5px;
+    float: right;
 }
 .chat_item .chat_main .chat_file .version{
     background: #66aeff;

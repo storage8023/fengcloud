@@ -42,11 +42,18 @@
                         <span ng-bind="msg.content"></span>
                     </div>
                     <div class="chat_file" ng-if="msg.fullpath" ng-click="goToFile(msg)">
-                        <i class="icon32x32" ng-class="msg.filename | getFileIcon:msg.dir:0:0">
-                            <img error-src="" src="{{msg.hash | getThumbUrl:msg.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.ext)>=0" />
-                        </i>
-                        <span class="filename" ng-bind="msg.filename"></span>
-                        <span class="version_wrapper"><i class="version">V{{msg.version}}</i></span>
+                        <div class="file_icon_wrapper">
+                            <i class="icon32x32" ng-class="msg.filename | getFileIcon:msg.dir:0:0">
+                                <img error-src="" src="{{msg.hash | getThumbUrl:msg.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.ext)>=0" />
+                            </i>
+                        </div>
+                       <div class="version_wrapper">
+                          <i class="version">V{{msg.version}}</i>
+                       </div>
+                      <div class="filename_wrapper">
+                          <span class="filename" ng-bind="msg.filename"></span>
+                      </div>
+
                     </div>
                 </div>
             </div>
