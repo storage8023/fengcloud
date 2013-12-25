@@ -1448,26 +1448,17 @@ footer {
     word-break: break-all;
     word-wrap: break-word;
     line-height: 1.8;
-    display: table;
     width: 100%;
 }
 
 .right_sidebar .file_detail_wrapper .update_list > li *{
     color: #7F8999;
 }
-.right_sidebar .file_detail_wrapper .update_list > li > span{
-    display: table-cell;
-}
+
 .right_sidebar .file_detail_wrapper .update_list > li .update_text span{
     white-space: pre-wrap;
 }
-.right_sidebar .file_detail_wrapper .update_list > li .update_member{
-    margin-right: 10px;
-    text-align: right;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+
 
 .right_sidebar .file_detail_wrapper .update_list > li .update_time {
     color: #ACB4BF;

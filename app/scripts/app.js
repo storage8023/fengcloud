@@ -15,6 +15,9 @@ angular.module('gkClientIndex', ['jmdobry.angular-cache','pasvaz.bindonce','gkCl
             'https://*.yunku.cn/**'
         ]);
     }])
+    .run(['$rootScope',function($rootScope){
+        $rootScope.productVersion = '2013-12-23-00';
+    }])
 ;
 
 
