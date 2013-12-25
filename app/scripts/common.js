@@ -1049,7 +1049,16 @@ angular.module('GKCommon.filters', [])
             return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
         }
     }])
-;
+    .filter('getFileIcon',['$filter',function($filter){
+        return function(filename,dir,share,sync){
+            return 'icon_'+$filter('getFileIconSuffix')(filename,dir,share,sync);
+        }
+    }])
+    .filter('getFileThumb',['$filter',function($filter){
+        return function(filename,dir,share,sync){
+            return 'images/icon/' + $filter('getFileIconSuffix')(filename,dir,share,sync) + '128x128.png';
+        }
+    }]);
 
 
 

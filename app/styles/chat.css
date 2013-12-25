@@ -157,6 +157,22 @@ footer {
 .chat_item .chat_main .chat_file{
     background: #ebebeb;
     border-radius: 3px;
+    padding: 6px;
+    margin: 5px 0 0 0;
+    color: #7f8999;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.chat_item .chat_main .chat_file .version_wrapper{
+    margin: 0 0 0 5px;
+}
+.chat_item .chat_main .chat_file .version{
+    background: #66aeff;
+    border-radius: 3px;
+    color: #fff;
+    font-style: normal;
+    padding: 0 4px;
 }
 footer textarea{
     height: 100%;

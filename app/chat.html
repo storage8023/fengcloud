@@ -46,7 +46,7 @@
                             <img error-src="" src="{{msg.hash | getThumbUrl:msg.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.ext)>=0" />
                         </i>
                         <span class="filename" ng-bind="msg.filename"></span>
-                        <span class="version"><i>V{{msg.version}}</i></span>
+                        <span class="version_wrapper"><i class="version">V{{msg.version}}</i></span>
                     </div>
                 </div>
             </div>
