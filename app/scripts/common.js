@@ -1009,6 +1009,46 @@ angular.module('GKCommon.filters', [])
             return Math.round(val/total * 100)+'%';
         }
     })
+    .filter('getFileIconSuffix',['FILE_SORTS',function(FILE_SORTS){
+        return function(filename, dir, share, sync){
+            var suffix = '';
+            var sorts = FILE_SORTS;
+            if (dir == 1) {
+                suffix = 'folder';
+                if (sync == 1) {
+                    suffix = 'sync_' + suffix;
+                }
+                if (share > 0) {
+                    suffix = 'shared_' + suffix;
+                }
+            } else {
+                var ext = Util.String.getExt(filename);
+                if (jQuery.inArray(ext, sorts['SORT_SPEC']) > -1) {
+                    suffix = ext;
+                } else if (jQuery.inArray(ext, sorts['SORT_MOVIE']) > -1) {
+                    suffix = 'movie';
+                } else if (jQuery.inArray(ext, sorts['SORT_MUSIC']) > -1) {
+                    suffix = 'music';
+                } else if (jQuery.inArray(ext, sorts['SORT_IMAGE']) > -1) {
+                    suffix = 'image';
+                } else if (jQuery.inArray(ext, sorts['SORT_DOCUMENT']) > -1) {
+                    suffix = 'document';
+                } else if (jQuery.inArray(ext, sorts['SORT_ZIP']) > -1) {
+                    suffix = 'compress';
+                } else if (jQuery.inArray(ext, sorts['SORT_EXE']) > -1) {
+                    suffix = 'execute';
+                } else {
+                    suffix = 'other';
+                }
+            }
+            return suffix;
+        }
+    }])
+    .filter('getThumbUrl',[function(){
+        return function(hash,filehash){
+            return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
+        }
+    }])
 ;
 
 

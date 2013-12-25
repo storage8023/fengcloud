@@ -28,9 +28,14 @@ angular.module('gkChat', ['GKCommon'])
         var formateMsgItem = function(value){
             var receiver = getMemberItemById(value.receiver);
             var sender = getMemberItemById(value.sender);
+            var filename = Util.String.baseName(value.fullpath);
+            var ext = Util.String.getExt(filename);
             angular.extend(value,{
                 receiver_name:receiver?receiver['member_name']:'-;',
-                sender_name:sender?sender['member_name']:'-'
+                sender_name:sender?sender['member_name']:'-',
+                filename:filename,
+                ext:ext,
+                is_vip:sender.isvip==1?true:false
             })
             return value;
         };
@@ -64,32 +69,69 @@ angular.module('gkChat', ['GKCommon'])
                 });
             $event.preventDefault();
         };
-
+        $scope.historyGrid = false;
         $scope.handleScrollLoad = function(){
             var minDateline = 0;
             if($scope.msg_list.length){
                 minDateline = $scope.msg_list[0]['time'];
+
             }
-            chatService.search($scope.org.orgid,minDateline).success(function(data){
-                console.log(data);
+            chatService.search($scope.org.orgid,minDateline,50).success(function(data){
+                $scope.$apply(function(){
+                angular.forEach(data,function(item){
+                    item = formateMsgItem(item);
+                    if(!$scope.historyGrid){
+                        item.history_msg = true;
+                        $scope.historyGrid = true;
+                    }
+                    $scope.msg_list.unshift(item);
+                })
+                })
             })
         }
+        var data = [
+            {
+                sender:4,
+                receiver:5,
+                content:'测试2',
+                time: new Date().getTime(),
+                type:'text',
+                fullpath:'test/125.jpg',
+                version:5,
+                dir:0
+            },
+            {
+                sender:4,
+                receiver:5,
+                content:'测试2',
+                time: new Date().getTime(),
+                type:'text',
+                fullpath:'test/125',
+                version:5,
+                dir:1
+            },
+            {
+                sender:4,
+                receiver:5,
+                content:'测试2',
+                time: new Date().getTime(),
+                type:'text'
+            }
+        ];
 
+        $scope.msg_list = data.map(formateMsgItem);
         var connect = function(){
             chatService.connect($scope.org.orgid).success(function(data){
                     if(data){
                         $timeout(function(){
                             var lastTime = data;
                             chatService.list(lastTime,$scope.org.orgid).success(function(data){
-                                console.log(data);
                                 angular.forEach(data,function(item){
                                     item = formateMsgItem(item);
                                     $scope.$apply(function(){
                                         $scope.msg_list.push(item);
                                         $scope.scrollToBottom = true;
                                     })
-
-                                    //console.log($scope.msg_list);
                                 })
                             });
                         },1000)
@@ -125,6 +167,7 @@ angular.module('gkChat', ['GKCommon'])
                     url: host + '/search-message',
                     dataType: 'json',
                     data:{
+                        'receiver':'gokuai',
                         'limit':size,
                         'timestamp':dateline,
                         'team-id':orgId,

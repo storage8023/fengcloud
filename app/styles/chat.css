@@ -42,9 +42,13 @@ footer {
 .chat_item{
     margin: 20px 0;
 }
-.chat_item .time_grid{
+.chat_item .time_grid,
+.chat_item .history_grid{
     text-align: center;
     color: #ACB4BF;
+}
+.chat_item .history_grid{
+    margin: 10px 0;
 }
 .chat_item .avatar_wrapper,
 .chat_item .chat_main{
@@ -151,7 +155,7 @@ footer {
 }
 
 .chat_item .chat_main .chat_file{
-    background: #CDCED0;
+    background: #ebebeb;
     border-radius: 3px;
 }
 footer textarea{
