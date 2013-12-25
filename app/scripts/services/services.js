@@ -2141,10 +2141,9 @@ angular.module('gkClientIndex.services', [])
                         hash: value.hash,
                         open: value.publish || 0,
                         hasFolder: 1,
-                        tag:value.tag
+                        tag:value.tag||''
                     };
                 } else {
-                    //console.log(value);
                     var fileName = Util.String.baseName(value.path);
                     var ext = value.dir == 1 ? '' : Util.String.getExt(fileName);
                     file = {
@@ -2174,7 +2173,8 @@ angular.module('gkClientIndex.services', [])
                         filehash: value.filehash,
                         hash: value.uuidhash,
                         open: value.open || 0,
-                        hasFolder: value.hasfolder || 0
+                        hasFolder: value.hasfolder || 0,
+                        tag:''
                     };
                 }
                 return file;

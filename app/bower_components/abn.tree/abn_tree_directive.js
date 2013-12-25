@@ -89,7 +89,6 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
          * @returns {*}
          */
       select_branch = function(branch) {
-          console.log(123);
         //if (branch !== scope.selectedBranch) {
           if (scope.selectedBranch != null) {
               scope.selectedBranch.selected = false;
@@ -98,13 +97,11 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
             scope.selectedBranch = branch;
           if (branch.onSelect != null) {
             return $timeout(function() {
-                console.log(12);
               return branch.onSelect(branch);
             },0);
           } else {
             if (scope.onSelect != null) {
               return $timeout(function() {
-                  console.log(12);
                 return scope.onSelect({
                   branch: branch
                 });

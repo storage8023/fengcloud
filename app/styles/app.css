@@ -1565,7 +1565,7 @@ footer {
     color: #3f4754;
     word-break: break-all;
     word-wrap: break-word;
-    white-space: pre;
+    white-space: pre-wrap;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .version_size{
     text-align: right;

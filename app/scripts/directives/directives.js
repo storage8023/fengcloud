@@ -1553,7 +1553,6 @@ angular.module('gkClientIndex.directives', [])
                         }
                     });
                 })
-
             }
         };
     }])
@@ -1656,19 +1655,6 @@ angular.module('gkClientIndex.directives', [])
                     $scope.it_isOpen = false;
                 };
 
-                $scope.$on('$locationChangeSuccess', function () {
-                    if ($scope.it_isOpen) {
-                        hide();
-                    }
-                });
-
-                $scope.$on('$destroy', function () {
-                    if ($scope.it_isOpen) {
-                        hide();
-                    } else {
-                        inputtip.remove();
-                    }
-                });
 
                 $scope.$watch('remarkText', function (newValue, oldeValue) {
                     if (!newValue && newValue !== oldeValue) {
@@ -1748,6 +1734,26 @@ angular.module('gkClientIndex.directives', [])
                     }, 0)
 
                 };
+
+
+                $scope.$on('$locationChangeSuccess', function () {
+                    if (timer) {
+                        $interval.cancel(timer);
+                    }
+                    if ($scope.it_isOpen) {
+                        hide();
+                    }
+                });
+
+                $scope.$on('$destroy', function () {
+                    if (timer) {
+                        $interval.cancel(timer);
+                    }
+                    inputtip.remove();
+                    if ($scope.it_isOpen) {
+                        hide();
+                    }
+                });
 
                 $scope.it_onSelect = function (item) {
                     insertChar(item.member_name);
