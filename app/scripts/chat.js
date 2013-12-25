@@ -1,12 +1,16 @@
 'use strict';
 
-angular.module('gkChat', ['gkClientIndex.directives'])
-    .controller('initChat',['$location','$scope','chatService','$timeout',function($location,$scope,chatService,$timeout){
+angular.module('gkChat', ['GKCommon'])
+    .controller('initChat',['$location','$scope','chatService','$timeout','GKApi',function($location,$scope,chatService,$timeout,GKApi){
         var param = $location.search();
         var mountId = Number(param.mount_id);
 
         $scope.org = gkClientInterface.getMount({
             mountid:mountId
+        });
+        $scope.members = [];
+        GKApi.teamGroupsMembers($scope.org.orgid).success(function(data){
+            $scope.members = data.members;
         });
 
         $scope.handleKeyDown = function($event,postText){
@@ -18,59 +22,57 @@ angular.module('gkChat', ['gkClientIndex.directives'])
                 return;
             }
             chatService.add($scope.org.orgid,postText).success(function(){
-
+                postText = '';
             }).error(function(){
 
                 });
         };
 
         var connect = function(){
-            var callee = arguments.callee;
             chatService.connect($scope.org.orgid).success(function(data){
-                var lastTime = data;
-                $timeout(function(){
-                    chatService.list(lastTime,$scope.org.orgid).success(function(){
-
-                    }).error(function(){
-
-                        });
-                },1000)
-                callee();
+                console.log(data);
+//                var lastTime = data ||0;
+//                $timeout(function(){
+//                    chatService.list(lastTime,$scope.org.orgid).success(function(){
+//
+//                    }).error(function(){
+//
+//                        });
+//                },1000)
+                //connect();
             }).error(function(XMLHttpRequest, textStatus, errorThrown){
                     if (textStatus == "timeout") {
-                        callee();
+                        //connect();
                     }
                 });
         };
         connect();
     }])
     .factory('chatService', [function () {
-       var host = 'http://112.124.68.214';
+       var host = 'http://10.0.0.150:1238';
        var chat = {
             add:function(orgId,content){
-                var headers = {
-                    'x-gk-team-id': orgId,
-                    'x-gk-type': 'text',
-                    'x-gk-sign': gkClientInterface.getToken()
-                };
                 return jQuery.ajax({
                     url: host + '/post-message',
-                    data:content,
-                    dataType: 'text',
-                    type: method,
-                    headers: headers
+                    type:'POST',
+                    data:{
+                        'content':content,
+                        'target-team':orgId,
+                        'type':'text',
+                        'token':gkClientInterface.getToken()
+                    },
+                    dataType: 'text'
                 });
             },
             search:function(){
-                var headers = {
-                    'x-gk-team-id': orgId,
-                    'x-gk-sign': gkClientInterface.getToken()
-                };
-                return jQuery.ajax({
+             return jQuery.ajax({
                     url: host + '/post-message',
-                    dataType: 'text',
+                    dataType: 'json',
                     type: method,
-                    headers: headers
+                    data:{
+                        'team-id':orgId,
+                        'token':gkClientInterface.getToken()
+                    }
                 });
             },
            list:function(lastTime,orgId){
@@ -78,10 +80,10 @@ angular.module('gkChat', ['gkClientIndex.directives'])
                    type: 'GET',
                    dataType: 'json',
                    url: host+'/get-message',
-                   headers: {
-                       "x-gk-team-id": orgId,
-                       "x-gk-sign": gkClientInterface.getToken(),
-                       "x-gk-time": lastTime
+                   data:{
+                       'team-id':orgId,
+                       'time':lastTime,
+                       'token':gkClientInterface.getToken()
                    }
                })
            },
@@ -89,12 +91,12 @@ angular.module('gkChat', ['gkClientIndex.directives'])
                 return jQuery.ajax({
                     type: 'GET',
                     url: host+'/login',
-                    headers: {
-                        "x-gk-team-id": orgId,
-                        "x-gk-sign": gkClientInterface.getToken(),
-                        "x-gk-time": new Date().getTime()
+                    dataType:'text',
+                    data:{
+                       'team-id':orgId,
+                       'token':gkClientInterface.getToken()
                     },
-                    timeout: 10000000000
+                    timeout: 30000
                 });
             }
        };

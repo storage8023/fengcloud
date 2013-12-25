@@ -406,7 +406,7 @@ angular.module('GKCommon.services', [])
         return restFile;
     }
     ])
-    .factory('GKApi', ['GK', '$http', function (GK, $http) {
+    .factory('GKApi', ['$http', function ($http) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
@@ -414,26 +414,26 @@ angular.module('GKCommon.services', [])
                 var params = {
                     password: oldPassword,
                     newpassword: newPassword,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/account/set_password',
+                    url: gkClientInterface.getApiHost() + '/1/account/set_password',
                     dataType: 'json',
                     data: params
                 })
             },
             mounts: function () {
                 var params = {
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/account/mount',
+                    url: gkClientInterface.getApiHost() + '/1/account/mount',
                     dataType: 'json',
                     data: params
                 })
@@ -443,13 +443,13 @@ angular.module('GKCommon.services', [])
                     mount_id: mountId,
                     fullpath: fullpath,
                     favorite_type: type,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/favorites_add',
+                    url: gkClientInterface.getApiHost() + '/1/file/favorites_add',
                     dataType: 'json',
                     data: params
                 })
@@ -459,13 +459,13 @@ angular.module('GKCommon.services', [])
                     mount_id: mountId,
                     fullpath: fullpath,
                     favorite_type: type,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/favorites_delete',
+                    url: gkClientInterface.getApiHost() + '/1/file/favorites_delete',
                     dataType: 'json',
                     data: params
                 })
@@ -475,28 +475,28 @@ angular.module('GKCommon.services', [])
                     mount_id: mountId,
                     fullpath: fullpath,
                     collaboration: collaboration,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
                     dataType: 'json',
-                    url: GK.getApiHost() + '/1/file/delete_collaboration',
+                    url: gkClientInterface.getApiHost() + '/1/file/delete_collaboration',
                     data: params
                 });
             },
             userInfo: function () {
                 var params = {
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/account/info',
+                    url: gkClientInterface.getApiHost() + '/1/account/info',
                     data: params
                 });
             },
@@ -507,7 +507,7 @@ angular.module('GKCommon.services', [])
                     password: password,
                     user_license_chk: user_license_check,
                     disable_next_login: 1,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 return jQuery.ajax({
                     type: 'POST',
@@ -519,28 +519,28 @@ angular.module('GKCommon.services', [])
             getSmartFolder: function (code) {
                 var params = {
                     code: code,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     method: 'GET',
-                    url: GK.getApiHost() + '/1/file/search_condition',
+                    url: gkClientInterface.getApiHost() + '/1/file/search_condition',
                     data: params
                 });
             },
             removeSmartFolder: function (code) {
                 var params = {
                     code: code,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/remove_search',
+                    url: gkClientInterface.getApiHost() + '/1/file/remove_search',
                     data: params
                 })
             },
@@ -550,14 +550,14 @@ angular.module('GKCommon.services', [])
                     name: name,
                     condition: condition,
                     description: description || '',
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/edit_search',
+                    url: gkClientInterface.getApiHost() + '/1/file/edit_search',
                     data: params
                 })
             },
@@ -567,14 +567,14 @@ angular.module('GKCommon.services', [])
                     name: name,
                     condition: condition,
                     description: description || '',
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/save_search',
+                    url: gkClientInterface.getApiHost() + '/1/file/save_search',
                     data: params
                 })
             },
@@ -582,68 +582,68 @@ angular.module('GKCommon.services', [])
                 var params = {
                     mount_id: mount_id,
                     condition: condition,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/search',
+                    url: gkClientInterface.getApiHost() + '/1/file/search',
                     data: params
                 });
             },
             smartFolderList: function (code) {
                 var params = {
                     code: code,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/search',
+                    url: gkClientInterface.getApiHost() + '/1/file/search',
                     data: params
                 });
             },
             starFileList: function (type) {
                 var params = {
                     favorite_type: type,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/file/favorites',
+                    url: gkClientInterface.getApiHost() + '/1/file/favorites',
                     data: params
                 });
             },
             recentFileList: function () {
                 var params = {
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/file/recent_modified',
+                    url: gkClientInterface.getApiHost() + '/1/file/recent_modified',
                     data: params
                 });
             },
             inboxFileList: function () {
                 var params = {
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/file/inbox',
+                    url: gkClientInterface.getApiHost() + '/1/file/inbox',
                     data: params
                 });
             },
@@ -654,16 +654,16 @@ angular.module('GKCommon.services', [])
                     type: type || '',
                     start: start || '',
                     date: date || '',
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     cache: cache || true,
                     type: 'GET',
                     dataType: 'json',
-                    url: GK.getApiHost() + '/1/file/client_sidebar',
+                    url: gkClientInterface.getApiHost() + '/1/file/client_sidebar',
                     data: params
                 });
             },
@@ -672,14 +672,14 @@ angular.module('GKCommon.services', [])
                     mount_id: mount_id,
                     fullpath: fullpath,
                     keywords: keyword,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/file/keyword',
+                    url: gkClientInterface.getApiHost() + '/1/file/keyword',
                     data: params,
                     dataType: 'text'
                 });
@@ -688,31 +688,31 @@ angular.module('GKCommon.services', [])
                 size = angular.isDefined(size) ? size : 100;
                 var params = {
                     size: size,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 if (angular.isDefined(dateline)) {
                     params['dateline'] = dateline;
                 }
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/updates/ls',
+                    url: gkClientInterface.getApiHost() + '/1/updates/ls',
                     data: params
                 });
             },
             newUpdate: function (dateline) {
                 var params = {
                     dateline: dateline || 0,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/updates/ls_newer',
+                    url: gkClientInterface.getApiHost() + '/1/updates/ls_newer',
                     data: params
                 });
             },
@@ -720,55 +720,55 @@ angular.module('GKCommon.services', [])
                 var params = {
                     id: id,
                     opt: opt,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
-                    type: 'GET',
-                    url: GK.getApiHost() + '/1/updates/do_action',
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/updates/do_action',
                     data: params
                 });
             },
             teamInvitePending: function () {
                 var params = {
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/team/invite_pending',
+                    url: gkClientInterface.getApiHost() + '/1/team/invite_pending',
                     data: params
                 });
             },
             teamManage: function (data) {
                 var params = {
                     org_id: data,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/updates/',
+                    url: gkClientInterface.getApiHost() + '/1/updates/',
                     data: params
                 });
             },
             teamQuit: function (org_id) {
                 var params = {
                     org_id: org_id,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/team/quit',
+                    url: gkClientInterface.getApiHost() + '/1/team/quit',
                     data: params
                 });
             },
@@ -776,14 +776,14 @@ angular.module('GKCommon.services', [])
                 var params = {
                     org_id: orgId,
                     code: code,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/team/invite_reject',
+                    url: gkClientInterface.getApiHost() + '/1/team/invite_reject',
                     data: params
                 });
             },
@@ -791,42 +791,43 @@ angular.module('GKCommon.services', [])
                 var params = {
                     org_id: orgId,
                     code: code,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/team/invite_accept',
+                    url: gkClientInterface.getApiHost() + '/1/team/invite_accept',
                     data: params
                 });
             },
             teamGroupsMembers: function (orgId) {
                 var params = {
                     org_id: orgId,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/team/groups_and_members',
+                    dataType:'json',
+                    url: gkClientInterface.getApiHost() + '/1/team/groups_and_members',
                     data: params
                 });
             },
             groupMember: function (data) {
                 var params = {
                     org_id: data,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/team/group_member',
+                    url: gkClientInterface.getApiHost() + '/1/team/group_member',
                     data: params
                 });
             },
@@ -834,14 +835,14 @@ angular.module('GKCommon.services', [])
                 var params = {
                     org_id: org_id,
                     key: keyword,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/team/search',
+                    url: gkClientInterface.getApiHost() + '/1/team/search',
                     data: params
 
                 });
@@ -852,14 +853,14 @@ angular.module('GKCommon.services', [])
              */
             devicelist: function () {
                 var params = {
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/account/device_list',
+                    url: gkClientInterface.getApiHost() + '/1/account/device_list',
                     data: params
 
                 });
@@ -872,14 +873,14 @@ angular.module('GKCommon.services', [])
                 var params = {
                     state: state,
                     device_id: device_id,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/account/toggle_device',
+                    url: gkClientInterface.getApiHost() + '/1/account/toggle_device',
                     data: params
                 });
             },
@@ -890,28 +891,28 @@ angular.module('GKCommon.services', [])
             delDevice: function (device_id) {
                 var params = {
                     device_id: device_id,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/account/del_device',
+                    url: gkClientInterface.getApiHost() + '/1/account/del_device',
                     data: params
                 });
             },
             disableNewDevice: function (state) {
                 var params = {
                     state: state,
-                    token: GK.getToken()
+                    token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: GK.getApiHost() + '/1/account/disable_new_device',
+                    url: gkClientInterface.getApiHost() + '/1/account/disable_new_device',
                     data: params
                 });
             },
@@ -921,17 +922,17 @@ angular.module('GKCommon.services', [])
                     fullpath: fullpath,
                     start: start || 0,
                     size: size || 0,
-                    token: GK.getToken(),
+                    token: gkClientInterface.getToken(),
                 };
                 if (angular.isDefined(dir)) {
                     params.dir = dir;
                 }
                 angular.extend(params, defaultParams);
-                var sign = GK.getApiAuthorization(params);
+                var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    url: GK.getApiHost() + '/1/file/ls',
+                    url: gkClientInterface.getApiHost() + '/1/file/ls',
                     data: params
                 });
             }

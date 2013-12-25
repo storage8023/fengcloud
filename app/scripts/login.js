@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gkClientLogin', ['ngAnimate','angular-md5','gkClientIndex.services','gkClientIndex.directives'])
+angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientIndex.services','gkClientIndex.directives'])
     .controller('loginCtrl',['$scope','md5','GKApi','GKException',function($scope,md5,GKApi,GKException){
         $scope.step = 'login';
         $scope.registDevice = gkClientInterface.getComputerInfo()['name'];
