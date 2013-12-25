@@ -70,8 +70,8 @@ angular.module('gkChat', ['GKCommon'])
             if($scope.msg_list.length){
                 minDateline = $scope.msg_list[0]['time'];
             }
-            chatService.search($scope.org.orgid,minDateline).success(function(){
-
+            chatService.search($scope.org.orgid,minDateline).success(function(data){
+                console.log(data);
             })
         }
 
@@ -119,13 +119,14 @@ angular.module('gkChat', ['GKCommon'])
                     dataType: 'text'
                 });
             },
-            search:function(orgId,dateline){
+            search:function(orgId,dateline,size){
              return jQuery.ajax({
                     type:'GET',
-                    url: host + '/search',
+                    url: host + '/search-message',
                     dataType: 'json',
                     data:{
-                        'dateline':dateline,
+                        'limit':size,
+                        'timestamp':dateline,
                         'team-id':orgId,
                         'token':gkClientInterface.getToken()
                     }
