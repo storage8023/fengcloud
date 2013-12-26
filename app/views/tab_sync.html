@@ -21,7 +21,7 @@
                         <span>{{file.webpath|getSyncFileName:file.mountid}}</span>
                     </div>
                     <div class="sync_state">
-                        <i class="icon16x16 {{file.num|getSyncIcon:isAllSyncPaused}}"></i>
+                        <i class="icon16x16" ng-class="file.num|getSyncIcon:isAllSyncPaused"></i>
                        <span>{{file.num|getSyncState:isAllSyncPaused}}</span>
                     </div>
                     <div class="opts">

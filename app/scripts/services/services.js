@@ -4357,23 +4357,28 @@ angular.module('gkClientIndex.services', [])
     ])
     .factory('GKQueue', ['$rootScope', '$interval', function ($rootScope, $interval) {
         var dealList = function (oldList, newList, type) {
-            angular.forEach(oldList, function (value) {
+            angular.forEach(oldList, function (value,index) {
                 var localUri = '';
                 if (['download', 'syncdownload'].indexOf(type) >= 0) {
                     localUri = value.path;
                 }
                 var mountId = value.mountid;
                 var fullpath = value.webpath;
+                var has = false;
                 angular.forEach(newList, function (newItem, key) {
                     if (newItem.mountid == mountId && newItem.webpath == fullpath) {
                         value.time = newItem.time;
                         value.pos = newItem.pos;
                         value.status = newItem.status;
                         value.num = newItem.num;
+                        has = true;
                         newList.splice(key, 1);
                         return false;
                     }
                 });
+                if(!has && ['syncdownload','syncupload'].indexOf(type)>=0){
+                    oldList.splice(index, 1);
+                }
             });
         };
         return {
@@ -4421,7 +4426,7 @@ angular.module('gkClientIndex.services', [])
                 getFileList();
                 var listTimer = $interval(function () {
                     getFileList(true);
-                }, 500);
+                }, 1000);
                 return listTimer;
             }
         }
