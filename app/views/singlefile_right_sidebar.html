@@ -78,12 +78,12 @@
                                 </span>
                                 </li>
                             </ul>
-                            <div class="post_wrapper" ng-show="remindMembers && remindMembers.length">
+                            <div class="post_wrapper">
                                 <div>
                                     <textarea class="form-control"  ng-model="remarkText" input-tip="@" input-tip-list="remindMembers"
                                               input-tip-placement="top right" ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="handleFocus()" ng-model="remarkText"></textarea>
                                     <div class="post_opts">
-                            <span ng-show="remindMembers && remindMembers.length">
+                            <span>
                                 <a href="javascript:void(0)" ng-click="insertAt('@')" class="f_l" title="提醒">@</a>
                             <a href="javascript:void(0)" ng-click="insertAt('@all ')" class="f_l"
                                title="提醒所有共享者">@全部</a>
