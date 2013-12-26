@@ -43,6 +43,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (newMount) {
                     $scope.$apply(function () {
                         $rootScope.$broadcast('EditOrgObject', newMount);
+                        $rootScope.$broadcast('closeModal', 'changeTeamLogo');
                     });
                 }
             })

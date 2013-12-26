@@ -459,6 +459,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
                         $scope.$on('removeTeam', function (event, orgId) {
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
@@ -468,8 +469,10 @@ angular.module('gkClientIndex.services', [])
                             })
                         })
 
-                        $scope.$on('closeModal', function () {
-                             $modalInstance.dismiss('cancel');
+                        $scope.$on('closeModal', function (event,name) {
+                            if(!name){
+                                $modalInstance.dismiss('cancel');
+                            }
                         })
                     },
                     resolve: {
