@@ -89,7 +89,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('qr', function ($event, orgId) {
             if (!orgId) {
-                return;
+                return; 
             }
             GKModal.teamQr(orgId);
         })
