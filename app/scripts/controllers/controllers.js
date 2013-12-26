@@ -21,6 +21,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
+
+
+        //更新云库
+        $rootScope.$on('updateTeam', function (event, param) {
+            if (!param) {
+                return;
+            }
+            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(param.orgId)}, function (newMount) {
+                if (newMount) {
+                    $scope.$apply(function () {
+                        $rootScope.$broadcast('EditOrgObject', newMount);
+                    });
+                }
+            })
+        })
+
+
         /**
          * 监听打开消息的通知
          */

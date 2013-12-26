@@ -399,7 +399,7 @@ angular.module('gkClientIndex.services', [])
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $rootScope.$on('closeModal', function () {
+                        $scope.$on('closeModal', function () {
                             $modalInstance.dismiss('cancel');
                         })
                     },
@@ -457,20 +457,7 @@ angular.module('gkClientIndex.services', [])
                             })
                         })
 
-                        //更新云库
-                        $rootScope.$on('updateTeam', function (event, param) {
-                            if (!param) {
-                                return;
-                            }
-                            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(param.orgId)}, function (newMount) {
-                                if (newMount) {
-                                    $scope.$apply(function () {
-                                        $rootScope.$broadcast('EditOrgObject', newMount);
-                                    });
-                                }
-                            })
-                        })
-                        $rootScope.$on('closeModal', function () {
+                        $scope.$on('closeModal', function () {
                              $modalInstance.dismiss('cancel');
                         })
                     },
@@ -1002,7 +989,7 @@ angular.module('gkClientIndex.services', [])
                             })
                         })
 
-                        $rootScope.$on('closeModal', function (event, param) {
+                        $scope.$on('closeModal', function (event, param) {
                             $modalInstance.dismiss('cancel');
                         })
                     },
