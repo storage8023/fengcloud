@@ -448,7 +448,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-                        $rootScope.$on('removeTeam', function (event, orgId) {
+                        $scope.$on('removeTeam', function (event, orgId) {
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
@@ -939,33 +939,6 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, option, defaultOption);
                 return $modal.open(option);
             },
-            nearBy: function () {
-                var option = {
-                    templateUrl: 'views/nearby_dialog.html',
-                    windowClass: 'modal_frame nearby_dialog',
-                    controller: function ($scope, $modalInstance, src) {
-                        $scope.url = src;
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-
-                        $rootScope.$on('subscribeTeamSuccess', function (event, orgId) {
-                            $modalInstance.close(orgId);
-
-                        })
-                    },
-                    resolve: {
-                        src: function () {
-                            return gkClientInterface.getUrl({
-                                sso: 1,
-                                url: '/org/neighbour'
-                            });
-                        }
-                    }
-                };
-                option = angular.extend({}, defaultOption, option);
-                return $modal.open(option);
-            },
             createTeam: function (title) {
                 title = angular.isDefined(title) ? title : '创建云库';
                 var option = {
@@ -977,16 +950,12 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-                        $rootScope.$on('createTeamSuccess', function (event, param) {
-                            var orgId = param.orgId;
-                            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                                if (param) {
-                                    $scope.$apply(function () {
-                                        var newOrg = param;
-                                        $rootScope.$broadcast('createOrgSuccess', newOrg);
-                                    });
-                                }
-                            })
+
+                        $scope.$on('changeModalSrc', function (event, param) {
+                            $scope.url = gkClientInterface.getUrl({
+                                sso: 1,
+                                url: param.src
+                            });
                         })
 
                         $scope.$on('closeModal', function (event, param) {
@@ -1059,7 +1028,7 @@ angular.module('gkClientIndex.services', [])
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $rootScope.$on('removeTeam', function (event, orgId) {
+                        $scope.$on('removeTeam', function (event, orgId) {
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
@@ -2350,7 +2319,6 @@ angular.module('gkClientIndex.services', [])
                     'new_xls_file',
                     'new_ppt_file',
                     'new_txt_file',
-                    //'nearby', //附近
                     'unsubscribe', //取消订阅
                     'new_folder', //新建
                     'create', //创建
@@ -2802,15 +2770,6 @@ angular.module('gkClientIndex.services', [])
                         className: "unsubscribe",
                         callback: function () {
                             GKOpt.unsubscribe($rootScope.PAGE_CONFIG.mount.org_id);
-                        }
-                    },
-                    'nearby': {
-                        index: 3,
-                        name: '附近',
-                        icon: 'icon_location',
-                        className: "nearby",
-                        callback: function () {
-                            GKModal.nearBy();
                         }
                     },
                     'manage': {
