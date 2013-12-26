@@ -9,6 +9,7 @@ angular.module('gkChat', ['GKCommon'])
     .controller('initChat',['$location','$scope','chatService','$timeout','GKApi',function($location,$scope,chatService,$timeout,GKApi){
         var param = $location.search();
         var mountId = Number(param.mount_id);
+        $scope.connecting = true;
         $scope.msg_list = [];
         $scope.org = gkClientInterface.getMount({
             mountid:mountId
@@ -35,13 +36,23 @@ angular.module('gkChat', ['GKCommon'])
                 sender_name:sender?sender['member_name']:'-',
                 filename:filename,
                 ext:ext,
-                is_vip:sender.isvip==1?true:false
+                is_vip:sender&&sender.isvip?true:false
             })
             return value;
         };
 
+        var setMsgError = function(msg,errorMsg){
+            angular.forEach($scope.msg_list,function(value){
+                if(msg == value){
+                    value.error = errorMsg;
+                    return false;
+                }
+            })
+        };
+
         GKApi.teamGroupsMembers($scope.org.orgid).success(function(data){
             $scope.members = data.members;
+            $scope.connecting = false;
         });
         $scope.scrollToBottom = false;
         $scope.handleKeyDown = function($event,postText){
@@ -53,20 +64,23 @@ angular.module('gkChat', ['GKCommon'])
                 return;
             }
             $scope.postText = '';
-            chatService.add($scope.org.orgid,postText).success(function(){
-                $scope.$apply(function(){
-                    $scope.msg_list.push(formateMsgItem({
-                        content: postText,
-                        receiver:$scope.org.orgid,
-                        sender:$scope.PAGE_CONFIG.user.member_id,
-                        time:new Date().getTime(),
-                        type:'text'
-                    }))
-                    $scope.scrollToBottom = true;
-                })
-            }).error(function(){
+            var newMsg = formateMsgItem({
+                content: postText,
+                receiver:$scope.org.orgid,
+                sender:$scope.PAGE_CONFIG.user.member_id,
+                time:new Date().getTime(),
+                type:'text'
+            });
 
-                });
+            $scope.msg_list.push(newMsg);
+            $scope.scrollToBottom = true;
+            chatService.add($scope.org.orgid,postText).success(function(){
+
+            }).error(function(error){
+                    var errorMsg = GKException.getAjaxErrorMsg(error);
+                    setMsgError(newMsg,errorMsg);
+             });
+
             $event.preventDefault();
         };
         $scope.historyGrid = false;
@@ -105,37 +119,6 @@ angular.module('gkChat', ['GKCommon'])
             gkClientInterface.open(params);
         }
 
-        var data = [
-            {
-                sender:4,
-                receiver:5,
-                content:'测试2',
-                time: new Date().getTime(),
-                type:'text',
-                fullpath:'test/125.jpg',
-                version:5,
-                dir:0
-            },
-            {
-                sender:4,
-                receiver:5,
-                content:'测试2',
-                time: new Date().getTime(),
-                type:'text',
-                fullpath:'test/125',
-                version:5,
-                dir:1
-            },
-            {
-                sender:4,
-                receiver:5,
-                content:'测试2',
-                time: new Date().getTime(),
-                type:'text'
-            }
-        ];
-
-        $scope.msg_list = data.map(formateMsgItem);
         var connect = function(){
             chatService.connect($scope.org.orgid).success(function(data){
                     if(data){
@@ -212,7 +195,7 @@ angular.module('gkChat', ['GKCommon'])
                        'team-id':orgId,
                        'token':gkClientInterface.getToken()
                     },
-                    timeout: 300000
+                    timeout: 3000000
                 });
             }
        };

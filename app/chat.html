@@ -19,7 +19,8 @@
 </head>
 <body ng-controller="initChat">
 <div class="container">
-    <div class="main">
+    <div class="empty" ng-show="connecting">连接中...</div>
+    <div class="main" ng-show="!connecting">
         <header>
             <div class="header_left">
                 <team-logo gk-src="{{org.orgphoto}}" class="avatar avatar_big"></team-logo>
@@ -39,6 +40,7 @@
                         <span ng-bind="msg.sender_name"></span>
                     </div>
                     <div class="chat_text">
+                        <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
                         <span ng-bind="msg.content"></span>
                     </div>
                     <div class="chat_file" ng-if="msg.fullpath" ng-click="goToFile(msg)">

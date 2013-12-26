@@ -1,3 +1,6 @@
+body{
+    background: #f7f7f7;
+}
 header,
 section,
 footer {
@@ -30,6 +33,8 @@ section {
     background-repeat:no-repeat ;
     background-position: center;
     overflow: auto;
+    -webkit-user-select:auto;
+    user-select:auto;
 }
 section.has_msg{
     background:none;
@@ -38,6 +43,7 @@ footer {
     bottom: 0;
     height: 74px;
     border-top: 1px solid #ccc;
+    background: #fff;
 }
 .chat_item{
     margin: 20px 0;
@@ -81,6 +87,8 @@ footer {
     padding: 5px 10px;
     font-size: 14px;
     position: relative;
+    word-break: break-all;
+    word-wrap: break-word;
 }
 .chat_item .chat_text:before,
 .chat_item.chat_item_mine .chat_text:after{
