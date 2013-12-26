@@ -29,6 +29,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.$apply(function () {
                         var newOrg = param;
                         $rootScope.$broadcast('createOrgSuccess', newOrg);
+                        $rootScope.$broadcast('closeModal');
                     });
                 }
             })
