@@ -1827,7 +1827,7 @@ angular.module('gkClientIndex.services', [])
                             list = GKFile.dealFileList(data['list'], source);
                             var param = {
                                 key:cacheKey,
-                                value:list
+                                value:JSON.stringify(list)
                             }
                             gkClientInterface.addCache(param);
                             deferred.resolve(list);
