@@ -607,14 +607,15 @@
     },
     addCache:function(param){
         try {
-            gkClient.gSetLocalCache(param);
+            console.log(param);
+            gkClient.gSetLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);
         }
     },
     delCache:function(param){
         try {
-            gkClient.gDeleteLocalCache(param);
+            gkClient.gDeleteLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);
         }
@@ -622,7 +623,13 @@
     },
     getCache:function(param){
         try {
-            gkClient.gGetLocalCache(param);
+            var re = gkClient.gGetLocalCache(JSON.stringify(param));
+            if(!re){
+                return '';
+            }else{
+                return JSON.parse(re);
+            }
+
         } catch (e) {
             this._handleException(e);
         }
