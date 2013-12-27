@@ -3867,7 +3867,6 @@ angular.module('gkClientIndex.services', [])
                         return false;
                     }
                 });
-
             },
             removeTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);

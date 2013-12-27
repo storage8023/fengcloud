@@ -256,7 +256,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             $location.search(pararm);
-
         };
 
         /**
@@ -321,8 +320,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.smartFolderGuider = getSmartGuide('guide_5');
         },500);
 
-        $scope.$on('$locationChangeSuccess', function () {
-            var param = $location.search();
+        var selectBranchOnLocationChange = function(param){
             var branch;
             if (param.partition == GKPartition.teamFile) {
                 angular.forEach($scope.orgTreeList, function (value) {
@@ -338,22 +336,55 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         return false;
                     }
                 })
+            }else if(param.partition == GKPartition.smartFolder){
+                angular.forEach($scope.smartTreeList, function (value) {
+                    if (value.data.filter == param.filter) {
+                        branch = value;
+                        return false;
+                    }
+                })
             }
             /**
              * 如果当前的路径分区与选择的节点分区不同，则需要手动unselect已选择的节点
              */
-            if (branch && $scope.selectedBranch && branch.data.partition != $scope.selectedBranch.data.partition) {
-            //if (branch) {
-                if(branch != $scope.selectedBranch){
-                    unSelectAllBranch();
-                    selectBreanch(branch, param.partition);
-                }
+            if(branch && branch != $scope.selectedBranch){
+                unSelectAllBranch();
+                selectBreanch(branch, param.partition);
             }
+        };
+
+        $scope.$on('$locationChangeSuccess', function () {
+            var param = $location.search();
 
             if(param.filter){
                 var guideId = 'guide_4';
                 $scope.smartFolderGuider = getSmartGuide(guideId);
             }
+
+            var filter='';
+            if($scope.selectedBranch){
+                filter = $scope.selectedBranch.data.filter || '';
+            }
+
+            if(!$scope.selectedBranch){
+                selectBranchOnLocationChange(param);
+            }else{
+                if($scope.selectedBranch.data.partition != param.partition){
+                    selectBranchOnLocationChange(param);
+                }else{
+                    if($scope.selectedBranch.data.partition == GKPartition.smartFolder){
+                        if(filter != param.filter){
+                            selectBranchOnLocationChange(param);
+                        }
+                    }else{
+                        if($scope.selectedBranch.data.mount_id  != param.mountid || $scope.selectedBranch.data.fullpath != param.path || filter!=param.filter){
+                            selectBranchOnLocationChange(param);
+                        }
+                    }
+                }
+            }
+
+
         })
 
         $scope.$on('selectedFileChange',function($event,selectedFile){
