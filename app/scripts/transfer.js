@@ -15,12 +15,6 @@ angular.module('gkClientTransfer', ['gkClientIndex.directives','gkClientIndex.se
                 title:'下载',
                 icon:'icon_down',
                 directive:'tabDownload'
-            },
-            {
-                name:'sync',
-                title:'同步',
-                icon:'icon_syncing',
-                directive:'tabSync'
             }
         ];
 
