@@ -1804,6 +1804,7 @@ body.resizing *{
     padding: 0 10px;
     color: #fff;
     width: 60px;
+    vertical-align: middle;
 }
 
 .news_dialog .message_list li > div > .text{

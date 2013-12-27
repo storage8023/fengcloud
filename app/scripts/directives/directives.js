@@ -1195,7 +1195,7 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout) {
+    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout','$rootScope', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout,$rootScope) {
         return {
             replace: true,
             restrict: 'E',
