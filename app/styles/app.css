@@ -1806,7 +1806,9 @@ body.resizing *{
     width: 60px;
     vertical-align: middle;
 }
-
+.news_dialog .message_list li > div.button_len_2 .time{
+    background: #f39c12;
+}
 .news_dialog .message_list li > div > .text{
     border-radius: 0 4px 4px 0;
     padding: 0 0 0 20px;
