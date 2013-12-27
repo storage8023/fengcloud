@@ -1267,7 +1267,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKNews;
     }])
-    .factory('GKSmartFolder', ['GKFilter', '$filter', 'GKApi', '$q', 'GKException', 'GKFile', function (GKFilter, $filter, GKApi, $q, GKException, GKFile) {
+    .factory('GKSmartFolder', ['GKFilter', '$filter', 'GKApi', '$q', 'GKException', 'GKFile', '$rootScope',function (GKFilter, $filter, GKApi, $q, GKException, GKFile,$rootScope) {
         var getFolderAliasByType = function (type) {
             var filter = '';
             switch (type) {
@@ -1416,15 +1416,38 @@ angular.module('gkClientIndex.services', [])
             getList: function (filter, option) {
                 var list = [],
                     deferred = $q.defer(),
-                    source = 'api';
+                    source = 'api',
+                    param,
+                    cacheKey;
+                if(['star', 'diamond', 'moon', 'triangle', 'flower', 'heart','recent'].indexOf(filter)<0){
+                    return;
+                }
+                cacheKey = filter+':';
+                if(!$rootScope.PAGE_CONFIG.networkConnected){
+                    list = gkClientInterface.getCache({
+                        key:cacheKey
+                    });
+                    list = list.map(function(value){
+                        if(value.dir == 0 && value.filehash){
+                            value.cache = gkClientInterface.checkFileCache(value.filehash);
+                        }
+                        return value;
+                    })
+                    deferred.resolve(list);;
+                }else{
                 if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf(filter) >= 0) {
                     /**
                      * 加星标的文件
                      */
                     var type = GKFilter.getFilterType(filter);
                     GKApi.starFileList(type).success(function (data) {
-                        list = data['list'];
-                        deferred.resolve(GKFile.dealFileList(list, source));
+                        list = GKFile.dealFileList(data['list'], source);
+                        param = {
+                            key:cacheKey,
+                            value:JSON.stringify(list)
+                        }
+                        gkClientInterface.addCache(param);
+                        deferred.resolve(list);
                     }).error(function (request) {
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
@@ -1433,11 +1456,17 @@ angular.module('gkClientIndex.services', [])
                      */
                 } else if (filter == 'recent') {
                     GKApi.recentFileList(filter).success(function (data) {
-                        list = data['list'];
-                        deferred.resolve(GKFile.dealFileList(list, source));
+                        list = GKFile.dealFileList(data['list'], source);
+                        param = {
+                            key:cacheKey,
+                            value:JSON.stringify(list)
+                        }
+                        gkClientInterface.addCache(param);
+                        deferred.resolve(list);
                     }).error(function (request) {
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
+                }
                 }
                 return deferred.promise;
             }
@@ -1769,7 +1798,7 @@ angular.module('gkClientIndex.services', [])
         smartFolder: 'smartfolder',
         subscribeFile: 'subscribefile'
     })
-    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException', 'RestFile', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException, RestFile) {
+    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException', 'RestFile','$rootScope','$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException, RestFile,$rootScope,$filter) {
         var GKFile = {
             checkFilename: function (filename) {
                 if (!filename.length) {
@@ -1818,22 +1847,36 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 if (source == 'api') {
                     if (!option.recycle) {
-                        var cacheKey = GKPartition.subscribeFile+':'+mountId+':'+fullpath;
-                        var cacheData = gkClientInterface.getCache({
-                            key:cacheKey
-                        });
-
-                        GKApi.list(mountId, fullpath, option.start, option.size, option.dir).success(function (data) {
-                            list = GKFile.dealFileList(data['list'], source);
-                            var param = {
-                                key:cacheKey,
-                                value:JSON.stringify(list)
-                            }
-                            gkClientInterface.addCache(param);
-                            deferred.resolve(list);
-                        }).error(function (request) {
-                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                        var cacheKey = mountId+':'+fullpath;
+                        if(!$rootScope.PAGE_CONFIG.networkConnected){
+                            list = gkClientInterface.getCache({
+                                key:cacheKey
                             });
+                            if(option.dir==1){
+                                list = $filter('filter')(list,{dir:1});
+                            }else{
+                                list = list.map(function(value){
+                                    if(value.dir == 0 && value.filehash){
+                                        value.cache = gkClientInterface.checkFileCache(value.filehash);
+                                    }
+                                    return value;
+                                })
+                            }
+                            deferred.resolve(list);
+                        }else{
+                            GKApi.list(mountId, fullpath, option.start, option.size, option.dir).success(function (data) {
+                                list = GKFile.dealFileList(data['list'], source);
+                                var param = {
+                                    key:cacheKey,
+                                    value:JSON.stringify(list)
+                                }
+                                gkClientInterface.addCache(param);
+                                deferred.resolve(list);
+                            }).error(function (request) {
+                                    deferred.reject(GKException.getAjaxErrorMsg(request));
+                                })
+                        }
+                    ;
                     } else {
                         RestFile.recycle(mountId, '').success(function (data) {
                             list = data['list'];

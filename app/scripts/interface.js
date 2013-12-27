@@ -7,6 +7,10 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    checkFileCache:function(filehash){
+        return 0;
+        return gkClient.gCheckFileCache(JSON.stringify({filehash:filehash}));
+    },
     getMount:function(params){
         var re = gkClient.gGetMountInfo(JSON.stringify(params));
         if(re){
@@ -607,7 +611,7 @@
     },
     addCache:function(param){
         try {
-            console.log(param);
+            //console.log(param);
             gkClient.gSetLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);
@@ -623,10 +627,7 @@
     },
     getCache:function(param){
         try {
-
-            console.log(param);
             var re = gkClient.gGetLocalCache(JSON.stringify(param));
-            console.log(re);
             if(!re){
                 return '';
             }else{
