@@ -24,10 +24,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $rootScope.$on('createTeamSuccess', function (event, param) {
             var orgId = param.orgId;
-            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                if (param) {
+            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (newOrg) {
+                if (newOrg) {
                     $scope.$apply(function () {
-                        var newOrg = param;
                         $rootScope.$broadcast('createOrgSuccess', newOrg);
                         if(param.close == 1){
                             $rootScope.$broadcast('closeModal');
