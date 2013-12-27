@@ -648,6 +648,7 @@ angular.module('GKCommon.services', [])
                 });
             },
             sideBar: function (mount_id, fullpath, type, cache, start, date) {
+                cache = cache === undefined?true:cache;
                 var params = {
                     mount_id: mount_id,
                     fullpath: fullpath,
@@ -656,11 +657,13 @@ angular.module('GKCommon.services', [])
                     date: date || '',
                     token: gkClientInterface.getToken()
                 };
+                if(!cache){
+                    params.t = new Date().getTime();
+                }
                 angular.extend(params, defaultParams);
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
-                    cache: cache || true,
                     type: 'GET',
                     dataType: 'json',
                     url: gkClientInterface.getApiHost() + '/1/file/client_sidebar',
