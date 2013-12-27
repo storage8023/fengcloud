@@ -1822,7 +1822,7 @@ angular.module('gkClientIndex.services', [])
                         var cacheData = gkClientInterface.getCache({
                             key:cacheKey
                         });
-                        console.log(cacheData);
+
                         GKApi.list(mountId, fullpath, option.start, option.size, option.dir).success(function (data) {
                             list = GKFile.dealFileList(data['list'], source);
                             var param = {

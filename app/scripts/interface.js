@@ -623,7 +623,10 @@
     },
     getCache:function(param){
         try {
+
+            console.log(param);
             var re = gkClient.gGetLocalCache(JSON.stringify(param));
+            console.log(re);
             if(!re){
                 return '';
             }else{
