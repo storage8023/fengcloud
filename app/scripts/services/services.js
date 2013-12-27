@@ -2373,7 +2373,7 @@ angular.module('gkClientIndex.services', [])
                 var opts = this.getDefaultOpts();
                 var context = this;
                 angular.forEach(files, function (file) {
-                    context.disableOpt(opts, "add", "new_folder", "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
+                    context.disableOpt(opts, "add", "new_folder",'new_txt_file','new_ppt_file','new_xls_file','new_doc_file', 'new_file', "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
                         context.disableOpt(opts, 'open_with', 'lock', 'unlock');
                         context.setSyncOpt(opts, currentFile, file);
@@ -2798,6 +2798,10 @@ angular.module('gkClientIndex.services', [])
                                     GKException.handleClientException(error);
                                 });
                             } else if (data.code == 'ctrlX') {
+                                if($rootScope.PAGE_CONFIG.mount.mount_id != data.mount_id){
+                                    alert('不能将文件或文件夹剪切到另一个云库中');
+                                    return;
+                                }
                                 GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
                                     GKFileList.refreahData($scope);
                                     GKCilpboard.clearData();
