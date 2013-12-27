@@ -21,13 +21,33 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
-        /**
-         * 监听打开消息的通知
-         */
-        $scope.$on('ShowFind', function (e, data) {
-            if (!$rootScope.showFind) {
-                GKModal.nearBy();
+
+        $rootScope.$on('createTeamSuccess', function (event, param) {
+            var orgId = param.orgId;
+            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
+                if (param) {
+                    $scope.$apply(function () {
+                        var newOrg = param;
+                        $rootScope.$broadcast('createOrgSuccess', newOrg);
+                        $rootScope.$broadcast('closeModal');
+                    });
+                }
+            })
+        })
+
+        //更新云库
+        $rootScope.$on('updateTeam', function (event, param) {
+            if (!param) {
+                return;
             }
+            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(param.orgId)}, function (newMount) {
+                if (newMount) {
+                    $scope.$apply(function () {
+                        $rootScope.$broadcast('EditOrgObject', newMount);
+                        $rootScope.$broadcast('closeModal', 'changeTeamLogo');
+                    });
+                }
+            })
         })
 
         $scope.$on('teamSecurity', function ($event, orgId) {
@@ -72,7 +92,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('qr', function ($event, orgId) {
             if (!orgId) {
-                return;
+                return; 
             }
             GKModal.teamQr(orgId);
         })
@@ -256,27 +276,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleAdd = function (partition) {
             if (partition == GKPartition.teamFile) {
                 var createTeamDialog = GKModal.createTeam();
-            } else if (partition == GKPartition.subscribeFile) {
-                var nearbyDialog = GKModal.nearBy();
-                nearbyDialog.result.then(function (orgId) {
-                    gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                        if (param) {
-                            $scope.$apply(function () {
-                                var newOrg = param;
-                                if (!GKMount.checkMountExsit(newOrg['mountid'])) {
-                                    newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], GKPartition.subscribeFile)[0];
-                                    if (newOrg) {
-                                        $scope.orgSubscribeList.push(newOrg);
-                                        unSelectAllBranch();
-                                        selectBreanch(newOrg, GKPartition.subscribeFile, true);
-                                        nearbyDialog.dismiss('cancel');
-                                    }
-                                }
-                            });
-                        }
-
-                    })
-                })
             }
         };
 

@@ -1,7 +1,7 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4 ng-if="publish">创建公开文件夹</h4>
-    <h4 ng-if="!publish">新建文件夹</h4>
+    <h4 ng-if="publish">创建公开文件夹<span>{{orgName}}</span></h4>
+    <h4 ng-if="!publish">新建文件夹<span>{{orgName}}</span></h4>
 </div>
 <div class="modal-body">
     <div ng-show="!PAGE_CONFIG.networkConnected">

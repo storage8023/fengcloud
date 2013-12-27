@@ -385,6 +385,15 @@ angular.module('gkClientIndex.services', [])
         var defaultOption = {
             backdrop: 'static'
         };
+        var getOrgName = function(orgId){
+            var orgName = '';
+            var mount = GKMount.getMountByOrgId(orgId);
+            if(mount){
+                orgName = '（'+mount.name+'）';
+            }
+            return orgName;
+        };
+
         return{
             openNew: function (url,title) {
                 var context = this;
@@ -397,6 +406,10 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+
+                        $scope.$on('closeModal', function () {
+                            $modalInstance.dismiss('cancel');
+                        })
                     },
                     resolve: {
                         src: function () {
@@ -420,6 +433,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+                        $scope.orgName = getOrgName(orgId);
                     },
                     resolve: {
                         src: function () {
@@ -440,10 +454,12 @@ angular.module('gkClientIndex.services', [])
                     windowClass: 'modal_frame team_overview_dialog',
                     controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
+                        $scope.orgName = getOrgName(orgId);
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-                        $rootScope.$on('removeTeam', function (event, orgId) {
+
+                        $scope.$on('removeTeam', function (event, orgId) {
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
@@ -452,21 +468,10 @@ angular.module('gkClientIndex.services', [])
                             })
                         })
 
-                        //更新云库
-                        $rootScope.$on('updateTeam', function (event, param) {
-                            if (!param) {
-                                return;
+                        $scope.$on('closeModal', function (event,name) {
+                            if(!name){
+                                $modalInstance.dismiss('cancel');
                             }
-                            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(param.orgId)}, function (newMount) {
-                                if (newMount) {
-                                    $scope.$apply(function () {
-                                        $rootScope.$broadcast('EditOrgObject', newMount);
-                                    });
-                                }
-                            })
-                        })
-                        $rootScope.$on('closeModal', function () {
-                            $modalInstance.dismiss('cancel');
                         })
                     },
                     resolve: {
@@ -845,135 +850,6 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            backUp: function (mountId, fullpath) {
-                fullpath = angular.isDefined(fullpath) ? fullpath : '';
-                var option = {
-                    templateUrl: 'views/backup.html',
-                    windowClass: 'backup_dialog',
-                    controller: function ($scope, $modalInstance) {
-                        var tips = {
-                            'desktop': {
-                                mac: '同步桌面上的文件到够快',
-                                windows: '同步桌面上的文件到够快'
-                            },
-                            'documents': {
-                                mac: '同步finder中的文档文件夹（路径）到够快',
-                                windows: '同步电脑中的文档文件夹（库\\文档）到够快'
-                            },
-                            'pictures': {
-                                mac: '同步finder中的图片文件夹（路径）到够快',
-                                windows: '同步电脑中的图片文件夹（库\\图片）到够快'
-                            },
-                            'music': {
-                                mac: '同步finder中的音乐文件夹（路径）到够快',
-                                windows: '同步电脑中的音乐文件夹（库\\音乐）到够快'
-                            },
-                            'video': {
-                                mac: '同步finder中的视频文件夹（路径）到够快',
-                                windows: '同步电脑中的视频文件夹（库\\视频）到够快'
-                            },
-                            'other': {
-                                mac: '自定义计算机中的文件夹同步到够快',
-                                windows: '自定义计算机中的文件夹同步到够快'
-                            }
-                        };
-                        var os = gkClientInterface.getClientOS().toLowerCase();
-                        $scope.backupList = [
-                            {
-                                name: 'desktop',
-                                text: '桌面',
-                                tip: tips['desktop'][os]
-                            },
-                            {
-                                name: 'documents',
-                                text: '文档',
-                                tip: tips['documents'][os]
-                            },
-                            {
-                                name: 'pictures',
-                                text: '照片',
-                                tip: tips['pictures'][os]
-                            },
-                            {
-                                name: 'music',
-                                text: '音乐',
-                                tip: tips['music'][os]
-                            },
-                            {
-                                name: 'video',
-                                text: '视频',
-                                tip: tips['video'][os]
-                            },
-                            {
-                                name: 'other',
-                                text: '文件夹',
-                                tip: tips['other'][os]
-                            }
-                        ];
-                        $scope.backUp = function (item) {
-                            var localUri = '', defaultName = '';
-                            if (item.name == 'other') {
-                                localUri = gkClientInterface.selectPath({
-                                    disable_root: 1
-                                });
-                                if (!localUri) {
-                                    return;
-                                }
-                                defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri, '/'), '\\\\'));
-                            } else {
-                                localUri = gkClientInterface.getComputePath({
-                                    type: item.name
-                                });
-                                defaultName = item.text;
-                            }
-                            if (!defaultName) return;
-                            var syncPath = fullpath + (fullpath ? '/' : '') + defaultName;
-                            var params = {
-                                webpath: syncPath,
-                                fullpath: localUri,
-                                mountid: mountId
-                            };
-                            gkClientInterface.setLinkPath(params, function () {
-                                $rootScope.$broadcast('editFileSuccess', 'create', mountId, fullpath, {fullpath: syncPath});
-                                $modalInstance.close();
-                            })
-                        };
-
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-                    }
-                };
-                option = angular.extend({}, option, defaultOption);
-                return $modal.open(option);
-            },
-            nearBy: function () {
-                var option = {
-                    templateUrl: 'views/nearby_dialog.html',
-                    windowClass: 'modal_frame nearby_dialog',
-                    controller: function ($scope, $modalInstance, src) {
-                        $scope.url = src;
-                        $scope.cancel = function () {
-                            $modalInstance.dismiss('cancel');
-                        };
-
-                        $rootScope.$on('subscribeTeamSuccess', function (event, orgId) {
-                            $modalInstance.close(orgId);
-
-                        })
-                    },
-                    resolve: {
-                        src: function () {
-                            return gkClientInterface.getUrl({
-                                sso: 1,
-                                url: '/org/neighbour'
-                            });
-                        }
-                    }
-                };
-                option = angular.extend({}, defaultOption, option);
-                return $modal.open(option);
-            },
             createTeam: function (title) {
                 title = angular.isDefined(title) ? title : '创建云库';
                 var option = {
@@ -985,20 +861,15 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
-                        $rootScope.$on('createTeamSuccess', function (event, param) {
-                            var orgId = param.orgId;
-                            gkClientInterface.notice({type: 'getOrg', 'org_id': Number(orgId)}, function (param) {
-                                if (param) {
-                                    $scope.$apply(function () {
-                                        var newOrg = param;
-                                        $rootScope.$broadcast('createOrgSuccess', newOrg);
-                                    });
-                                    $modalInstance.close(orgId);
-                                }
-                            })
+
+                        $scope.$on('changeModalSrc', function (event, param) {
+                            $scope.url = gkClientInterface.getUrl({
+                                sso: 1,
+                                url: param.src
+                            });
                         })
 
-                        $rootScope.$on('closeModal', function (event, param) {
+                        $scope.$on('closeModal', function (event, param) {
                             $modalInstance.dismiss('cancel');
                         })
                     },
@@ -1020,6 +891,7 @@ angular.module('gkClientIndex.services', [])
                     windowClass: 'modal_frame team_member_dialog',
                     controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
+                        $scope.orgName = getOrgName(orgId);
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
@@ -1042,6 +914,7 @@ angular.module('gkClientIndex.services', [])
                     windowClass: 'modal_frame team_subscriber_dialog',
                     controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
+                        $scope.orgName = getOrgName(orgId);
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
@@ -1064,11 +937,12 @@ angular.module('gkClientIndex.services', [])
                     windowClass: 'modal_frame team_manage_dialog',
                     controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
+                        $scope.orgName = getOrgName(orgId);
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
 
-                        $rootScope.$on('removeTeam', function (event, orgId) {
+                        $scope.$on('removeTeam', function (event, orgId) {
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
@@ -1096,6 +970,7 @@ angular.module('gkClientIndex.services', [])
                     windowClass: 'modal_frame team_qr_dialog',
                     controller: function ($scope, $modalInstance, src) {
                         $scope.url = src;
+                        $scope.orgName = getOrgName(orgId);
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
@@ -2331,7 +2206,6 @@ angular.module('gkClientIndex.services', [])
                     'new_xls_file',
                     'new_ppt_file',
                     'new_txt_file',
-                    //'nearby', //附近
                     'unsubscribe', //取消订阅
                     'new_folder', //新建
                     'create', //创建
@@ -2783,15 +2657,6 @@ angular.module('gkClientIndex.services', [])
                         className: "unsubscribe",
                         callback: function () {
                             GKOpt.unsubscribe($rootScope.PAGE_CONFIG.mount.org_id);
-                        }
-                    },
-                    'nearby': {
-                        index: 3,
-                        name: '附近',
-                        icon: 'icon_location',
-                        className: "nearby",
-                        callback: function () {
-                            GKModal.nearBy();
                         }
                     },
                     'manage': {
@@ -3719,23 +3584,28 @@ angular.module('gkClientIndex.services', [])
     ])
     .factory('GKQueue', ['$rootScope', '$interval', function ($rootScope, $interval) {
         var dealList = function (oldList, newList, type) {
-            angular.forEach(oldList, function (value) {
+            angular.forEach(oldList, function (value,index) {
                 var localUri = '';
                 if (['download', 'syncdownload'].indexOf(type) >= 0) {
                     localUri = value.path;
                 }
                 var mountId = value.mountid;
                 var fullpath = value.webpath;
+                var has = false;
                 angular.forEach(newList, function (newItem, key) {
                     if (newItem.mountid == mountId && newItem.webpath == fullpath) {
                         value.time = newItem.time;
                         value.pos = newItem.pos;
                         value.status = newItem.status;
                         value.num = newItem.num;
+                        has = true;
                         newList.splice(key, 1);
                         return false;
                     }
                 });
+                if(!has && ['syncdownload','syncupload'].indexOf(type)>=0){
+                    oldList.splice(index, 1);
+                }
             });
         };
         return {
@@ -3783,7 +3653,7 @@ angular.module('gkClientIndex.services', [])
                 getFileList();
                 var listTimer = $interval(function () {
                     getFileList(true);
-                }, 500);
+                }, 1000);
                 return listTimer;
             }
         }

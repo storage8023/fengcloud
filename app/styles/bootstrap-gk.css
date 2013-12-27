@@ -419,14 +419,16 @@ input[type="password"] {
 }
 .modal .modal-header {
     text-align: center;
-    background: #23272A;
     color: #fff;
     padding: 12px;
+    text-align: left;
     border: 0 none;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 }
-
+.modal .modal-header span{
+    color: #afb6c0;
+}
 .modal .close {
     color: #fff;
     text-shadow: none;
