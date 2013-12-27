@@ -204,17 +204,17 @@ angular.module('gkClientIndex.services', [])
                                         callback: function () {
                                             GKModal.teamMember(data.org_id);
                                         }
-                                    },
-                                    'view_subscriber': {
-                                        name: '订阅者',
-                                        callback: function () {
-                                            GKModal.teamSubscribe(data.org_id);
-                                        }
                                     }
                                 });
                             }
                             if (GKMount.isAdmin(mount)) {
                                 angular.extend(items, {
+                                    'view_subscriber': {
+                                        name: '订阅者',
+                                        callback: function () {
+                                            GKModal.teamSubscribe(data.org_id);
+                                        }
+                                    },
                                     'manage': {
                                         name: '安全设置',
                                         callback: function () {

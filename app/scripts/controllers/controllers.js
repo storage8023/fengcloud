@@ -1444,6 +1444,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
                             }
                         });
+                    }
+                    if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
                         sideBarData.menus.push({
                             text: '订阅者',
                             icon: 'icon_pin',
@@ -1452,8 +1454,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
                             }
                         });
-                    }
-                    if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
                         sideBarData.menus.push({
                             text: '安全设置',
                             icon: 'icon_manage',
