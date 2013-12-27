@@ -604,6 +604,35 @@
     },
     getClientVersion:function(){
         return this.getUserAgent()[1].toLowerCase();
+    },
+    addCache:function(param){
+        try {
+            gkClient.gSetLocalCache(param);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    delCache:function(param){
+        try {
+            gkClient.gDeleteLocalCache(param);
+        } catch (e) {
+            this._handleException(e);
+        }
+
+    },
+    getCache:function(param){
+        try {
+            gkClient.gGetLocalCache(param);
+        } catch (e) {
+            this._handleException(e);
+        }
+    },
+    clearCache:function(){
+        try {
+            gkClient.gClearCache();
+        } catch (e) {
+            this._handleException(e);
+        }
     }
 };
 
