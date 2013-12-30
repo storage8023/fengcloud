@@ -1789,10 +1789,10 @@ angular.module('gkClientIndex.directives', [])
                             text: GKSmartFolder.getSmartFoldeName(params.filter)
                         })
                     } else {
-                        if(params.partition == GKPartition.teamFile){
+                        if([GKPartition.teamFile,GKPartition.joinFile].indexOf(params.partition)>=0){
                             searchScopes.push({
                                 name: 'partition',
-                                text: '我的云库'
+                                text: '所有云库'
                             });
                         }
                         searchScopes.push({

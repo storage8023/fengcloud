@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getNetworkStatus:function(){
+        return gkClient.gGetNetworkStatus();
+    },
+    checkFileCache:function(filehash){
+        return Number(gkClient.gCheckFileCache(JSON.stringify({filehash:filehash})));
+    },
     getMount:function(params){
         var re = gkClient.gGetMountInfo(JSON.stringify(params));
         if(re){
@@ -607,14 +613,15 @@
     },
     addCache:function(param){
         try {
-            gkClient.gSetLocalCache(param);
+            //console.log(param);
+            gkClient.gSetLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);
         }
     },
     delCache:function(param){
         try {
-            gkClient.gDeleteLocalCache(param);
+            gkClient.gDeleteLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);
         }
@@ -622,7 +629,13 @@
     },
     getCache:function(param){
         try {
-            gkClient.gGetLocalCache(param);
+            var re = gkClient.gGetLocalCache(JSON.stringify(param));
+            if(!re){
+                return '';
+            }else{
+                return JSON.parse(re);
+            }
+
         } catch (e) {
             this._handleException(e);
         }
