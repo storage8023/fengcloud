@@ -9,7 +9,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             file: {},
             mount: {},
             filter: '',
-            networkConnected: 1
+            networkConnected: Number(gkClientInterface.getNetworkStatus())
         };
 
         /**

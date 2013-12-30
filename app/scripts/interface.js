@@ -7,9 +7,11 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getNetworkStatus:function(){
+        return gkClient.gGetNetworkStatus();
+    },
     checkFileCache:function(filehash){
-        return 0;
-        return gkClient.gCheckFileCache(JSON.stringify({filehash:filehash}));
+        return Number(gkClient.gCheckFileCache(JSON.stringify({filehash:filehash})));
     },
     getMount:function(params){
         var re = gkClient.gGetMountInfo(JSON.stringify(params));

@@ -1427,6 +1427,7 @@ angular.module('gkClientIndex.services', [])
                     list = gkClientInterface.getCache({
                         key:cacheKey
                     });
+                    if(!list) list = [];
                     list = list.map(function(value){
                         if(value.dir == 0 && value.filehash){
                             value.cache = gkClientInterface.checkFileCache(value.filehash);
@@ -1852,6 +1853,7 @@ angular.module('gkClientIndex.services', [])
                             list = gkClientInterface.getCache({
                                 key:cacheKey
                             });
+                            if(!list) list = [];
                             if(option.dir==1){
                                 list = $filter('filter')(list,{dir:1});
                             }else{
