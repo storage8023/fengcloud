@@ -37,7 +37,7 @@ section {
     user-select:auto;
 }
 section.has_msg{
-    background:none;
+    background:#fff;
 }
 footer {
     bottom: 0;
@@ -54,7 +54,24 @@ footer {
     color: #ACB4BF;
 }
 .chat_item .history_grid{
-    margin: 10px 0;
+    padding: 10px 0;
+    clear: both;
+}
+.chat_item .history_grid  .line{
+    height: 1px;
+    font-size: 0;
+    background:#eee;
+    width: 260px;
+    margin:  0 auto;
+}
+.chat_item .history_grid  .text{
+    background: #fff;
+    width: 130px;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 auto;
+    margin-top: -11px;
+    text-align: center;
 }
 .chat_item .avatar_wrapper,
 .chat_item .chat_main{

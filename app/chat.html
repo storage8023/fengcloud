@@ -29,8 +29,7 @@
             <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
         </header>
         <section class="scrollbar" ng-class="msg_list.length?'has_msg':''" scroll-to-bottom="scrollToBottom" scroll-load="handleScrollLoad()" trigger-direction="up">
-            <div class="chat_item c_f_after" ng-repeat="msg in msg_list" ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
-                <div ng-if="msg.history_msg" class="history_grid">以上是聊天的历史记录</div>
+            <div class="chat_item c_f_after" ng-repeat="msg in msg_list | limitSize:start:size " ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
                 <div class="time_grid">{{msg.time|dateAgo}}</div>
                 <div class="avatar_wrapper">
                     <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
@@ -57,6 +56,10 @@
                       </div>
 
                     </div>
+                </div>
+                <div ng-if="msg.history_msg" class="history_grid">
+                    <div class="line"></div>
+                    <div class="text">以上是聊天的历史记录</div>
                 </div>
             </div>
         </section>

@@ -956,6 +956,31 @@ angular.module('GKCommon.services', [])
     }])
 ;
 angular.module('GKCommon.filters', [])
+    .filter('limitSize',function(){
+        return function(input, start,size) {
+            if(!angular.isArray(input)) return input;
+            if(size<0) return;
+
+            start = parseInt(start);
+            size = parseInt(size)
+
+            var out = [],i, n,absStart,len = input.length;
+            absStart = Math.abs(start>=0?start:start+1);
+            if(absStart+size>input.length){
+                size = input.length - absStart;
+            }
+            if (start < 0) {
+                for (i = len+start; i>len+start-size; i--) {
+                    out.unshift(input[i]);
+                }
+            } else {
+                for (i = start; i<start+size; i++) {
+                    out.push(input[i]);
+                }
+            }
+            return out;
+        }
+    })
     .filter('orderObjectBy', function(){
         return function(input, attribute) {
             if (!angular.isObject(input)) return input;
