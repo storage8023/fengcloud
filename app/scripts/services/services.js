@@ -2330,13 +2330,14 @@ angular.module('gkClientIndex.services', [])
                     /**
                      * 团队文件夹的根目录
                      */
+                    if (currentFile.syncpath) {
+                        this.disableOpt(opts, 'create_sync_folder')
+                    }
                     if (!currentFile.fullpath) {
 
                     } else {
                         this.disableOpt(opts, 'create');
-                        if (currentFile.syncpath) {
-                            this.disableOpt(opts, 'create_sync_folder')
-                        }
+
                     }
 
                 }
@@ -2558,7 +2559,6 @@ angular.module('gkClientIndex.services', [])
                                 index: 0,
                                 className: "new_folder",
                                 callback: function () {
-
                                     if (arguments.length <= 1) {
                                         $scope.createNewFileExt = '';
                                         $scope.createNewFolder = true;
@@ -2585,6 +2585,10 @@ angular.module('gkClientIndex.services', [])
                                 callback: function () {
                                     var mountId = $scope.mountId;
                                     var fullpath = $rootScope.PAGE_CONFIG.file.fullpath;
+                                    if($rootScope.PAGE_CONFIG.file.syncpath){
+                                        alert('不能在已同步的目录中再创建同步文件夹');
+                                        return;
+                                    }
                                     var localUri = '', defaultName = '';
                                     localUri = gkClientInterface.selectPath({
                                         disable_root: 1
