@@ -168,7 +168,7 @@ angular.module('gkClientIndex.services', [])
                 if (mountId) {
                     mount = GKMount.getMountById(mountId);
                 }
-                if (partition == GKPartition.teamFile) {
+                if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0) {
                     if (data.filter == 'trash') {
                         if(GKMount.isSuperAdmin(mount)){
                             items = {
@@ -1502,7 +1502,7 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
                 var search = {
-                    partition: mount['type'] == 3 ? GKPartition.subscribeFile : GKPartition.teamFile,
+                    partition: mount['type'] > 2? GKPartition.subscribeFile : mount['type'] > 0?GKPartition.joinFile:GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
                     selectedpath: selectFile
@@ -1525,7 +1525,7 @@ angular.module('gkClientIndex.services', [])
             },
             getBread: function () {
                 var path = $location.search().path || '';
-                var partition = $location.search().partition || GKPartition.myFile;
+                var partition = $location.search().partition || GKPartition.teamFile;
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
                 var keyword = $location.search().keyword;
@@ -1811,7 +1811,7 @@ angular.module('gkClientIndex.services', [])
         'SORT_EXE': ['exe', 'bat', 'com']
     })
     .constant('GKPartition', {
-        myFile: 'myfile',
+        joinFile: 'joinfile',
         teamFile: 'teamfile',
         smartFolder: 'smartfolder',
         subscribeFile: 'subscribefile'
@@ -1970,24 +1970,22 @@ angular.module('gkClientIndex.services', [])
                     /**
                      * 我的云库，订阅的云库
                      */
-                    if (type == GKPartition.myFile || type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
+                    if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf(type)>=0) {
                         var icon = '';
                         if (!value.fullpath) {
                             label = value.name;
-                            if (type == GKPartition.teamFile || type == GKPartition.subscribeFile) {
-                                item.nodeImg = value.logo;
-                            }
+                            item.nodeImg = value.logo;
                         } else {
                             label = value.filename;
                             mountId && angular.extend(value, {
                                 mount_id: mountId
                             });
-                            if (type == GKPartition.myFile || type == GKPartition.teamFile) {
+                            if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(type)>=0) {
                                 icon = value.sharepath || value.open == 1 ? 'icon_teamfolder' : 'icon_myfolder';
                             }
                         }
                         var dropAble = false;
-                        if (type == GKPartition.myFile || type == GKPartition.teamFile) {
+                        if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(type)>=0) {
                             dropAble = true;
                         }
                         angular.extend(item, {
@@ -2292,7 +2290,7 @@ angular.module('gkClientIndex.services', [])
                     this.disableOpt(opts, 'new_doc_file', 'new_ppt_file', 'new_xls_file');
                 }
                 switch (partition) {
-                    case GKPartition.myFile:
+                    case GKPartition.joinFile:
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
@@ -2328,7 +2326,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
-                if (partition == GKPartition.teamFile) {
+                if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0) {
                     /**
                      * 团队文件夹的根目录
                      */
@@ -3821,17 +3819,26 @@ angular.module('gkClientIndex.services', [])
                 return myMount;
             },
             /**
-             * 获取云库的mount
+             * 获取我的云库的mount
              * @returns {Array}
              */
             getOrgMounts: function () {
                 var orgMounts = [];
                 angular.forEach(mounts, function (value) {
-                    if (value.type != 3) {
+                    if (value.type < 1) {
                         orgMounts.push(value);
                     }
                 })
                 return orgMounts;
+            },
+            getJoinOrgMounts: function () {
+                var joinOrgMounts = [];
+                angular.forEach(mounts, function (value) {
+                    if (value.type <3 && value.type>0) {
+                        joinOrgMounts.push(value);
+                    }
+                })
+                return joinOrgMounts;
             },
             getSubscribeMounts: function () {
                 var subscribeMounts = [];
@@ -3881,7 +3888,16 @@ angular.module('gkClientIndex.services', [])
                         return false;
                     }
                 });
-
+            },
+            removeJoinTeamList: function ($scope, orgId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                angular.forEach($scope.joinOrgTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.joinOrgTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
             }
         };
 
@@ -4098,7 +4114,7 @@ angular.module('gkClientIndex.services', [])
                 /**
                  * 我的文件和云库文件夹
                  */
-                if ($scope.partition == GKPartition.myFile || $scope.partition == GKPartition.teamFile || $scope.partition == GKPartition.subscribeFile) {
+                if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0) {
                     if ($scope.keyword) {
                         source = 'api';
                         GKSearch.setSearchState('loading');

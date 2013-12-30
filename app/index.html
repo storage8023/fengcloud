@@ -69,7 +69,22 @@
                       on-drop="handleDrop(branch)"
                     >
             </abn-tree>
+            <abn-tree tree-data="joinOrgTreeList"
+                      header="加入的云库"
+                      ng-show="joinOrgTreeList.length"
+                      icon-leaf="icon_file"
+                      icon-expand="icon_fold"
+                      icon-collapse="icon_unfold"
+                      icon-node-expand="icon_teamfolder"
+                      icon-node-collapse="icon_teamfolder"
+                      selected-branch="selectedBranch"
+                      on-select="handleSelect(branch,GKPartition.joinFile)"
+                      on-expand="handleExpand(branch,GKPartition.joinFile)"
+                      on-drop="handleDrop(branch)"
+                    >
+            </abn-tree>
             <abn-tree tree-data="orgSubscribeList"
+                      ng-show="orgSubscribeList.length"
                       header="订阅的云库"
                       icon-leaf="icon_file"
                       icon-expand="icon_fold"
