@@ -120,7 +120,7 @@ angular.module('GKCommon.directives', [])
                 var disableScroll = false;
                 if (attrs.triggerDistance != null) {
                     $scope.$watch(attrs.triggerDistance, function (value) {
-                        return triggerDistance = parseInt(value, 10);
+                        return triggerDistance = parseInt(value||0, 10);
                     });
                 }
 
@@ -130,7 +130,11 @@ angular.module('GKCommon.directives', [])
                     });
                 }
 
-                var startScrollTop = $element.scrollTop();
+                var direction = 'down';
+                if(attrs.triggerDirection){
+                    direction = attrs.triggerDirection;
+                }
+                var startScrollTop = 0;
                 $element.on('scroll.scrollLoad', function (e) {
                     var _self = jQuery(this),
                         realDistance = 0,
@@ -141,13 +145,20 @@ angular.module('GKCommon.directives', [])
                     scrollT = _self.scrollTop();
                     isScrollDown = scrollT > startScrollTop;
                     var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
-                    realDistance = scrollH - scrollT - clientHeight;
-                    if (isScrollDown //向下滚动才触发
-                        && realDistance <= triggerDistance && !disableScroll) {
-                        if ($rootScope.$$phase) {
-                            return $scope.$eval(attrs.scrollLoad);
-                        } else {
-                            return $scope.$apply(attrs.scrollLoad);
+                    realDistance = direction =='down'?(scrollH - scrollT - clientHeight):scrollT;
+                    if(realDistance <= triggerDistance && !disableScroll){
+                        if(!isScrollDown && direction == 'up'){
+                            if ($rootScope.$$phase) {
+                                return $scope.$eval(attrs.scrollLoad);
+                            } else {
+                                return $scope.$apply(attrs.scrollLoad);
+                            }
+                        }else if(isScrollDown && direction == 'down'){
+                            if ($rootScope.$$phase) {
+                                return $scope.$eval(attrs.scrollLoad);
+                            } else {
+                                return $scope.$apply(attrs.scrollLoad);
+                            }
                         }
                     }
                     startScrollTop = scrollT;
@@ -815,6 +826,7 @@ angular.module('GKCommon.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
+                    async:false,
                     dataType:'json',
                     url: gkClientInterface.getApiHost() + '/1/team/groups_and_members',
                     data: params
@@ -944,6 +956,31 @@ angular.module('GKCommon.services', [])
     }])
 ;
 angular.module('GKCommon.filters', [])
+    .filter('limitSize',function(){
+        return function(input, start,size) {
+            if(!angular.isArray(input)) return input;
+            if(size<0) return;
+
+            start = parseInt(start);
+            size = parseInt(size)
+
+            var out = [],i, n,absStart,len = input.length;
+            absStart = Math.abs(start>=0?start:start+1);
+            if(absStart+size>input.length){
+                size = input.length - absStart;
+            }
+            if (start < 0) {
+                for (i = len+start; i>len+start-size; i--) {
+                    out.unshift(input[i]);
+                }
+            } else {
+                for (i = start; i<start+size; i++) {
+                    out.push(input[i]);
+                }
+            }
+            return out;
+        }
+    })
     .filter('orderObjectBy', function(){
         return function(input, attribute) {
             if (!angular.isObject(input)) return input;
@@ -969,7 +1006,7 @@ angular.module('GKCommon.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = '今天，' + $filter('date')(dateline, 'HH:mm');
+                dateText = $filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             }else{
@@ -1000,7 +1037,56 @@ angular.module('GKCommon.filters', [])
             return Math.round(val/total * 100)+'%';
         }
     })
-;
+    .filter('getFileIconSuffix',['FILE_SORTS',function(FILE_SORTS){
+        return function(filename, dir, share, sync){
+            var suffix = '';
+            var sorts = FILE_SORTS;
+            if (dir == 1) {
+                suffix = 'folder';
+                if (sync == 1) {
+                    suffix = 'sync_' + suffix;
+                }
+                if (share > 0) {
+                    suffix = 'shared_' + suffix;
+                }
+            } else {
+                var ext = Util.String.getExt(filename);
+                if (jQuery.inArray(ext, sorts['SORT_SPEC']) > -1) {
+                    suffix = ext;
+                } else if (jQuery.inArray(ext, sorts['SORT_MOVIE']) > -1) {
+                    suffix = 'movie';
+                } else if (jQuery.inArray(ext, sorts['SORT_MUSIC']) > -1) {
+                    suffix = 'music';
+                } else if (jQuery.inArray(ext, sorts['SORT_IMAGE']) > -1) {
+                    suffix = 'image';
+                } else if (jQuery.inArray(ext, sorts['SORT_DOCUMENT']) > -1) {
+                    suffix = 'document';
+                } else if (jQuery.inArray(ext, sorts['SORT_ZIP']) > -1) {
+                    suffix = 'compress';
+                } else if (jQuery.inArray(ext, sorts['SORT_EXE']) > -1) {
+                    suffix = 'execute';
+                } else {
+                    suffix = 'other';
+                }
+            }
+            return suffix;
+        }
+    }])
+    .filter('getThumbUrl',[function(){
+        return function(hash,filehash){
+            return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
+        }
+    }])
+    .filter('getFileIcon',['$filter',function($filter){
+        return function(filename,dir,share,sync){
+            return 'icon_'+$filter('getFileIconSuffix')(filename,dir,share,sync);
+        }
+    }])
+    .filter('getFileThumb',['$filter',function($filter){
+        return function(filename,dir,share,sync){
+            return 'images/icon/' + $filter('getFileIconSuffix')(filename,dir,share,sync) + '128x128.png';
+        }
+    }]);
 
 
 

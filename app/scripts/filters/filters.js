@@ -34,21 +34,7 @@ angular.module('gkClientIndex.filters', [])
             return partitionName;
         }
     }])
-    .filter('getFileIcon',['GKFile',function(GKFile){
-          return function(filename,dir,share,sync){
-              return'icon_'+GKFile.getFileIconSuffix(filename,dir,share,sync);
-          }
-    }])
-    .filter('getFileThumb',['GKFile',function(GKFile){
-        return function(filename,dir,share,sync){
-            return  'images/icon/' + GKFile.getFileIconSuffix(filename,dir,share,sync) + '128x128.png';
-        }
-    }])
-    .filter('getThumbUrl',[function(GKFile){
-        return function(hash,filehash){
-            return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
-        }
-    }])
+
     .filter('getFileType',['GKFile',function(GKFile){
         return function(filename,dir,ext){
             var type =  GKFile.getFileIconSuffix(filename,dir);
