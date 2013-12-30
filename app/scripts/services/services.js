@@ -3468,12 +3468,12 @@ angular.module('gkClientIndex.services', [])
                         GKSearch.setSearchState('end');
                     }
                 } else {
-                    if ($scope.partition == GKPartition.teamFile || $scope.partition == GKPartition.subscribeFile) {
+                    if ([GKPartition.teamFile,GKPartition.subscribeFile,GKPartition.joinFile].indexOf($scope.partition)>=0) {
                         var source = 'api', option = {};
                         if ($scope.filter == 'trash') {
                             option.recycle = true;
                         } else {
-                            if ([GKPartition.teamFile,GKPartition.joinFile].indexOf($scope.partition)) {
+                            if ([GKPartition.teamFile,GKPartition.joinFile].indexOf($scope.partition)>=0) {
                                 source = 'client';
                                 option.current = 1;
                             }
