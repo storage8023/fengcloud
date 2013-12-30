@@ -1525,6 +1525,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
            if($rootScope.PAGE_CONFIG.filter == 'trash'){
                return;
            }
+           $scope.selectedFileLength = selectedFile.length;
            if(!selectedFile.length){
                $scope.localFile = $rootScope.PAGE_CONFIG.file;
                $scope.sidebar = 'nofile';
