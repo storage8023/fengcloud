@@ -2353,11 +2353,14 @@ angular.module('gkClientIndex.services', [])
             getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
                 if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0) {
+                    if(!GKMount.isAdmin(mount)){
+                        this.disableOpt(opts, 'create');
+                    }
                     /**
                      * 团队文件夹的根目录
                      */
                     if (currentFile.syncpath) {
-                        this.disableOpt(opts, 'create_sync_folder')
+                        this.disableOpt(opts, 'create_sync_folder');
                     }
                     if (!currentFile.fullpath) {
 
