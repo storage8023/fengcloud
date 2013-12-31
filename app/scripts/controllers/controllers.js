@@ -1492,15 +1492,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             }
                         })
                     }
-
-//                    sideBarData.menus.push({
-//                        text: '聊天',
-//                        icon: 'icon_chat',
-//                        name: 'chat',
-//                        click: function () {
-//                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
-//                        }
-//                    })
+                    sideBarData.menus.push({
+                        text: '聊天',
+                        icon: 'icon_chat',
+                        name: 'chat',
+                        click: function () {
+                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
+                        }
+                    })
                 }
             }else if(params.filter){
                 var filterName = GKSmartFolder.getSmartFoldeName(params.filter);

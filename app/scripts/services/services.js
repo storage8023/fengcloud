@@ -2882,6 +2882,7 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
+
                             var data = {
                                 code: 'ctrlX',
                                 mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
