@@ -148,7 +148,7 @@ angular.module('gkChat', ['GKCommon'])
             chatService.connect($scope.org.orgid).success(function(data){
                     if(data){
                         $timeout(function(){
-                            var lastTime = data;
+                            var lastTime = Number(data)-1;
                             chatService.list(lastTime,$scope.org.orgid).success(function(data){
                                 var len = data.length;
                                 angular.forEach(data,function(item){
@@ -156,6 +156,7 @@ angular.module('gkChat', ['GKCommon'])
                                         var start = $scope.msg_list.length + len - $scope.size;
                                         $scope.start = start<0?0:start;
                                         add(item);
+                                        $scope.scrollToBottom = true;
                                     })
                                 })
                             });
@@ -163,10 +164,9 @@ angular.module('gkChat', ['GKCommon'])
                     }
                 connect();
             }).error(function(request, textStatus, errorThrown){
-                    var msg = GKException.getAjaxErrorMsg(request);
-                    if (textStatus == "timeout") {
-                       connect();
-                    }
+                    $timeout(function(){
+                        connect();
+                    },1000)
                 });
         };
         connect();
@@ -225,7 +225,7 @@ angular.module('gkChat', ['GKCommon'])
                        'team-id':orgId,
                        'token':gkClientInterface.getToken()
                     },
-                    timeout: 3000000
+                    timeout: 30000000
                 });
             }
        };
@@ -236,7 +236,7 @@ angular.module('gkChat', ['GKCommon'])
             restrict: 'A',
             link: function ($scope, $element,$attrs) {
                 $scope.$watch($attrs.scrollToBottom, function (value) {
-                    if (value === true) {
+                    if (value == true) {
                         $timeout(function(){
                             $element.scrollTop($element[0].scrollHeight);
                         })
