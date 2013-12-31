@@ -2513,7 +2513,40 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.order = asc + type;
             },
+            getAccessKey:function(cmd){
+                var accesskeyMap = {
+                    copy:{
+                        mac:'⌘C',
+                        pc:'Ctrl+C'
+                    },
+                    cut:{
+                        mac:'⌘X',
+                        pc:'Ctrl+X'
+                    },
+                    paste:{
+                        mac:'⌘V',
+                        pc:'Ctrl+V'
+                    },
+                    del:{
+                        mac:'',
+                        pc:'Delete'
+                    },
+                    save:{
+                        mac:'⌘S',
+                        pc:'Ctrl+S'
+                    },
+                    view_property:{
+                        mac:'⌘P',
+                        pc:'Ctrl+P'
+                    }
+                };
+                var os = gkClientInterface.isMacClient()?'mac':'pc';
+                cmd = cmd.toLowerCase();
+                return accesskeyMap[cmd]?accesskeyMap[cmd][os] ||'':'';
+            },
+
             getAllOpts: function ($scope,selectedFile) {
+                var context = this;
                 var toggleSync = function (isSync) {
                     var params,
                         setParentFile = true,
@@ -2810,7 +2843,7 @@ angular.module('gkClientIndex.services', [])
                         name: '粘贴',
                         className: "paste",
                         icon: 'icon_paste',
-                        accesskeyText: 'Ctrl+V',
+                        accesskeyText: context.getAccessKey('paste'),
                         callback: function () {
                             var data = GKCilpboard.getData();
                             if (!data || !data.files || !data.mount_id) return;
@@ -2844,7 +2877,7 @@ angular.module('gkClientIndex.services', [])
                         name: '剪切',
                         className: "cut",
                         icon: 'icon_cut',
-                        accesskeyText: 'Ctrl+X',
+                        accesskeyText: context.getAccessKey('cut'),
                         callback: function () {
                             if (!selectedFile || !selectedFile.length) {
                                 return;
@@ -2862,7 +2895,7 @@ angular.module('gkClientIndex.services', [])
                         name: '复制',
                         className: "copy",
                         icon: 'icon_copy',
-                        accesskeyText: 'Ctrl+C',
+                        accesskeyText: context.getAccessKey('copy'),
                         callback: function () {
                             if (!selectedFile || !selectedFile.length) {
                                 return;
@@ -2942,7 +2975,7 @@ angular.module('gkClientIndex.services', [])
                         name: '保存',
                         className: "save",
                         icon: 'icon_save',
-                        accesskeyText: 'Ctrl+S',
+                        accesskeyText: context.getAccessKey('save'),
                         callback: function () {
                             if (!selectedFile || !selectedFile.length) {
                                 return;
@@ -2966,7 +2999,7 @@ angular.module('gkClientIndex.services', [])
                         name: '删除',
                         className: "del",
                         icon: 'icon_trash',
-                        accesskeyText: 'Delete',
+                        accesskeyText: context.getAccessKey('del'),
                         callback: function () {
                             if (!selectedFile || !selectedFile.length) {
                                 return;
@@ -2994,7 +3027,7 @@ angular.module('gkClientIndex.services', [])
                         name: '属性',
                         className: "file_property",
                         icon: 'icon_file_property',
-                        accesskeyText: 'Ctrl+P',
+                        accesskeyText: context.getAccessKey('view_property'),
                         callback: function () {
                             if (selectedFile.length != 1) {
                                 return;

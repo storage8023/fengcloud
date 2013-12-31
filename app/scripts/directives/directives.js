@@ -198,7 +198,7 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('keybroadNav', ['GKFileList', function (GKFileList) {
+    .directive('keybroadNav', ['GKFileList', 'GKOpt',function (GKFileList,GKOpt) {
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
@@ -326,31 +326,31 @@ angular.module('gkClientIndex.directives', [])
                                 downRightPress($event);
                                 break;
                             case 46: //Delete
-                                $scope.triggleOptByShortCut('Delete');
+                                $scope.triggleOptByShortCut(GKOpt.getAccessKey('del'));
                                 break;
                             case 67: //c
                                 if (ctrlKeyOn) {
-                                    $scope.triggleOptByShortCut('Ctrl+C');
+                                    $scope.triggleOptByShortCut(GKOpt.getAccessKey('copy'));
                                 }
                                 break;
                             case 80: //p
                                 if (ctrlKeyOn) {
-                                    $scope.triggleOptByShortCut('Ctrl+P');
+                                    $scope.triggleOptByShortCut(GKOpt.getAccessKey('view_property'));
                                 }
                                 break;
                             case 83: //s
                                 if (ctrlKeyOn) {
-                                    $scope.triggleOptByShortCut('Ctrl+S');
+                                    $scope.triggleOptByShortCut(GKOpt.getAccessKey('save'));
                                 }
                                 break;
                             case 86: //v
                                 if (ctrlKeyOn) {
-                                    $scope.triggleOptByShortCut('Ctrl+V');
+                                    $scope.triggleOptByShortCut(GKOpt.getAccessKey('paste'));
                                 }
                                 break;
                             case 88: //x
                                 if (ctrlKeyOn) {
-                                    $scope.triggleOptByShortCut('Ctrl+X');
+                                    $scope.triggleOptByShortCut(GKOpt.getAccessKey('cut'));
                                 }
                                 break;
                         }
