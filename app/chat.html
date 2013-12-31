@@ -24,12 +24,12 @@
         <header>
             <div class="header_left">
                 <team-logo gk-src="{{org.orgphoto}}" class="avatar avatar_big"></team-logo>
-                <span ng-bind="org.orgname"></span>
+                <span ng-bind="org.name"></span>
             </div>
             <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
         </header>
         <section class="scrollbar" ng-class="msg_list.length?'has_msg':''" scroll-to-bottom="scrollToBottom" scroll-load="handleScrollLoad()" trigger-direction="up">
-            <div class="chat_item c_f_after" ng-repeat="msg in msg_list | limitSize:start:size " ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
+            <div class="chat_item c_f_after" ng-repeat="msg in msg_list" ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
                 <div class="time_grid">{{msg.time|dateAgo}}</div>
                 <div class="avatar_wrapper">
                     <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>

@@ -47,7 +47,7 @@ angular.module('gkChat', ['GKCommon'])
                 history_msg:history,
                 is_vip:sender&&sender.isvip?true:false
             })
-            console.log(value);
+
             return value;
         };
 
@@ -110,11 +110,11 @@ angular.module('gkChat', ['GKCommon'])
 
         $scope.handleScrollLoad = function(scrollToBottom){
             scrollToBottom = angular.isDefined(scrollToBottom)?scrollToBottom:false;
-            var minDateline = 0;
+            var minDateline = new Date().getTime();
             if($scope.msg_list.length){
                 minDateline = $scope.msg_list[0]['time'];
             }
-            chatService.search($scope.org.orgid,minDateline,50).success(function(data){
+            chatService.search($scope.org.orgid,minDateline,10).success(function(data){
                 $scope.$apply(function(){
                     $scope.start = -1;
                     var len = data.length;
@@ -122,7 +122,6 @@ angular.module('gkChat', ['GKCommon'])
                         $scope.start -= len;
                     }
                     angular.forEach(data,function(item){
-
                        pop(item);
                     })
                 $scope.scrollToBottom = scrollToBottom;
