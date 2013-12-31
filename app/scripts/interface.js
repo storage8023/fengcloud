@@ -141,6 +141,7 @@
         }
     },
     notice:function(params,callback){
+        console.log(arguments);
         gkClient.gNotice(JSON.stringify(params),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
