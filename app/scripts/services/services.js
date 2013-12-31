@@ -158,6 +158,7 @@ angular.module('gkClientIndex.services', [])
         return {
             getSidebarMenu: function ($trigger) {
                 var data = $trigger.data('branch');
+                console.log(data);
                 var partition = data.partition,
                     fullpath = data.fullpath,
                     mountId = data.mount_id,
@@ -264,26 +265,46 @@ angular.module('gkClientIndex.services', [])
                     }
 
                 } else if (data.partition == GKPartition.subscribeFile) {
-                    items = {
-                        'view_dashboard': {
-                            name: '资料',
-                            callback: function () {
-                                GKModal.teamOverview(orgId);
+                    if(!data.fullpath){
+                        items = {
+                            'view_dashboard': {
+                                name: '资料',
+                                callback: function () {
+                                    GKModal.teamOverview(orgId);
+                                }
+                            },
+                            'view_card': {
+                                name: '名片',
+                                callback: function () {
+                                    GKModal.teamCard(orgId);
+                                }
+                            },
+                            'unsubscribe': {
+                                name: '取消订阅',
+                                callback: function () {
+                                    GKOpt.unsubscribe(orgId);
+                                }
                             }
-                        },
-                        'view_card': {
-                            name: '名片',
-                            callback: function () {
-                                GKModal.teamCard(orgId);
-                            }
-                        },
-                        'unsubscribe': {
-                            name: '取消订阅',
-                            callback: function () {
-                                GKOpt.unsubscribe(orgId);
+                        };
+                    }else{
+                        items = {
+                            'view_property': {
+                                name: '属性',
+                                callback: function () {
+                                    var parentFile = {
+                                        mount_id: mountId,
+                                        fullpath: ''
+                                    }
+                                    var upPath = Util.String.dirName(fullpath);
+                                    if (upPath) {
+                                        parentFile = GKFile.getFileInfo(mountId, upPath);
+                                    }
+                                    GKModal.filePropery(mountId, data, parentFile);
+                                }
                             }
                         }
-                    };
+                    }
+
                 } else if (data.partition == GKPartition.smartFolder) {
                     items = {
                         'rename': {
