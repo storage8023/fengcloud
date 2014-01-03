@@ -8,9 +8,15 @@
         throw new Error(e.name + ":" + e.message);
     },
     getNetworkStatus:function(){
+        if(typeof gkClient.gGetNetworkStatus === 'undefined'){
+            return 1;
+        }
         return gkClient.gGetNetworkStatus();
     },
     checkFileCache:function(filehash){
+        if(typeof gkClient.gCheckFileCache === 'undefined'){
+            return 0;
+        }
         return Number(gkClient.gCheckFileCache(JSON.stringify({filehash:filehash})));
     },
     getMount:function(params){
