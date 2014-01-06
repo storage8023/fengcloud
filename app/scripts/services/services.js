@@ -2497,7 +2497,11 @@ angular.module('gkClientIndex.services', [])
                     return;
                 }
                 GKApi.teamQuit(org_id).success(function () {
-                    $rootScope.$broadcast('RemoveOrgObject', {'org_id': org_id});
+                    gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(org_id)}, function (param) {
+                        if (param) {
+                            $rootScope.$broadcast('RemoveOrgObject', {'org_id': org_id});
+                        }
+                    })
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
