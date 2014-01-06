@@ -1488,11 +1488,13 @@ angular.module('gkClientIndex.directives', [])
                     }, 0);
                 };
 
+                var lastQ;
                 /**
                  * 隐藏提示框
                  */
                 var hide = function () {
                     $scope.it_isOpen = false;
+                    lastQ = null;
                 };
 
 
@@ -1501,7 +1503,7 @@ angular.module('gkClientIndex.directives', [])
                         hide();
                     }
                 });
-                var inputPos, val, lastIndex,lastQ;
+                var inputPos, val, lastIndex;
 
                 var checkAt = function () {
                     val = $scope.remarkText;
@@ -1526,9 +1528,9 @@ angular.module('gkClientIndex.directives', [])
                     } else {
                         if ($scope.remindMembers && $scope.remindMembers.length) {
                             angular.forEach($scope.remindMembers, function (value) {
-                                if (value.short_name && value.short_name.indexOf(q) === 0) {
+                                if (value.short_name && value.short_name.toLowerCase().indexOf(q.toLowerCase()) === 0) {
                                     resultList.unshift(value);
-                                } else if (value.member_name.indexOf(q) != -1) {
+                                } else if (value.member_name.toLowerCase().indexOf(q.toLowerCase()) != -1) {
                                     resultList.push(value);
                                 }
                             });
