@@ -305,7 +305,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     }
 
-                } else if (data.partition == GKPartition.smartFolder) {
+                } else if (data.partition == GKPartition.smartFolder && data.type != 0 ) {
                     items = {
                         'rename': {
                             name: '修改名称',
@@ -352,9 +352,6 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                     };
-                    if (data.type == 0) {
-                        items['rename']['disabled'] = true;
-                    }
                 }
 
                 return items;
