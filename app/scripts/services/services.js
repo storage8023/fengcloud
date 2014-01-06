@@ -3740,7 +3740,7 @@ angular.module('gkClientIndex.services', [])
                         return false;
                     }
                 });
-                if(!has && ['syncdownload','syncupload'].indexOf(type)>=0){
+                if(!has){
                     oldList.splice(index, 1);
                 }
             });
