@@ -17,17 +17,18 @@
     <script src="scripts/chat.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
 </head>
-<body ng-controller="initChat">
+<body >
 <div class="container">
-    <div class="sidebar">
+    <div class="sidebar" ng-controller="initSession">
         <ul class="session_list">
-            <li ng-repeat="team in teamList">
-                <span ng-bind="team.name"></span>
+            <li ng-repeat="session in sessions" ng-class="session.id==mountId?'selected':''">
+                <span ng-bind="session.name"></span>
             </li>
         </ul>
     </div>
-    <div class="empty" ng-show="connecting">连接中...</div>
-    <div class="main" ng-show="!connecting">
+    <div class="main" ng-show="!connecting" ng-controller="initChatContent">
+        <div class="empty" ng-show="connecting">连接中...</div>
+        <div>
         <header>
             <div class="header_left">
                 <team-logo gk-src="{{org.orgphoto}}" class="avatar avatar_big"></team-logo>
@@ -73,6 +74,8 @@
         <footer>
             <textarea placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)" ng-model="postText"></textarea>
         </footer>
+        </div>
+
     </div>
 </div>
 </body>

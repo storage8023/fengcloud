@@ -3139,18 +3139,18 @@ angular.module('gkClientIndex.services', [])
             };
             return newMount;
         };
+        var getMounts = function(){
+            return gkClientInterface.getSideTreeList({sidetype: 'org'})['list'].map(function(mount){
+                return formatMountItem(mount);
+            })
+        };
 
-        var mounts = [];
-        var gkMounts = gkClientInterface.getSideTreeList({sidetype: 'org'})['list'],
-            mountItem;
-        angular.forEach(gkMounts, function (value) {
-            mountItem = formatMountItem(value);
-//            if (mountItem.name == '测试团队') {
-//                mountItem.type = 3;
-//            }
-            mounts.push(mountItem);
-        });
+        var mounts = getMounts();
+
         var GKMount = {
+            refreshMounts:function(){
+                mounts = getMounts();
+            },
             isMember: function (mount) {
                 return mount && mount.type < 3;
             },
