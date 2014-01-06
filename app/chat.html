@@ -19,6 +19,13 @@
 </head>
 <body ng-controller="initChat">
 <div class="container">
+    <div class="sidebar">
+        <ul class="session_list">
+            <li ng-repeat="team in teamList">
+                <span ng-bind="team.name"></span>
+            </li>
+        </ul>
+    </div>
     <div class="empty" ng-show="connecting">连接中...</div>
     <div class="main" ng-show="!connecting">
         <header>
