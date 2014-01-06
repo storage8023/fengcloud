@@ -1215,6 +1215,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         $scope.$on('UpdateFileList',function(){
+            if($scope.createNewFolder){ //新建文件（夹）的情况下忽略该回调
+                return;
+            }
             var selecedPath = [];
             angular.forEach(GKFileList.getSelectedFile(),function(value){
                 selecedPath.push(value.fullpath);
