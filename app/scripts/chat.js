@@ -5,47 +5,23 @@ angular.module('gkChat', ['GKCommon'])
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser()
         }
+        var setMount = function(){
+            var param = $location.search();
+            $scope.mountId = Number(param.mount_id);
+        }
+        $scope.$on('$locationChangeSuccess', function () {
+            setMount();
+        })
+        setMount();
     }])
-    .controller('initSession','$scope',[function(chatSession,$scope){
-       $scope.sessions = chatSession.getSession();
-       var setMount = function(){
-           var param = $location.search();
-           $scope.mountId = Number(param.mount_id);
-       }
-       $scope.$on('$locationChangeSuccess', function () {
-           setMount();
-       })
-       setMount();
-
+    .controller('initSession',['chatSession','$scope','$location',function(chatSession,$scope,$location){
+       $scope.sessions = chatSession.getSessionList();
     }])
 
     .controller('initContent', ['$location', '$scope', 'chatService', '$timeout', 'GKApi', 'GKException', '$filter', 'chatSession', function ($location, $scope, chatService, $timeout, GKApi, GKException, $filter, chatSession) {
-
-        $scope.$on('$locationChangeSuccess', function () {
-            var param = $location.search();
-            var mountId = Number(param.mount_id);
-        })
-
-        $scope.connecting = true;
-        $scope.msg_list = [];
-        $scope.start = 0;
-        $scope.size = 100;
-        $scope.teamList = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
-        $scope.org = gkClientInterface.getMount({
-            mountid: mountId
-        });
-        $scope.members = [];
+        $scope.connecting = false;
         var now = new Date().getTime();
 
-        $scope.historyGrid = false;
-
-
-        GKApi.teamGroupsMembers($scope.org.orgid).success(function (data) {
-            $scope.members = data.members;
-            $scope.connecting = false;
-        });
-
-        $scope.scrollToBottom = false;
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
             if (keyCode != 13) {
@@ -74,7 +50,6 @@ angular.module('gkChat', ['GKCommon'])
 
             $event.preventDefault();
         };
-
 
         $scope.handleScrollLoad = function (scrollToBottom) {
             scrollToBottom = angular.isDefined(scrollToBottom) ? scrollToBottom : false;
@@ -112,8 +87,23 @@ angular.module('gkChat', ['GKCommon'])
             gkClientInterface.open(params);
         }
 
+        var setList = function(){
+            $scope.scrollToBottom = false;
+            var param = $location.search();
+            var mountId = Number(param.mount_id);
+            $scope.historyGrid = false;
+            $scope.msg_list = [];
+            $scope.start = 0;
+            $scope.size = 100;
+            $scope.org = chatSession.getSession(mountId);
+            $scope.handleScrollLoad(true);
+        }
+        $scope.$on('$locationChangeSuccess', function () {
+            //setList();
+        })
+
         var connect = function () {
-            chatService.connect($scope.org.orgid).success(function (data) {
+            chatService.connect(0).success(function (data) {
                 if (data) {
                     $timeout(function () {
                         var lastTime = Number(data) - 1;
@@ -137,9 +127,7 @@ angular.module('gkChat', ['GKCommon'])
                     }, 1000)
                 });
         };
-        connect();
-        $scope.handleScrollLoad(true);
-
+        //connect();
     }])
     .factory('chatContent', ['chatMember',function (chatMember) {
         var chatContent = {
@@ -176,25 +164,34 @@ angular.module('gkChat', ['GKCommon'])
         };
         return chatContent;
     }])
-    .factory('chatSession', [function (GKMount) {
+    .factory('chatSession', ['GKMount',function (GKMount) {
         var sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
         var chatSession = {
-            getSession:function(){
+            getSessionList:function(){
                 return sessions;
             },
             refreshSession:function(){
                 GKMount.refreshMounts();
                 sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
             }
-
         };
         return chatSession;
     }])
-    .factory('chatMember', [function () {
+    .factory('chatMember', ['GKApi',function (GKApi) {
+        var members = {};
         var chatMember = {
+            getMembers:function(orgId){
+                if(!members[orgId]){
+                    GKApi.teamGroupsMembers(orgId).success(function (data) {
+                        members[orgId] = data.members;
+                    });
+                }
+                return members[orgId];
+            },
             getMemberItem: function (orgId,memberId) {
-                var member;
-                angular.forEach($scope.members, function (value) {
+                var members = this.getMembers(orgId),
+                    member;
+                angular.forEach(members, function (value) {
                     if (value.member_id == id) {
                         member = value;
                         return false;

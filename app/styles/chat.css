@@ -1,6 +1,28 @@
 body{
     background: #f7f7f7;
 }
+.wrapper{
+    position: absolute;
+    left:0;
+    top:0;
+    right: 0;
+    bottom: 0;
+}
+.sidebar{
+    position: absolute;
+    left:0;
+    top:0;
+    bottom: 0;
+    width: 220px;
+    border-right:1px solid #ccc;
+}
+.main{
+    position: absolute;
+    left:220px;
+    right: 0;
+    top:0;
+    bottom: 0;
+}
 header,
 section,
 footer {
@@ -217,4 +239,20 @@ footer textarea{
     height: 100%;
     width: 100%;
     border:0 none;
+}
+.session_list > li{
+    height: 48px;
+    line-height: 32px;
+    padding:8px 15px;
+}
+.session_list > li:hover{
+   background: #e1e3e7;
+}
+.session_list > li:active,
+.session_list > li:selected{
+    background:#448DE8;;
+    color: #fff;
+}
+.session_list > li .avatar{
+    margin-right: 5px;
 }

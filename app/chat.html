@@ -2,7 +2,7 @@
 <html lang="zh-CN" ng-app="gkChat" prevent-drag-drop>
 <head>
     <meta charset="utf-8">
-    <title>够快云库</title>
+    <title>聊天</title>
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
     <link rel="stylesheet" href="styles/bootstrap-gk.css"/>
     <link rel="stylesheet" href="styles/jquery-ui-gk.css"/>
@@ -17,63 +17,68 @@
     <script src="scripts/chat.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
 </head>
-<body >
-<div class="container">
+<body>
+<div class="wrapper">
     <div class="sidebar" ng-controller="initSession">
         <ul class="session_list">
-            <li ng-repeat="session in sessions" ng-class="session.id==mountId?'selected':''">
+            <li ng-repeat="session in sessions" ng-class="session.mount_id==mountId?'selected':''">
+                <team-logo gk-src="{{session.logo}}" class="avatar"></team-logo>
                 <span ng-bind="session.name"></span>
             </li>
         </ul>
     </div>
-    <div class="main" ng-show="!connecting" ng-controller="initChatContent">
+    <div class="main" ng-show="!connecting" ng-controller="initContent">
         <div class="empty" ng-show="connecting">连接中...</div>
         <div>
-        <header>
-            <div class="header_left">
-                <team-logo gk-src="{{org.orgphoto}}" class="avatar avatar_big"></team-logo>
-                <span ng-bind="org.name"></span>
-            </div>
-            <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
-        </header>
-        <section class="scrollbar" ng-class="msg_list.length?'has_msg':''" scroll-to-bottom="scrollToBottom" scroll-load="handleScrollLoad()" trigger-direction="up">
-            <div class="chat_item c_f_after" ng-repeat="msg in msg_list" ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
-                <div class="time_grid">{{msg.time|dateAgo}}</div>
-                <div class="avatar_wrapper">
-                    <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
+            <header>
+                <div class="header_left">
+                    <team-logo gk-src="{{org.orgphoto}}" class="avatar avatar_big"></team-logo>
+                    <span ng-bind="org.name"></span>
                 </div>
-                <div class="chat_main">
-                    <div class="chat_member">
-                        <span ng-bind="msg.sender_name"></span>
+                <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
+            </header>
+            <section class="scrollbar" ng-class="msg_list.length?'has_msg':''" scroll-to-bottom="scrollToBottom"
+                     scroll-load="handleScrollLoad()" trigger-direction="up">
+                <div class="chat_item c_f_after" ng-repeat="msg in msg_list"
+                     ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
+                    <div class="time_grid">{{msg.time|dateAgo}}</div>
+                    <div class="avatar_wrapper">
+                        <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
                     </div>
-                    <div class="chat_text">
-                        <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
-                        <span ng-bind="msg.content"></span>
-                    </div>
-                    <div class="chat_file" ng-if="msg.fullpath" ng-click="goToFile(msg)">
-                        <div class="file_icon_wrapper">
-                            <i class="icon32x32" ng-class="msg.filename | getFileIcon:msg.dir:0:0">
-                                <img error-src="" src="{{msg.hash | getThumbUrl:msg.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.ext)>=0" />
-                            </i>
+                    <div class="chat_main">
+                        <div class="chat_member">
+                            <span ng-bind="msg.sender_name"></span>
                         </div>
-                       <div class="version_wrapper">
-                          <i class="version">V{{msg.version}}</i>
-                       </div>
-                      <div class="filename_wrapper">
-                          <span class="filename" ng-bind="msg.filename"></span>
-                      </div>
+                        <div class="chat_text">
+                            <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
+                            <span ng-bind="msg.content"></span>
+                        </div>
+                        <div class="chat_file" ng-if="msg.fullpath" ng-click="goToFile(msg)">
+                            <div class="file_icon_wrapper">
+                                <i class="icon32x32" ng-class="msg.filename | getFileIcon:msg.dir:0:0">
+                                    <img error-src="" src="{{msg.hash | getThumbUrl:msg.filehash}}"
+                                         ng-if="['jpg','jpeg','png','gif'].indexOf(msg.ext)>=0"/>
+                                </i>
+                            </div>
+                            <div class="version_wrapper">
+                                <i class="version">V{{msg.version}}</i>
+                            </div>
+                            <div class="filename_wrapper">
+                                <span class="filename" ng-bind="msg.filename"></span>
+                            </div>
 
+                        </div>
+                    </div>
+                    <div ng-if="msg.history_msg" class="history_grid">
+                        <div class="line"></div>
+                        <div class="text">以上是聊天的历史记录</div>
                     </div>
                 </div>
-                <div ng-if="msg.history_msg" class="history_grid">
-                    <div class="line"></div>
-                    <div class="text">以上是聊天的历史记录</div>
-                </div>
-            </div>
-        </section>
-        <footer>
-            <textarea placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)" ng-model="postText"></textarea>
-        </footer>
+            </section>
+            <footer>
+                <textarea placeholder="按Enter键发送" class="scrollbar post_text"
+                          ng-keydown="handleKeyDown($event,postText)" ng-model="postText"></textarea>
+            </footer>
         </div>
 
     </div>
