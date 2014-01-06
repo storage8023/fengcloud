@@ -1344,11 +1344,13 @@ angular.module('gkClientIndex.directives', [])
                     selectItem();
                     $event.stopPropagation();
                 };
+
                 $document.bind('keydown', function (e) {
                     if (!$scope.isOpen()) {
                         return;
                     }
                     $scope.$apply(function () {
+
                         var key_code = e.keyCode;
                         if (!$scope.list || !$scope.list.length) return;
                         var listLength = $scope.list.length;
@@ -1365,6 +1367,25 @@ angular.module('gkClientIndex.directives', [])
                             }
 
                             preSelectItem(newIndex);
+                            var itemHeight =  $element.find('li:eq(0)').height();
+                            var scrollTop = $element.find('li:eq('+newIndex+')').position().top;
+                            if(newIndex == 0){
+                                $element.scrollTop(0);
+                            }else if(newIndex == ($scope.list.length-1)){
+                                $element.scrollTop(scrollTop);
+                            }else{
+                                if(step==-1){
+                                    var jTop = scrollTop;
+                                    if (jTop >= -itemHeight && jTop < 0) {
+                                        jTop.scrollTop(jTop.scrollTop() + jTop);
+                                    }
+                                }else{
+                                    var jTop = scrollTop - $element.height();
+                                    if (jTop >= 0 && jTop < itemHeight) {
+                                        $element.scrollTop($element.scrollTop() + itemHeight + jTop);
+                                    }
+                                }
+                            }
                             e.preventDefault();
                         } else if (key_code == 13 || key_code == 32) {
                             selectItem();
@@ -1480,7 +1501,7 @@ angular.module('gkClientIndex.directives', [])
                         hide();
                     }
                 });
-                var inputPos, val, lastIndex;
+                var inputPos, val, lastIndex,lastQ;
 
                 var checkAt = function () {
                     val = $scope.remarkText;
@@ -1493,7 +1514,7 @@ angular.module('gkClientIndex.directives', [])
                         return;
                     }
                     var q = leftStr.slice(lastIndex + 1, leftStr.length); //获取@与光标位置之间的字符
-
+                    if(q===lastQ) return;
                     //如果@与光标之间有空格，隐藏提示框
                     if ($.trim(q).length != q.length) {
                         hide();
@@ -1519,6 +1540,7 @@ angular.module('gkClientIndex.directives', [])
                         $scope.it_list = resultList;
                         show();
                     }
+                    lastQ = q;
                 };
 
                 $scope.it_list = [];
