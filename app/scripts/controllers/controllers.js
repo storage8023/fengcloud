@@ -129,6 +129,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     if(mount){
                         extend.file.filename = mount['name'];
                     }
+                }else{
+                   if(param.partition == GKPartition.subscribeFile){
+                       var index = param.path.indexOf('/');
+                       extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
+                   }
                 }
                 extend.mount = GKMount.getMountById(param.mountid)
             } else {
