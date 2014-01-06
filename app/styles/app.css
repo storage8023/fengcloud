@@ -1161,6 +1161,10 @@ footer {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.right_sidebar .file_attrs > div.file_name{
+    word-break: break-all;
+    word-wrap: break-word;
+}
 .right_sidebar .file_attrs .file_name {
     font-size: 14px;
     color: #3f4754;
