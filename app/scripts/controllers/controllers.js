@@ -1177,11 +1177,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileOpt.move(toFullpath, toMountId, fromFullpathes, fromMountId).then(function () {
                 GKFileList.refreahData($scope);
             }, function () {
-
             });
         };
 
         $scope.handleSysDrop = function ($event) {
+            var nowVersion = gkClientInterface.getClientVersion();
+            var compareVersion = gkClientInterface.isWindowsClient()?'1.0.1.0':'1.1.0';
+            if(Util.browser.compareVersion(nowVersion,compareVersion)>0){
+                return
+            }
             var dragFiles = gkClientInterface.getDragFiles();
             if ($scope.partition == GKPartition.subscribeFile) {
                 alert('不能在当前路径添加文件');
@@ -1212,7 +1216,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         $scope.handleScrollLoad = function () {
-
             if ($scope.partition == GKPartition.subscribeFile) {
                 var start = $scope.fileData.length;
                 if (start >= $scope.totalCount) return;
@@ -1225,6 +1228,26 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
 
         }
+
+        $scope.$on('SetDropFiles',function($event,param){
+            var dragFiles = param;
+            if ($scope.partition == GKPartition.subscribeFile) {
+                alert('不能在当前路径添加文件');
+                return;
+            }
+            var params = {
+                parent: $scope.path,
+                type: 'save',
+                list: dragFiles.list,
+                mountid: $scope.mountId
+            };
+            GK.addFile(params).then(function () {
+                GKFileList.refreahData($scope);
+            }, function (error) {
+                GKException.handleClientException(error);
+            })
+        })
+
 
         $scope.$on('UpdateFileList',function(){
             if($scope.createNewFolder){ //新建文件（夹）的情况下忽略该回调
