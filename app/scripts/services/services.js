@@ -2984,7 +2984,9 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_unlock',
                         callback: function () {
                             var file = selectedFile[0];
-                            if (file.lock_member_id != $rootScope.PAGE_CONFIG.member_id) {
+//                            console.log(file.lock_member_id);
+//                            console.log($rootScope.PAGE_CONFIG.user.member_id);
+                            if (file.lock_member_id != $rootScope.PAGE_CONFIG.user.member_id) {
                                 alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
                                 return;
                             }
