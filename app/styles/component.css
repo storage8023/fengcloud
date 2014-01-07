@@ -143,7 +143,9 @@
 .icon16x16.icon_lock_white{
     background-position: -24px -284px;
 }
-
+.icon16x16.icon_lock_color{
+    background-position: -44px -284px;
+}
 .icon16x16.icon_unlock{
     background-position: -4px -304px;
 }

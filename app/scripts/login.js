@@ -150,10 +150,10 @@ angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientI
                     var text = '';
                     switch (name){
                         case 'qq':
-                            text = '腾讯QQ登录';
+                            text = '使用腾讯QQ帐号登录';
                             break;
                         case 'sina':
-                            text = '新浪微博登录';
+                            text = '使用新浪微博帐号登录';
                             break
                     }
                     return text;

@@ -1710,6 +1710,7 @@ angular.module('gkClientIndex.services', [])
                         deferred.reject(re);
                     }
                 });
+                return deferred.promise;
             },
             unlock: function (params) {
                 params.status = 0;
@@ -1721,6 +1722,7 @@ angular.module('gkClientIndex.services', [])
                         deferred.reject(re);
                     }
                 });
+                return deferred.promise;
             },
             getUser: function () {
                 return gkClientInterface.getUser();
@@ -2283,8 +2285,8 @@ angular.module('gkClientIndex.services', [])
                     'create_sync_folder',
                     'add', //添加
                     'clear_trash', //清空回收站
-                    //'lock',  //锁定
-                    //'unlock', //解锁
+                    'lock',  //锁定
+                    'unlock', //解锁
                     'sync',  //同步
                     'unsync',//不同步
                     'save',  //保存到

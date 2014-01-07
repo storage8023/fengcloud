@@ -919,10 +919,21 @@ footer {
     top:22px;
     left: -2px;
 }
+.file_item .file_icon s.icon_lock_color{
+    top:22px;
+    right: -2px;
+    left:auto;;
+}
 .file_item .thumb s{
     position: absolute;
     left: 10px;
     bottom: 2px;
+}
+.file_item .thumb s.icon_lock_color{
+    top:auto;
+    bottom: 29px;
+    right: 18px;
+    left:auto;;
 }
 .file_item[data-dir="1"] .thumb s{
     left: 3px;

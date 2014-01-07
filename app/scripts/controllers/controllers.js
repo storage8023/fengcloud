@@ -104,13 +104,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         })
 
-        /**
-         * 监听路径的改变
-         */
-        $scope.$on('$locationChangeSuccess', function () {
-            setPageConfig();
-        })
-
         var setPageConfig = function(){
             var param = $location.search();
             if(!param.partition) return;
@@ -130,10 +123,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         extend.file.filename = mount['name'];
                     }
                 }else{
-                   if(param.partition == GKPartition.subscribeFile){
-                       var index = param.path.indexOf('/');
-                       extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
-                   }
+                    if(param.partition == GKPartition.subscribeFile){
+                        var index = param.path.indexOf('/');
+                        extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
+                    }
                 }
                 extend.mount = GKMount.getMountById(param.mountid)
             } else {
@@ -142,6 +135,25 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             angular.extend($rootScope.PAGE_CONFIG, extend);
         }
+
+        /**
+         * 监听路径的改变
+         */
+        $scope.$on('$locationChangeSuccess', function () {
+            setPageConfig();
+        })
+
+        $scope.$on('UpdateFileList', function () {
+            var param = $location.search();
+            var oldSyncPath = $rootScope.PAGE_CONFIG.file.syncpath;
+            angular.extend($rootScope.PAGE_CONFIG, {
+                file:GKFile.getFileInfo(param.mountid, param.path)
+            });
+            if(oldSyncPath&&!$rootScope.PAGE_CONFIG.file.syncpath){
+                $scope.$broadcast('editFileSuccess','unsync',param.mountid, param.path);
+            }
+        })
+
 
         setPageConfig();
 
@@ -866,7 +878,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     case 'unsync':
                         forEachFullpath(function (fullpath) {
                             $rootScope.PAGE_CONFIG.file.syncpath = '';
-                            $scope.showHint = true;
+                            $scope.showHint = false;
                         });
                         break;
                     case 'del':
