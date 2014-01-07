@@ -188,7 +188,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//我的云库
             joinOrgMount = GKMount.getJoinOrgMounts(),
@@ -609,6 +609,37 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.$apply(function(){
                 GKPath.gotoFile(mountId, path, selectFile);
             })
+        })
+
+        var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
+        $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+        var t,count = 0;
+        $scope.$on('UpdateMessage', function () {
+            if(t){
+                $interval.cancel(t);
+            }
+           t = $interval(function(){
+                if(count==10){
+                    if(t){
+                        $interval.cancel(t);
+                        count = 0;
+                    }
+                    $scope.newMsg = true;
+                    localStorageService.add(unreadMsgKey,$scope.newMsg);
+                    return;
+                }
+                $scope.newMsg = !$scope.newMsg;
+                count++;
+            },150);
+        })
+
+        $scope.$on('newsModalOpen', function () {
+            if(t){
+                $interval.cancel(t);
+                count = 0;
+            }
+            $scope.newMsg = false;
+            localStorageService.remove(unreadMsgKey);
         })
     }])
     .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', 'GKFileListView',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch,GKFileListView) {

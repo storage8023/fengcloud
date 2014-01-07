@@ -804,11 +804,13 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             templateUrl: "views/member.html",
             scope: {
-                user: '='
+                user: '=',
+                newMsg:'='
             },
             link: function ($scope, $element) {
                 $scope.newsOpen = function () {
                     GKModal.news(GKNews, GKApi);
+                    $scope.$emit('newsModalOpen');
                 };
 
                 $scope.personalOpen = function ($scope) {
