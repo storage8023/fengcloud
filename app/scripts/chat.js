@@ -1,27 +1,39 @@
 'use strict';
 
 angular.module('gkChat', ['GKCommon'])
-    .run(['$rootScope', function ($rootScope) {
+    .run(['$rootScope','$location','GKMount', function ($rootScope,$location,GKMount) {
         $rootScope.PAGE_CONFIG = {
-            user: gkClientInterface.getUser()
+            user: gkClientInterface.getUser(),
+            mount:{}
         }
         var setMount = function(){
             var param = $location.search();
-            $scope.mountId = Number(param.mount_id);
+            angular.extend($rootScope.PAGE_CONFIG,{
+                mount:GKMount.getMountById(param.mountid)
+            })
         }
-        $scope.$on('$locationChangeSuccess', function () {
+        $rootScope.$on('$locationChangeSuccess', function () {
             setMount();
         })
         setMount();
     }])
-    .controller('initSession',['chatSession','$scope','$location',function(chatSession,$scope,$location){
-       $scope.sessions = chatSession.getSessionList();
-    }])
+    .controller('initChat',['$scope','chatSession','$location','$timeout','chatContent','$rootScope','chatService',function($scope,chatSession,$location,$timeout,chatContent,$rootScope,chatService){
+        $scope.sessions = chatSession.sessions;
+        $scope.currentMsgList = [];
+        var initTime =  new Date().getTime();
 
-    .controller('initContent', ['$location', '$scope', 'chatService', '$timeout', 'GKApi', 'GKException', '$filter', 'chatSession', function ($location, $scope, chatService, $timeout, GKApi, GKException, $filter, chatSession) {
-        $scope.connecting = false;
-        var now = new Date().getTime();
+        $scope.selectSession = function(session){
+            $location.search({
+                mountid:session.mount_id
+            });
+        };
 
+
+        /**
+         * 发布新消息
+         * @param $event
+         * @param postText
+         */
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
             if (keyCode != 13) {
@@ -31,27 +43,35 @@ angular.module('gkChat', ['GKCommon'])
                 return;
             }
             $scope.postText = '';
-            var start = $scope.msg_list.length + 1 - $scope.size;
+            var start = $scope.currentMsgList.length + 1 - $scope.size;
             $scope.start = start < 0 ? 0 : start;
-            var newMsg = add({
+            var newMsg = chatContent.add($rootScope.PAGE_CONFIG.mount.mount_id,{
                 content: postText,
-                receiver: $scope.org.orgid,
+                receiver: $rootScope.PAGE_CONFIG.mount.orgId,
                 sender: $scope.PAGE_CONFIG.user.member_id,
                 time: new Date().getTime(),
                 type: 'text'
             });
+            if(!newMsg){
+                return;
+            }
             $scope.scrollToBottom = true;
-            chatService.add($scope.org.orgid, postText).success(function () {
+            chatService.add($rootScope.PAGE_CONFIG.mount.orgId, postText).success(function () {
 
             }).error(function (error) {
                     var errorMsg = GKException.getAjaxErrorMsg(error);
-                    setMsgError(newMsg, errorMsg);
+                    chatContent.setItemError(newMsg, errorMsg);
                 });
 
             $event.preventDefault();
         };
 
+        /**
+         * 滚动加载
+         * @param scrollToBottom
+         */
         $scope.handleScrollLoad = function (scrollToBottom) {
+            return;
             scrollToBottom = angular.isDefined(scrollToBottom) ? scrollToBottom : false;
             var minDateline = new Date().getTime();
             if ($scope.msg_list.length) {
@@ -72,11 +92,19 @@ angular.module('gkChat', ['GKCommon'])
             })
         }
 
+        /**
+         * 打开文件位置
+         * @param msg
+         */
         $scope.goToFile = function (msg) {
             var fullpath = msg.fullpath;
             var mountId = $scope.PAGE_CONFIG.mount.mountid;
         };
 
+        /**
+         * 打开文件
+         * @param msg
+         */
         $scope.openFile = function (msg) {
             var fullpath = msg.fullpath;
             var mountId = $scope.PAGE_CONFIG.mount.mountid;
@@ -88,18 +116,20 @@ angular.module('gkChat', ['GKCommon'])
         }
 
         var setList = function(){
-            $scope.scrollToBottom = false;
             var param = $location.search();
-            var mountId = Number(param.mount_id);
+            $scope.scrollToBottom = false;
+            var mountId = Number(param.mountid);
             $scope.historyGrid = false;
-            $scope.msg_list = [];
+            var session = chatSession.getSessionByMountId(mountId);
+            if(!session) return;
+            $scope.currentMsgList = session.msgList || [];
             $scope.start = 0;
             $scope.size = 100;
-            $scope.org = chatSession.getSession(mountId);
             $scope.handleScrollLoad(true);
         }
+
         $scope.$on('$locationChangeSuccess', function () {
-            //setList();
+           setList();
         })
 
         var connect = function () {
@@ -128,8 +158,10 @@ angular.module('gkChat', ['GKCommon'])
                 });
         };
         //connect();
+
     }])
-    .factory('chatContent', ['chatMember',function (chatMember) {
+
+    .factory('chatContent', ['chatMember','chatSession',function (chatMember,chatSession) {
         var chatContent = {
             formatItem: function (value) {
                 var sender = chatMember.getMemberItem(value.receiver,value.sender) || value.sender;
@@ -143,37 +175,38 @@ angular.module('gkChat', ['GKCommon'])
                 })
                 return value;
             },
-            setItemError:function($scope,msg,errorMsg){
-                angular.forEach($scope.msg_list, function (value) {
-                    if (msg == value) {
-                        value.error = errorMsg;
-                        return false;
-                    }
-                })
+            setItemError:function(msg,errorMsg){
+                msg.error = errorMsg;
             },
-            add:function($scope,newMsg){
+            add:function(mountId,newMsg,head){
+                head = angular.isDefined(head)?head:false;
                 newMsg = this.formatItem(newMsg);
-                $scope.msg_list.push(newMsg);
-                return newMsg;
-            },
-            pop:function($scope,newMsg){
-                newMsg = this.formatItem(newMsg);
-                $scope.msg_list.unshift(newMsg);
+                var session = chatSession.getSessionByMountId(mountId);
+                if(!session){
+                    return;
+                }
+                if(!session.msgList){
+                    session.msgList = [];
+                }
+                head?session.msgList.unshift(newMsg):session.msgList.push(newMsg);
                 return newMsg;
             }
         };
         return chatContent;
     }])
     .factory('chatSession', ['GKMount',function (GKMount) {
-        var sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
         var chatSession = {
+            sessions:GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts()),
             getSessionList:function(){
                 return sessions;
             },
             refreshSession:function(){
                 GKMount.refreshMounts();
-                sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
-            }
+                this.sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
+            },
+            getSessionByMountId:function(mountId){
+                return Util.Array.getObjectByKeyValue(this.sessions,'mount_id',mountId);
+            },
         };
         return chatSession;
     }])
@@ -203,8 +236,8 @@ angular.module('gkChat', ['GKCommon'])
         return chatMember;
     }])
     .factory('chatService', [function () {
-        //var host = 'http://10.0.0.150:1238';
-        var host = 'http://112.124.68.214:1238';
+        var host = 'http://10.0.0.150:1238';
+        //var host = 'http://112.124.68.214:1238';
         var chat = {
             add: function (orgId, content) {
                 return jQuery.ajax({

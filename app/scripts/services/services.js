@@ -3476,7 +3476,7 @@ angular.module('gkClientIndex.services', [])
             chat: function (mountId) {
                 if(!mountId) return;
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mount_id=' + mountId;
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId;
                 var data = {
                     url: url,
                     type:'normal',

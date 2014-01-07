@@ -17,23 +17,23 @@
     <script src="scripts/chat.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
 </head>
-<body>
+<body ng-controller="initChat">
 <div class="wrapper">
-    <div class="sidebar" ng-controller="initSession">
+    <div class="scrollbar sidebar">
         <ul class="session_list">
-            <li ng-repeat="session in sessions" ng-class="session.mount_id==mountId?'selected':''">
+            <li ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'+lastTime'" ng-class="session.mount_id==PAGE_CONFIG.mount.mount_id?'selected':''">
                 <team-logo gk-src="{{session.logo}}" class="avatar"></team-logo>
                 <span ng-bind="session.name"></span>
             </li>
         </ul>
     </div>
-    <div class="main" ng-show="!connecting" ng-controller="initContent">
+    <div class="main" ng-show="!connecting">
         <div class="empty" ng-show="connecting">连接中...</div>
         <div>
             <header>
                 <div class="header_left">
-                    <team-logo gk-src="{{org.orgphoto}}" class="avatar avatar_big"></team-logo>
-                    <span ng-bind="org.name"></span>
+                    <team-logo gk-src="{{PAGE_CONFIG.mount.logo}}" class="avatar avatar_big"></team-logo>
+                    <span ng-bind="PAGE_CONFIG.mount.name"></span>
                 </div>
                 <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
             </header>
