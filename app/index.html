@@ -229,7 +229,7 @@
                                     <img bo-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0" error-src="" src="{{file.hash | getThumbUrl:file.filehash}}"/>
                                     <s bo-if="file.status==2" class="icon16x16 icon_down"></s>
                                     <s bo-if="file.status==1" class="icon16x16 icon_up"></s>
-                                    <s bo-if="file.lock==1" class="icon16x16 icon_lock_color" title="'已被'+file.lock_member_name+'锁定'"></s>
+                                    <s bo-if="file.lock==1" class="icon16x16 icon_lock_color" title="{{'已被'+file.lock_member_name+'锁定'}}"></s>
                                 </i>
                             </div>
                             <div class="file_icon_wrapper" bo-title="file.fullpath">

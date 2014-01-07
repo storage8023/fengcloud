@@ -2285,8 +2285,8 @@ angular.module('gkClientIndex.services', [])
                     'create_sync_folder',
                     'add', //添加
                     'clear_trash', //清空回收站
-                    'lock',  //锁定
-                    'unlock', //解锁
+                    //'lock',  //锁定
+                    //'unlock', //解锁
                     'sync',  //同步
                     'unsync',//不同步
                     'save',  //保存到
@@ -3328,6 +3328,11 @@ angular.module('gkClientIndex.services', [])
                 oldFileItem.find('.file_name span').prop({
                     'title':file.fullpath
                 }).text(file.filename);
+
+                oldFileItem.find('.file_name,.thumb,.file_icon_wrapper').prop({
+                    'title':file.fullpath
+                });
+
                 var icon = $filter('getFileIcon')(file.filename,file.dir,(file.open||(PAGE_CONFIG.file.sharepath?1:0)),(file.sync||PAGE_CONFIG.file.syncpath?1:0)),
                     thumbUrl = $filter('getThumbUrl')(file.hash,file.filehash);
                 var thumbIcon = oldFileItem.find('.thumb i'),
@@ -3350,6 +3355,9 @@ angular.module('gkClientIndex.services', [])
                         elem.append('<s class="icon16x16 icon_up"></s>');
                     }else if(file.status==2){
                         elem.append('<s class="icon16x16 icon_down"></s>');
+                    }
+                    if(file.lock==1){
+                        elem.append('<s class="icon16x16 icon_lock_color" title="已被'+file.lock_member_name+'锁定"></s>');
                     }
                 })
                 var atts = {
