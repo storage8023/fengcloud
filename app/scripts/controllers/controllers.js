@@ -120,7 +120,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             if ([GKPartition.teamFile,GKPartition.joinFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 if(!param.filter){
-                    extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                    if(param.partition == GKPartition.subscribeFile){
+                        extend.file = {
+                            fullpath: param.path,
+                            mount_id: param.mountid
+                        }
+                    }else{
+                        extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                    }
+
                 }else{
                     extend.file = {};
                 }
@@ -1521,7 +1529,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
-            $scope.sidbarData = getSidbarData(param);
+            if(param.path){
+                $scope.sidebar = 'singlefile';
+            }else{
+                $scope.sidebar = 'nofile';
+                $scope.sidbarData = getSidbarData(param);
+            }
+
         })
 
         $scope.$on('selectedFileChange', function ($event, selectedFile) {
@@ -1531,7 +1545,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.selectedFileLength = selectedFile.length;
             if (!selectedFile.length) {
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;
-                $scope.sidebar = 'nofile';
+                if(!$scope.localFile.fullpath){
+                    $scope.sidebar = 'nofile';
+                }else{
+                    $scope.sidebar = 'singlefile';
+                }
 
            }else if(selectedFile.length ==1){
                $scope.localFile = selectedFile[0];
