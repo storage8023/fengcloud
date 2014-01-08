@@ -6,6 +6,7 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
+
                 var getVersion =  function(triggerElem){
                     return Number(triggerElem.data('version'));
                 };
@@ -15,13 +16,13 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.$watch($attrs.gkVersionContextmenu,function(newValue){
                     if(!newValue){
-                        jQuery.contextMenu('destroy', '.history_list > .item');
+                        jQuery.contextMenu('destroy', '.history_list > li');
                     }else{
                         /**
                          * 设置右键菜单
                          */
                         jQuery.contextMenu({
-                            selector: '.history_list > .item',
+                            selector: '.history_list > li',
                             reposition: true,
                             zIndex: 9999,
                             className: 'version_contextmenu',
@@ -817,7 +818,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog',function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog) {
         return {
             replace: true,
             restrict: 'E',
@@ -840,17 +841,6 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.smarts = GKSmartFolder.getFolders('recent');
-                $scope.inputingRemark = false;
-                $scope.remarkText = '';
-                var postRemarkCache = $angularCacheFactory.get('postRemarkCache');
-                if(!postRemarkCache){
-                    postRemarkCache = $angularCacheFactory('postRemarkCache',{
-                        maxAge: 10000, //10秒后过期，因为client_sidebar的缓存是10秒
-                        deleteOnExpire: 'aggressive',
-                        storageMode: 'localStorage'
-                    });
-                }
-
 
                 var getFileState = function (mountId, fullpath) {
                     var info = gkClientInterface.getTransInfo({
@@ -950,25 +940,11 @@ angular.module('gkClientIndex.directives', [])
                     }
 
                     if (options.data != 'file') {
-                       if(options.cache && postRemarkCache.get(mountId+':'+fullpath)){
-                           options.cache = false;
-                       }
                         lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
                             $scope.$apply(function () {
-                                if (data.share_members) {
-                                    $scope.shareMembers = data.share_members;
-                                }
-                                if (data.share_groups) {
-                                    $scope.shareGroups = data.share_groups;
-                                }
-                                if (data.remark) {
-                                    $scope.remarks = data.remark;
-                                }
                                 if (data.history) {
+                                    data.history[0].milestone = 1;
                                     $scope.histories = data.history;
-                                }
-                                if (data.remind_members) {
-                                    $scope.remindMembers = data.remind_members;
                                 }
                             })
                         });
@@ -980,8 +956,6 @@ angular.module('gkClientIndex.directives', [])
                     if (!file || !oldValue || file == oldValue || file.fullpath == oldValue.fullpath) {
                         return;
                     }
-                    $scope.inputingRemark = false;
-                    $scope.remarkText = '';
                     if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;
@@ -992,6 +966,10 @@ angular.module('gkClientIndex.directives', [])
 
                 getFileInfo($scope.localFile);
 
+                /**
+                 * 添加tag
+                 * @param tag
+                 */
                 $scope.postTag = function (tag) {
                     tag = String(tag);
                     GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
@@ -999,99 +977,12 @@ angular.module('gkClientIndex.directives', [])
                     });
                 }
 
-                $scope.handlePostKeyDown = function ($event, tag) {
-                    tag = String(tag);
-                    var keyCode = $event.keyword;
-                    if (keyCode == 13) {
-                        $scope.postTag(tag);
-                        $scope.focusPostTextarea = false;
-                    }
-                }
-
                 /**
-                 * 取消发布备注
+                 * 检测是否已加标
+                 * @param favorite
+                 * @param filter
+                 * @returns {boolean}
                  */
-                $scope.cancelPostRemark = function () {
-                    $scope.remarkText = '';
-                    $scope.inputingRemark = false;
-                };
-
-                $scope.handleFocus = function () {
-                    if (!$scope.inputingRemark) {
-                        $scope.inputingRemark = true;
-                    }
-                };
-
-                jQuery('body').on('click.cancelRemark', function (e) {
-                    if (!jQuery(e.target).hasClass('post_wrapper') && !jQuery(e.target).parents('.post_wrapper').size()) {
-                        $timeout(function () {
-                            if (!$scope.remarkText) {
-                                $scope.inputingRemark = false;
-                                $element.find('.post_wrapper textarea').blur();
-                            }
-                        }, 0)
-                    }
-                })
-                $scope.posting = false;
-                /**
-                 * 发布讨论
-                 */
-                $scope.postRemark = function (remarkText) {
-                    if($scope.posting){
-                        return;
-                    }
-                    if (!remarkText || !remarkText.length) return;
-                    var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
-                    $scope.posting = true;
-                    var mountId = getOptMountId($scope.file);
-                    RestFile.remind(mountId, fullpath, remarkText).success(function (data) {
-                        postRemarkCache.put(mountId+':'+fullpath,1);
-                        $scope.$apply(function(){
-                            $scope.posting = false;
-                            $scope.cancelPostRemark();
-                            if (data && data.length) {
-                                $scope.remarks.unshift(data[0]);
-                            }
-                        })
-                    }).error(function (request) {
-                            $scope.$apply(function(){
-                            $scope.posting = false;
-                            GKException.handleAjaxException(request);
-                            })
-                        });
-                };
-
-                $scope.showAddMember = function () {
-                    GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
-                };
-
-                $scope.insertAt = function (input) {
-                    var val = $scope.remarkText;
-                    var jqTextarea = $element.find('.post_wrapper textarea');
-                    var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');
-                    var is_insert = input_pos[1] != val.length ? 1 : 0;
-                    var l = val.substr(0, input_pos[0]);
-                    var r = val.substr(input_pos[1], val.length);
-                    val = l + input + r;
-                    $scope.remarkText = val;
-                    $timeout(function () {
-                        if (is_insert) {
-                            Util.Input.moveCur(jqTextarea[0], parseInt(input_pos[0]) + (input).length);
-                        } else {
-                            Util.Input.moveCur(jqTextarea[0], val.length);
-                        }
-                        return null;
-                    }, 0);
-
-                }
-
-                $scope.handleKeyDown = function (e) {
-                    if (e.keyCode == 13 & (e.ctrlKey || e.metaKey)) {
-                        $scope.postRemark($scope.remarkText);
-                        $element.find('.post_wrapper textarea').blur();
-                    }
-                };
-
                 $scope.isSmartAdd = function (favorite, filter) {
                     if (!favorite) favorite = [];
                     var type = GKFilter.getFilterType(filter);
@@ -1136,31 +1027,24 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 /**
-                 * 删除共享
-                 * @param shareItem
+                 * 打开生成临时链接的窗口
+                 * @param file
                  */
-                $scope.removeShare = function (shareItem) {
-                    var fullpath = $scope.file.fullpath;
-                    var collaboration = [], collaborationItem = '';
-                    var type = shareItem['group_id'] ? 'group' : 'member';
-                    if (!confirm('你确定要删除改共享参与' + (type == 'group' ? '组' : '人' + '？'))) {
-                        return;
-                    }
-                    collaborationItem = type + '|' + (type == 'group' ? shareItem['group_id'] : shareItem['member_id']);
+                $scope.publishFile = function(file){
+                   GKModal.publish(getOptMountId(file),file);
+                };
 
-                    collaboration.push(collaborationItem);
-                    GKApi.delCollaboration(getOptMountId($scope.file), fullpath, collaboration.join(',')).success(function () {
-                        $scope.$apply(function () {
-                            if (type == 'group') {
-                                Util.Array.removeByValue($scope.shareGroups, shareItem);
-                            } else {
-                                Util.Array.removeByValue($scope.shareMembers, shareItem);
-                            }
-                        });
+                /**
+                 * 打开聊天窗口
+                 */
+                $scope.startChat = function(file){
+                    GKDialog.chat(getOptMountId(file),file.fullpath);
+                }
 
-                    }).error(function (request) {
-                            GKException.handleAjaxException(request);
-                        });
+                $scope.showMilestoneDialog = function(file){
+                    GKModal.setMilestone(getOptMountId(file),file).result.then(function(){
+                        getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
+                    });
                 }
 
                 /**
@@ -1173,8 +1057,17 @@ angular.module('gkClientIndex.directives', [])
                     getFileInfo($scope.localFile, {data: 'sidebar', type: type, cache: false});
                 })
 
+                $scope.historyFilter = null;
+
+                $scope.$watch('onlyShowMileStone',function(newValue){
+                    if(newValue){
+                        $scope.historyFilter = {milestone:1};
+                    }else{
+                        $scope.historyFilter = null;
+                    }
+                })
+
                 $scope.$on('$destroy', function () {
-                    jQuery('body').off('click.cancelRemark');
                     if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;

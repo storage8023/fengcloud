@@ -608,6 +608,37 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            publish:function(mountId,fullpath){
+                var params = {
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/file/get_file_link',
+                    dataType: 'json',
+                    data: params
+                })
+            },
+            markMilestone:function(mountId,fullpath,message){
+                var params = {
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    message: message,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/file/mark_milestone',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             editPassword: function (oldPassword, newPassword) {
                 var params = {
                     password: oldPassword,

@@ -399,7 +399,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile) {
+    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -413,6 +413,62 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            publish: function (mountId, file) {
+                var option = {
+                    templateUrl: 'views/publish_dialog.html',
+                    windowClass: 'publish_dialog',
+                    controller: function ($scope,$modalInstance) {
+                        $scope.file = file;
+                        $scope.link = '';
+                        $scope.publish = function(file){
+                            GKApi.publish(mountId,file.fullpath)
+                                .success(function(data){
+                                    $scope.$apply(function(){
+                                        $scope.link = data.link;
+                                    })
+                                })
+                                .error(function(reqest){
+                                    GKException.handleAjaxException(reqest);
+                                })
+                        }
+                        $scope.copy = function (innerLink) {
+                            gkClientInterface.copyToClipboard(innerLink);
+                            alert('已复制到剪切板');
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+
+            },
+            setMilestone:function(mountId,file){
+                var option = {
+                    templateUrl: 'views/set_milestone_dialog.html',
+                    windowClass: 'set_milestone_dialog',
+                    controller: function ($scope,$modalInstance) {
+                        $scope.file = file;
+                        $scope.message = '';
+                        $scope.markMilestone = function(message){
+                            GKApi.markMilestone(mountId,file.fullpath,message)
+                                .success(function(){
+                                    $modalInstance.close();
+                                })
+                                .error(function(reqest){
+                                    GKException.handleAjaxException(reqest);
+                                })
+                        }
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
             openNew: function (url,title) {
                 var context = this;
                 var option = {
@@ -2082,7 +2138,8 @@ angular.module('gkClientIndex.services', [])
                         hash: value.hash,
                         open: value.publish || 0,
                         hasFolder: 1,
-                        tag:value.tag||''
+                        tag:value.tag||'',
+                        version:value.version
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -2115,7 +2172,8 @@ angular.module('gkClientIndex.services', [])
                         hash: value.uuidhash,
                         open: value.open || 0,
                         hasFolder: value.hasfolder || 0,
-                        tag:''
+                        tag:'',
+                        version:value.version
                     };
                 }
                 return file;
@@ -3473,13 +3531,14 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKDialog', [function () {
         return {
-            chat: function (mountId) {
+            chat: function (mountId,fullpath) {
+                fullpath = angular.isDefined(fullpath)?fullpath:'';
                 if(!mountId) return;
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId;
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+fullpath;
                 var data = {
                     url: url,
-                    type:'normal',
+                    type:'single',
                     width: 760,
                     resize: 1,
                     height: 480
