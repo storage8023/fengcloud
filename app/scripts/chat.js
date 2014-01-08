@@ -1,15 +1,15 @@
 'use strict';
 
 angular.module('gkChat', ['GKCommon'])
-    .run(['$rootScope','$location','GKMount', function ($rootScope,$location,GKMount) {
+    .run(['$rootScope', '$location', 'GKMount', function ($rootScope, $location, GKMount) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
-            mount:{}
+            mount: {}
         }
-        var setMount = function(){
+        var setMount = function () {
             var param = $location.search();
-            angular.extend($rootScope.PAGE_CONFIG,{
-                mount:GKMount.getMountById(param.mountid)
+            angular.extend($rootScope.PAGE_CONFIG, {
+                mount: GKMount.getMountById(param.mountid)
             })
         }
         $rootScope.$on('$locationChangeSuccess', function () {
@@ -17,17 +17,16 @@ angular.module('gkChat', ['GKCommon'])
         })
         setMount();
     }])
-    .controller('initChat',['$scope','chatSession','$location','$timeout','chatContent','$rootScope','chatService',function($scope,chatSession,$location,$timeout,chatContent,$rootScope,chatService){
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException) {
         $scope.sessions = chatSession.sessions;
         $scope.currentMsgList = [];
-        var initTime =  new Date().getTime();
+        var initTime = new Date().getTime();
 
-        $scope.selectSession = function(session){
+        $scope.selectSession = function (session) {
             $location.search({
-                mountid:session.mount_id
+                mountid: session.mount_id
             });
         };
-
 
         /**
          * 发布新消息
@@ -45,23 +44,23 @@ angular.module('gkChat', ['GKCommon'])
             $scope.postText = '';
             var start = $scope.currentMsgList.length + 1 - $scope.size;
             $scope.start = start < 0 ? 0 : start;
-            var newMsg = chatContent.add($rootScope.PAGE_CONFIG.mount.mount_id,{
+            var newMsg = chatContent.add($rootScope.PAGE_CONFIG.mount.mount_id, {
                 content: postText,
                 receiver: $rootScope.PAGE_CONFIG.mount.orgId,
                 sender: $scope.PAGE_CONFIG.user.member_id,
                 time: new Date().getTime(),
                 type: 'text'
             });
-            if(!newMsg){
+
+            if (!newMsg) {
                 return;
             }
             $scope.scrollToBottom = true;
-            chatService.add($rootScope.PAGE_CONFIG.mount.orgId, postText).success(function () {
-
-            }).error(function (error) {
-                    var errorMsg = GKException.getAjaxErrorMsg(error);
-                    chatContent.setItemError(newMsg, errorMsg);
-                });
+            //console.log($rootScope.PAGE_CONFIG.mount);
+            chatService.add($rootScope.PAGE_CONFIG.mount.org_id, postText).error(function (error) {
+                var errorMsg = GKException.getAjaxErrorMsg(error);
+                chatContent.setItemError(newMsg, errorMsg);
+            });
 
             $event.preventDefault();
         };
@@ -71,26 +70,30 @@ angular.module('gkChat', ['GKCommon'])
          * @param scrollToBottom
          */
         $scope.handleScrollLoad = function (scrollToBottom) {
-            return;
             scrollToBottom = angular.isDefined(scrollToBottom) ? scrollToBottom : false;
+            console.log(scrollToBottom);
             var minDateline = new Date().getTime();
-            if ($scope.msg_list.length) {
-                minDateline = $scope.msg_list[0]['time'];
+            if ($scope.currentMsgList.length) {
+                minDateline = $scope.currentMsgList[0]['time'];
             }
-            chatService.search($scope.org.orgid, minDateline, 10).success(function (data) {
+            chatService.search($scope.PAGE_CONFIG.mount.org_id, minDateline, 10).success(function (data) {
                 $scope.$apply(function () {
                     $scope.start = -1;
                     var len = data.length;
-                    if ($scope.msg_list.length + len > $scope.size) {
+                    if ($scope.currentMsgList.length + len > $scope.size) {
                         $scope.start -= len;
                     }
                     angular.forEach(data, function (item) {
-                        pop(item);
+                        if(!$scope.currentMsgList.historyGrid && item.time<initTime){
+                            item.historyMsg = true;
+                            $scope.currentMsgList.historyGrid = true;
+                        }
+                        chatContent.add($scope.PAGE_CONFIG.mount.mount_id,item,true);
                     })
                     $scope.scrollToBottom = scrollToBottom;
                 })
             })
-        }
+        };
 
         /**
          * 打开文件位置
@@ -113,39 +116,49 @@ angular.module('gkChat', ['GKCommon'])
                 webpath: fullpath
             }
             gkClientInterface.open(params);
-        }
+        };
 
-        var setList = function(){
+        var setList = function () {
             var param = $location.search();
-            $scope.scrollToBottom = false;
             var mountId = Number(param.mountid);
-            $scope.historyGrid = false;
             var session = chatSession.getSessionByMountId(mountId);
-            if(!session) return;
-            $scope.currentMsgList = session.msgList || [];
+            if (!session) return;
+            $scope.currentMsgList = session.msgList;
             $scope.start = 0;
             $scope.size = 100;
-            $scope.handleScrollLoad(true);
-        }
+            chatSession.setUnreadCount(session,0);
+            if(!$scope.currentMsgList.length || $scope.currentMsgList[0]['time']>initTime){
+                $scope.handleScrollLoad(true);
+            }else{
+                $scope.scrollToBottom = true;
+            }
+        };
 
         $scope.$on('$locationChangeSuccess', function () {
-           setList();
+            setList();
         })
 
         var connect = function () {
             chatService.connect(0).success(function (data) {
                 if (data) {
+                    var lastTime = Number(data.time) - 1,
+                        orgId = data.receiver.split('_')[0];
+                    var session = chatSession.getSessionByOrgId(orgId);
+                    if (!session) return;
                     $timeout(function () {
-                        var lastTime = Number(data) - 1;
-                        chatService.list(lastTime, $scope.org.orgid).success(function (data) {
-                            var len = data.length;
-                            angular.forEach(data, function (item) {
-                                $scope.$apply(function () {
-                                    var start = $scope.msg_list.length + len - $scope.size;
-                                    $scope.start = start < 0 ? 0 : start;
-                                    add(item);
+                        chatService.list(lastTime, orgId).success(function (newMsgList) {
+                            $scope.$apply(function(){
+                                var len = newMsgList.length;
+
+                                angular.forEach(newMsgList, function (item) {
+//                                var start = $scope.msg_list.length + len - $scope.size;
+//                                $scope.start = start < 0 ? 0 : start;
+                                    chatContent.add(session.mount_id,item);
                                     $scope.scrollToBottom = true;
                                 })
+                                if(session.mount_id != $rootScope.PAGE_CONFIG.mount.mount_id){
+                                    chatSession.setUnreadCount(session,session.unreadCount+len);
+                                }
                             })
                         });
                     }, 1000)
@@ -157,75 +170,91 @@ angular.module('gkChat', ['GKCommon'])
                     }, 1000)
                 });
         };
-        //connect();
-
+        connect();
     }])
 
-    .factory('chatContent', ['chatMember','chatSession',function (chatMember,chatSession) {
+    .factory('chatContent', ['chatMember', 'chatSession', function (chatMember, chatSession) {
         var chatContent = {
             formatItem: function (value) {
-                var sender = chatMember.getMemberItem(value.receiver,value.sender) || value.sender;
+                var sender = chatMember.getMemberItem(value.receiver, value.sender);
                 var filename = Util.String.baseName(value.fullpath);
                 var ext = Util.String.getExt(filename);
                 angular.extend(value, {
-                    sender_name: sender,
+                    sender_name: sender?sender['member_name']:value.sender,
                     filename: filename,
                     ext: ext,
                     is_vip: sender && sender.isvip ? true : false
                 })
                 return value;
             },
-            setItemError:function(msg,errorMsg){
+            setItemError: function (msg, errorMsg) {
                 msg.error = errorMsg;
             },
-            add:function(mountId,newMsg,head){
-                head = angular.isDefined(head)?head:false;
+            add: function (mountId, newMsg, head) {
+                head = angular.isDefined(head) ? head : false;
                 newMsg = this.formatItem(newMsg);
                 var session = chatSession.getSessionByMountId(mountId);
-                if(!session){
+                if (!session) {
                     return;
                 }
-                if(!session.msgList){
+                if (!session.msgList) {
                     session.msgList = [];
                 }
-                head?session.msgList.unshift(newMsg):session.msgList.push(newMsg);
+                head ? session.msgList.unshift(newMsg) : session.msgList.push(newMsg);
                 return newMsg;
             }
         };
         return chatContent;
     }])
-    .factory('chatSession', ['GKMount',function (GKMount) {
+    .factory('chatSession', ['GKMount', function (GKMount) {
+        var getSession = function () {
+            return GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts()).map(function (session) {
+                if (!angular.isArray(session.msgList)) {
+                    session.msgList = [];
+                }
+                if(!session.unreadCount){
+                    session.unreadCount = 0;
+                }
+                if(!session.lastTime){
+                    session.lastTime = 0;
+                }
+                return session;
+            })
+        };
         var chatSession = {
-            sessions:GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts()),
-            getSessionList:function(){
-                return sessions;
-            },
-            refreshSession:function(){
+            sessions: getSession(),
+            refreshSession: function () {
                 GKMount.refreshMounts();
-                this.sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts());
+                this.sessions = getSession();
             },
-            getSessionByMountId:function(mountId){
-                return Util.Array.getObjectByKeyValue(this.sessions,'mount_id',mountId);
+            getSessionByMountId: function (mountId) {
+                return Util.Array.getObjectByKeyValue(this.sessions, 'mount_id', mountId);
             },
+            getSessionByOrgId: function (orgId) {
+                return Util.Array.getObjectByKeyValue(this.sessions, 'org_id', orgId);
+            },
+            setUnreadCount:function(session,unreadCount){
+                session.unreadCount = unreadCount;
+            }
         };
         return chatSession;
     }])
-    .factory('chatMember', ['GKApi',function (GKApi) {
+    .factory('chatMember', ['GKApi', function (GKApi) {
         var members = {};
         var chatMember = {
-            getMembers:function(orgId){
-                if(!members[orgId]){
+            getMembers: function (orgId) {
+                if (!members[orgId]) {
                     GKApi.teamGroupsMembers(orgId).success(function (data) {
                         members[orgId] = data.members;
                     });
                 }
                 return members[orgId];
             },
-            getMemberItem: function (orgId,memberId) {
+            getMemberItem: function (orgId, memberId) {
                 var members = this.getMembers(orgId),
                     member;
                 angular.forEach(members, function (value) {
-                    if (value.member_id == id) {
+                    if (value.member_id == memberId) {
                         member = value;
                         return false;
                     }
@@ -245,7 +274,7 @@ angular.module('gkChat', ['GKCommon'])
                     type: 'POST',
                     data: {
                         'content': content,
-                        'target-team': orgId,
+                        'receiver': orgId + '_0',
                         'type': 'text',
                         'token': gkClientInterface.getToken()
                     },
@@ -260,7 +289,7 @@ angular.module('gkChat', ['GKCommon'])
                     data: {
                         'receiver': orgId,
                         'limit': size,
-                        'timestamp': dateline,
+                        'time': dateline,
                         'team-id': orgId,
                         'token': gkClientInterface.getToken()
                     }
@@ -278,13 +307,12 @@ angular.module('gkChat', ['GKCommon'])
                     }
                 })
             },
-            connect: function (orgId) {
+            connect: function () {
                 return jQuery.ajax({
                     type: 'GET',
                     url: host + '/login',
                     dataType: 'json',
                     data: {
-                        'team-id': orgId,
                         'token': gkClientInterface.getToken()
                     },
                     timeout: 30000000

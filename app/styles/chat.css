@@ -79,7 +79,7 @@ footer {
     color: #ACB4BF;
 }
 .chat_item .history_grid{
-    padding: 10px 0;
+    padding: 30px 0 0 0;
     clear: both;
 }
 .chat_item .history_grid  .line{
@@ -246,7 +246,8 @@ footer textarea{
 .session_list > li{
     height: 48px;
     line-height: 32px;
-    padding:8px 15px;
+    padding:8px 30px 8px 15px;
+    position: relative;
 }
 .session_list > li:hover{
    background: #e1e3e7;
@@ -258,4 +259,17 @@ footer textarea{
 }
 .session_list > li .avatar{
     margin-right: 5px;
+}
+.session_list > li .unread_count{
+    position: absolute;
+    display:block;
+    top:50%;
+    right: 6px;
+    height: 16px;
+    padding: 0 8px;
+    border-radius: 8px;
+    background: #F26363;
+    color: #fff;
+    margin: -8px 0 0 0;
+    line-height: 16px;
 }

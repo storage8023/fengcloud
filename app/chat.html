@@ -24,6 +24,7 @@
             <li ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'+lastTime'" ng-class="session.mount_id==PAGE_CONFIG.mount.mount_id?'selected':''">
                 <team-logo gk-src="{{session.logo}}" class="avatar"></team-logo>
                 <span ng-bind="session.name"></span>
+                <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount"></span>
             </li>
         </ul>
     </div>
@@ -37,9 +38,9 @@
                 </div>
                 <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
             </header>
-            <section class="scrollbar" ng-class="msg_list.length?'has_msg':''" scroll-to-bottom="scrollToBottom"
+            <section class="scrollbar" ng-class="currentMsgList.length?'has_msg':''" scroll-to-bottom="scrollToBottom"
                      scroll-load="handleScrollLoad()" trigger-direction="up">
-                <div class="chat_item c_f_after" ng-repeat="msg in msg_list"
+                <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
                      ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
                     <div class="time_grid">{{msg.time|dateAgo}}</div>
                     <div class="avatar_wrapper">
@@ -69,7 +70,7 @@
 
                         </div>
                     </div>
-                    <div ng-if="msg.history_msg" class="history_grid">
+                    <div ng-if="msg.historyMsg" class="history_grid">
                         <div class="line"></div>
                         <div class="text">以上是聊天的历史记录</div>
                     </div>
