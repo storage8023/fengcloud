@@ -77,8 +77,7 @@
                 </div>
             </section>
             <footer>
-                <textarea placeholder="按Enter键发送" class="scrollbar post_text"
-                          ng-keydown="handleKeyDown($event,postText)" ng-model="postText"></textarea>
+                <textarea ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
             </footer>
         </div>
 

@@ -20,7 +20,7 @@ angular.module('gkChat', ['GKCommon'])
             console.log(arguments);
         }
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException) {
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException,chatMember) {
         $scope.sessions = chatSession.sessions;
         $scope.currentMsgList = [];
         var initTime = new Date().getTime();
@@ -36,9 +36,10 @@ angular.module('gkChat', ['GKCommon'])
          * @param $event
          * @param postText
          */
+        $scope.postText = '';
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
-            if (keyCode != 13) {
+            if (keyCode != 13 || $scope.it_isOpen) {
                 return;
             }
             if (!postText.length) {
@@ -120,12 +121,13 @@ angular.module('gkChat', ['GKCommon'])
             }
             gkClientInterface.open(params);
         };
-
+        $scope.remindMembers = [];
         var setList = function () {
             var param = $location.search();
-            var mountId = Number(param.mountid);
+            var mountId = Number($rootScope.PAGE_CONFIG.mount.mount_id);
             var session = chatSession.getSessionByMountId(mountId);
             if (!session) return;
+            $scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
             $scope.currentMsgList = session.msgList;
             $scope.start = 0;
             $scope.size = 100;
