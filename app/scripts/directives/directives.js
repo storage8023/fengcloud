@@ -827,7 +827,6 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
-                $scope.loading = true;
                 $scope.fileExist = false;
                 var fileInterval,lastGetRequest,lastClientSidebarRequest;
                 var getOptMountId = function (file) {
@@ -890,7 +889,8 @@ angular.module('gkClientIndex.directives', [])
                     }
                     var defaultOptions = {
                         data: '',
-                        cache: true
+                        cache: true,
+                        first:false
                     };
 
                     options = angular.extend({}, defaultOptions, options);
@@ -902,7 +902,7 @@ angular.module('gkClientIndex.directives', [])
                     if (options.data != 'sidebar') {
                         lastGetRequest = RestFile.get(mountId, fullpath).success(function (data) {
                             $scope.$apply(function () {
-                                $scope.loading = false;
+                                $scope.fileLoaded = true;
                                 $scope.fileExist = true;
                                 var formatFile = GKFile.formatFileItem(data, 'api');
                                 angular.extend($scope.file, formatFile);
@@ -915,7 +915,7 @@ angular.module('gkClientIndex.directives', [])
 
                         }).error(function (request) {
                                 $scope.$apply(function () {
-                                    $scope.loading = false;
+                                    $scope.fileLoaded = true;
                                     $scope.fileExist = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
                                     if (String(errorCode).slice(0, 3) != '404') {
@@ -942,12 +942,17 @@ angular.module('gkClientIndex.directives', [])
                     if (options.data != 'file') {
                         lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
                             $scope.$apply(function () {
+                                $scope.sidebarLoaded = true;
                                 if (data.history) {
                                     data.history[0].milestone = 1;
                                     $scope.histories = data.history;
                                 }
                             })
-                        });
+                        }).error(function(){
+                                $scope.$apply(function () {
+                                    $scope.sidebarLoaded = true;
+                                })
+                            });
                     }
 
                 };
@@ -960,11 +965,14 @@ angular.module('gkClientIndex.directives', [])
                         $interval.cancel(fileInterval);
                         fileInterval = null;
                     }
-                    var option = {};
+//                    $scope.fileLoaded = false;
+//                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
                 });
 
-                getFileInfo($scope.localFile);
+                $scope.fileLoaded = false;
+                $scope.sidebarLoaded = false;
+                getFileInfo($scope.localFile,{first:true});
 
                 /**
                  * 添加tag

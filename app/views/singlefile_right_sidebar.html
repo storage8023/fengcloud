@@ -1,5 +1,5 @@
 <div class="single_file">
-    <div ng-show="!loading">
+    <div ng-show="fileLoaded && sidebarLoaded">
         <div ng-show="!fileExist">
             <filter-right-sidebar></filter-right-sidebar>
         </div>
@@ -100,4 +100,5 @@
             </section>
         </div>
     </div>
+    <div class="empty loading" ng-show="!fileLoaded || !sidebarLoaded">正在加载...</div>
 </div>

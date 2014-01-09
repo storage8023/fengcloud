@@ -1100,7 +1100,13 @@ footer {
     margin: 14px 10px 0 0;
     padding: 0;
 }
-
+.right_sidebar .loading{
+    position: absolute;
+    top:50%;
+    margin-top: -9px;
+    width: 100%;
+    padding-top: 0;
+}
 .right_sidebar .single_file.folded .section_title button.fold{
     -webkit-transform: rotate(180deg);
     -webkit-transform-origin: 50%;

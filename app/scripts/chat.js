@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('gkChat', ['GKCommon'])
-    .run(['$rootScope', '$location', 'GKMount', function ($rootScope, $location, GKMount) {
+    .run(['$rootScope', '$location', 'GKMount','$window', function ($rootScope, $location, GKMount,$window) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             mount: {}
@@ -16,6 +16,9 @@ angular.module('gkChat', ['GKCommon'])
             setMount();
         })
         setMount();
+        $window.onmessage = function(){
+            console.log(arguments);
+        }
     }])
     .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException) {
         $scope.sessions = chatSession.sessions;
