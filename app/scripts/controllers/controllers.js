@@ -184,7 +184,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','GKWindowCom',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,GKWindowCom) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//我的云库
             joinOrgMount = GKMount.getJoinOrgMounts(),
@@ -462,6 +462,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }else{
                     $scope.orgSubscribeList.push(newOrg);
                 }
+                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                    GKWindowCom.post('single',{type:'add',orgId:newOrg.org_id});
+                }
             });
         })
 
@@ -516,6 +519,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var currentMountId = $location.search().mountid;
                 if(currentMountId==mount.mount_id && $scope.orgTreeList && $scope.orgTreeList.length){
                     selectBreanch($scope.orgTreeList[0], GKPartition.teamFile, true);
+                }
+
+                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                    GKWindowCom.post('single',{type:'remove',orgId:mount.org_id});
                 }
 
             });

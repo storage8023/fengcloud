@@ -506,6 +506,19 @@ angular.module('GKCommon.services', [])
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
+    .factory('GKWindowCom', ['$window',function ($window) {
+        var GKWindowCom = {
+            post:function(windowName,data){
+                var win = gkClientInterface.getWindow({name:windowName});
+                if(!win) return;
+                win.postMessage(data,'*');
+            },
+            message:function(callback){
+                $window.addEventListener('message',callback,false);
+            }
+        };
+        return GKWindowCom;
+    }])
     .factory('GKException', [function () {
         var GKException = {
             getAjaxErrorMsg: function (request) {

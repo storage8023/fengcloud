@@ -13,6 +13,7 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+
     .factory('GKGuiders', [function () {
         return guiders;
     }])
