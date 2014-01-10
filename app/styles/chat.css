@@ -74,22 +74,34 @@ header .icon_person{
 section {
     top: 66px;
     bottom: 80px;
-    overflow: auto;
     -webkit-user-select:auto;
     user-select:auto;
 }
-
+section .loading{
+    color: #ACB4BF;
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+}
 footer {
     bottom: 0;
     height: 80px;
     border-top: 1px solid #ccc;
     background: #fff;
 }
-
+section .msg_list{
+    position: absolute;
+    top:0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+}
 
 .chat_item{
     margin: 20px 0;
 }
+
 .chat_item .time_grid,
 .chat_item .history_grid{
     text-align: center;
@@ -99,12 +111,12 @@ footer {
     padding: 30px 0 0 0;
     clear: both;
 }
-.chat_item .history_grid  .line{
+.chat_item .history_grid .line{
     height: 1px;
     font-size: 0;
     background:#eee;
     width: 260px;
-    margin:  0 auto;
+    margin: 0 auto;
 }
 .chat_item .history_grid  .text{
     background: #f7f7f7;
@@ -207,23 +219,33 @@ footer {
 .chat_file{
     background: #dfe3e9;
     border-radius: 3px;
-    padding:6px 80px 6px 10px;
+    padding:0;
     margin: 5px 0 0 0;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
     position: relative;
+    height: 50px;
 }
-.chat_file >div{
+.chat_file > div{
     float: left;
 }
+.chat_file .file_icon_wrapper,
 .chat_file .filename_wrapper{
-    max-width: 85%;
-
+    margin-top: 9px;
+}
+.chat_file .file_icon_wrapper{
+    margin-left: 10px;
+}
+.chat_file .file_icon_wrapper .icon32x32{
+    margin-top: 0;
+}
+.chat_file .filename_wrapper{
+    max-width: 76%;
+    line-height: 16px;
+    margin: 10px 10px 0 6px;
 }
 
-.chat_file .file_icon_wrapper{
-    margin: 7px 5px 0 0;
+.chat_file[data-dir="1"] .filename_wrapper{
+    line-height: 32px;
 }
 .chat_file .filename_wrapper > div{
     white-space: nowrap;
@@ -242,27 +264,27 @@ color: #ACB4BF;
     float: right;
 }
 .chat_file .file_opt{
-    position: absolute;
     width: 70px;
-    height: 51px;
-    top:0;
+    float: right;
+    position: relative;
     right: -70px;
     -webkit-transition:right linear .25s;
 }
 .chat_file:hover .file_opt{
     right: 0;
 }
-.chat_file .file_opt >button{
+.chat_file .file_opt .btn{
     width: 35px;
-    height: 100%;
+    height: 50px;
     border-radius: 0;
     padding: 0;
     text-align: center;
+    float: none;
 }
-.chat_file .file_opt >button:last-child{
+.chat_file .file_opt .btn:last-child{
     border-radius: 0 3px 3px 0;
 }
-.chat_file .file_opt >button >i{
+.chat_file .file_opt .btn >i{
     margin-right: 0;
 }
 .chat_file .version{

@@ -8,10 +8,10 @@
         throw new Error(e.name + ":" + e.message);
     },
     setWindowTop:function(){
-        if(typeof gkClient.gForegroundWindow === 'undefined'){
+        if(typeof gkClient.gSetForegroundWindow === 'undefined'){
             return;
         }
-        gkClient.gForegroundWindow();
+        gkClient.gSetForegroundWindow();
     },
     getWindow:function(param){
         if(typeof gkClient.gGetWindow === 'undefined'){

@@ -41,13 +41,16 @@
                     </div>
                 </div>
             </header>
-            <section class="scrollbar" ng-class="currentMsgList.length?'has_msg':''" scroll-to-msg="scrollToIndex"
-                     scroll-load="handleScrollLoad()" trigger-direction="up">
+            <section>
+                <div ng-show="loadingHistoryMsg" class="loading">正在加载...</div>
                 <div class="empty" ng-show="error">{{error.msg}}</div>
-                <div classs="msg_list" ng-show="!error">
+                <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
+                     scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
                          ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id}">
+
                         <div class="time_grid">{{msg.time|dateAgo}}</div>
+
                         <div class="avatar_wrapper">
                             <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
                         </div>
@@ -60,14 +63,14 @@
                                 <span ng-bind="msg.content"></span>
                             </div>
                             <div class="chat_file" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
+                                <div class="file_opt">
+                                    <button title="位置" class="btn btn-default" ng-click="goToFile(msg.file)"><i class="icon16x16 icon_location_white"></i></button><button title="打开" class="btn btn-default" ng-click="openFile(msg.file)"><i class="icon16x16 icon_open_with_white"></i></button>
+                                </div>
                                 <div class="file_icon_wrapper">
                                     <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
                                         <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
                                     </i>
                                 </div>
-                                <!--<div class="version_wrapper">-->
-                                <!--<i class="version">V{{msg.file.version}}</i>-->
-                                <!--</div>-->
                                 <div class="filename_wrapper">
                                     <div class="filename">
                                         <span ng-bind="msg.file.filename"></span>
@@ -76,12 +79,9 @@
                                         <span ng-bind="msg.file.filesize|bitSize"></span>
                                     </div>
                                 </div>
-                                <div class="file_opt">
-                                    <button title="文件位置" class="btn btn-default" ng-click="goToFile(msg.file)"><i class="icon16x16 icon_location_white"></i></button><button title="打开" class="btn btn-default" ng-click="openFile(msg.file)"><i class="icon16x16 icon_open_with_white"></i></button>
-                                </div>
                             </div>
                         </div>
-                        <div ng-if="msg.historyMsg" class="history_grid">
+                        <div ng-show="msg.historyMsg" class="history_grid">
                             <div class="line"></div>
                             <div class="text">以上是聊天的历史记录</div>
                         </div>

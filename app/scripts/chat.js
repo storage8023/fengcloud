@@ -113,17 +113,19 @@ angular.module('gkChat', ['GKCommon'])
             if ($scope.currentMsgList.length) {
                 minDateline = $scope.currentMsgList[0]['time'];
             }
+            $scope.loadingHistoryMsg = true;
             chatService.search($scope.PAGE_CONFIG.mount.org_id, minDateline, 10).success(function (data) {
                 $scope.$apply(function () {
+                    $scope.loadingHistoryMsg = false;
                     $scope.start = -1;
                     var len = data.length;
                     if ($scope.currentMsgList.length + len > $scope.size) {
                         $scope.start -= len;
                     }
                     angular.forEach(data, function (item) {
-                        if (!$scope.currentMsgList.historyGrid && item.time < initTime) {
+                        if (!$scope.currentSession.historyGrid && Number(item.time) < initTime) {
                             item.historyMsg = true;
-                            $scope.currentMsgList.historyGrid = true;
+                            $scope.currentSession.historyGrid = true;
                         }
                         chatContent.add($scope.currentSession, item, true);
                     })
@@ -133,7 +135,9 @@ angular.module('gkChat', ['GKCommon'])
                         $scope.scrollToIndex = len;
                     }
                 })
-            })
+            }).error(function(){
+                    $scope.loadingHistoryMsg = false;
+                })
         };
 
         /**
@@ -156,12 +160,21 @@ angular.module('gkChat', ['GKCommon'])
          */
         $scope.openFile = function (file) {
             var fullpath = file.path;
-            var mountId = $rootScope.PAGE_CONFIG.mount.mount_id;
-            var params = {
-                mountid: Number(mountId),
-                webpath: fullpath
+            var mountId = Number($rootScope.PAGE_CONFIG.mount.mount_id);
+            if(file.dir==1){
+                GKWindowCom.post('launchpad', {
+                    type: 'gotoFile',
+                    mountid: mountId,
+                    webpath: fullpath+'/'
+                });
+            }else{
+                var params = {
+                    mountid: mountId,
+                    webpath: fullpath
+                }
+                gkClientInterface.open(params);
             }
-            gkClientInterface.open(params);
+
         };
 
         $scope.remindMembers = [];
@@ -176,8 +189,11 @@ angular.module('gkChat', ['GKCommon'])
             $scope.start = 0;
             $scope.size = 100;
             chatSession.setUnreadCount(session, 0);
+
             if (!$scope.currentMsgList.length || $scope.currentMsgList[0]['time'] > initTime) {
                 $scope.handleScrollLoad(true);
+            }else{
+                $scope.scrollToIndex = $scope.currentMsgList.length-1;
             }
         };
 
@@ -227,12 +243,13 @@ angular.module('gkChat', ['GKCommon'])
                 });
         };
         var initConnect = function () {
-            $scope.error = null;
+                $scope.error = null;
                 chatService.login().success(function (data) {
                 if (lastContect) {
                     lastContect.abort();
                 }
-                initTime = lastActiveTime = Number(data.time);
+                lastActiveTime = Number(data.time);
+                initTime = Number(data.time);
                 setList();
                 connect();
             }).error(function (xhr,textStatus,thrown) {
@@ -241,8 +258,10 @@ angular.module('gkChat', ['GKCommon'])
                     })
                 });
         };
-
-        $scope.$on('$locationChangeSuccess', function () {
+        $scope.$on('$locationChangeSuccess', function (event,newLocation,oldLocation) {
+            if(newLocation == oldLocation){
+                return;
+            }
             setList();
         })
         initConnect();
