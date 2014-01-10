@@ -944,8 +944,9 @@ angular.module('gkClientIndex.directives', [])
                             $scope.$apply(function () {
                                 $scope.sidebarLoaded = true;
                                 if (data.history) {
-                                    data.history[0].milestone = 1;
                                     $scope.histories = data.history;
+                                }else{
+                                    $scope.histories = [];
                                 }
                             })
                         }).error(function(){

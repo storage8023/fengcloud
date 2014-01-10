@@ -20,8 +20,9 @@
 <body ng-controller="initChat">
 <div class="wrapper">
     <div class="scrollbar sidebar">
+        <h2>够快云库</h2>
         <ul class="session_list">
-            <li ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'+lastTime'" ng-class="session.mount_id==PAGE_CONFIG.mount.mount_id?'selected':''">
+            <li ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'-lastTime'" ng-class="session.mount_id==PAGE_CONFIG.mount.mount_id?'selected':''">
                 <team-logo gk-src="{{session.logo}}" class="avatar"></team-logo>
                 <span ng-bind="session.name"></span>
                 <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount"></span>
@@ -34,50 +35,79 @@
             <header>
                 <div class="header_left">
                     <team-logo gk-src="{{PAGE_CONFIG.mount.logo}}" class="avatar avatar_big"></team-logo>
-                    <span ng-bind="PAGE_CONFIG.mount.name"></span>
+                    <div class="org_info">
+                        <div class="org_name"><span ng-bind="PAGE_CONFIG.mount.name"></span></div>
+                        <div class="org_count"><span>成员数：{{PAGE_CONFIG.mount.member_count}}</span></div>
+                    </div>
                 </div>
-                <!--<i class="icon16x16 icon_person" ng-click="showMembers"></i>-->
             </header>
-            <section class="scrollbar" ng-class="currentMsgList.length?'has_msg':''" scroll-to-bottom="scrollToBottom"
+            <section class="scrollbar" ng-class="currentMsgList.length?'has_msg':''" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up">
-                <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
-                     ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id,'vip_item':msg.is_vip}">
-                    <div class="time_grid">{{msg.time|dateAgo}}</div>
-                    <div class="avatar_wrapper">
-                        <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
-                    </div>
-                    <div class="chat_main">
-                        <div class="chat_member">
-                            <span ng-bind="msg.sender_name"></span>
+                <div class="empty" ng-show="error">{{error.msg}}</div>
+                <div classs="msg_list" ng-show="!error">
+                    <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
+                         ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_id}">
+                        <div class="time_grid">{{msg.time|dateAgo}}</div>
+                        <div class="avatar_wrapper">
+                            <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
                         </div>
-                        <div class="chat_text">
-                            <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
-                            <span ng-bind="msg.content"></span>
+                        <div class="chat_main">
+                            <div class="chat_member">
+                                <span ng-bind="msg.sender_name"></span>
+                            </div>
+                            <div class="chat_text">
+                                <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
+                                <span ng-bind="msg.content"></span>
+                            </div>
+                            <div class="chat_file" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
+                                <div class="file_icon_wrapper">
+                                    <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
+                                        <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
+                                    </i>
+                                </div>
+                                <!--<div class="version_wrapper">-->
+                                <!--<i class="version">V{{msg.file.version}}</i>-->
+                                <!--</div>-->
+                                <div class="filename_wrapper">
+                                    <div class="filename">
+                                        <span ng-bind="msg.file.filename"></span>
+                                    </div>
+                                    <div class="filesize" ng-show="msg.file.dir==0" >
+                                        <span ng-bind="msg.file.filesize|bitSize"></span>
+                                    </div>
+                                </div>
+                                <div class="file_opt">
+                                    <button title="文件位置" class="btn btn-default" ng-click="goToFile(msg.file)"><i class="icon16x16 icon_location_white"></i></button><button title="打开" class="btn btn-default" ng-click="openFile(msg.file)"><i class="icon16x16 icon_open_with_white"></i></button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="chat_file" ng-if="msg.fullpath" ng-click="goToFile(msg)">
-                            <div class="file_icon_wrapper">
-                                <i class="icon32x32" ng-class="msg.filename | getFileIcon:msg.dir:0:0">
-                                    <img error-src="" src="{{msg.hash | getThumbUrl:msg.filehash}}"
-                                         ng-if="['jpg','jpeg','png','gif'].indexOf(msg.ext)>=0"/>
-                                </i>
-                            </div>
-                            <div class="version_wrapper">
-                                <i class="version">V{{msg.version}}</i>
-                            </div>
-                            <div class="filename_wrapper">
-                                <span class="filename" ng-bind="msg.filename"></span>
-                            </div>
-
+                        <div ng-if="msg.historyMsg" class="history_grid">
+                            <div class="line"></div>
+                            <div class="text">以上是聊天的历史记录</div>
                         </div>
-                    </div>
-                    <div ng-if="msg.historyMsg" class="history_grid">
-                        <div class="line"></div>
-                        <div class="text">以上是聊天的历史记录</div>
                     </div>
                 </div>
+
             </section>
-            <footer>
+            <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == PAGE_CONFIG.mount.mount_id?'post_with_file':''">
                 <textarea ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
+                <div class="post_file_wrapper" ng-if="PAGE_CONFIG.file">
+                    <div class="chat_file" data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">
+                        <div class="file_icon_wrapper">
+                            <i class="icon32x32" ng-class="PAGE_CONFIG.file.filename | getFileIcon:PAGE_CONFIG.file.dir:0:0">
+                                <img error-src="" src="{{PAGE_CONFIG.file.uuidhash | getThumbUrl:PAGE_CONFIG.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(PAGE_CONFIG.file.ext)>=0"/>
+                            </i>
+                        </div>
+                        <div class="filename_wrapper">
+                            <div class="filename">
+                                <span ng-bind="PAGE_CONFIG.file.filename"></span>
+                            </div>
+                            <div class="filesize" ng-show="PAGE_CONFIG.file.dir==0" >
+                                <span ng-bind="PAGE_CONFIG.file.filesize|bitSize"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </footer>
         </div>
 

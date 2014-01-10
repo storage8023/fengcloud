@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    setWindowTop:function(){
+        if(typeof gkClient.gForegroundWindow === 'undefined'){
+            return;
+        }
+        gkClient.gForegroundWindow();
+    },
     getWindow:function(param){
         if(typeof gkClient.gGetWindow === 'undefined'){
             return null;

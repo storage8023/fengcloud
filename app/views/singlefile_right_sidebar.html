@@ -43,7 +43,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="opt_wrapper">
+                    <div class="opt_wrapper" ng-show="showTab">
                         <button class="btn btn-default" ng-click="publishFile(file)">临时链接</button>
                         <button class="btn btn-default" ng-click="startChat(file)">发起讨论</button>
                     </div>
@@ -83,7 +83,7 @@
                                     <span class="version_index" ng-if="history.dir==0">V{{history.property.version}}</span>
                                     <span class="name_size_wrapper">
                                     <span class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
-                                        &nbsp;
+                                       &nbsp;
                                     <span class="version_size" title="{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}">{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}</span>
                                     </span>
                                 </div>

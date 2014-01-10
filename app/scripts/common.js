@@ -521,6 +521,46 @@ angular.module('GKCommon.services', [])
     }])
     .factory('GKException', [function () {
         var GKException = {
+            getAjaxError:function(request,textStatus,errorThrown){
+                var error = {
+                    code:0,
+                    msg:'出错了'
+                };
+                if (request.responseText) {
+                    var result = JSON.parse(request.responseText);
+                    angular.extend(error,{
+                        code:result.error_code,
+                        msg:result.error_msg || request.responseText
+                    })
+                } else {
+                    error.code = request.status;
+                    if(textStatus === 'timeout'){
+                        error.msg = '网络连接超时';
+                    }else{
+                        switch (request.status) {
+                            case 0:
+                            case 404:
+                                error.msg = '网络未连接';
+                                break;
+                            case 401:
+                                error.msg = '网络连接超时';
+                                break;
+                            case 501:
+                            case 502:
+                                error.msg = '服务器繁忙, 请稍候重试';
+                                break;
+                            case 503:
+                            case 504:
+                                error.msg = '因您的操作太过频繁, 操作已被取消';
+                                break;
+                            default:
+                                error.msg = request.statusText;
+                                break;
+                        }
+                    }
+                }
+                return error;
+            },
             getAjaxErrorMsg: function (request) {
                 var errorMsg = '';
                 if (request.responseText) {
@@ -948,7 +988,7 @@ angular.module('GKCommon.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: gkClientInterface.getApiHost() + '/1/file/mark_milestone',
+                    url: gkClientInterface.getApiHost() + '/1/file/set_milestone',
                     dataType: 'json',
                     data: params
                 })

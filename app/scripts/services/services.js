@@ -3540,9 +3540,9 @@ angular.module('gkClientIndex.services', [])
                 var data = {
                     url: url,
                     type:'single',
-                    width: 760,
+                    width: 820,
                     resize: 1,
-                    height: 480
+                    height: 580
                 };
                 gkClientInterface.setMain(data);
             },

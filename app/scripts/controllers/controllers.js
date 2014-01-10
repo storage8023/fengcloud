@@ -3,6 +3,18 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
+    .run(['$rootScope','$window','GKWindowCom',function($rootScope,$window,GKWindowCom){
+        GKWindowCom.message(function(event){
+            var data = event.data;
+            if(!data){
+                return;
+            }
+            if(data.type=='gotoFile'){
+                gkClientInterface.setWindowTop();
+                $rootScope.$broadcast('OpenMountPath',data);
+            }
+        })
+    }])
     .controller('initClient', ['GKGuiders','localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout',function (GKGuiders,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
