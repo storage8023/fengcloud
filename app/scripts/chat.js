@@ -89,7 +89,7 @@ angular.module('gkChat', ['GKCommon'])
             var msgData = {
                 content: postText,
                 receiver: $rootScope.PAGE_CONFIG.mount.org_id,
-                sender: $scope.PAGE_CONFIG.user.member_id,
+                sender: $scope.PAGE_CONFIG.user.member_name,
                 time: now,
                 type: 'text'
             };
@@ -386,7 +386,7 @@ angular.module('gkChat', ['GKCommon'])
                 var members = this.getMembers(orgId),
                     member;
                 angular.forEach(members, function (value) {
-                    if (value.member_id == memberId) {
+                    if (value.member_name == memberId) {
                         member = value;
                         return false;
                     }
@@ -397,8 +397,8 @@ angular.module('gkChat', ['GKCommon'])
         return chatMember;
     }])
     .factory('chatService', [function () {
-        //var host = 'http://10.0.0.150:1238';
-        var host = 'http://112.124.68.214:1238';
+        var host = 'http://10.0.0.150:1238';
+        //var host = 'http://112.124.68.214:1238';
         var chat = {
             add: function (orgId, content, metadata) {
                 metadata = angular.isDefined(metadata) ? metadata : '';

@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    clearMessage:function(){
+        if(typeof gkClient.gClearMessage === 'undefined'){
+            return;
+        }
+        return gkClient.gClearMessage();
+    },
     getOrgMembers:function(param){
         if(typeof gkClient.gGetOrgMembers === 'undefined'){
             return '';

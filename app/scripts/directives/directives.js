@@ -6,7 +6,6 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-
                 var getVersion =  function(triggerElem){
                     return Number(triggerElem.data('version'));
                 };
