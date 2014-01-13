@@ -1587,6 +1587,24 @@ angular.module('GKCommon.filters', [])
             return dateText;
         }
     })
+    .filter('timeAgo', function ($filter) {
+        return function (dateline) {
+            var now = new Date().valueOf();
+            var today = $filter('date')(now, 'yyyy-MM-dd');
+            var yesterdayTimestamp = now - 24 * 3600 * 1000;
+            var yesterday = $filter('date')(yesterdayTimestamp, 'yyyy-MM-dd');
+            var date = $filter('date')(dateline, 'yyyy-MM-dd');
+            var dateText = '';
+            if (date == today) {
+                dateText = $filter('date')(dateline, 'HH:mm');
+            } else if (date == yesterday) {
+                dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
+            }else{
+                dateText =$filter('date')(dateline, 'yyyy年M月d日 HH:mm');
+            }
+            return dateText;
+        }
+    })
     .filter('getAvatarUrl', function () {
         return function (memberId,isThumb) {
             isThumb = angular.isDefined(isThumb)?isThumb:1;

@@ -66,13 +66,13 @@
                   width: 280
                   }'>
                 <div class="section_title">
-                    <button class="btn btn-default" ng-click="showMilestoneDialog(file)">里程碑</button>
+                    <button class="btn btn-default" ng-show="localFile.dir==0" ng-click="showMilestoneDialog(file)">里程碑</button>
                     <span>历史</span>
                 </div>
                 <div class="history_wrapper">
                     <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
                     <ul class="scrollbar history_list" gk-version-contextmenu="localFile.dir==0" gk-version-contextmenu="localFile.dir==0">
-                        <li class="c_f_after {{'act_'+history.act}}" title="{{history.message}}" ng-class="history.milestone?'milestone':''" ng-repeat="history in histories | filter:historyFilter" data-version="{{history.property.version}}">
+                        <li class="c_f_after {{'act_'+history.act}}" title="{{history.property.message}}" ng-class="history.property.milestone?'milestone':''" ng-repeat="history in histories | filter:historyFilter" data-version="{{history.property.version}}">
                             <div class="act_name">
                                 <div class="avatar_wrapper">
                                     <avatar class="avatar avatar_mini" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
