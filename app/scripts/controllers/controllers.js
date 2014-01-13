@@ -1420,6 +1420,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKGuiders.show('guide_1');
         }
 
+
+        $scope.visitBBS = function(){
+            var url = gkClientInterface.getUrl({
+                sso:1,
+                url: '/account/bbs'
+            });
+            gkClientInterface.openUrl(url);
+        }
+
         $scope.items = [
             {
                 item: "创建云库",
@@ -1437,16 +1446,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 item: "传输队列",
                 menuclick: function () {
                     GKDialog.openTransfer();
-                }
-            },
-            {
-                item: "论坛",
-                menuclick: function () {
-                    var url = gkClientInterface.getUrl({
-                        sso:1,
-                        url: '/account/bbs'
-                    });
-                    gkClientInterface.openUrl(url);
                 }
             },
             {

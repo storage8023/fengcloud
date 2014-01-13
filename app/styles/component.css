@@ -664,6 +664,9 @@ a:hover > .icon16x16.icon_chat,
 .icon32x32.icon_what{
     background-position: -4px -400px;
 }
+.icon32x32.icon_bbs{
+    background-position: -4px -544px;
+}
 .icon128x128{
     width: 128px;
     height:128px;

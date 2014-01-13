@@ -135,10 +135,13 @@
                 class="icon16x16 icon_rightarrow_white"></i></button>
     </div>
     <div class="menu">
-        <span ng-click="showGuider()">
+         <span ng-click="visitBBS()" title="用户社区">
+            <i class="icon32x32 icon_bbs"></i>
+        </span>
+        <span ng-click="showGuider()" title="帮助">
             <i class="icon32x32 icon_what"></i>
         </span>
-        <span class="more_menu dropdown">
+        <span class="more_menu dropdown" title="更多">
             <a href="javascript:void(0);" dropdown-toggle><i class="icon32x32 icon_menu"></i></a>
             <ul class="dropdown-menu">
                 <li ng-repeat="menuchoice in items">
