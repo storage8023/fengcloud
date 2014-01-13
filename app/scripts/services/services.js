@@ -868,6 +868,14 @@ angular.module('gkClientIndex.services', [])
                                 else if (opt.opt == 'view_device') {
                                     GKDialog.openSetting('device');
                                 }
+                                else if (opt.opt == 'view_chat') {
+                                    var mount = GKMount.getMountByOrgId(item.org_id);
+                                    var mountId = 0;
+                                    if(mount){
+                                        mountId = mount['mount_id'];
+                                    }
+                                    GKDialog.chat(mountId);
+                                }
                                 $modalInstance.close();
                             }
                         };

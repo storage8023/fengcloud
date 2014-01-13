@@ -29,14 +29,6 @@
         <div class="file_size" ng-show="file.dir==0">
             <span>占用 {{file.filesize|bitSize}} 空间</span>
         </div>
-        <div ng-if="file.dir==0">
-            <label for="inner_link">链接</label>
-            <div class="input-group">
-                <input readonly name="inner_link" ng-click="handleInputFocus($event)" id="inner_link" type="text" class="form-control" ng-model="innerLink"
-                       autocomplete="off"/>
-                <button class="btn btn-default" ng-click="copy(innerLink)">复制</button>
-            </div>
-        </div>
         <div ng-if="localUri">
             <label for="inner_link">同步位置</label>
             <div class="input-group">

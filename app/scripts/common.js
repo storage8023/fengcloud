@@ -1522,6 +1522,21 @@ angular.module('GKCommon.services', [])
                     url: gkClientInterface.getApiHost() + '/1/file/ls',
                     data: params
                 });
+            },
+            servers:function(type){
+                var params = {
+                    type: type,
+                    token: gkClientInterface.getToken()
+                };
+
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/account/servers',
+                    dataType: 'json',
+                    data:params
+                });
             }
         }
         return GKApi;

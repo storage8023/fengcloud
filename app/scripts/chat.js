@@ -31,12 +31,12 @@ angular.module('gkChat', ['GKCommon'])
             angular.extend($rootScope.PAGE_CONFIG, extendParam);
         };
 
-        $rootScope.$on('$locationChangeSuccess', function () {
+        $rootScope.$on('$locationChangeSuccess', function (event,newLocation,oldLocation) {
             setMount();
         })
         setMount();
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember) {
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', 'GKApi','chatHost',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember,GKApi,chatHost) {
         $scope.sessions = chatSession.sessions;
         $scope.currentMsgList = [];
         $scope.currentSession = null;
@@ -289,7 +289,19 @@ angular.module('gkChat', ['GKCommon'])
             }
             setList();
         })
-        initConnect();
+        GKApi.servers('chat').success(function(data){
+            if(!data) return;
+            var hostList = data;
+            var random =Math.floor(Math.random()*hostList.length);
+            var hostItem = hostList[random];
+            chatHost.setHost((hostItem.https==1?'https':'http')+'://'+hostItem.host+':'+hostItem.port);
+            initConnect();
+        }).error(function(xhr,textStatus,thrown){
+                $scope.$apply(function(){
+                    $scope.error = GKException.getAjaxError(xhr,textStatus,thrown);
+                })
+            })
+
     }])
 
     .factory('chatContent', ['chatMember', 'chatSession', function (chatMember, chatSession) {
@@ -387,7 +399,7 @@ angular.module('gkChat', ['GKCommon'])
                 var members = this.getMembers(orgId),
                     member;
                 angular.forEach(members, function (value) {
-                    if (value.member_name == memberId) {
+                    if (value.username == memberId) {
                         member = value;
                         return false;
                     }
@@ -397,14 +409,26 @@ angular.module('gkChat', ['GKCommon'])
         };
         return chatMember;
     }])
-    .factory('chatService', [function () {
+    .factory('chatHost',[function(){
+        var chatHost = {
+          setHost:function(host){
+              this.host = host;
+          },
+          getHost:function(){
+              return this.host;
+          }
+
+        };
+        return chatHost;
+    }])
+    .factory('chatService', ['chatHost',function (chatHost) {
         //var host = 'http://10.0.0.150:1238';
-        var host = 'http://112.124.68.214:1238';
+        //var host = 'http://112.124.68.214:1238';
         var chat = {
             add: function (orgId, content, metadata) {
                 metadata = angular.isDefined(metadata) ? metadata : '';
                 return jQuery.ajax({
-                    url: host + '/post-message',
+                    url: chatHost.getHost() + '/post-message',
                     type: 'POST',
                     data: {
                         'content': content,
@@ -419,7 +443,7 @@ angular.module('gkChat', ['GKCommon'])
             search: function (orgId, dateline, size) {
                 return jQuery.ajax({
                     type: 'GET',
-                    url: host + '/search-message',
+                    url: chatHost.getHost() + '/search-message',
                     dataType: 'json',
                     data: {
                         'receiver': orgId,
@@ -434,7 +458,7 @@ angular.module('gkChat', ['GKCommon'])
                 return jQuery.ajax({
                     type: 'GET',
                     dataType: 'json',
-                    url: host + '/get-message',
+                    url: chatHost.getHost() + '/get-message',
                     data: {
                         'team-id': orgId,
                         'time': lastTime,
@@ -445,7 +469,7 @@ angular.module('gkChat', ['GKCommon'])
             connect: function (time) {
                 return jQuery.ajax({
                     type: 'GET',
-                    url: host + '/connect',
+                    url: chatHost.getHost() + '/connect',
                     dataType: 'json',
                     data: {
                         'token': gkClientInterface.getToken(),
@@ -457,7 +481,7 @@ angular.module('gkChat', ['GKCommon'])
             login: function () {
                 return jQuery.ajax({
                     type: 'POST',
-                    url: host + '/login',
+                    url: chatHost.getHost() + '/login',
                     dataType: 'json',
                     data: {
                         'token': gkClientInterface.getToken()
