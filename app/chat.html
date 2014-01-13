@@ -29,9 +29,12 @@
             </li>
         </ul>
     </div>
-    <div class="main" ng-show="!connecting">
-        <div class="empty" ng-show="connecting">连接中...</div>
-        <div>
+    <div class="main">
+        <div ng-show="!logined">
+            <div class="empty" ng-if="!error">正在登录房间...</div>
+            <div class="empty" ng-if="error">{{error.msg}}</div>
+        </div>
+        <div ng-show="logined">
             <header>
                 <div class="header_left">
                     <team-logo gk-src="{{PAGE_CONFIG.mount.logo}}" class="avatar avatar_big"></team-logo>
@@ -42,8 +45,7 @@
                 </div>
             </header>
             <section>
-                <div ng-show="loadingHistoryMsg" class="loading">正在加载...</div>
-                <div class="empty" ng-show="error">{{error.msg}}</div>
+                <div ng-show="loadingHistoryMsg" class="loading" ng-class="firstLoading?'first_loading':''">正在加载...</div>
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"

@@ -32,6 +32,16 @@ body{
     top:0;
     bottom: 0;
 }
+.main > div > .empty{
+    padding: 0;
+    position: absolute;
+    height: 30px;
+    line-height: 30px;
+    left: 0;
+    right: 0;
+    top:50%;
+    margin-top: -15px;
+}
 header,
 section,
 footer {
@@ -82,6 +92,13 @@ section .loading{
     text-align: center;
     height: 30px;
     line-height: 30px;
+}
+section .loading.first_loading{
+    position: absolute;
+    top:50%;
+    left:0;
+    right: 0;
+    margin-top: -15px;
 }
 footer {
     bottom: 0;

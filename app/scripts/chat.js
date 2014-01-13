@@ -10,16 +10,22 @@ angular.module('gkChat', ['GKCommon'])
 
         var setMount = function () {
             var param = $location.search();
-            var mountId = Number(param.mountid);
+            var mount;
+            if(param.mountid){
+                mount = GKMount.getMountById(Number(param.mountid))
+            }else{
+                mount = GKMount.getMounts()[0];
+            }
+            if(!mount) return;
             var extendParam = {
-                mount: GKMount.getMountById(mountId)
+                mount: mount
             };
             if (param.fullpath) {
                 extendParam.file = gkClientInterface.getFileInfo({
-                    mountid: mountId,
+                    mountid: mount.mount_id,
                     webpath: param.fullpath
                 });
-                extendParam.file.mount_id = mountId;
+                extendParam.file.mount_id = mount.mount_id;
                 extendParam.file.filename = Util.String.baseName(extendParam.file.path);
                 extendParam.file.ext = Util.String.getExt(extendParam.file.filename);
             }
@@ -114,6 +120,8 @@ angular.module('gkChat', ['GKCommon'])
                 minDateline = $scope.currentMsgList[0]['time'];
             }
             $scope.loadingHistoryMsg = true;
+            $scope.loadingHistoryError = true;
+            $scope.firstLoading = scrollToBottom;
             chatService.search($scope.PAGE_CONFIG.mount.org_id, minDateline, 10).success(function (data) {
                 $scope.$apply(function () {
                     $scope.loadingHistoryMsg = false;
@@ -135,8 +143,11 @@ angular.module('gkChat', ['GKCommon'])
                         $scope.scrollToIndex = len;
                     }
                 })
-            }).error(function(){
-                    $scope.loadingHistoryMsg = false;
+            }).error(function(xhr,textStatus,errorThrown){
+                    $scope.$apply(function(){
+                        $scope.loadingHistoryMsg = false;
+                        $scope.loadingHistoryError = GKException.getAjaxError(xhr,textStatus,errorThrown);
+                    })
                 })
         };
 
@@ -242,9 +253,13 @@ angular.module('gkChat', ['GKCommon'])
                     }
                 });
         };
+        $scope.logined = false;
         var initConnect = function () {
                 $scope.error = null;
                 chatService.login().success(function (data) {
+                $scope.$apply(function(){
+                    $scope.logined = true;
+                })
                 if (lastContect) {
                     lastContect.abort();
                 }
@@ -254,7 +269,7 @@ angular.module('gkChat', ['GKCommon'])
                 connect();
             }).error(function (xhr,textStatus,thrown) {
                     $scope.$apply(function(){
-                        //$scope.error = GKException.getAjaxError(xhr,textStatus,thrown);
+                        $scope.error = GKException.getAjaxError(xhr,textStatus,thrown);
                     })
                 });
         };
