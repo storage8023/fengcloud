@@ -540,10 +540,10 @@ angular.module('GKCommon.services', [])
                         switch (request.status) {
                             case 0:
                             case 404:
-                                error.msg = '网络未连接';
+                                error.msg = '网络未连接或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                                 break;
                             case 401:
-                                error.msg = '网络连接超时';
+                                error.msg = '网络连接超时或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                                 break;
                             case 501:
                             case 502:
@@ -569,10 +569,10 @@ angular.module('GKCommon.services', [])
                 } else {
                     switch (request.status) {
                         case 0:
-                            errorMsg = '网络未连接';
+                            errorMsg = '网络未连接或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                             break;
                         case 401:
-                            errorMsg = '网络连接超时';
+                            errorMsg = '网络连接超时或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                             break;
                         case 501:
                         case 502:
@@ -605,8 +605,8 @@ angular.module('GKCommon.services', [])
             handleClientException: function (error) {
                 alert(error.message);
             },
-            handleAjaxException: function (request) {
-                var errorMsg = this.getAjaxErrorMsg(request);
+            handleAjaxException: function (request,textStatus,errorThrown) {
+                var errorMsg = this.getAjaxError(request,textStatus,errorThrown)['msg'];
                 alert(errorMsg);
             }
         };

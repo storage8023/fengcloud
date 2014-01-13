@@ -78,9 +78,11 @@ angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientI
                     username:$scope.registEmail,
                     password:md5.createHash($scope.registPassword)
                 });
-            }).error(function(request){
-                    $scope.loading = false;
-                    GKException.handleAjaxException(request);
+            }).error(function(request,textStatus,errorThrown){
+                    $scope.$apply(function(){
+                        $scope.loading = false;
+                        GKException.handleAjaxException(request,textStatus,errorThrown);
+                    })
                 });
 
         }
