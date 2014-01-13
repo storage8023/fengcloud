@@ -515,6 +515,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'])[0];
             GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
             $rootScope.$broadcast('editOrgObjectSuccess',newMount);
+            if([GKPartition.teamFile,GKPartition.joinFile].indexOf(type)>=0){
+                GKWindowCom.post('single',{type:'edit',orgId:newMount.org_id});
+            }
         })
 
         /**
@@ -569,6 +572,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.joinOrgTreeList.push(newOrg);
             } else {
                 $scope.orgSubscribeList.push(newOrg);
+            }
+            if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                GKWindowCom.post('single',{type:'add',orgId:newOrg.org_id});
             }
             unSelectAllBranch();
             selectBreanch(newOrg,partition, true);
@@ -1575,7 +1581,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         icon: 'icon_chat',
                         name: 'chat',
                         click: function () {
-                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
+                            GKDialog.chat();
+                            //GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
                         }
                     })
                 }

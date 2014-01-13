@@ -7,11 +7,10 @@ angular.module('gkChat', ['GKCommon'])
             mount: {},
             file: null
         }
-
         var setMount = function () {
             var param = $location.search();
             var mount;
-            if(param.mountid){
+            if(param.mountid!=0){
                 mount = GKMount.getMountById(Number(param.mountid))
             }else{
                 mount = GKMount.getMounts()[0];
@@ -47,8 +46,14 @@ angular.module('gkChat', ['GKCommon'])
          * 库发生变化后重新初始化
          */
         GKWindowCom.message(function (event) {
-            chatSession.refreshSession();
-            initConnect();
+            var data = event.data;
+            $scope.$apply(function(){
+                chatSession.refreshSession();
+                $scope.sessions = chatSession.sessions;
+            })
+            if(data.type !='edit'){
+                initConnect();
+            }
         });
 
         $scope.selectSession = function (session) {
@@ -200,7 +205,6 @@ angular.module('gkChat', ['GKCommon'])
             $scope.start = 0;
             $scope.size = 100;
             chatSession.setUnreadCount(session, 0);
-
             if (!$scope.currentMsgList.length || $scope.currentMsgList[0]['time'] > initTime) {
                 $scope.handleScrollLoad(true);
             }else{
@@ -218,7 +222,11 @@ angular.module('gkChat', ['GKCommon'])
                                 var len = newMsgList.length;
                                 var orgMag = {};
                                 angular.forEach(newMsgList, function (item) {
-                                    var session = chatSession.getSessionByMountId(item.receiver);
+                                    var session = chatSession.getSessionByOrgId(item.receiver);
+                                    var time = Number(item.time);
+                                    if(time>lastActiveTime){
+                                        lastActiveTime = time;
+                                    }
                                     if (!session) return;
 //                                  var start = $scope.msg_list.length + len - $scope.size;
 //                                  $scope.start = start < 0 ? 0 : start;
@@ -227,10 +235,6 @@ angular.module('gkChat', ['GKCommon'])
                                         chatSession.setUnreadCount(session, session.unreadCount + 1);
                                     }else{
                                         $scope.scrollToIndex = $scope.currentMsgList.length-1;
-                                    }
-                                    var time = Number(item.time);
-                                    if(time>lastActiveTime){
-                                        lastActiveTime = time;
                                     }
                                     chatSession.setLastTime(session, time);
                                 })

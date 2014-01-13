@@ -159,7 +159,6 @@ angular.module('gkClientIndex.services', [])
         return {
             getSidebarMenu: function ($trigger) {
                 var data = $trigger.data('branch');
-                console.log(data);
                 var partition = data.partition,
                     fullpath = data.fullpath,
                     mountId = data.mount_id,
@@ -3545,8 +3544,8 @@ angular.module('gkClientIndex.services', [])
     .factory('GKDialog', [function () {
         return {
             chat: function (mountId,fullpath) {
+                mountId = angular.isDefined(mountId)?mountId:0;
                 fullpath = angular.isDefined(fullpath)?fullpath:'';
-                if(!mountId) return;
                 var UIPath = gkClientInterface.getUIPath();
                 var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+fullpath;
                 var data = {
