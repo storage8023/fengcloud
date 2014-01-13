@@ -191,6 +191,307 @@ angular.module('GKCommon.directives', [])
             });
         };
     }])
+    .directive('inputTipPopup', ['$document', '$parse', '$timeout', function ($document, $parse, $timeout) {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: { list: '=', onSelect: '&', 'isOpen': '&'},
+            template: '<ul class="dropdown-menu input_tip_list" ng-show="isOpen()">'
+                + '<li ng-repeat="item in list"><a  ng-mouseenter="handleMouseEnter($index)" ng-click="handleClick($event,$index)" ng-class="item.selected?\'active\':\'\'" title="{{item.member_name}}" href="javascript:void(0)">{{item.member_name}}</a></li>'
+                + '</ul>',
+            link: function ($scope, $element, $attrs) {
+                var index = 0;
+
+                var selectItem = function () {
+                    if (!$scope.list[index]) return;
+                    if ($scope.onSelect != null) {
+                        $scope.onSelect({item: $scope.list[index]})
+                    }
+                    if ($scope.list[index]) {
+                        $scope.list[index].selected = false;
+                        index = 0;
+                    }
+                };
+
+                var preSelectItem = function (newIndex) {
+                    if (!$scope.list || !$scope.list.length) return;
+                    angular.forEach($scope.list, function (value) {
+                        if (value.selected) {
+                            value.selected = false;
+                        }
+                    });
+                    $scope.list[newIndex].selected = true;
+                    index = newIndex;
+                };
+
+                $scope.handleMouseEnter = function ($index) {
+                    preSelectItem($index);
+
+                };
+                $scope.handleClick = function ($event, $index) {
+                    //preSelectItem(key);
+                    selectItem();
+                    $event.stopPropagation();
+                };
+
+                $document.bind('keydown', function (e) {
+                    if (!$scope.isOpen()) {
+                        return;
+                    }
+                    $scope.$apply(function () {
+
+                        var key_code = e.keyCode;
+                        if (!$scope.list || !$scope.list.length) return;
+                        var listLength = $scope.list.length;
+                        var step = 1;
+                        if (key_code == 38 || key_code == 40) { //up
+                            if (key_code == 38) {
+                                step = -1;
+                            }
+                            var newIndex = index + step;
+                            if (newIndex < 0) {
+                                newIndex = listLength - 1;
+                            } else if (newIndex > listLength - 1) {
+                                newIndex = 0;
+                            }
+
+                            preSelectItem(newIndex);
+                            var itemHeight =  $element.find('li:eq(0)').height();
+                            var scrollTop = $element.find('li:eq('+newIndex+')').position().top;
+                            if(newIndex == 0){
+                                $element.scrollTop(0);
+                            }else if(newIndex == ($scope.list.length-1)){
+                                $element.scrollTop(scrollTop);
+                            }else{
+                                if(step==-1){
+                                    var jTop = scrollTop;
+                                    if (jTop >= -itemHeight && jTop < 0) {
+                                        jTop.scrollTop(jTop.scrollTop() + jTop);
+                                    }
+                                }else{
+                                    var jTop = scrollTop - $element.height();
+                                    if (jTop >= 0 && jTop < itemHeight) {
+                                        $element.scrollTop($element.scrollTop() + itemHeight + jTop);
+                                    }
+                                }
+                            }
+                            e.preventDefault();
+                        } else if (key_code == 13 || key_code == 32) {
+                            selectItem();
+                            e.preventDefault();
+                        }
+                    });
+                })
+            }
+        };
+    }])
+    .directive('inputTip', [ '$compile', '$parse', '$document', '$timeout', '$interval', function ($compile, $parse, $document, $timeout, $interval) {
+        var template =
+            '<input-tip-popup ' +
+                'list="it_list" ' +
+                'on-select="it_onSelect(item)" ' +
+                'is-open="it_isOpen"' +
+                '>' +
+                '</input-tip-popup>';
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                var watchStr = $attrs.inputTip;
+                var placementArr = $attrs.inputTipPlacement.split(' ');
+                var placement = {
+                    v: placementArr[0],
+                    h: placementArr[1]
+                };
+                var inputtip = $compile(template)($scope);
+                var elem = $element[0];
+                /**
+                 * 是否appendToBody
+                 * @TODO 可定制
+                 */
+                var appendToBody = true;
+                $scope.it_isOpen = false;
+                var $body;
+                var setPosition = function (jqTextarea, hintWrapper) {
+                    var position,
+                        ttWidth,
+                        ttHeight,
+                        ttPosition;
+
+                    ttWidth = inputtip.outerWidth();
+                    ttHeight = inputtip.outerHeight();
+
+                    /**
+                     * 获取光标在输入框的位置
+                     * @type {*}
+                     */
+                    var lineHeight = 4;
+                    var cursorPosition = Util.Input.getInputPositon(elem);
+                    var ttPosition = {
+                        top: cursorPosition.top + lineHeight,
+                        left: cursorPosition.left
+                    }
+
+                    if (ttPosition.top + ttHeight > jQuery(window).height()) {
+                        ttPosition.top = ttPosition.top - ttHeight - lineHeight - parseInt($element.css('line-height').replace('px'));
+                    }
+
+                    if (ttPosition.left + ttWidth > jQuery(window).width()) {
+                        ttPosition.left = ttPosition.left - ttWidth;
+                    }
+
+                    ttPosition.top += 'px';
+                    ttPosition.left += 'px';
+                    inputtip.css(ttPosition);
+                };
+
+                /**
+                 * 显示提示框
+                 */
+                var show = function () {
+                    var selected = false;
+                    angular.forEach($scope.it_list, function (value) {
+                        if (value.selected) {
+                            selected = true;
+                        }
+                    });
+                    if (!selected && $scope.it_list) {
+                        $scope.it_list[0].selected = true;
+                    }
+                    if (appendToBody) {
+                        $body = $body || $document.find('body');
+                        $body.append(inputtip);
+                    } else {
+                        //TODO
+                    }
+
+                    /**
+                     * 设置位置
+                     */
+                    $scope.it_isOpen = true;
+                    $timeout(function () {
+                        setPosition();
+                        inputtip.css('display', 'block');
+                    }, 0);
+                };
+
+                var lastQ;
+                /**
+                 * 隐藏提示框
+                 */
+                var hide = function () {
+                    $scope.it_isOpen = false;
+                    lastQ = null;
+                };
+
+
+                $scope.$watch($attrs.ngModel, function (newValue, oldeValue) {
+                    if (!newValue && newValue !== oldeValue) {
+                        hide();
+                    }
+                });
+                var inputPos, val, lastIndex;
+
+                var checkAt = function () {
+                    val = $scope[$attrs.ngModel];
+                    console.log(val);
+                    var cursor = Util.Input.getCurSor($element[0]);
+                    inputPos = cursor.split('|');
+                    var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
+                    lastIndex = leftStr.lastIndexOf(watchStr); //获取光标左边字符最后一个@字符的位置
+                    if (lastIndex < 0) {
+                        hide();
+                        return;
+                    }
+                    var q = leftStr.slice(lastIndex + 1, leftStr.length); //获取@与光标位置之间的字符
+                    if(q===lastQ) return;
+                    //如果@与光标之间有空格，隐藏提示框
+                    if ($.trim(q).length != q.length) {
+                        hide();
+                        return;
+                    }
+                    var resultList = [];
+                    if (!q.length) {
+                        resultList = $scope.remindMembers;
+                    } else {
+                        if ($scope.remindMembers && $scope.remindMembers.length) {
+                            angular.forEach($scope.remindMembers, function (value) {
+                                if (value.short_name && value.short_name.toLowerCase().indexOf(q.toLowerCase()) === 0) {
+                                    resultList.unshift(value);
+                                } else if (value.member_name.toLowerCase().indexOf(q.toLowerCase()) != -1) {
+                                    resultList.push(value);
+                                }
+                            });
+                        }
+                    }
+                    if (!resultList || !resultList.length) {
+                        hide();
+                    } else {
+                        $scope.it_list = resultList;
+                        show();
+                    }
+                    lastQ = q;
+                };
+
+                $scope.it_list = [];
+                $scope.it_index = 0;
+                var timer;
+                $element.bind('focus',function () {
+                    if (timer) {
+                        $interval.cancel(timer);
+                    }
+                    timer = $interval(function () {
+                        checkAt();
+                    }, 100);
+                }).bind('blur', function () {
+                        if (timer) {
+                            $interval.cancel(timer);
+                        }
+                    })
+
+                var insertChar = function (input) {
+                    input += ' ';
+                    var newVal = $scope[$attrs.ngModel];
+
+                    var newInputPos = inputPos;
+                    var isInsert = newInputPos[1] != newVal.length;
+                    newVal = newVal.substr(0, lastIndex + 1) + input + newVal.substr(inputPos[1], newVal.length);
+                    $scope[$attrs.ngModel] = newVal;
+                    $timeout(function () {
+                        if (isInsert) {
+                            Util.Input.moveCur(elem, parseInt(inputPos[0]) + (input).length);
+                        } else {
+                            Util.Input.moveCur(elem, $scope[$attrs.ngModel].length);
+                        }
+                    }, 0)
+
+                };
+
+
+                $scope.$on('$locationChangeSuccess', function () {
+                    if (timer) {
+                        $interval.cancel(timer);
+                    }
+                    if ($scope.it_isOpen) {
+                        hide();
+                    }
+                });
+
+                $scope.$on('$destroy', function () {
+                    if (timer) {
+                        $interval.cancel(timer);
+                    }
+                    inputtip.remove();
+                    if ($scope.it_isOpen) {
+                        hide();
+                    }
+                });
+
+                $scope.it_onSelect = function (item) {
+                    insertChar(item.member_name);
+                };
+            }
+        }
+    }])
 ;
 /* Services */
 angular.module('GKCommon.services', [])
@@ -205,8 +506,61 @@ angular.module('GKCommon.services', [])
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
+    .factory('GKWindowCom', ['$window',function ($window) {
+        var GKWindowCom = {
+            post:function(windowName,data){
+                var win = gkClientInterface.getWindow({name:windowName});
+                if(!win) return;
+                win.postMessage(data,'*');
+            },
+            message:function(callback){
+                $window.addEventListener('message',callback,false);
+            }
+        };
+        return GKWindowCom;
+    }])
     .factory('GKException', [function () {
         var GKException = {
+            getAjaxError:function(request,textStatus,errorThrown){
+                var error = {
+                    code:0,
+                    msg:'出错了'
+                };
+                if (request.responseText) {
+                    var result = JSON.parse(request.responseText);
+                    angular.extend(error,{
+                        code:result.error_code,
+                        msg:result.error_msg || request.responseText
+                    })
+                } else {
+                    error.code = request.status;
+                    if(textStatus === 'timeout'){
+                        error.msg = '网络连接超时';
+                    }else{
+                        switch (request.status) {
+                            case 0:
+                            case 404:
+                                error.msg = '网络未连接或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
+                                break;
+                            case 401:
+                                error.msg = '网络连接超时或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
+                                break;
+                            case 501:
+                            case 502:
+                                error.msg = '服务器繁忙, 请稍候重试';
+                                break;
+                            case 503:
+                            case 504:
+                                error.msg = '因您的操作太过频繁, 操作已被取消';
+                                break;
+                            default:
+                                error.msg = request.statusText;
+                                break;
+                        }
+                    }
+                }
+                return error;
+            },
             getAjaxErrorMsg: function (request) {
                 var errorMsg = '';
                 if (request.responseText) {
@@ -215,10 +569,10 @@ angular.module('GKCommon.services', [])
                 } else {
                     switch (request.status) {
                         case 0:
-                            errorMsg = '网络未连接';
+                            errorMsg = '网络未连接或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                             break;
                         case 401:
-                            errorMsg = '网络连接超时';
+                            errorMsg = '网络连接超时或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                             break;
                         case 501:
                         case 502:
@@ -251,14 +605,201 @@ angular.module('GKCommon.services', [])
             handleClientException: function (error) {
                 alert(error.message);
             },
-            handleAjaxException: function (request) {
-                var errorMsg = this.getAjaxErrorMsg(request);
+            handleAjaxException: function (request,textStatus,errorThrown) {
+                var errorMsg = this.getAjaxError(request,textStatus,errorThrown)['msg'];
                 alert(errorMsg);
             }
         };
 
         return GKException;
     }])
+    .factory('GKMount', [function () {
+        /**
+         * 格式化mount数据
+         * @param mount
+         */
+        var formatMountItem = function (mount) {
+            var newMount = {
+                mount_id: mount.mountid,
+                name: mount.name ? mount.name : '我的文件',
+                org_id: mount.orgid,
+                capacity: mount.total,
+                size: mount.use,
+                org_capacity: mount.orgtotal,
+                org_size: mount.orguse,
+                type: mount.type,
+                fullpath: '',
+                logo: mount.orgphoto,
+                member_count: mount.membercount,
+                subscriber_count: mount.subscribecount,
+                hasFolder: 1
+                //hasFolder:mount.hasfolder||0
+            };
+            return newMount;
+        };
+        var getMounts = function(){
+            return gkClientInterface.getSideTreeList({sidetype: 'org'})['list'].map(function(mount){
+                return formatMountItem(mount);
+            })
+        };
+
+        var mounts = getMounts();
+
+        var GKMount = {
+            refreshMounts:function(){
+                mounts = getMounts();
+            },
+            isMember: function (mount) {
+                return mount && mount.type < 3;
+            },
+            isAdmin: function (mount) {
+                return mount && mount.type < 2;
+            },
+            isSuperAdmin: function (mount) {
+                return mount && mount.type < 1;
+            },
+            formatMountItem: formatMountItem,
+            /**
+             * 获取所有的mount
+             * @returns {Array}
+             */
+            getMounts: function () {
+                return mounts;
+            },
+            /**
+             * 根据id获取mount
+             * @param id
+             * @returns {null}
+             */
+            getMountById: function (id) {
+                var mount = null;
+                angular.forEach(mounts, function (value) {
+                    if (value.mount_id == id) {
+                        mount = value;
+                        return false;
+                    }
+                })
+                return mount;
+            },
+            checkMountExsit: function (id) {
+                return !!this.getMountById(id);
+            },
+            /**
+             * 根据云库id获取mount
+             * @param orgId
+             * @returns {null}
+             */
+            getMountByOrgId: function (orgId) {
+                var mount = null;
+                angular.forEach(mounts, function (value) {
+                    if (value.org_id == orgId) {
+                        mount = value;
+                        return false;
+                    }
+                })
+                return mount;
+            },
+            /**
+             * 获取个人的mount
+             * @returns {null}
+             */
+            getMyMount: function () {
+                var myMount = null;
+                angular.forEach(mounts, function (value) {
+                    if (value.org_id == 0) {
+                        myMount = value;
+                        return false;
+                    }
+                })
+                return myMount;
+            },
+            /**
+             * 获取我的云库的mount
+             * @returns {Array}
+             */
+            getOrgMounts: function () {
+                var orgMounts = [];
+                angular.forEach(mounts, function (value) {
+                    if (value.type < 1) {
+                        orgMounts.push(value);
+                    }
+                })
+                return orgMounts;
+            },
+            getJoinOrgMounts: function () {
+                var joinOrgMounts = [];
+                angular.forEach(mounts, function (value) {
+                    if (value.type <3 && value.type>0) {
+                        joinOrgMounts.push(value);
+                    }
+                })
+                return joinOrgMounts;
+            },
+            getSubscribeMounts: function () {
+                var subscribeMounts = [];
+                angular.forEach(mounts, function (value) {
+                    if (value.org_id != 0 && value.type == 3) {
+                        subscribeMounts.push(value);
+                    }
+                })
+                return subscribeMounts;
+            },
+            addMount: function (newMount, $scope) {
+                var mountItem = formatMountItem(newMount);
+                mounts.push(mountItem);
+                return mountItem;
+            },
+            editMount: function (mountId, param) {
+                var mount = this.getMountById(mountId);
+                if (!mount) {
+                    return;
+                }
+                angular.extend(mount, param);
+                return mount;
+            },
+            removeMountByOrgId: function (orgId) {
+                var mount = this.getMountByOrgId(orgId);
+                if (mount) {
+                    Util.Array.removeByValue(mounts, mount);
+                }
+                return mount;
+            },
+            removeOrgSubscribeList: function ($scope, orgId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                angular.forEach($scope.orgSubscribeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.orgSubscribeList.splice(key, 1);
+                        return false;
+                    }
+                });
+            },
+            removeTeamList: function ($scope, orgId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                angular.forEach($scope.orgTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.orgTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
+            },
+            removeJoinTeamList: function ($scope, orgId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                angular.forEach($scope.joinOrgTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.joinOrgTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
+            }
+        };
+
+        return GKMount;
+
+    }
+    ])
     .factory('RestFile', ['GK', '$http', function (GK, $http) {
         var restFile = {
             orgShare: function (mount_id, fullpath, collaboration) {
@@ -421,6 +962,37 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            publish:function(mountId,fullpath){
+                var params = {
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/file/get_file_link',
+                    dataType: 'json',
+                    data: params
+                })
+            },
+            markMilestone:function(mountId,fullpath,message){
+                var params = {
+                    mount_id: mountId,
+                    fullpath: fullpath,
+                    message: message,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/file/set_milestone',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             editPassword: function (oldPassword, newPassword) {
                 var params = {
                     password: oldPassword,
@@ -1011,6 +1583,24 @@ angular.module('GKCommon.filters', [])
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             }else{
                 dateText =$filter('date')(dateline, 'yyyy年M月d日');
+            }
+            return dateText;
+        }
+    })
+    .filter('timeAgo', function ($filter) {
+        return function (dateline) {
+            var now = new Date().valueOf();
+            var today = $filter('date')(now, 'yyyy-MM-dd');
+            var yesterdayTimestamp = now - 24 * 3600 * 1000;
+            var yesterday = $filter('date')(yesterdayTimestamp, 'yyyy-MM-dd');
+            var date = $filter('date')(dateline, 'yyyy-MM-dd');
+            var dateText = '';
+            if (date == today) {
+                dateText = $filter('date')(dateline, 'HH:mm');
+            } else if (date == yesterday) {
+                dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
+            }else{
+                dateText =$filter('date')(dateline, 'yyyy年M月d日 HH:mm');
             }
             return dateText;
         }

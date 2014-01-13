@@ -6,6 +6,7 @@ angular.module('gkClientIndex.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
+
                 var getVersion =  function(triggerElem){
                     return Number(triggerElem.data('version'));
                 };
@@ -15,13 +16,13 @@ angular.module('gkClientIndex.directives', [])
 
                 $scope.$watch($attrs.gkVersionContextmenu,function(newValue){
                     if(!newValue){
-                        jQuery.contextMenu('destroy', '.history_list > .item');
+                        jQuery.contextMenu('destroy', '.history_list > li');
                     }else{
                         /**
                          * 设置右键菜单
                          */
                         jQuery.contextMenu({
-                            selector: '.history_list > .item',
+                            selector: '.history_list > li',
                             reposition: true,
                             zIndex: 9999,
                             className: 'version_contextmenu',
@@ -819,7 +820,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog',function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog) {
         return {
             replace: true,
             restrict: 'E',
@@ -828,7 +829,6 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
-                $scope.loading = true;
                 $scope.fileExist = false;
                 var fileInterval,lastGetRequest,lastClientSidebarRequest;
                 var getOptMountId = function (file) {
@@ -842,17 +842,6 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.smarts = GKSmartFolder.getFolders('recent');
-                $scope.inputingRemark = false;
-                $scope.remarkText = '';
-                var postRemarkCache = $angularCacheFactory.get('postRemarkCache');
-                if(!postRemarkCache){
-                    postRemarkCache = $angularCacheFactory('postRemarkCache',{
-                        maxAge: 10000, //10秒后过期，因为client_sidebar的缓存是10秒
-                        deleteOnExpire: 'aggressive',
-                        storageMode: 'localStorage'
-                    });
-                }
-
 
                 var getFileState = function (mountId, fullpath) {
                     var info = gkClientInterface.getTransInfo({
@@ -902,7 +891,8 @@ angular.module('gkClientIndex.directives', [])
                     }
                     var defaultOptions = {
                         data: '',
-                        cache: true
+                        cache: true,
+                        first:false
                     };
 
                     options = angular.extend({}, defaultOptions, options);
@@ -914,7 +904,7 @@ angular.module('gkClientIndex.directives', [])
                     if (options.data != 'sidebar') {
                         lastGetRequest = RestFile.get(mountId, fullpath).success(function (data) {
                             $scope.$apply(function () {
-                                $scope.loading = false;
+                                $scope.fileLoaded = true;
                                 $scope.fileExist = true;
                                 var formatFile = GKFile.formatFileItem(data, 'api');
                                 angular.extend($scope.file, formatFile);
@@ -927,7 +917,7 @@ angular.module('gkClientIndex.directives', [])
 
                         }).error(function (request) {
                                 $scope.$apply(function () {
-                                    $scope.loading = false;
+                                    $scope.fileLoaded = true;
                                     $scope.fileExist = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
                                     if (String(errorCode).slice(0, 3) != '404') {
@@ -952,28 +942,20 @@ angular.module('gkClientIndex.directives', [])
                     }
 
                     if (options.data != 'file') {
-                       if(options.cache && postRemarkCache.get(mountId+':'+fullpath)){
-                           options.cache = false;
-                       }
                         lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
                             $scope.$apply(function () {
-                                if (data.share_members) {
-                                    $scope.shareMembers = data.share_members;
-                                }
-                                if (data.share_groups) {
-                                    $scope.shareGroups = data.share_groups;
-                                }
-                                if (data.remark) {
-                                    $scope.remarks = data.remark;
-                                }
+                                $scope.sidebarLoaded = true;
                                 if (data.history) {
                                     $scope.histories = data.history;
-                                }
-                                if (data.remind_members) {
-                                    $scope.remindMembers = data.remind_members;
+                                }else{
+                                    $scope.histories = [];
                                 }
                             })
-                        });
+                        }).error(function(){
+                                $scope.$apply(function () {
+                                    $scope.sidebarLoaded = true;
+                                })
+                            });
                     }
 
                 };
@@ -982,18 +964,23 @@ angular.module('gkClientIndex.directives', [])
                     if (!file || !oldValue || file == oldValue || file.fullpath == oldValue.fullpath) {
                         return;
                     }
-                    $scope.inputingRemark = false;
-                    $scope.remarkText = '';
                     if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;
                     }
-                    var option = {};
+//                    $scope.fileLoaded = false;
+//                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
                 });
 
-                getFileInfo($scope.localFile);
+                $scope.fileLoaded = false;
+                $scope.sidebarLoaded = false;
+                getFileInfo($scope.localFile,{first:true});
 
+                /**
+                 * 添加tag
+                 * @param tag
+                 */
                 $scope.postTag = function (tag) {
                     tag = String(tag);
                     GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
@@ -1001,99 +988,12 @@ angular.module('gkClientIndex.directives', [])
                     });
                 }
 
-                $scope.handlePostKeyDown = function ($event, tag) {
-                    tag = String(tag);
-                    var keyCode = $event.keyword;
-                    if (keyCode == 13) {
-                        $scope.postTag(tag);
-                        $scope.focusPostTextarea = false;
-                    }
-                }
-
                 /**
-                 * 取消发布备注
+                 * 检测是否已加标
+                 * @param favorite
+                 * @param filter
+                 * @returns {boolean}
                  */
-                $scope.cancelPostRemark = function () {
-                    $scope.remarkText = '';
-                    $scope.inputingRemark = false;
-                };
-
-                $scope.handleFocus = function () {
-                    if (!$scope.inputingRemark) {
-                        $scope.inputingRemark = true;
-                    }
-                };
-
-                jQuery('body').on('click.cancelRemark', function (e) {
-                    if (!jQuery(e.target).hasClass('post_wrapper') && !jQuery(e.target).parents('.post_wrapper').size()) {
-                        $timeout(function () {
-                            if (!$scope.remarkText) {
-                                $scope.inputingRemark = false;
-                                $element.find('.post_wrapper textarea').blur();
-                            }
-                        }, 0)
-                    }
-                })
-                $scope.posting = false;
-                /**
-                 * 发布讨论
-                 */
-                $scope.postRemark = function (remarkText) {
-                    if($scope.posting){
-                        return;
-                    }
-                    if (!remarkText || !remarkText.length) return;
-                    var fullpath = $scope.file.dir == 1 ? $scope.file.fullpath + '/' : $scope.file.fullpath;
-                    $scope.posting = true;
-                    var mountId = getOptMountId($scope.file);
-                    RestFile.remind(mountId, fullpath, remarkText).success(function (data) {
-                        postRemarkCache.put(mountId+':'+fullpath,1);
-                        $scope.$apply(function(){
-                            $scope.posting = false;
-                            $scope.cancelPostRemark();
-                            if (data && data.length) {
-                                $scope.remarks.unshift(data[0]);
-                            }
-                        })
-                    }).error(function (request) {
-                            $scope.$apply(function(){
-                            $scope.posting = false;
-                            GKException.handleAjaxException(request);
-                            })
-                        });
-                };
-
-                $scope.showAddMember = function () {
-                    GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
-                };
-
-                $scope.insertAt = function (input) {
-                    var val = $scope.remarkText;
-                    var jqTextarea = $element.find('.post_wrapper textarea');
-                    var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');
-                    var is_insert = input_pos[1] != val.length ? 1 : 0;
-                    var l = val.substr(0, input_pos[0]);
-                    var r = val.substr(input_pos[1], val.length);
-                    val = l + input + r;
-                    $scope.remarkText = val;
-                    $timeout(function () {
-                        if (is_insert) {
-                            Util.Input.moveCur(jqTextarea[0], parseInt(input_pos[0]) + (input).length);
-                        } else {
-                            Util.Input.moveCur(jqTextarea[0], val.length);
-                        }
-                        return null;
-                    }, 0);
-
-                }
-
-                $scope.handleKeyDown = function (e) {
-                    if (e.keyCode == 13 & (e.ctrlKey || e.metaKey)) {
-                        $scope.postRemark($scope.remarkText);
-                        $element.find('.post_wrapper textarea').blur();
-                    }
-                };
-
                 $scope.isSmartAdd = function (favorite, filter) {
                     if (!favorite) favorite = [];
                     var type = GKFilter.getFilterType(filter);
@@ -1138,31 +1038,24 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 /**
-                 * 删除共享
-                 * @param shareItem
+                 * 打开生成临时链接的窗口
+                 * @param file
                  */
-                $scope.removeShare = function (shareItem) {
-                    var fullpath = $scope.file.fullpath;
-                    var collaboration = [], collaborationItem = '';
-                    var type = shareItem['group_id'] ? 'group' : 'member';
-                    if (!confirm('你确定要删除改共享参与' + (type == 'group' ? '组' : '人' + '？'))) {
-                        return;
-                    }
-                    collaborationItem = type + '|' + (type == 'group' ? shareItem['group_id'] : shareItem['member_id']);
+                $scope.publishFile = function(file){
+                   GKModal.publish(getOptMountId(file),file);
+                };
 
-                    collaboration.push(collaborationItem);
-                    GKApi.delCollaboration(getOptMountId($scope.file), fullpath, collaboration.join(',')).success(function () {
-                        $scope.$apply(function () {
-                            if (type == 'group') {
-                                Util.Array.removeByValue($scope.shareGroups, shareItem);
-                            } else {
-                                Util.Array.removeByValue($scope.shareMembers, shareItem);
-                            }
-                        });
+                /**
+                 * 打开聊天窗口
+                 */
+                $scope.startChat = function(file){
+                    GKDialog.chat(getOptMountId(file),file.fullpath);
+                }
 
-                    }).error(function (request) {
-                            GKException.handleAjaxException(request);
-                        });
+                $scope.showMilestoneDialog = function(file){
+                    GKModal.setMilestone(getOptMountId(file),file).result.then(function(){
+                        getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
+                    });
                 }
 
                 /**
@@ -1175,8 +1068,17 @@ angular.module('gkClientIndex.directives', [])
                     getFileInfo($scope.localFile, {data: 'sidebar', type: type, cache: false});
                 })
 
+                $scope.historyFilter = null;
+
+                $scope.$watch('onlyShowMileStone',function(newValue){
+                    if(newValue){
+                        $scope.historyFilter = {milestone:1};
+                    }else{
+                        $scope.historyFilter = null;
+                    }
+                })
+
                 $scope.$on('$destroy', function () {
-                    jQuery('body').off('click.cancelRemark');
                     if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;
@@ -1304,308 +1206,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('inputTipPopup', ['$document', '$parse', '$timeout', function ($document, $parse, $timeout) {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: { list: '=', onSelect: '&', 'isOpen': '&'},
-            template: '<ul class="dropdown-menu input_tip_list" ng-show="isOpen()">'
-                + '<li ng-repeat="item in list"><a  ng-mouseenter="handleMouseEnter($index)" ng-click="handleClick($event,$index)" ng-class="item.selected?\'active\':\'\'" title="{{item.member_name}}" href="javascript:void(0)">{{item.member_name}}</a></li>'
-                + '</ul>',
-            link: function ($scope, $element, $attrs) {
-                var index = 0;
 
-                var selectItem = function () {
-                    if (!$scope.list[index]) return;
-                    if ($scope.onSelect != null) {
-                        $scope.onSelect({item: $scope.list[index]})
-                    }
-                    if ($scope.list[index]) {
-                        $scope.list[index].selected = false;
-                        index = 0;
-                    }
-                };
-
-                var preSelectItem = function (newIndex) {
-                    if (!$scope.list || !$scope.list.length) return;
-                    angular.forEach($scope.list, function (value) {
-                        if (value.selected) {
-                            value.selected = false;
-                        }
-                    });
-                    $scope.list[newIndex].selected = true;
-                    index = newIndex;
-                };
-
-                $scope.handleMouseEnter = function ($index) {
-                    preSelectItem($index);
-
-                };
-                $scope.handleClick = function ($event, $index) {
-                    //preSelectItem(key);
-                    selectItem();
-                    $event.stopPropagation();
-                };
-
-                $document.bind('keydown', function (e) {
-                    if (!$scope.isOpen()) {
-                        return;
-                    }
-                    $scope.$apply(function () {
-
-                        var key_code = e.keyCode;
-                        if (!$scope.list || !$scope.list.length) return;
-                        var listLength = $scope.list.length;
-                        var step = 1;
-                        if (key_code == 38 || key_code == 40) { //up
-                            if (key_code == 38) {
-                                step = -1;
-                            }
-                            var newIndex = index + step;
-                            if (newIndex < 0) {
-                                newIndex = listLength - 1;
-                            } else if (newIndex > listLength - 1) {
-                                newIndex = 0;
-                            }
-
-                            preSelectItem(newIndex);
-                            var itemHeight =  $element.find('li:eq(0)').height();
-                            var scrollTop = $element.find('li:eq('+newIndex+')').position().top;
-                            if(newIndex == 0){
-                                $element.scrollTop(0);
-                            }else if(newIndex == ($scope.list.length-1)){
-                                $element.scrollTop(scrollTop);
-                            }else{
-                                if(step==-1){
-                                    var jTop = scrollTop;
-                                    if (jTop >= -itemHeight && jTop < 0) {
-                                        jTop.scrollTop(jTop.scrollTop() + jTop);
-                                    }
-                                }else{
-                                    var jTop = scrollTop - $element.height();
-                                    if (jTop >= 0 && jTop < itemHeight) {
-                                        $element.scrollTop($element.scrollTop() + itemHeight + jTop);
-                                    }
-                                }
-                            }
-                            e.preventDefault();
-                        } else if (key_code == 13 || key_code == 32) {
-                            selectItem();
-                            e.preventDefault();
-                        }
-                    });
-                })
-            }
-        };
-    }])
-    .directive('inputTip', [ '$compile', '$parse', '$document', '$position', '$timeout', '$interval', function ($compile, $parse, $document, $position, $timeout, $interval) {
-        var template =
-            '<input-tip-popup ' +
-                'list="it_list" ' +
-                'on-select="it_onSelect(item)" ' +
-                'is-open="it_isOpen"' +
-                '>' +
-                '</input-tip-popup>';
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                var watchStr = $attrs.inputTip;
-                var placementArr = $attrs.inputTipPlacement.split(' ');
-                var placement = {
-                    v: placementArr[0],
-                    h: placementArr[1]
-                };
-                var inputtip = $compile(template)($scope);
-                var elem = $element[0];
-                /**
-                 * 是否appendToBody
-                 * @TODO 可定制
-                 */
-                var appendToBody = true;
-                $scope.it_isOpen = false;
-                var $body;
-                var setPosition = function (jqTextarea, hintWrapper) {
-                    var position,
-                        ttWidth,
-                        ttHeight,
-                        ttPosition;
-
-                    //获取textarea的相对位置
-                    //position = appendToBody ? $position.offset($element) : $position.position($element);
-
-                    ttWidth = inputtip.outerWidth();
-                    ttHeight = inputtip.outerHeight();
-
-                    /**
-                     * 获取光标在输入框的位置
-                     * @type {*}
-                     */
-                    var lineHeight = 4;
-                    var cursorPosition = Util.Input.getInputPositon(elem);
-                    var ttPosition = {
-                        top: cursorPosition.top + lineHeight,
-                        left: cursorPosition.left
-                    }
-
-                    if (ttPosition.top + ttHeight > jQuery(window).height()) {
-                        ttPosition.top = ttPosition.top - ttHeight - lineHeight - parseInt($element.css('line-height').replace('px'));
-                    }
-
-                    if (ttPosition.left + ttWidth > jQuery(window).width()) {
-                        ttPosition.left = ttPosition.left - ttWidth;
-                    }
-
-                    ttPosition.top += 'px';
-                    ttPosition.left += 'px';
-                    inputtip.css(ttPosition);
-                };
-
-                /**
-                 * 显示提示框
-                 */
-                var show = function () {
-                    var selected = false;
-                    angular.forEach($scope.it_list, function (value) {
-                        if (value.selected) {
-                            selected = true;
-                        }
-                    });
-                    if (!selected && $scope.it_list) {
-                        $scope.it_list[0].selected = true;
-                    }
-                    if (appendToBody) {
-                        $body = $body || $document.find('body');
-                        $body.append(inputtip);
-                    } else {
-                        //TODO
-                    }
-
-                    /**
-                     * 设置位置
-                     */
-                    $scope.it_isOpen = true;
-                    $timeout(function () {
-                        setPosition();
-                        inputtip.css('display', 'block');
-                    }, 0);
-                };
-
-                var lastQ;
-                /**
-                 * 隐藏提示框
-                 */
-                var hide = function () {
-                    $scope.it_isOpen = false;
-                    lastQ = null;
-                };
-
-
-                $scope.$watch('remarkText', function (newValue, oldeValue) {
-                    if (!newValue && newValue !== oldeValue) {
-                        hide();
-                    }
-                });
-                var inputPos, val, lastIndex;
-
-                var checkAt = function () {
-                    val = $scope.remarkText;
-                    var cursor = Util.Input.getCurSor($element[0]);
-                    inputPos = cursor.split('|');
-                    var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
-                    lastIndex = leftStr.lastIndexOf(watchStr); //获取光标左边字符最后一个@字符的位置
-                    if (lastIndex < 0) {
-                        hide();
-                        return;
-                    }
-                    var q = leftStr.slice(lastIndex + 1, leftStr.length); //获取@与光标位置之间的字符
-                    if(q===lastQ) return;
-                    //如果@与光标之间有空格，隐藏提示框
-                    if ($.trim(q).length != q.length) {
-                        hide();
-                        return;
-                    }
-                    var resultList = [];
-                    if (!q.length) {
-                        resultList = $scope.remindMembers;
-                    } else {
-                        if ($scope.remindMembers && $scope.remindMembers.length) {
-                            angular.forEach($scope.remindMembers, function (value) {
-                                if (value.short_name && value.short_name.toLowerCase().indexOf(q.toLowerCase()) === 0) {
-                                    resultList.unshift(value);
-                                } else if (value.member_name.toLowerCase().indexOf(q.toLowerCase()) != -1) {
-                                    resultList.push(value);
-                                }
-                            });
-                        }
-                    }
-                    if (!resultList || !resultList.length) {
-                        hide();
-                    } else {
-                        $scope.it_list = resultList;
-                        show();
-                    }
-                    lastQ = q;
-                };
-
-                $scope.it_list = [];
-                $scope.it_index = 0;
-                var timer;
-                $element.bind('focus',function () {
-                    if (timer) {
-                        $interval.cancel(timer);
-                    }
-                    timer = $interval(function () {
-                        checkAt();
-                    }, 100);
-                }).bind('blur', function () {
-                        if (timer) {
-                            $interval.cancel(timer);
-                        }
-                    })
-
-                var insertChar = function (input) {
-                    input += ' ';
-                    var newVal = $scope.remarkText;
-                    var newInputPos = inputPos;
-                    var isInsert = newInputPos[1] != newVal.length;
-                    newVal = newVal.substr(0, lastIndex + 1) + input + newVal.substr(inputPos[1], newVal.length);
-                    $scope.remarkText = newVal;
-                    $timeout(function () {
-                        if (isInsert) {
-                            Util.Input.moveCur(elem, parseInt(inputPos[0]) + (input).length);
-                        } else {
-                            Util.Input.moveCur(elem, $scope.remarkText.length);
-                        }
-                    }, 0)
-
-                };
-
-
-                $scope.$on('$locationChangeSuccess', function () {
-                    if (timer) {
-                        $interval.cancel(timer);
-                    }
-                    if ($scope.it_isOpen) {
-                        hide();
-                    }
-                });
-
-                $scope.$on('$destroy', function () {
-                    if (timer) {
-                        $interval.cancel(timer);
-                    }
-                    inputtip.remove();
-                    if ($scope.it_isOpen) {
-                        hide();
-                    }
-                });
-
-                $scope.it_onSelect = function (item) {
-                    insertChar(item.member_name);
-                };
-            }
-        }
-    }])
     .directive('rightTagInput', ['$parse', function ($parse) {
         return {
             restrict: 'A',

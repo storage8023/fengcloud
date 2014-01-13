@@ -358,7 +358,7 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                         })
                         $scope.mounts = mounts;
                     })
-                }).error(function () {
+                }).error(function (request) {
                         $scope.$apply(function () {
                             $scope.loading = false;
                             $scope.errorMsg = GKException.getAjaxErrorMsg(request);

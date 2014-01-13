@@ -7,6 +7,18 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    setWindowTop:function(){
+        if(typeof gkClient.gSetForegroundWindow === 'undefined'){
+            return;
+        }
+        gkClient.gSetForegroundWindow();
+    },
+    getWindow:function(param){
+        if(typeof gkClient.gGetWindow === 'undefined'){
+            return null;
+        }
+        return gkClient.gGetWindow(JSON.stringify(param));
+    },
     getNetworkStatus:function(){
         if(typeof gkClient.gGetNetworkStatus === 'undefined'){
             return 1;

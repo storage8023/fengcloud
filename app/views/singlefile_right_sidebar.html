@@ -1,5 +1,5 @@
 <div class="single_file">
-    <div ng-show="!loading">
+    <div ng-show="fileLoaded && sidebarLoaded">
         <div ng-show="!fileExist">
             <filter-right-sidebar></filter-right-sidebar>
         </div>
@@ -43,7 +43,10 @@
                             </a>
                         </div>
                     </div>
-
+                    <div class="opt_wrapper" ng-show="showTab">
+                        <button class="btn btn-default" ng-click="publishFile(file)">临时链接</button>
+                        <button class="btn btn-default" ng-click="startChat(file)">发起讨论</button>
+                    </div>
                     <div class="tags">
                         <div ng-if="!showTab">
                             {{file.tag}}
@@ -62,56 +65,40 @@
                   title: "讨论和历史",
                   width: 280
                   }'>
-                <tabset direction="blew">
-                    <tab heading="讨论">
-                        <div class="update_wrapper" ng-class="inputingRemark?'editing':''">
-                            <div class="empty" ng-if="!remarks || !remarks.length">没有讨论</div>
-                            <ul class="scrollbar update_list">
-                                <li ng-repeat="remark in remarks" class="item c_f_after">
-                            <span class="update_member" title="{{remark.member_name}}">
-                                <avatar class="avatar avatar_mini" gk-src="{{remark.member_photo}}"></avatar>
-                                <span>{{remark.member_name}}：</span>
-                            </span>
-                                 <span class="update_text">
-                                    <span ng-bind-html="remark.render_text"></span>
-                                     <span class="update_time">({{remark.dateline*1000| date:'yyyy/MM/dd HH:mm'}})</span>
-                                </span>
-                                </li>
-                            </ul>
-                            <div class="post_wrapper">
-                                <div>
-                                    <textarea class="form-control"  ng-model="remarkText" input-tip="@" input-tip-list="remindMembers"
-                                              input-tip-placement="top right" ng-keydown="handleKeyDown($event)" placeholder="参与讨论" ng-focus="handleFocus()" ng-model="remarkText"></textarea>
-                                    <div class="post_opts">
-                            <span>
-                                <a href="javascript:void(0)" ng-click="insertAt('@')" class="f_l" title="提醒">@</a>
-                            <a href="javascript:void(0)" ng-click="insertAt('@all ')" class="f_l"
-                               title="提醒所有共享者">@全部</a>
-                            </span>
-                                        <button class="btn btn-primary f_r" ng-disabled="posting" ng-click="postRemark(remarkText)">确定</button>
-                                    </div>
+                <div class="section_title">
+                    <button class="btn btn-default" ng-show="localFile.dir==0" ng-click="showMilestoneDialog(file)">里程碑</button>
+                    <span>历史</span>
+                </div>
+                <div class="history_wrapper">
+                    <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
+                    <ul class="scrollbar history_list" gk-version-contextmenu="localFile.dir==0" gk-version-contextmenu="localFile.dir==0">
+                        <li class="c_f_after {{'act_'+history.act}}" title="{{history.property.message}}" ng-class="history.property.milestone?'milestone':''" ng-repeat="history in histories | filter:historyFilter" data-version="{{history.property.version}}">
+                            <div class="act_name">
+                                <div class="avatar_wrapper">
+                                    <avatar class="avatar avatar_mini" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
                                 </div>
                             </div>
-                        </div>
-
-                    </tab>
-                    <tab heading='历史'>
-                        <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
-                        <ul class="scrollbar history_list" gk-version-contextmenu="localFile.dir==0">
-                            <li class="item c_f_after" ng-class="'act_'+history.act" ng-repeat="history in histories" data-version="{{history.property.version}}">
-                                <div class="act_name"><span>{{history.act_name}}</span></div>
-                                <div class="act_info">
-                                    <div class="version_size" title="{{history.property.filesize|bitSize}}"><span >{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}</span></div>
-                                    <div class="filename_wrapper"><span class="filename">{{history.fullpath|baseName}}</span></div>
-                                    <div><span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span><span
-                                            class="act_dateline">{{history.dateline*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
-                                    </div>
+                            <div class="act_info">
+                                <div class="filename_wrapper">
+                                    <span class="version_index" ng-if="history.dir==0">V{{history.property.version}}</span>
+                                    <span class="name_size_wrapper">
+                                    <span class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
+                                       &nbsp;
+                                    <span class="version_size" title="{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}">{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}</span>
+                                    </span>
                                 </div>
-                            </li>
-                        </ul>
-                    </tab>
-                </tabset>
+                                <div class="other_info">
+                                    <span class="act_dateline" title="{{history.dateline*1000 | date:'yyyy/MM/dd HH:mm'}}">{{history.dateline*1000 | dateAgo}}</span>
+                                    <span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span>
+                                    <span class="act">{{history.act_name}}</span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="checkbox_wrapper" ng-show="histories.length"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
+                </div>
             </section>
         </div>
     </div>
+    <div class="empty loading" ng-show="!fileLoaded || !sidebarLoaded">正在加载...</div>
 </div>

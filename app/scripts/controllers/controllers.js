@@ -3,6 +3,18 @@
 /* Controllers */
 
 angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
+    .run(['$rootScope','$window','GKWindowCom',function($rootScope,$window,GKWindowCom){
+        GKWindowCom.message(function(event){
+            var data = event.data;
+            if(!data){
+                return;
+            }
+            if(data.type=='gotoFile'){
+                gkClientInterface.setWindowTop();
+                $rootScope.$broadcast('OpenMountPath',data);
+            }
+        })
+    }])
     .controller('initClient', ['GKGuiders','localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout',function (GKGuiders,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
@@ -113,7 +125,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             };
             if ([GKPartition.teamFile,GKPartition.joinFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 if(!param.filter){
-                    extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                    if(param.partition == GKPartition.subscribeFile){
+                        extend.file = {
+                            fullpath: param.path,
+                            mount_id: param.mountid
+                        }
+                    }else{
+                        extend.file = GKFile.getFileInfo(param.mountid, param.path);
+                    }
+
                 }else{
                     extend.file = {};
                 }
@@ -123,10 +143,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         extend.file.filename = mount['name'];
                     }
                 }else{
-                    if(param.partition == GKPartition.subscribeFile){
-                        var index = param.path.indexOf('/');
-                        extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
-                    }
+                   if(param.partition == GKPartition.subscribeFile){
+                       var index = param.path.indexOf('/');
+                       extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
+                   }
                 }
                 extend.mount = GKMount.getMountById(param.mountid)
             } else {
@@ -188,7 +208,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//我的云库
             joinOrgMount = GKMount.getJoinOrgMounts(),
@@ -466,6 +486,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }else{
                     $scope.orgSubscribeList.push(newOrg);
                 }
+                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                    GKWindowCom.post('single',{type:'add',orgId:newOrg.org_id});
+                }
             });
         })
 
@@ -520,6 +543,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var currentMountId = $location.search().mountid;
                 if(currentMountId==mount.mount_id && $scope.orgTreeList && $scope.orgTreeList.length){
                     selectBreanch($scope.orgTreeList[0], GKPartition.teamFile, true);
+                }
+
+                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                    GKWindowCom.post('single',{type:'remove',orgId:mount.org_id});
                 }
 
             });
@@ -1208,6 +1235,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileOpt.move(toFullpath, toMountId, fromFullpathes, fromMountId).then(function () {
                 GKFileList.refreahData($scope);
             }, function () {
+
             });
         };
 
@@ -1242,6 +1270,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         $scope.handleScrollLoad = function () {
+
             if ($scope.partition == GKPartition.subscribeFile) {
                 var start = $scope.fileData.length;
                 if (start >= $scope.totalCount) return;
@@ -1541,14 +1570,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             }
                         })
                     }
-//                    sideBarData.menus.push({
-//                        text: '聊天',
-//                        icon: 'icon_chat',
-//                        name: 'chat',
-//                        click: function () {
-//                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
-//                        }
-//                    })
+                    sideBarData.menus.push({
+                        text: '聊天',
+                        icon: 'icon_chat',
+                        name: 'chat',
+                        click: function () {
+                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
+                        }
+                    })
                 }
             }else if(params.filter){
                 var filterName = GKSmartFolder.getSmartFoldeName(params.filter);
@@ -1565,7 +1594,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
-            $scope.sidbarData = getSidbarData(param);
+            if(param.path){
+                $scope.sidebar = 'singlefile';
+            }else{
+                $scope.sidebar = 'nofile';
+                $scope.sidbarData = getSidbarData(param);
+            }
+
         })
 
         $scope.$on('selectedFileChange', function ($event, selectedFile) {
@@ -1575,7 +1610,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.selectedFileLength = selectedFile.length;
             if (!selectedFile.length) {
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;
-                $scope.sidebar = 'nofile';
+                if(!$scope.localFile.fullpath){
+                    $scope.sidebar = 'nofile';
+                }else{
+                    $scope.sidebar = 'singlefile';
+                }
 
            }else if(selectedFile.length ==1){
                $scope.localFile = selectedFile[0];

@@ -3,7 +3,6 @@
 /* Filters */
 
 angular.module('gkClientIndex.filters', [])
-
     .filter('getSmartIcon',['GKFilter',function(GKFilter){
         return function(favorites,filter){
           var type = GKFilter.getFilterType(filter);
