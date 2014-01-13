@@ -28,24 +28,29 @@ ul.quickmenu{
 }
 
 ul.quickmenu li{
-    width: 33.33%;
+    width: 25%;
     height: 100%;
     text-align: center;
     float: left;
     font-size: 13px;
+    color: #7F8999;
 }
-
+ul.quickmenu li:hover{
+   color: #448DE8;
+}
 ul.quickmenu li i,
 ul.quickmenu li span{
     display: block;
 
 }
 ul.quickmenu li i{
-
     margin: 4px auto 0;
 }
+ul.quickmenu li.chat:hover i{
+    background-position: -76px -580px;
+}
 ul.quickmenu li.message:hover i{
-    background-position: -76px -220px;
+    background-position: -76px -616px;
 }
 ul.quickmenu li.nearby:hover i{
     background-position: -76px -4px;
@@ -57,7 +62,7 @@ ul.quickmenu li.setting:hover i{
     background-position: -76px -148px;
 }
 ul.quickmenu li span{
-    font-size: 13px;
+    font-size: 12px;
     height: 20px;
     line-height: 20px;
 }

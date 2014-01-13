@@ -135,6 +135,11 @@
                 class="icon16x16 icon_rightarrow_white"></i></button>
     </div>
     <div class="menu">
+         <span ng-click="openNews()" title="{{newMsg?'有新消息':'消息'}}">
+            <i class="icon32x32 icon_ring">
+                <span class="hint" ng-show="newMsg"></span>
+            </i>
+        </span>
          <span ng-click="visitBBS()" title="用户社区">
             <i class="icon32x32 icon_bbs"></i>
         </span>

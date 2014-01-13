@@ -6,7 +6,7 @@ angular.module('gkClientFrame.controllers',[])
     .controller('initFrame',['$scope','GKApi','GKNews','$rootScope',function($scope,GKApi,GKNews,$rootScope){
         $rootScope.PAGE_CONFIG  ={
             user:gkClientInterface.getUser()
-        }
+        };
         if($rootScope.PAGE_CONFIG.user.member_id){
             var getNews = function(){
                 var news = GKNews.getNews();

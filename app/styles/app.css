@@ -32,6 +32,19 @@ header .menu{
     width: 250px;
     text-align: right;
 }
+header .menu .icon_ring{
+position: relative;
+}
+header .menu .icon_ring .hint{
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: #f00;
+    position: absolute;
+    display: block;
+    right: 8px;
+    bottom: 6px;
+}
 header .menu > span,
 header .menu > a{
     margin: 0 10px 0 0;
@@ -320,16 +333,7 @@ footer {
     position: absolute;
     right:5px;
 }
-.left_sidebar  .account .account_info .icon_envelope_white .hint{
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background: #f00;
-    position: absolute;
-    display: block;
-    right: 2px;
-    bottom: 3px;
-}
+
 .left_sidebar  .account .photo{
     position: absolute;
     left:10px;

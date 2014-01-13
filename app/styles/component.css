@@ -607,7 +607,7 @@ a:hover > .icon16x16.icon_chat,
 .icon32x32{
     width: 32px;
     height: 32px;
-    background-image: url(../images/icon/icon32x32.png?v=5);
+    background-image: url(../images/icon/icon32x32.png?v=6);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -623,7 +623,7 @@ a:hover > .icon16x16.icon_chat,
     background-position: -76px -4px;
 }
 .icon32x32.icon_envelope{
-    background-position: -4px -244px;
+    background-position: -4px -220px;
 }
 .icon32x32.icon_envelope_white{
     background-position: -40px -220px;
@@ -666,6 +666,18 @@ a:hover > .icon16x16.icon_chat,
 }
 .icon32x32.icon_bbs{
     background-position: -4px -544px;
+}
+.icon32x32.icon_ring{
+    background-position: -4px -580px;
+}
+.icon32x32.icon_ring_white{
+    background-position: -40px -580px;
+}
+.icon32x32.icon_message{
+    background-position: -4px -616px;
+}
+.icon32x32.icon_message_white{
+    background-position: -40px -616px;
 }
 .icon128x128{
     width: 128px;

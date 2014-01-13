@@ -445,13 +445,13 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open(option);
 
             },
-            setMilestone:function(mountId,file){
+            setMilestone:function(mountId,file,oldMessage){
                 var option = {
                     templateUrl: 'views/set_milestone_dialog.html',
                     windowClass: 'set_milestone_dialog',
                     controller: function ($scope,$modalInstance) {
                         $scope.file = file;
-                        $scope.message = '';
+                        $scope.message = oldMessage || '';
                         $scope.markMilestone = function(message){
                             GKApi.markMilestone(mountId,file.fullpath,message)
                                 .success(function(){

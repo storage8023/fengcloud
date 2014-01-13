@@ -13,7 +13,15 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'message',
                         name:'消息',
-                        icon:'icon_envelope_white',
+                        icon:'icon_message',
+                        handleClick:function(){
+                            GKDialog.chat();
+                        }
+                    },
+                    {
+                        classes:'chat',
+                        name:'聊天',
+                        icon:'icon_ring',
                         handleClick:function(){
                             gkClientInterface.launchpad({type:'message'});
                         }
@@ -21,7 +29,7 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'trasfer',
                         name:'传输',
-                        icon:'icon_transfer_white',
+                        icon:'icon_transfer',
                         handleClick:function(){
                             GKDialog.openTransfer();
                         }
@@ -29,7 +37,7 @@ angular.module('gkClientFrame.directives',[])
                     {
                         classes:'setting',
                         name:'设置',
-                        icon:'icon_setting_white',
+                        icon:'icon_setting',
                         handleClick:function(){
                             GKDialog.openSetting();
                         }

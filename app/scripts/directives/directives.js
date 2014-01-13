@@ -798,21 +798,18 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', 'GKModal', 'GKNews', 'GKApi', function (GKDialog, GKModal, GKNews, GKApi) {
+    .directive('member', ['GKDialog',  function (GKDialog) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/member.html",
             scope: {
-                user: '=',
-                newMsg:'='
+                user: '='
             },
             link: function ($scope, $element) {
                 $scope.newsOpen = function () {
-                    GKModal.news(GKNews, GKApi);
-                    $scope.$emit('newsModalOpen');
+                   GKDialog.chat();
                 };
-
                 $scope.personalOpen = function ($scope) {
                     GKDialog.openSetting('account');
                 };
@@ -1056,7 +1053,12 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 $scope.showMilestoneDialog = function(file){
-                    GKModal.setMilestone(getOptMountId(file),file).result.then(function(){
+                    var firstHistory = $scope.histories[0];
+                    var oldMsg = '';
+                    if(firstHistory){
+                        oldMsg = firstHistory['property']?firstHistory['property']['message']||'' : '';
+                    }
+                    GKModal.setMilestone(getOptMountId(file),file,oldMsg).result.then(function(){
                         getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
                     });
                 }
