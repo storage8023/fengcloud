@@ -1581,8 +1581,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         icon: 'icon_chat',
                         name: 'chat',
                         click: function () {
-                            GKDialog.chat();
-                            //GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
+                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
                         }
                     })
                 }

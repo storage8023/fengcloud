@@ -9,13 +9,13 @@ angular.module('gkChat', ['GKCommon'])
         }
         var setMount = function () {
             var param = $location.search();
-            var mount;
-            if(param.mountid!=0){
-                mount = GKMount.getMountById(Number(param.mountid))
-            }else{
-                mount = GKMount.getMounts()[0];
-            }
-            if(!mount) return;
+            var mount = GKMount.getMountById(Number(param.mountid));
+            if(!mount){
+                $location.search({
+                    mountid:GKMount.getMounts()[0]['mount_id']
+                })
+                return;
+            };
             var extendParam = {
                 mount: mount
             };
@@ -50,6 +50,11 @@ angular.module('gkChat', ['GKCommon'])
             $scope.$apply(function(){
                 chatSession.refreshSession();
                 $scope.sessions = chatSession.sessions;
+                if(data.type == 'remove' && data.orgId == $rootScope.PAGE_CONFIG.mount.org_id){
+                    $location.search({
+                        mountid:$scope.sessions[0]['mount_id']
+                    });
+                }
             })
             if(data.type !='edit'){
                 initConnect();
