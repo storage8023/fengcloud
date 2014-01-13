@@ -712,7 +712,7 @@ angular.module('gkClientIndex.services', [])
                     windowClass: 'news_dialog',
                     controller: function ($scope, $modalInstance, classifyNews) {
                         $rootScope.showNews = true;
-
+                        $rootScope.$broadcast('newsOpen');
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
@@ -3107,7 +3107,13 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_rename',
                         callback: function () {
                             var file = selectedFile[0];
-                            file.rename = true;
+                            if (arguments.length <= 1) {
+                                file.rename = true;
+                            }else{
+                                $scope.$apply(function(){
+                                    file.rename = true;
+                                })
+                            }
                         }
                     },
                     'view_property': {

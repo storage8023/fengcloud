@@ -1474,6 +1474,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.openNews = function(){
             GKModal.news(GKNews, GKApi);
+        }
+
+        $scope.$on('newsOpen',function(){
             if(t){
                 $interval.cancel(t);
                 count = 0;
@@ -1481,8 +1484,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.newMsg = false;
             localStorageService.remove(unreadMsgKey);
             gkClientInterface.clearMessage();
-        }
-
+        })
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog) {
 
