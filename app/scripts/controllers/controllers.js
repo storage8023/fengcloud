@@ -1125,6 +1125,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKPath.gotoFile(GKFileList.getOptFileMountId(file), file.fullpath);
             } else {
                 if (!$scope.PAGE_CONFIG.networkConnected && !file.cache) {
+                    alert('该文件无本地缓存，离线状态下无法查看');
                     return;
                 }
                 GK.open({

@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getOrgMembers:function(param){
+        if(typeof gkClient.gGetOrgMembers === 'undefined'){
+            return '';
+        }
+        return JSON.stringify(gkClient.gGetOrgMembers(JSON.stringify(param)));
+    },
     setWindowTop:function(){
         if(typeof gkClient.gSetForegroundWindow === 'undefined'){
             return;
