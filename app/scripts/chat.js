@@ -251,7 +251,7 @@ angular.module('gkChat', ['GKCommon'])
 
                 }
             }).error(function (request, textStatus, errorThrown) {
-                    if (textStatus != 'abort') {
+                    //if (textStatus != 'abort') {
                         var errorCode = GKException.getAjaxErroCode(request);
                         $timeout(function () {
                             if (errorCode == 40310) {
@@ -260,7 +260,7 @@ angular.module('gkChat', ['GKCommon'])
                                 connect();
                             }
                         }, 2000)
-                    }
+                    //}
                 });
         };
         $scope.logined = false;
@@ -312,7 +312,8 @@ angular.module('gkChat', ['GKCommon'])
                 var ext = Util.String.getExt(filename);
                 var extendValue = {
                     sender_name: sender ? sender['member_name'] : value.sender,
-                    is_vip: sender && sender.isvip ? true : false
+                    is_vip: sender && sender.isvip ? true : false,
+                    sender_id:sender ? sender['member_id'] : value.sender,
                 };
 
                 if (value.metadata) {

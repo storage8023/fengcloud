@@ -393,7 +393,7 @@ angular.module('GKCommon.directives', [])
 
                 var checkAt = function () {
                     val = $scope[$attrs.ngModel];
-                    console.log(val);
+                    //console.log(val);
                     var cursor = Util.Input.getCurSor($element[0]);
                     inputPos = cursor.split('|');
                     var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符

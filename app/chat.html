@@ -54,7 +54,7 @@
                         <div class="time_grid" ng-show="currentMsgList[$index-1]&&((msg['time']|date:'yyyy/MM/dd HH:mm') != (currentMsgList[$index-1]['time']|date:'yyyy/MM/dd HH:mm'))">{{msg.time|timeAgo}}</div>
 
                         <div class="avatar_wrapper">
-                            <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl}}"></avatar>
+                            <avatar class="avatar" gk-src="{{msg.sender_id|getAvatarUrl}}"></avatar>
                         </div>
                         <div class="chat_main">
                             <div class="chat_member">
