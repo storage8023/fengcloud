@@ -397,8 +397,8 @@ angular.module('gkChat', ['GKCommon'])
         return chatMember;
     }])
     .factory('chatService', [function () {
-        //var host = 'http://10.0.0.150:1238';
-        var host = 'http://112.124.68.214:1238';
+        var host = 'http://10.0.0.150:1238';
+        //var host = 'http://112.124.68.214:1238';
         var chat = {
             add: function (orgId, content, metadata) {
                 metadata = angular.isDefined(metadata) ? metadata : '';

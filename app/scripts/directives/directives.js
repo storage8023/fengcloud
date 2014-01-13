@@ -945,7 +945,10 @@ angular.module('gkClientIndex.directives', [])
                             $scope.$apply(function () {
                                 $scope.sidebarLoaded = true;
                                 if (data.history) {
-                                    $scope.histories = data.history;
+                                    $scope.histories = data.history.map(function(item){
+                                        item.milestone = item.property?item.property.milestone : 0;
+                                        return item;
+                                    });
                                 }else{
                                     $scope.histories = [];
                                 }
@@ -967,6 +970,7 @@ angular.module('gkClientIndex.directives', [])
                         $interval.cancel(fileInterval);
                         fileInterval = null;
                     }
+                    $scope.onlyShowMileStone = false;
 //                    $scope.fileLoaded = false;
 //                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
