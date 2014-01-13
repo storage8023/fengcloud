@@ -92,7 +92,6 @@ angular.module('gkClientIndex.directives', [])
                                                 version:version
                                             }]
                                         }
-                                        console.log(param);
                                         gkClientInterface.saveToLocal(param);
                                     }
                                 }
@@ -951,9 +950,9 @@ angular.module('gkClientIndex.directives', [])
                                 }
                             })
                         }).error(function(){
-                                $scope.$apply(function () {
+                                //$scope.$apply(function () {
                                     $scope.sidebarLoaded = true;
-                                })
+                                //})
                             });
                     }
 
