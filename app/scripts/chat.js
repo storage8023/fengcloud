@@ -80,6 +80,7 @@ angular.module('gkChat', ['GKCommon'])
                 return;
             }
             if (!postText.length) {
+                $event.preventDefault();
                 return;
             }
             $scope.postText = '';
