@@ -2149,7 +2149,8 @@ angular.module('gkClientIndex.services', [])
                         open: value.publish || 0,
                         hasFolder: 1,
                         tag:value.tag||'',
-                        version:value.version
+                        version:value.version,
+                        index:value.index
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -2183,7 +2184,8 @@ angular.module('gkClientIndex.services', [])
                         open: value.open || 0,
                         hasFolder: value.hasfolder || 0,
                         tag:'',
-                        version:value.version
+                        version:value.version,
+                        index:0
                     };
                 }
                 return file;

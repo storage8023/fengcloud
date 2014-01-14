@@ -841,7 +841,7 @@ angular.module('gkClientIndex.directives', [])
                 var getFileState = function (mountId, fullpath) {
                     //网络断开后不重新连接
                     if($rootScope.PAGE_CONFIG.networkConnected ==0){
-                        //return;
+                        return;
                     }
                     var info = gkClientInterface.getTransInfo({
                         mountid: mountId,

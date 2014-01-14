@@ -17,8 +17,7 @@
            </div>
            <div class="file_info">
                <div class="filename_wrapper">
-                   <span class="filename" title="{{file.filename}}">{{file.filename}} &nbsp;<span class="file_version">V{{file.version}}</span></span>
-
+                   <span class="filename" title="{{file.filename}}">{{file.filename}} &nbsp;<span class="file_version" ng-show="file.index>0">V{{file.index}}</span></span>
                </div>
               <div class="other_info">
                   <span class="last_member_name">{{file.last_member_name}}</span>
