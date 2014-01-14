@@ -639,7 +639,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 path = Util.String.dirName(fullpath);
                 selectFile = fullpath;
             }
-            $scope.$apply(function(){
+            $timeout(function(){
                 GKPath.gotoFile(mountId, path, selectFile);
             })
         })
