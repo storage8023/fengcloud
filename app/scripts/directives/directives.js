@@ -1357,6 +1357,7 @@ angular.module('gkClientIndex.directives', [])
                     if(!$scope.currentSearchScope){
                         return;
                     }
+
                     if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || $rootScope.PAGE_CONFIG.filter == 'trash') {
                         $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
                     } else {

@@ -3407,7 +3407,7 @@ angular.module('gkClientIndex.services', [])
                     source = 'client',
                     deferred = $q.defer();
                 if ($scope.keyword) {
-                    if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0) {
+                    if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0 && $scope.filter != 'trash') {
                         source = 'api';
                         GKSearch.setSearchState('loading');
                         var condition = GKSearch.getCondition();

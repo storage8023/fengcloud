@@ -1405,8 +1405,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             gkClientInterface.openUrl(url);
         }
 
-
-
         $scope.items = [
             {
                 item: "创建云库",
