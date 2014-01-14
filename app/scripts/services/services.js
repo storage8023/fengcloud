@@ -3068,7 +3068,7 @@ angular.module('gkClientIndex.services', [])
                     },
                     'save': {
                         index: 16,
-                        name: '保存',
+                        name: '另存为',
                         className: "save",
                         icon: 'icon_save',
                         accesskeyText: context.getAccessKey('save'),

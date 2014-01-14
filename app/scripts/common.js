@@ -1691,6 +1691,16 @@ angular.module('GKCommon.filters', [])
         return function(filename,dir,share,sync){
             return 'images/icon/' + $filter('getFileIconSuffix')(filename,dir,share,sync) + '128x128.png';
         }
+    }])
+    .filter('formatCount',[function(){
+        return function(count,max){
+           max = angular.isDefined(max)?max:99;
+           if(count>max){
+               return max+'+';
+           }else{
+               return count;
+           }
+        }
     }]);
 
 

@@ -910,8 +910,8 @@ angular.module('gkClientIndex.directives', [])
                                 }
                             });
 
-                        }).error(function (request) {
-                                $scope.$apply(function () {
+                        }).error(function (request,textStatus,errorThrown) {
+                               //$scope.$apply(function () {
                                     $scope.fileLoaded = true;
                                     $scope.fileExist = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
@@ -932,7 +932,7 @@ angular.module('gkClientIndex.directives', [])
                                     fileInterval = $interval(function () {
                                         getFileState(mountId, file.fullpath);
                                     }, 1000);
-                                })
+                                //})
                             });
                     }
 

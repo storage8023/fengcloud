@@ -1,42 +1,14 @@
 'use strict';
 
-angular.module('gkChat', ['GKCommon'])
+angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
     .run(['$rootScope', '$location', 'GKMount', '$window', function ($rootScope, $location, GKMount, $window) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
-            mount: {},
             file: null
         }
-        var setMount = function () {
-            var param = $location.search();
-            var mount = GKMount.getMountById(Number(param.mountid));
-            if(!mount){
-                $location.search({
-                    mountid:GKMount.getMounts()[0]['mount_id']
-                })
-                return;
-            };
-            var extendParam = {
-                mount: mount
-            };
-            if (param.fullpath) {
-                extendParam.file = gkClientInterface.getFileInfo({
-                    mountid: mount.mount_id,
-                    webpath: param.fullpath
-                });
-                extendParam.file.mount_id = mount.mount_id;
-                extendParam.file.filename = Util.String.baseName(extendParam.file.path);
-                extendParam.file.ext = Util.String.getExt(extendParam.file.filename);
-            }
-            angular.extend($rootScope.PAGE_CONFIG, extendParam);
-        };
-
-        $rootScope.$on('$locationChangeSuccess', function (event,newLocation,oldLocation) {
-            setMount();
-        })
-        setMount();
     }])
     .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', 'GKApi','chatHost',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember,GKApi,chatHost) {
+
         $scope.sessions = chatSession.sessions;
         $scope.currentMsgList = [];
         $scope.currentSession = null;
@@ -50,7 +22,7 @@ angular.module('gkChat', ['GKCommon'])
             $scope.$apply(function(){
                 chatSession.refreshSession();
                 $scope.sessions = chatSession.sessions;
-                if(data.type == 'remove' && data.orgId == $rootScope.PAGE_CONFIG.mount.org_id){
+                if(data.type == 'remove' && data.orgId == $scope.currentSession.org_id){
                     $location.search({
                         mountid:$scope.sessions[0]['mount_id']
                     });
@@ -89,15 +61,15 @@ angular.module('gkChat', ['GKCommon'])
             var now = new Date().getTime();
             var msgData = {
                 content: postText,
-                receiver: $rootScope.PAGE_CONFIG.mount.org_id,
-                sender: $scope.PAGE_CONFIG.user.member_name,
+                receiver: $scope.currentSession.org_id,
+                sender: $scope.user.member_name,
                 time: now,
                 type: 'text'
             };
             var metaData;
-            if ($rootScope.PAGE_CONFIG.file && !$rootScope.PAGE_CONFIG.file.posted && $rootScope.PAGE_CONFIG.file.mount_id == $rootScope.PAGE_CONFIG.mount.mount_id) {
+            if ($rootScope.PAGE_CONFIG.file && !$rootScope.PAGE_CONFIG.file.posted && $rootScope.PAGE_CONFIG.file.mount_id == $scope.currentSession.mount_id) {
                 metaData = {
-                    mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
+                    mount_id: $scope.currentSession.mount_id,
                     hash: $rootScope.PAGE_CONFIG.file.uuidhash
                 };
                 angular.extend(msgData, {
@@ -112,7 +84,7 @@ angular.module('gkChat', ['GKCommon'])
             $scope.scrollToIndex = $scope.currentMsgList.length-1;
 
             chatSession.setLastTime($scope.currentSession, now);
-            chatService.add($rootScope.PAGE_CONFIG.mount.org_id, postText, metaData ? JSON.stringify(metaData) : '').error(function (error) {
+            chatService.add($scope.currentSession.org_id, postText, metaData ? JSON.stringify(metaData) : '').error(function (error) {
                 var errorMsg = GKException.getAjaxErrorMsg(error);
                 chatContent.setItemError(newMsg, errorMsg);
             });
@@ -133,7 +105,7 @@ angular.module('gkChat', ['GKCommon'])
             $scope.loadingHistoryMsg = true;
             $scope.loadingHistoryError = true;
             $scope.firstLoading = scrollToBottom;
-            chatService.search($scope.PAGE_CONFIG.mount.org_id, minDateline, 10).success(function (data) {
+            chatService.search($scope.currentSession.org_id, minDateline, 10).success(function (data) {
                 $scope.$apply(function () {
                     $scope.loadingHistoryMsg = false;
                     $scope.start = -1;
@@ -168,7 +140,7 @@ angular.module('gkChat', ['GKCommon'])
          */
         $scope.goToFile = function (file) {
             var fullpath = file.path;
-            var mountId = $rootScope.PAGE_CONFIG.mount.mount_id;
+            var mountId = $scope.currentSession.mount_id;
             gkClientInterface.openPath({
                 mountid:mountId,
                 webpath:fullpath,
@@ -182,7 +154,7 @@ angular.module('gkChat', ['GKCommon'])
          */
         $scope.openFile = function (file) {
             var fullpath = file.path;
-            var mountId = Number($rootScope.PAGE_CONFIG.mount.mount_id);
+            var mountId = Number($scope.currentSession.mount_id);
             if(file.dir==1){
                 gkClientInterface.openPath({
                     mountid:mountId,
@@ -202,11 +174,24 @@ angular.module('gkChat', ['GKCommon'])
         $scope.remindMembers = [];
         var setList = function () {
             var param = $location.search();
-            var mountId = Number($rootScope.PAGE_CONFIG.mount.mount_id);
+            var mountId = Number(param.mountid);
             var session = chatSession.getSessionByMountId(mountId);
-            if (!session) return;
+            if (!session){
+                session = $scope.sessions[0];
+            };
             $scope.currentSession = session;
-            $scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
+            var extendParam = {};
+            if (param.fullpath) {
+                extendParam.file = gkClientInterface.getFileInfo({
+                    mountid: $scope.currentSession.mount_id,
+                    webpath: param.fullpath
+                });
+                extendParam.file.mount_id = $scope.currentSession.mount_id;
+                extendParam.file.filename = Util.String.baseName(extendParam.file.path);
+                extendParam.file.ext = Util.String.getExt(extendParam.file.filename);
+            }
+            angular.extend($rootScope.PAGE_CONFIG, extendParam);
+            $scope.remindMembers = chatMember.getMembers($scope.currentSession.org_id);
             $scope.currentMsgList = session.msgList;
             $scope.start = 0;
             $scope.size = 100;
@@ -237,7 +222,7 @@ angular.module('gkChat', ['GKCommon'])
 //                                  var start = $scope.msg_list.length + len - $scope.size;
 //                                  $scope.start = start < 0 ? 0 : start;
                                     chatContent.add(session, item);
-                                    if (session.mount_id != $rootScope.PAGE_CONFIG.mount.mount_id) {
+                                    if (session.mount_id != $scope.currentSession.mount_id) {
                                         chatSession.setUnreadCount(session, session.unreadCount + 1);
                                     }else{
                                         $scope.scrollToIndex = $scope.currentMsgList.length-1;
@@ -303,7 +288,6 @@ angular.module('gkChat', ['GKCommon'])
             })
 
     }])
-
     .factory('chatContent', ['chatMember', 'chatSession', function (chatMember, chatSession) {
         var chatContent = {
             formatItem: function (value) {
@@ -349,9 +333,17 @@ angular.module('gkChat', ['GKCommon'])
         };
         return chatContent;
     }])
-    .factory('chatSession', ['GKMount', function (GKMount) {
+    .factory('chatSession', ['GKMount','$angularCacheFactory','$filter', function (GKMount,$angularCacheFactory,$filter) {
+        var chatSessionCache = $angularCacheFactory.get('chatSessionCache');
+        if(!chatSessionCache){
+            chatSessionCache = $angularCacheFactory('postRemarkCache',{
+                maxAge: 2592000000, //30天后过期
+                deleteOnExpire: 'aggressive',
+                storageMode: 'localStorage'
+            });
+        }
         var getSession = function () {
-            return GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts()).map(function (session) {
+            var sessions = GKMount.getOrgMounts().concat(GKMount.getJoinOrgMounts()).map(function (session) {
                 if (!angular.isArray(session.msgList)) {
                     session.msgList = [];
                 }
@@ -359,10 +351,12 @@ angular.module('gkChat', ['GKCommon'])
                     session.unreadCount = 0;
                 }
                 if (!session.lastTime) {
-                    session.lastTime = 0;
+                    session.lastTime = Number(chatSessionCache.get(session.org_id)) || 0;
                 }
                 return session;
-            })
+            });
+            sessions = $filter('orderBy')(sessions,'-lastTime');
+            return sessions;
         };
         var chatSession = {
             sessions: getSession(),
@@ -381,6 +375,7 @@ angular.module('gkChat', ['GKCommon'])
             },
             setLastTime: function (session, lastTime) {
                 session.lastTime = lastTime;
+                chatSessionCache.put(session.org_id,lastTime);
             }
         };
         return chatSession;

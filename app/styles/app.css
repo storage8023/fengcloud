@@ -45,6 +45,19 @@ header .menu .icon_ring .hint{
     right: 8px;
     bottom: 6px;
 }
+header .menu .icon_ring.active,
+header .menu .icon_ring:hover{
+    background-position: -40px -580px;
+}
+header .menu .icon_bbs:hover{
+    background-position: -40px -544px;
+}
+header .menu .icon_what:hover{
+    background-position: -40px -400px;
+}
+header .menu .icon_menu:hover{
+    background-position: -40px -292px;
+}
 header .menu > span,
 header .menu > a{
     margin: 0 10px 0 0;
@@ -329,11 +342,14 @@ footer {
     display: inline-block;
     vertical-align: middle;
 }
-.left_sidebar  .account .account_info .icon_envelope_white{
+.left_sidebar  .account .account_info .show_chat{
     position: absolute;
     right:5px;
+   margin-top: 0;
 }
-
+.left_sidebar  .account .account_info .show_chat:hover{
+    background-position: -40px -616px;
+}
 .left_sidebar  .account .photo{
     position: absolute;
     left:10px;

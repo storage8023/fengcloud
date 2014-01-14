@@ -13,6 +13,7 @@
     <script src="scripts/interface.js?v=3"></script>
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="scripts/common.js?v=3"></script>
     <script src="scripts/chat.js?v=3"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
@@ -22,25 +23,25 @@
     <div class="scrollbar sidebar">
         <h2>够快云库</h2>
         <ul class="session_list">
-            <li ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'-lastTime'" ng-class="session.mount_id==PAGE_CONFIG.mount.mount_id?'selected':''">
+            <li title="{{session.name}}" ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'-lastTime'" ng-class="session.mount_id==currentSession.mount_id?'selected':''">
                 <team-logo gk-src="{{session.logo}}" class="avatar"></team-logo>
                 <span ng-bind="session.name"></span>
-                <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount"></span>
+                <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount|formatCount"></span>
             </li>
         </ul>
     </div>
     <div class="main">
         <div ng-show="!logined">
-            <div class="empty" ng-if="!error">正在登录房间...</div>
+            <div class="empty" ng-if="!error">正在加载...</div>
             <div class="empty" ng-if="error">{{error.msg}}</div>
         </div>
         <div ng-show="logined">
             <header>
                 <div class="header_left">
-                    <team-logo gk-src="{{PAGE_CONFIG.mount.logo}}" class="avatar avatar_big"></team-logo>
+                    <team-logo gk-src="{{currentSession.logo}}" class="avatar avatar_big"></team-logo>
                     <div class="org_info">
-                        <div class="org_name"><span ng-bind="PAGE_CONFIG.mount.name"></span></div>
-                        <div class="org_count"><span>成员数：{{PAGE_CONFIG.mount.member_count}}</span></div>
+                        <div class="org_name"><span ng-bind="currentSession.name"></span></div>
+                        <div class="org_count"><span>成员数：{{currentSession.member_count}}</span></div>
                     </div>
                 </div>
             </header>
@@ -91,7 +92,7 @@
                 </div>
 
             </section>
-            <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == PAGE_CONFIG.mount.mount_id?'post_with_file':''">
+            <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == currentSession.mount_id?'post_with_file':''">
                 <textarea ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="post_file_wrapper" ng-if="PAGE_CONFIG.file">
                     <div class="chat_file" data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">

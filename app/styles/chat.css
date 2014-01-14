@@ -348,10 +348,13 @@ footer .post_file_wrapper .chat_file{
 .session_list > li{
     height: 37px;
     line-height: 27px;
-    padding:6px 10px;
+    padding:6px 42px 6px 10px;
     margin: 2px 0;
     position: relative;
     font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .session_list > li:hover,
 .session_list > li:active{
@@ -371,6 +374,7 @@ footer .post_file_wrapper .chat_file{
     display:block;
     top:50%;
     right: 6px;
+    font-size: 13px;
     height: 16px;
     padding: 0 8px;
     border-radius: 8px;
