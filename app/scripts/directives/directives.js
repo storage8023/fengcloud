@@ -839,6 +839,10 @@ angular.module('gkClientIndex.directives', [])
                 $scope.smarts = GKSmartFolder.getFolders('recent');
 
                 var getFileState = function (mountId, fullpath) {
+                    //网络断开后不重新连接
+                    if($rootScope.PAGE_CONFIG.networkConnected ==0){
+                        //return;
+                    }
                     var info = gkClientInterface.getTransInfo({
                         mountid: mountId,
                         webpath: fullpath
@@ -915,7 +919,7 @@ angular.module('gkClientIndex.directives', [])
                                     $scope.fileLoaded = true;
                                     $scope.fileExist = false;
                                     var errorCode = GKException.getAjaxErroCode(request);
-                                    if (String(errorCode).slice(0, 3) != '404') {
+                                    if (errorCode == 404 || String(errorCode).slice(0, 3) != '404') {
                                         return;
                                     }
                                     if (errorCode == 404024 && $scope.localFile.status != 1) {
@@ -928,11 +932,12 @@ angular.module('gkClientIndex.directives', [])
                                     $scope.sidbarData = {
                                         icon: 'uploading'
                                     };
+                               //})
                                     getFileState(mountId, file.fullpath);
                                     fileInterval = $interval(function () {
                                         getFileState(mountId, file.fullpath);
                                     }, 1000);
-                                //})
+
                             });
                     }
 
