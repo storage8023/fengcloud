@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    openPath:function(param){
+        if(typeof gkClient.gSelectWebPathDlg === 'undefined'){
+            return;
+        }
+        return gkClient.gSelectWebPathDlg(JSON.stringify(param));
+    },
     clearMessage:function(){
         if(typeof gkClient.gClearMessage === 'undefined'){
             return;

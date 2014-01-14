@@ -169,10 +169,10 @@ angular.module('gkChat', ['GKCommon'])
         $scope.goToFile = function (file) {
             var fullpath = file.path;
             var mountId = $rootScope.PAGE_CONFIG.mount.mount_id;
-            GKWindowCom.post('launchpad', {
-                type: 'gotoFile',
-                mountid: Number(mountId),
-                webpath: fullpath
+            gkClientInterface.openPath({
+                mountid:mountId,
+                webpath:fullpath,
+                type:'select'
             });
         };
 
@@ -184,10 +184,10 @@ angular.module('gkChat', ['GKCommon'])
             var fullpath = file.path;
             var mountId = Number($rootScope.PAGE_CONFIG.mount.mount_id);
             if(file.dir==1){
-                GKWindowCom.post('launchpad', {
-                    type: 'gotoFile',
-                    mountid: mountId,
-                    webpath: fullpath+'/'
+                gkClientInterface.openPath({
+                    mountid:mountId,
+                    webpath:fullpath,
+                    type:'open'
                 });
             }else{
                 var params = {
