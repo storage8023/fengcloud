@@ -12,7 +12,7 @@ angular.module('gkClientFrame.directives',[])
                 $scope.menus = [
                     {
                         classes:'message',
-                        name:'消息',
+                        name:'聊天',
                         icon:'icon_message',
                         handleClick:function(){
                             GKDialog.chat();
@@ -20,7 +20,7 @@ angular.module('gkClientFrame.directives',[])
                     },
                     {
                         classes:'chat',
-                        name:'聊天',
+                        name:'消息',
                         icon:'icon_ring',
                         handleClick:function(){
                             gkClientInterface.launchpad({type:'message'});
