@@ -69,7 +69,7 @@
                     <button class="btn btn-default" ng-show="localFile.dir==0" ng-click="showMilestoneDialog(file)">里程碑</button>
                     <span>历史</span>
                 </div>
-                <div class="history_wrapper">
+                <div class="history_wrapper" ng-class="!histories.length || localFile.dir==1?'nocheckbox':''">
                     <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
                     <ul class="scrollbar history_list" gk-version-contextmenu="localFile.dir==0" gk-version-contextmenu="localFile.dir==0">
                         <li class="c_f_after {{'act_'+history.act}}" title="{{history.property.message}}" ng-class="history.property.milestone?'milestone':''" ng-repeat="history in histories | filter:historyFilter" data-version="{{history.property.version}}">
@@ -95,7 +95,7 @@
                             </div>
                         </li>
                     </ul>
-                    <div class="checkbox_wrapper" ng-show="histories.length"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
+                    <div class="checkbox_wrapper" ng-show="histories.length && localFile.dir==0"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
                 </div>
             </section>
         </div>
