@@ -62,7 +62,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             var msgData = {
                 content: postText,
                 receiver: $scope.currentSession.org_id,
-                sender: $scope.user.member_name,
+                sender: $rootScope.PAGE_CONFIG.user.member_name,
                 time: now,
                 type: 'text'
             };
@@ -307,9 +307,12 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                             mountid: Number(value.metadata.mount_id),
                             uuidhash: value.metadata.hash
                         });
-                        file.filename = Util.String.baseName(file.path);
-                        file.ext = Util.String.getExt(file.filename);
-                        extendValue.file = file;
+                        if(!jQuery.isEmptyObject(file)){
+                            file.filename = Util.String.baseName(file.path);
+                            file.ext = Util.String.getExt(file.filename);
+                            extendValue.file = file;
+                        }
+
                     }
                 }
                 angular.extend(value, extendValue)
