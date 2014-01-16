@@ -24,7 +24,7 @@
         <h2>够快云库</h2>
         <ul class="session_list">
             <li title="{{session.name}}" ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'-lastTime'" ng-class="session.mount_id==currentSession.mount_id?'selected':''">
-                <team-logo gk-src="{{session.logo}}" class="avatar"></team-logo>
+                <team-logo gk-src="{{session.logo}}" class="avatar avatar_mini"></team-logo>
                 <span ng-bind="session.name"></span>
                 <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount|formatCount"></span>
             </li>
@@ -36,6 +36,7 @@
             <div class="empty" ng-if="error">{{error.msg}}</div>
         </div>
         <div ng-show="logined">
+            <div class="content">
             <header>
                 <div class="header_left">
                     <team-logo gk-src="{{currentSession.logo}}" class="avatar avatar_big"></team-logo>
@@ -66,9 +67,6 @@
                                 <span ng-bind="msg.content"></span>
                             </div>
                             <div class="chat_file" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
-                                <div class="file_opt">
-                                    <button title="位置" class="btn btn-default" ng-click="goToFile(msg.file)"><i class="icon16x16 icon_location_white"></i></button><button title="打开" class="btn btn-default" ng-click="openFile(msg.file)"><i class="icon16x16 icon_open_with_white"></i></button>
-                                </div>
                                 <div class="file_icon_wrapper">
                                     <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
                                         <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
@@ -82,6 +80,11 @@
                                         <span ng-bind="msg.file.filesize|bitSize"></span>
                                     </div>
                                 </div>
+                                <div class="file_opt">
+                                    <button title="位置" class="" ng-click="goToFile(msg.file)"><i class="icon16x16 icon_location"></i></button>
+                                    <button title="打开" class="" ng-click="openFile(msg.file)"><i class="icon16x16 icon_open_with"></i></button>
+                                    <button title="引用" class="" ng-click="quoteFile(msg.file)"><i class="icon16x16 icon_open_with"></i></button>
+                                </div>
                             </div>
                         </div>
                         <div ng-show="msg.historyMsg" class="history_grid">
@@ -93,25 +96,35 @@
 
             </section>
             <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == currentSession.mount_id?'post_with_file':''">
-                <textarea ng-model="postText" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
+                <textarea ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="post_file_wrapper" ng-if="PAGE_CONFIG.file">
-                    <div class="chat_file" data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">
-                        <div class="file_icon_wrapper">
-                            <i class="icon32x32" ng-class="PAGE_CONFIG.file.filename | getFileIcon:PAGE_CONFIG.file.dir:0:0">
-                                <img error-src="" src="{{PAGE_CONFIG.file.uuidhash | getThumbUrl:PAGE_CONFIG.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(PAGE_CONFIG.file.ext)>=0"/>
-                            </i>
+                    <div data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">
+                        <div class="close_btn" ng-click="cancelAtFile()">
+                            <i class="close" title="取消">&times;</i>
                         </div>
-                        <div class="filename_wrapper">
-                            <div class="filename">
-                                <span ng-bind="PAGE_CONFIG.file.filename"></span>
-                            </div>
-                            <div class="filesize" ng-show="PAGE_CONFIG.file.dir==0" >
-                                <span ng-bind="PAGE_CONFIG.file.filesize|bitSize"></span>
-                            </div>
+                        <div class="filesize" ng-show="PAGE_CONFIG.file.dir==0" >
+                            <span ng-bind="PAGE_CONFIG.file.filesize|bitSize"></span>
                         </div>
+                        <div class="filename">
+                            <span ng-bind="PAGE_CONFIG.file.filename"></span>
+                        </div>
+
                     </div>
                 </div>
             </footer>
+            </div>
+            <div class="right_sidebar">
+                <div class="input_wrapper">
+                    <input type="text"  placeholder="输入关键字筛选" class="form-control" ng-model="searchKeyword" name="search_keyword" id="search_keyword"/>
+                    <i class="icon16x16 icon_search"></i>
+                </div>
+                <div class="member_list" >
+                    <li ng-repeat="member in remindMembers | filter:{member_name:searchKeyword}" ng-dblclick="atMember(member)">
+                        <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
+                        <span class="member_name" ng-bind="member.member_name"></span>
+                    </li>
+                </div>
+            </div>
         </div>
 
     </div>

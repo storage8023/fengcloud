@@ -3567,7 +3567,7 @@ angular.module('gkClientIndex.services', [])
                 var data = {
                     url: url,
                     type:'single',
-                    width: 820,
+                    width: 900,
                     resize: 1,
                     height: 580
                 };

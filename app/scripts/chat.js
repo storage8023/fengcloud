@@ -168,7 +168,34 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 }
                 gkClientInterface.open(params);
             }
+        };
 
+        $scope.quoteFile = function (file) {
+           $rootScope.PAGE_CONFIG.file = file;
+            $scope.focusTextarea = true;
+        };
+
+        $scope.atMember = function(member){
+            var val = $scope.remarkText;
+            var jqTextarea = $element.find('.post_wrapper textarea');
+            var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');
+            var is_insert = input_pos[1] != val.length ? 1 : 0;
+            var l = val.substr(0, input_pos[0]);
+            var r = val.substr(input_pos[1], val.length);
+            val = l + input + r;
+            $scope.remarkText = val;
+            $timeout(function () {
+                if (is_insert) {
+                    Util.Input.moveCur(jqTextarea[0], parseInt(input_pos[0]) + (input).length);
+                } else {
+                    Util.Input.moveCur(jqTextarea[0], val.length);
+                }
+                return null;
+            }, 0);
+        };
+
+        $scope.cancelAtFile = function(){
+            $rootScope.PAGE_CONFIG.file = null
         };
 
         $scope.remindMembers = [];
@@ -308,6 +335,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                             uuidhash: value.metadata.hash
                         });
                         if(!jQuery.isEmptyObject(file)){
+                            file.mount_id = Number(value.metadata.mount_id);
                             file.filename = Util.String.baseName(file.path);
                             file.ext = Util.String.getExt(file.filename);
                             extendValue.file = file;

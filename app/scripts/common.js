@@ -3,6 +3,14 @@ angular.module('GKCommon',['GKCommon.directives','GKCommon.services','GKCommon.f
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('insetTo', [function () {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element) {
+               
+            }
+        }
+    }])
     .directive('focusMe', function ($timeout) {
         return {
             link: function (scope, element, attrs) {
