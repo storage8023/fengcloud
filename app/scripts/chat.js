@@ -138,7 +138,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
          * 打开文件位置
          * @param msg
          */
-        $scope.goToFile = function (file) {
+        $scope.goToFile = function ($event,file) {
             var fullpath = file.path;
             var mountId = $scope.currentSession.mount_id;
             gkClientInterface.openPath({
@@ -146,13 +146,14 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 webpath:fullpath,
                 type:'select'
             });
+            $event.stopPropagation();
         };
 
         /**
          * 打开文件
          * @param msg
          */
-        $scope.openFile = function (file) {
+        $scope.openFile = function ($event,file) {
             var fullpath = file.path;
             var mountId = Number($scope.currentSession.mount_id);
             if(file.dir==1){
@@ -168,6 +169,13 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 }
                 gkClientInterface.open(params);
             }
+            $event.stopPropagation();
+        };
+
+        $scope.showAddMember = function(){
+          gkClientInterface.openLanchpad({
+              orgId:$scope.currentSession.org_id
+          });
         };
 
         $scope.quoteFile = function (file) {
@@ -175,23 +183,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             $scope.focusTextarea = true;
         };
 
-        $scope.atMember = function(member){
-            var val = $scope.remarkText;
-            var jqTextarea = $element.find('.post_wrapper textarea');
-            var input_pos = Util.Input.getCurSor(jqTextarea[0]).split('|');
-            var is_insert = input_pos[1] != val.length ? 1 : 0;
-            var l = val.substr(0, input_pos[0]);
-            var r = val.substr(input_pos[1], val.length);
-            val = l + input + r;
-            $scope.remarkText = val;
-            $timeout(function () {
-                if (is_insert) {
-                    Util.Input.moveCur(jqTextarea[0], parseInt(input_pos[0]) + (input).length);
-                } else {
-                    Util.Input.moveCur(jqTextarea[0], val.length);
-                }
-                return null;
-            }, 0);
+        $scope.insertStr = '';
+        $scope.atMember = function(memberName){
+            $scope.insertStr ='@'+memberName+' ';
         };
 
         $scope.cancelAtFile = function(){

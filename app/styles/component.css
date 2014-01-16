@@ -5,7 +5,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=9);
+    background-image: url(../images/icon/icon16x16.png?v=10);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -103,7 +103,6 @@
 .icon16x16.icon_save_white{
     background-position: -24px -184px;
 }
-
 
 .icon16x16.icon_rename{
     background-position: -4px -204px;
@@ -607,7 +606,7 @@ a:hover > .icon16x16.icon_chat,
 .icon32x32{
     width: 32px;
     height: 32px;
-    background-image: url(../images/icon/icon32x32.png?v=6);
+    background-image: url(../images/icon/icon32x32.png?v=7);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -678,6 +677,18 @@ a:hover > .icon16x16.icon_chat,
 }
 .icon32x32.icon_message_white{
     background-position: -40px -616px;
+}
+.icon32x32.icon_add_member{
+    background-position: -4px -653px;
+}
+.icon32x32.icon_add_member_white{
+    background-position: -40px -653px;
+}
+.icon32x32.icon_member{
+    background-position: -4px -688px;
+}
+.icon32x32.icon_member_white{
+    background-position: -40px -688px;
 }
 .icon128x128{
     width: 128px;

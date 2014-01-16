@@ -3,11 +3,30 @@ angular.module('GKCommon',['GKCommon.directives','GKCommon.services','GKCommon.f
 
 /* Directives */
 angular.module('GKCommon.directives', [])
-    .directive('insetTo', [function () {
+    .directive('insertTo', ['$timeout',function ($timeout) {
         return {
             restrict: 'A',
-            link: function ($scope, $element) {
-               
+            link: function ($scope, $element,$attrs) {
+                $scope.$watch($attrs.insertTo, function (input) {
+                    if (input) {
+                        var val = $scope[$attrs.ngModel];
+                        var inputPos = Util.Input.getCurSor($element[0]).split('|');
+                        var isInsert = inputPos[1] != val.length ? 1 : 0;
+                        var l = val.substr(0, inputPos[0]);
+                        var r = val.substr(inputPos[1], val.length);
+                        val = l + input + r;
+                        $scope[$attrs.ngModel] = val;
+                        $timeout(function () {
+                            if (isInsert) {
+                                Util.Input.moveCur($element[0], parseInt(inputPos[0]) + (input).length);
+                            } else {
+                                Util.Input.moveCur($element[0], val.length);
+                            }
+                            return null;
+                        }, 0);
+                        $scope[$attrs.insertTo] = '';
+                    }
+                });
             }
         }
     }])
