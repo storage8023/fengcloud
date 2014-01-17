@@ -1697,7 +1697,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.headClick = function () {
-            $scope.sidbarData.menus[0].click();
+            GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
         };
 
         $scope.atMember = function(memberName){
