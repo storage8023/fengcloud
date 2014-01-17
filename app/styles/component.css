@@ -5,7 +5,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=10);
+    background-image: url(../images/icon/icon16x16.png?v=11);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -33,7 +33,6 @@
 .icon16x16.icon_teamfolder_color{
     background-position: -44px -24px;
 }
-
 
 .icon16x16.icon_subscribefolder{
     background-position: -44px -44px;
@@ -919,6 +918,27 @@ a:hover > .icon16x16.icon_chat,
 .btn-green:focus{
     color: #fff;
 }
+
+.btn.btn-opt{
+    background: #fff;
+    border:1px solid #c9ccd0;
+    color: #7F8999;
+    padding: 3px 10px;
+    transition:linear .1s;
+    -webkit-transition:linear .1s;
+}
+.btn.btn-opt > i{
+    margin-right: 0;
+}
+.btn.btn-opt:hover,
+.btn.btn-opt:active{
+    background: #539CF5;
+    border-color: #539CF5;
+}
+.btn.btn-opt:hover *,
+.btn.btn-opt:active *{
+    color: #fff;
+}
 .input_tip_list{
     position: absolute;
 
@@ -1348,4 +1368,30 @@ text-align: center;
 .guiders_close .close{
    background: none;
     font-weight: normal;
+}
+
+/**选项卡**/
+.tab_header{
+    overflow: hidden;
+    background: #E1E3E7;
+}
+.tab_header > li{
+    float: left;
+}
+.tab_header > li > a{
+    display: block;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-size: 14px;
+    -webkit-transition:linear .1s;
+    transition:linear .1s;
+}
+.tab_header > li > a:hover,
+.tab_header > li > a:active{
+
+}
+.tab_header > li > a.active{
+    background: #448de8;
+    color: #fff;
 }

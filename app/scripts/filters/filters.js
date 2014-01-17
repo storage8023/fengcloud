@@ -33,11 +33,49 @@ angular.module('gkClientIndex.filters', [])
             return partitionName;
         }
     }])
-
     .filter('getFileType',['GKFile',function(GKFile){
         return function(filename,dir,ext){
             var type =  GKFile.getFileIconSuffix(filename,dir);
             return dir==1 ? '文件夹' : ext+GKFile.getFileTypeName(type);
+        }
+    }])
+    .filter('getMemberRoleName',[function(){
+        return function(memberType){
+            var roleName = '';
+          if(memberType==0){
+              roleName = '超级管理员';
+          }else if(memberType==1){
+              roleName = '管理员';
+          }else if(memberType==2){
+              roleName = '成员';
+          }else{
+              roleName = '订阅者';
+          }
+            return roleName;
+        }
+    }])
+    .filter('getTipContent',['$filter',function($filter){
+        return function(member){
+            var src = $filter('getAvatarUrl')(member.member_id);
+            var html = '<div class="member_info_wrapper">'
+            html += '<div>';
+            html += '<img src="'+src+'" class="avatar avatar_big" alt="" />';
+            html += '</div>';
+            html += '<div class="member_name">';
+            html += member.member_name;
+            html += '</div>';
+            if(member.contact_email){
+                html += '<div>';
+                html += member.contact_email;
+                html += '</div>';
+            }
+            if(member.contact_phone){
+                html += '<div>';
+                html += member.contact_phone;
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
         }
     }]);
 

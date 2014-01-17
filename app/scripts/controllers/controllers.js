@@ -33,6 +33,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
+        $scope.$on('ShowAction', function (e, data) {
+            if(!data){
+                return;
+            }
+            if(data.type=='addMember'){
+                GKModal.teamMember(data.orgId);
+            }
+        })
 
         $rootScope.$on('createTeamSuccess', function (event, param) {
             var orgId = param.orgId;
@@ -1517,46 +1525,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
                 sideBarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
                 sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
-                sideBarData.menus = [
-                    {
-                        text: '资料',
-                        icon: 'icon_info',
-                        name: 'visit_website',
-                        click: function () {
-                            GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
-                        }
-                    },
-                    {
-                        text: '名片',
-                        icon: 'icon_teamcard',
-                        name: 'team_card',
-                        click: function () {
-                            GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id);
-                        }
-                    },
-                ];
-
+                sideBarData.menus = [];
                 if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(params.partition) >=0) {
                     sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                    if (GKMount.isMember($rootScope.PAGE_CONFIG.mount)) {
-                        sideBarData.menus.push({
-                            text: '成员',
-                            icon: 'icon_team',
-                            name: 'member_group',
-                            click: function () {
-                                GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
-                            }
-                        });
-                    }
+
                     if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
-                        sideBarData.menus.push({
-                            text: '订阅者',
-                            icon: 'icon_pin',
-                            name: 'subscriber',
-                            click: function () {
-                                GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
-                            }
-                        });
                         sideBarData.menus.push({
                             text: '安全设置',
                             icon: 'icon_manage',
@@ -1580,14 +1553,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             }
                         })
                     }
-//                    sideBarData.menus.push({
-//                        text: '聊天',
-//                        icon: 'icon_chat',
-//                        name: 'chat',
-//                        click: function () {
-//                            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id);
-//                        }
-//                    })
                 }
             }else if(params.filter){
                 var filterName = GKSmartFolder.getSmartFoldeName(params.filter);
@@ -1600,17 +1565,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return sideBarData;
         };
 
+        $scope.hideNoFile = true;
+
         $scope.sidbarData = getSidbarData($location.search());
+
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
             if(param.path){
                 $scope.sidebar = 'singlefile';
+                $scope.hideNoFile = true;
             }else{
                 $scope.sidebar = 'nofile';
                 $scope.sidbarData = getSidbarData(param);
+                $scope.hideNoFile = false;
             }
-
+            $scope.currentTab = 'member';
+            getMember();
         })
 
         $scope.$on('selectedFileChange', function ($event, selectedFile) {
@@ -1622,18 +1593,26 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;
                 if(!$scope.localFile.fullpath){
                     $scope.sidebar = 'nofile';
+                    $scope.hideNoFile = false;
                 }else{
                     $scope.sidebar = 'singlefile';
+                    $scope.hideNoFile = true;
                 }
 
            }else if(selectedFile.length ==1){
                $scope.localFile = selectedFile[0];
                $scope.sidebar = 'singlefile';
+                $scope.hideNoFile = true;
            }else{
                $scope.localFile = null;
                $scope.sidebar = 'multifile';
+                $scope.hideNoFile = true;
            }
         })
+
+        $scope.toggleNoFile = function(){
+            $scope.hideNoFile = !$scope.hideNoFile;
+        }
 
         $scope.$on('editSmartFolder', function ($event, name, code, filter) {
             if ($scope.filter == filter) {
@@ -1653,8 +1632,76 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
+
+        $scope.showTab  = function(tab){
+            if(tab == $scope.currentTab){
+                return;
+            }
+            $scope.currentTab = tab;
+        };
+
+        var getMember = function(){
+            GKApi.groupMember($rootScope.PAGE_CONFIG.mount.org_id).success(function(data){
+                $scope.$apply(function(){
+                    $scope.memberLoading = false
+                    angular.forEach(data.members,function(value,key){
+                        if(value.member_id == $rootScope.PAGE_CONFIG.user.member_id){
+                            data.members.splice(key,1);
+                            data.members.unshift(value);
+                            return false;
+                        }
+                    })
+                    $scope.members = data.members;
+
+                })
+
+            }).error(function(){
+                    $scope.$apply(function(){
+                        $scope.memberLoading = false;
+                    })
+                })
+        };
+
+        var getSubscriber = function(){
+            GKApi.subscriberList($rootScope.PAGE_CONFIG.mount.org_id,0,500).success(function(data){
+                $scope.$apply(function(){
+                    $scope.memberLoading = false;
+                    $scope.subscribers = data.members;
+                })
+            }).error(function(){
+                    $scope.$apply(function(){
+                        $scope.memberLoading = false;
+                    })
+                })
+        };
+
+        $scope.$watch('currentTab',function(newValue,oldValue){
+            if(!newValue) return;
+            if(newValue == oldValue){
+                return;
+            }
+            $scope.memberLoading = true;
+            if(newValue == 'member'){
+                getMember();
+            }else{
+                getSubscriber();
+            }
+        })
+
+        $scope.showMember = function(){
+            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+        };
+
+        $scope.showSubscriber = function(){
+            GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+        };
+
         $scope.headClick = function () {
             $scope.sidbarData.menus[0].click();
+        };
+
+        $scope.atMember = function(memberName){
+            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id,$scope.localFile.fullpath,memberName);
         };
 
     }])

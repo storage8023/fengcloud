@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="header_right">
-                    <a href="javascript:void(0)" ng-click="showAddMember()">
+                    <a href="javascript:void(0)" ng-show="currentSession.type<2" ng-click="showAddMember()">
                         <i class="icon32x32 icon_add_member"></i>
                     </a>
                     <a href="javascript:void(0)" ng-click="hideMember=!hideMember">
@@ -104,7 +104,7 @@
 
             </section>
             <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == currentSession.mount_id?'post_with_file':''">
-                <textarea insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
+                <textarea ng-blur="saveLastText(postText)" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="post_file_wrapper" ng-if="PAGE_CONFIG.file">
                     <div data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">
                         <div class="close_btn" ng-click="cancelAtFile()">

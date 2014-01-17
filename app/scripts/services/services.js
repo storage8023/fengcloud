@@ -3559,11 +3559,12 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKDialog', [function () {
         return {
-            chat: function (mountId,fullpath) {
+            chat: function (mountId,fullpath,atMember) {
                 mountId = angular.isDefined(mountId)?mountId:0;
                 fullpath = angular.isDefined(fullpath)?fullpath:'';
+                atMember = angular.isDefined(atMember)?atMember:'';
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath);
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+atMember;
                 var data = {
                     url: url,
                     type:'single',

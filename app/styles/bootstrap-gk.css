@@ -657,3 +657,19 @@ fieldset[disabled] .form-control{
 .carousel-inner .item:hover{
     background: none;
 }
+.popover{
+   width: 200px;
+    border:0 none;
+    -webkit-box-shadow: 0 0 30px rgba(0,0,0,.25);
+    box-shadow: 0 0 30px rgba(0,0,0,.25);
+}
+.popover .popover-content{
+    padding: 0 20px;
+
+}
+.popover .popover-content > div{
+
+}
+.popover.left .arrow{
+    border-left-color: rgba(0,0,0,.05);
+}

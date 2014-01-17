@@ -7,11 +7,11 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
-    openLanchpad:function(param){
-        if(typeof gkClient.gOpenLanchpad === 'undefined'){
+    openLaunchpad:function(param){
+        if(typeof gkClient.gShowLaunchpad === 'undefined'){
             return;
         }
-        return gkClient.gOpenLanchpad(JSON.stringify(param));
+        return gkClient.gShowLaunchpad(JSON.stringify(param));
     },
     openPath:function(param){
         if(typeof gkClient.gSelectWebPathDlg === 'undefined'){

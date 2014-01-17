@@ -270,22 +270,29 @@
 
         </div>
     </div>
-    <aside class="right_sidebar" ng-class="PAGE_CONFIG.mount.org_id==0?'my_right_sidebar':''"
+    <aside class="right_sidebar"
+           ng-class="hideNoFile?'hide_no_file':''"
            ng-controller="rightSidebar">
+
         <div ng-if="!PAGE_CONFIG.networkConnected">
             <network-unconnect></network-unconnect>
         </div>
-        <div ng-if="PAGE_CONFIG.networkConnected">
+        <div ng-if="PAGE_CONFIG.networkConnected" >
             <div ng-switch="sidebar">
                 <div ng-switch-when="singlefile">
+                    <a href="javascript:void(0)" ng-click="toggleNoFile()" class="slide_arrow"> </a>
                     <singlefile-right-sidebar></singlefile-right-sidebar>
                 </div>
                 <div ng-switch-when="multifile">
+                    <a href="javascript:void(0)" ng-click="toggleNoFile()" class="slide_arrow"> </a>
                     <multifile-right-sidebar></multifile-right-sidebar>
                 </div>
-                <div ng-switch-when="nofile">
-                    <nofile-right-sidebar></nofile-right-sidebar>
-                </div>
+                <!--<div ng-switch-when="nofile">-->
+                    <!--<nofile-right-sidebar></nofile-right-sidebar>-->
+                <!--</div>-->
+            </div>
+            <div>
+                <nofile-right-sidebar></nofile-right-sidebar>
             </div>
         </div>
     </aside>

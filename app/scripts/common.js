@@ -3,6 +3,207 @@ angular.module('GKCommon',['GKCommon.directives','GKCommon.services','GKCommon.f
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('tipOverPopup', [function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: { title: '@', content: '@', placement: '@', isOpen: '&' },
+            templateUrl: 'views/tip_over_popup.html'
+        }
+    }])
+    .directive('tipOver', ['$window', '$compile', '$timeout', '$parse', '$document', '$position', '$interpolate',function ($window, $compile, $timeout, $parse, $document, $position, $interpolate) {
+        var directiveName = 'tip-over',
+            startSym = '{{',
+            endSym = '}}';
+        var template =
+            '<'+ directiveName +'-popup '+
+                'title="'+startSym+'tt_title'+endSym+'" '+
+                'content="'+startSym+'tt_content'+endSym+'" '+
+                'placement="'+startSym+'tt_placement'+endSym+'" '+
+                'is-open="tt_isOpen"'+
+                '>'+
+                '</'+ directiveName +'-popup>';
+
+        return {
+            restrict: 'EA',
+            scope: true,
+            link: function link ( scope, element, attrs ) {
+                var type = 'tipOver',
+                    prefix = 'tipOver';
+                var tooltip = $compile( template )( scope );
+                var $body;
+                var appendToBody = true;
+                var hideTimer;
+
+                // By default, the tooltip is not open.
+                // TODO add ability to start tooltip opened
+                scope.tt_isOpen = false;
+
+                function toggleTooltipBind () {
+                    if ( ! scope.tt_isOpen ) {
+                        showTooltipBind();
+                    } else {
+                        hideTooltipBind();
+                    }
+                }
+
+                // Show the tooltip with delay if specified, otherwise show it immediately
+                function showTooltipBind() {
+                        if(hideTimer){
+                            $timeout.cancel(hideTimer);
+                        }
+                        scope.$apply( show );
+                }
+
+                function hideTooltipBind () {
+                    if(hideTimer){
+                        $timeout.cancel(hideTimer);
+                        hideTimer = null;
+                    }
+                    hideTimer = $timeout(hide,50);
+                }
+
+                // Show the tooltip popup element.
+                function show() {
+                    var position,
+                        ttWidth,
+                        ttHeight,
+                        ttPosition;
+
+                    // Don't show empty tooltips.
+                    if ( ! scope.tt_content ) {
+                        return;
+                    }
+
+                    // If there is a pending remove transition, we must cancel it, lest the
+                    // tooltip be mysteriously removed.
+
+
+                    // Set the initial positioning.
+                    tooltip.css({ top: 0, left: 0, display: 'block' });
+
+                    // Now we add it to the DOM because need some info about it. But it's not
+                    // visible yet anyway.
+                    if ( appendToBody) {
+                        $body = $body || $document.find( 'body' );
+                        $body.append( tooltip );
+                    }
+
+                    // Get the position of the directive element.
+                    position = appendToBody ? $position.offset( element ) : $position.position( element );
+
+                    // Get the height and width of the tooltip so we can center it.
+                    ttWidth = tooltip.prop( 'offsetWidth' );
+                    ttHeight = tooltip.prop( 'offsetHeight' );
+
+                    // Calculate the tooltip's top and left coordinates to center it with
+                    // this directive.
+                    switch ( scope.tt_placement ) {
+                        case 'right':
+                            ttPosition = {
+                                top: position.top + position.height / 2 - ttHeight / 2,
+                                left: position.left + position.width
+                            };
+                            break;
+                        case 'bottom':
+                            ttPosition = {
+                                top: position.top + position.height,
+                                left: position.left + position.width / 2 - ttWidth / 2
+                            };
+                            break;
+                        case 'left':
+                            ttPosition = {
+                                top: position.top + position.height / 2 - ttHeight / 2,
+                                left: position.left - ttWidth
+                            };
+                            break;
+                        default:
+                            ttPosition = {
+                                top: position.top - ttHeight,
+                                left: position.left + position.width / 2 - ttWidth / 2
+                            };
+                            break;
+                    }
+
+                    ttPosition.top += 'px';
+                    ttPosition.left += 'px';
+
+                    // Now set the calculated positioning.
+                    tooltip.css( ttPosition );
+
+                    // And show the tooltip.
+                    scope.tt_isOpen = true;
+
+                    tooltip.on('mouseenter',function(){
+                        if(hideTimer){
+                            $timeout.cancel(hideTimer);
+                            hideTimer = null;
+                        }
+                    });
+
+                    tooltip.on('mouseleave',function(){
+                        hideTooltipBind();
+                    });
+
+                }
+
+                // Hide the tooltip popup element.
+                function hide() {
+                    // First things first: we don't show it anymore.
+                    scope.tt_isOpen = false;
+
+                    //if tooltip is going to be shown after delay, we must cancel this
+
+                    // And now we remove it from the DOM. However, if we have animation, we
+                    // need to wait for it to expire beforehand.
+                    tooltip.remove();
+                }
+
+
+                element.off('mouseenter',showTooltipBind);
+                element.off('mouseleave',hideTooltipBind);
+                element.on('mouseenter',showTooltipBind);
+                element.on('mouseleave',hideTooltipBind);
+
+
+                /**
+                 * Observe the relevant attributes.
+                 */
+                attrs.$observe( type, function ( val ) {
+                    scope.tt_content = val;
+                });
+
+                attrs.$observe( prefix+'Title', function ( val ) {
+                    scope.tt_title = val;
+                });
+
+                attrs.$observe( prefix+'Placement', function ( val ) {
+                    scope.tt_placement = angular.isDefined( val ) ? val : options.placement;
+                });
+
+                // if a tooltip is attached to <body> we need to remove it on
+                // location change as its parent scope will probably not be destroyed
+                // by the change.
+                if ( appendToBody ) {
+                    scope.$on('$locationChangeSuccess', function closeTooltipOnLocationChangeSuccess () {
+                        if ( scope.tt_isOpen ) {
+                            hide();
+                        }
+                    });
+                }
+
+                // Make sure tooltip is destroyed and removed.
+                scope.$on('$destroy', function onDestroyTooltip() {
+
+                    if ( scope.tt_isOpen ) {
+                        hide();
+                    } else {
+                        tooltip.remove();
+                    }
+                });
+            }
+        }
+    }])
     .directive('insertTo', ['$timeout',function ($timeout) {
         return {
             restrict: 'A',
@@ -989,6 +1190,22 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            subscriberList:function(orgId,start,limit){
+                var params = {
+                    org_id: orgId,
+                    start: start,
+                    limit:limit,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/team/subscribe_member',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             publish:function(mountId,fullpath){
                 var params = {
                     mount_id: mountId,

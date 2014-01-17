@@ -7,7 +7,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             file: null
         }
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', 'GKApi','chatHost',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember,GKApi,chatHost) {
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', 'GKApi','chatHost','$angularCacheFactory',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember,GKApi,chatHost,$angularCacheFactory) {
 
         $scope.sessions = chatSession.sessions;
         $scope.currentMsgList = [];
@@ -45,7 +45,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
          * @param $event
          * @param postText
          */
-        $scope.postText = '';
+
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
             if (keyCode != 13 || $scope.it_isOpen) {
@@ -173,7 +173,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         };
 
         $scope.showAddMember = function(){
-          gkClientInterface.openLanchpad({
+          gkClientInterface.openLaunchpad({
+              type:'addMember',
               orgId:$scope.currentSession.org_id
           });
         };
@@ -191,6 +192,16 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         $scope.cancelAtFile = function(){
             $rootScope.PAGE_CONFIG.file = null
         };
+
+
+        var postTextCache = $angularCacheFactory.get('postTextCache');
+        if(!postTextCache){
+            postTextCache = $angularCacheFactory('postTextCache',{
+                maxAge: 2592000000, //30天后过期
+                deleteOnExpire: 'aggressive',
+                storageMode: 'localStorage'
+            });
+        }
 
         $scope.remindMembers = [];
         var setList = function () {
@@ -222,6 +233,14 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             }else{
                 $scope.scrollToIndex = $scope.currentMsgList.length-1;
             }
+            $scope.focusTextarea = true;
+            $timeout(function(){
+                if(param.at){
+                    $scope.postText = '@'+ param.at+' ';
+                }else{
+                    $scope.postText = postTextCache.get($scope.currentSession.org_id) || '';
+                }
+            },100)
         };
 
         var lastActiveTime = 0;
@@ -295,6 +314,13 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             }
             setList();
         })
+
+
+        $scope.saveLastText = function(postText){
+
+            postTextCache.put($scope.currentSession.org_id,postText);
+        };
+
         GKApi.servers('chat').success(function(data){
             if(!data) return;
             var hostList = data;
