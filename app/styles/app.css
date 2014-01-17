@@ -1115,6 +1115,10 @@ footer {
     left: 0;
     right: 0;
     top:36px;
+    overflow: auto;
+}
+.right_sidebar .no_file .tab_wrapper.normal_member .tab_content ul{
+    bottom: 0;
 }
 .right_sidebar .no_file .tab_content ul li{
     height: 31px;

@@ -58,6 +58,7 @@ body{
     width: 190px;
     bottom: 0;
     right: 0;
+
     border-left: 1px solid #dbdbdb;
     -webkit-transition:right linear .15s;
 
@@ -496,8 +497,9 @@ footer .post_file_wrapper .chat_file{
     left: 0;
     right: 0;
     bottom: 0;
-    overflow: hidden;
+    overflow: auto;
     padding-top: 44px;
+
 }
 
 .right_sidebar .member_list li{

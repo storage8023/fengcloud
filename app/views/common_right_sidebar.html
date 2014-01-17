@@ -30,7 +30,7 @@
             <div class="tab_content_layer" ng-show="currentTab=='member'">
                 <div ng-show="memberLoading" class="empty">正在加载...</div>
                 <div ng-show="!memberLoading">
-                <ul class="member_list">
+                <ul class="scrollbar member_list">
                     <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members" tip-over="{{member|getTipContent}}" tip-over-placement="left">
                         <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
                         <span ng-bind="member.member_name"></span>
@@ -46,7 +46,7 @@
                 <div ng-show="memberLoading" class="empty">正在加载...</div>
                 <div ng-show="!memberLoading">
                     <div class="empty" ng-if="!subscribers || !subscribers.length">没有订阅者</div>
-                    <ul class="subscriber_list">
+                    <ul class="scrollbar subscriber_list">
                         <li ng-repeat="subscriber in subscribers">
                             <avatar class="avatar avatar_mini" gk-src="{{subscriber.member_id|getAvatarUrl}}"></avatar>
                             <span ng-bind="subscriber.member_name"></span>

@@ -126,7 +126,7 @@
                     <input type="text"  placeholder="输入关键字筛选" class="form-control" ng-model="searchKeyword" name="search_keyword" id="search_keyword"/>
                     <i class="icon16x16 icon_search"></i>
                 </div>
-                <div class="member_list" >
+                <div class="scrollbar member_list" >
                     <li ng-repeat="member in remindMembers | filter:{member_name:searchKeyword}" ng-click="atMember(member.member_name)">
                         <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
                         <span class="member_name" ng-bind="member.member_name"></span>
