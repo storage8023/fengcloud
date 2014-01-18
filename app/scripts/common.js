@@ -32,6 +32,7 @@ angular.module('GKCommon.directives', [])
                     prefix = 'tipOver';
                 var tooltip = $compile( template )( scope );
                 var $body;
+                var popupTimeout;
                 var appendToBody = true;
                 var hideTimer;
 
@@ -52,7 +53,7 @@ angular.module('GKCommon.directives', [])
                         if(hideTimer){
                             $timeout.cancel(hideTimer);
                         }
-                        scope.$apply( show );
+                        popupTimeout = $timeout( show, 200);
                 }
 
                 function hideTooltipBind () {
@@ -60,6 +61,7 @@ angular.module('GKCommon.directives', [])
                         $timeout.cancel(hideTimer);
                         hideTimer = null;
                     }
+                    $timeout.cancel(popupTimeout);
                     hideTimer = $timeout(hide,50);
                 }
 
@@ -153,6 +155,7 @@ angular.module('GKCommon.directives', [])
                     scope.tt_isOpen = false;
 
                     //if tooltip is going to be shown after delay, we must cancel this
+                    $timeout.cancel(popupTimeout);
 
                     // And now we remove it from the DOM. However, if we have animation, we
                     // need to wait for it to expire beforehand.
