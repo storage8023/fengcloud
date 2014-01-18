@@ -47,7 +47,7 @@
                 <div ng-show="!memberLoading">
                     <div class="empty" ng-if="!subscribers || !subscribers.length">没有订阅者</div>
                     <ul class="scrollbar subscriber_list">
-                        <li ng-repeat="subscriber in subscribers">
+                        <li ng-repeat="subscriber in subscribers" tip-over="{{subscriber|getTipContent}}" tip-over-placement="left">
                             <avatar class="avatar avatar_mini" gk-src="{{subscriber.member_id|getAvatarUrl}}"></avatar>
                             <span ng-bind="subscriber.member_name"></span>
                         </li>

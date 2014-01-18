@@ -514,7 +514,7 @@ footer {
 }
 
 
-.toolbar button.open .btn-opt,
+.toolbar button.open > .btn-opt,
 .toolbar button:active .btn-opt{
     background: #448DE8;
     border-color:#448DE8;
@@ -531,7 +531,6 @@ footer {
 .toolbar .opt {
     display: block;
     padding: 3px 12px;
-    border-radius: 3px;
 }
 .toolbar .opt .gk_down_arrow{
     vertical-align: middle;

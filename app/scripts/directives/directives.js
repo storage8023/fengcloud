@@ -1153,7 +1153,7 @@ angular.module('gkClientIndex.directives', [])
                         if (count > 50) break;
                         if (!moreBtn) {
                             var moreBtnHtml = '<button class="f_l dropdown">';
-                            moreBtnHtml += '<a dropdown-toggle class="opt" href="javascript:void(0);" ng-class="">';
+                            moreBtnHtml += '<a dropdown-toggle class="btn btn-opt opt" href="javascript:void(0);" ng-class="">';
                             moreBtnHtml += '<span>更多</span>';
                             moreBtnHtml += '<i class="gk_down_arrow"></i>';
                             moreBtnHtml += '</a>';
@@ -1163,7 +1163,7 @@ angular.module('gkClientIndex.directives', [])
                             moreBtn = $compile(angular.element(moreBtnHtml))($scope);
                         }
                         var lastBtn = toolOpt.find('button.opt_btn:visible:last');
-                        var lastBtnClone = jQuery('<li/>').append(lastBtn.find('> a').clone(true));
+                        var lastBtnClone = jQuery('<li/>').append(lastBtn.find('> a').clone(true).removeClass('btn btn-opt'));
                         lastBtn.hide();
                         moreBtn.appendTo(toolOpt).find('.dropdown-menu').prepend(lastBtnClone);
                         grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
