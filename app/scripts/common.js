@@ -11,19 +11,17 @@ angular.module('GKCommon.directives', [])
             templateUrl: 'views/tip_over_popup.html'
         }
     }])
-    .directive('tipOver', ['$window', '$compile', '$timeout', '$parse', '$document', '$position', '$interpolate',function ($window, $compile, $timeout, $parse, $document, $position, $interpolate) {
+    .directive('tipOver', ['$compile', '$timeout', '$document', '$position',function ($compile, $timeout, $document, $position) {
         var directiveName = 'tip-over',
             startSym = '{{',
             endSym = '}}';
         var template =
             '<'+ directiveName +'-popup '+
-                'title="'+startSym+'tt_title'+endSym+'" '+
                 'content="'+startSym+'tt_content'+endSym+'" '+
                 'placement="'+startSym+'tt_placement'+endSym+'" '+
                 'is-open="tt_isOpen"'+
                 '>'+
                 '</'+ directiveName +'-popup>';
-
         return {
             restrict: 'EA',
             scope: true,
@@ -163,8 +161,8 @@ angular.module('GKCommon.directives', [])
                 }
 
 
-                element.off('mouseenter',showTooltipBind);
-                element.off('mouseleave',hideTooltipBind);
+                //element.off('mouseenter',showTooltipBind);
+                //element.off('mouseleave',hideTooltipBind);
                 element.on('mouseenter',showTooltipBind);
                 element.on('mouseleave',hideTooltipBind);
 
@@ -176,12 +174,8 @@ angular.module('GKCommon.directives', [])
                     scope.tt_content = val;
                 });
 
-                attrs.$observe( prefix+'Title', function ( val ) {
-                    scope.tt_title = val;
-                });
-
                 attrs.$observe( prefix+'Placement', function ( val ) {
-                    scope.tt_placement = angular.isDefined( val ) ? val : options.placement;
+                    scope.tt_placement = angular.isDefined( val ) ? val :'top';
                 });
 
                 // if a tooltip is attached to <body> we need to remove it on
@@ -197,12 +191,16 @@ angular.module('GKCommon.directives', [])
 
                 // Make sure tooltip is destroyed and removed.
                 scope.$on('$destroy', function onDestroyTooltip() {
-
+                    $body = null;
+                    element.off('mouseenter',showTooltipBind);
+                    element.off('mouseleave',hideTooltipBind);
+                    tooltip.off('mouseenter').off('mouseleave');
                     if ( scope.tt_isOpen ) {
                         hide();
                     } else {
                         tooltip.remove();
                     }
+                    tooltip = null;
                 });
             }
         }

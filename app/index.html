@@ -271,7 +271,6 @@
         </div>
     </div>
     <aside class="right_sidebar"
-           ng-class="hideNoFile?'hide_no_file':''"
            ng-controller="rightSidebar">
 
         <div ng-if="!PAGE_CONFIG.networkConnected">
@@ -280,19 +279,84 @@
         <div ng-if="PAGE_CONFIG.networkConnected" >
             <div ng-switch="sidebar">
                 <div ng-switch-when="singlefile">
-                    <a href="javascript:void(0)" ng-click="toggleNoFile()" class="slide_arrow"> </a>
                     <singlefile-right-sidebar></singlefile-right-sidebar>
                 </div>
                 <div ng-switch-when="multifile">
-                    <a href="javascript:void(0)" ng-click="toggleNoFile()" class="slide_arrow"> </a>
                     <multifile-right-sidebar></multifile-right-sidebar>
                 </div>
-                <!--<div ng-switch-when="nofile">-->
-                    <!--<nofile-right-sidebar></nofile-right-sidebar>-->
-                <!--</div>-->
-            </div>
-            <div>
-                <nofile-right-sidebar></nofile-right-sidebar>
+                <div ng-switch-when="nofile">
+                    <div class="no_file no_file_{{partition}}">
+                        <div ng-if="!filter && !keyword">
+                            <div ng-show="sidbarData" gk-guider='{
+                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
+                  description: "查看云库的信息，并对其进行容量、成员、订阅者及安全方面的管理。",
+                  id: "guide_4",
+                  next: "guide_5",
+                  position: 9,
+                  title: "云库信息",
+                  width: 280
+                  }'>
+                                <div class="head_wrapper">
+                                    <img alt="" ng-click="headClick()" src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{sidbarData.photo}}" />
+                                    <div class="info" ng-click="headClick()">
+                                        <div class="title">{{sidbarData.title}}</div>
+                                        <div ng-bind-html="sidbarData.atrrHtml"></div>
+                                    </div>
+                                    <div class="btn_wrapper">
+                                        <button class="btn btn-opt" ng-repeat="menu in sidbarData.menus" ng-click="menu.click()">
+                                            <i class="icon16x16" ng-class="menu.icon"></i>
+                                            <span>{{menu.text}}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="tab_wrapper" ng-if="PAGE_CONFIG.mount.type<=2" ng-class="PAGE_CONFIG.mount.type<2?'':'normal_member'">
+                                    <ul class="tab_header" ng-if="PAGE_CONFIG.mount.type<2">
+                                        <li><a href="javascript:void(0)" ng-class="currentTab=='member'?'active':''" ng-click="showTab('member')">成员</a></li>
+                                        <li><a href="javascript:void(0)" ng-class="currentTab=='subscriber'?'active':''" ng-click="showTab('subscriber')">订阅者</a></li>
+                                    </ul>
+                                    <div class="section_title" ng-if="PAGE_CONFIG.mount.type>=2">成员</div>
+                                    <div class="tab_content">
+                                        <div class="tab_content_layer" ng-show="currentTab=='member'">
+                                            <div ng-if="memberLoading" class="empty">正在加载...</div>
+                                            <div ng-if="!memberLoading">
+                                                <ul class="scrollbar member_list">
+                                                    <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members"  bindonce >
+                                                        <img class="avatar avatar_mini" src="{{member.member_id|getAvatarUrl}}" alt=""/>
+                                                        <span bo-text="member.member_name"></span>
+                                                        <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
+                                                        <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="opt_wrapper" ng-if="PAGE_CONFIG.mount.type<2">
+                                                <button class="btn btn-primary" ng-click="showMember()">成员管理</button>
+                                            </div>
+                                        </div>
+                                        <div class="tab_content_layer" ng-if="PAGE_CONFIG.mount.type<2" ng-show="currentTab=='subscriber'">
+                                            <div ng-if="memberLoading" class="empty">正在加载...</div>
+                                            <div ng-if="!memberLoading">
+                                                <div class="empty" ng-if="!subscribers || !subscribers.length">没有订阅者</div>
+                                                <ul class="scrollbar subscriber_list">
+                                                    <li ng-repeat="subscriber in subscribers" bindonce>
+                                                        <img class="avatar avatar_mini" src="{{subscriber.member_id|getAvatarUrl}}" alt=""/>
+                                                        <span bo-text="subscriber.member_name"></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="opt_wrapper">
+                                                <button class="btn btn-primary" ng-click="showSubscriber()">订阅者管理</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="filter || keyword">
+                            <filter-right-sidebar class="filter_right_sidebar"></filter-right-sidebar>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </aside>

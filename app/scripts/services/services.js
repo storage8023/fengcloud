@@ -3564,7 +3564,7 @@ angular.module('gkClientIndex.services', [])
                 fullpath = angular.isDefined(fullpath)?fullpath:'';
                 atMember = angular.isDefined(atMember)?atMember:'';
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+atMember;
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
                 var data = {
                     url: url,
                     type:'single',

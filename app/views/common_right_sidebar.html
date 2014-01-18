@@ -31,7 +31,7 @@
                 <div ng-show="memberLoading" class="empty">正在加载...</div>
                 <div ng-show="!memberLoading">
                 <ul class="scrollbar member_list">
-                    <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members" tip-over="{{member|getTipContent}}" tip-over-placement="left">
+                    <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members">
                         <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
                         <span ng-bind="member.member_name"></span>
                         <i title="{{member.member_type|getMemberRoleName}}" ng-if="member.member_type==1 || member.member_type==0 " class="icon16x16" ng-class="'member_type_'+member.member_type"></i>
@@ -47,13 +47,12 @@
                 <div ng-show="!memberLoading">
                     <div class="empty" ng-if="!subscribers || !subscribers.length">没有订阅者</div>
                     <ul class="scrollbar subscriber_list">
-                        <li ng-repeat="subscriber in subscribers" tip-over="{{subscriber|getTipContent}}" tip-over-placement="left">
+                        <li ng-repeat="subscriber in subscribers">
                             <avatar class="avatar avatar_mini" gk-src="{{subscriber.member_id|getAvatarUrl}}"></avatar>
                             <span ng-bind="subscriber.member_name"></span>
                         </li>
                     </ul>
                 </div>
-
                 <div class="opt_wrapper">
                     <button class="btn btn-primary" ng-click="showSubscriber()">订阅者管理</button>
                 </div>

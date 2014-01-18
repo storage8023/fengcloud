@@ -74,7 +74,7 @@
                                 <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
                                 <span ng-bind="msg.content"></span>
                             </div>
-                            <div class="chat_file" ng-click="quoteFile(msg.file)" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
+                            <div class="chat_file" ng-dblclick="openFile($event,msg.file)" ng-click="quoteFile(msg.file)" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
                                 <div class="file_icon_wrapper">
                                     <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
                                         <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
