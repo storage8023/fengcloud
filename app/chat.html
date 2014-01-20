@@ -20,16 +20,6 @@
 </head>
 <body ng-controller="initChat">
 <div class="wrapper">
-    <div class="scrollbar sidebar">
-        <h2>够快云库</h2>
-        <ul class="session_list">
-            <li title="{{session.name}}" ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'-lastTime'" ng-class="session.mount_id==currentSession.mount_id?'selected':''">
-                <team-logo gk-src="{{session.logo}}" class="avatar avatar_mini"></team-logo>
-                <span ng-bind="session.name"></span>
-                <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount|formatCount"></span>
-            </li>
-        </ul>
-    </div>
     <div class="main" ng-class="hideMember?'member_hidden':''">
         <div ng-show="!logined">
             <div class="empty" ng-if="!error">正在加载...</div>
@@ -38,20 +28,8 @@
         <div ng-show="logined">
             <div class="content">
             <header>
-                <div class="header_left">
-                    <team-logo gk-src="{{currentSession.logo}}" class="avatar avatar_big"></team-logo>
-                    <div class="org_info">
-                        <div class="org_name"><span ng-bind="currentSession.name"></span></div>
-                        <div class="org_count"><span>成员数：{{currentSession.member_count}}</span></div>
-                    </div>
-                </div>
-                <div class="header_right">
-                    <a href="javascript:void(0)" ng-show="currentSession.type<2" ng-click="showAddMember()">
-                        <i class="icon32x32 icon_add_member"></i>
-                    </a>
-                    <a href="javascript:void(0)" ng-click="hideMember=!hideMember">
-                        <i class="icon32x32 icon_member"></i>
-                    </a>
+                <div class="header_right opt_view_change">
+                    <div ng-include="'views/view_change_btn.html'"></div>
                 </div>
             </header>
             <section>
@@ -121,20 +99,7 @@
                 </div>
             </footer>
             </div>
-            <div class="right_sidebar">
-                <div class="input_wrapper">
-                    <input type="text"  placeholder="输入关键字筛选" class="form-control" ng-model="searchKeyword" name="search_keyword" id="search_keyword"/>
-                    <i class="icon16x16 icon_search"></i>
-                </div>
-                <div class="scrollbar member_list" >
-                    <li ng-repeat="member in remindMembers | filter:{member_name:searchKeyword}" ng-click="atMember(member.member_name)">
-                        <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
-                        <span class="member_name" ng-bind="member.member_name"></span>
-                    </li>
-                </div>
-            </div>
         </div>
-
     </div>
 </div>
 </body>

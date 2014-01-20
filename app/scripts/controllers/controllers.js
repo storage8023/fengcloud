@@ -215,6 +215,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 angular.extend($rootScope.PAGE_CONFIG.mount,mount)
             }
         })
+
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom) {
         $scope.GKPartition = GKPartition;
@@ -652,7 +653,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             })
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', 'GKFileListView',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch,GKFileListView) {
+    .controller('fileBrowser', ['GKChat','$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', 'GKFileListView',function (GKChat,$location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch,GKFileListView) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
@@ -820,6 +821,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.changeView = function (view) {
             GKFileList.changeView($scope,view);
         };
+
+        $scope.$on('changeView',function(event,view){
+            if(arguments.length>2){
+                GKFileList.changeView($scope,view);
+            }else{
+                $scope.$apply(function(){
+                    GKFileList.changeView($scope,view);
+                })
+            }
+
+        })
 
         /**
          * 操作
@@ -993,7 +1005,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.unSelectAll($scope);
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
+            GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
         };
+
+        $scope.gkChat = GKChat;
 
         $scope.limit = 50;
         $scope.$on('$locationChangeSuccess',function(){
@@ -1492,7 +1507,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             gkClientInterface.clearMessage();
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat',function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat) {
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1632,7 +1647,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
-
         $scope.showTab  = function(tab){
             if(tab == $scope.currentTab){
                 return;
@@ -1701,7 +1715,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.atMember = function(memberName){
-            GKDialog.chat($rootScope.PAGE_CONFIG.mount.mount_id,$scope.localFile.fullpath,memberName);
+            GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id,$scope.localFile.fullpath,memberName);
         };
 
     }])

@@ -3557,6 +3557,20 @@ angular.module('gkClientIndex.services', [])
     .factory('GKHistory', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
         return new GKHistory($q, $location, $rootScope);
     }])
+    .factory('GKChat', [function () {
+        var GKChat = {
+            src:'',
+            setSrc:function(mountId,fullpath,atMember){
+                mountId = angular.isDefined(mountId)?mountId:0;
+                fullpath = angular.isDefined(fullpath)?fullpath:'';
+                atMember = angular.isDefined(atMember)?atMember:''; var UIPath = gkClientInterface.getUIPath();
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
+                this.src = url;
+                console.log(this.src);
+            }
+        };
+        return GKChat;
+    }])
     .factory('GKDialog', [function () {
         return {
             chat: function (mountId,fullpath,atMember) {

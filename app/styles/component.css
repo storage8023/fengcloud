@@ -592,7 +592,15 @@ a:hover > .icon16x16.icon_team_upgrade,
 .icon16x16.icon_qq_color{
     background-position: -44px -1504px;
 }
-
+.icon16x16.icon_message{
+    background-position: -4px -1564px;
+}
+.icon16x16.icon_message_white{
+    background-position: -24px -1564px;
+}
+.icon16x16.icon_message_color{
+    background-position: -44px -1564px;
+}
 .icon16x16.icon_chat{
     background-position: -4px -1564px;
 }
@@ -1394,4 +1402,44 @@ text-align: center;
 .tab_header > li > a.active{
     background: #448de8;
     color: #fff;
+}
+
+.opt_view_change{
+    margin-top: 7px;
+}
+.opt_view_change a {
+    display: inline-block;
+    height: 24px;
+    width: 36px;
+    border-radius: 3px;
+    text-align: center;
+    background-color: #7F8999;
+    margin-left: 1px;
+    line-height: 24px;
+}
+
+.opt_view_change a:first-child{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.opt_view_change a:last-child{
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.opt_view_change a.thumb_view{
+    border-radius: 0;
+}
+.opt_view_change a:hover{
+    background: #9AA5B8;
+}
+.opt_view_change a.active {
+    background: #448DE8;
+}
+.opt_view_change a:hover.list_view > i,
+.opt_view_change a.active.list_view > i {
+    background-position: -24px -584px;
+}
+.opt_view_change a:hover.thumb_view > i,
+.opt_view_change a.active.thumb_view > i {
+    background-position: -24px -604px;
 }

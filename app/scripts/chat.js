@@ -1,14 +1,14 @@
 'use strict';
 
 angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
-    .run(['$rootScope', '$location', 'GKMount', '$window', function ($rootScope, $location, GKMount, $window) {
+    .run(['$rootScope', function ($rootScope) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: null
         }
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', 'GKApi','chatHost','$angularCacheFactory',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember,GKApi,chatHost,$angularCacheFactory) {
-
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'GKWindowCom', 'chatMember', 'GKApi','chatHost','$angularCacheFactory','$window',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, GKWindowCom, chatMember,GKApi,chatHost,$angularCacheFactory,$window) {
+        $scope.view = 'chat';
         $scope.sessions = chatSession.sessions;
         $scope.currentMsgList = [];
         $scope.currentSession = null;
@@ -172,13 +172,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             $event.stopPropagation();
         };
 
-        $scope.showAddMember = function(){
-          gkClientInterface.openLaunchpad({
-              type:'addMember',
-              orgId:$scope.currentSession.org_id
-          });
-        };
-
+        /**
+         * 引用文件
+         * @param file
+         */
         $scope.quoteFile = function (file) {
            $rootScope.PAGE_CONFIG.file = file;
             $scope.focusTextarea = true;
@@ -315,9 +312,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             setList();
         })
 
-
         $scope.saveLastText = function(postText){
-
             postTextCache.put($scope.currentSession.org_id,postText);
         };
 
@@ -333,6 +328,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     $scope.error = GKException.getAjaxError(xhr,textStatus,thrown);
                 })
             })
+
+        $scope.changeView = function(view){
+            $window.top.gkSiteCallback('changeView',view);
+        }
 
     }])
     .factory('chatContent', ['chatMember', 'chatSession', function (chatMember, chatSession) {
@@ -462,6 +461,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
               this.host = host;
           },
           getHost:function(){
+              return 'http://10.0.0.150:1238';
               return this.host;
           }
 

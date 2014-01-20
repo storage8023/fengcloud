@@ -815,7 +815,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog',function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat',function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat) {
         return {
             replace: true,
             restrict: 'E',
@@ -1053,7 +1053,8 @@ angular.module('gkClientIndex.directives', [])
                  * 打开聊天窗口
                  */
                 $scope.startChat = function(file){
-                    GKDialog.chat(getOptMountId(file),file.fullpath);
+                    $rootScope.$broadcast('changeView','chat',1);
+                    GKChat.setSrc(getOptMountId(file),file.fullpath);
                 }
 
                 $scope.showMilestoneDialog = function(file){

@@ -476,7 +476,8 @@ footer {
     left: 0;
     right: 0;
 }
-.main .file_browser{
+.main .file_browser,
+.main .chat_wrapper{
     position: absolute;
     top: 0;
     bottom: 0;
@@ -552,19 +553,6 @@ footer {
 .toolbar .f_l .opt i.icon16x16 {
     margin-right: 4px;
 }
-.toolbar .opt.opt_view_change{
-    margin-top: 7px;
-}
-
-.toolbar .opt.opt_view_change > a {
-    display: inline-block;
-    height: 24px;
-    width: 36px;
-    border-radius: 3px;
-    text-align: center;
-    background-color: #7F8999;
-}
-
 
 .context-menu-item.add:hover i,
 .toolbar button:hover .opt.add i,
@@ -696,31 +684,7 @@ footer {
 .toolbar button.open .opt.file_property i{
     background-position: -24px -384px;
 }
-.toolbar .opt.opt_view_change > a{
-    margin-left: 1px;
-}
-.toolbar .opt.opt_view_change > a.list_view{
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-.toolbar .opt.opt_view_change > a.thumb_view{
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-.toolbar .opt.opt_view_change > a:hover{
-    background: #9AA5B8;
-}
-.toolbar .opt.opt_view_change > a.active {
-    background: #448DE8;
-}
-.toolbar .opt.opt_view_change > a:hover.list_view > i,
-.toolbar .opt.opt_view_change > a.active.list_view > i {
-    background-position: -24px -584px;
-}
-.toolbar .opt.opt_view_change > a:hover.thumb_view > i,
-.toolbar .opt.opt_view_change > a.active.thumb_view > i {
-    background-position: -24px -604px;
-}
+
 .context-menu-item.open_with:hover i,
 .toolbar button:hover .opt.open_with i,
 .toolbar button:active .opt.open_with i,
@@ -2268,4 +2232,9 @@ padding: 6px 21px;
 }
 .member_info_wrapper .member_name{
     font-size: 15px;
+}
+
+#ifame_chat{
+    width: 100%;
+    height: 100%;
 }
