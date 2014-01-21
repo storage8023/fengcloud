@@ -499,23 +499,6 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
-    .directive('gkGuider', ['GKGuiders', '$parse', '$timeout', function (GKGuiders, $parse, $timeout) {
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                $scope.GKGuiders = GKGuiders;
-                $timeout(function () {
-                    $attrs.$observe('gkGuider', function (newValue) {
-                        var option = $scope.$eval(newValue);
-                        angular.extend(option, {
-                            attachTo: $element[0]
-                        });
-                        GKGuiders.createGuider(option);
-                    })
-                })
-            }
-        }
-    }])
     .directive('contextmenu', ['GKContextMenu', function (GKContextMenu) {
         return {
             restrict: 'A',

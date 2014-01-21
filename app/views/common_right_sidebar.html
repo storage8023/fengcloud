@@ -1,12 +1,4 @@
-<div ng-show="sidbarData" gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "查看云库的信息，并对其进行容量、成员、订阅者及安全方面的管理。",
-                  id: "guide_4",
-                  next: "guide_5",
-                  position: 9,
-                  title: "云库信息",
-                  width: 280
-                  }'>
+<div ng-show="sidbarData">
     <div class="head_wrapper">
         <img alt="" ng-click="headClick()" src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{sidbarData.photo}}" />
         <div class="info" ng-click="headClick()">

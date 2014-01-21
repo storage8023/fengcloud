@@ -46,15 +46,7 @@
 <aside class="left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="scrollbar tree_wrapper" contextmenu>
-        <div gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "云库可以存放各种文件的基本单元。“我的云库”中的文件，你可以查看、编辑和同步到本地，你可以自己创建或加入其他人的云库。“订阅的云库”是由别人分享的，且你只能查看里面的文件",
-                  id: "guide_1",
-                  next: "guide_2",
-                  position: 3,
-                  title: "云库",
-                  width: 280
-                  }'>
+        <div>
             <abn-tree tree-data="orgTreeList"
                       header="我的云库"
                       icon-leaf="icon_file"
@@ -111,7 +103,6 @@
                   on-select="handleSelect(branch,GKPartition.smartFolder)"
                   on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
-                  gk-guider='{{smartFolderGuider}}'
                 >
         </abn-tree>
     </div>
@@ -119,15 +110,7 @@
 
 <div class="main">
 <header ng-controller="header">
-    <breadsearch gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "通过文件名、文件注释中的关键词查找需要的文件",
-                  id: "guide_2",
-                  next: "guide_3",
-                  position: 6,
-                  title: "搜索",
-                  width: 280
-                  }'></breadsearch>
+    <breadsearch></breadsearch>
     <div class="back_forward btn-group">
         <button type="button" class="btn btn-diablo back" ng-click="handleNav()" ng-disabled="!canBack"><i
                 class="icon16x16 icon_leftarrow_white"></i></button>
@@ -287,15 +270,7 @@
                 <div ng-switch-when="nofile">
                     <div class="no_file no_file_{{partition}}">
                         <div ng-if="!filter && !keyword">
-                            <div ng-show="sidbarData" gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "查看云库的信息，并对其进行容量、成员、订阅者及安全方面的管理。",
-                  id: "guide_4",
-                  next: "guide_5",
-                  position: 9,
-                  title: "云库信息",
-                  width: 280
-                  }'>
+                            <div ng-show="sidbarData">
                                 <div class="head_wrapper">
                                     <img alt="" ng-click="headClick()" src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{sidbarData.photo}}" />
                                     <div class="info" ng-click="headClick()">
