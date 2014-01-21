@@ -197,9 +197,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
         $scope.$on('removeSlideGuide',function(){
             $scope.showSildeGuide = false;
-            $timeout(function(){
-                showGuider();
-            },0)
         });
 
         $scope.$on('editOrgObjectSuccess', function (event, mount) {
@@ -1308,7 +1305,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             jQuery.contextMenu('destroy', '.file_list .list_body');
         })
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant) {
         $scope.canBack = false;
         $scope.canForward = false;
 
@@ -1451,6 +1448,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             localStorageService.remove(unreadMsgKey);
             gkClientInterface.clearMessage();
         })
+
+        $scope.toggleGuider = function(){
+            var old = localStorageService.get(GKConstant.guideKey);
+            if(old){
+                localStorageService.remove(GKConstant.guideKey);
+            }else{
+                localStorageService.add(GKConstant.guideKey,1);
+            }
+
+        }
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog) {
 

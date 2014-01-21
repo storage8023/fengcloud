@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="styles/ng-animation.css?v=5"/>
     <link rel="stylesheet" href="bower_components/abn.tree/abn_tree_style.css?v=5"/>
     <link rel="stylesheet" href="bower_components/tags-input/ng-tags-input.css?v=5"/>
-    <link rel="stylesheet" href="bower_components/guiders/guiders.css?v=5"/>
     <link rel="stylesheet" href="styles/base.css?v=5"/>
     <link rel="stylesheet" href="styles/component.css?v=5"/>
     <link rel="stylesheet" href="styles/app.css?v=5"/>
@@ -18,7 +17,6 @@
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/jquery/context-menu/jquery.contextMenu.js"></script>
     <script src="bower_components/jquery-ui/js/jquery-ui-1.10.3.custom.js"></script>
-    <script src="bower_components/guiders/guiders.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="bower_components/angunar-bindonce/bindonce.js"></script>
@@ -47,48 +45,52 @@
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="scrollbar tree_wrapper" contextmenu>
         <div>
-            <abn-tree tree-data="orgTreeList"
-                      header="我的云库"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_teamfolder"
-                      icon-node-collapse="icon_teamfolder"
-                      selected-branch="selectedBranch"
-                      init-selected-branch="initSelectedBranch"
-                      on-add="handleAdd(GKPartition.teamFile)"
-                      on-select="handleSelect(branch,GKPartition.teamFile)"
-                      on-expand="handleExpand(branch,GKPartition.teamFile)"
-                      on-drop="handleDrop(branch)"
-                    >
-            </abn-tree>
-            <abn-tree tree-data="joinOrgTreeList"
-                      header="加入的云库"
-                      ng-show="joinOrgTreeList.length"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_teamfolder"
-                      icon-node-collapse="icon_teamfolder"
-                      selected-branch="selectedBranch"
-                      on-select="handleSelect(branch,GKPartition.joinFile)"
-                      on-expand="handleExpand(branch,GKPartition.joinFile)"
-                      on-drop="handleDrop(branch)"
-                    >
-            </abn-tree>
-            <abn-tree tree-data="orgSubscribeList"
-                      ng-show="orgSubscribeList.length"
-                      header="订阅的云库"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_subscribefolder"
-                      icon-node-collapse="icon_subscribefolder"
-                      selected-branch="selectedBranch"
-                      on-select="handleSelect(branch,GKPartition.subscribeFile)"
-                      on-expand="handleExpand(branch,GKPartition.subscribeFile)"
-                    >
-            </abn-tree>
+            <div guider="lib" guider-placement="right">
+                <abn-tree tree-data="orgTreeList"
+                          header="我的云库"
+                          icon-leaf="icon_file"
+                          icon-expand="icon_fold"
+                          icon-collapse="icon_unfold"
+                          icon-node-expand="icon_teamfolder"
+                          icon-node-collapse="icon_teamfolder"
+                          selected-branch="selectedBranch"
+                          init-selected-branch="initSelectedBranch"
+                          on-add="handleAdd(GKPartition.teamFile)"
+                          on-select="handleSelect(branch,GKPartition.teamFile)"
+                          on-expand="handleExpand(branch,GKPartition.teamFile)"
+                          on-drop="handleDrop(branch)"
+                        >
+                </abn-tree>
+                <abn-tree tree-data="joinOrgTreeList"
+                          header="加入的云库"
+                          ng-show="joinOrgTreeList.length"
+                          icon-leaf="icon_file"
+                          icon-expand="icon_fold"
+                          icon-collapse="icon_unfold"
+                          icon-node-expand="icon_teamfolder"
+                          icon-node-collapse="icon_teamfolder"
+                          selected-branch="selectedBranch"
+                          on-select="handleSelect(branch,GKPartition.joinFile)"
+                          on-expand="handleExpand(branch,GKPartition.joinFile)"
+                          on-drop="handleDrop(branch)"
+                        >
+                </abn-tree>
+            </div>
+            <div guider="subscribe" guider-placement="right">
+                <abn-tree tree-data="orgSubscribeList"
+                          ng-show="orgSubscribeList.length"
+                          header="订阅的云库"
+                          icon-leaf="icon_file"
+                          icon-expand="icon_fold"
+                          icon-collapse="icon_unfold"
+                          icon-node-expand="icon_subscribefolder"
+                          icon-node-collapse="icon_subscribefolder"
+                          selected-branch="selectedBranch"
+                          on-select="handleSelect(branch,GKPartition.subscribeFile)"
+                          on-expand="handleExpand(branch,GKPartition.subscribeFile)"
+                        >
+                </abn-tree>
+            </div>
         </div>
 
         <abn-tree tree-data="smartTreeList"
@@ -126,7 +128,7 @@
          <span ng-click="visitBBS()" title="用户社区">
             <i class="icon32x32 icon_bbs"></i>
         </span>
-        <span ng-click="showGuider()" title="帮助">
+        <span ng-click="toggleGuider()" title="帮助">
             <i class="icon32x32 icon_what"></i>
         </span>
         <span class="more_menu dropdown" title="更多">
