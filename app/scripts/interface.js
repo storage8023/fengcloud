@@ -7,6 +7,29 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getChatMessage:function(param){
+        if(typeof gkClient.gGetMessage === 'undefined'){
+            return '';
+        }
+        return gkClient.gGetMessage(JSON.stringify(param));
+    },
+    postChatMessage:function(param,callback){
+        if(typeof gkClient.gSendMessage === 'undefined'){
+            return;
+        }
+        return gkClient.gSendMessage(JSON.stringify(param),function(re){
+            re = typeof re ==='object'?re:JSON.parse(re);
+            if(typeof callback === 'function'){
+                callback(re);
+            }
+        });
+    },
+    getChateState:function(param){
+        if(typeof gkClient.gGetMessageUpdate === 'undefined'){
+            return '';
+        }
+        return gkClient.gGetMessageUpdate(JSON.stringify(param));
+    },
     openLaunchpad:function(param){
         if(typeof gkClient.gShowLaunchpad === 'undefined'){
             return;

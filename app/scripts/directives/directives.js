@@ -1721,8 +1721,8 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 var setPosition = function (width) {
-                    if (width < 80) {
-                        width = 80;
+                    if (width < 160) {
+                        width = 160;
                     }
                     if ($document.width() - width < 650) {
                         width = $document.width() - 650;

@@ -614,6 +614,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKPath.gotoFile(mountId, path, selectFile);
             })
         })
+
+        $scope.$on('ChatMessageUpdate',function(event,param){
+            console.log(arguments);
+        })
     }])
     .controller('fileBrowser', ['GKChat','$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', 'GKFileListView',function (GKChat,$location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch,GKFileListView) {
         $scope.fileData = []; //文件列表的数据
