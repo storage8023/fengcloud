@@ -64,10 +64,6 @@ angular.module('gkClientIndex.directives', [])
                     isOpen = false;
                 };
 
-                var setArrowPosition = function(){
-
-                };
-
                 var position = function(guiderElem){
                     var base,
                         tWidth,
@@ -88,10 +84,11 @@ angular.module('gkClientIndex.directives', [])
                     left = base.left;
                     tWidth = guider.width();
                     tHeight = guider.height();
-                    attachToHeight = element.height();
-                    attachToWidth = element.width();
-                    arrowHeigth = arrowElem.height();
-                    arrowWidth = arrowElem.width();
+                    attachToHeight = element.outerHeight();
+                    attachToWidth = element.outerWidth();
+                    arrowHeigth = arrowElem.outerHeight();
+                    arrowWidth = arrowElem.outerWidth();
+                    $body = $body || $document.find('body');
 
                     var placementMap = {
                         'right':[attachToHeight/2 - tHeight/2, arrowWidth + attachToWidth],
@@ -103,7 +100,37 @@ angular.module('gkClientIndex.directives', [])
                     top += offset[0];
                     left += offset[1];
 
-                    setArrowPosition(guiderElem);
+                    var minTop = 0;
+                    var maxTop = $(window).height();
+                    var minLeft = 0;
+                    var maxLeft = $(window).width()-tWidth;
+                    if(top<minTop){
+                        arrowElem.css({
+                            'margin-top':(arrowHeigth/2+(minTop-top))*-1
+                        })
+                        top = minTop;
+                    }
+
+                    if(top>maxTop){
+                        arrowElem.css({
+                            'margin-top':(arrowHeigth/2+(top-maxTop))*-1
+                        })
+                        top = maxTop;
+                    }
+
+                    if(left<minLeft){
+                        arrowElem.css({
+                            'margin-left':(arrowWidth/2+(minLeft-left))*-1
+                        })
+                        left = minLeft;
+                    }
+
+                    if(left>maxLeft){
+                        arrowElem.css({
+                            'margin-left':(arrowWidth/2+(maxLeft-left))*-1
+                        })
+                        left = maxLeft;
+                    }
 
                     guiderElem.css({
                         "position": positionType,
@@ -149,7 +176,7 @@ angular.module('gkClientIndex.directives', [])
                 }
 
 
-                element.on('mouseenter',function(event){
+                element.on('mouseenter.guider',function(event){
                     if(localStorageService.get(storageKey)){
                         return;
                     }
@@ -159,7 +186,7 @@ angular.module('gkClientIndex.directives', [])
                     },showDely);
                 });
 
-                element.on('mouseleave',function(){
+                element.on('mouseleave.guider',function(){
                     if(showTimer){
                         $timeout.cancel(showTimer);
                         showTimer = null;
@@ -167,7 +194,7 @@ angular.module('gkClientIndex.directives', [])
                     hideTimer =  $timeout(hide,hideDely);
                 });
 
-                element.on('mousedown',function(){
+                element.on('click.guider',function(){
                     if(showTimer){
                         $timeout.cancel(showTimer);
                         showTimer = null;
@@ -175,8 +202,19 @@ angular.module('gkClientIndex.directives', [])
                     hide();
                 });
 
+                jQuery(window).on('resize.guider',function(){
+                    if(isOpen){
+                        position(guider);
+                    }
+                })
+
                 scope.$on('$destroy',function(){
                     cancelBind();
+                    guider.remove();
+                    jQuery(window).off('resize.guider');
+                    element.off('mousedown.guider');
+                    element.off('mouseenter.guider');
+                    element.off('mouseleave.guider');
                 })
             }
         }
@@ -284,21 +322,22 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
+
     .directive('sizeAdjust', ['$timeout', '$compile', function ($timeout, $compile) {
+        var template = '<size-elem content="{{content}}"></size-elem>';
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-                var fakeDiv = $compile(angular.element('<div ng-bind-html="content"></div>'))($scope);
+                var fakeDiv = jQuery('<div></div>');
                 fakeDiv.css($element.css()).css({
                     'display': 'none',
                     'word-wrap': 'break-word',
                     'min-height': $element.height(),
                     'height': 'auto'
                 }).insertAfter($element.css('overflow-y', 'hidden'));
-                $element.before(fakeDiv);
                 $scope.$watch($attrs.ngModel, function (value) {
                     value = String(value);
-                    $scope.content = value.replace(/&/g, '&amp;')
+                    var content = value.replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
                         .replace(/>/g, '&gt;')
                         .replace(/'/g, '&#039;')
@@ -308,9 +347,11 @@ angular.module('gkClientIndex.directives', [])
                         .replace(/\n/g, '<br/>')
                         .replace(/<br \/>[ ]*$/, '<br />-')
                         .replace(/<br \/> /g, '<br />&nbsp;');
+                    fakeDiv.html(content);
                     $timeout(function () {
+                        console.log(fakeDiv.height());
                         $element.height(fakeDiv.height());
-                    })
+                    },200)
                 })
 
                 $scope.$on('$destroy', function () {
