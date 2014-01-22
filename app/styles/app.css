@@ -530,7 +530,7 @@ footer {
 
 .toolbar .opt {
     display: block;
-    padding: 3px 12px;
+    padding: 3px 10px;
 }
 .toolbar .opt .gk_down_arrow{
     vertical-align: middle;
@@ -549,8 +549,14 @@ footer {
 .toolbar .opt.opt_sync:hover .synced{
     display: none;
 }
-.toolbar .f_l .opt i.icon16x16 {
-    margin-right: 4px;
+
+.toolbar .f_l .opt > span{
+    display: inline-block;
+    max-width: 54px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
 }
 .toolbar .opt.opt_view_change{
     margin-top: 7px;
@@ -696,6 +702,14 @@ footer {
 .toolbar button.open .opt.file_property i{
     background-position: -24px -384px;
 }
+
+.context-menu-item.order_by:hover i,
+.toolbar button:hover .opt.order_by i,
+.toolbar button:active .opt.order_by i,
+.toolbar button.open .opt.order_by i{
+    background-position: -24px -1284px;
+}
+
 .toolbar .opt.opt_view_change > a{
     margin-left: 1px;
 }

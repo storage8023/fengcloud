@@ -564,6 +564,18 @@ a:hover > .icon16x16.icon_teamcard,
 .icon16x16.icon_teamcard_color{
     background-position: -44px -1264px;
 }
+
+.icon16x16.icon_orderby{
+    background-position: -4px -1284px;
+}
+.icon16x16.icon_orderby_white{
+    background-position: -24px -1284px;
+}
+a:hover > .icon16x16.icon_orderby,
+.icon16x16.icon_orderby_color{
+    background-position: -44px -1284px;
+}
+
 .icon16x16.icon_open_with{
     background-position: -4px -1304px;
 }
@@ -934,6 +946,7 @@ a:hover > .icon16x16.icon_chat,
 .btn.btn-opt:active{
     background: #539CF5;
     border-color: #539CF5;
+    color:#fff;
 }
 .btn.btn-opt:hover *,
 .btn.btn-opt:active *{

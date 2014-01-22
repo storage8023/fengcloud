@@ -3006,7 +3006,7 @@ angular.module('gkClientIndex.services', [])
                     },
                     'add': {
                         index: 2,
-                        name: '添加',
+                        name: '添加到云库',
                         className: "add",
                         icon: 'icon_download',
                         callback: function () {
@@ -3069,7 +3069,7 @@ angular.module('gkClientIndex.services', [])
                     },
                     'save': {
                         index: 16,
-                        name: '另存为',
+                        name: '保存到本地',
                         className: "save",
                         icon: 'icon_save',
                         accesskeyText: context.getAccessKey('save'),
@@ -3144,7 +3144,7 @@ angular.module('gkClientIndex.services', [])
                     'order_by': {
                         index: 20,
                         name: '排序方式',
-                        icon: 'icon_order',
+                        icon: 'icon_orderby',
                         className: "order_by",
                         items: {
                             'order_by_file_name': {
