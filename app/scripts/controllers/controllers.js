@@ -652,7 +652,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             })
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKSearch', 'GKFileListView',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile, GKSearch,GKFileListView) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
@@ -664,7 +664,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.showHint = false;
         $scope.totalCount = 0;
         $scope.shiftLastIndex = 0; //shift键盘的起始点
-        $scope.keyword = '';
+        $scope.search = '';
         $scope.view = 'list';
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
@@ -707,7 +707,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setOpts = function (selectedFile) {
             selectedFile = angular.isDefined(selectedFile)?selectedFile:[];
             $scope.allOpts = GKOpt.getAllOpts($scope,selectedFile);
-            var isSearch = $scope.keyword.length ? true : false;
+            var isSearch = $scope.search.length ? true : false;
             optKeys = GKOpt.getOpts($scope.PAGE_CONFIG.file, selectedFile, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
             $scope.opts = null;
             $scope.opts = [];
@@ -988,7 +988,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.filter = param.filter || '';
             $scope.selectedpath = param.selectedpath || '';
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
-            $scope.keyword = param.keyword || '';
+            $scope.search = param.search || '';
             $scope.showHint =$rootScope.PAGE_CONFIG.file.syncpath?true:false;
             GKFileList.unSelectAll($scope);
             GKFileList.refreahData($scope,param.selectedpath);
@@ -1326,19 +1326,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope);
         })
 
-        $scope.$on('searchSmartFolder', function (event, keyword) {
-            if (!keyword) {
-                return;
-            }
-            $scope.keyword = keyword;
-            GKFileList.refreahData($scope);
-        })
-
-        $scope.$on('cancelSearchSmartFolder', function (event, keyword) {
-            $scope.keyword = '';
-            GKFileList.refreahData($scope);
-        })
-
         $scope.$on('$destroy', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
         })
@@ -1492,7 +1479,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             gkClientInterface.clearMessage();
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKSearch', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKSearch, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog) {
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1507,7 +1494,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.localFile = $rootScope.PAGE_CONFIG.file;
         var getSidbarData = function(params){
             var sideBarData;
-            if(params.keyword){
+            if(params.search){
                 sideBarData =  {
                     title: '搜索结果',
                     tip: '',

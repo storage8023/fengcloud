@@ -31,10 +31,7 @@
                         <div class="file_name">
                             <span title="{{file.filename}}">{{file.filename}}</span>
                         </div>
-                        <div title="创建人：{{file.creator_member_name}}">创建人：<span
-                                ng-bind="file.creator_member_name"></span></div>
-                        <div title="最后修改人：{{file.last_member_name}}">最后修改人：<span ng-bind="file.last_member_name"></span>
-                        </div>
+                        <div title="创建人：{{file.creator_member_name}}">创建人：<span ng-bind="file.creator_member_name"></span></div>
                         <div class="smart">
                             <a href="javascript:void(0)" ng-repeat="smart in smarts"
                                ng-class="isSmartAdd(file.favorite,smart.filter)?'active':''"

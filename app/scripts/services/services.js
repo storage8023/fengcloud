@@ -1658,7 +1658,7 @@ angular.module('gkClientIndex.services', [])
                     path: paramArr[1] | '',
                     mountid: paramArr[3] || 0,
                     filter: paramArr[4] || '',
-                    keyword: paramArr[5] || '',
+                    search: paramArr[5] || '',
                 };
                 return '/file?' + jQuery.param(params);
             },
@@ -1667,7 +1667,6 @@ angular.module('gkClientIndex.services', [])
                 var partition = $location.search().partition || GKPartition.teamFile;
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
-                var keyword = $location.search().keyword;
                 var breads = [], bread;
                 if (path.length) {
                     path = Util.String.rtrim(Util.String.ltrim(path, '/'), '/');
@@ -3260,7 +3259,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'RestFile', 'GKSearch', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, RestFile, GKSearch, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'RestFile', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, RestFile, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -3406,24 +3405,35 @@ angular.module('gkClientIndex.services', [])
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
-                if ($scope.keyword) {
+                if ($scope.search) {
+                    var searchArr = $scope.search.split('|');
                     if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0 && $scope.filter != 'trash') {
                         source = 'api';
-                        GKSearch.setSearchState('loading');
-                        var condition = GKSearch.getCondition();
-                        var mountId = GKSearch.getMountId();
+                        $rootScope.$broadcast('searchStateChange','loading');
+                        var fileSearch = new GKFileSearch();
+                        fileSearch.conditionIncludeKeyword(searchArr[0]);
+                        var mountId = 0;
+                        if(['mount','path'].indexOf(searchArr[1])>=0){
+                            fileSearch.conditionIncludeMountId($scope.PAGE_CONFIG.mount.mount_id);
+                            mountId = $scope.PAGE_CONFIG.mount.mount_id;
+                        }
+
+                        if(searchArr[1] == 'path'){
+                            fileSearch.conditionIncludePath($scope.path);
+                        }
+                        var condition = fileSearch.getCondition();
                         GKApi.searchFile(condition, mountId).success(function (data) {
-                            GKSearch.setSearchState('end');
+                            $rootScope.$broadcast('searchStateChange','end');
                             fileList = data['list'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));
                         }).error(function (request) {
-                                GKSearch.setSearchState('end');
+                                $rootScope.$broadcast('searchStateChange','end');
                                 deferred.reject(GKException.getAjaxErrorMsg(request));
                             });
                     } else {
-                        fileList = $filter('filter')($scope.fileData, {filename: $scope.keyword});
+                        fileList = $filter('filter')($scope.fileData, {filename: searchArr[0]});
                         deferred.resolve(fileList);
-                        GKSearch.setSearchState('end');
+                        $rootScope.$broadcast('searchStateChange','end');
                     }
                 } else {
                     if ([GKPartition.teamFile,GKPartition.subscribeFile,GKPartition.joinFile].indexOf($scope.partition)>=0) {
@@ -3476,7 +3486,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.selectedpath = selectPath;
                     }
                     if (!$scope.fileData || !$scope.fileData.length) {
-                        if ($scope.keyword) {
+                        if ($scope.search) {
                             $scope.errorMsg = '未找到相关搜索结果';
                         }else{
                             $scope.errorMsg = '该文件夹为空';
@@ -3489,70 +3499,6 @@ angular.module('gkClientIndex.services', [])
             }
         };
         return GKFileList;
-    }])
-    .factory('GKSearch', [function () {
-        var searchState = '',
-            searchCondition = '',
-            keyword = '',
-            JSONCondition;
-        return {
-            checkExist: function (field) {
-                if (!JSONCondition || !JSONCondition['include'] || !JSONCondition['include'][field]) {
-                    return false;
-                }
-                return true;
-            },
-            getKeyWord: function () {
-                if (!this.checkExist('keywords')) {
-                    return '';
-                }
-                return JSONCondition['include']['keywords'][1] || '';
-            },
-            getMountId:function(){
-                if (!this.checkExist('mount_id')) {
-                    return 0;
-                }
-                return JSONCondition['include']['mount_id'][1] || 0;
-            },
-            setSearchState: function (state) {
-                searchState = state;
-            },
-            getSearchState: function () {
-                return searchState;
-            },
-            setCondition: function (condition) {
-                searchCondition = condition;
-                JSONCondition = JSON.parse(searchCondition);
-            },
-            getConditionField: function (field) {
-                if (!this.checkExist(field)) {
-                    return null;
-                }
-                var value = JSONCondition['include'][field];
-                var reValue;
-                if (value[0] == 'in') {
-                    reValue = JSONCondition['include'][field][1];
-                } else if (value[0] == 'lt') {
-                    reValue = [0, dateline[1]];
-                }
-                else if (value[0] == 'gt') {
-                    reValue = [value[1], 0];
-                } else if (value[0] == 'eq') {
-                    reValue = value[1];
-                } else {
-                    reValue = value[1];
-                }
-                return reValue;
-            },
-            getCondition: function () {
-                return searchCondition;
-            },
-            reset: function () {
-                searchState = '';
-                searchCondition = '';
-                keyword = '';
-            }
-        }
     }])
     .factory('GKHistory', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
         return new GKHistory($q, $location, $rootScope);

@@ -286,7 +286,7 @@
                 </div>
                 <div ng-switch-when="nofile">
                     <div class="no_file no_file_{{partition}}">
-                        <div ng-if="!filter && !keyword">
+                        <div ng-if="!filter && !search">
                             <div ng-show="sidbarData" gk-guider='{
                   buttons: [{name: "下一步",onclick:GKGuiders.next}],
                   description: "查看云库的信息，并对其进行容量、成员、订阅者及安全方面的管理。",
@@ -352,7 +352,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div ng-if="filter || keyword">
+                        <div ng-if="filter || search">
                             <filter-right-sidebar class="filter_right_sidebar"></filter-right-sidebar>
                         </div>
                     </div>

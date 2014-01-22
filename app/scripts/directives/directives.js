@@ -1113,7 +1113,7 @@ angular.module('gkClientIndex.directives', [])
             link: function ($scope, $element) {
                 $scope.$on('$locationChangeSuccess', function () {
                     var param = $location.search(), listName = '';
-                    if (param.keyword) {
+                    if (param.search) {
                         listName = '搜索结果';
                     } else {
                         if (param.partition == GKPartition.smartFolder && param.filter) {
@@ -1241,7 +1241,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKSearch', 'GKPartition', '$rootScope', 'GKSmartFolder', function ($location, $timeout, GKSearch, GKPartition, $rootScope, GKSmartFolder) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder) {
         return {
             replace: true,
             restrict: 'E',
@@ -1340,64 +1340,38 @@ angular.module('gkClientIndex.directives', [])
                     $event.stopPropagation();
                 };
 
-
-                $scope.$watch(function () {
-                    return GKSearch.getSearchState();
-                }, function (newValue, oldValue) {
-                    if (newValue == oldValue) {
-                        return;
-                    }
-                    $scope.searchState = newValue;
-                });
+                $scope.$on('searchStateChange',function(event,state){
+                    $scope.searchState = state;
+                })
 
                 $scope.searchFile = function () {
                     if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                         return;
                     }
+                    if($scope.keyword.indexOf('|')>=0){
+                        alert('搜索关键字中不能包含 | ');
+                        return;
+                    }
                     if(!$scope.currentSearchScope){
                         return;
                     }
-
-                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder || $rootScope.PAGE_CONFIG.filter == 'trash') {
-                        $rootScope.$broadcast('searchSmartFolder', $scope.keyword);
-                    } else {
-                        var params = {
-                            keyword: $scope.keyword,
-                            searchscope:$scope.currentSearchScope.name
-                        };
-                        var fileSearch = new GKFileSearch();
-                        fileSearch.conditionIncludeKeyword($scope.keyword);
-                        if(['mount','path'].indexOf($scope.currentSearchScope.name)>=0){
-                            fileSearch.conditionIncludeMountId($scope.PAGE_CONFIG.mount.mount_id);
-                        }
-                        if($scope.currentSearchScope.name == 'path'){
-                            fileSearch.conditionIncludePath($scope.path);
-                        }
-                        var condition = fileSearch.getCondition();
-
-                        GKSearch.setCondition(condition);
-                        var search = $location.search();
-                        $location.search(angular.extend(search, params));
-                    }
+                    var extendParam = {
+                          search:[$scope.keyword,$scope.currentSearchScope.name].join('|')
+                    };
+                    var search = $location.search();
+                    $location.search(angular.extend(search, extendParam));
                 };
 
                 var resetSearch = function () {
-                    $scope.keyword = '';
-                    $scope.searchState = '';
-                    GKSearch.reset();
+                    $scope.keyword = $scope.searchState = '';
+//                    $scope.currentSearchScope = null;
                 };
 
                 $scope.cancelSearch = function ($event) {
-                    resetSearch();
-                    if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder ||  $rootScope.PAGE_CONFIG.filter == 'trash') {
-                        $rootScope.$broadcast('cancelSearchSmartFolder');
-                    } else {
-                        var search = $location.search();
-                        $location.search(angular.extend(search, {
-                            keyword: '',
-                            searchscope:''
-                        }));
-                    }
+                    var search = $location.search();
+                    $location.search(angular.extend(search, {
+                        search: ''
+                    }));
                     $event.stopPropagation();
                 };
 
@@ -1415,7 +1389,6 @@ angular.module('gkClientIndex.directives', [])
                     })
                 })
 
-                $scope.disableSearch = false;
 
                 var getSearchScopes = function () {
                     var searchScopes = [];
@@ -1444,22 +1417,48 @@ angular.module('gkClientIndex.directives', [])
                             })
                         }
                     }
-                    $scope.searchScopes = searchScopes;
-                    var len = $scope.searchScopes.length;
-                    if (len) {
-                        $scope.currentSearchScope = $scope.searchScopes[len - 1];
+                    return searchScopes;
+                };
+
+                var getCurrentSearchScope = function(scope,searchScopes){
+                    var currentScope;
+                    angular.forEach(searchScopes,function(val){
+                        if(val.name == scope){
+                            currentScope = val;
+                            return false;
+                        }
+                    });
+                    return currentScope;
+                }
+
+                var getSearchParam = function(){
+                    var params = $location.search();
+                    $scope.searchScopes =  getSearchScopes();
+
+                    if(!params.search){
+                        resetSearch();
+                        var len = $scope.searchScopes.length;
+                        if(len){
+                            $scope.currentSearchScope = $scope.searchScopes[len-1];
+                        }
+                    }else{
+                        var searchArr = params.search.split('|');
+                        if($scope.keyword == searchArr[0] && ($scope.currentSearchScope && $scope.currentSearchScope.name == searchArr[1])){
+                            return;
+                        }
+                        var currentScope = getCurrentSearchScope(searchArr[1],$scope.searchScopes);
+                        if(!currentScope) return;
+                        $scope.keyword = searchArr[0];
+                        $scope.currentSearchScope = currentScope;
+                        $scope.searchState = 'start';
                     }
                 };
 
-
                 $scope.$on('$locationChangeSuccess', function ($e, $new, $old) {
-                    var params = $location.search();
-                    if (!params.keyword) {
-                        resetSearch();
-                        getSearchScopes();
-                    }
+                    getSearchParam();
                 });
-                getSearchScopes();
+
+                getSearchParam();
 
                 $scope.setSearchScope = function (searchScope) {
                     $scope.currentSearchScope = searchScope;
