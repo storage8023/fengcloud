@@ -982,6 +982,9 @@ footer {
 
 
 /**右侧**/
+.right_sidebar{
+    overflow: auto;
+}
 .right_sidebar .slide_arrow{
     position: absolute;
     width: 14px;
@@ -1005,7 +1008,7 @@ footer {
     padding-top: 40px;
 }
 .right_sidebar .no_file{
-    padding: 25px 0;
+    padding: 10px 0;
     color:#ACB4BF;
     position: absolute;
     top:0;
@@ -1024,8 +1027,7 @@ footer {
     /*opacity: 0;*/
 }
 .right_sidebar .no_file .head_wrapper{
-    height: 105px;
-    padding: 0 26px;
+    padding: 10px 26px;
 }
 .right_sidebar .no_file .head_wrapper img{
     width: 54px;
@@ -1058,31 +1060,15 @@ footer {
 .right_sidebar .no_file .btn_wrapper button:hover .icon_team_upgrade{
     background-position: -24px -1364px;
 }
-.right_sidebar .no_file .tab_wrapper{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top:125px;
-    bottom: 0;
-    background: #fcfcfc;
-}
+
 .right_sidebar .no_file .tab_wrapper.normal_member{
 
 }
+
 .right_sidebar .no_file .tab_content{
     color: #3F4754;
 }
-.right_sidebar .no_file .tab_content ul{
-    position: absolute;
-    bottom: 62px;
-    left: 0;
-    right: 0;
-    top:36px;
-    overflow: auto;
-}
-.right_sidebar .no_file .tab_wrapper.normal_member .tab_content ul{
-    bottom: 0;
-}
+
 .right_sidebar .no_file .tab_content ul li{
     height: 31px;
     line-height: 31px;
@@ -1244,9 +1230,6 @@ footer {
     padding-bottom: 4px;
 }
 .right_sidebar .file_info_wrapper > section{
-    height: 170px;
-    overflow-y: auto;
-    overflow-x:hidden;
     -webkit-transition:height linear 0.1s;
 }
 .right_sidebar.my_right_sidebar .file_info_wrapper > section{
@@ -1448,24 +1431,6 @@ footer {
     padding-right: 16px;
 }
 
-.right_sidebar .file_detail_wrapper {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 205px;
-    bottom: 0;
-    -webkit-transition:top linear 0.1s;
-    z-index: 2;
-    background:#fcfcfc;
-}
-.right_sidebar .file_detail_wrapper .history_wrapper{
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 35px;
-    bottom: 0;
-    overflow: auto;
-}
 .right_sidebar .file_detail_wrapper .section_title button{
     float: right;
     margin: 5px 10px 0 0;
@@ -1488,14 +1453,7 @@ footer {
 .right_sidebar .file_detail_wrapper .checkbox_wrapper label{
     font-weight: normal;
 }
-.right_sidebar .file_detail_wrapper .history_list{
-    position: absolute;
-    left:0;
-    right:0;
-    top:0;
-    bottom: 35px;
-    overflow: auto;
-}
+
 .right_sidebar .file_detail_wrapper .nocheckbox .history_list{
     bottom: 0;
 }

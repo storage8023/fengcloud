@@ -1191,6 +1191,20 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            pendingMembers:function(orgId){
+                var params = {
+                    org_id: orgId,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/team/pending_members',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             subscriberList:function(orgId,start,limit){
                 var params = {
                     org_id: orgId,

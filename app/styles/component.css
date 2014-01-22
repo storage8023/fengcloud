@@ -1443,3 +1443,147 @@ text-align: center;
 .opt_view_change a.active.thumb_view > i {
     background-position: -24px -604px;
 }
+
+
+.guider{
+    position: absolute;
+    background: #fff;
+    max-width: 580px;
+    -webkit-box-shadow: 0 0 30px rgba(0,0,0,.25);
+    box-shadow: 0 0 30px rgba(0,0,0,.25);
+}
+
+/*.guider.top {*/
+    /*margin-top: -10px;*/
+/*}*/
+
+/*.guider.right {*/
+    /*margin-left: 10px;*/
+/*}*/
+
+/*.guider.bottom {*/
+    /*margin-top: 10px;*/
+/*}*/
+
+/*.guider.left {*/
+    /*margin-left: -10px;*/
+/*}*/
+
+
+.guider .arrow,
+.guider .arrow:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+
+.guider .arrow {
+    border-width: 11px;
+}
+
+.guider .arrow:after {
+    border-width: 10px;
+    content: "";
+}
+
+.guider.top .arrow {
+    bottom: -11px;
+    left: 50%;
+    margin-left: -11px;
+    border-top-color: #ccc;
+    border-bottom-width: 0;
+}
+
+.guider.top .arrow:after {
+    bottom: 1px;
+    margin-left: -10px;
+    border-top-color: #ffffff;
+    border-bottom-width: 0;
+    content: " ";
+}
+
+.guider.right .arrow {
+    top: 50%;
+    left: -11px;
+    margin-top: -11px;
+    border-right-color: #ccc;
+    border-left-width: 0;
+}
+
+.guider.right .arrow:after {
+    bottom: -10px;
+    left: 1px;
+    border-right-color: #ffffff;
+    border-left-width: 0;
+    content: " ";
+}
+
+.guider.bottom .arrow {
+    top: -11px;
+    left: 50%;
+    margin-left: -11px;
+    border-bottom-color: #ccc;
+    border-top-width: 0;
+}
+
+.guider.bottom .arrow:after {
+    top: 1px;
+    margin-left: -10px;
+    border-bottom-color: #ffffff;
+    border-top-width: 0;
+    content: " ";
+}
+
+.guider.left .arrow {
+    top: 50%;
+    right: -11px;
+    margin-top: -11px;
+    border-left-color: #ccc;
+    border-right-width: 0;
+}
+
+.guider.left .arrow:after {
+    right: 1px;
+    bottom: -10px;
+    border-left-color: #ffffff;
+    border-right-width: 0;
+    content: " ";
+}
+
+.guider .close{
+    position: absolute;
+    top:5px;
+    right: 5px;
+}
+.guider .guider_inner{
+    padding: 20px;
+}
+.guider .guider_inner h4{
+    font-size: 23px;
+    line-height: 1.4;
+}
+.guider .guider_inner ul{
+  overflow: hidden;
+   margin: 12px 0;
+    text-align: center;
+}
+.guider .guider_inner ul li{
+    display: inline-block;
+    width: 175px;
+    text-align: center;
+    font-size: 14px;
+    color: #738295;
+}
+.guider .guider_inner ul li > div{
+    margin-top: 10px;
+}
+.guider .guider_inner .guider_opt{
+    text-align: right;
+
+}
+.guider .guider_inner .guider_opt a{
+    color: #b53c2c;
+}

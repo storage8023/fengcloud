@@ -8,15 +8,15 @@ jQuery.ajaxSetup({
 });
 
 angular.module('gkClientIndex.services', [])
+    .value('GKConstant', {
+        guideKey: 'gk_guide_hide'
+    })
     .value('uiSelectableConfig', {
         filter: '.file_item',
         //tolerance:'fit',
         distance: 10
     })
 
-    .factory('GKGuiders', [function () {
-        return guiders;
-    }])
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath: function (mountId, fullpath) {

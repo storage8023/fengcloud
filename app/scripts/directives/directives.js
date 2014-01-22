@@ -2,6 +2,223 @@
 
 /* Directives */
 angular.module('gkClientIndex.directives', [])
+    .directive('guiderPopup', [function () {
+        return {
+            restrict: 'EA',
+            replace: true,
+            scope: {  content: '@', placement: '@',turnOffGuide:'&',closeGuide:'&'},
+            templateUrl: 'views/guider_popup.html'
+        }
+    }])
+    .directive('guider', ['$compile','$document','$position','$timeout','localStorageService','GKConstant',function ($compile,$document,$position,$timeout,localStorageService,GKConstant) {
+        var template = '<guider-popup content="{{guiderContent}}" close-guide="closeGuide()" turn-off-guide="turnOffGuide()" placement="{{placement}}"></guider-popup>';
+        return {
+            restrict: 'A',
+            scope:true,
+            link:function(scope, element, attrs ){
+                var showTimer,
+                    hideTimer,
+                    showDely,
+                    hideDely,
+                    $body,
+                    guider,
+                    storageKey,
+                    isOpen;
+
+                showDely = hideDely = 200;
+                guider = $compile(template)(scope);
+                storageKey = GKConstant.guideKey;
+
+                attrs.$observe('guider',function(value){
+                    if(!value) return;
+                    jQuery.ajax({
+                        url:'views/guider_'+value+'.html',
+                        dataType:'html'
+                    }).success(function(data){
+                            scope.$apply(function(){
+                                scope.guiderContent = data;
+                            })
+                        }).error(function(){
+                            scope.$apply(function(){
+                                scope.guiderContent = '';
+                            })
+                        })
+
+                })
+
+                attrs.$observe('guiderPlacement',function(value){
+                    scope.placement = angular.isDefined(value)?value:'left';
+                })
+
+                scope.closeGuide = function(){
+                    cancelBind();
+                }
+
+                scope.turnOffGuide = function(){
+                    cancelBind();
+                    localStorageService.add(storageKey,1);
+                }
+
+                var hide = function(){
+                    guider.hide();
+                    isOpen = false;
+                };
+
+                var position = function(guiderElem){
+                    var base,
+                        tWidth,
+                        tHeight,
+                        attachToHeight,
+                        attachToWidth,
+                        arrowHeigth,
+                        arrowWidth,
+                        arrowElem,
+                        top,
+                        left,
+                        positionType;
+
+                    positionType  = 'absolute';
+                    arrowElem = guiderElem.find('.arrow');
+                    base = $position.offset(element);
+                    top = base.top;
+                    left = base.left;
+                    tWidth = guider.width();
+                    tHeight = guider.height();
+                    attachToHeight = element.outerHeight();
+                    attachToWidth = element.outerWidth();
+                    arrowHeigth = arrowElem.outerHeight();
+                    arrowWidth = arrowElem.outerWidth();
+                    $body = $body || $document.find('body');
+
+                    var placementMap = {
+                        'right':[attachToHeight/2 - tHeight/2, arrowWidth + attachToWidth],
+                        'left':[attachToHeight/2 - tHeight/2, -tWidth - arrowWidth],
+                        'top':[-arrowHeigth - tHeight, attachToWidth/2 - tWidth/2],
+                        'bottom':[arrowHeigth + attachToHeight, attachToWidth/2 - tWidth/2]
+                    };
+                    var offset = placementMap[scope.placement];
+                    top += offset[0];
+                    left += offset[1];
+
+                    var minTop = 0;
+                    var maxTop = $(window).height();
+                    var minLeft = 0;
+                    var maxLeft = $(window).width()-tWidth;
+                    if(top<minTop){
+                        arrowElem.css({
+                            'margin-top':(arrowHeigth/2+(minTop-top))*-1
+                        })
+                        top = minTop;
+                    }
+
+                    if(top>maxTop){
+                        arrowElem.css({
+                            'margin-top':(arrowHeigth/2+(top-maxTop))*-1
+                        })
+                        top = maxTop;
+                    }
+
+                    if(left<minLeft){
+                        arrowElem.css({
+                            'margin-left':(arrowWidth/2+(minLeft-left))*-1
+                        })
+                        left = minLeft;
+                    }
+
+                    if(left>maxLeft){
+                        arrowElem.css({
+                            'margin-left':(arrowWidth/2+(maxLeft-left))*-1
+                        })
+                        left = maxLeft;
+                    }
+
+                    guiderElem.css({
+                        "position": positionType,
+                        "top": top,
+                        "left": left,
+                        "z-index":9999
+                    });
+                };
+
+                var show =function(){
+                    if(!scope.guiderContent){
+                        return;
+                    }
+
+                    guider.css({
+                        'top':'0',
+                        'left':'0',
+                        'display':'block'
+                    })
+
+                    $body = $body || $document.find('body');
+                    $body.append(guider);
+                    position(guider);
+                    isOpen = true;
+                    guider.on('mouseenter',function(){
+                        if(hideTimer){
+                            $timeout.cancel(hideTimer);
+                            hideTimer = null;
+                        }
+                    });
+
+                    guider.on('mouseleave',function(){
+                        //return;
+                        hideTimer =  $timeout(hide,hideDely);
+                    });
+                };
+
+                var cancelBind = function(){
+                    $timeout.cancel(showTimer);
+                    $timeout.cancel(hideTimer);
+                    showTimer = hideTimer = null;
+                    hide();
+                }
+
+
+                element.on('mouseenter.guider',function(event){
+                    if(localStorageService.get(storageKey)){
+                        return;
+                    }
+                    if(isOpen) return;
+                    showTimer = $timeout(function(){
+                        show();
+                    },showDely);
+                });
+
+                element.on('mouseleave.guider',function(){
+                    if(showTimer){
+                        $timeout.cancel(showTimer);
+                        showTimer = null;
+                    }
+                    hideTimer =  $timeout(hide,hideDely);
+                });
+
+                element.on('click.guider',function(){
+                    if(showTimer){
+                        $timeout.cancel(showTimer);
+                        showTimer = null;
+                    }
+                    hide();
+                });
+
+                jQuery(window).on('resize.guider',function(){
+                    if(isOpen){
+                        position(guider);
+                    }
+                })
+
+                scope.$on('$destroy',function(){
+                    cancelBind();
+                    guider.remove();
+                    jQuery(window).off('resize.guider');
+                    element.off('mousedown.guider');
+                    element.off('mouseenter.guider');
+                    element.off('mouseleave.guider');
+                })
+            }
+        }
+    }])
     .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException',function ($timeout,$rootScope,GKException) {
         return {
             restrict: 'A',
@@ -106,20 +323,20 @@ angular.module('gkClientIndex.directives', [])
         }
     }])
     .directive('sizeAdjust', ['$timeout', '$compile', function ($timeout, $compile) {
+        var template = '<size-elem content="{{content}}"></size-elem>';
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-                var fakeDiv = $compile(angular.element('<div ng-bind-html="content"></div>'))($scope);
+                var fakeDiv = jQuery('<div></div>');
                 fakeDiv.css($element.css()).css({
                     'display': 'none',
                     'word-wrap': 'break-word',
                     'min-height': $element.height(),
                     'height': 'auto'
                 }).insertAfter($element.css('overflow-y', 'hidden'));
-                $element.before(fakeDiv);
                 $scope.$watch($attrs.ngModel, function (value) {
                     value = String(value);
-                    $scope.content = value.replace(/&/g, '&amp;')
+                    var content = value.replace(/&/g, '&amp;')
                         .replace(/</g, '&lt;')
                         .replace(/>/g, '&gt;')
                         .replace(/'/g, '&#039;')
@@ -129,9 +346,11 @@ angular.module('gkClientIndex.directives', [])
                         .replace(/\n/g, '<br/>')
                         .replace(/<br \/>[ ]*$/, '<br />-')
                         .replace(/<br \/> /g, '<br />&nbsp;');
+                    fakeDiv.html(content);
                     $timeout(function () {
+                        console.log(fakeDiv.height());
                         $element.height(fakeDiv.height());
-                    })
+                    },200)
                 })
 
                 $scope.$on('$destroy', function () {
@@ -498,23 +717,6 @@ angular.module('gkClientIndex.directives', [])
                 })
             }
         };
-    }])
-    .directive('gkGuider', ['GKGuiders', '$parse', '$timeout', function (GKGuiders, $parse, $timeout) {
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                $scope.GKGuiders = GKGuiders;
-                $timeout(function () {
-                    $attrs.$observe('gkGuider', function (newValue) {
-                        var option = $scope.$eval(newValue);
-                        angular.extend(option, {
-                            attachTo: $element[0]
-                        });
-                        GKGuiders.createGuider(option);
-                    })
-                })
-            }
-        }
     }])
     .directive('contextmenu', ['GKContextMenu', function (GKContextMenu) {
         return {
@@ -1465,7 +1667,6 @@ angular.module('gkClientIndex.directives', [])
                 $scope.setSearchScope = function (searchScope) {
                     $scope.currentSearchScope = searchScope;
                 }
-
                 $scope.$on('$destroy', function () {
                     $('body').off('mousedown.resetsearch');
                     jQuery(window).off('resize');

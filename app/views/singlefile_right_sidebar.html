@@ -11,15 +11,7 @@
                         详细
                     </span>
                 </div>
-                <section class="scrollbar" gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "添加“注释”和“图形标记”，可以更方便地归整文件，搜索也更快速",
-                  id: "guide_4",
-                  next: "guide_5",
-                  position: 9,
-                  title: "注释和标记",
-                  width: 280
-                  }'>
+                <section class="scrollbar">
                     <div class="file_icon">
                         <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
                              ng-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"/>
@@ -35,7 +27,7 @@
                                 ng-bind="file.creator_member_name"></span></div>
                         <div title="最后修改人：{{file.last_member_name}}">最后修改人：<span ng-bind="file.last_member_name"></span>
                         </div>
-                        <div class="smart">
+                        <div class="smart" guider="mark" guider-placement="left">
                             <a href="javascript:void(0)" ng-repeat="smart in smarts"
                                ng-class="isSmartAdd(file.favorite,smart.filter)?'active':''"
                                ng-click="toggleSmart(smart.filter,file.favorite)">
@@ -44,29 +36,21 @@
                         </div>
                     </div>
                     <div class="opt_wrapper" ng-show="showTab">
-                        <button class="btn btn-default" ng-show="file.dir==0" ng-click="publishFile(file)">临时链接</button>
-                        <button class="btn btn-default" ng-click="startChat(file)">发起讨论</button>
+                        <button class="btn btn-default" ng-show="file.dir==0" guider="plink" guider-placement="left" ng-click="publishFile(file)">临时链接</button>
+                        <button guider="chat" guider-placement="left" class="btn btn-default" ng-click="startChat(file)">发起讨论</button>
                     </div>
                     <div class="tags">
                         <div ng-if="!showTab">
                             {{file.tag}}
                         </div>
-                        <textarea ng-if="showTab" size-adjust focus-me="focusPostTextarea" ng-blur="postTag(file.tag)" maxlength="280" ng-keydown="handlePostKeyDown($event,file.tag)" class="form-control" placeholder="+添加注释" ng-model="file.tag"></textarea>
+                        <textarea guider="comment" guider-placement="left" ng-if="showTab" size-adjust focus-me="focusPostTextarea" ng-blur="postTag(file.tag)" maxlength="280" ng-keydown="handlePostKeyDown($event,file.tag)" class="form-control" placeholder="+添加注释" ng-model="file.tag"></textarea>
                     </div>
                 </section>
 
             </div>
-            <section class="file_detail_wrapper" ng-show="showTab" gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "云库中的其他成员对协作编辑的文件进行讨论。并可以查看文件修改的历史版本",
-                  id: "guide_5",
-                  next: "guide_6",
-                  position: 9,
-                  title: "讨论和历史",
-                  width: 280
-                  }'>
+            <section class="file_detail_wrapper" ng-show="showTab">
                 <div class="section_title">
-                    <button class="btn btn-default" ng-show="localFile.dir==0" ng-click="showMilestoneDialog(file)">里程碑</button>
+                    <button class="btn btn-default" ng-show="localFile.dir==0" guider-placement="left" guider="milestone" ng-click="showMilestoneDialog(file)">里程碑</button>
                     <span>历史</span>
                 </div>
                 <div class="history_wrapper" ng-class="!histories.length || localFile.dir==1?'nocheckbox':''">
