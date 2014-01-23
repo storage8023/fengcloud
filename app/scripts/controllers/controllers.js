@@ -594,24 +594,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         });
 
-        $scope.$on('OpenMountPath',function($event,param){
-           var mountId = param.mountid,
-               fullpath = param.webpath,
-               selectFile = '',
-               path = '';
-            var lastStr = Util.String.lastChar(fullpath);
-            if(lastStr==='/'){
-                path = Util.String.rtrim(fullpath,'/');
-                selectFile = '';
-            }else{
-                path = Util.String.dirName(fullpath);
-                selectFile = fullpath;
-            }
-            $timeout(function(){
-                GKPath.gotoFile(mountId, path, selectFile);
-            })
-        })
-
         var setNewMsgTime = function(orgId,newMsgTime){
             var mount = GKMount.getMountByOrgId(orgId);
             if(!mount){
@@ -1363,6 +1345,28 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('cancelSearchSmartFolder', function (event, keyword) {
             $scope.keyword = '';
             GKFileList.refreahData($scope);
+        })
+
+        $scope.$on('OpenMountPath',function($event,param){
+            if($scope.view == 'chat'){
+                GKFileList.changeView($scope,'list');
+            }
+            var mountId = param.mountid,
+                fullpath = param.webpath,
+                selectFile = '',
+                path = '';
+            var lastStr = Util.String.lastChar(fullpath);
+            if(lastStr==='/'){
+                path = Util.String.rtrim(fullpath,'/');
+                selectFile = '';
+            }else{
+                path = Util.String.dirName(fullpath);
+                selectFile = fullpath;
+            }
+            console.log(path);
+            $timeout(function(){
+                GKPath.gotoFile(mountId, path, selectFile);
+            })
         })
 
         $scope.$on('$destroy', function () {

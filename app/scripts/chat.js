@@ -102,11 +102,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         $scope.goToFile = function ($event,file) {
             var fullpath = file.path;
             var mountId = $scope.currentSession.mountid;
-            gkClientInterface.openPath({
+            topWindow.gkFrameCallback('OpenMountPath',{
                 mountid:mountId,
-                webpath:fullpath,
-                type:'select'
-            });
+                webpath:fullpath
+            })
             $event.stopPropagation();
         };
 
@@ -118,11 +117,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             var fullpath = file.path;
             var mountId = Number($scope.currentSession.mountid);
             if(file.dir==1){
-                gkClientInterface.openPath({
+                topWindow.gkFrameCallback('OpenMountPath',{
                     mountid:mountId,
-                    webpath:fullpath,
-                    type:'open'
-                });
+                    webpath:fullpath+'/'
+                })
             }else{
                 var params = {
                     mountid: mountId,
@@ -168,13 +166,14 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             var extendParam = {};
             if (param.fullpath) {
                 extendParam.file = gkClientInterface.getFileInfo({
-                    mountid: $scope.currentSession.mountid,
+                    mountid: mountId,
                     webpath: param.fullpath
                 });
                 extendParam.file.mount_id = $scope.currentSession.mountid;
                 extendParam.file.filename = Util.String.baseName(extendParam.file.path);
                 extendParam.file.ext = Util.String.getExt(extendParam.file.filename);
             }
+
             angular.extend($rootScope.PAGE_CONFIG, extendParam);
             $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
             var msgList = [];
