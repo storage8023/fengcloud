@@ -399,7 +399,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
               this.host = host;
           },
           getHost:function(){
-              return 'http://10.0.0.150:1238';
               return this.host;
           }
 
