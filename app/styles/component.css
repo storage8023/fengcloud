@@ -1411,7 +1411,6 @@ text-align: center;
     display: inline-block;
     height: 24px;
     width: 36px;
-    border-radius: 3px;
     text-align: center;
     background-color: #7F8999;
     margin-left: 1px;
@@ -1419,16 +1418,14 @@ text-align: center;
 }
 
 .opt_view_change a:first-child{
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
 }
 .opt_view_change a:last-child{
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
-.opt_view_change a.thumb_view{
-    border-radius: 0;
-}
+
 .opt_view_change a:hover{
     background: #9AA5B8;
 }

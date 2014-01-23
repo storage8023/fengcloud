@@ -1012,6 +1012,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
             GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
+            if([GKPartition.teamFile,GKPartition.joinFile].indexOf($scope.partition)<0 && $scope.view == 'chat'){
+                $scope.view = 'list';
+            }else if($scope.view == 'chat' && $scope.path){
+                $scope.view = 'list';
+            }
         };
 
         $scope.gkChat = GKChat;

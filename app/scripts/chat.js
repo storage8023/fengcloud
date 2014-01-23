@@ -4,11 +4,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
     .run(['$rootScope', function ($rootScope) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
-            file: null
+            file: null,
+            partition:'teamfile'
         }
     }])
     .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember','$angularCacheFactory','$window',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember,$angularCacheFactory,$window) {
-
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
