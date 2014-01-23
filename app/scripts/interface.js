@@ -11,13 +11,17 @@
         if(typeof gkClient.gGetMessage === 'undefined'){
             return '';
         }
-        return gkClient.gGetMessage(JSON.stringify(param));
+        var re =  gkClient.gGetMessage(JSON.stringify(param));
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
     },
     postChatMessage:function(param,callback){
         if(typeof gkClient.gSendMessage === 'undefined'){
             return;
         }
-        console.log(param);
         gkClient.gSendMessage(JSON.stringify(param),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
@@ -25,11 +29,16 @@
             }
         });
     },
-    getChateState:function(param){
+    getChateState:function(){
         if(typeof gkClient.gGetMessageUpdate === 'undefined'){
             return '';
         }
-        return gkClient.gGetMessageUpdate(JSON.stringify(param));
+        var re = gkClient.gGetMessageUpdate();
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
     },
     openLaunchpad:function(param){
         if(typeof gkClient.gShowLaunchpad === 'undefined'){
@@ -207,7 +216,6 @@
         }
     },
     notice:function(params,callback){
-        console.log(arguments);
         gkClient.gNotice(JSON.stringify(params),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
@@ -683,7 +691,6 @@
             if(typeof gkClient.gSetLocalCache === 'undefined'){
                 return;
             }
-            //console.log(param);
             gkClient.gSetLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);

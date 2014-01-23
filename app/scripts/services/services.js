@@ -32,6 +32,21 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
+    .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
+        return {
+            getSyncByMountIdFullpath: function (mountId, fullpath) {
+                var syncedFiles = gkClientInterface.getLinkPath()['list'] || [];
+                var syncItem = null;
+                angular.forEach(syncedFiles, function (value) {
+                    if (value.mountid == mountId && value.webpath == fullpath) {
+                        syncItem = value;
+                        return false;
+                    }
+                })
+                return syncItem;
+            }
+        };
+    }])
     .factory('GKSideTree', ['GKFile', 'GKPartition', function (GKFile, GKPartition) {
         return {
             getNode: function (list, mountId, fullpath) {
@@ -3265,6 +3280,7 @@ angular.module('gkClientIndex.services', [])
         var selectedIndex = [];
         var selectedPath = '';
         var fileListElem = jQuery('.file_list');
+        var currentView = 'list';
         var GKFileList = {
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
@@ -3331,7 +3347,10 @@ angular.module('gkClientIndex.services', [])
                 return selectedFile;
             },
             changeView: function ($scope, view) {
-                $scope.view = view;
+                $scope.view = currentView = view;
+            },
+            getCurrentView:function(){
+              return currentView;
             },
             getOptFileMountId: function (file) {
                 var mountID = 0;
@@ -3566,7 +3585,6 @@ angular.module('gkClientIndex.services', [])
                 atMember = angular.isDefined(atMember)?atMember:''; var UIPath = gkClientInterface.getUIPath();
                 var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
                 this.src = url;
-                console.log(this.src);
             }
         };
         return GKChat;

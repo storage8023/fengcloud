@@ -2,7 +2,7 @@
     <div class="opt_tool">
     <span class="filter_name" ng-show="(!opts||!opts.length)&&listName">{{listName}}</span>
     <button ng-repeat="opt in opts | orderBy:'+index'" class="f_l dropdown opt_btn">
-        <a dropdown-toggle class="btn btn-opt opt" href="javascript:void(0);" guider="{{opt.key=='sync'?'sync':''}}" guider-placement="bottom" ng-class="opt.className?opt.className:'opt_'+opt.key" ng-click="opt.callback($event)">
+        <a dropdown-toggle class="btn btn-opt opt" href="javascript:void(0);" ng-class="opt.className?opt.className:'opt_'+opt.key" ng-click="opt.callback($event)">
             <i class="icon16x16" ng-class="opt.icon"></i>
             <span>{{opt.name}}</span>
             <i class="gk_down_arrow" ng-show="opt.items"></i>

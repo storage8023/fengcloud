@@ -2,8 +2,8 @@
     <div class="account_info">
         <avatar gk-src="{{user.avatar}}" class="photo avatar" ng-click="personalOpen()"></avatar>
         <span ng-click = "personalOpen()" class="name">{{user.member_name}}</span>
-        <i ng-click ="newsOpen()" title="讨论" class="icon32x32 icon_message show_chat" >
-
+        <i class="icon32x32 icon_ring" ng-click="openNews()" title="{{newMsg?'有新消息':'消息'}}">
+            <span class="hint" ng-show="newMsg"></span>
         </i>
     </div>
 </div>

@@ -1587,3 +1587,12 @@ text-align: center;
 .guider .guider_inner .guider_opt a{
     color: #b53c2c;
 }
+
+.hint{
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    background: #f00;
+    display: inline-block;
+
+}

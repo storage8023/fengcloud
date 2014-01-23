@@ -348,7 +348,6 @@ angular.module('gkClientIndex.directives', [])
                         .replace(/<br \/> /g, '<br />&nbsp;');
                     fakeDiv.html(content);
                     $timeout(function () {
-                        console.log(fakeDiv.height());
                         $element.height(fakeDiv.height());
                     },200)
                 })
@@ -999,7 +998,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog',  function (GKDialog) {
+    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi) {
         return {
             replace: true,
             restrict: 'E',
@@ -1008,9 +1007,42 @@ angular.module('gkClientIndex.directives', [])
                 user: '='
             },
             link: function ($scope, $element) {
-                $scope.newsOpen = function () {
-                   GKDialog.chat();
-                };
+                var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
+                $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+                var t,count = 0;
+                $scope.$on('UpdateMessage', function () {
+                    if(t){
+                        $interval.cancel(t);
+                    }
+                    t = $interval(function(){
+                        if(count==10){
+                            if(t){
+                                $interval.cancel(t);
+                                count = 0;
+                            }
+                            $scope.newMsg = true;
+                            localStorageService.add(unreadMsgKey,$scope.newMsg);
+                            return;
+                        }
+                        $scope.newMsg = !$scope.newMsg;
+                        count++;
+                    },150);
+                })
+
+                $scope.openNews = function(){
+                    GKModal.news(GKNews, GKApi);
+                }
+
+                $scope.$on('newsOpen',function(){
+                    if(t){
+                        $interval.cancel(t);
+                        count = 0;
+                    }
+                    $scope.newMsg = false;
+                    localStorageService.remove(unreadMsgKey);
+                    gkClientInterface.clearMessage();
+                })
+
                 $scope.personalOpen = function ($scope) {
                     GKDialog.openSetting('account');
                 };
