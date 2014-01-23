@@ -78,10 +78,13 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             $scope.scrollToIndex = $scope.currentMsgList.length-1;
 
             chatSession.setLastTime($scope.currentSession, now);
-            chatService.add($scope.currentSession.org_id, postText, metaData ? JSON.stringify(metaData) : '').error(function (error) {
-                var errorMsg = GKException.getAjaxErrorMsg(error);
+            chatService.add($scope.currentSession.org_id, postText, metaData ? JSON.stringify(metaData) : '').then(function(){
+
+            },function(re){
+
+                var errorMsg = GKException.getClientErrorMsg(re);
                 chatContent.setItemError(newMsg, errorMsg);
-            });
+            })
 
             $event.preventDefault();
         };
@@ -120,12 +123,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                         $scope.scrollToIndex = len;
                     }
                 })
-            }).error(function(xhr,textStatus,errorThrown){
-                    $scope.$apply(function(){
-                        $scope.loadingHistoryMsg = false;
-                        $scope.loadingHistoryError = GKException.getAjaxError(xhr,textStatus,errorThrown);
-                    })
-                })
+            })
         };
 
         /**
@@ -215,7 +213,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             $scope.size = 100;
             chatSession.setUnreadCount(session, 0);
             if (!$scope.currentMsgList.length || $scope.currentMsgList[0]['time'] > initTime) {
-                $scope.handleScrollLoad(true);
+                //$scope.handleScrollLoad(true);
             }else{
                 $scope.scrollToIndex = $scope.currentMsgList.length-1;
             }
@@ -230,8 +228,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         };
 
         var lastActiveTime = 0;
+        $scope.postText = '';
 
-//        $timeout(function () {
 //            chatService.list(data.time, 0).success(function (newMsgList) {
 //                $scope.$apply(function () {
 //                    var len = newMsgList.length;
@@ -254,11 +252,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
 //                        chatSession.setLastTime(session, time);
 //                    })
 //                })
-//                connect();
+//
 //            });
-//        }, 1000)
 
-        $scope.logined = false;
 
         $scope.$on('$locationChangeSuccess', function (event,newLocation,oldLocation) {
             if(newLocation == oldLocation){
@@ -417,7 +413,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 metadata = angular.isDefined(metadata) ? metadata : '';
                 gkClientInterface.postChatMessage({
                     'content': content,
-                    'receiver': orgId,
+                    'receiver': String(orgId),
                     'metadata': metadata,
                     'type': 'text',
                 },function(re){
@@ -438,7 +434,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     'before':1
                 });
                 deferred.resolve(re);
-                return deferred.promise();
+                return deferred.promise;
             },
             list: function (lastTime, orgId) {
                 var deferred = $q.defer();
@@ -449,7 +445,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     'before':0
                 });
                 deferred.resolve(re);
-                return deferred.promise();
+                return deferred.promise;
             }
         };
         return chat;

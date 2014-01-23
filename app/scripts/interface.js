@@ -17,7 +17,8 @@
         if(typeof gkClient.gSendMessage === 'undefined'){
             return;
         }
-        return gkClient.gSendMessage(JSON.stringify(param),function(re){
+        console.log(param);
+        gkClient.gSendMessage(JSON.stringify(param),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
                 callback(re);

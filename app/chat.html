@@ -21,11 +21,7 @@
 <body ng-controller="initChat">
 <div class="wrapper">
     <div class="main" ng-class="hideMember?'member_hidden':''">
-        <div ng-show="!logined">
-            <div class="empty" ng-if="!error">正在加载...</div>
             <div class="empty" ng-if="error">{{error.msg}}</div>
-        </div>
-        <div ng-show="logined">
             <div class="content">
             <header>
                 <div class="header_right opt_view_change">
@@ -99,7 +95,7 @@
                 </div>
             </footer>
             </div>
-        </div>
+
     </div>
 </div>
 </body>
