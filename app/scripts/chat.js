@@ -60,7 +60,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             chatService.add($scope.currentSession.orgid, postText, metaData ? JSON.stringify(metaData) : '').then(function(re){
                 postedMsg.push(re.time);
             },function(re){
-
                 var errorMsg = GKException.getClientErrorMsg(re);
                 chatContent.setItemError(newMsg, errorMsg);
             })
@@ -349,7 +348,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     'metadata': metadata,
                     'type': 'text',
                 },function(re){
-                    if(re.error == 0){
+                    if(!re.error){
                         deferred.resolve(re);
                     }else{
                         deferred.reject(re);

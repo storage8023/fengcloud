@@ -120,8 +120,7 @@ header .icon_person{
 section {
     top: 45px;
     bottom: 80px;
-    -webkit-user-select:auto;
-    user-select:auto;
+
 }
 section .loading{
     color: #ACB4BF;
@@ -189,6 +188,10 @@ section .msg_list{
 .chat_item.chat_item_mine .avatar_wrapper,
 .chat_item.chat_item_mine .chat_main{
     float: right;
+}
+.chat_item.chat_item_mine .chat_main{
+    -webkit-user-select:auto;
+    user-select:auto;
 }
 .chat_item .avatar_wrapper{
     margin: 0 10px;
