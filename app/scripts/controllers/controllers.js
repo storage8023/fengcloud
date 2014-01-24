@@ -296,7 +296,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 选中树节点的处理函数
          * @param branch
          */
-        $scope.handleSelect = function (branch, partition) {
+        $scope.handleSelect = function (branch,showChat, partition) {
             var pararm = {
                 partition: partition
             };
@@ -304,6 +304,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['path'] = branch.data.fullpath;
                 pararm['mountid'] = branch.data.mount_id;
                 pararm['filter'] = branch.data.filter || '';
+                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                    pararm['view'] = showChat?'chat':'';
+                }
             } else if (partition == GKPartition.smartFolder) {
                 pararm['filter'] = branch.data.filter;
             } else {
@@ -990,6 +993,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
             $scope.search = param.search || '';
             $scope.showHint =$rootScope.PAGE_CONFIG.file.syncpath?true:false;
+            if(param.view){
+                GKFileList.changeView($scope,param.view);
+            }
             GKFileList.unSelectAll($scope);
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
@@ -999,7 +1005,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }else if($scope.view == 'chat' && $scope.path){
                 $scope.view = 'list';
             }
-
             if($scope.view == 'chat'){
                 $rootScope.$broadcast('clearMsgTime',{orgId:$rootScope.PAGE_CONFIG.mount.org_id})
             }
@@ -1604,6 +1609,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.toggleNoFile = function(){
             $scope.hideNoFile = !$scope.hideNoFile;
         }
+        $scope.$watch('view',function(val){
+            if(val == 'chat'){
+                $scope.hideNoFile = false;
+            }else{
+                $scope.hideNoFile = true;
+            }
+        })
 
         $scope.$on('editSmartFolder', function ($event, name, code, filter) {
             if ($scope.filter == filter) {

@@ -15,7 +15,8 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
       onExpand: '&',
       initSelectedBranch:'=',
       onAdd:'&',
-      onDrop:'&'
+      onDrop:'&',
+      onHintClick:'&'
     },
     link: function(scope, element, attrs) {
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
@@ -88,7 +89,8 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
          * @param branch
          * @returns {*}
          */
-      select_branch = function(branch) {
+      select_branch = function(branch,showChat) {
+          showChat = angular.isDefined(showChat)?showChat:false;
         //if (branch !== scope.selectedBranch) {
           if (scope.selectedBranch != null) {
               scope.selectedBranch.selected = false;
@@ -97,13 +99,14 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
             scope.selectedBranch = branch;
           if (branch.onSelect != null) {
             return $timeout(function() {
-              return branch.onSelect(branch);
+              return branch.onSelect(branch,showChat);
             },0);
           } else {
             if (scope.onSelect != null) {
               return $timeout(function() {
                 return scope.onSelect({
-                  branch: branch
+                  branch: branch,
+                  showChat:showChat
                 });
               },0);
             }
@@ -143,8 +146,12 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
         if(angular.element($event.target).hasClass('tree-icon') || angular.element($event.target).parents('.tree-icon').size()){
             return expand_branch(branch);
         }else{
+            var showChat = false;
+            if(angular.element($event.target).hasClass('hint_wrapper') || angular.element($event.target).parents('.hint_wrapper').size()){
+                showChat = true;
+            }
             //if (branch !== scope.selectedBranch) {
-                return select_branch(branch);
+                return select_branch(branch,showChat);
             //}
         }
 

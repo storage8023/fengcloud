@@ -386,11 +386,17 @@ footer {
     margin: 2px 0;
     font-weight: normal;
 }
-.left_sidebar ul.nav.nav-list.abn-tree > li .hint{
+.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper{
     position: absolute;
-    top:11px;
-    right: 10px;
+    width: 16px;
+    height: 16px;
+    top:7px;
+    right: 6px;
+    text-align: center;
+    line-height: 16px;
+    cursor: pointer;
 }
+
 .left_sidebar ul.nav > li > a{
     padding: 1px 10px 1px 0;
     border-left:4px solid transparent;
@@ -1000,7 +1006,7 @@ footer {
 
 /**右侧**/
 .right_sidebar{
-    overflow: auto;
+    overflow: hidden;
 }
 .right_sidebar .slide_arrow{
     position: absolute;
@@ -1033,6 +1039,8 @@ footer {
     width: 100%;
     bottom: 0;
     z-index: 10;
+    overflow: auto;
+    background: #F1F1F2;
     /*opacity: 1;*/
     border-left:1px solid #deddde;
     -webkit-transition:all linear .3s;
@@ -1225,12 +1233,14 @@ footer {
     width: 100%;
     padding-top: 0;
 }
+
 .right_sidebar .single_file{
     position: absolute;
     top:0;
     left: 0;
     right: 0;
     bottom: 0;
+    overflow: auto;
     background: #fff;
 }
 .right_sidebar .single_file.folded .section_title button.fold{

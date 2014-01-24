@@ -1650,7 +1650,8 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition) {
         var GKPath = {
-            gotoFile: function (mountId, path, selectFile) {
+            gotoFile: function (mountId, path, selectFile,view) {
+                view = angular.isDefined(view)?view:'';
                 selectFile = angular.isDefined(selectFile) ? selectFile : '';
                 var searchParam = $location.search();
                 var mount = GKMount.getMountById(mountId);
@@ -1659,7 +1660,8 @@ angular.module('gkClientIndex.services', [])
                     partition: mount['type'] > 2? GKPartition.subscribeFile : mount['type'] > 0?GKPartition.joinFile:GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
-                    selectedpath: selectFile
+                    selectedpath: selectFile,
+                    view:view
                 };
                 if (mount) {
                     $location.search(search);
