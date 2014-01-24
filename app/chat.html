@@ -44,7 +44,7 @@
                                 <span ng-bind="msg.sender_name"></span>
                             </div>
                             <div class="chat_text">
-                                <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_ban"></i>
+                                <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_warning"></i>
                                 <span ng-bind="msg.content"></span>
                             </div>
                             <div class="chat_file" ng-dblclick="openFile($event,msg.file)" ng-click="quoteFile(msg.file)" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
