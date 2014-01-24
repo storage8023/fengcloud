@@ -190,41 +190,24 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                                 maxMsgTime = time;
                             }
                         });
-
                     }
-                    var grid = maxCount - msgList.length;
-                    if(grid>0){
-                        chatService.search($scope.currentSession.orgid, minDataline, grid).then(function(re){
-                            if(re && re.list && re.list.length){
-                                angular.forEach(re.list,function(item){
-                                    chatContent.add(msgList,item,true);
-                                    var time =  Number(item.time);
-                                    if(time<minMsgTime){
-                                        minMsgTime = time;
-                                    }
-                                });
-                            }
-                            $scope.currentMsgList = msgList;
-                            $scope.scrollToIndex = $scope.currentMsgList.length-1;
-                        })
-                    }else{
-                        $scope.currentMsgList = msgList;
-                        $scope.scrollToIndex = $scope.currentMsgList.length-1;
-
-                    }
-                topWindow.gkFrameCallback('clearMsgTime',{orgId:$scope.currentSession.orgid});
+                    $scope.currentMsgList = msgList;
+                    $scope.scrollToIndex = $scope.currentMsgList.length-1;
+                    //topWindow.gkFrameCallback('clearMsgTimeclearMsgTime',{orgId:$scope.currentSession.orgid});
                 });
 
-
             $scope.focusTextarea = true;
-            $timeout(function(){
-                if(param.at){
-                    $scope.postText = '@'+ param.at+' ';
-                }else{
-                    $scope.postText = postTextCache.get(String($scope.currentSession.orgid)) || '';
-                }
-            },100)
+            //$scope.postText = postTextCache.get(String($scope.currentSession.orgid)) || '';
+            $scope.postText = '';
+
         };
+
+        $scope.$on('atMember',function(event,at){
+            $timeout(function(){
+                $scope.insertStr = '@'+ at+' ';
+                $scope.focusTextarea = true;
+            })
+        })
 
         $scope.$on('chatMessageUpdate',function(event,item){
             if(item.receiver == $scope.currentSession.orgid){

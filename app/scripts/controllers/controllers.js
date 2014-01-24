@@ -999,6 +999,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }else if($scope.view == 'chat' && $scope.path){
                 $scope.view = 'list';
             }
+
+            if($scope.view == 'chat'){
+                $rootScope.$broadcast('clearMsgTime',{orgId:$rootScope.PAGE_CONFIG.mount.org_id})
+            }
         };
 
         $scope.gkChat = GKChat;
@@ -1479,7 +1483,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         }
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat',function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1686,7 +1690,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.atMember = function(memberName){
-            GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id,$scope.localFile.fullpath,memberName);
+            if(GKFileList.getCurrentView() !='chat'){
+                $rootScope.$broadcast('changeView','chat',1);
+            }
+            var iframe = GKFrame('ifame_chat');
+            if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
+                iframe.gkFrameCallback('atMember',memberName);
+            }
         };
 
     }])

@@ -1087,10 +1087,15 @@ footer {
     line-height: 31px;
     padding: 0 15px;
 }
-.right_sidebar .no_file .tab_content ul li:hover{
+.right_sidebar .no_file .tab_content ul li:not(.pending_member){
+    cursor: pointer;
+}
+.right_sidebar .no_file .tab_content ul li:not(.pending_member):hover{
     background: #E1E3E7;
 }
-
+.right_sidebar .no_file .tab_content ul li.pending_member *{
+    color: #ACB4BF;
+}
 .right_sidebar .no_file .tab_content ul li >span{
     display: inline-block;
     max-width: 175px;

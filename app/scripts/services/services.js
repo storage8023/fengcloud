@@ -3347,6 +3347,9 @@ angular.module('gkClientIndex.services', [])
             },
             changeView: function ($scope, view) {
                 $scope.view = currentView = view;
+                if(view == 'chat'){
+                    $rootScope.$broadcast('clearMsgTime',{orgId:$rootScope.PAGE_CONFIG.mount.org_id})
+                }
             },
             getCurrentView:function(){
               return currentView;
