@@ -515,10 +515,8 @@ footer {
 
 .toolbar button {
     border: 0 none;
-
+    background: transparent;
 }
-
-
 .toolbar button.open > .btn-opt,
 .toolbar button:active .btn-opt{
     background: #448DE8;

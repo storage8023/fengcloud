@@ -106,7 +106,7 @@ header .header_left .avatar{
 }
 header .header_right{
     float: right;
-    margin-right: 22px;
+    margin-right: 20px;
     margin-top: 10px;
 }
 header .opt_view_change a > i {
