@@ -1593,6 +1593,9 @@ text-align: center;
     font-size: 14px;
     color: #738295;
 }
+.guider .guider_inner ul.two_item li{
+    margin: 0 40px;
+}
 .guider .guider_inner ul li > div{
     margin-top: 10px;
 }
