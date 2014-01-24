@@ -11,14 +11,6 @@ angular.module('gkClientFrame.directives',[])
             link: function ($scope, $element) {
                 $scope.menus = [
                     {
-                        classes:'message',
-                        name:'讨论',
-                        icon:'icon_message',
-                        handleClick:function(){
-                            GKDialog.chat();
-                        }
-                    },
-                    {
                         classes:'chat',
                         name:'消息',
                         icon:'icon_ring',

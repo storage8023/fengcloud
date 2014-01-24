@@ -50,7 +50,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 angular.extend(msgData, {
                     metadata: JSON.stringify(metaData)
                 });
-                $rootScope.PAGE_CONFIG.file.posted = true;
+                $rootScope.PAGE_CONFIG.file = null;
             }
             var newMsg = chatContent.add($scope.currentMsgList, msgData);
             if (!newMsg) {
