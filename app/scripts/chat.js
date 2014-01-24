@@ -219,11 +219,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     var newMsgList = re.list;
                     angular.forEach(newMsgList, function (item) {
                         var time = Number(item.time);
-                        if(postedMsg.indexOf(time)>=0){
-                            return;
-                        }
                         if(time>maxMsgTime){
                             maxMsgTime = time;
+                        }
+                        if(postedMsg.indexOf(time)>=0){
+                            return;
                         }
                         chatContent.add($scope.currentMsgList, item);
                         $scope.scrollToIndex = $scope.currentMsgList.length-1;
