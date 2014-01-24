@@ -86,8 +86,10 @@ header {
     padding: 0 5px;
 }
 header .header_left{
-    margin: 0 30px 0 15px;
+    padding-left: 15px;
     float: left;
+     line-height: 45px;
+    font-size:18px;
 }
 header .header_left .org_info{
     float: left;
@@ -109,9 +111,7 @@ header .header_right{
     margin-right: 20px;
     margin-top: 10px;
 }
-header .opt_view_change a > i {
-    margin-top: -1px;
-}
+
 header .icon_person{
     position: absolute;
     top:25px;
