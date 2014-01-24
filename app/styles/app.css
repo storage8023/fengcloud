@@ -702,6 +702,12 @@ footer {
 .toolbar button.open .opt.open_with i{
     background-position: -24px -1304px;
 }
+.context-menu-item.order_by:hover i,
+.toolbar button:hover .opt.order_by i,
+.toolbar button:active .opt.order_by i,
+.toolbar button.open .opt.order_by i{
+    background-position: -24px -1284px;
+}
 .bread {
     height: 26px;
     line-height: 26px;
