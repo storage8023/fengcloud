@@ -1410,6 +1410,18 @@ text-align: center;
     font-size: 14px;
     -webkit-transition:linear .1s;
     transition:linear .1s;
+    position: relative;
+}
+.tab_header > li > a > span{
+    font-size: 12px;
+    margin-left: 10px;
+    display: none;
+    position: absolute;
+    top:0;
+    right: 8px;
+}
+.tab_header > li > a:hover > span{
+    display: inline;
 }
 .tab_header > li > a:hover,
 .tab_header > li > a:active{

@@ -16,8 +16,8 @@
             </div>
             <div class="tab_wrapper" ng-if="PAGE_CONFIG.mount.type<=2" ng-class="PAGE_CONFIG.mount.type<2?'':'normal_member'">
                 <ul class="tab_header" ng-if="PAGE_CONFIG.mount.type<2">
-                    <li><a href="javascript:void(0)" ng-class="currentTab=='member'?'active':''" ng-click="showTab('member')">成员</a></li>
-                    <li guider="subscribe" guider-placement="left" ><a href="javascript:void(0)" ng-class="currentTab=='subscriber'?'active':''" ng-click="showTab('subscriber')">订阅者</a></li>
+                    <li><a href="javascript:void(0)" ng-class="currentTab=='member'?'active':''" ng-click="showTab('member')">成员<span ng-if="currentTab=='member'">添加</span></a></li>
+                    <li guider="subscribe" guider-placement="left" ><a href="javascript:void(0)" ng-class="currentTab=='subscriber'?'active':''" ng-click="showTab('subscriber')">订阅者<span ng-if="currentTab=='subscriber'">添加</span></a></li>
                 </ul>
                 <div class="section_title" ng-if="PAGE_CONFIG.mount.type>=2">成员</div>
                 <div class="tab_content">
@@ -35,9 +35,9 @@
                                 <span>(已邀请)</span>
                             </li>
                         </ul>
-                        <div class="opt_wrapper" ng-if="PAGE_CONFIG.mount.type<2">
-                            <button class="btn btn-primary" ng-click="showMember()">成员管理</button>
-                        </div>
+                        <!--<div class="opt_wrapper" ng-if="PAGE_CONFIG.mount.type<2">-->
+                            <!--<button class="btn btn-primary" ng-click="showMember()">成员管理</button>-->
+                        <!--</div>-->
                     </div>
                     <div class="tab_content_layer" ng-if="PAGE_CONFIG.mount.type<2" ng-show="currentTab=='subscriber'">
                         <div ng-if="memberLoading" class="empty">正在加载...</div>
@@ -52,9 +52,9 @@
                             </ul>
                         </div>
 
-                        <div class="opt_wrapper">
-                            <button class="btn btn-primary" ng-click="showSubscriber()">订阅者管理</button>
-                        </div>
+                        <!--<div class="opt_wrapper">-->
+                            <!--<button class="btn btn-primary" ng-click="showSubscriber()">订阅者管理</button>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>

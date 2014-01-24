@@ -1637,9 +1637,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.showTab  = function(tab){
             if(tab == $scope.currentTab){
-                return;
+                if(tab == 'member'){
+                    GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+                }else{
+                    GKModal.teamSubscribe($rootScope.PAGE_CONFIG.mount.org_id);
+                }
+            }else{
+                $scope.currentTab = tab;
             }
-            $scope.currentTab = tab;
+
         };
 
         var getMember = function(){
