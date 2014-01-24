@@ -15,53 +15,26 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="scripts/common.js?v=5"></script>
-    <script src="scripts/chat.js?v=5"></script>
+    <script src="scripts/chat.js?v=6"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
 </head>
 <body ng-controller="initChat">
 <div class="wrapper">
-    <div class="scrollbar sidebar">
-        <h2>够快云库</h2>
-        <ul class="session_list">
-            <li title="{{session.name}}" ng-click="selectSession(session)" ng-repeat="session in sessions | orderBy:'-lastTime'" ng-class="session.mount_id==currentSession.mount_id?'selected':''">
-                <team-logo gk-src="{{session.logo}}" class="avatar avatar_mini"></team-logo>
-                <span ng-bind="session.name"></span>
-                <span class="unread_count" ng-show="session.unreadCount" ng-bind="session.unreadCount|formatCount"></span>
-            </li>
-        </ul>
-    </div>
     <div class="main" ng-class="hideMember?'member_hidden':''">
-        <div ng-show="!logined">
-            <div class="empty" ng-if="!error">正在加载...</div>
             <div class="empty" ng-if="error">{{error.msg}}</div>
-        </div>
-        <div ng-show="logined">
             <div class="content">
             <header>
-                <div class="header_left">
-                    <team-logo gk-src="{{currentSession.logo}}" class="avatar avatar_big"></team-logo>
-                    <div class="org_info">
-                        <div class="org_name"><span ng-bind="currentSession.name"></span></div>
-                        <div class="org_count"><span>成员数：{{currentSession.member_count}}</span></div>
-                    </div>
-                </div>
-                <div class="header_right">
-                    <a href="javascript:void(0)" ng-show="currentSession.type<2" ng-click="showAddMember()">
-                        <i class="icon32x32 icon_add_member"></i>
-                    </a>
-                    <a href="javascript:void(0)" ng-click="hideMember=!hideMember">
-                        <i class="icon32x32 icon_member"></i>
-                    </a>
+                <div class="header_right opt_view_change">
+                    <div ng-include="'views/view_change_btn.html'"></div>
                 </div>
             </header>
             <section>
-                <div ng-show="loadingHistoryMsg" class="loading" ng-class="firstLoading?'first_loading':''">正在加载...</div>
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
                          ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_name}">
 
-                        <div class="time_grid" ng-show="$index==0||(currentMsgList[$index-1]&&((msg['time']|date:'yyyy/MM/dd HH:mm') != (currentMsgList[$index-1]['time']|date:'yyyy/MM/dd HH:mm')))">{{msg.time|timeAgo}}</div>
+                        <div class="time_grid" ng-show="$index==0||(currentMsgList[$index-1]&&((msg['time']|date:'yyyy/MM/dd HH:mm') != (currentMsgList[$index-1]['time']|date:'yyyy/MM/dd HH:mm')))" ng-bind="msg.time|timeAgo"></div>
 
                         <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)">
                             <avatar class="avatar" gk-src="{{msg.sender_id|getAvatarUrl}}"></avatar>
@@ -103,7 +76,7 @@
                 </div>
 
             </section>
-            <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == currentSession.mount_id?'post_with_file':''">
+            <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == currentSession.mountid?'post_with_file':''">
                 <textarea ng-blur="saveLastText(postText)" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="post_file_wrapper" ng-if="PAGE_CONFIG.file">
                     <div data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">
@@ -121,19 +94,6 @@
                 </div>
             </footer>
             </div>
-            <div class="right_sidebar">
-                <div class="input_wrapper">
-                    <input type="text"  placeholder="输入关键字筛选" class="form-control" ng-model="searchKeyword" name="search_keyword" id="search_keyword"/>
-                    <i class="icon16x16 icon_search"></i>
-                </div>
-                <div class="scrollbar member_list" >
-                    <li ng-repeat="member in remindMembers | filter:{member_name:searchKeyword}" ng-click="atMember(member.member_name)">
-                        <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
-                        <span class="member_name" ng-bind="member.member_name"></span>
-                    </li>
-                </div>
-            </div>
-        </div>
 
     </div>
 </div>

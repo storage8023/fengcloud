@@ -1,11 +1,11 @@
 <div class="toolbar">
     <div class="opt_tool" gk-guider='{
-                  buttons: [{name: "ä¸‹ä¸€æ­¥",onclick:GKGuiders.next}],
-                  description: "åœ¨è¿™é‡Œå¯ä»¥è¿›è¡Œæ–‡ä»¶ï¼ˆå¤¹ï¼‰æ–°å»ºã€å¤åˆ¶ã€åˆ é™¤ã€é‡å‘½åç­‰æ“ä½œã€‚â€œåŒæ­¥â€å¯ä»¥å°†äº‘åº“ä¸­çš„æ–‡ä»¶å¤¹ä¸Žæœ¬åœ°æ–‡ä»¶å¤¹ä¿æŒä¸€è‡´ã€‚ä½ ä¹Ÿå¯ä»¥é€šè¿‡é¼ æ ‡å³é”®èœå•æ“ä½œæ–‡ä»¶ï¼ˆå¤¹ï¼‰",
+                  buttons: [{name: "ÏÂÒ»²½",onclick:GKGuiders.next}],
+                  description: "ÔÚÕâÀï¿ÉÒÔ½øÐÐÎÄ¼þ£¨¼Ð£©ÐÂ½¨¡¢¸´ÖÆ¡¢É¾³ý¡¢ÖØÃüÃûµÈ²Ù×÷¡£¡°Í¬²½¡±¿ÉÒÔ½«ÔÆ¿âÖÐµÄÎÄ¼þ¼ÐÓë±¾µØÎÄ¼þ¼Ð±£³ÖÒ»ÖÂ¡£ÄãÒ²¿ÉÒÔÍ¨¹ýÊó±êÓÒ¼ü²Ëµ¥²Ù×÷ÎÄ¼þ£¨¼Ð£©",
                   id: "guide_3",
                   next: "guide_4",
                   position: 6,
-                  title: "èœå•æ ",
+                  title: "²Ëµ¥À¸",
                   width: 280
                   }'>
     <span class="filter_name" ng-show="(!opts||!opts.length)&&listName">{{listName}}</span>
@@ -26,8 +26,6 @@
     </button>
     </div>
     <span class="opt f_r opt_view_change">
-            <a href="javascript:;" ng-click="changeView('list')" class="list_view"
-               ng-class="view=='list'?'active':''"><i class="icon16x16 icon_listview"></i></a><a href="javascript:;" ng-click="changeView('thumb')" class="thumb_view"
-               ng-class="view=='thumb'?'active':''"><i class="icon16x16 icon_thumbview"></i></a>
+        <div ng-include="'views/view_change_btn.html'"></div>
     </span>
 </div>

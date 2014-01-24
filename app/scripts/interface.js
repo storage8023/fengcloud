@@ -7,6 +7,39 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getChatMessage:function(param){
+        if(typeof gkClient.gGetMessage === 'undefined'){
+            return '';
+        }
+        var re =  gkClient.gGetMessage(JSON.stringify(param));
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
+    },
+    postChatMessage:function(param,callback){
+        if(typeof gkClient.gSendMessage === 'undefined'){
+            return;
+        }
+        gkClient.gSendMessage(JSON.stringify(param),function(re){
+            re = typeof re ==='object'?re:JSON.parse(re);
+            if(typeof callback === 'function'){
+                callback(re);
+            }
+        });
+    },
+    getChateState:function(){
+        if(typeof gkClient.gGetMessageUpdate === 'undefined'){
+            return '';
+        }
+        var re = gkClient.gGetMessageUpdate();
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
+    },
     openLaunchpad:function(param){
         if(typeof gkClient.gShowLaunchpad === 'undefined'){
             return;
@@ -183,7 +216,6 @@
         }
     },
     notice:function(params,callback){
-        console.log(arguments);
         gkClient.gNotice(JSON.stringify(params),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
@@ -659,7 +691,6 @@
             if(typeof gkClient.gSetLocalCache === 'undefined'){
                 return;
             }
-            //console.log(param);
             gkClient.gSetLocalCache(JSON.stringify(param));
         } catch (e) {
             this._handleException(e);

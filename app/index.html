@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="styles/ng-animation.css?v=5"/>
     <link rel="stylesheet" href="bower_components/abn.tree/abn_tree_style.css?v=5"/>
     <link rel="stylesheet" href="bower_components/tags-input/ng-tags-input.css?v=5"/>
-    <link rel="stylesheet" href="bower_components/guiders/guiders.css?v=5"/>
     <link rel="stylesheet" href="styles/base.css?v=5"/>
     <link rel="stylesheet" href="styles/component.css?v=5"/>
     <link rel="stylesheet" href="styles/app.css?v=5"/>
@@ -18,7 +17,6 @@
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/jquery/context-menu/jquery.contextMenu.js"></script>
     <script src="bower_components/jquery-ui/js/jquery-ui-1.10.3.custom.js"></script>
-    <script src="bower_components/guiders/guiders.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="bower_components/angunar-bindonce/bindonce.js"></script>
@@ -46,57 +44,53 @@
 <aside class="left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="scrollbar tree_wrapper" contextmenu>
-        <div gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "云库可以存放各种文件的基本单元。“我的云库”中的文件，你可以查看、编辑和同步到本地，你可以自己创建或加入其他人的云库。“订阅的云库”是由别人分享的，且你只能查看里面的文件",
-                  id: "guide_1",
-                  next: "guide_2",
-                  position: 3,
-                  title: "云库",
-                  width: 280
-                  }'>
-            <abn-tree tree-data="orgTreeList"
-                      header="我的云库"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_teamfolder"
-                      icon-node-collapse="icon_teamfolder"
-                      selected-branch="selectedBranch"
-                      init-selected-branch="initSelectedBranch"
-                      on-add="handleAdd(GKPartition.teamFile)"
-                      on-select="handleSelect(branch,GKPartition.teamFile)"
-                      on-expand="handleExpand(branch,GKPartition.teamFile)"
-                      on-drop="handleDrop(branch)"
-                    >
-            </abn-tree>
-            <abn-tree tree-data="joinOrgTreeList"
-                      header="加入的云库"
-                      ng-show="joinOrgTreeList.length"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_teamfolder"
-                      icon-node-collapse="icon_teamfolder"
-                      selected-branch="selectedBranch"
-                      on-select="handleSelect(branch,GKPartition.joinFile)"
-                      on-expand="handleExpand(branch,GKPartition.joinFile)"
-                      on-drop="handleDrop(branch)"
-                    >
-            </abn-tree>
-            <abn-tree tree-data="orgSubscribeList"
-                      ng-show="orgSubscribeList.length"
-                      header="订阅的云库"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_subscribefolder"
-                      icon-node-collapse="icon_subscribefolder"
-                      selected-branch="selectedBranch"
-                      on-select="handleSelect(branch,GKPartition.subscribeFile)"
-                      on-expand="handleExpand(branch,GKPartition.subscribeFile)"
-                    >
-            </abn-tree>
+        <div>
+            <div guider="lib" guider-placement="right">
+                <abn-tree tree-data="orgTreeList"
+                          header="我的云库"
+                          icon-leaf="icon_file"
+                          icon-expand="icon_fold"
+                          icon-collapse="icon_unfold"
+                          icon-node-expand="icon_teamfolder"
+                          icon-node-collapse="icon_teamfolder"
+                          selected-branch="selectedBranch"
+                          init-selected-branch="initSelectedBranch"
+                          on-add="handleAdd(GKPartition.teamFile)"
+                          on-select="handleSelect(branch,GKPartition.teamFile)"
+                          on-expand="handleExpand(branch,GKPartition.teamFile)"
+                          on-drop="handleDrop(branch)"
+                        >
+                </abn-tree>
+                <abn-tree tree-data="joinOrgTreeList"
+                          header="加入的云库"
+                          ng-show="joinOrgTreeList.length"
+                          icon-leaf="icon_file"
+                          icon-expand="icon_fold"
+                          icon-collapse="icon_unfold"
+                          icon-node-expand="icon_teamfolder"
+                          icon-node-collapse="icon_teamfolder"
+                          selected-branch="selectedBranch"
+                          on-select="handleSelect(branch,GKPartition.joinFile)"
+                          on-expand="handleExpand(branch,GKPartition.joinFile)"
+                          on-drop="handleDrop(branch)"
+                        >
+                </abn-tree>
+            </div>
+            <div guider="subscribe" guider-placement="right">
+                <abn-tree tree-data="orgSubscribeList"
+                          ng-show="orgSubscribeList.length"
+                          header="订阅的云库"
+                          icon-leaf="icon_file"
+                          icon-expand="icon_fold"
+                          icon-collapse="icon_unfold"
+                          icon-node-expand="icon_subscribefolder"
+                          icon-node-collapse="icon_subscribefolder"
+                          selected-branch="selectedBranch"
+                          on-select="handleSelect(branch,GKPartition.subscribeFile)"
+                          on-expand="handleExpand(branch,GKPartition.subscribeFile)"
+                        >
+                </abn-tree>
+            </div>
         </div>
 
         <abn-tree tree-data="smartTreeList"
@@ -111,7 +105,6 @@
                   on-select="handleSelect(branch,GKPartition.smartFolder)"
                   on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
-                  gk-guider='{{smartFolderGuider}}'
                 >
         </abn-tree>
     </div>
@@ -119,15 +112,7 @@
 
 <div class="main">
 <header ng-controller="header">
-    <breadsearch gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "通过文件名、文件注释中的关键词查找需要的文件",
-                  id: "guide_2",
-                  next: "guide_3",
-                  position: 6,
-                  title: "搜索",
-                  width: 280
-                  }'></breadsearch>
+    <breadsearch></breadsearch>
     <div class="back_forward btn-group">
         <button type="button" class="btn btn-diablo back" ng-click="handleNav()" ng-disabled="!canBack"><i
                 class="icon16x16 icon_leftarrow_white"></i></button>
@@ -135,15 +120,10 @@
                 class="icon16x16 icon_rightarrow_white"></i></button>
     </div>
     <div class="menu">
-         <span ng-click="openNews()" title="{{newMsg?'有新消息':'消息'}}">
-            <i class="icon32x32 icon_ring">
-                <span class="hint" ng-show="newMsg"></span>
-            </i>
-        </span>
          <span ng-click="visitBBS()" title="用户社区">
             <i class="icon32x32 icon_bbs"></i>
         </span>
-        <span ng-click="showGuider()" title="帮助">
+        <span ng-click="toggleGuider()" title="帮助">
             <i class="icon32x32 icon_what"></i>
         </span>
         <span class="more_menu dropdown" title="更多">
@@ -158,7 +138,7 @@
 </header>
 
 <div class="content" ng-controller="fileBrowser">
-    <div class="file_browser">
+    <div class="file_browser" ng-show="view!='chat'">
         <toolbar></toolbar>
         <div class="file_list_wrapper" fix-scroll>
             <div class="file_list {{view}}_view" ng-class="showHint?'has_hint':''">
@@ -270,9 +250,13 @@
 
         </div>
     </div>
-    <aside class="right_sidebar"
-           ng-controller="rightSidebar">
 
+    <div class="chat_wrapper" ng-show="view=='chat'">
+        <iframe id="ifame_chat" name="ifame_chat" frameborder="0" ng-src="{{gkChat.src}}"></iframe>
+    </div>
+
+    <aside class="scrollbar right_sidebar"
+           ng-controller="rightSidebar">
         <div ng-if="!PAGE_CONFIG.networkConnected">
             <network-unconnect></network-unconnect>
         </div>
@@ -287,15 +271,7 @@
                 <div ng-switch-when="nofile">
                     <div class="no_file no_file_{{partition}}">
                         <div ng-if="!filter && !search">
-                            <div ng-show="sidbarData" gk-guider='{
-                  buttons: [{name: "下一步",onclick:GKGuiders.next}],
-                  description: "查看云库的信息，并对其进行容量、成员、订阅者及安全方面的管理。",
-                  id: "guide_4",
-                  next: "guide_5",
-                  position: 9,
-                  title: "云库信息",
-                  width: 280
-                  }'>
+                            <div ng-show="sidbarData">
                                 <div class="head_wrapper">
                                     <img alt="" ng-click="headClick()" src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{sidbarData.photo}}" />
                                     <div class="info" ng-click="headClick()">

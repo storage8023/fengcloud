@@ -735,6 +735,15 @@ angular.module('GKCommon.services', [])
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
+    .factory('GKFrame', ['$window',function ($window) {
+        function GKFrame(frameName){
+            if(!$window.frames[frameName]){
+                return;
+            }
+            return $window.frames[frameName];
+        }
+        return GKFrame;
+    }])
     .factory('GKWindowCom', ['$window',function ($window) {
         var GKWindowCom = {
             post:function(windowName,data){
@@ -1191,6 +1200,20 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            pendingMembers:function(orgId){
+                var params = {
+                    org_id: orgId,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/team/pending_members',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             subscriberList:function(orgId,start,limit){
                 var params = {
                     org_id: orgId,
@@ -1956,7 +1979,6 @@ angular.module('GKCommon.filters', [])
  * @param params
  */
 var gkClientCallback = function (name, param) {
-    console.log(arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
@@ -1974,6 +1996,15 @@ var gkClientCallback = function (name, param) {
  * @param params
  */
 var gkSiteCallback = function (name, params) {
+    console.log(arguments);
+    if (typeof name !== 'string') {
+        name = String(name);
+    }
+    var rootScope = jQuery(document).scope();
+    rootScope.$broadcast(name, params);
+};
+
+var gkFrameCallback = function (name, params) {
     console.log(arguments);
     if (typeof name !== 'string') {
         name = String(name);
