@@ -1032,7 +1032,6 @@ footer {
     left: -1px;
     width: 100%;
     bottom: 0;
-    background: #F1F1F2;
     z-index: 10;
     /*opacity: 1;*/
     border-left:1px solid #deddde;
@@ -1226,6 +1225,14 @@ footer {
     width: 100%;
     padding-top: 0;
 }
+.right_sidebar .single_file{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+}
 .right_sidebar .single_file.folded .section_title button.fold{
     -webkit-transform: rotate(180deg);
     -webkit-transform-origin: 50%;
@@ -1251,8 +1258,12 @@ footer {
     padding-top: 4px;
     padding-bottom: 4px;
 }
+.right_sidebar .file_info_wrapper{
+    background: #F1F1F2;
+}
 .right_sidebar .file_info_wrapper > section{
     -webkit-transition:height linear 0.1s;
+    padding-bottom: 5px;
 }
 .right_sidebar.my_right_sidebar .file_info_wrapper > section{
     height: auto;
@@ -1351,7 +1362,7 @@ footer {
     margin: 8px 0 0 0;
 }
 .right_sidebar .tags {
-    margin:5px 12px 5px 12px;
+    margin:5px 12px 0 12px;
 }
 
 .right_sidebar .tags textarea{

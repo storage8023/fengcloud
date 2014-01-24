@@ -12,8 +12,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
-            topWindow = window.top;
-
+            topWindow = window.top,
+            postedMsg = [];
         $scope.view = 'chat';
         $scope.currentMsgList = [];
         $scope.currentSession = null;
@@ -57,8 +57,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 return;
             }
             $scope.scrollToIndex = $scope.currentMsgList.length-1;
-            chatService.add($scope.currentSession.orgid, postText, metaData ? JSON.stringify(metaData) : '').then(function(){
-
+            chatService.add($scope.currentSession.orgid, postText, metaData ? JSON.stringify(metaData) : '').then(function(re){
+                postedMsg.push(re.time);
             },function(re){
 
                 var errorMsg = GKException.getClientErrorMsg(re);
@@ -156,6 +156,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         $scope.remindMembers = [];
 
         var setList = function () {
+            postedMsg = [];
             var param = $location.search();
             var mountId = Number(param.mountid);
             var session = chatSession.getSessionByMountId(mountId);
@@ -218,6 +219,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     var newMsgList = re.list;
                     angular.forEach(newMsgList, function (item) {
                         var time = Number(item.time);
+                        if(postedMsg.indexOf(time)>=0){
+                            return;
+                        }
                         if(time>maxMsgTime){
                             maxMsgTime = time;
                         }
@@ -346,7 +350,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     'type': 'text',
                 },function(re){
                     if(re.error == 0){
-                        deferred.resolve();
+                        deferred.resolve(re);
                     }else{
                         deferred.reject(re);
                     }

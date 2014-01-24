@@ -63,7 +63,7 @@ angular.module('gkClientIndex.directives', [])
                     guider.hide();
                     isOpen = false;
                 };
-
+                var bufferPosition =  10;
                 var position = function(guiderElem){
                     var base,
                         tWidth,
@@ -100,10 +100,10 @@ angular.module('gkClientIndex.directives', [])
                     top += offset[0];
                     left += offset[1];
 
-                    var minTop = 0;
-                    var maxTop = $(window).height();
-                    var minLeft = 0;
-                    var maxLeft = $(window).width()-tWidth;
+                    var minTop = 0+bufferPosition;
+                    var maxTop = $(window).height()-tHeight-bufferPosition;
+                    var minLeft = 0+bufferPosition;
+                    var maxLeft = $(window).width()-tWidth-bufferPosition;
                     if(top<minTop){
                         arrowElem.css({
                             'margin-top':(arrowHeigth/2+(minTop-top))*-1
