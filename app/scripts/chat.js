@@ -330,9 +330,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         var chatMember = {
             getMembers: function (orgId) {
                 if (!members[orgId]) {
-                    GKApi.teamGroupsMembers(orgId).success(function (data) {
-                        members[orgId] = data.members;
+                    var re = gkClientInterface.getOrgMembers({
+                        orgid:orgId
                     });
+                    members[orgId] = re.list || [];
                 }
                 return members[orgId];
             },

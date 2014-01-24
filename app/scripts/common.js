@@ -1890,6 +1890,9 @@ angular.module('GKCommon.filters', [])
     })
     .filter('getAvatarUrl', function () {
         return function (memberId,isThumb) {
+            if(memberId == 0){
+                return 'images/unknow_photo.png';
+            }
             isThumb = angular.isDefined(isThumb)?isThumb:1;
             return gkClientInterface.getSiteDomain()+'/index/avatar?id='+memberId+'&thumb='+isThumb;
         }

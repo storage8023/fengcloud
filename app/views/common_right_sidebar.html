@@ -20,16 +20,17 @@
         <div class="section_title" ng-if="PAGE_CONFIG.mount.type>=2">成员</div>
         <div class="tab_content">
             <div class="tab_content_layer" ng-show="currentTab=='member'">
-                <div ng-show="memberLoading" class="empty">正在加载...</div>
-                <div ng-show="!memberLoading">
                 <ul class="scrollbar member_list">
                     <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members">
                         <avatar class="avatar avatar_mini" gk-src="{{member.member_id|getAvatarUrl}}"></avatar>
                         <span ng-bind="member.member_name"></span>
                         <i title="{{member.member_type|getMemberRoleName}}" ng-if="member.member_type==1 || member.member_type==0 " class="icon16x16" ng-class="'member_type_'+member.member_type"></i>
                     </li>
+                    <li ng-repeat="pendingMember in pendingMembers">
+                        <avatar class="avatar avatar_mini" gk-src="{{pendingMember.accept_member_id|getAvatarUrl}}"></avatar>
+                        <span ng-bind="pendingMember.name?pendingMember.name:pendingMember.email"></span>
+                    </li>
                 </ul>
-                </div>
                 <div class="opt_wrapper" ng-if="PAGE_CONFIG.mount.type<2">
                     <button class="btn btn-primary" ng-click="showMember()">成员管理</button>
                 </div>

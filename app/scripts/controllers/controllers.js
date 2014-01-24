@@ -642,7 +642,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setNewMsgTime(orgId,0);
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
@@ -1627,28 +1627,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         var getMember = function(){
-//            GKApi.pendingMembers($rootScope.PAGE_CONFIG.mount.org_id).success(function(data){
-//
-//            })
-            GKApi.groupMember($rootScope.PAGE_CONFIG.mount.org_id).success(function(data){
-                $scope.$apply(function(){
-                    $scope.memberLoading = false
-                    angular.forEach(data.members,function(value,key){
-                        if(value.member_id == $rootScope.PAGE_CONFIG.user.member_id){
-                            data.members.splice(key,1);
-                            data.members.unshift(value);
-                            return false;
-                        }
-                    })
-                    $scope.members = data.members;
-
-                })
-
-            }).error(function(){
-                    $scope.$apply(function(){
-                        $scope.memberLoading = false;
-                    })
-                })
+            var re = gkClientInterface.getOrgMembers({
+                orgid:$rootScope.PAGE_CONFIG.mount.org_id
+            })
+            var members = re.list || [];
+            angular.forEach(members,function(value,key){
+                if(value.member_id == $rootScope.PAGE_CONFIG.user.member_id){
+                    members.splice(key,1);
+                    members.unshift(value);
+                    return false;
+                }
+            })
+            $scope.members = members;
+            GKApi.pendingMembers($rootScope.PAGE_CONFIG.mount.org_id).success(function(data){
+               $scope.$apply(function(){
+                   $scope.pendingMembers = data.members || [];
+                   console.log($scope.pendingMembers);
+               })
+            })
         };
 
         var getSubscriber = function(){

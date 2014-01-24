@@ -293,17 +293,18 @@
                                     <div class="section_title" ng-if="PAGE_CONFIG.mount.type>=2">成员</div>
                                     <div class="tab_content">
                                         <div class="tab_content_layer" ng-show="currentTab=='member'">
-                                            <div ng-if="memberLoading" class="empty">正在加载...</div>
-                                            <div ng-if="!memberLoading">
-                                                <ul class="scrollbar member_list">
-                                                    <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members"  bindonce >
-                                                        <img class="avatar avatar_mini" src="{{member.member_id|getAvatarUrl}}" alt=""/>
-                                                        <span bo-text="member.member_name"></span>
-                                                        <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
-                                                        <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <ul class="scrollbar member_list">
+                                                <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members"  bindonce >
+                                                    <img class="avatar avatar_mini" src="{{member.member_id|getAvatarUrl}}" alt=""/>
+                                                    <span bo-text="member.member_name"></span>
+                                                    <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
+                                                    <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
+                                                </li>
+                                                <li ng-repeat="pendingMember in pendingMembers">
+                                                    <avatar class="avatar avatar_mini" gk-src="{{pendingMember.accept_member_id|getAvatarUrl}}"></avatar>
+                                                    <span ng-bind="pendingMember.name?pendingMember.name:pendingMember.email"></span>
+                                                </li>
+                                            </ul>
                                             <div class="opt_wrapper" ng-if="PAGE_CONFIG.mount.type<2">
                                                 <button class="btn btn-primary" ng-click="showMember()">成员管理</button>
                                             </div>
