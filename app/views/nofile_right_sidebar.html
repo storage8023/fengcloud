@@ -16,8 +16,8 @@
             </div>
             <div class="tab_wrapper" ng-if="PAGE_CONFIG.mount.type<=2" ng-class="PAGE_CONFIG.mount.type<2?'':'normal_member'">
                 <ul class="tab_header" ng-if="PAGE_CONFIG.mount.type<2">
-                    <li><a href="javascript:void(0)" ng-class="currentTab=='member'?'active':''" ng-click="showTab('member')">成员<span ng-if="currentTab=='member'">添加</span></a></li>
-                    <li guider="subscribe" guider-placement="left" ><a href="javascript:void(0)" ng-class="currentTab=='subscriber'?'active':''" ng-click="showTab('subscriber')">订阅者<span ng-if="currentTab=='subscriber'">添加</span></a></li>
+                    <li><a href="javascript:void(0)" ng-class="currentTab=='member'?'active':''" ng-click="showTab('member')">成员<span ng-if="currentTab=='member'">+</span></a></li>
+                    <li guider="subscribe" guider-placement="left" ><a href="javascript:void(0)" ng-class="currentTab=='subscriber'?'active':''" ng-click="showTab('subscriber')">订阅者<span ng-if="currentTab=='subscriber'">+</span></a></li>
                 </ul>
                 <div class="section_title" ng-if="PAGE_CONFIG.mount.type>=2">成员</div>
                 <div class="tab_content">
