@@ -1413,15 +1413,11 @@ text-align: center;
     position: relative;
 }
 .tab_header > li > a > span{
-    font-size: 12px;
-    margin-left: 10px;
-    display: none;
-    position: absolute;
-    top:0;
-    right: 8px;
-}
-.tab_header > li > a:hover > span{
     display: inline;
+    position: absolute;
+    top:-2px;
+    right: 28px;
+    font-weight: bold;
 }
 .tab_header > li > a:hover,
 .tab_header > li > a:active{
