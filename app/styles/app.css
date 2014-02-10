@@ -39,6 +39,12 @@ header .menu .icon_bbs:hover{
 header .menu .icon_what:hover{
     background-position: -40px -400px;
 }
+header .menu .hide_guider .icon_what{
+    background-position: -4px -724px;
+}
+header .menu .hide_guider .icon_what:hover{
+    background-position: -40px -724px;
+}
 header .menu .icon_menu:hover{
     background-position: -40px -292px;
 }

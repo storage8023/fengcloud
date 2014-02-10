@@ -1208,15 +1208,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         };
 
-        $scope.handleOver = function (event, ui, file) {
-            file.hover = true;
+        $scope.handleOver = function (event, ui, index) {
+            GKFileListView.hoverItem(index);
         };
 
-        $scope.handleOut = function (event, ui, file) {
-            file.hover = false;
+        $scope.handleOut = function (event, ui, index) {
+            GKFileListView.unhoverItem(index);
         };
 
-        $scope.handleDrop = function (event, ui, file) {
+        $scope.handleDrop = function () {
+            console.log(arguments);
             var toMountId = $scope.mountId,
                 toFullpath = file.fullpath,
                 fromMountId = $scope.mountId,
@@ -1359,7 +1360,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 path = Util.String.dirName(fullpath);
                 selectFile = fullpath;
             }
-            console.log(path);
             $timeout(function(){
                 GKPath.gotoFile(mountId, path, selectFile);
             })
@@ -1477,15 +1477,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         ];
 
-
-        $scope.toggleGuider = function(){
-            var old = localStorageService.get(GKConstant.guideKey);
-            if(old){
+         $scope.hideGuider = localStorageService.get(GKConstant.guideKey);
+        $scope.toggleGuider = function(hideGuider){
+            if(!hideGuider){
                 localStorageService.remove(GKConstant.guideKey);
             }else{
                 localStorageService.add(GKConstant.guideKey,1);
             }
-
+            $scope.hideGuider = hideGuider;
         }
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
@@ -1664,7 +1663,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKApi.pendingMembers($rootScope.PAGE_CONFIG.mount.org_id).success(function(data){
                $scope.$apply(function(){
                    $scope.pendingMembers = data.members || [];
-                   console.log($scope.pendingMembers);
                })
             })
         };

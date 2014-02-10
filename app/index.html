@@ -20,7 +20,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="bower_components/angunar-bindonce/bindonce.js"></script>
-    <script src="bower_components/angular-drag-drop/angular-dragdrop.js"></script>
+    <script src="bower_components/angular-dnd/draganddrop.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -125,7 +125,7 @@
          <span ng-click="visitBBS()" title="用户社区">
             <i class="icon32x32 icon_bbs"></i>
         </span>
-        <span ng-click="toggleGuider()" title="帮助">
+        <span ng-click="toggleGuider(!hideGuider)" title="{{hideGuider?'开启帮助提示':'关闭帮助提示'}}" ng-class="hideGuider?'hide_guider':''">
             <i class="icon32x32 icon_what"></i>
         </span>
         <span class="more_menu dropdown" title="更多">

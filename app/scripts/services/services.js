@@ -3229,6 +3229,12 @@ angular.module('gkClientIndex.services', [])
             unselectItem:function(index){
                 this.getFileItem(index).removeClass('selected');
             },
+            hoverItem:function(index){
+                this.getFileItem(index).addClass('hover');
+            },
+            unhoverItem:function(index){
+                this.getFileItem(index).removeClass('hover');
+            },
             removeFileItem:function(index){
                 this.getFileItem(index).remove();
             },
