@@ -566,6 +566,7 @@ footer {
     text-overflow: ellipsis;
     white-space: nowrap;
     text-align: left;
+    vertical-align: middle;
 }
 .toolbar .opt.opt_view_change{
     margin-top: 7px;
@@ -729,6 +730,7 @@ footer {
 .bread .bread_item > span{
     display: inline-block;
     padding: 0  3px;
+    vertical-align: middle;
 }
 .bread .bread_item .bread_grid{
 
@@ -1113,6 +1115,7 @@ footer {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    vertical-align: middle;
 }
 
 .right_sidebar .no_file .tab_content ul li i.member_type_0{
@@ -1225,6 +1228,7 @@ footer {
     line-height: 16px;
     margin: 14px 10px 0 0;
     padding: 0;
+    vertical-align: middle;
 }
 .right_sidebar .loading{
     position: absolute;
@@ -1559,6 +1563,7 @@ footer {
     white-space: nowrap;
     text-overflow: ellipsis;
     display: inline-block;
+    vertical-align: middle;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .version_size{
     color:#ACB4BF;
@@ -1584,6 +1589,7 @@ footer {
     color:#539CF5;
     margin: 0 3px 0 0;
     max-width: 80px;
+    vertical-align: middle;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_dateline,
 .right_sidebar .file_detail_wrapper .history_list > li .version_index{
@@ -1595,6 +1601,7 @@ float: right;
     overflow: hidden;
     text-overflow: ellipsis;
     color:#ACB4BF;
+    vertical-align: middle;
 }
 
 .right_sidebar .file_detail_wrapper .history_list > li .act{
@@ -2177,6 +2184,7 @@ body.resizing *{
 .publish_dialog .file_wrapper .filename_wrapper span,
 .set_milestone_dialog .file_wrapper .filename_wrapper span{
     display: inline-block;
+    vertical-align: middle;
 }
 .publish_dialog .file_wrapper .file_info .other_info,
 .set_milestone_dialog .file_wrapper .file_info .other_info{
@@ -2214,6 +2222,7 @@ padding: 6px 21px;
 .publish_dialog .btn_wrapper .input_wrapper input{
     width: 80%;
     display: inline-block;
+    vertical-align: middle;
     margin-bottom: 10px;
 }
 .publish_dialog .modal-body{

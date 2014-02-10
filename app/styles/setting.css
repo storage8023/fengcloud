@@ -2,6 +2,7 @@
 .form-control{
     width: auto;
     display: inline-block;
+    vertical-align: middle;
 }
 
 
@@ -226,6 +227,7 @@ width: 112px;
     vertical-align: middle;
     margin: -2px 8px 0 0;
     position: relative;
+
 }
 .sync .list .item > div:nth-child(1),
 .sync .list_header > div:nth-child(1){
@@ -303,6 +305,7 @@ width: 112px;
     border-radius: 2px;
     line-height: 13px;
     text-align: center;
+    vertical-align: middle;
 }
 .other_info .member_role .vip i{
     background: #448DE8;
@@ -414,6 +417,7 @@ aside ul li.active i.icon_sync2_white{
 
 .transfer_page .list .item > div > *{
     display: inline-block;
+    vertical-align: middle;
 }
 .transfer_page .list .item > div .btn-flat{
     height: 40px;

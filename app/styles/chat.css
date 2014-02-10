@@ -282,6 +282,7 @@ section .msg_list{
     overflow: hidden;
     border:1px solid #d2d5da;
     display: inline-block;
+    vertical-align: middle;
 }
 .chat_file > div{
     float: left;

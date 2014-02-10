@@ -1145,6 +1145,7 @@ button.close_window{
     overflow: hidden;
     text-overflow: ellipsis;
     white-space:nowrap;
+    vertical-align: middle;
 }
 .context-menu-item > span.accesskey{
     width: 40px;
