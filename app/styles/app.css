@@ -536,7 +536,7 @@ footer {
     color: #fff;
 }
 .toolbar .f_l {
-    margin-left: 10px;
+    margin-left: 6px;
 }
 
 .toolbar .f_r {
@@ -720,6 +720,12 @@ footer {
 .toolbar button:active .opt.order_by i,
 .toolbar button.open .opt.order_by i{
     background-position: -24px -1284px;
+}
+.context-menu-item.file_link:hover i,
+.toolbar button:hover .opt.file_link i,
+.toolbar button:active .opt.file_link i,
+.toolbar button.open .opt.file_link i{
+    background-position: -24px -1604px;
 }
 .bread {
     height: 26px;

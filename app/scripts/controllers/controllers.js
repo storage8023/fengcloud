@@ -690,7 +690,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             allOpts['open_with']['items'] = subMenu;
         };
 
-        var excludeOpts = ['open_with', 'view_property', 'order_by'],
+        var excludeOpts = ['open_with', 'view_property', 'order_by','link'],
             excludeRightOpts = [], //右键要排除的操作
             optKeys,
             topOptKeys,

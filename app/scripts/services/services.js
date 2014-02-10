@@ -2391,7 +2391,8 @@ angular.module('gkClientIndex.services', [])
                     'order_by_file_name',
                     'order_by_file_size',
                     'order_by_file_type',
-                    'order_by_last_edit_time'
+                    'order_by_last_edit_time',
+                    'link'
                 ];
             },
             /**
@@ -2475,9 +2476,9 @@ angular.module('gkClientIndex.services', [])
 
                     } else {
                         this.disableOpt(opts, 'create');
-
                     }
-
+                }else{
+                    this.disableOpt(opts, 'link');
                 }
                 return opts;
             },
@@ -2499,7 +2500,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts, 'new_file', 'view_property', 'open_with', "goto", "sync", "unsync", "rename", "lock", "unlock");
+                    this.disableOpt(opts, 'link','new_file', 'view_property', 'open_with', "goto", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
@@ -2512,7 +2513,7 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach(files, function (file) {
                     context.disableOpt(opts, "add", "new_folder",'new_txt_file','new_ppt_file','new_xls_file','new_doc_file', 'new_file', "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
-                        context.disableOpt(opts, 'open_with', 'lock', 'unlock');
+                        context.disableOpt(opts, 'open_with', 'lock', 'unlock','link');
                         context.setSyncOpt(opts, currentFile, file);
                     } else {
                         context.disableOpt(opts, 'sync', 'unsync');
@@ -3118,7 +3119,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'del': {
-                        index: 21,
+                        index: 22,
                         name: '删除',
                         className: "del",
                         icon: 'icon_trash',
@@ -3151,8 +3152,23 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                     },
-                    'view_property': {
+                    'link': {
                         index: 19,
+                        name: '临时连接',
+                        className: "file_link",
+                        icon: 'icon_link',
+                        callback: function () {
+                            if (selectedFile.length != 1 || selectedFile[0].dir != 0) {
+                                return;
+                            }
+                            var file = selectedFile[0],
+                                parentFile = $rootScope.PAGE_CONFIG.file;
+                            var mountId = GKFileList.getOptFileMountId(file);
+                            GKModal.publish(mountId,file);
+                        }
+                    },
+                    'view_property': {
+                        index: 20,
                         name: '属性',
                         className: "file_property",
                         icon: 'icon_file_property',
@@ -3168,7 +3184,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'order_by': {
-                        index: 20,
+                        index: 21,
                         name: '排序方式',
                         icon: 'icon_orderby',
                         className: "order_by",

@@ -620,6 +620,13 @@ a:hover > .icon16x16.icon_chat,
 .icon16x16.icon_chat_color{
     background-position: -44px -1564px;
 }
+.icon16x16.icon_link{
+    background-position: -4px -1604px;
+}
+a:hover > .icon16x16.icon_link,
+.icon16x16.icon_link_color{
+    background-position: -44px -1604px;
+}
 .icon16x16.icon_warning{
     background-position: -4px -1644px;
 }
