@@ -172,10 +172,14 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
             var newPath = gkClientInterface.selectPath({
                 path: $scope.setting['configpath'],
                 disable_root: 0
+            },function(re){
+                if (re && re.path) {
+                    $scope.$apply(function(){
+                        $scope.setting['configpath'] = re.path;
+                    })
+                }
             });
-            if (newPath && newPath.length) {
-                $scope.setting['configpath'] = newPath;
-            }
+
         };
 
         $scope.clearCache = function () {

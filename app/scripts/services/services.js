@@ -680,14 +680,19 @@ angular.module('gkClientIndex.services', [])
                             webpath: fullpath
                         });
                         $scope.reSetLocalPath = function () {
-                            var newPath = GK.selectPath({
+                            gkClientInterface.selectPath({
                                 path: $scope.localURI,
                                 disable_root: true
+                            },function(re){
+                                var newPath = re.path;
+                                if (newPath) {
+                                    $scope.$apply(function(){
+                                        $scope.localURI = newPath;
+                                    })
+                                }
                             });
-                            if (newPath) {
-                                $scope.localURI = newPath;
-                            }
                         };
+
                         $scope.ok = function () {
                             var new_local_uri = $scope.localURI;
                             var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
@@ -2760,24 +2765,27 @@ angular.module('gkClientIndex.services', [])
                                         return;
                                     }
                                     var localUri = '', defaultName = '';
-                                    localUri = gkClientInterface.selectPath({
+                                   gkClientInterface.selectPath({
                                         disable_root: 1
-                                    });
-                                    if (!localUri) {
-                                        return;
-                                    }
-                                    defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri, '/'), '\\\\'));
+                                    },function(re){
+                                        localUri = re.path;
+                                        if (!localUri) {
+                                            return;
+                                        }
+                                        defaultName = Util.String.baseName(Util.String.rtrim(Util.String.rtrim(localUri, '/'), '\\\\'));
 
-                                    if (!defaultName) return;
-                                    var syncPath = fullpath + (fullpath ? '/' : '') + defaultName;
-                                    var params = {
-                                        webpath: syncPath,
-                                        fullpath: localUri,
-                                        mountid: mountId
-                                    };
-                                    gkClientInterface.setLinkPath(params, function () {
-                                        $rootScope.$broadcast('editFileSuccess', 'create', mountId, fullpath, {fullpath: syncPath});
-                                    })
+                                        if (!defaultName) return;
+                                        var syncPath = fullpath + (fullpath ? '/' : '') + defaultName;
+                                        var params = {
+                                            webpath: syncPath,
+                                            fullpath: localUri,
+                                            mountid: mountId
+                                        };
+                                        gkClientInterface.setLinkPath(params, function () {
+                                            $rootScope.$broadcast('editFileSuccess', 'create', mountId, fullpath, {fullpath: syncPath});
+                                        })
+                                    });
+
 
                                 }
                             },

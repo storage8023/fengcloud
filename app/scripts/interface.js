@@ -488,7 +488,7 @@
             this._handleException(e);
         }
     },
-    openLocation:function(params){
+    openLocation:function(params,callback){
         try {
             params.opentype = 'select';
             gkClient.gOpen(JSON.stringify(params));
@@ -496,14 +496,20 @@
             this._handleException(e);
         }
     },
-    selectPath:function(params){
+    selectPath:function(params,callback){
         try {
+            var req;
             if(typeof params === 'undefined'){
-                return gkClient.gSelectPathDlg('');
+                req  = '';
             }else{
-                return gkClient.gSelectPathDlg(JSON.stringify(params));
+                req = JSON.stringify(params);
             }
-
+            gkClient.gSelectPathDlg(req,function(re){
+                re = typeof re ==='object'?re:JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
         } catch (e) {
             this._handleException(e);
         }
