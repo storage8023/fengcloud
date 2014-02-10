@@ -2985,6 +2985,7 @@ angular.module('gkClientIndex.services', [])
                                 GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
                                     GKFileList.refreahData($scope);
                                     GKCilpboard.clearData();
+                                    $scope.$broadcast('refreshOpt');
                                 }, function (error) {
                                     GKException.handleClientException(error);
                                 });

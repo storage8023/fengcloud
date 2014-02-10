@@ -10,7 +10,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: 'views/guider_popup.html'
         }
     }])
-    .directive('guider', ['$compile','$document','$position','$timeout','localStorageService','GKConstant',function ($compile,$document,$position,$timeout,localStorageService,GKConstant) {
+    .directive('guider', ['$compile','$document','$position','$timeout','localStorageService','GKConstant','$rootScope',function ($compile,$document,$position,$timeout,localStorageService,GKConstant,$rootScope) {
         var template = '<guider-popup content="{{guiderContent}}" close-guide="closeGuide()" turn-off-guide="turnOffGuide()" placement="{{placement}}"></guider-popup>';
         return {
             restrict: 'A',
@@ -57,6 +57,7 @@ angular.module('gkClientIndex.directives', [])
                 scope.turnOffGuide = function(){
                     cancelBind();
                     localStorageService.add(storageKey,1);
+                    $rootScope.$broadcast('toggleGuider',1);
                 }
 
                 var hide = function(){

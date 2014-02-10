@@ -690,7 +690,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             allOpts['open_with']['items'] = subMenu;
         };
 
-        var excludeOpts = ['open_with', 'view_property', 'order_by', 'paste', 'copy', 'cut'],
+        var excludeOpts = ['open_with', 'view_property', 'order_by'],
             excludeRightOpts = [], //右键要排除的操作
             optKeys,
             topOptKeys,
@@ -824,13 +824,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
+        var selectedFile;
         /**
          * 操作
          * @type {Array}
          */
         $scope.$on('selectedFileChange',function($event,selectedFile){
+            selectedFile = selectedFile;
             setOpts(selectedFile);
         })
+
+        $scope.$on('refreshOpt',function($event){
+            setOpts(selectedFile);
+        })
+
 
         $scope.$watch('rightOpts', function () {
             jQuery.contextMenu('destroy', '.file_list .list_body');
@@ -1477,7 +1484,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         ];
 
-         $scope.hideGuider = localStorageService.get(GKConstant.guideKey);
+        $scope.hideGuider = localStorageService.get(GKConstant.guideKey);
         $scope.toggleGuider = function(hideGuider){
             if(!hideGuider){
                 localStorageService.remove(GKConstant.guideKey);
@@ -1486,6 +1493,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             $scope.hideGuider = hideGuider;
         }
+
+        $scope.$on('toggleGuider',function(event,hideGuider){
+            $scope.hideGuider = hideGuider;
+        })
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
 
