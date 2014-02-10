@@ -1899,7 +1899,7 @@ angular.module('gkClientIndex.services', [])
         smartFolder: 'smartfolder',
         subscribeFile: 'subscribefile'
     })
-    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException', 'RestFile','$rootScope','$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException, RestFile,$rootScope,$filter) {
+    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException','$rootScope','$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException,$rootScope,$filter) {
         var GKFile = {
             checkFilename: function (filename) {
                 if (!filename.length) {
@@ -1980,7 +1980,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     ;
                     } else {
-                        RestFile.recycle(mountId, '').success(function (data) {
+                        GKApi.recycle(mountId, '').success(function (data) {
                             list = data['list'];
                             deferred.resolve(GKFile.dealFileList(list, source));
                         }).error(function (request) {
@@ -2311,7 +2311,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', 'RestFile', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder', function (GKFile, GKPartition, GKMount, $rootScope, GK, RestFile, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -2593,7 +2593,7 @@ angular.module('gkClientIndex.services', [])
                 if (!confirm('确定要清空该回收站？')) {
                     return;
                 }
-                RestFile.clear(mountId).success(function () {
+                GKApi.clear(mountId).success(function () {
                     $rootScope.$broadcast('clearTrashSuccess', mountId);
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
@@ -2916,7 +2916,7 @@ angular.module('gkClientIndex.services', [])
                             angular.forEach(selectedFile, function (value) {
                                 fullpaths.push(value.dir == 1 ? value.fullpath + '/' : value.fullpath);
                             });
-                            RestFile.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths).success(function () {
+                            GKApi.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths).success(function () {
                                 angular.forEach(selectedFile, function (value) {
                                     angular.forEach($scope.fileData, function (file, key) {
                                         if (value == file) {
@@ -3276,7 +3276,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'RestFile', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, RestFile, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';

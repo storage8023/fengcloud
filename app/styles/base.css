@@ -20,6 +20,7 @@ button{
 }
 a{
     color:#5595E9;
+    outline: 0;
 }
 p,div{
     cursor: default;
@@ -41,6 +42,7 @@ h1, h2, h3, h4, h5, h6{
     font-weight:normal;
 }
 body,button, input, select, textarea{
+    outline: 0;
     font: 12px/1.5 "Helvetica Neue","Helvetica","Arial",'Yahei',"hiragino sans gb",'微软雅黑',"宋体", "simsun","sans-serif";
 }
 address, cite, dfn, em, var { font-style: normal; }

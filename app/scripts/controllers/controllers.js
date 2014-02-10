@@ -1488,7 +1488,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         }
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', 'RestFile', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, RestFile, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
 
         $scope.GKPartition = GKPartition;
         /**

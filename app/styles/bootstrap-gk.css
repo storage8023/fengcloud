@@ -191,7 +191,9 @@ input[type="password"] {
 .btn:active {
     color: #fff;
 }
-
+.btn:focus{
+    outline: 0;
+}
 .btn.btn-default:hover {
     background: #9AA5B8;
 }

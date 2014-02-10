@@ -1049,7 +1049,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', 'RestFile', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat',function ($angularCacheFactory,GKFilter, GKSmartFolder, RestFile, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat) {
         return {
             replace: true,
             restrict: 'E',
@@ -1135,7 +1135,7 @@ angular.module('gkClientIndex.directives', [])
                     var formatTag = [];
 
                     if (options.data != 'sidebar') {
-                        lastGetRequest = RestFile.get(mountId, fullpath).success(function (data) {
+                        lastGetRequest = GKApi.info(mountId, fullpath).success(function (data) {
                             $scope.$apply(function () {
                                 $scope.fileLoaded = true;
                                 $scope.fileExist = true;

@@ -1038,168 +1038,69 @@ angular.module('GKCommon.services', [])
 
     }
     ])
-    .factory('RestFile', ['GK', '$http', function (GK, $http) {
-        var restFile = {
-            orgShare: function (mount_id, fullpath, collaboration) {
-                var date = new Date().toUTCString();
-                var method = 'ORG_SHARE';
-                var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return jQuery.ajax({
-                    type: method,
-                    url: GK.getRestHost() + webpath,
-                    headers: {
-                        'x-gk-mount': mount_id,
-                        'Date': date,
-                        'Authorization': authorization,
-                    },
-                    data: {
-                        collaboration: collaboration
-                    }
-                })
-            },
-
-            get: function (mount_id, fullpath) {
-                var date = new Date().toUTCString();
-                var method = 'GET';
-                var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return jQuery.ajax({
-                    type: method,
-                    url: GK.getRestHost() + webpath,
-                    headers: {
-                        'x-gk-mount': mount_id,
-                        'Date': date,
-                        'Authorization': authorization
-                    }
-                })
-            },
-            remind: function (mount_id, fullpath, message) {
-                var date = new Date().toUTCString();
-                var method = 'REMIND';
-                var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                return jQuery.ajax({
-                    type: method,
-                    dataType: 'json',
-                    url: GK.getRestHost() + webpath,
-                    headers: {
-                        'x-gk-mount': mount_id,
-                        'x-gk-bool': 1,
-                        'Date': date,
-                        'Authorization': authorization,
-                        'Content-Type': "application/x-www-form-urlencoded"
-                    },
-                    data: {
-                        message: message
-                    }
-                })
-            },
-            recycle: function (mount_id, fullpath, order, start, size) {
-                var date = new Date().toUTCString();
-                var method = 'RECYCLE';
-                var webpath = Util.String.encodeRequestUri(fullpath);
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                var headers = {
-                    'x-gk-mount': mount_id,
-                    'Date': date,
-                    'Authorization': authorization,
-                    'Content-Type': "application/x-www-form-urlencoded"
-                };
-                if (angular.isDefined(order)) {
-                    headers['x-gk-order'] = order;
-                }
-                if (angular.isDefined(start)) {
-                    headers['x-gk-start'] = start;
-                }
-                if (angular.isDefined(size)) {
-                    headers['x-gk-size'] = size;
-                }
-                return jQuery.ajax({
-                    type: method,
-                    url: GK.getRestHost() + webpath,
-                    headers: headers
-                })
-            },
-            clear: function (mount_id) {
-                var date = new Date().toUTCString();
-                var method = 'CLEAR';
-                var webpath = Util.String.encodeRequestUri('');
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                var headers = {
-                    'x-gk-mount': mount_id,
-                    'Date': date,
-                    'Authorization': authorization,
-                    'Content-Type': "application/x-www-form-urlencoded",
-                    'Accept': '*/*'
-                };
-                return jQuery.ajax({
-                    url: GK.getRestHost() + webpath,
-                    dataType: 'text',
-                    type: method,
-                    headers: headers
-                });
-//                return $http({
-//                    method: method,
-//                    url: GK.getRestHost() + webpath,
-//                    headers: headers,
-//                    responseType:'text'
-//                })
-            },
-            delCompletely: function (mount_id, fullpaths) {
-                var date = new Date().toUTCString();
-                var method = 'DELETECOMPLETELY';
-                var webpath = Util.String.encodeRequestUri('');
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                if (angular.isArray(fullpaths)) {
-                    fullpaths = fullpaths.join('|');
-                }
-                var headers = {
-                    'x-gk-mount': mount_id,
-                    'Date': date,
-                    'x-gk-fullpaths': encodeURIComponent(fullpaths),
-                    'Authorization': authorization,
-                    'Content-Type': "application/x-www-form-urlencoded"
-                };
-
-                return $http({
-                    method: method,
-                    url: GK.getRestHost() + webpath,
-                    headers: headers
-                })
-            },
-            recover: function (mount_id, fullpaths, machine) {
-                var date = new Date().toUTCString();
-                var method = 'RECOVER';
-                var webpath = Util.String.encodeRequestUri('');
-                var authorization = GK.getAuthorization(method, webpath, date, mount_id);
-                if (angular.isArray(fullpaths)) {
-                    fullpaths = fullpaths.join('|');
-                }
-                var headers = {
-                    'x-gk-mount': mount_id,
-                    'Date': date,
-                    'x-gk-machine': machine,
-                    'x-gk-fullpaths': encodeURIComponent(fullpaths),
-                    'Authorization': authorization,
-                    'Content-Type': "application/x-www-form-urlencoded"
-                };
-                return jQuery.ajax({
-                    url: GK.getRestHost() + webpath,
-                    dataType: 'text',
-                    type: method,
-                    headers: headers
-                });
-            }
-        };
-
-        return restFile;
-    }
-    ])
     .factory('GKApi', ['$http', function ($http) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            delCompletely:function(mount_id, fullpaths){
+                var params = {
+                    mount_id: mount_id,
+                    fullpaths:fullpaths,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/file/del_completely',
+                    dataType: 'json',
+                    data: params
+                })
+            },
+            clear:function(mount_id){
+                var params = {
+                    mount_id: mount_id,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/file/clear',
+                    dataType: 'json',
+                    data: params
+                })
+            },
+            recycle:function(mount_id, fullpath){
+                var params = {
+                    mount_id: mount_id,
+                    fullpath:fullpath,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/file/recycle',
+                    dataType: 'json',
+                    data: params
+                })
+            },
+            info:function(mount_id, fullpath){
+                var params = {
+                    mount_id: mount_id,
+                    fullpath:fullpath,
+                    token: gkClientInterface.getToken()
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/file/info',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             pendingMembers:function(orgId){
                 var params = {
                     org_id: orgId,
