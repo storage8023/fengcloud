@@ -203,7 +203,20 @@ section .msg_list{
    max-width: 90%;
    font-size: 14px;
 }
-
+.chat_item .chat_main .icon_warning{
+  position: absolute;
+right: 5px;
+  top:50%;
+  display: none;
+  margin-top:-9px ;
+}
+.chat_item.chat_item_mine .chat_main .icon_warning{
+    left: 5px;
+    right: auto;
+}
+.chat_item .chat_main.error .icon_warning {
+    display: inline-block;
+}
 .chat_item .chat_main .chat_member{
     color: #8e98a8;
 }
@@ -214,11 +227,17 @@ section .msg_list{
     background: #fff;
     border-radius: 3px;
     padding: 5px 10px;
-
     position: relative;
     word-break: break-all;
     word-wrap: break-word;
     box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);
+}
+.chat_item .chat_main.error .chat_text{
+    padding-right: 25px;
+}
+.chat_item.chat_item_mine .chat_main.error .chat_text{
+    padding-left: 25px;
+    padding-right: 10px;
 }
 .chat_item.chat_item_mine .chat_main .chat_text{
     background: #7bc4ff;
@@ -275,14 +294,13 @@ section .msg_list{
     padding-right: 10px;
 }
 .chat_file{
-    padding:6px 9px;
     margin: 5px 0 0 0;
     overflow: hidden;
-    display: inline-block;
-    vertical-align: middle;
+    display: table;
 }
 .chat_file > div{
-    float: left;
+display: table-cell;
+    vertical-align: middle;
 }
 
 .chat_file .filename_wrapper{
@@ -299,20 +317,25 @@ section .msg_list{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 .chat_file .filename_wrapper .filename span{
     white-space: pre;
+    font-size: 16px;
+    line-height: 22px;
 }
 .chat_file .filename_wrapper .filesize{
-color: #ACB4BF;
     font-size: 12px;
     margin-top: 1px;
 }
-.chat_file .file_icon_wrapper .icon32x32{
+.chat_file .file_icon_wrapper .file_icon128x128{
     margin-top: 0;
+    display: inline-block;
+    width: 128px;
+    height: 128px;
 }
-.chat_file .file_icon_wrapper .icon32x32 img{
-    width: 32px;
-    height: 32px;
+.chat_file .file_icon_wrapper .file_icon128x128 img{
+    width: 128px;
+    height: 128px;
 }
 .chat_file .version_wrapper{
     margin: 0 0 0 5px;
@@ -320,14 +343,20 @@ color: #ACB4BF;
 }
 .chat_file .file_opt{
     clear: both;
+    position: absolute;
+    top:8px;
+    right: 8px;
+}
+.chat_item.chat_item_mine .chat_file .file_opt{
+    right: auto;
+    left: 8px;
 }
 .chat_file:hover .file_opt{
+
 }
 .chat_file .file_opt button{
     background: transparent;
     border:0 none;
-    margin-right: 8px;
-    line-height: 16px;
 }
 
 .chat_file .file_opt button >i{

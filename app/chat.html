@@ -42,16 +42,16 @@
                         <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)">
                             <avatar class="avatar" gk-src="{{msg.sender_id|getAvatarUrl}}"></avatar>
                         </div>
-                        <div class="chat_main">
+                        <div class="chat_main" ng-class="msg.error?'error':''">
                             <div class="chat_member" ng-click="atMember(msg.sender_name)">
                                 <span ng-bind="msg.sender_name"></span>
                             </div>
                             <div class="chat_text">
-                                <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_warning"></i>
+                                <i title="{{msg.error}}" class="icon16x16 icon_warning"></i>
                                 <span ng-bind="msg.content" ng-if="msg.type=='text'"></span>
                                 <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg.file)" data-dir="{{msg.file.dir}}" title="{{msg.file.filename}}">
                                     <div class="file_icon_wrapper">
-                                        <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
+                                        <i class="file_icon128x128" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
                                             <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
                                         </i>
                                     </div>
@@ -60,13 +60,11 @@
                                             <span ng-bind="msg.file.filename"></span>
                                         </div>
                                         <div class="filesize" ng-show="msg.file.dir==0" >
-                                            <span ng-bind="msg.file.filesize|bitSize"></span>
+                                            <span ng-bind="msg.file.lastname"></span> 修改于 <span ng-bind="msg.file.lasttime*1000 | date:'yyyy/MM/dd HH:mm'"></span>
                                         </div>
                                     </div>
                                     <div class="file_opt">
                                         <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
-                                        <button title="打开" class="" ng-click="openFile($event,msg.file)"><i class="icon16x16 icon_open_with"></i></button>
-                                        <button title="引用" class="" ng-click="quoteFile(msg.file)"><i class="icon16x16 icon_recycle"></i></button>
                                     </div>
                                 </div>
                             </div>

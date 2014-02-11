@@ -1303,6 +1303,23 @@ angular.module('gkClientIndex.directives', [])
                     });
                 }
 
+                $scope.openFile = function(history){
+                    if(history.dir == 1){
+                        return;
+                    }
+                    var version = history.property.version;
+                    if(!version){
+                        return;
+                    }
+                    var mountId = getOptMountId($scope.file);
+                    if(!mountId) return;
+                    gkClientInterface.open({
+                        mountid:mountId,
+                        webpath:$scope.file.fullpath,
+                        version:version
+                    });
+                }
+
                 /**
                  * 监听刷新事件
                  */
