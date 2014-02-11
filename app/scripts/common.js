@@ -505,7 +505,7 @@ angular.module('GKCommon.directives', [])
                                 }
                             }
                             e.preventDefault();
-                        } else if (key_code == 13 || key_code == 32) {
+                        } else if (key_code == 13) {
                             selectItem();
                             e.preventDefault();
                         }
@@ -622,7 +622,6 @@ angular.module('GKCommon.directives', [])
 
                 var checkAt = function () {
                     val = $scope[$attrs.ngModel];
-                    //console.log(val);
                     var cursor = Util.Input.getCurSor($element[0]);
                     inputPos = cursor.split('|');
                     var leftStr = val.slice(0, inputPos[0]); //截取光标左边的所有字符
@@ -634,7 +633,7 @@ angular.module('GKCommon.directives', [])
                     var q = leftStr.slice(lastIndex + 1, leftStr.length); //获取@与光标位置之间的字符
                     if(q===lastQ) return;
                     //如果@与光标之间有空格，隐藏提示框
-                    if ($.trim(q).length != q.length) {
+                    if (jQuery.trim(q).length != q.length) {
                         hide();
                         return;
                     }
