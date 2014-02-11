@@ -122,10 +122,10 @@
                 class="icon16x16 icon_rightarrow_white"></i></button>
     </div>
     <div class="menu">
-        <span ng-click="showTransferQueue()" title="传输队列" ng-class="transfering?'transfering':''">
-            <i class="icon32x32 icon_bbs"></i>
+        <span ng-click="showTransferQueue()" title="{{transfering?'正在传输':'打开传输队列'}}" ng-class="transfering?'transfering':''">
+            <i class="icon32x32 icon_transfer"></i>
         </span>
-         <span ng-click="visitBBS()" title="用户社区">
+         <span ng-click="visitBBS()" title="访问用户社区">
             <i class="icon32x32 icon_bbs"></i>
         </span>
         <span ng-click="toggleGuider(!hideGuider)" title="{{hideGuider?'开启帮助提示':'关闭帮助提示'}}" ng-class="hideGuider?'hide_guider':''">

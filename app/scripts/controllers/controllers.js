@@ -1445,8 +1445,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKDialog.openTransfer();
         }
 
-        $scope.$on('TransferState',function(param){
-            $scope.transfering = param.state;
+        $scope.$on('TransferState',function(event,param){
+            $scope.$apply(function(){
+               $scope.transfering = param.state;
+            })
         })
 
         $scope.items = [

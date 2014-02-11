@@ -1897,6 +1897,7 @@ angular.module('GKCommon.filters', [])
  * @param params
  */
 var gkClientCallback = function (name, param) {
+    console.log(arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }

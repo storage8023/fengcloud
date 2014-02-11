@@ -1433,7 +1433,6 @@ angular.module('gkClientIndex.services', [])
         angular.forEach(reSmartFolders, function (value) {
             smartFolders.push(formartSmartFolder(value))
         });
-        console.log(smartFolders);
         var GKSmartFolder = {
             getFolderAliasByType: getFolderAliasByType,
             checkFolderName: function (filename) {
