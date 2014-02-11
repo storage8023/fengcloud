@@ -1373,6 +1373,10 @@ angular.module('gkClientIndex.services', [])
         var getFolderAliasByType = function (type) {
             var filter = '';
             switch (type) {
+                case -1:
+                case '-1':
+                    filter = GKFilter.recentVisit;
+                    break;
                 case 0:
                     filter = GKFilter.recent;
                     break;
@@ -1396,7 +1400,7 @@ angular.module('gkClientIndex.services', [])
                     break;
             }
             return filter;
-        }
+        };
 
         var formartSmartFolder = function (value) {
             var condition = Number(value.condition);
@@ -1419,10 +1423,17 @@ angular.module('gkClientIndex.services', [])
             condition: '0',
             name: '最近修改的文件'
         })
+
+        reSmartFolders.unshift({
+            condition: '-1',
+            name: '最近访问的文件'
+        })
+
         var smartFolders = [], item;
         angular.forEach(reSmartFolders, function (value) {
             smartFolders.push(formartSmartFolder(value))
         });
+        console.log(smartFolders);
         var GKSmartFolder = {
             getFolderAliasByType: getFolderAliasByType,
             checkFolderName: function (filename) {
@@ -1449,6 +1460,9 @@ angular.module('gkClientIndex.services', [])
                         break;
                     case GKFilter.recent:
                         filterName = '最近修改的文件';
+                        break;
+                    case GKFilter.recentVisit:
+                        filterName = '最近访问的文件';
                         break;
                     case GKFilter.search:
                         filterName = '搜索结果';
@@ -1521,7 +1535,7 @@ angular.module('gkClientIndex.services', [])
                     source = 'api',
                     param,
                     cacheKey;
-                if(['star', 'diamond', 'moon', 'triangle', 'flower', 'heart','recent'].indexOf(filter)<0){
+                if(['star', 'diamond', 'moon', 'triangle', 'flower', 'heart','recent','recent_visit'].indexOf(filter)<0){
                     return;
                 }
                 cacheKey = filter+':';
@@ -1555,10 +1569,25 @@ angular.module('gkClientIndex.services', [])
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
                     /**
-                     * 最近访问的文件
+                     * 最近修改的文件
                      */
                 } else if (filter == 'recent') {
                     GKApi.recentFileList(filter).success(function (data) {
+                        list = GKFile.dealFileList(data['list'], source);
+                        param = {
+                            key:cacheKey,
+                            value:JSON.stringify(list)
+                        }
+                        gkClientInterface.addCache(param);
+                        deferred.resolve(list);
+                    }).error(function (request) {
+                            deferred.reject(GKException.getAjaxErrorMsg(request));
+                        });
+                    /**
+                     * 最近访问的文件
+                     */
+                }else if(filter == 'recent_visit'){
+                    GKApi.recentVisitList(filter).success(function (data) {
                         list = GKFile.dealFileList(data['list'], source);
                         param = {
                             key:cacheKey,
@@ -1581,6 +1610,7 @@ angular.module('gkClientIndex.services', [])
             trash: 'trash',
             inbox: 'inbox',
             star: 'star',
+            recentVisit: 'recent_visit',
             recent: 'recent',
             triangle: 'triangle',
             diamond: 'diamond',

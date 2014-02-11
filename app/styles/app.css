@@ -1387,6 +1387,9 @@ footer {
     text-align: center;
     margin: 8px 0 0 0;
 }
+.right_sidebar .opt_wrapper button{
+    margin: 0 2px;
+}
 .right_sidebar .tags {
     margin:5px 12px 0 12px;
 }

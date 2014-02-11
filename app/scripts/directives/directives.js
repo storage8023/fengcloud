@@ -1071,7 +1071,7 @@ angular.module('gkClientIndex.directives', [])
                     return Number(mountID);
                 };
 
-                $scope.smarts = GKSmartFolder.getFolders('recent');
+                $scope.smarts = GKSmartFolder.getFolders(['recent','recent_visit']);
 
                 var getFileState = function (mountId, fullpath) {
                     //网络断开后不重新连接

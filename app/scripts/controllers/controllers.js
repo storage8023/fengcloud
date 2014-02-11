@@ -1441,6 +1441,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             gkClientInterface.openUrl(url);
         }
 
+        $scope.showTransferQueue = function(){
+            GKDialog.openTransfer();
+        }
+
+        $scope.$on('TransferState',function(param){
+            $scope.transfering = param.state;
+        })
+
         $scope.items = [
             {
                 item: "创建云库",
@@ -1452,12 +1460,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 item: "设置",
                 menuclick: function () {
                     GKDialog.openSetting();
-                }
-            },
-            {
-                item: "传输队列",
-                menuclick: function () {
-                    GKDialog.openTransfer();
                 }
             },
             {

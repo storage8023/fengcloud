@@ -1373,8 +1373,23 @@ angular.module('GKCommon.services', [])
                     data: params
                 });
             },
+            recentVisitList: function () {
+                var params = {
+                    size:100,
+                    token: gkClientInterface.getToken()
+                };
+                angular.extend(params, defaultParams);
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/file/recent_modified',
+                    data: params
+                });
+            },
             recentFileList: function () {
                 var params = {
+                    size:100,
                     token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
