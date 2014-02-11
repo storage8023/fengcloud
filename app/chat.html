@@ -48,26 +48,26 @@
                             </div>
                             <div class="chat_text">
                                 <i ng-show="msg.error" title="{{msg.error}}" class="icon16x16 icon_warning"></i>
-                                <span ng-bind="msg.content"></span>
-                            </div>
-                            <div class="chat_file" ng-dblclick="openFile($event,msg.file)" ng-click="quoteFile(msg.file)" data-dir="{{msg.file.dir}}" ng-if="msg.file"  title="{{msg.file.filename}}">
-                                <div class="file_icon_wrapper">
-                                    <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
-                                        <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
-                                    </i>
-                                </div>
-                                <div class="filename_wrapper">
-                                    <div class="filename">
-                                        <span ng-bind="msg.file.filename"></span>
+                                <span ng-bind="msg.content" ng-if="msg.type=='text'"></span>
+                                <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg.file)" data-dir="{{msg.file.dir}}" title="{{msg.file.filename}}">
+                                    <div class="file_icon_wrapper">
+                                        <i class="icon32x32" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
+                                            <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
+                                        </i>
                                     </div>
-                                    <div class="filesize" ng-show="msg.file.dir==0" >
-                                        <span ng-bind="msg.file.filesize|bitSize"></span>
+                                    <div class="filename_wrapper">
+                                        <div class="filename">
+                                            <span ng-bind="msg.file.filename"></span>
+                                        </div>
+                                        <div class="filesize" ng-show="msg.file.dir==0" >
+                                            <span ng-bind="msg.file.filesize|bitSize"></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="file_opt">
-                                    <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
-                                    <button title="打开" class="" ng-click="openFile($event,msg.file)"><i class="icon16x16 icon_open_with"></i></button>
-                                    <button title="引用" class="" ng-click="quoteFile(msg.file)"><i class="icon16x16 icon_recycle"></i></button>
+                                    <div class="file_opt">
+                                        <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
+                                        <button title="打开" class="" ng-click="openFile($event,msg.file)"><i class="icon16x16 icon_open_with"></i></button>
+                                        <button title="引用" class="" ng-click="quoteFile(msg.file)"><i class="icon16x16 icon_recycle"></i></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -79,22 +79,9 @@
                 </div>
 
             </section>
-            <footer ng-class="PAGE_CONFIG.file && !PAGE_CONFIG.file.posted&&PAGE_CONFIG.file.mount_id == currentSession.mountid?'post_with_file':''">
+            <footer>
                 <textarea ng-trim="false" ng-blur="saveLastText(postText)" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
-                <div class="post_file_wrapper" ng-if="PAGE_CONFIG.file">
-                    <div data-dir="{{PAGE_CONFIG.file.dir}}" title="{{PAGE_CONFIG.file.filename}}">
-                        <div class="close_btn" ng-click="cancelAtFile()">
-                            <i class="close" title="取消">&times;</i>
-                        </div>
-                        <div class="filesize" ng-show="PAGE_CONFIG.file.dir==0" >
-                            <span ng-bind="PAGE_CONFIG.file.filesize|bitSize"></span>
-                        </div>
-                        <div class="filename">
-                            <span ng-bind="PAGE_CONFIG.file.filename"></span>
-                        </div>
-
-                    </div>
-                </div>
+                <button class="btn btn-primary post_btn" ng-click="postMessage(postText)">发 送</button>
             </footer>
             </div>
 

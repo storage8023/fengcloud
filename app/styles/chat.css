@@ -275,12 +275,9 @@ section .msg_list{
     padding-right: 10px;
 }
 .chat_file{
-    background: #f4f6f9;
-    border-radius: 5px;
     padding:6px 9px;
     margin: 5px 0 0 0;
     overflow: hidden;
-    border:1px solid #d2d5da;
     display: inline-block;
     vertical-align: middle;
 }
@@ -353,62 +350,21 @@ footer textarea{
     position: absolute;
     top:0;
     left: 0;
-    right: 0;
+    right: 90px;
     bottom: 0;
     border:0 none;
     box-shadow: none;
 }
-footer.post_with_file textarea{
-    padding-top: 45px;
-}
-footer .post_file_wrapper{
-    position: absolute;
-    top:9px;
-    left: 4px;
-    display: none;
-    height: 28px;
-    line-height: 28px;
-    max-width: 98%;
-}
-footer .post_file_wrapper > div{
-    border-radius: 5px;
-    border:1px solid #ced1d7;
-    background: #f4f6f9;
-    overflow: hidden;
-    padding:0 4px 0 10px;
-}
 
-footer .post_file_wrapper .filename{
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 14px;
-}
-footer .post_file_wrapper .filename > span{
-    white-space: pre;
-}
-footer .post_file_wrapper .filesize,
-footer .post_file_wrapper .close_btn{
-    float: right;
-}
-footer .post_file_wrapper .filesize{
+footer .post_btn{
     width: 70px;
-    text-align: center;
-    color: #ACB4BF;
+    height: 70px;
+    position: absolute;
+    right: 10px;
+    top:10px;
+    font-size: 17px;
 }
-footer .post_file_wrapper .close_btn{
-    margin: 4px 0 0 5px;
-}
-footer .post_file_wrapper .close{
-    float: none;
-    display: block;
-    width: 16px;
-    height: 16px;
 
-}
-footer.post_with_file .post_file_wrapper{
-    display: block;
-}
 footer .post_file_wrapper .chat_file{
     width: 270px;
     margin: 15px auto;

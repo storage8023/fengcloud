@@ -17,6 +17,32 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         $scope.view = 'chat';
         $scope.currentMsgList = [];
         $scope.currentSession = null;
+
+        var post = function(type,content,metadata){
+            metadata = angular.isDefined(metadata) ? metadata : '';
+            var now = new Date().getTime();
+            var msgData = {
+                content: content,
+                receiver: $scope.currentSession.orgid,
+                sender: $rootScope.PAGE_CONFIG.user.member_name,
+                time: now,
+                type: type,
+                metadata:metadata
+            };
+            var newMsg = chatContent.add($scope.currentMsgList, msgData);
+
+            if (!newMsg) {
+                return;
+            }
+            $scope.scrollToIndex = $scope.currentMsgList.length-1;
+            chatService.add($scope.currentSession.orgid, content, metadata).then(function(re){
+                postedMsg.push(re.time);
+            },function(re){
+                var errorMsg = GKException.getClientErrorMsg(re);
+                chatContent.setItemError(newMsg, errorMsg);
+            })
+        };
+
         /**
          * 发布新消息
          * @param $event
@@ -33,38 +59,13 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 return;
             }
             $scope.postText = '';
-            var now = new Date().getTime();
-            var msgData = {
-                content: postText,
-                receiver: $scope.currentSession.orgid,
-                sender: $rootScope.PAGE_CONFIG.user.member_name,
-                time: now,
-                type: 'text'
-            };
-            var metaData;
-            if ($rootScope.PAGE_CONFIG.file && !$rootScope.PAGE_CONFIG.file.posted && $rootScope.PAGE_CONFIG.file.mount_id == $scope.currentSession.mountid) {
-                metaData = {
-                    mount_id: $scope.currentSession.mountid,
-                    hash: $rootScope.PAGE_CONFIG.file.uuidhash
-                };
-                angular.extend(msgData, {
-                    metadata: JSON.stringify(metaData)
-                });
-                $rootScope.PAGE_CONFIG.file = null;
-            }
-            var newMsg = chatContent.add($scope.currentMsgList, msgData);
-            if (!newMsg) {
-                return;
-            }
-            $scope.scrollToIndex = $scope.currentMsgList.length-1;
-            chatService.add($scope.currentSession.orgid, postText, metaData ? JSON.stringify(metaData) : '').then(function(re){
-                postedMsg.push(re.time);
-            },function(re){
-                var errorMsg = GKException.getClientErrorMsg(re);
-                chatContent.setItemError(newMsg, errorMsg);
-            })
-
+            post('text',postText);
             $event.preventDefault();
+        };
+
+        $scope.postMessage = function(postText){
+            $scope.postText = '';
+            post('text',postText);
         };
 
         /**
@@ -135,8 +136,14 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
          * @param file
          */
         $scope.quoteFile = function (file) {
-           $rootScope.PAGE_CONFIG.file = file;
-            $scope.focusTextarea = true;
+            var metadata = JSON.stringify({
+                mount_id: file.mount_id,
+                hash:  file.uuidhash,
+                filehash: file.filehash,
+                filesize: file.filesize,
+                version: file.version
+            });
+            post('file','',metadata);
         };
 
         $scope.cancelAtFile = function(){
@@ -164,17 +171,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             };
             $scope.currentSession = session;
             var extendParam = {};
-            if (param.fullpath) {
-                extendParam.file = gkClientInterface.getFileInfo({
-                    mountid: mountId,
-                    webpath: param.fullpath
-                });
-                extendParam.file.mount_id = $scope.currentSession.mountid;
-                extendParam.file.filename = Util.String.baseName(extendParam.file.path);
-                extendParam.file.ext = Util.String.getExt(extendParam.file.filename);
-            }
-
-            angular.extend($rootScope.PAGE_CONFIG, extendParam);
             $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
             var msgList = [];
             chatService.list($scope.currentSession.orgid,0,maxCount).then(function(re){
@@ -192,6 +188,22 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                         });
                     }
                     $scope.currentMsgList = msgList;
+                //文件
+                if (param.fullpath) {
+                    extendParam.file = gkClientInterface.getFileInfo({
+                        mountid: mountId,
+                        webpath: param.fullpath
+                    });
+                    var metadata = JSON.stringify({
+                        mount_id: mountId,
+                        hash:  extendParam.file.uuidhash,
+                        filehash: extendParam.file.filehash,
+                        filesize: extendParam.file.filesize,
+                        version: extendParam.file.version
+                    });
+                    post('file','',metadata);
+                }
+
                     $scope.scrollToIndex = $scope.currentMsgList.length-1;
                     //topWindow.gkFrameCallback('clearMsgTimeclearMsgTime',{orgId:$scope.currentSession.orgid});
                 });
@@ -248,8 +260,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         }
 
     }])
-    .factory('chatContent', ['chatMember', 'chatSession', function (chatMember, chatSession) {
+    .factory('chatContent', ['chatMember', 'chatSession','$q', function (chatMember, chatSession,$q) {
         var chatContent = {
+            post:function(){
+
+            },
             formatItem: function (value) {
                 var sender = chatMember.getMemberItem(value.receiver, value.sender);
                 var filename = Util.String.baseName(value.fullpath);
