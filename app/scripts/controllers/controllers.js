@@ -1019,9 +1019,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.gkChat = GKChat;
 
-        $scope.limit = 50;
+        $scope.limit = 100;
         $scope.$on('$locationChangeSuccess',function(){
-            $scope.limit = 50;
+            $scope.limit = 100;
             getFileData();
         })
 

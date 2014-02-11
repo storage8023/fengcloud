@@ -16,7 +16,6 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
-
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath: function (mountId, fullpath) {
@@ -1586,7 +1585,7 @@ angular.module('gkClientIndex.services', [])
                      * 最近访问的文件
                      */
                 }else if(filter == 'recent_visit'){
-                    GKApi.recentVisitList(filter).success(function (data) {
+                    GKApi.starFileList(255).success(function (data) {
                         list = GKFile.dealFileList(data['list'], source);
                         param = {
                             key:cacheKey,
