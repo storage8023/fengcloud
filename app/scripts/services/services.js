@@ -3065,9 +3065,7 @@ angular.module('gkClientIndex.services', [])
                         className: "add",
                         icon: 'icon_download',
                         callback: function () {
-                         gkClientInterface.addFileDialog(function(re){
-                                console.log('addFiles:',re);
-                                return;
+                         gkClientInterface.addFileDialog(function(addFiles){
                                 if (!addFiles || !addFiles.list || !addFiles.list.length) {
                                     return;
                                 }

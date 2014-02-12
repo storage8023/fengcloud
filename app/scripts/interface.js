@@ -379,7 +379,6 @@
     addFileDialog: function (callback) {
         try {
           gkClient.gAddFileDlg(function(re){
-              console.log(re);
               re = typeof re ==='object'?re:JSON.parse(re);
               if(typeof callback === 'function'){
                   callback(re);
