@@ -1216,7 +1216,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var selectedFile = GKFileList.getSelectedFile();
             var dragIcon = document.createElement('img');
             dragIcon.src = drawTip(selectedFile.length);
-            event.dataTransfer.setDragImage(dragIcon, -10, -10);
+            //event.dataTransfer.setDragImage(dragIcon, -10, -10);
             angular.forEach(selectedFile, function (value) {
                 value.disableDrop = true;
             });
@@ -1236,7 +1236,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileListView.unhoverItem(index);
         };
 
-        $scope.handleDrop = function (file) {
+        $scope.handleDrop = function (file,index) {
             var toMountId = $scope.mountId,
                 toFullpath = file.fullpath,
                 fromMountId = $scope.mountId,
@@ -1247,6 +1247,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     webpath: value.fullpath
                 });
             });
+            if(!fromFullpathes.length){
+                return;
+            }
             var msg = '你要将 ' + Util.String.baseName(fromFullpathes[0]['webpath']) + (fromFullpathes.length > 1 ? ' 等' + fromFullpathes.length + '文件或文件夹' : ' ') + ' 复制到还是移动到 ' + Util.String.baseName(toFullpath) + ' 中？';
             var choseModal = GKModal.choseDrag(msg).result.then(function(type){
               if(type == 'move'){
@@ -1258,16 +1261,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
               }else{
                   GKFileOpt.copy(toFullpath, toMountId, fromFullpathes, fromMountId).then(function () {
 
+                      GKFileListView.unhoverItem(index);
                   }, function () {
 
                   });
               }
+            },function(){
+                GKFileListView.unhoverItem(index);
             });
-
-
-
-
-
         };
 
         $scope.handleSysDrop = function ($event) {

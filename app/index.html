@@ -222,7 +222,7 @@
                              dropable="file.dir==1 && !file.disableDrop"
                              drag-over="handleOver($event,$index)"
                              drag-leave="handleOut($event,$index)"
-                             drop-success="handleDrop(file)"
+                             drop-success="handleDrop(file,$index)"
                              bindonce>
                             <div class="thumb" bo-title="file.fullpath">
                                 <i class="file_icon128x128" bo-class="file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
