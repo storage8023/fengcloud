@@ -376,9 +376,15 @@
      * 显示添加文件的对话框
      * @returns {*}
      */
-    addFileDialog: function () {
+    addFileDialog: function (callback) {
         try {
-            return JSON.parse(gkClient.gAddFileDlg());
+          gkClient.gAddFileDlg(function(re){
+              console.log(re);
+              re = typeof re ==='object'?re:JSON.parse(re);
+              if(typeof callback === 'function'){
+                  callback(re);
+              }
+          });
         } catch (e) {
             this._handleException(e);
         }

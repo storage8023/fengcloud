@@ -3065,21 +3065,25 @@ angular.module('gkClientIndex.services', [])
                         className: "add",
                         icon: 'icon_download',
                         callback: function () {
-                            var addFiles = gkClientInterface.addFileDialog();
-                            if (!addFiles || !addFiles.list || !addFiles.list.length) {
+                         gkClientInterface.addFileDialog(function(re){
+                                console.log('addFiles:',re);
                                 return;
-                            }
-                            var params = {
-                                parent: $scope.path,
-                                type: 'save',
-                                list: addFiles.list,
-                                mountid: $scope.mountId
-                            };
-                            GK.addFile(params).then(function () {
-                                GKFileList.refreahData($scope);
-                            }, function (error) {
-                                GKException.handleClientException(error);
-                            })
+                                if (!addFiles || !addFiles.list || !addFiles.list.length) {
+                                    return;
+                                }
+                                var params = {
+                                    parent: $scope.path,
+                                    type: 'save',
+                                    list: addFiles.list,
+                                    mountid: $scope.mountId
+                                };
+                                GK.addFile(params).then(function () {
+                                    GKFileList.refreahData($scope);
+                                }, function (error) {
+                                    GKException.handleClientException(error);
+                                })
+                            });
+
                         }
                     },
                     'lock': {
