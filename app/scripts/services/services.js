@@ -427,6 +427,29 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            choseDrag: function (msg) {
+                var option = {
+                    templateUrl: 'views/chose_drag_dialog.html',
+                    windowClass: 'chose_drag_dialog',
+                    controller: function ($scope,$modalInstance) {
+                        $scope.msg = msg;
+                        $scope.copy = function(){
+                            $modalInstance.close('copy');
+                        };
+
+                        $scope.move = function(){
+                            $modalInstance.close('move');
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+
+            },
             publish: function (mountId, file) {
                 var option = {
                     templateUrl: 'views/publish_dialog.html',

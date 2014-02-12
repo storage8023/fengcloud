@@ -20,7 +20,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="bower_components/angunar-bindonce/bindonce.js"></script>
-    <script src="bower_components/angular-dnd/draganddrop.js"></script>
+    <script src="bower_components/angular-drag-drop/drag-drop.js"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
@@ -216,6 +216,13 @@
                              bo-attr
                              bo-attr-data-dir="file.dir"
                              bo-attr-data-fullpath="file.fullpath"
+                             dragable="true"
+                             drag-begin="dragBegin($event,$index)"
+                             drag-end="dragEnd($event,$index)"
+                             dropable="file.dir==1 && !file.disableDrop"
+                             drag-over="handleOver($event,$index)"
+                             drag-leave="handleOut($event,$index)"
+                             drop-success="handleDrop(file)"
                              bindonce>
                             <div class="thumb" bo-title="file.fullpath">
                                 <i class="file_icon128x128" bo-class="file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
