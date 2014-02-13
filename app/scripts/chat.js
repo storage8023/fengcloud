@@ -35,7 +35,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 return;
             }
             $scope.scrollToIndex = $scope.currentMsgList.length-1;
-            chatService.add($scope.currentSession.orgid, content, metadata).then(function(re){
+            chatService.add(type,$scope.currentSession.orgid, content, metadata).then(function(re){
                 postedMsg.push(re.time);
             },function(re){
                 var errorMsg = GKException.getClientErrorMsg(re);
@@ -354,14 +354,14 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
     }])
     .factory('chatService', ['$q',function ($q) {
         var chat = {
-            add: function (orgId, content, metadata) {
+            add: function (type,orgId, content, metadata) {
                 var deferred = $q.defer();
                 metadata = angular.isDefined(metadata) ? metadata : '';
                 gkClientInterface.postChatMessage({
                     'content': content,
                     'receiver': String(orgId),
                     'metadata': metadata,
-                    'type': 'text',
+                    'type': type,
                 },function(re){
                     if(!re.error){
                         deferred.resolve(re);

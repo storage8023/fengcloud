@@ -220,13 +220,22 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException',function ($timeout,$rootScope,GKException) {
+    .directive('gkVersionContextmenu', ['$timeout','$rootScope','GKException','GKPath',function ($timeout,$rootScope,GKException,GKPath) {
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
                 var getVersion =  function(triggerElem){
                     return Number(triggerElem.data('version'));
                 };
+
+                var getDir =  function(triggerElem){
+                    return Number(triggerElem.data('dir'));
+                };
+
+                var getFullpath =  function(triggerElem){
+                    return triggerElem.data('fullpath');
+                };
+
                 var getMountId = function(){
                     return Number($scope.localFile.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id);
                 };
@@ -251,68 +260,104 @@ angular.module('gkClientIndex.directives', [])
                                     this.removeClass('hover');
                                 }
                             },
-                            items:{
-                                'open': {
-                                    name: '打开',
-                                    callback: function (key,opt) {
-                                        var triggerElem = jQuery(opt.$trigger);
-                                        var version = getVersion(triggerElem);
-                                        if(!version){
-                                            return;
-                                        }
-                                        var mountId = getMountId();
-                                        if(!mountId) return;
-                                        gkClientInterface.open({
-                                            mountid:mountId,
-                                            webpath:$scope.localFile.fullpath,
-                                            version:version
-                                        });
+                            build: function($trigger, e) {
+                                var triggerElem = jQuery($trigger);
+                                var dir = getDir(triggerElem);
+                                var fullpath = getFullpath(triggerElem);
+                                if(dir){
+                                    if(triggerElem.hasClass('act_0')){
+                                        return;
                                     }
-                                },
-                                'recover': {
-                                    name: '还原',
-                                    callback: function (key,opt) {
-                                        var triggerElem = jQuery(opt.$trigger);
-                                        var version = getVersion(triggerElem);
-                                        if(!version){
-                                            return;
-                                        }
-                                        var mountId = getMountId();
-                                        if(!mountId) return;
-                                        gkClientInterface.revert({
-                                            mountid:mountId,
-                                            webpath:$scope.localFile.fullpath,
-                                            version:version
-                                        },function(msg){
-                                            if(!msg.error){
-                                                alert('恢复成功');
-                                                $rootScope.$broadcast('UpdateFileInfo',msg);
-                                            }else{
-                                                GKException.handleClientException(msg);
+                                    return {
+                                        items:{
+                                            'open': {
+                                                name: '打开',
+                                                callback: function (key,opt) {
+                                                    var mountId = getMountId();
+                                                    if(!mountId) return;
+                                                    GKPath.gotoFile(mountId,fullpath);
+                                                }
+                                            },
+                                            'saveto': {
+                                                name: '保存到本地',
+                                                callback: function (key,opt) {
+                                                    var mountId = getMountId();
+                                                    if(!mountId) return;
+                                                    var param = {
+                                                        list:[{
+                                                            mountid:mountId,
+                                                            webpath:fullpath,
+                                                            dir:1
+                                                        }]
+                                                    }
+                                                    gkClientInterface.saveToLocal(param);
+                                                }
                                             }
-                                        });
+                                        }
                                     }
-                                },
-                                'saveto': {
-                                    name: '另存为',
-                                    callback: function (key,opt) {
-                                        var triggerElem = jQuery(opt.$trigger);
-                                        var version = getVersion(triggerElem);
-                                        if(!version){
-                                            return;
+                                }else{
+                                    var version = getVersion(triggerElem);
+                                    return {
+                                        items:{
+                                            'open': {
+                                                name: '打开',
+                                                callback: function (key,opt) {
+                                                    if(!version){
+                                                        return;
+                                                    }
+                                                    var mountId = getMountId();
+                                                    if(!mountId) return;
+                                                    gkClientInterface.open({
+                                                        mountid:mountId,
+                                                        webpath:fullpath,
+                                                        version:version
+                                                    });
+                                                }
+                                            },
+                                            'recover': {
+                                                name: '还原',
+                                                callback: function (key,opt) {
+                                                    if(!version){
+                                                        return;
+                                                    }
+                                                    var mountId = getMountId();
+                                                    if(!mountId) return;
+                                                    gkClientInterface.revert({
+                                                        mountid:mountId,
+                                                        webpath:fullpath,
+                                                        version:version
+                                                    },function(msg){
+                                                        if(!msg.error){
+                                                            alert('恢复成功');
+                                                            $rootScope.$broadcast('UpdateFileInfo',msg);
+                                                        }else{
+                                                            GKException.handleClientException(msg);
+                                                        }
+                                                    });
+                                                }
+                                            },
+                                            'saveto': {
+                                                name: '保存到本地',
+                                                callback: function (key,opt) {
+                                                    if(!version){
+                                                        return;
+                                                    }
+                                                    var mountId = getMountId();
+                                                    if(!mountId) return;
+                                                    var param = {
+                                                        list:[{
+                                                            mountid:mountId,
+                                                            webpath:fullpath,
+                                                            version:version
+                                                        }]
+                                                    }
+                                                    gkClientInterface.saveToLocal(param);
+                                                }
+                                            }
                                         }
-                                        var mountId = getMountId();
-                                        if(!mountId) return;
-                                        var param = {
-                                            list:[{
-                                                mountid:mountId,
-                                                webpath:$scope.localFile.fullpath,
-                                                version:version
-                                            }]
-                                        }
-                                        gkClientInterface.saveToLocal(param);
                                     }
                                 }
+
                             }
                         });
                     }
@@ -1050,7 +1095,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath) {
         return {
             replace: true,
             restrict: 'E',
@@ -1304,20 +1349,23 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 $scope.openFile = function(history){
-                    if(history.dir == 1){
-                        return;
-                    }
-                    var version = history.property.version;
-                    if(!version){
-                        return;
-                    }
                     var mountId = getOptMountId($scope.file);
-                    if(!mountId) return;
-                    gkClientInterface.open({
-                        mountid:mountId,
-                        webpath:$scope.file.fullpath,
-                        version:version
-                    });
+                    if(history.dir == 1){
+                        if(history.act == 0) return;
+                        GKPath.gotoFile(mountId,history.fullpath);
+                    }else{
+                        var version = history.property.version;
+                        if(!version){
+                            return;
+                        }
+                        if(!mountId) return;
+                        gkClientInterface.open({
+                            mountid:mountId,
+                            webpath:history.fullpath,
+                            version:version
+                        });
+                    }
+
                 }
 
                 /**
