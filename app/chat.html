@@ -59,7 +59,7 @@
                                         <div class="filename">
                                             <span ng-bind="msg.file.filename"></span>
                                         </div>
-                                        <div class="filesize" ng-show="msg.file.dir==0" >
+                                        <div class="filesize">
                                             <span ng-bind="msg.file.lastname"></span> 修改于 <span ng-bind="msg.file.lasttime*1000 | date:'yyyy/MM/dd HH:mm'"></span>
                                         </div>
                                     </div>
@@ -79,7 +79,11 @@
             </section>
             <footer>
                 <textarea ng-trim="false" ng-blur="saveLastText(postText)" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
-                <button class="btn btn-primary post_btn" ng-click="postMessage(postText)">发 送</button>
+                <div class="btn_wrapper">
+                    <span>你已输入了{{postText.length}}个字</span>
+                    <button class="btn btn-primary post_btn" ng-click="postMessage(postText)">发 送</button>
+                </div>
+
             </footer>
             </div>
 

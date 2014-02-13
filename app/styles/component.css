@@ -1435,7 +1435,7 @@ text-align: center;
 .tab_header > li > a > span{
     display: inline;
     position: absolute;
-    top:-2px;
+    top:0;
     right: 28px;
     font-weight: bold;
 }

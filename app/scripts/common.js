@@ -1726,6 +1726,11 @@ angular.module('GKCommon.services', [])
     }])
 ;
 angular.module('GKCommon.filters', [])
+    .filter('strLen',function(){
+        return function(str){
+            return Util.String.strLen(str);
+        }
+    })
     .filter('limitSize',function(){
         return function(input, start,size) {
             if(!angular.isArray(input)) return input;

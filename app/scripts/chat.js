@@ -54,7 +54,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             if (keyCode != 13 || $scope.it_isOpen) {
                 return;
             }
-            if (!postText.length) {
+            if (!postText) {
                 $event.preventDefault();
                 return;
             }
@@ -64,6 +64,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
         };
 
         $scope.postMessage = function(postText){
+            if (!postText) {
+                return;
+            }
             $scope.postText = '';
             post('text',postText);
         };
