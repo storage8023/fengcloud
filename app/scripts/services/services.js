@@ -319,7 +319,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     }
 
-                } else if (data.partition == GKPartition.smartFolder && data.type != 0 ) {
+                } else if (data.partition == GKPartition.smartFolder && data.type > 0 ) {
                     items = {
                         'rename': {
                             name: '修改名称',

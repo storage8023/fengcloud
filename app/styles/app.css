@@ -1187,6 +1187,9 @@ footer {
     background-repeat: no-repeat;
 }
 .right_sidebar .bgicon.recent{
+    background-position: -532px -136px;
+}
+.right_sidebar .bgicon.recent_visit{
     background-position: -136px -8px;
 }
 .right_sidebar .bgicon.star,
