@@ -1188,23 +1188,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             },0);
         };
 
-
-        var drawTip = function(count){
-            var canvas = document.createElement('canvas');
-            canvas.width = 20;
-            canvas.height = 20;
-            var context = canvas.getContext('2d');
-            context.strokeStyle="rgba(13,72,142,.7)";
-            context.fillStyle="rgba(13,72,142,.7)";
-            context.roundRect(0, 0, 20, 20, 4, true);
-            context.textAlign = 'center';
-            context.textBaseline='middle';
-            context.font="12px Arial";
-            context.fillStyle="rgb(255,255,255)";
-            context.fillText(count,10,10);
-            return canvas.toDataURL();
-        }
-
         $scope.dragBegin = function (event, index) {
             var file = $scope.fileData[index];
             if (!file) {
@@ -1214,13 +1197,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKFileList.select($scope, index);
             }
             var selectedFile = GKFileList.getSelectedFile();
-            var dragIcon = document.createElement('img');
-            dragIcon.src = drawTip(selectedFile.length);
-            //event.dataTransfer.setDragImage(dragIcon, -10, -10);
+            var dragIcon = jQuery('#drag_helper')[0];
+            event.dataTransfer.setDragImage(dragIcon, -10, -10);
             angular.forEach(selectedFile, function (value) {
                 value.disableDrop = true;
             });
         };
+
+        /**drag drop **/
+        $scope.getHelper = function () {
+            var selectFileName = $scope.fileData[$scope.shiftLastIndex].filename;
+            var selectedFile = GKFileList.getSelectedFile();
+            var len = selectedFile.length;
+            var selectFileName = selectedFile[0].filename;
+            var moreInfo = len > 1 ? ' 等 ' + len + ' 个文件或文件夹' : '';
+            return '<div class="helper">' + selectFileName + moreInfo + '</div>';
+        };
+
 
         $scope.dragEnd = function (event, index) {
             angular.forEach(GKFileList.getSelectedFile(), function (value) {
@@ -1250,7 +1243,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(!fromFullpathes.length){
                 return;
             }
-            var msg = '你要将 ' + Util.String.baseName(fromFullpathes[0]['webpath']) + (fromFullpathes.length > 1 ? ' 等' + fromFullpathes.length + '文件或文件夹' : ' ') + ' 复制到还是移动到 ' + Util.String.baseName(toFullpath) + ' 中？';
+            var msg = '你要将 ' + Util.String.baseName(fromFullpathes[0]['webpath']) + (fromFullpathes.length > 1 ? ' 等 ' + fromFullpathes.length + ' 文件或文件夹' : ' ') + ' 复制到还是移动到 ' + Util.String.baseName(toFullpath) + ' 中？';
             var choseModal = GKModal.choseDrag(msg).result.then(function(type){
               if(type == 'move'){
                   GKFileOpt.move(toFullpath, toMountId, fromFullpathes, fromMountId).then(function () {

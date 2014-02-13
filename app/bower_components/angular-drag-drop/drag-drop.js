@@ -2,10 +2,7 @@ angular.module("gkDragDrop",[])
     .directive('dragable',['$parse','$document',function($parse,$document){
         return function(scope, element, attrs){
             element.attr("draggable", false);
-            var helper = angular.element('<div class="helper"></div>').css({
-                'position':'absolute',
-                'z-index':99999
-            });
+          var helper;
             attrs.$observe("dragable", function (newValue) {
                 element.attr("draggable", newValue);
             });
@@ -16,27 +13,33 @@ angular.module("gkDragDrop",[])
             var dragBeginFn = $parse(attrs.dragBegin);
             element.on('dragstart',function(event){
                 var e = event.originalEvent;
+                scope.$apply(function () {
+                    dragBeginFn(scope, {$event: e});
+                });
+                helper = angular.element($parse(attrs.dragHelper)(scope)());
                 var sendData = angular.toJson(dragData);
                 e.dataTransfer.setData("text", 'GK_DRAG_DROP');
                 e.dataTransfer.effectAllowed = 'move';
                 $document.find('body').append(helper);
-                scope.$apply(function () {
-                    dragBeginFn(scope, {$event: e});
-                });
+                helper.css({
+                    'position':'absolute',
+                    'z-index':99999,
+                    'top': e.pageY,
+                    'left': e.pageX
+                })
             })
 
             element.on('drag',function(event){
-//                var e = event.originalEvent;
-//                console.log(e);
-//                helper.css({
-//                    'top': e.pageY,
-//                    'left': e.pageX
-//                })
+                var e = event.originalEvent;
+                helper&&helper.css({
+                    'top': e.pageY,
+                    'left': e.pageX
+                })
             })
 
             var dragEndFn = $parse(attrs.dragEnd);
             element.on('dragend',function(event){
-                //helper.remove();
+                helper&&helper.remove();
                 scope.$apply(function () {
                     dragEndFn(scope, {$event: event});
                 });

@@ -223,6 +223,7 @@
                              drag-over="handleOver($event,$index)"
                              drag-leave="handleOut($event,$index)"
                              drop-success="handleDrop(file,$index)"
+                             drag-helper="getHelper"
                              bindonce>
                             <div class="thumb" bo-title="file.fullpath">
                                 <i class="file_icon128x128" bo-class="file.filename | getFileIcon:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
@@ -303,5 +304,6 @@
         </slide>
     </carousel>
 </div>
+<img id="drag_helper" src="images/transparent.png" style="position: absolute;top:10000px;left:100px"/>
 </body>
 </html>
