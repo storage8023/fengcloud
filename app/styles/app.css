@@ -33,7 +33,7 @@ header .menu{
     text-align: right;
 }
 header .menu .icon_transfer:hover{
-    background-position: -40px -256px;
+    background-position: -40px -760px;
 }
 header .menu .transfering .icon_transfer{
     background: url(../images/icon/transfering.gif) no-repeat center;
