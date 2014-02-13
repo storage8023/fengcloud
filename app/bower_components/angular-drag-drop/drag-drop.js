@@ -1,11 +1,15 @@
 angular.module("gkDragDrop",[])
     .directive('dragable',['$parse','$document',function($parse,$document){
         return function(scope, element, attrs){
+            var helper;
             element.attr("draggable", false);
-          var helper;
-            attrs.$observe("dragable", function (newValue) {
+
+            scope.$watch(function(){
+                return scope.$eval(attrs.dragable);
+            }, function (newValue) {
                 element.attr("draggable", newValue);
             });
+
             var dragData = '';
             attrs.$observe('dragData',function(val){
                 dragData = val;
