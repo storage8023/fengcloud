@@ -182,7 +182,7 @@ angular.module('gkClientIndex.services', [])
                 if (mountId) {
                     mount = GKMount.getMountById(mountId);
                 }
-                if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0) {
+                if ([GKPartition.teamFile].indexOf(partition)>=0) {
                     if (data.filter == 'trash') {
                         if(GKMount.isSuperAdmin(mount)){
                             items = {
@@ -1713,7 +1713,7 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
                 var search = {
-                    partition: mount['type'] > 2? GKPartition.subscribeFile : mount['type'] > 0?GKPartition.joinFile:GKPartition.teamFile,
+                    partition: mount['type'] > 2? GKPartition.subscribeFile : GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
                     selectedpath: selectFile,
@@ -1950,7 +1950,6 @@ angular.module('gkClientIndex.services', [])
         }
     }])
     .constant('GKPartition', {
-        joinFile: 'joinfile',
         teamFile: 'teamfile',
         smartFolder: 'smartfolder',
         subscribeFile: 'subscribefile'
@@ -2152,7 +2151,7 @@ angular.module('gkClientIndex.services', [])
                     /**
                      * 我的云库，订阅的云库
                      */
-                    if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf(type)>=0) {
+                    if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf(type)>=0) {
                         var icon = '';
                         if (!value.fullpath) {
                             label = value.name;
@@ -2162,19 +2161,18 @@ angular.module('gkClientIndex.services', [])
                             mountId && angular.extend(value, {
                                 mount_id: mountId
                             });
-                            if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(type)>=0) {
+                            if ([GKPartition.teamFile].indexOf(type)>=0) {
                                 icon = value.sharepath || value.open == 1 ? 'icon_teamfolder' : 'icon_myfolder';
                             }
                         }
                         var dropAble = false;
-                        if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(type)>=0) {
+                        if ([GKPartition.teamFile].indexOf(type)>=0) {
                             dropAble = true;
                         }
                         angular.extend(item, {
                             dropAble: dropAble,
                             label: label,
-                            isParent: true,
-                            hasChildren: value.hasFolder == 1,
+                            isParent: false,
                             data: value,
                             iconNodeExpand: icon,
                             iconNodeCollapse: icon
@@ -2477,7 +2475,6 @@ angular.module('gkClientIndex.services', [])
                     this.disableOpt(opts, 'new_doc_file', 'new_ppt_file', 'new_xls_file');
                 }
                 switch (partition) {
-                    case GKPartition.joinFile:
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
@@ -2513,7 +2510,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
-                if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0) {
+                if ([GKPartition.teamFile].indexOf(partition)>=0) {
                     if(!GKMount.isAdmin(mount)){
                         this.disableOpt(opts, 'create');
                     }
@@ -3515,7 +3512,7 @@ angular.module('gkClientIndex.services', [])
                     deferred = $q.defer();
                 if ($scope.search) {
                     var searchArr = $scope.search.split('|');
-                    if ([GKPartition.teamFile,GKPartition.joinFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0 && $scope.filter != 'trash') {
+                    if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0 && $scope.filter != 'trash') {
                         source = 'api';
                         $rootScope.$broadcast('searchStateChange','loading');
                         var fileSearch = new GKFileSearch();
@@ -3544,12 +3541,12 @@ angular.module('gkClientIndex.services', [])
                         $rootScope.$broadcast('searchStateChange','end');
                     }
                 } else {
-                    if ([GKPartition.teamFile,GKPartition.subscribeFile,GKPartition.joinFile].indexOf($scope.partition)>=0) {
+                    if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0) {
                         var source = 'api', option = {};
                         if ($scope.filter == 'trash') {
                             option.recycle = true;
                         } else {
-                            if ([GKPartition.teamFile,GKPartition.joinFile].indexOf($scope.partition)>=0) {
+                            if ([GKPartition.teamFile].indexOf($scope.partition)>=0) {
                                 source = 'client';
                                 option.current = 1;
                             }

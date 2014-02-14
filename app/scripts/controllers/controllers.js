@@ -131,7 +131,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 filter: param.filter || '',
                 partition: param.partition
             };
-            if ([GKPartition.teamFile,GKPartition.joinFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
+            if ([GKPartition.teamFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 if(!param.filter){
                     if(param.partition == GKPartition.subscribeFile){
                         extend.file = {
@@ -212,7 +212,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//我的云库
-            joinOrgMount = GKMount.getJoinOrgMounts(),
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
         /**
          * 我的云库
@@ -220,10 +219,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile);
 
-        /**
-         * 加入的云库
-         */
-        $scope.joinOrgTreeList = GKFile.dealTreeData(joinOrgMount, GKPartition.joinFile);
 
         /**
          * 订阅的云库
@@ -234,8 +229,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var partition = GKPartition.teamFile;
             if (type > 2) {
                 partition = GKPartition.subscribeFile;
-            }else if(type > 0){
-                partition = GKPartition.joinFile;
             }
             return partition;
         }
@@ -300,11 +293,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var pararm = {
                 partition: partition
             };
-            if ([GKPartition.teamFile, GKPartition.subscribeFile,GKPartition.joinFile].indexOf(partition)>=0) {
+
+            if ([GKPartition.teamFile, GKPartition.subscribeFile].indexOf(partition)>=0) {
                 pararm['path'] = branch.data.fullpath;
                 pararm['mountid'] = branch.data.mount_id;
                 pararm['filter'] = branch.data.filter || '';
-                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                if([GKPartition.teamFile].indexOf(partition)>=0){
                     pararm['view'] = showChat?'chat':'';
                 }
             } else if (partition == GKPartition.smartFolder) {
@@ -312,22 +306,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             } else {
                 return;
             }
+            console.log(pararm);
             $location.search(pararm);
         };
 
-        /**
-         * 选中树节点的处理函数
-         * @param branch
-         */
-        $scope.handleExpand = function (branch) {
-            if (branch.expanded) {
-                GKFile.getChildNode(branch).then(function (children) {
-                    branch.children = children;
-                });
-            } else {
-
-            }
-        };
 
         $scope.handleAdd = function (partition) {
             if (partition == GKPartition.teamFile) {
@@ -378,15 +360,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                 })
 
-            } else if (param.partition == GKPartition.joinFile) {
-                angular.forEach($scope.joinOrgTreeList, function (value) {
-                    if (value.data.mount_id == param.mountid) {
-                        branch = value;
-                        return false;
-                    }
-                })
-            }
-            else if (param.partition == GKPartition.subscribeFile) {
+            }else if (param.partition == GKPartition.subscribeFile) {
                 angular.forEach($scope.orgSubscribeList, function (value) {
                     if (value.data.mount_id == param.mountid) {
                         branch = value;
@@ -455,12 +429,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
                 if (partition == GKPartition.teamFile) {
                     $scope.orgTreeList.push(newOrg);
-                } else if(partition == GKPartition.joinFile) {
-                    $scope.joinOrgTreeList.push(newOrg);
                 }else{
                     $scope.orgSubscribeList.push(newOrg);
                 }
-                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                if([GKPartition.teamFile].indexOf(partition)>=0){
                     GKWindowCom.post('single',{type:'add',orgId:newOrg.org_id});
                 }
             });
@@ -509,8 +481,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var partition = getPartitionByMountType(mount['type']);
                 if (partition == GKPartition.teamFile) {
                     GKMount.removeTeamList($scope, mount.org_id);
-                }else if(partition == GKPartition.joinFile) {
-                    GKMount.removeJoinTeamList($scope, mount.org_id);
                 }else {
                     GKMount.removeOrgSubscribeList($scope, mount.org_id);
                 }
@@ -519,7 +489,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     selectBreanch($scope.orgTreeList[0], GKPartition.teamFile, true);
                 }
 
-                if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+                if([GKPartition.teamFile].indexOf(partition)>=0){
                     GKWindowCom.post('single',{type:'remove',orgId:mount.org_id});
                 }
 
@@ -539,63 +509,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
             if (partition == GKPartition.teamFile) {
                 $scope.orgTreeList.push(newOrg);
-            }else if(partition == GKPartition.joinFile){
-                $scope.joinOrgTreeList.push(newOrg);
-            } else {
+            }else {
                 $scope.orgSubscribeList.push(newOrg);
             }
-            if([GKPartition.teamFile,GKPartition.joinFile].indexOf(partition)>=0){
+            if([GKPartition.teamFile].indexOf(partition)>=0){
                 GKWindowCom.post('single',{type:'add',orgId:newOrg.org_id});
             }
             unSelectAllBranch();
             selectBreanch(newOrg,partition, true);
         })
-
-        $scope.$on('editFileSuccess', function (event, opt, mountId, fullpath) {
-            var fullpathArr = !angular.isArray(fullpath) ? [fullpath] : fullpath;
-            angular.forEach(fullpathArr, function (path) {
-                switch (opt) {
-                    case 'del':
-                        GKSideTree.removeNode($scope.orgTreeList, mountId, path);
-                        break;
-                    case 'sync':
-                        GKSideTree.editNode($scope.orgTreeList, mountId, path, {
-                            sync: 1
-                        });
-                        break;
-                    case 'unsync':
-                        GKSideTree.editNode($scope.orgTreeList, mountId, path, {
-                            sync: 0
-                        });
-                        break;
-                    case 'create':
-                        var node = GKSideTree.findNode($scope.orgTreeList, mountId, path);
-                        /**
-                         * 已展开的node才刷新数据
-                         */
-                        if(node){
-                            if (node.expanded) {
-                                $scope.handleExpand(node);
-                            }else{
-                                node.hasChildren = true;
-                            }
-                        }
-                        break;
-                    case 'set_open':
-                        var node = GKSideTree.findNode($scope.orgTreeList, mountId, path);
-                        /**
-                         * 已展开的node才刷新数据
-                         */
-                        if (node) {
-                            node.data.open = 1;
-                            node.iconNodeCollapse = node.iconNodeExpand = 'icon_teamfolder';
-                        }
-                        break;
-
-                }
-            })
-
-        });
 
         var setNewMsgTime = function(orgId,newMsgTime){
             var mount = GKMount.getMountByOrgId(orgId);
@@ -606,7 +528,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var list;
             if (partition == GKPartition.teamFile) {
                 list = $scope.orgTreeList;
-            }else if(partition == GKPartition.joinFile){
+            }else{
                 list = $scope.joinOrgTreeList;
             }
             GKSideTree.editNode(list, mount['mount_id'], '', {newMsgTime:newMsgTime});
@@ -659,6 +581,35 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         $scope.search = '';
         $scope.view = 'list';
+
+        var setBread = function(){
+            var param = $location.search();
+            if(!param.partition) return;
+            $scope.breads = GKPath.getBread();
+            $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
+        }
+
+        $scope.$on('editSmartFolder', function ($event, name, code, filter) {
+            angular.forEach($scope.breads, function (value) {
+                if (value.filter == filter) {
+                    value.name = name;
+                }
+            });
+        })
+
+        $scope.$on('editOrgObjectSuccess', function (event, mount) {
+            if (!mount) {
+                return;
+            }
+            if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
+                if($scope.breads && $scope.breads.length){
+                    angular.extend($scope.breads[0],{
+                        logo:mount.logo,
+                        name:mount.name
+                    })
+                }
+            }
+        })
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
             allOpts['open_with']['items'] = {};
@@ -1007,7 +958,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
             GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
-            if([GKPartition.teamFile,GKPartition.joinFile].indexOf($scope.partition)<0 && $scope.view == 'chat'){
+            if([GKPartition.teamFile].indexOf($scope.partition)<0 && $scope.view == 'chat'){
                 $scope.view = 'list';
             }else if($scope.view == 'chat' && $scope.path){
                 $scope.view = 'list';
@@ -1020,12 +971,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.gkChat = GKChat;
 
         $scope.limit = 100;
+
         $scope.$on('$locationChangeSuccess',function(){
+            console.log('success');
+            setBread();
             $scope.limit = 100;
             getFileData();
+
         })
 
         getFileData();
+        setBread();
 
         $scope.getItemClasses = function(file){
             var classes = {
@@ -1303,7 +1259,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 GKFileList.getFileData($scope, {start:start}).then(function (list) {
                     $scope.fileData = $scope.fileData.concat(list);
                 })
-            }else if([GKPartition.teamFile,GKPartition.joinFile].indexOf($scope.partition)>=0){
+            }else if([GKPartition.teamFile].indexOf($scope.partition)>=0){
                 $scope.limit += 50;
             }
 
@@ -1393,61 +1349,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
     }])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant) {
-        $scope.canBack = false;
-        $scope.canForward = false;
-
-        var setBread = function(){
-            var param = $location.search();
-            if(!param.partition) return;
-            $scope.breads = GKPath.getBread();
-            $scope.canBack = GKHistory.canBack();
-            $scope.canForward = GKHistory.canForward();
-            $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
-        }
-
-        /**
-         * 判断前进后退按钮的状态
-         * @type {*}
-         */
-        $scope.$on('$locationChangeSuccess', function () {
-            setBread();
-        });
-
-        setBread();
-
-        $scope.$on('editSmartFolder', function ($event, name, code, filter) {
-            angular.forEach($scope.breads, function (value) {
-                if (value.filter == filter) {
-                    value.name = name;
-                }
-            });
-        })
-
-        $scope.$on('editOrgObjectSuccess', function (event, mount) {
-            if (!mount) {
-                return;
-            }
-            if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
-                if($scope.breads && $scope.breads.length){
-                    angular.extend($scope.breads[0],{
-                        logo:mount.logo,
-                        name:mount.name
-                    })
-                }
-            }
-        })
-
-        /**
-         * 前进 后退
-         * @param forward
-         */
-        $scope.handleNav = function (forward) {
-            if (!forward) {
-                GKHistory.back();
-            } else {
-                GKHistory.forward();
-            }
-        };
 
         $scope.visitBBS = function(){
             var url = gkClientInterface.getUrl({
@@ -1552,7 +1453,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 sideBarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
                 sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
                 sideBarData.menus = [];
-                if ([GKPartition.teamFile,GKPartition.joinFile].indexOf(params.partition) >=0) {
+                if ([GKPartition.teamFile].indexOf(params.partition) >=0) {
                     sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
 
                     if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {

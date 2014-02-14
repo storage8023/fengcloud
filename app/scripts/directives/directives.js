@@ -1700,7 +1700,7 @@ angular.module('gkClientIndex.directives', [])
                             text: GKSmartFolder.getSmartFoldeName(params.filter)
                         })
                     } else {
-                        if([GKPartition.teamFile,GKPartition.joinFile].indexOf(params.partition)>=0){
+                        if([GKPartition.teamFile].indexOf(params.partition)>=0){
                             searchScopes.push({
                                 name: 'partition',
                                 text: '所有云库'

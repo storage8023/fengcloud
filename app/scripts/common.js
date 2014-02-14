@@ -957,7 +957,7 @@ angular.module('GKCommon.services', [])
             getOrgMounts: function () {
                 var orgMounts = [];
                 angular.forEach(mounts, function (value) {
-                    if (value.type < 1) {
+                    if (value.type < 3) {
                         orgMounts.push(value);
                     }
                 })

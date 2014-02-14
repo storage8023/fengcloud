@@ -57,22 +57,6 @@
                           init-selected-branch="initSelectedBranch"
                           on-add="handleAdd(GKPartition.teamFile)"
                           on-select="handleSelect(branch,showChat,GKPartition.teamFile)"
-                          on-expand="handleExpand(branch,GKPartition.teamFile)"
-                          on-drop="handleDrop(branch)"
-                          on-hint-click = "handleHintClick(branch)"
-                        >
-                </abn-tree>
-                <abn-tree tree-data="joinOrgTreeList"
-                          header="加入的云库"
-                          ng-show="joinOrgTreeList.length"
-                          icon-leaf="icon_file"
-                          icon-expand="icon_fold"
-                          icon-collapse="icon_unfold"
-                          icon-node-expand="icon_teamfolder"
-                          icon-node-collapse="icon_teamfolder"
-                          selected-branch="selectedBranch"
-                          on-select="handleSelect(branch,showChat,GKPartition.joinFile)"
-                          on-expand="handleExpand(branch,GKPartition.joinFile)"
                           on-drop="handleDrop(branch)"
                           on-hint-click = "handleHintClick(branch)"
                         >
@@ -89,7 +73,6 @@
                           icon-node-collapse="icon_subscribefolder"
                           selected-branch="selectedBranch"
                           on-select="handleSelect(branch,showChat,GKPartition.subscribeFile)"
-                          on-expand="handleExpand(branch,GKPartition.subscribeFile)"
                         >
                 </abn-tree>
             </div>
@@ -105,7 +88,6 @@
                   selected-branch="selectedBranch"
                   show-add-btn="false"
                   on-select="handleSelect(branch,showChat,GKPartition.smartFolder)"
-                  on-expand="handleExpand(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
                 >
         </abn-tree>
@@ -114,12 +96,11 @@
 
 <div class="main">
 <header ng-controller="header">
-    <breadsearch></breadsearch>
-    <div class="back_forward btn-group">
-        <button type="button" class="btn btn-diablo back" ng-click="handleNav()" ng-disabled="!canBack"><i
-                class="icon16x16 icon_leftarrow_white"></i></button>
-        <button type="button" class="btn btn-diablo forward" ng-click="handleNav(true)" ng-disabled="!canForward"><i
-                class="icon16x16 icon_rightarrow_white"></i></button>
+    <div class="tabbar">
+        <ul>
+            <li class="current">文件模式</li>
+            <li>讨论模式</li>
+        </ul>
     </div>
     <div class="menu">
         <span ng-click="showTransferQueue()" title="{{transfering?'正在传输':'打开传输队列'}}" ng-class="transfering?'transfering':''">
@@ -144,6 +125,7 @@
 
 <div class="content" ng-controller="fileBrowser">
     <div class="file_browser" ng-show="view!='chat'">
+        <breadsearch></breadsearch>
         <toolbar></toolbar>
         <div class="file_list_wrapper" fix-scroll>
             <div class="file_list {{view}}_view" ng-class="showHint?'has_hint':''">

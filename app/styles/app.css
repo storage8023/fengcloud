@@ -89,16 +89,35 @@ header .menu > a i{
 header .menu > .gk_drop{
     border-radius: 32px;
     box-shadow: inset 0 1px 2px 0 rgba(0,0,0,.6),inset 0 0 0 3px rgba(0,0,0,.3);
-
 }
-header .bread_and_search_wrapper{
-    margin: 0 250px 0 80px;
+
+header .tabbar{
+   position: absolute;
+    color: #fff;
+    top:18px;
+}
+header .tabbar li{
+    height: 32px;
+    line-height: 32px;
+    float: left;
+    background: #515a63;
+    border-radius: 3px 3px 0 0;
+    margin: 0 5px;
+    padding: 0 15px;
+}
+header .tabbar li.current{
+    background: #F1F1F2;
+    color: #7F8999;
+}
+.bread_and_search_wrapper{
     border-radius: 14px;
     background: #fff;
     height: 26px;
     position: relative;
+    margin: 0 10px;
+    top:5px;
 }
-header .bread_and_search_wrapper .searching_label{
+.bread_and_search_wrapper .searching_label{
     position: absolute;
     left:1px;
     line-height: 22px;
@@ -111,7 +130,7 @@ header .bread_and_search_wrapper .searching_label{
     margin: 1px 0;
 
 }
-header .bread_and_search_wrapper .searching_label > a {
+.bread_and_search_wrapper .searching_label > a {
     color: #fff;
     display: block;
     overflow: hidden;
@@ -120,35 +139,35 @@ header .bread_and_search_wrapper .searching_label > a {
     padding-right: 7px;
 }
 
-header .bread_and_search_wrapper .searching_label > a > .gk_down_arrow{
+.bread_and_search_wrapper .searching_label > a > .gk_down_arrow{
     border-top-color: #fff;
     position: absolute;
     top:9px;
     right: 8px;
 }
-header .bread_and_search_wrapper .bread{
+.bread_and_search_wrapper .bread{
     border-right: 1px solid transparent;
     border-radius: 4px 0 0 4px;
     position: absolute;
     left:13px;
     right: 220px;
 }
-header .bread_and_search_wrapper.search_disable .bread{
+.bread_and_search_wrapper.search_disable .bread{
 right: 0;
 }
-header .bread_and_search_wrapper.search_disable .icon_search,
-header .bread_and_search_wrapper.search_disable .icon_cancel,
-header .bread_and_search_wrapper.search_disable input,
-header .bread_and_search_wrapper.search_disable .searching_label{
+.bread_and_search_wrapper.search_disable .icon_search,
+.bread_and_search_wrapper.search_disable .icon_cancel,
+.bread_and_search_wrapper.search_disable input,
+.bread_and_search_wrapper.search_disable .searching_label{
 display: none;
 }
-header .bread_and_search_wrapper .bread{
+.bread_and_search_wrapper .bread{
     cursor: text;
 }
-header .bread_and_search_wrapper.search_disable .bread{
+.bread_and_search_wrapper.search_disable .bread{
     cursor: default;
 }
-header .bread_and_search_wrapper input{
+.bread_and_search_wrapper input{
     position: absolute;
     right: 24px;
     height: 26px;
@@ -156,8 +175,8 @@ header .bread_and_search_wrapper input{
     padding: 2px 5px;
     width: 200px;
 }
-header .bread_and_search_wrapper .icon_search,
-header .bread_and_search_wrapper .icon_cancel{
+.bread_and_search_wrapper .icon_search,
+.bread_and_search_wrapper .icon_cancel{
     position: absolute;
     right: 5px;
     top:8px;
@@ -167,26 +186,26 @@ header .bread_and_search_wrapper .icon_cancel{
     height: 16px;
 }
 
-header .bread_and_search_wrapper .hide_bread{
+.bread_and_search_wrapper .hide_bread{
    position: absolute;
    left:2px;
 }
-header .bread_and_search_wrapper .hide_bread > a {
+.bread_and_search_wrapper .hide_bread > a {
     display: inline-block;
     line-height: 26px;
     padding: 0 3px;
     margin-top: 3px;
 }
 
-header .bread_and_search_wrapper .bread_list{
+.bread_and_search_wrapper .bread_list{
  float: left;
 }
 
-header .bread_and_search_wrapper .bread_item{
+.bread_and_search_wrapper .bread_item{
     line-height: 22px;
     margin-top: 1px;
 }
-header .bread_and_search_wrapper .bread_item > a{
+.bread_and_search_wrapper .bread_item > a{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -195,35 +214,35 @@ header .bread_and_search_wrapper .bread_item > a{
     border-radius: 4px;
     color: #7F8999;
 }
-header .bread_and_search_wrapper .bread_item a:hover
+.bread_and_search_wrapper .bread_item a:hover
 {
     border-color: #fff;
     background: #448DE8;
     color: #fff;
 }
 
-header .bread_and_search_wrapper.searching .bread{
+.bread_and_search_wrapper.searching .bread{
 display: none;
 }
 
-header .bread_and_search_wrapper.searching input{
+.bread_and_search_wrapper.searching input{
     width:auto;
     left:140px;
 }
-header .bread_and_search_wrapper.searching .searching_label{
+.bread_and_search_wrapper.searching .searching_label{
 display: block;
     z-index: 99;
 }
-header .bread_and_search_wrapper .keyword_label{
+.bread_and_search_wrapper .keyword_label{
     display: none;
 }
-header .bread_and_search_wrapper.searching.end .keyword_label{
+.bread_and_search_wrapper.searching.end .keyword_label{
     position: absolute;
     left:110px;
     top:4px;
     display: block;
 }
-header .bread_and_search_wrapper.searching.end .keyword_label .label{
+.bread_and_search_wrapper.searching.end .keyword_label .label{
     display: inline-block;
     max-width: 90px;
     padding: 0 4px;
@@ -233,19 +252,19 @@ header .bread_and_search_wrapper.searching.end .keyword_label .label{
     font-size: 13px;
     font-weight: normal;
 }
-header .bread_and_search_wrapper .keyword_label .label .remove_label{
+.bread_and_search_wrapper .keyword_label .label .remove_label{
     color:#fff;
     font-size: 12px;
     font-weight: normal;
     margin: 0 3px;
 }
-header .bread_and_search_wrapper.searching.loading .icon_search{
+.bread_and_search_wrapper.searching.loading .icon_search{
     background: url(../images/icon/loading16x16.gif) no-repeat 50%;
 }
-header .bread_and_search_wrapper.searching.end .icon_search{
+.bread_and_search_wrapper.searching.end .icon_search{
     display: none;
 }
-header .bread_and_search_wrapper .icon_cancel{
+.bread_and_search_wrapper .icon_cancel{
  display: none;
      width: 16px;
     height: 16px;
@@ -259,26 +278,8 @@ font-size: 24px;
     color: #7f8999;
     top: 5px;
 }
-header .bread_and_search_wrapper.searching.end .icon_cancel{
+.bread_and_search_wrapper.searching.end .icon_cancel{
     display: block;
-}
-
-header .back_forward{
-    margin: -45px 0 0 11px;
-}
-header .back_forward .btn{
-    padding: 4px 5px;
-    border-radius: 14px;
-}
-header .back_forward .btn.forward{
-    margin-left: 1px;
-}
-
-header .back_forward .btn.forward[disabled] i{
-    background-position: -4px -824px;
-}
-header .back_forward .btn.back[disabled] i{
-    background-position: -4px -804px;
 }
 
 footer {
@@ -453,7 +454,8 @@ footer {
 .left_sidebar  ul.nav.nav-list.abn-tree .icon_trash{
     margin-left: 45px;
 }
-.left_sidebar  ul.nav.nav-list.abn-tree.smart_tree_list .node_icon{
+.left_sidebar  ul.nav.nav-list.abn-tree .node_icon,
+.left_sidebar  ul.nav.nav-list.abn-tree li > a > img{
    margin-left: 20px;
 }
 
@@ -506,6 +508,7 @@ footer {
     right: 250px;
     box-shadow: 3px 0 15px rgba(0,0,0,.07);
     z-index: 20;
+    background: #F1F1F2;
 }
 /*文件列表区样式*/
 .toolbar {
@@ -754,7 +757,7 @@ footer {
 }
 .file_list_wrapper {
     position: absolute;
-    top: 45px;
+    top: 70px;
     left: 0;
     right: 0;
     bottom: 0;
