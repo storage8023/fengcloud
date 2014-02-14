@@ -1095,7 +1095,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location) {
         return {
             replace: true,
             restrict: 'E',
@@ -1333,7 +1333,12 @@ angular.module('gkClientIndex.directives', [])
                  * 打开聊天窗口
                  */
                 $scope.startChat = function(file){
-                    $rootScope.$broadcast('changeView','chat',1);
+                    //$rootScope.$broadcast('changeView','chat',1);
+                    var param = $location.search();
+                    angular.extend(param,{
+                        mode:'chat'
+                    })
+                    $location.search(param);
                     GKChat.setSrc(getOptMountId(file),file.fullpath);
                 }
 

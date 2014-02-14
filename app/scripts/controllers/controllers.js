@@ -1652,8 +1652,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.atMember = function(memberName){
-            if(GKFileList.getCurrentView() !='chat'){
-                $rootScope.$broadcast('changeView','chat',1);
+            if($rootScope.PAGE_CONFIG.mode !='chat'){
+                var param = $location.search();
+                angular.extend(param,{
+                    mode:'chat'
+                })
+                $location.search(param);
             }
             var iframe = GKFrame('ifame_chat');
             if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
