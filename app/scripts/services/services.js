@@ -169,7 +169,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', 'GKFile', 'GKMount', 'GKSmartFolder', function (GKPartition, GKModal, GKOpt, GKFile, GKMount, GKSmartFolder) {
+    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', 'GKFile', 'GKMount', 'GKSmartFolder','GKPath', '$rootScope',function (GKPartition, GKModal, GKOpt, GKFile, GKMount, GKSmartFolder,GKPath,$rootScope) {
         return {
             getSidebarMenu: function ($trigger) {
                 var data = $trigger.data('branch');
@@ -237,6 +237,16 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 })
                             }
+                            angular.extend(items, {
+                                'trash': {
+                                    name: '回收站',
+                                    callback: function () {
+                                        $rootScope.$apply(function(){
+                                            GKPath.gotoFile(mountId, '','','','trash');
+                                        })
+                                    }
+                                }
+                            })
                             if (GKMount.isSuperAdmin(mount)) {
                                 angular.extend(items, {
                                     'team_upgrade': {
@@ -1706,9 +1716,10 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition) {
         var GKPath = {
-            gotoFile: function (mountId, path, selectFile,view) {
+            gotoFile: function (mountId, path, selectFile,view,filter) {
                 view = angular.isDefined(view)?view:'';
                 selectFile = angular.isDefined(selectFile) ? selectFile : '';
+                filter = angular.isDefined(filter) ? filter : '';
                 var searchParam = $location.search();
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
@@ -1717,8 +1728,10 @@ angular.module('gkClientIndex.services', [])
                     mountid: mountId,
                     path: path,
                     selectedpath: selectFile,
-                    view:view
+                    view:view,
+                    filter:filter
                 };
+                console.log(mount);
                 if (mount) {
                     $location.search(search);
                 }
@@ -3288,7 +3301,7 @@ angular.module('gkClientIndex.services', [])
         var fileListElem = angular.element('.file_list .list_body');
         var GKFileListView = {
             getFileItem:function(index){
-                return fileListElem.find('> div > .item:eq('+index+')');
+                return fileListElem.find('> div > .file_item:eq('+index+')');
             },
             selectItem:function(index){
                 this.getFileItem(index).addClass('selected');

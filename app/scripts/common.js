@@ -869,7 +869,9 @@ angular.module('GKCommon.services', [])
                 logo: mount.orgphoto,
                 member_count: mount.membercount,
                 subscriber_count: mount.subscribecount,
-                hasFolder: 1
+                hasFolder: 1,
+                trash_size: mount.size_recycle,
+                trash_dateline: mount.dateline_recycle
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;

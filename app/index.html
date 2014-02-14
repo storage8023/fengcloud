@@ -99,8 +99,10 @@
 <header ng-controller="header">
     <div class="tabbar">
         <ul>
-            <li class="current">文件模式</li>
-            <li>讨论模式</li>
+            <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')">
+                <i class="icon16x16 icon_clock"></i>文件模式
+            </li>
+            <li ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat"></i>讨论模式</li>
         </ul>
     </div>
     <div class="menu">
@@ -182,13 +184,16 @@
                      create-file-submit="createFileNameSubmit(filename,dir)"
                      keybroad-nav
                         >
+
                     <div class="empty" ng-if="loadingFileData">
                         <span>正在加载...</span>
                     </div>
                     <div class="empty" ng-if="errorMsg && !loadingFileData">
                         <span>{{errorMsg}}</span>
                     </div>
+
                     <div ng-if="!errorMsg && !loadingFileData">
+
                         <div class="item file_item"
                              rename-file="file.rename"
                              rename-file-submit="renameFileSubmit(filename,$index)"
@@ -247,7 +252,7 @@
         </div>
     </div>
 
-    <div class="chat_wrapper" ng-show="view=='chat'">
+    <div class="chat_wrapper" ng-show="PAGE_CONFIG.mode=='chat'">
         <iframe id="ifame_chat" name="ifame_chat" frameborder="0" ng-src="{{gkChat.src}}"></iframe>
     </div>
 

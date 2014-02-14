@@ -94,20 +94,21 @@ header .menu > .gk_drop{
 header .tabbar{
    position: absolute;
     color: #fff;
-    top:18px;
+    top:14px;
+    left:5px;
 }
 header .tabbar li{
-    height: 32px;
-    line-height: 32px;
+    height: 36px;
+    line-height: 36px;
     float: left;
     background: #515a63;
     border-radius: 3px 3px 0 0;
-    margin: 0 5px;
+    margin-left:5px;
     padding: 0 15px;
 }
 header .tabbar li.current{
     background: #F1F1F2;
-    color: #7F8999;
+    color: #3F4754;
 }
 .bread_and_search_wrapper{
     border-radius: 14px;
@@ -115,7 +116,7 @@ header .tabbar li.current{
     height: 26px;
     position: relative;
     margin: 0 10px;
-    top:5px;
+    top:6px;
 }
 .bread_and_search_wrapper .searching_label{
     position: absolute;
@@ -520,6 +521,7 @@ footer {
     line-height: 24px;
     padding: 0 5px;
     font-size: 13px;
+    margin: 2px 0 0 0;
 }
 .toolbar .opt_tool{
     display: inline-block;
@@ -556,7 +558,7 @@ footer {
 
 .toolbar .opt {
     display: block;
-    padding: 3px 10px;
+    padding: 3px 7px;
 }
 .toolbar .opt .gk_down_arrow{
     vertical-align: middle;
@@ -896,35 +898,35 @@ footer {
 
 }
 
-.file_item .last_edit_time,
-.file_item .file_type,
-.file_item .file_size {
+.file_list .item .last_edit_time,
+.file_list .item .file_type,
+.file_list .item .file_size {
     color: #8e98a8;
 }
 
 
-.list_view .file_item {
+.list_view .item {
     padding: 5px 0;
     height: 42px;
     line-height: 32px;
     -webkit-transition: background-color linear 0.1s;
 }
 
-.thumb_view .file_item .last_edit_time,
-.thumb_view .file_item .file_type,
-.thumb_view .file_item .file_size,
-.thumb_view .file_item .file_icon_wrapper{
+.thumb_view .item .last_edit_time,
+.thumb_view .item .file_type,
+.thumb_view .item .file_size,
+.thumb_view .item .file_icon_wrapper{
     display: none;
 }
 
-.list_view .file_item .last_edit_time,
-.list_view .file_item .file_type,
-.list_view .file_item .file_size,
-.list_view .file_item .file_icon_wrapper{
+.list_view .item .last_edit_time,
+.list_view .item .file_type,
+.list_view .item .file_size,
+.list_view .item .file_icon_wrapper{
     display: block;
 }
 
-.file_item .file_icon {
+.file_list .item .file_icon {
     display: inline-block;
     width: 32px;
     height: 32px;
@@ -932,50 +934,50 @@ footer {
     margin: -2px 15px 0 15px;
     position: relative;
 }
-.file_item .file_icon128x128{
+.file_list .item  .file_icon128x128{
     display: inline-block;
     width: 128px;
     height: 128px;
 }
-.list_view .file_item .thumb{
+.list_view .item .thumb{
     display: none;
 }
-.thumb_view .file_item .thumb{
+.thumb_view .item .thumb{
     display: block;
     width: 128px;
     height: 128px;
     margin: 0 auto;
 }
-.file_item .file_icon s{
+.file_list .item .file_icon s{
     position: absolute;
     top:22px;
     left: -2px;
 }
-.file_item .file_icon s.icon_lock_color{
+.file_list .item .file_icon s.icon_lock_color{
     top:22px;
     right: -2px;
     left:auto;;
 }
-.file_item .thumb s{
+.file_list .item .thumb s{
     position: absolute;
     left: 10px;
     bottom: 2px;
 }
-.file_item .thumb s.icon_lock_color{
+.file_list .item .thumb s.icon_lock_color{
     top:auto;
     bottom: 29px;
     right: 18px;
     left:auto;;
 }
-.file_item[data-dir="1"] .thumb s{
+.file_list .item[data-dir="1"] .thumb s{
     left: 3px;
     bottom: 13px;
 }
-.file_item .file_icon img{
+.file_list .item .file_icon img{
     width: 32px;
     height: 32px;
 }
-.file_item .file_icon s.locked {
+.file_list .item .file_icon s.locked {
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -985,17 +987,17 @@ footer {
     background: url(../images/icon.png) no-repeat -2px -282px;
 }
 
-.file_list_wrapper .file_item.selected span{
+.file_list_wrapper .item.selected span{
     color: #fff;
 }
-.file_list_wrapper .file_item span.name{
+.file_list_wrapper .item span.name{
     white-space: pre;
 }
 .file_list_wrapper .ngViewport {
     outline: 0;
 }
 
-.thumb_view .file_item {
+.thumb_view .item {
     float: left;
     margin: 20px 18px;
     width: 144px;
@@ -1006,12 +1008,12 @@ footer {
     padding: 8px 0;
 }
 
-.thumb_view .file_item.hover,
-.thumb_view .file_item:hover{
+.thumb_view .item.hover,
+.thumb_view .item:hover{
     background-color:#E1E3E7;
 }
 
-.thumb_view .file_item.selected {
+.thumb_view .item.selected {
     background-color:#448de8;
 }
 

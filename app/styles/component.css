@@ -734,6 +734,11 @@ a:hover > .icon16x16.icon_link,
 .icon32x32.icon_transfer_color{
     background-position: -76px -760px;
 }
+.icon_recycle{
+    background: url(../images/icon/trash.png) no-repeat center;
+    background-size: 32px;
+}
+
 .icon128x128{
     width: 128px;
     height:128px;
@@ -1099,8 +1104,12 @@ button.close_window{
     width:112px;
     right: -112px;
 }
+.item.even,
 .item:nth-child(even) {
     background-color: #F7F7F7;
+}
+.item.odd{
+    background:transparent;
 }
 .item.hover,
 .item:hover{
