@@ -4,21 +4,9 @@ ul.nav.nav-list.abn-tree{
 
 ul.nav.nav-list.abn-tree .nav-header a{
     position: absolute;
-    width: 20px;
-    height: 20px;
-    right: 10px;
+    right: 5px;
     top:5px;
-    line-height: 20px;
-    text-align: center;
-    display: block;
-    padding: 0;
-    border:1px solid #232426;
-    border-radius: 20px;
-    font-size: 20px;
-    background: #25282D;
-    color: #fff;
-    font-family: Courier;
-    font-weight: bold;
+    padding: 1px 5px;
 }
 ul.nav.nav-list.abn-tree .tree-icon{
     width: 20px;
@@ -71,8 +59,8 @@ ul.nav.nav-list.abn-tree > li{
    white-space: nowrap;
 }
 
-ul.nav.abn-tree > li > a:hover,
-ul.nav.abn-tree > li > a:focus{
+ul.nav.abn-tree > li:not(.nav-header) > a:hover,
+ul.nav.abn-tree > li:not(.nav-header) > a:focus{
     background-color: transparent;
 }
 /*ul.nav.nav-list.abn-tree > li > a:hover,*/
