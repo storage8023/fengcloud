@@ -418,12 +418,18 @@ footer {
     text-align: center;
     line-height: 16px;
     cursor: pointer;
+    display: none;
+}
+.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper.show,
+.left_sidebar ul.nav.nav-list.abn-tree > li:hover .hint_wrapper{
+    display: inline-block;
 }
 .left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     position: absolute;
     top:-1px;
     right: -1px;
 }
+
 .left_sidebar ul.nav > li:not(.nav-header) > a{
     padding: 1px 10px 1px 0;
     border-left:4px solid transparent;

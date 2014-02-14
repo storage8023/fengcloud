@@ -13,7 +13,7 @@
           <i class="icon16x16 node_icon" ng-if="!row.node_img" ng-class="row.node_icon" ng-show="row.node_icon"></i>
           <team-logo ng-if="row.node_img" class="avatar avatar_mini" gk-src="{{row.node_img}}" title="{{ row.label }}"></team-logo>
           <span class="indented tree-label">{{ row.label }}</span>
-          <span class="hint_wrapper" ng-show="showMsgIcon" title="讨论模式">
+          <span class="hint_wrapper" ng-if="showMsgIcon" ng-class="row.branch.newMsgTime?'show':''" title="讨论模式">
               <i class="icon16x16 icon_chat_white"></i>
               <i class="hint" ng-show="row.branch.newMsgTime"></i>
           </span>
