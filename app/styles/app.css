@@ -110,6 +110,16 @@ header .tabbar li.current{
     background: #F1F1F2;
     color: #3F4754;
 }
+header .tabbar li i{
+    margin-right: 5px;
+    margin-top: 0;
+}
+header .tabbar li.current i.icon_chat_white{
+    background-position: -4px -1564px;
+}
+header .tabbar li.current i.icon_file_white{
+    background-position: -4px -244px;
+}
 .bread_and_search_wrapper{
     border-radius: 14px;
     background: #fff;

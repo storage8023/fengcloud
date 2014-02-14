@@ -644,7 +644,12 @@ a:hover > .icon16x16.icon_link,
 .icon16x16.icon_recent_visit{
     background-position: -44px -1720px;
 }
-
+.icon16x16.icon_file{
+    background-position: -4px -244px;
+}
+.icon16x16.icon_file_white{
+    background-position: -24px -244px;
+}
 /*32x32*/
 .icon32x32{
     width: 32px;
