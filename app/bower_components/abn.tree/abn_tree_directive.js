@@ -22,6 +22,7 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
        index  = 20;
        scope.showAdd = !!attrs['onAdd'];
+        scope.showMsgIcon = !!attrs['onHintClick'];
       if (attrs.iconExpand == null) {
         attrs.iconExpand = 'icon-plus';
       }
@@ -113,6 +114,7 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
           }
         //}
       };
+
 
         /**
          * 展开节点

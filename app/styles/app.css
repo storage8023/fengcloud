@@ -403,12 +403,16 @@ footer {
     width: 16px;
     height: 16px;
     top:7px;
-    right: 6px;
+    right: 8px;
     text-align: center;
     line-height: 16px;
     cursor: pointer;
 }
-
+.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
+    position: absolute;
+    top:-1px;
+    right: -1px;
+}
 .left_sidebar ul.nav > li:not(.nav-header) > a{
     padding: 1px 10px 1px 0;
     border-left:4px solid transparent;
@@ -420,7 +424,6 @@ footer {
 }
 .left_sidebar  ul.nav.nav-list.abn-tree .tree-icon{
     background: none;
-
     text-align: right;
 }
 .left_sidebar  ul.nav.nav-list.abn-tree .tree-icon i{

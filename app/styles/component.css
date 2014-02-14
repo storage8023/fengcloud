@@ -616,6 +616,9 @@ a:hover > .icon16x16.icon_team_upgrade,
 .icon16x16.icon_chat{
     background-position: -4px -1564px;
 }
+.icon16x16.icon_chat_white{
+    background-position: -24px -1564px;
+}
 a:hover > .icon16x16.icon_chat,
 .icon16x16.icon_chat_color{
     background-position: -44px -1564px;
@@ -1636,8 +1639,8 @@ text-align: center;
 }
 
 .hint{
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 4px;
     background: #f00;
     display: inline-block;
