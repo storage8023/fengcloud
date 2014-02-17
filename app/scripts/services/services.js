@@ -923,10 +923,11 @@ angular.module('gkClientIndex.services', [])
                                 else if (opt.opt == 'view_chat') {
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     var mountId = 0;
-                                    if(mount){
-                                        mountId = mount['mount_id'];
+                                    if(!mount){
+                                        return;
                                     }
-                                    GKDialog.chat(mountId);
+                                    mountId = mount['mount_id'];
+                                    GKPath.gotoFile(mountId, '', '','','','chat');
                                 }
                                 $modalInstance.close();
                             }
@@ -1716,10 +1717,11 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition) {
         var GKPath = {
-            gotoFile: function (mountId, path, selectFile,view,filter) {
+            gotoFile: function (mountId, path, selectFile,view,filter,mode) {
                 view = angular.isDefined(view)?view:'';
                 selectFile = angular.isDefined(selectFile) ? selectFile : '';
                 filter = angular.isDefined(filter) ? filter : '';
+                mode = angular.isDefined(mode) ? mode : '';
                 var searchParam = $location.search();
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
@@ -1729,9 +1731,9 @@ angular.module('gkClientIndex.services', [])
                     path: path,
                     selectedpath: selectFile,
                     view:view,
-                    filter:filter
+                    filter:filter,
+                    mode:mode
                 };
-                console.log(mount);
                 if (mount) {
                     $location.search(search);
                 }
