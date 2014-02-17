@@ -1335,13 +1335,9 @@ angular.module('gkClientIndex.directives', [])
                  * 打开聊天窗口
                  */
                 $scope.startChat = function(file){
-                    //$rootScope.$broadcast('changeView','chat',1);
-                    var param = $location.search();
-                    angular.extend(param,{
-                        mode:'chat'
-                    })
-                    $location.search(param);
-                    GKChat.setSrc(getOptMountId(file),file.fullpath);
+                    var mountId = getOptMountId(file);
+                    GKPath.gotoFile(mountId,'', '','','','chat');
+                    GKChat.setSrc(mountId,file.fullpath);
                 }
 
                 $scope.showMilestoneDialog = function(file){
