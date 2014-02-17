@@ -2493,7 +2493,7 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.teamFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
-                            this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                             if (!GKMount.isSuperAdmin(mount)) {
                                 this.disableOpt(opts, 'clear_trash', 'del_completely')
                             }
@@ -2509,10 +2509,10 @@ angular.module('gkClientIndex.services', [])
 
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
+                        this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
                     case GKPartition.smartFolder:
-                        this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         break;
                 };
                 if (isSearch) {

@@ -1478,7 +1478,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.showHelpTip = true;
                 $timeout(function(){
                     $scope.showHelpTip = false;
-                },1500)
+                },2000)
             }
         })
     }])

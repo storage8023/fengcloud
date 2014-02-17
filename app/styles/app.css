@@ -392,8 +392,8 @@ footer {
 }
 .left_sidebar .account .icon_ring .hint{
     position: absolute;
-    right: 3px;
-    top: 6px;
+    right: 5px;
+    top: 5px;
 }
 .left_sidebar .account .icon_ring.active,
 .left_sidebar .account .icon_ring:hover{
