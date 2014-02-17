@@ -1137,7 +1137,7 @@ button.close_window{
     list-style-type: none;
     top: 100%;
     left: 0;
-    padding: 5px 0;
+    padding:0;
     margin: 2px 0 0;
     z-index: 9999;
     font-size: 12px;
