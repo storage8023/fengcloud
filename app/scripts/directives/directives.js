@@ -275,7 +275,9 @@ angular.module('gkClientIndex.directives', [])
                                                 callback: function (key,opt) {
                                                     var mountId = getMountId();
                                                     if(!mountId) return;
-                                                    GKPath.gotoFile(mountId,fullpath);
+                                                    $timeout(function(){
+                                                        GKPath.gotoFile(mountId,fullpath);
+                                                    })
                                                 }
                                             },
                                             'saveto': {
