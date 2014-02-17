@@ -158,7 +158,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                        extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
                    }
                 }
-                extend.mount = GKMount.getMountById(param.mountid)
+
+                extend.mount = GKMount.getMountById(param.mountid);
                 var mount = gkClientInterface.getMount({
                     mountid:Number(param.mountid)
                 });
@@ -167,6 +168,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     trash_size: mount.size_recycle,
                     trash_dateline: mount.dateline_recycle
                 })
+
+                if(param.mode == 'chat'){
+                    $rootScope.$broadcast('clearMsgTime',{orgId: extend.mount.org_id})
+                }
             } else {
                 extend.file = {};
                 extend.mount = {};
@@ -545,7 +550,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setChatState = function(list){
             angular.forEach(list,function(item){
                 var orgId = item.receiver;
-                if($rootScope.PAGE_CONFIG.mount.org_id != orgId || GKFileList.getCurrentView() != 'chat'){
+                if($rootScope.PAGE_CONFIG.mount.org_id != orgId || $rootScope.PAGE_CONFIG.mode != 'chat'){
                     setNewMsgTime(orgId,item.time);
                 }
                 var iframe = GKFrame('ifame_chat');
@@ -966,14 +971,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
             GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
-            if([GKPartition.teamFile].indexOf($scope.partition)<0 && $scope.view == 'chat'){
-                $scope.view = 'list';
-            }else if($scope.view == 'chat' && $scope.path){
-                $scope.view = 'list';
-            }
-            if($scope.view == 'chat'){
-                $rootScope.$broadcast('clearMsgTime',{orgId:$rootScope.PAGE_CONFIG.mount.org_id})
-            }
         };
 
         $scope.gkChat = GKChat;
