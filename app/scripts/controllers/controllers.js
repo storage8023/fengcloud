@@ -229,6 +229,46 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 iframe.gkFrameCallback('UpdateMembers',param);
             }
         })
+
+        /**
+         * 网站iframe成员管理的回调
+         */
+        $scope.$on('_inviteMember',function($event,param){
+            var orgId = param.orgId;
+            var mount = GKMount.getMountByOrgId(orgId);
+            console.log(mount);
+            if(!mount) return;
+            $rootScope.$broadcast('UpdateMembers',{mountid:mount.mount_id});
+        })
+
+        $scope.$on('_uninviteMember',function($event,param){
+            var orgId = param.orgId;
+            var mount = GKMount.getMountByOrgId(orgId);
+            console.log(mount);
+            if(!mount) return;
+            $rootScope.$broadcast('UpdateMembers',{mountid:mount.mount_id});
+        })
+
+        $scope.$on('_editMember',function($event,param){
+            var orgId = param.orgId;
+            var mount = GKMount.getMountByOrgId(orgId);
+            if(!mount) return;
+            gkClientInterface.editMember({
+                mountid:mount.mount_id,
+                userid:Number(param.memberId),
+                type:Number(param.memberType)
+            });
+        })
+
+        $scope.$on('_delMember',function($event,param){
+            var orgId = param.orgId;
+            var mount = GKMount.getMountByOrgId(orgId);
+            if(!mount) return;
+            gkClientInterface.removeMember({
+                mountid:mount.mount_id,
+                userid:Number(param.memberId)
+            });
+        })
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame) {
         $scope.GKPartition = GKPartition;

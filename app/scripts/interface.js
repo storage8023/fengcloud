@@ -7,6 +7,18 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    removeMember:function(param){
+        if(typeof gkClient.gRemoveMember === 'undefined'){
+            return;
+        }
+        gkClient.gRemoveMember(JSON.stringify(param));
+    },
+    editMember:function(param){
+        if(typeof gkClient.gEditMember === 'undefined'){
+            return;
+        }
+        gkClient.gEditMember(JSON.stringify(param));
+    },
     getChatMessage:function(param){
         if(typeof gkClient.gGetMessage === 'undefined'){
             return '';
