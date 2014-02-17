@@ -3219,7 +3219,7 @@ angular.module('gkClientIndex.services', [])
                     },
                     'link': {
                         index: 19,
-                        name: '临时连接',
+                        name: '临时链接',
                         className: "file_link",
                         icon: 'icon_link',
                         callback: function () {
