@@ -51,6 +51,10 @@ angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientI
          */
         $scope.registSubmit = function(){
             if($scope.loading) return;
+            if(!$scope.registUsername || !$scope.registUsername.length){
+                alert('请输入用户名');
+                return;
+            }
             if(!$scope.registEmail || !$scope.registEmail.length){
                 alert('请输入邮箱');
                 return;
@@ -61,10 +65,6 @@ angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientI
             }
             if(!$scope.registPassword || !$scope.registPassword.length){
                 alert('请输入登录密码');
-                return;
-            }
-            if(!$scope.registUsername || !$scope.registUsername.length){
-                alert('请输入用户名');
                 return;
             }
             if(!Util.Validation.isRegName($scope.registUsername)){
