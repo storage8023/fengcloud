@@ -258,9 +258,12 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             postTextCache.put($scope.currentSession.orgid,postText);
         };
 
-        $scope.changeView = function(view){
-            $window.top.gkSiteCallback('changeView',view);
-        }
+        $scope.$on('UpdateMembers',function($event,param){
+            if($scope.currentSession.mountid == param.mountid){
+                chatMember.refreshMembers($scope.currentSession.orgid);
+                $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
+            }
+        })
 
     }])
     .factory('chatContent', ['chatMember', 'chatSession','$q', function (chatMember, chatSession,$q) {
@@ -351,6 +354,14 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     }
                 })
                 return member;
+            },
+            refreshMembers:function(orgId){
+                if(members[orgId] !== undefined){
+                    var re = gkClientInterface.getOrgMembers({
+                        orgid:orgId
+                    });
+                    members[orgId] = re.list || [];
+                }
             }
         };
         return chatMember;
