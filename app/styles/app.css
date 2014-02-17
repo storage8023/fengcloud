@@ -61,7 +61,20 @@ header .more_menu{
     display: inline-block;
 
 }
-
+header .menu .help_tip_popover{
+    top:27px;
+    left:113px;
+    width: 132px;
+    color: #7F8999;
+    opacity: 0;
+}
+header .menu .help_tip_popover.show_tip{
+    opacity: 1;
+    display: block;
+}
+header .menu .help_tip_popover .popover-content{
+    padding:5px 10px;
+}
 header .more_menu .dropdown-menu{
     left: auto;
     right: 0;

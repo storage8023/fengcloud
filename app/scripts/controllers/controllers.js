@@ -1425,9 +1425,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             $scope.hideGuider = hideGuider;
         }
-
+        $scope.showHelpTip = false;
         $scope.$on('toggleGuider',function(event,hideGuider){
             $scope.hideGuider = hideGuider;
+            if(hideGuider){
+                $scope.showHelpTip = true;
+                $timeout(function(){
+                    $scope.showHelpTip = false;
+                },1500)
+            }
         })
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
