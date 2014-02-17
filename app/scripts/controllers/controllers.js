@@ -471,15 +471,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var list = $scope.orgTreeList;
-
             var type = getPartitionByMountType(newMount['type']);
             if (newMount['type'] > 2) {
                 list = $scope.orgSubscribeList;
-            }else if(newMount['type'] > 0){
-                list = $scope.joinOrgTreeList;
             }
             var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'])[0];
-            GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
+            $timeout(function(){
+                GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
+            });
             $rootScope.$broadcast('editOrgObjectSuccess',newMount);
         })
 
