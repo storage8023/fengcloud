@@ -2550,7 +2550,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getCurrentOpts: function (currentFile, partition) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, 'view_property', "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
+                this.disableOpt(opts, 'link','view_property', "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
                 if (GKCilpboard.isEmpty()) {
                     this.disableOpt(opts, 'paste');
                 }
