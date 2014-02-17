@@ -197,13 +197,19 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                         mountid: mountId,
                         webpath: param.fullpath
                     });
+                    if(!extendParam.file || jQuery.isEmptyObject(extendParam.file)){
+                        alert('文件已被删除');
+                       return;
+                    }
                     var metadata = JSON.stringify({
                         mount_id: mountId,
                         hash:  extendParam.file.uuidhash,
                         filehash: extendParam.file.filehash,
                         filesize: extendParam.file.filesize,
-                        version: extendParam.file.version
+                        version: extendParam.file.version,
+                        filename:Util.String.baseName(extendParam.file.path)
                     });
+
                     post('file','',metadata);
                 }
 

@@ -54,10 +54,13 @@
                                     </div>
                                     <div class="filename_wrapper">
                                         <div class="filename">
-                                            <span ng-bind="msg.file.filename"></span>
+                                            <span ng-bind="msg.metadata.filename?msg.metadata.filename:msg.file.filename"></span>
                                         </div>
-                                        <div class="filesize">
+                                        <div class="filesize" ng-if="msg.file">
                                             <span ng-bind="msg.file.lastname"></span> 修改于 <span ng-bind="msg.file.lasttime*1000 | date:'yyyy/MM/dd HH:mm'"></span>
+                                        </div>
+                                        <div class="filesize" ng-if="!msg.file">
+                                            <span>文件已被删除或还未同步</span>
                                         </div>
                                     </div>
                                     <div class="file_opt">
