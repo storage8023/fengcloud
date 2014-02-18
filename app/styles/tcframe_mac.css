@@ -4,9 +4,9 @@ header{
 }
 ul.quickmenu{
     top:auto;
-    bottom: 40px;
+    bottom: 0;
 }
 .message_wrapper{
     top:0;
-    bottom: 100px;
+    bottom: 55px;
 }

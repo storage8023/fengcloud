@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="styles/base.css"/>
     <link rel="stylesheet" href="styles/component.css"/>
     <link rel="stylesheet" href="styles/tcframe.css"/>
+    <link rel="stylesheet" href="styles/tcframe_mac.css"/>
     <script src="scripts/util.js"></script>
     <script src="scripts/interface.js"></script>
     <script src="bower_components/jquery/jquery.js"></script>
@@ -18,37 +19,39 @@
     <script src="scripts/directives/directives.js"></script>
     <script src="scripts/filters/filters.js"></script>
     <script src="scripts/controllers/tcframe_controllers.js"></script>
-    <script src="scripts/directives/tcframe_directives.js"></script>
     <script src="scripts/services/services.js"></script>
     <script src="scripts/tcframe.js"></script>
-    <script>
-        if(!gkClientInterface.isWindowsClient()){
-            document.write(unescape("%3Clink rel='stylesheet' href='styles/tcframe_mac.css' type='text/javascript' %3E%3C/link%3E"));
-        }
-    </script>
 </head>
 <body ng-controller="initFrame">
-<header ng-click="handleHeaderClick()">
-    <i class="icon32x32 icon_logo"></i>
-    <a href="javascript:void(0)" class="logout" ng-click="logout()"><i></i></a>
-</header>
-<qiuckmenu></qiuckmenu>
+<ul class="quickmenu">
+    <li ng-click="handleClick('lanchpad')" class="lanchpad">
+        <i class="icon32x32 icon_logo_color"></i>
+        <span>云库</span>
+    </li>
+    <li ng-click="handleClick('chat')" class="chat">
+        <i class="icon32x32 icon_ring"></i>
+        <span>消息</span>
+    </li>
+    <li ng-click="handleClick('trasfer')" class="trasfer">
+        <i class="icon32x32 icon_transfer"></i>
+        <span>传输</span>
+    </li>
+    <li ng-click="handleClick('setting')" class="setting">
+        <i class="icon32x32 icon_setting"></i>
+        <span>设置</span>
+    </li>
+</ul>
 <div class="message_wrapper" ng-click="showMessage()">
     <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">帐号未登录或正在登录</div>
-    <ul class="scrollbar message_list" ng-if="PAGE_CONFIG.user.member_id">
-        <li ng-show="!messages || !messages.length" class="empty">没有消息</li>
-        <li ng-repeat="message in messages">
-            <div class="photo_wrapper">
-                <team-logo ng-if="message.org_logo" class="avatar" gk-src="{{message.org_logo}}"></team-logo>
-                <avatar class="avatar" gk-src="{{message.member_photo}}"></avatar>
-            </div>
-            <div class="msg">
-                <span ng-bind-html="message.render_content"></span>
-            </div>
-            <div class="dateline" ng-bind="message.dateline*1000|dateAgo"></div>
-        </li>
-    </ul>
+    <div class="member_info_wrapper" ng-if="PAGE_CONFIG.user.member_id">
+        <div class="member_photo">
+            <avatar gk-src="{{PAGE_CONFIG.user.avatar}}" class="avatar"></avatar>
+        </div>
+        <div class="member_name">
+            <div class="name" title="{{PAGE_CONFIG.user.member_name}}" ng-bind="PAGE_CONFIG.user.member_name"></div>
+            <div ng-if="PAGE_CONFIG.user.member_email" ng-bind="PAGE_CONFIG.user.member_email" class="email"></div>
+        </div>
+    </div>
 </div>
-
 </body>
 </html>

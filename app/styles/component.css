@@ -650,6 +650,7 @@ a:hover > .icon16x16.icon_link,
 .icon16x16.icon_file_white{
     background-position: -24px -244px;
 }
+
 /*32x32*/
 .icon32x32{
     width: 32px;
@@ -738,6 +739,12 @@ a:hover > .icon16x16.icon_link,
 }
 .icon32x32.icon_transfer_color{
     background-position: -76px -760px;
+}
+.icon32x32.icon_logo{
+    background-position: -4px -326px;
+}
+.icon32x32.icon_logo_color{
+    background-position: -40px -326px;
 }
 .icon_recycle{
     background: url(../images/icon/trash.png) no-repeat center;

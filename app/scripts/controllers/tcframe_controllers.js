@@ -3,10 +3,24 @@
 /* Controllers */
 
 angular.module('gkClientFrame.controllers',[])
-    .controller('initFrame',['$scope','GKApi','GKNews','$rootScope',function($scope,GKApi,GKNews,$rootScope){
+    .controller('initFrame',['$scope','GKApi','GKNews','$rootScope','GKDialog',function($scope,GKApi,GKNews,$rootScope,GKDialog){
         $rootScope.PAGE_CONFIG  ={
             user:gkClientInterface.getUser()
         };
+
+        $scope.handleClick = function(type){
+
+            if(type == 'lanchpad'){
+                gkClientInterface.launchpad();
+            }else if(type == 'chat'){
+                gkClientInterface.launchpad({type:'message'});
+            }else if(type == 'trasfer'){
+                GKDialog.openTransfer();
+            }else if(type == 'setting'){
+                GKDialog.openSetting();
+            }
+        };
+
         if($rootScope.PAGE_CONFIG.user.member_id){
             var getNews = function(){
                 var news = GKNews.getNews();

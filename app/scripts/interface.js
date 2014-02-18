@@ -648,6 +648,7 @@
         return gkClient.gGetUrl(JSON.stringify(params));
     },
     setMain:function(data){
+        console.log(data);
         return gkClient.gMain(JSON.stringify(data));
     },
     getUIPath: function(){
