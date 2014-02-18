@@ -132,7 +132,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var extend = {
                 filter: param.filter || '',
                 partition: param.partition,
-                mode: param.mode || 'file'
+                mode: param.mode || 'chat'
             };
             if ([GKPartition.teamFile, GKPartition.subscribeFile].indexOf(param.partition) >= 0) {
                 if(!param.filter){
@@ -352,7 +352,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.handleSelect = function (branch,showChat, partition) {
             var pararm = {
-                partition: partition
+                partition: partition,
+                mode:'file'
             };
 
             if ([GKPartition.teamFile, GKPartition.subscribeFile].indexOf(partition)>=0) {
@@ -360,7 +361,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['mountid'] = branch.data.mount_id;
                 pararm['filter'] = branch.data.filter || '';
                 if([GKPartition.teamFile].indexOf(partition)>=0){
-                    pararm['mode'] = showChat?'chat':'file';
+                    pararm['mode'] = 'chat';
                 }
             } else if (partition == GKPartition.smartFolder) {
                 pararm['filter'] = branch.data.filter;

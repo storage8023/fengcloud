@@ -433,14 +433,13 @@ footer {
     cursor: pointer;
     display: none;
 }
-.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper.show,
-.left_sidebar ul.nav.nav-list.abn-tree > li:hover .hint_wrapper{
+.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper.show{
     display: inline-block;
 }
 .left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     position: absolute;
-    top:-1px;
-    right: -1px;
+    top:50%;
+    margin-top: -3px;
 }
 
 .left_sidebar ul.nav > li:not(.nav-header) > a{
