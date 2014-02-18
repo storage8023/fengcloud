@@ -200,7 +200,7 @@ section .msg_list{
 .chat_item .chat_main{
    float: left;
    margin: -5px 0 0 0;
-   max-width: 90%;
+   max-width: 88%;
    font-size: 14px;
 }
 .chat_item .chat_main .icon_warning{
@@ -300,15 +300,8 @@ display: table-cell;
     padding: 0 0 0 10px;
 }
 
-
-.chat_file .filename_wrapper > div{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .chat_file .filename_wrapper .filename span{
-    white-space: pre;
+    white-space: pre-wrap;
     font-size: 15px;
     line-height: 22px;
 }

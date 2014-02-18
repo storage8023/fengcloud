@@ -286,6 +286,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     is_vip: sender && sender.isvip ? true : false,
                     sender_id:sender ? sender['member_id'] : value.sender,
                 };
+                value.content = decodeURIComponent(value.content);
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
                     if (value.metadata.hash && value.metadata.mount_id) {
