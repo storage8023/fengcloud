@@ -271,12 +271,26 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
             }
         })
 
+        $scope.handleSysDrop = function($event){
+//            var dragFiles = gkClientInterface.getDragFiles();
+//            var selectFileDialog = GKModal.selectFile($scope.currentSession.mountid);
+//            return;
+//            var params = {
+//                parent: $scope.path,
+//                type: 'save',
+//                list: dragFiles.list,
+//                mountid: $scope.mountId
+//            };
+//            GK.addFile(params).then(function () {
+//                GKFileList.refreahData($scope);
+//            }, function (error) {
+//                GKException.handleClientException(error);
+//            })
+        };
+
     }])
     .factory('chatContent', ['chatMember', 'chatSession','$q', function (chatMember, chatSession,$q) {
         var chatContent = {
-            post:function(){
-
-            },
             formatItem: function (value) {
                 var sender = chatMember.getMemberItem(value.receiver, value.sender);
                 var filename = Util.String.baseName(value.fullpath);
@@ -286,7 +300,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                     is_vip: sender && sender.isvip ? true : false,
                     sender_id:sender ? sender['member_id'] : value.sender,
                 };
-                value.content = decodeURIComponent(value.content);
+
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
                     if (value.metadata.hash && value.metadata.mount_id) {
