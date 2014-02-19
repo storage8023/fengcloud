@@ -954,7 +954,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         break;
                     case 'del':
                         forEachFullpath(function (fullpath) {
-                            GKPath.gotoFile(mountId, Util.String.dirName(fullpath));
+                            GKPath.gotoFile(mountId, Util.String.dirName(fullpath),'','','','file');
                         });
                         break;
                     case 'create':
@@ -1399,7 +1399,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 selectFile = fullpath;
             }
             $timeout(function(){
-                GKPath.gotoFile(mountId, path, selectFile);
+                GKPath.gotoFile(mountId, path, selectFile,'','','file');
             })
         })
 
