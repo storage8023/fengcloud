@@ -226,7 +226,7 @@ right: -20px;
 .chat_item .chat_main .chat_text{
     background: #fff;
     border-radius: 3px;
-    padding: 5px;
+    padding: 5px 10px;
     position: relative;
     word-break: break-all;
     word-wrap: break-word;
@@ -309,6 +309,7 @@ display: table-cell;
     font-size: 12px;
     margin-top: 1px;
     color: #7F8999;
+    min-width: 180px;
 }
 .chat_file .file_icon_wrapper .file_icon128x128{
     margin-top: 0;
@@ -316,10 +317,16 @@ display: table-cell;
     width: 96px;
     height: 96px;
     background-size: 96px;
+    vertical-align: middle;
 }
 .chat_file .file_icon_wrapper .file_icon128x128 img{
     width: 96px;
     height: 96px;
+}
+.chat_file .filename_wrapper .progress{
+    margin-bottom: 0;
+    height: 16px;
+    line-height: 16px;
 }
 .chat_file .version_wrapper{
     margin: 0 0 0 5px;

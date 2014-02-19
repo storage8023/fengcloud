@@ -35,6 +35,7 @@
         if(typeof gkClient.gSendMessage === 'undefined'){
             return;
         }
+        console.log(param);
         gkClient.gSendMessage(JSON.stringify(param),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
@@ -380,6 +381,7 @@
     getSideTreeList: function (params) {
         try {
             var re = gkClient.gSideTreeList(JSON.stringify(params));
+            console.log(JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);

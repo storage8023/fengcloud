@@ -559,11 +559,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(currentMountId==mount.mount_id && $scope.orgTreeList && $scope.orgTreeList.length){
                     selectBreanch($scope.orgTreeList[0], GKPartition.teamFile, true);
                 }
-
                 if([GKPartition.teamFile].indexOf(partition)>=0){
                     GKWindowCom.post('single',{type:'remove',orgId:mount.org_id});
                 }
-
             });
         })
 

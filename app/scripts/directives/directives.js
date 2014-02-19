@@ -1545,7 +1545,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder','GKPath', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder,GKPath) {
         return {
             replace: true,
             restrict: 'E',
@@ -1635,12 +1635,7 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.selectBread = function ($event, bread) {
                     var params = $location.search();
-                    $location.search({
-                        path: bread.path || '',
-                        mountid: params.mountid,
-                        partition: params.partition,
-                        filter: bread.filter
-                    });
+                    GKPath.gotoFile(params.mountid,bread.path || '', '','', bread.filter,'file');
                     $event.stopPropagation();
                 };
 

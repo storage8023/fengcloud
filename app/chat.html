@@ -13,8 +13,8 @@
     <script src="scripts/interface.js?v=5"></script>
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-
     <script src="bower_components/angular-cache/angular-cache.js"></script>
+    <script src="bower_components/bootstrap/ui-bootstrap.js?v=2"></script>
     <script src="scripts/common.js?v=5"></script>
     <script src="scripts/chat.js?v=6"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
@@ -47,24 +47,25 @@
                             <div class="chat_text">
                                 <i title="{{msg.error}}" class="icon16x16 icon_warning"></i>
                                 <span ng-bind="msg.content" ng-if="msg.type=='text'"></span>
-                                <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg.file)" data-dir="{{msg.file.dir}}" title="{{msg.file.filename}}">
+                                <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
                                     <div class="file_icon_wrapper">
-                                        <i class="file_icon128x128" ng-class="msg.file.filename | getFileIcon:msg.file.dir:0:0">
-                                            <img error-src="" src="{{msg.file.uuidhash | getThumbUrl:msg.file.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.file.ext)>=0"/>
+                                        <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0">
+                                            <img error-src="" src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0"/>
                                         </i>
                                     </div>
                                     <div class="filename_wrapper">
                                         <div class="filename">
-                                            <span ng-bind="msg.metadata.filename?msg.metadata.filename:msg.file.filename"></span>
+                                            <span ng-bind="msg.metadata.filename"></span>
                                         </div>
-                                        <div class="filesize" ng-if="msg.file">
+                                        <div class="filesize" ng-if="msg.file && msg.file.status!=1">
                                             <span ng-bind="msg.file.lastname"></span> 修改于 <span ng-bind="msg.file.lasttime*1000 | date:'yyyy/MM/dd HH:mm'"></span>
                                         </div>
-                                        <div class="filesize" ng-if="!msg.file">
-                                            <span>文件已被删除或还未同步</span>
+                                        <div class="filesize" ng-if="msg.file && msg.file.status==1">
+                                            <div ng-if="msg.metadata.dir==1">上传中...</div>
+                                            <progressbar ng-if="msg.metadata.dir==0" max="msg.meta.filesize" value="msg.offset" animate="true"></progressbar>
                                         </div>
                                     </div>
-                                    <div class="file_opt">
+                                    <div class="file_opt" ng-show="msg.file">
                                         <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
                                     </div>
                                 </div>
