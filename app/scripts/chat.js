@@ -137,7 +137,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 }else{
                     params.webpath = msg.file.path;
                 }
-                console.log(params);
                 gkClientInterface.open(params);
             }
             $event.stopPropagation();
@@ -286,7 +285,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                             version: file.version||0,
                             fullpath:file.path
                         });
-                        console.log('addFile',file);
                         post('file','',metadata,file.status==1?1:0);
                     })
                 }else{
@@ -303,7 +301,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         };
 
         pendingTimer = $interval(function(){
-            //console.log('pendingMsg',chatContent.pendingMsg);
             if(!chatContent.pendingMsg.length){
                 return;
             }
@@ -313,30 +310,18 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     mountid: metadata.mount_id,
                     webpath: metadata.fullpath
                 });
-                //console.log('info',info);
                 //上传完成
                 if (info.status == 1) {
-                    angular.forEach($scope.currentMsgList,function(val){
-                        if(val == item){
-                            val.file = gkClientInterface.getFileInfo({
-                                mountid: metadata.mount_id,
-                                webpath: metadata.fullpath
-                            });
-                            //val.file.status=3;
-                            console.log('val.file',val.file);
-                        }
-                    })
+                    item.file = gkClientInterface.getFileInfo({
+                        mountid: metadata.mount_id,
+                        webpath: metadata.fullpath
+                    });
+                    item.file.status=3;
                     chatContent.pendingMsg.splice(key,1);
                     return;
                 }else{
-                    angular.forEach($scope.currentMsgList,function(val){
-                        if(val == item){
-                            val.offset = Number(info.offset || 0);
-                            console.log('offset',val.offset);
-                        }
-                    })
+                    item.offset = Number(info.offset || 0);
                 }
-
             })
         },1000)
 
@@ -379,7 +364,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 return value;
             },
             setItemError: function (msg, errorMsg) {
-                msg.error = errorMsg;
+                msg.error = 1;
+                msg.errorMsg = errorMsg;
             },
             add: function (msgList, newMsg, head) {
                 head = angular.isDefined(head) ? head : false;
