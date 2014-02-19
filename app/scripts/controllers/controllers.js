@@ -1513,47 +1513,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     tip: '',
                     icon: 'search'
                 };
-            }else if(!params.filter){
-                var title = $rootScope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
-                sideBarData = {
-                    title:title,
-                    tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
-                    photo: "",
-                    attrHtml: '',
-                    menus: []
-                };
-
-                sideBarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
-                sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
-                sideBarData.menus = [];
-                if ([GKPartition.teamFile].indexOf(params.partition) >=0) {
-                    sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-
-                    if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
-                        sideBarData.menus.push({
-                            text: '安全设置',
-                            icon: 'icon_manage',
-                            name: 'manage_team',
-                            click: function () {
-                                GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
-                            }
-                        })
-                    }
-                    if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
-                        sideBarData.menus.push({
-                            text: '升级',
-                            icon: 'icon_team_upgrade',
-                            name: 'team_upgrade',
-                            click: function () {
-                                var url = gkClientInterface.getUrl({
-                                    sso: 1,
-                                    url: '/pay/order?org_id=' + $rootScope.PAGE_CONFIG.mount.org_id
-                                })
-                                gkClientInterface.openUrl(url);
-                            }
-                        })
-                    }
-                }
             }else if(params.filter){
                 var filterName = GKSmartFolder.getSmartFoldeName(params.filter);
                 sideBarData = {
@@ -1565,16 +1524,64 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             return sideBarData;
         };
 
+        var getRootSidebarData = function(params){
+            var title = $rootScope.PAGE_CONFIG.mount ? $scope.PAGE_CONFIG.mount.name : '';
+            var sideBarData = {
+                title:title,
+                tip: '将文稿，照片，视频等文件保存在我的文件夹里，文件将自动备份到云端。可以使用手机，平板来访问它们，使设备之间无缝，无线连接',
+                photo: "",
+                attrHtml: '',
+                menus: []
+            };
+
+            sideBarData.photo = $rootScope.PAGE_CONFIG.mount.logo;
+            sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
+            sideBarData.menus = [];
+            if ([GKPartition.teamFile].indexOf(params.partition) >=0) {
+                sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
+
+                if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
+                    sideBarData.menus.push({
+                        text: '安全设置',
+                        icon: 'icon_manage',
+                        name: 'manage_team',
+                        click: function () {
+                            GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
+                        }
+                    })
+                }
+                if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
+                    sideBarData.menus.push({
+                        text: '升级',
+                        icon: 'icon_team_upgrade',
+                        name: 'team_upgrade',
+                        click: function () {
+                            var url = gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/pay/order?org_id=' + $rootScope.PAGE_CONFIG.mount.org_id
+                            })
+                            gkClientInterface.openUrl(url);
+                        }
+                    })
+                }
+            }
+            console.log('sideBarData',sideBarData);
+            return sideBarData;
+        };
+
         $scope.hideNoFile = true;
 
         $scope.sidbarData = getSidbarData($location.search());
 
+        $scope.rootSidebarData = getRootSidebarData($location.search());
+
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
+            $scope.rootSidebarData = getRootSidebarData(param);
             if(param.path){
                 $scope.sidebar = 'singlefile';
-            }else{
+            }else if(param.filter||param.search){
                 $scope.sidebar = 'nofile';
                 $scope.sidbarData = getSidbarData(param);
             }
@@ -1586,7 +1593,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                if(param.path){
                    $scope.hideNoFile = true;
                }else{
-                   $scope.hideNoFile = false;
+                   if(param.search || param.filter){
+                       $scope.hideNoFile = true;
+                   }else{
+                       $scope.hideNoFile = false;
+                   }
+
                }
             }
         })

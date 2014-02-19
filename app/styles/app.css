@@ -1143,7 +1143,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     width: 128px;
     height: 128px;
     display: block;
-    margin: 0 auto;
+    margin: 30px auto 0;
     background-image: url(../images/icon/icon_other.png?v=2);
     background-repeat: no-repeat;
 }
