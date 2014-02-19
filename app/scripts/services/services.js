@@ -438,50 +438,62 @@ angular.module('gkClientIndex.services', [])
 
         return{
             selectFile:function(mountId){
-//                var option = {
-//                    templateUrl: 'views/select_file_dialog.html',
-//                    windowClass: 'select_file_dialog',
-//                    controller: function ($scope,$modalInstance) {
-//                        $scope.fileData = [
-//                            { "name" : "Joe", "age" : "21", "children" : [
-//                                { "name" : "Smith", "age" : "42", "children" : [] },
-//                                { "name" : "Gary", "age" : "21", "children" : [
-//                                    { "name" : "Jenifer", "age" : "23", "children" : [
-//                                        { "name" : "Dani", "age" : "32", "children" : [] },
-//                                        { "name" : "Max", "age" : "34", "children" : [] }
-//                                    ]}
-//                                ]}
-//                            ]},
-//                            { "name" : "Albert", "age" : "33", "children" : [] },
-//                            { "name" : "Ron", "age" : "29", "children" : [] }
-//                        ];
-//
-//                        $scope.treeOptions = {
-//                            nodeChildren: "children",
-//                            dirSelectable: true,
-//                            injectClasses: {
-//                                ul: "a1",
-//                                li: "a2",
-//                                liSelected: "a7",
-//                                iExpanded: "a3",
-//                                iCollapsed: "a4",
-//                                iLeaf: "a5",
-//                                label: "a6",
-//                                labelSelected: "a8"
-//                            }
-//                        };
-//
-//                        $scope.ok = function(){
-//
-//                        };
-//
-//                        $scope.cancel = function () {
-//                            $modalInstance.dismiss('cancel');
-//                        };
-//                    }
-//                };
-//                option = angular.extend({}, defaultOption, option);
-//                return $modal.open(option);
+                var option = {
+                    templateUrl: 'views/select_file_dialog.html',
+                    windowClass: 'select_file_dialog',
+                    controller: function ($scope,$modalInstance) {
+                        var mount = GKMount.getMountById(mountId);
+                        if(!mount) return;
+
+                        $scope.fileData = [{
+                            label:mount.name,
+                            nodeImg : mount.logo,
+                            hasChildren:true,
+                            isParent: true,
+                            data:{
+                                mount_id:mountId,
+                                fullpath:'',
+                                partition:GKPartition.teamFile
+                            }
+                        }];
+                        $scope.initSelectedBranch = $scope.fileData[0];
+                        GKFile.getChildNode({
+                            data:{
+                                mount_id:mountId,
+                                fullpath:'',
+                                partition:GKPartition.teamFile
+                            }
+                        }).then(function(data){
+                                $scope.fileData[0].children = data;
+                            });
+
+                        $scope.handleExpand = function (branch) {
+                            if (branch.expanded) {
+                                GKFile.getChildNode(branch).then(function (children) {
+                                    branch.children = children;
+                                });
+                            }
+                        };
+
+                        var selectedFile = $scope.fileData[0];
+                        $scope.handleSelect = function (branch) {
+                            selectedFile = branch;
+                        };
+
+                        $scope.ok = function(){
+                            if(!selectedFile) return;
+                            $modalInstance.close({
+                                selectedPath:selectedFile.data.fullpath
+                            });
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
             },
             choseDrag: function (msg) {
                 var option = {
@@ -2190,16 +2202,17 @@ angular.module('gkClientIndex.services', [])
                         /**
                          * 添加回收站
                          */
-                        if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
-                            var trashNode = context.getTrashNode(branch.data.mount_id, branch.data.partition);
-                            children.push(trashNode);
-                        }
+//                        if (!branch.data.fullpath && !branch.data.filter && branch.data.type != 3) {
+//                            var trashNode = context.getTrashNode(branch.data.mount_id, branch.data.partition);
+//                            children.push(trashNode);
+//                        }
                         deferred.resolve(children);
                     })
                 }
                 return deferred.promise;
             },
-            dealTreeData: function (data, type, mountId) {
+            dealTreeData: function (data, type, mountId,onlyRoot) {
+                onlyRoot = angular.isDefined(onlyRoot)?onlyRoot:false;
                 var newData = [],
                     item,
                     label,
@@ -2233,12 +2246,12 @@ angular.module('gkClientIndex.services', [])
                         angular.extend(item, {
                             dropAble: dropAble,
                             label: label,
-                            isParent: false,
                             data: value,
+                            isParent: onlyRoot?false:true,
+                            hasChildren: onlyRoot?false:value.hasFolder == 1,
                             iconNodeExpand: icon,
                             iconNodeCollapse: icon
                         });
-
                     } else {
                         item = {
                             label: value.name,

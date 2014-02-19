@@ -408,20 +408,14 @@ footer {
     bottom: 0;
     overflow: auto;
 }
-.left_sidebar ul.nav.nav-list{
-    padding: 0;
+.left_sidebar ul.nav.nav-list.abn-tree .icon_trash{
+    margin-left: 45px;
+}
+.left_sidebar ul.nav.nav-list.abn-tree .node_icon,
+.left_sidebar ul.nav.nav-list.abn-tree li > a > img{
+    margin-left: 20px;
 }
 
-.left_sidebar ul.nav.nav-list.abn-tree{
-    font-size: 12px;
-}
-.left_sidebar ul.nav.nav-list.abn-tree i.indented{
-    padding: 0;
-}
-.left_sidebar ul.nav.nav-list.abn-tree > li{
-    margin: 2px 0;
-    font-weight: normal;
-}
 .left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper{
     position: absolute;
     width: 16px;
@@ -433,87 +427,18 @@ footer {
     cursor: pointer;
     display: none;
 }
-.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper.show{
-    display: inline-block;
-}
-.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
+
+ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     position: absolute;
     top:50%;
     margin-top: -3px;
 }
 
-.left_sidebar ul.nav > li:not(.nav-header) > a{
-    padding: 1px 10px 1px 0;
-    border-left:4px solid transparent;
-    color:#9FA7AC;
-    height: 30px;
-    line-height: 30px;
-    transition:background-color linear .1s;
-    -webkit-transition:background-color linear .1s;
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .tree-icon{
-    background: none;
-    text-align: right;
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .tree-icon i{
-    height: 0;
-    width: 0;
-    line-height: 0;
-    border: 4px solid transparent;
-    border-left-color: #7F8999;
+.left_sidebar ul.nav.nav-list.abn-tree > li .hint_wrapper.show{
     display: inline-block;
-    vertical-align: top;
-    margin-top: 6px;
-    transition:all linear .1s;
-    -webkit-transition:-webkit-transform linear .1s;
-    transform-origin:25% 50%;
-    -webkit-transform-origin:25% 50%;
-
 }
-.left_sidebar  ul.nav.nav-list.abn-tree .tree-icon:hover i{
-    border-left-color: #fff;
-
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_fold{
-
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_unfold i{
-    transform:rotate(90deg);
-    -webkit-transform:rotate(90deg);
-}
-
-
-.left_sidebar  ul.nav.nav-list.abn-tree .icon_trash{
-    margin-left: 45px;
-}
-.left_sidebar  ul.nav.nav-list.abn-tree .node_icon,
-.left_sidebar  ul.nav.nav-list.abn-tree li > a > img{
-   margin-left: 20px;
-}
-
-
-.left_sidebar ul.nav.abn-tree > .hover > a,
-.left_sidebar ul.nav.abn-tree > li:not(.nav-header) > a:hover{
-    background: #393D42;
-    color:#fff;
-}
-.left_sidebar ul.nav.nav-list.abn-tree > li.active > a{
-
-    color: #fff;
-    font-weight: bold;
-
-}
-
 .left_sidebar .smart_tree_list ul.nav.nav-list.abn-tree .node_icon{
     margin-left: 11px;
-}
-
-.left_sidebar ul.nav.nav-list.abn-tree .nav-header{
-    height: 32px;
-    line-height: 32px;
-    font-size: 14px;
-    padding: 0 10px;
-
 }
 .right_sidebar,
 .nearby_sidebar{
@@ -2312,4 +2237,15 @@ padding: 6px 21px;
     width: 400px;
     margin-left: -200px;
     font-size: 13px;
+}
+
+/*选中文件的dialog*/
+.select_file_dialog{
+    width: 370px;
+    margin-left: -135px;
+}
+.select_file_dialog .modal-body{
+    padding: 15px 0;
+    height: 290px;
+    max-height: 290px;
 }

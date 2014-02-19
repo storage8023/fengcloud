@@ -756,6 +756,7 @@ angular.module('GKCommon.services', [])
         };
         return GKWindowCom;
     }])
+
     .factory('GKException', [function () {
         var GKException = {
             getAjaxError:function(request,textStatus,errorThrown){

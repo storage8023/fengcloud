@@ -34,7 +34,6 @@
                     options: "=?"
                 },
                 controller: function( $scope ) {
-
                     $scope.options = $scope.options || {};
                     ensureDefault($scope.options, "nodeChildren", "children");
                     ensureDefault($scope.options, "dirSelectable", "true");
@@ -116,6 +115,7 @@
 
                         scope.$watch("treeModel", function updateNodeOnRootScope(newValue) {
                             if (angular.isArray(newValue)) {
+                                console.log(angular.isDefined(scope.node) && angular.equals(scope.node[scope.options.nodeChildren], newValue));
                                 if (angular.isDefined(scope.node) && angular.equals(scope.node[scope.options.nodeChildren], newValue))
                                     return;
                                 scope.node = {};
@@ -161,6 +161,7 @@
                             scope.expandedNodes[id] = undefined;
                         }
                     });
+
                     if (scope.options.equality(scope.node, scope.selectedNode)) {
                         scope.selectNodeLabel(scope.node);
                     }

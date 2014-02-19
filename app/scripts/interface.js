@@ -24,6 +24,7 @@
             return '';
         }
         var re =  gkClient.gGetMessage(JSON.stringify(param));
+        //console.log(re);
         if(!re){
             return '';
         }else{

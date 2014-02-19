@@ -269,6 +269,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 userid:Number(param.memberId)
             });
         })
+
+        $scope.$on('showSelectFileDialog',function($event,param){
+            var mountId = param.mountId;
+            GKModal.selectFile(mountId).result.then(function(re){
+                var iframe = GKFrame('ifame_chat');
+                if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
+                    iframe.gkFrameCallback('selectAddDirSuccess',re);
+                }
+                return;
+            });
+        })
+
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame) {
         $scope.GKPartition = GKPartition;
@@ -277,14 +289,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         /**
          * 我的云库
          */
-
-        $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile);
+        $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile,0,true);
 
 
         /**
          * 订阅的云库
          */
-        $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.subscribeFile);
+        $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.subscribeFile,0,true);
 
         var getPartitionByMountType = function(type){
             var partition = GKPartition.teamFile;
@@ -322,7 +333,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
         var smartFolders = GKSmartFolder.getFolders();
-        $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder);
+        $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder,0,true);
 
         $scope.$on('RemoveMagicObject', function ($event, param) {
             $scope.$apply(function () {
@@ -487,7 +498,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     return;
                 }
                 var partition = getPartitionByMountType(newOrg['type']);
-                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
+                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition,0,true)[0];
                 if (partition == GKPartition.teamFile) {
                     $scope.orgTreeList.push(newOrg);
                 }else{
@@ -516,7 +527,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (newMount['type'] > 2) {
                 list = $scope.orgSubscribeList;
             }
-            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'])[0];
+            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],0,true)[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
             });
@@ -565,7 +576,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var partition = getPartitionByMountType(newOrg['type']);
-            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition)[0];
+            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition,0,true)[0];
 
             if (partition == GKPartition.teamFile) {
                 $scope.orgTreeList.push(newOrg);
@@ -1373,7 +1384,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope);
         })
 
-  $scope.$on('OpenMountPath',function($event,param){
+        $scope.$on('OpenMountPath',function($event,param){
             if($scope.view == 'chat'){
                 GKFileList.changeView($scope,'list');
             }
@@ -1745,6 +1756,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return false;
             }
         }
+    }])
+    .controller('chatControl', ['$scope',function ($scope) {
+
     }])
 ;
 

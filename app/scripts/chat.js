@@ -270,22 +270,41 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache'])
                 $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
             }
         })
+        var dragFiles;
+        $scope.$on('selectAddDirSuccess',function(param){
+            var selectedPath = param.selectedPath;
+            var params = {
+                parent: selectedPath,
+                type: 'save',
+                list: dragFiles.list,
+                mountid: $scope.currentSession.mountid
+           };
+           gkClientInterface.addFile(params,function(re){
+                if(re.error ==0){
+                    var file = gkClientInterface.getFileInfo({
+                        mountid: $scope.currentSession.mountid,
+                        webpath: param.fullpath
+                    });
+                    var metadata = JSON.stringify({
+                        mount_id: $scope.currentSession.mountid,
+                        hash:  file.uuidhash,
+                        filehash: file.filehash,
+                        filesize: file.filesize,
+                        version: file.version,
+                        filename:Util.String.baseName(file.path)
+                    });
 
-        $scope.handleSysDrop = function($event){
-//            var dragFiles = gkClientInterface.getDragFiles();
-//            var selectFileDialog = GKModal.selectFile($scope.currentSession.mountid);
-//            return;
-//            var params = {
-//                parent: $scope.path,
-//                type: 'save',
-//                list: dragFiles.list,
-//                mountid: $scope.mountId
-//            };
-//            GK.addFile(params).then(function () {
-//                GKFileList.refreahData($scope);
-//            }, function (error) {
-//                GKException.handleClientException(error);
-//            })
+                    post('file','',metadata);
+                }
+           })
+       })
+
+        $scope.handleChatDrop = function($event){
+             dragFiles = gkClientInterface.getDragFiles();
+            topWindow.gkFrameCallback('showSelectFileDialog',{
+                mountId:$scope.currentSession.mountid
+            })
+
         };
 
     }])

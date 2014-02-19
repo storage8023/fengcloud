@@ -13,7 +13,7 @@
     <script src="scripts/interface.js?v=5"></script>
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-tree-control/angular-tree-control.js"></script>
+
     <script src="bower_components/angular-cache/angular-cache.js"></script>
     <script src="scripts/common.js?v=5"></script>
     <script src="scripts/chat.js?v=6"></script>
@@ -30,7 +30,7 @@
                 </div>
             </header>
             <section>
-                <div class="scrollbar msg_list" ng-drop="handleSysDrop($event)" ng-show="!error" scroll-to-msg="scrollToIndex"
+                <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex" ng-drop="handleChatDrop($event)"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
                          ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_name}">

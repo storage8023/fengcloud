@@ -773,7 +773,7 @@ angular.module('gkClientIndex.directives', [])
                  * 设置右键菜单
                  */
                 jQuery.contextMenu({
-                    selector: '.abn-tree .abn-tree-row',
+                    selector: '.left_sidebar .abn-tree .abn-tree-row',
                     reposition: false,
                     zIndex: 9999,
                     className: 'sidebar_contextmenu',
