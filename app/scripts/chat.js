@@ -120,9 +120,24 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         $scope.openFile = function ($event,msg) {
             var metadata = msg.metadata;
             var mountId = Number($scope.currentSession.mountid);
+            var file;
+            if(!metadata.hash){
+                file = gkClientInterface.getFileInfo({
+                    mountid: Number(metadata.mount_id),
+                    webpath: metadata.fullpath
+                });
+            }else{
+                file = gkClientInterface.getFileInfo({
+                    mountid: Number(metadata.mount_id),
+                    uuidhash: metadata.hash
+                });
+            }
+            if(jQuery.isEmptyObject(file)){
+                file = null;
+            }
             if(metadata.dir==1){
-                if(!msg.file) return;
-                var fullpath = msg.file.path;
+                if(!file) return;
+                var fullpath = file.path;
                 topWindow.gkFrameCallback('OpenMountPath',{
                     mountid:mountId,
                     webpath:fullpath+'/'
@@ -131,11 +146,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 var params = {
                     mountid: mountId
                 };
-                if(!msg.file){
+                if(!file){
                     params.filehash = metadata.filehash;
                     params.webpath = metadata.fullpath;
                 }else{
-                    params.webpath = msg.file.path;
+                    params.webpath = file.path;
                 }
                 gkClientInterface.open(params);
             }

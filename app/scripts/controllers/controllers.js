@@ -1565,7 +1565,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     })
                 }
             }
-            console.log('sideBarData',sideBarData);
             return sideBarData;
         };
 
