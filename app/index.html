@@ -58,7 +58,6 @@
                       selected-branch="selectedBranch"
                       init-selected-branch="initSelectedBranch"
                       on-select="handleSelect(branch,showChat,GKPartition.teamFile)"
-                      on-drop="handleDrop(branch)"
                       on-hint-click = "handleHintClick(branch)"
                       show-msg-icon="true"
                     >
@@ -74,8 +73,7 @@
                       icon-node-collapse="icon_teamfolder"
                       selected-branch="selectedBranch"
                       init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,showChat,GKPartition.teamFile)"
-                      on-drop="handleDrop(branch)"
+                      on-select="handleSelect(branch,showChat,GKPartition.entFile)"
                       on-hint-click = "handleHintClick(branch)"
                       show-msg-icon="true"
                     >
@@ -100,7 +98,7 @@
 <header ng-controller="header">
     <div class="tabbar">
         <ul>
-            <li ng-if="['teamfile'].indexOf(PAGE_CONFIG.partition)>=0" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
+            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
             <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
         </ul>
     </div>

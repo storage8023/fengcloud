@@ -10,6 +10,22 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: 'views/guider_popup.html'
         }
     }])
+    .directive('checkAuth', ['GKAuth','$rootScope',function (GKAuth,$rootScope) {
+        return {
+            restrict: 'A',
+            link:function(scope, element, attrs ){
+                var checkAuth = attrs.checkAuth;
+                scope.$watch('PAGE_CONFIG.mount',function(val){
+                    var hasAuth = GKAuth.check(val,$rootScope.PAGE_CONFIG.partition,checkAuth);
+                    if(!hasAuth){
+                        element.hide();
+                    }else{
+                        element.show();
+                    }
+                })
+            }
+        }
+    }])
     .directive('guider', ['$compile','$document','$position','$timeout','localStorageService','GKConstant','$rootScope',function ($compile,$document,$position,$timeout,localStorageService,GKConstant,$rootScope) {
         var template = '<guider-popup content="{{guiderContent}}" close-guide="closeGuide()" turn-off-guide="turnOffGuide()" placement="{{placement}}"></guider-popup>';
         return {
@@ -1097,7 +1113,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth) {
         return {
             replace: true,
             restrict: 'E',
@@ -1242,7 +1258,8 @@ angular.module('gkClientIndex.directives', [])
                                 //})
                             });
                     }
-
+                    $scope.showChatBtn = GKAuth.check(mount,'','file_discuss');
+                    $scope.showLinkBtn = GKAuth.check(mount,'','file_link');
                 };
 
                 $scope.$watch('localFile', function (file, oldValue) {
@@ -1303,7 +1320,7 @@ angular.module('gkClientIndex.directives', [])
                     if (star) {
                         GKApi.removeFromFav(mountId, fullpath, filterType).success(function () {
                             $scope.$apply(function () {
-                                if ($scope.PAGE_CONFIG.partition == GKPartition.smartFolder && $scope.filter == filter) {
+                                if (GKPartition.isSmartFolderPartition($scope.PAGE_CONFIG.partition) && $scope.filter == filter) {
                                     $scope.$emit('unFav');
                                 } else {
                                     Util.Array.removeByValue(favorite, filterType);
@@ -1420,7 +1437,7 @@ angular.module('gkClientIndex.directives', [])
                     if (param.search) {
                         listName = '搜索结果';
                     } else {
-                        if (param.partition == GKPartition.smartFolder && param.filter) {
+                        if (GKPartition.isSmartFolderPartition(param.partition) && param.filter) {
                             listName = GKSmartFolder.getSmartFoldeName(param.filter);
                         } else {
                             var mount = GKMount.getMountById(param.mountid);
@@ -1698,7 +1715,7 @@ angular.module('gkClientIndex.directives', [])
                             text: GKSmartFolder.getSmartFoldeName(params.filter)
                         })
                     } else {
-                        if([GKPartition.teamFile].indexOf(params.partition)>=0){
+                        if(GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)){
                             searchScopes.push({
                                 name: 'partition',
                                 text: '所有云库'

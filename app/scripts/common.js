@@ -856,7 +856,44 @@ angular.module('GKCommon.services', [])
          * 格式化mount数据
          * @param mount
          */
+        var isMember = function(mount){
+            return mount && mount.type < 3;
+        };
+
+        var isAdmin = function(mount){
+            return mount && mount.type < 2;
+        };
+
+        var isSuperAdmin = function(mount){
+            return mount && mount.type < 1;
+        };
+
         var formatMountItem = function (mount) {
+            var property;
+            if(mount.property){
+                property = JSON.parse(mount.property);
+            }else{
+                if(isMember(mount)){
+                    property = [
+                        'file_read',
+                        'file_write',
+                        'file_preview',
+                        'file_delete',
+                        'file_recycle',
+                        'file_delete_com',
+                        'file_recover',
+                        'file_history',
+                        'file_discuss',
+                        'file_link',
+                        'file_read_open'
+                    ];
+                }else{
+                    property = [
+                        'file_read',
+                        'file_preview',
+                    ];
+                }
+            }
             var newMount = {
                 mount_id: mount.mountid,
                 ent_id:mount.ent_id,
@@ -874,7 +911,7 @@ angular.module('GKCommon.services', [])
                 hasFolder: 1,
                 trash_size: mount.size_recycle,
                 trash_dateline: mount.dateline_recycle,
-                property:mount.property?JSON.parse(mount.property):''
+                property:property
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;
@@ -891,15 +928,9 @@ angular.module('GKCommon.services', [])
             refreshMounts:function(){
                 mounts = getMounts();
             },
-            isMember: function (mount) {
-                return mount && mount.type < 3;
-            },
-            isAdmin: function (mount) {
-                return mount && mount.type < 2;
-            },
-            isSuperAdmin: function (mount) {
-                return mount && mount.type < 1;
-            },
+            isMember: isMember,
+            isAdmin: isAdmin,
+            isSuperAdmin: isSuperAdmin,
             formatMountItem: formatMountItem,
             /**
              * 获取所有的mount
@@ -1012,6 +1043,18 @@ angular.module('GKCommon.services', [])
                 angular.forEach($scope.orgSubscribeList, function (value, key) {
                     if (value.data.org_id == orgId) {
                         $scope.orgSubscribeList.splice(key, 1);
+                        return false;
+                    }
+                });
+            },
+            removeEntFileList: function ($scope, orgId,entId) {
+                var mount = this.removeMountByOrgId(orgId);
+                if (!mount) return;
+                if(!$scope.entTreeList[entId]) return;
+                var list = $scope.entTreeList[entId].data;
+                angular.forEach(list, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        list.splice(key, 1);
                         return false;
                     }
                 });

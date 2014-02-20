@@ -35,8 +35,8 @@
                         </div>
                     </div>
                     <div class="opt_wrapper" ng-show="showTab">
-                        <button class="btn btn-opt" ng-show="file.dir==0" guider="plink" guider-placement="left" ng-click="publishFile(file)">临时链接</button>
-                        <button guider="chat" guider-placement="left" class="btn btn-opt" ng-click="startChat(file)">发送到讨论</button>
+                        <button class="btn btn-opt" ng-show="showLinkBtn" guider="plink" guider-placement="left" ng-click="publishFile(file)">临时链接</button>
+                        <button guider="chat" guider-placement="left" ng-show="showChatBtn" class="btn btn-opt" ng-click="startChat(file)">发送到讨论</button>
                     </div>
                     <div class="tags">
                         <div ng-if="!showTab">

@@ -16,6 +16,34 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .factory('GKAuth', ['GKPartition',function (GKPartition) {
+        var GKAuth = {
+            getPermissions:function(mount,partition){
+                var permissions;
+                if(mount && !jQuery.isEmptyObject(mount)){
+                    permissions = mount.property.permissions || [];
+                }else{
+                    permissions = [];
+                }
+                return permissions;
+            },
+            check:function(mount,partition){
+                var auths = Array.prototype.slice.call(arguments).slice(2);
+                console.log('auth',auths);
+                var hasAuth = true;
+                var permissions = this.getPermissions(mount,partition);
+                console.log('permissions',permissions);
+                for(var i=0;i<auths.length;i++){
+                    if(permissions.indexOf(auths[i])<0){
+                        hasAuth = false;
+                        break;
+                    }
+                }
+                return hasAuth;
+            }
+        };
+        return GKAuth;
+    }])
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath: function (mountId, fullpath) {
@@ -68,18 +96,20 @@ angular.module('gkClientIndex.services', [])
             getTreeList:function(mounts){
                 var treeList = {};
                 angular.forEach(mounts,function(mount){
-                    var entId = mount.ent_id ||0,
-                        partition = GKPartition.getPartitionByMountType(mount.member_type),
-                        treeItem = GKFile.dealTreeItem(mount,partition, mount.mount_id,true);
-                    var ent = GKEnt.getEnt(entId);
-                    if(!treeList[entId]){
-                        treeList[entId] = {
-                            guider:!entId?'lib':'',
-                            header:ent.entname,
-                            data:[treeItem]
-                        };
-                    }else{
-                        treeList[entId].data.push(treeItem);
+                    if(mount.ent_id){
+                        var entId = mount.ent_id,
+                            partition = GKPartition.getPartitionByMountType(mount.member_type,mount.ent_id),
+                            treeItem = GKFile.dealTreeItem(mount,partition, mount.mount_id,true);
+                        var ent = GKEnt.getEnt(entId);
+                        if(!treeList[entId]){
+                            treeList[entId] = {
+                                guider:!entId?'lib':'',
+                                header:ent.entname,
+                                data:[treeItem]
+                            };
+                        }else{
+                            treeList[entId].data.push(treeItem);
+                        }
                     }
                 });
                 return treeList;
@@ -218,7 +248,7 @@ angular.module('gkClientIndex.services', [])
                 if (mountId) {
                     mount = GKMount.getMountById(mountId);
                 }
-                if ([GKPartition.teamFile].indexOf(partition)>=0) {
+                if (GKPartition.isTeamFilePartition(partition) || GKPartition.isEntFilePartition(partition)) {
                     if (data.filter == 'trash') {
                         if(GKMount.isSuperAdmin(mount)){
                             items = {
@@ -324,7 +354,7 @@ angular.module('gkClientIndex.services', [])
 
                     }
 
-                } else if (data.partition == GKPartition.subscribeFile) {
+                } else if (GKPartition.isSubscribePartition(data.partition)) {
                     if(!data.fullpath){
                         items = {
                             'view_dashboard': {
@@ -365,7 +395,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     }
 
-                } else if (data.partition == GKPartition.smartFolder && data.type > 0 ) {
+                } else if (GKPartition.isSmartFolderPartition(data.partition) && data.type > 0 ) {
                     items = {
                         'rename': {
                             name: '修改名称',
@@ -2061,15 +2091,37 @@ angular.module('gkClientIndex.services', [])
     .factory('GKPartition', [function(){
         var GKPartition = {
             teamFile: 'teamfile',
+            entFile: 'entfile',
             smartFolder: 'smartfolder',
             subscribeFile: 'subscribefile',
-            getPartitionByMountType : function(type){
-                var partition = this.teamFile;
-                if (type > 2) {
-                    partition = this.subscribeFile;
+            getPartitionByMountType : function(type,entId){
+                var partition;
+                if(!entId){
+                    partition = this.teamFile;
+                    if (type > 2) {
+                        partition = this.subscribeFile;
+                    }
+                }else{
+                    partition = this.entFile;
                 }
                 return partition;
+            },
+            isMountPartition:function(partition){
+                return [this.teamFile,this.entFile,this.subscribeFile].indexOf(partition) >= 0;
+            },
+            isSubscribePartition:function(partition){
+                return this.subscribeFile == partition;
+            },
+            isSmartFolderPartition:function(partition){
+                return this.smartFolder == partition;
+            },
+            isTeamFilePartition:function(partition){
+                return this.teamFile == partition;
+            },
+            isEntFilePartition:function(partition){
+                return this.entFile == partition;
             }
+
         };
         return GKPartition;
     }])
@@ -2239,7 +2291,7 @@ angular.module('gkClientIndex.services', [])
                 var deferred = $q.defer(), children;
                 if (branch.data.filter != 'trash') {
                     var source = 'client';
-                    if (branch.data.partition == GKPartition.subscribeFile) {
+                    if (GKPartition.isSubscribePartition(branch.data.partition)) {
                         source = 'api';
                     }
                     var option  = {dir:1};
@@ -2277,7 +2329,7 @@ angular.module('gkClientIndex.services', [])
                 /**
                  * 我的云库，订阅的云库
                  */
-                if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf(type)>=0) {
+                if (GKPartition.isMountPartition(type)) {
                     var icon = '';
                     if (!value.fullpath) {
                         label = value.name;
@@ -2287,12 +2339,12 @@ angular.module('gkClientIndex.services', [])
                         mountId && angular.extend(value, {
                             mount_id: mountId
                         });
-                        if ([GKPartition.teamFile].indexOf(type)>=0) {
+                        if (GKPartition.isTeamFilePartition(type) || GKPartition.isEntFilePartition(type)) {
                             icon = value.sharepath || value.open == 1 ? 'icon_teamfolder' : 'icon_myfolder';
                         }
                     }
                     var dropAble = false;
-                    if ([GKPartition.teamFile].indexOf(type)>=0) {
+                    if (GKPartition.isTeamFilePartition(type) || GKPartition.isEntFilePartition(type)) {
                         dropAble = true;
                     }
                     angular.extend(item, {
@@ -2634,7 +2686,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
-                if ([GKPartition.teamFile].indexOf(partition)>=0) {
+                if (GKPartition.isTeamFilePartition(partition) || GKPartition.isEntFilePartition(partition)) {
                     if(!GKMount.isAdmin(mount)){
                         this.disableOpt(opts, 'create');
                     }
@@ -3634,7 +3686,7 @@ angular.module('gkClientIndex.services', [])
                     deferred = $q.defer();
                 if ($scope.search) {
                     var searchArr = $scope.search.split('|');
-                    if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0 && $scope.filter != 'trash') {
+                    if (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash') {
                         source = 'api';
                         $rootScope.$broadcast('searchStateChange','loading');
                         var fileSearch = new GKFileSearch();
@@ -3663,12 +3715,12 @@ angular.module('gkClientIndex.services', [])
                         $rootScope.$broadcast('searchStateChange','end');
                     }
                 } else {
-                    if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf($scope.partition)>=0) {
+                    if (GKPartition.isMountPartition($scope.partition)) {
                         var source = 'api', option = {};
                         if ($scope.filter == 'trash') {
                             option.recycle = true;
                         } else {
-                            if ([GKPartition.teamFile].indexOf($scope.partition)>=0) {
+                            if (GKPartition.isTeamFilePartition($scope.partition) || GKPartition.isEntFilePartition($scope.partition)) {
                                 source = 'client';
                                 option.current = 1;
                             }
