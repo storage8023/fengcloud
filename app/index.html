@@ -47,7 +47,7 @@
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="scrollbar tree_wrapper" contextmenu>
         <a class="btn btn-primary add_lib" ng-click="handleAdd()" href="javascript:void(0)">+ 创建云库</a>
-        <div guider="lib" guider-placement="right">
+        <div class="tree in treeList" guider="lib" guider-placement="right">
             <abn-tree tree-data="orgTreeList"
                       header="我的云库"
                       icon-leaf="icon_file"
@@ -64,7 +64,6 @@
                     >
             </abn-tree>
         </div>
-
         <abn-tree tree-data="smartTreeList"
                   header="智能文件夹"
                   icon-leaf="icon_file"
