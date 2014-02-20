@@ -46,39 +46,23 @@
 <aside class="left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="scrollbar tree_wrapper" contextmenu>
-        <div>
-            <div guider="lib" guider-placement="right">
-                <abn-tree tree-data="orgTreeList"
-                          header="我的云库"
-                          icon-leaf="icon_file"
-                          icon-expand="icon_fold"
-                          icon-collapse="icon_unfold"
-                          icon-node-expand="icon_teamfolder"
-                          icon-node-collapse="icon_teamfolder"
-                          selected-branch="selectedBranch"
-                          init-selected-branch="initSelectedBranch"
-                          on-add="handleAdd(GKPartition.teamFile)"
-                          on-select="handleSelect(branch,showChat,GKPartition.teamFile)"
-                          on-drop="handleDrop(branch)"
-                          on-hint-click = "handleHintClick(branch)"
-                          show-msg-icon="true"
-                        >
-                </abn-tree>
-            </div>
-            <div guider="subscribe" guider-placement="right">
-                <abn-tree tree-data="orgSubscribeList"
-                          ng-show="orgSubscribeList.length"
-                          header="订阅的云库"
-                          icon-leaf="icon_file"
-                          icon-expand="icon_fold"
-                          icon-collapse="icon_unfold"
-                          icon-node-expand="icon_subscribefolder"
-                          icon-node-collapse="icon_subscribefolder"
-                          selected-branch="selectedBranch"
-                          on-select="handleSelect(branch,showChat,GKPartition.subscribeFile)"
-                        >
-                </abn-tree>
-            </div>
+        <a class="btn btn-primary add_lib" ng-click="handleAdd()" href="javascript:void(0)">+ 创建云库</a>
+        <div guider="lib" guider-placement="right">
+            <abn-tree tree-data="orgTreeList"
+                      header="我的云库"
+                      icon-leaf="icon_file"
+                      icon-expand="icon_fold"
+                      icon-collapse="icon_unfold"
+                      icon-node-expand="icon_teamfolder"
+                      icon-node-collapse="icon_teamfolder"
+                      selected-branch="selectedBranch"
+                      init-selected-branch="initSelectedBranch"
+                      on-select="handleSelect(branch,showChat,GKPartition.teamFile)"
+                      on-drop="handleDrop(branch)"
+                      on-hint-click = "handleHintClick(branch)"
+                      show-msg-icon="true"
+                    >
+            </abn-tree>
         </div>
 
         <abn-tree tree-data="smartTreeList"
@@ -89,7 +73,6 @@
                   icon-node-expand="icon_smartfolder"
                   icon-node-collapse="icon_smartfolder"
                   selected-branch="selectedBranch"
-                  show-add-btn="false"
                   on-select="handleSelect(branch,showChat,GKPartition.smartFolder)"
                   class="smart_tree_list"
                 >

@@ -1,5 +1,5 @@
 <ul class="nav nav-list abn-tree">
-  <li ng-show="header" class="nav-header"><span>{{ header }}</span><a class="btn btn-primary" ng-click="handleAddBtn()" ng-if="showAdd" href="javascript:void(0)">+ 创建云库</a></li>
+  <li ng-show="header" class="nav-header"><span>{{ header }}</span></li>
   <li ng-repeat="row in tree_rows | filter:{visible:true}"
       data-branch="{{row.branch.data}}"
       data-drop="true"

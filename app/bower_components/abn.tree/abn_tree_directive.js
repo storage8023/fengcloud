@@ -14,14 +14,12 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
       selectedBranch:'=',
       onExpand: '&',
       initSelectedBranch:'=',
-      onAdd:'&',
       onDrop:'&',
       onHintClick:'&'
     },
     link: function(scope, element, attrs) {
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
        index  = 20;
-       scope.showAdd = !!attrs['onAdd'];
         scope.showMsgIcon = !!attrs['onHintClick'];
       if (attrs.iconExpand == null) {
         attrs.iconExpand = 'icon-plus';
@@ -257,13 +255,6 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
         });
       }
 
-      scope.handleAddBtn = function(){
-          if (scope.onAdd != null) {
-              return $timeout(function() {
-                  return scope.onAdd();
-              });
-          }
-      };
 
      var expandedTimer;
       scope.drop = function(event,ui,branch){

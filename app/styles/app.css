@@ -408,6 +408,13 @@ footer {
     bottom: 0;
     overflow: auto;
 }
+.left_sidebar .tree_wrapper .add_lib{
+    position: absolute;
+    right: 5px;
+    top:8px;
+    padding:1px 5px;
+    z-index: 11;
+}
 .left_sidebar ul.nav.nav-list.abn-tree .icon_trash{
     margin-left: 45px;
 }

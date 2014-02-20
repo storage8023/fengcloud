@@ -384,9 +384,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.handleAdd = function (partition) {
-            if (partition == GKPartition.teamFile) {
-                var createTeamDialog = GKModal.createTeam();
-            }
+            var createTeamDialog = GKModal.createTeam();
         };
 
         $scope.handleDrop = function (branch) {
