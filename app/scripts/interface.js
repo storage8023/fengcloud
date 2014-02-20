@@ -405,7 +405,6 @@
     },
     addFile: function (params,callback) {
         try {
-
              gkClient.gAdd(JSON.stringify(params),function(re){
                  re = typeof re ==='object'?re:JSON.parse(re);
                  if(typeof callback === 'function'){

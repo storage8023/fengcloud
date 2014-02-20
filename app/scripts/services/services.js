@@ -705,7 +705,7 @@ angular.module('gkClientIndex.services', [])
                             };
                             gkClientInterface.setFilePublic(param, function (re) {
                                 $scope.$apply(function () {
-                                    if (re.error == 0) {
+                                    if (!re.error) {
                                         $scope.file.open = open;
                                         $rootScope.$broadcast('editFileSuccess', 'set_open', mountId, file.fullpath, {
                                             open: open
@@ -1218,7 +1218,7 @@ angular.module('gkClientIndex.services', [])
                                         webpath: path,
                                         open: 1
                                     }, function (re) {
-                                        if (re.error == 0) {
+                                        if (!re.error) {
                                             callback();
                                         } else {
                                             GKException.handleClientException(re);
@@ -1879,7 +1879,7 @@ angular.module('gkClientIndex.services', [])
             recover: function (params) {
                 var deferred = $q.defer();
                 gkClientInterface.recover(params, function (re) {
-                    if (re.error == 0) {
+                    if (!re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1890,7 +1890,7 @@ angular.module('gkClientIndex.services', [])
             addFile: function (params) {
                 var deferred = $q.defer();
                 gkClientInterface.addFile(params, function (re) {
-                    if (re.error == 0) {
+                    if (!re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1901,7 +1901,7 @@ angular.module('gkClientIndex.services', [])
             createFolder: function (params) {
                 var deferred = $q.defer();
                 gkClientInterface.createFolder(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1913,7 +1913,7 @@ angular.module('gkClientIndex.services', [])
                 params.status = 1;
                 var deferred = $q.defer();
                 gkClientInterface.toggleLock(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1925,7 +1925,7 @@ angular.module('gkClientIndex.services', [])
                 params.status = 0;
                 var deferred = $q.defer();
                 gkClientInterface.lock(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1942,7 +1942,7 @@ angular.module('gkClientIndex.services', [])
             del: function (params) {
                 var deferred = $q.defer();
                 var re = gkClientInterface.del(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1953,7 +1953,7 @@ angular.module('gkClientIndex.services', [])
             rename: function (params) {
                 var deferred = $q.defer();
                 var re = gkClientInterface.rename(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1964,7 +1964,7 @@ angular.module('gkClientIndex.services', [])
             copy: function (params) {
                 var deferred = $q.defer();
                 var re = gkClientInterface.copy(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1976,7 +1976,7 @@ angular.module('gkClientIndex.services', [])
             move: function (params) {
                 var deferred = $q.defer();
                 gkClientInterface.move(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -1994,7 +1994,7 @@ angular.module('gkClientIndex.services', [])
             removeLinkPath: function (params) {
                 var deferred = $q.defer();
                 gkClientInterface.removeLinkPath(params, function (re) {
-                    if (re && re.error == 0) {
+                    if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
                         deferred.reject(re);
@@ -2734,7 +2734,7 @@ angular.module('gkClientIndex.services', [])
                     name: name
                 };
                 gkClientInterface.renameSmartFolder(param, function (re) {
-                    if (re.error == 0) {
+                    if (!re.error) {
                         var filter = GKSmartFolder.getFolderAliasByType(condition);
                         $rootScope.$broadcast('editSmartFolder', name, condition, filter);
                         deferred.resolve();

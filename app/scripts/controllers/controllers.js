@@ -1430,8 +1430,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         $scope.$on('TransferState',function(event,param){
-            $scope.$apply(function(){
-               $scope.transfering = param.state;
+            $timeout(function(){
+                $scope.transfering = param.state;
             })
         })
 
