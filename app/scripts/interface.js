@@ -7,6 +7,17 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getEnt:function(param){
+        if(typeof gkClient.gGetEnt === 'undefined'){
+            return '';
+        }
+        var re =  gkClient.gGetEnt(JSON.stringify(param));
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
+    },
     removeMember:function(param){
         if(typeof gkClient.gRemoveMember === 'undefined'){
             return;

@@ -286,6 +286,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//我的云库
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
+
+        $scope.entTreeList = GKSideTree.getTreeList(GKMount.getMounts());
         /**
          * 我的云库
          */
@@ -384,7 +386,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.handleAdd = function (partition) {
-            var createTeamDialog = GKModal.createTeam();
+            GKModal.createTeam();
         };
 
         $scope.handleDrop = function (branch) {

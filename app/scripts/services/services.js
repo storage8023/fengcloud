@@ -31,6 +31,23 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
+    .factory('GKEnt', [function () {
+        var GKEnt = {
+            getEnt: function (entId) {
+               if(!entId){
+                   return {
+                       entid:0,
+                       entname:'我的云库'
+                   };
+               }else{
+                   return gkClientInterface.getEnt({
+                       entid:entId
+                   });
+               }
+            }
+        };
+        return GKEnt;
+    }])
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath: function (mountId, fullpath) {
@@ -46,8 +63,27 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKSideTree', ['GKFile', 'GKPartition', function (GKFile, GKPartition) {
+    .factory('GKSideTree', ['GKFile', 'GKPartition','GKEnt', function (GKFile, GKPartition,GKEnt) {
         return {
+            getTreeList:function(mounts){
+                var treeList = {};
+                angular.forEach(mounts,function(mount){
+                    var entId = mount.ent_id ||0,
+                        partition = GKPartition.getPartitionByMountType(mount.member_type),
+                        treeItem = GKFile.dealTreeItem(mount,partition, mount.mount_id,true);
+                    var ent = GKEnt.getEnt(entId);
+                    if(!treeList[entId]){
+                        treeList[entId] = {
+                            guider:!entId?'lib':'',
+                            header:ent.entname,
+                            data:[treeItem]
+                        };
+                    }else{
+                        treeList[entId].data.push(treeItem);
+                    }
+                });
+                return treeList;
+            },
             getNode: function (list, mountId, fullpath) {
                 var node = null;
                 angular.forEach(list, function (value, key) {
@@ -2022,11 +2058,21 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .constant('GKPartition', {
-        teamFile: 'teamfile',
-        smartFolder: 'smartfolder',
-        subscribeFile: 'subscribefile'
-    })
+    .factory('GKPartition', [function(){
+        var GKPartition = {
+            teamFile: 'teamfile',
+            smartFolder: 'smartfolder',
+            subscribeFile: 'subscribefile',
+            getPartitionByMountType : function(type){
+                var partition = this.teamFile;
+                if (type > 2) {
+                    partition = this.subscribeFile;
+                }
+                return partition;
+            }
+        };
+        return GKPartition;
+    }])
     .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException','$rootScope','$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException,$rootScope,$filter) {
         var GKFile = {
             checkFilename: function (filename) {
@@ -2218,53 +2264,57 @@ angular.module('gkClientIndex.services', [])
                     label,
                     context = this;
                 angular.forEach(data, function (value) {
-                    item = {};
-                    angular.extend(value, {
-                        partition: type
-                    });
-                    /**
-                     * 我的云库，订阅的云库
-                     */
-                    if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf(type)>=0) {
-                        var icon = '';
-                        if (!value.fullpath) {
-                            label = value.name;
-                            item.nodeImg = value.logo;
-                        } else {
-                            label = value.filename;
-                            mountId && angular.extend(value, {
-                                mount_id: mountId
-                            });
-                            if ([GKPartition.teamFile].indexOf(type)>=0) {
-                                icon = value.sharepath || value.open == 1 ? 'icon_teamfolder' : 'icon_myfolder';
-                            }
-                        }
-                        var dropAble = false;
-                        if ([GKPartition.teamFile].indexOf(type)>=0) {
-                            dropAble = true;
-                        }
-                        angular.extend(item, {
-                            dropAble: dropAble,
-                            label: label,
-                            data: value,
-                            isParent: onlyRoot?false:true,
-                            hasChildren: onlyRoot?false:value.hasFolder == 1,
-                            iconNodeExpand: icon,
-                            iconNodeCollapse: icon
-                        });
-                    } else {
-                        item = {
-                            label: value.name,
-                            isParent: false,
-                            data: value,
-                            hasChildren: false,
-                            iconNodeExpand: value.icon,
-                            iconNodeCollapse: value.icon
-                        };
-                    }
+                    item = context.dealTreeItem(value,type, mountId,onlyRoot);
                     newData.push(item);
                 });
                 return newData;
+            },
+            dealTreeItem:function(value,type, mountId,onlyRoot){
+                var item = {},label;
+                angular.extend(value, {
+                    partition: type
+                });
+                /**
+                 * 我的云库，订阅的云库
+                 */
+                if ([GKPartition.teamFile,GKPartition.subscribeFile].indexOf(type)>=0) {
+                    var icon = '';
+                    if (!value.fullpath) {
+                        label = value.name;
+                        item.nodeImg = value.logo;
+                    } else {
+                        label = value.filename;
+                        mountId && angular.extend(value, {
+                            mount_id: mountId
+                        });
+                        if ([GKPartition.teamFile].indexOf(type)>=0) {
+                            icon = value.sharepath || value.open == 1 ? 'icon_teamfolder' : 'icon_myfolder';
+                        }
+                    }
+                    var dropAble = false;
+                    if ([GKPartition.teamFile].indexOf(type)>=0) {
+                        dropAble = true;
+                    }
+                    angular.extend(item, {
+                        dropAble: dropAble,
+                        label: label,
+                        data: value,
+                        isParent: onlyRoot?false:true,
+                        hasChildren: onlyRoot?false:value.hasFolder == 1,
+                        iconNodeExpand: icon,
+                        iconNodeCollapse: icon
+                    });
+                } else {
+                    item = {
+                        label: value.name,
+                        isParent: false,
+                        data: value,
+                        hasChildren: false,
+                        iconNodeExpand: value.icon,
+                        iconNodeCollapse: value.icon
+                    };
+                }
+                return item;
             },
             formatFileItem: function (value, source) {
                 var file;

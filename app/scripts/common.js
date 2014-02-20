@@ -859,6 +859,7 @@ angular.module('GKCommon.services', [])
         var formatMountItem = function (mount) {
             var newMount = {
                 mount_id: mount.mountid,
+                ent_id:mount.ent_id,
                 name: mount.name ? mount.name : '我的文件',
                 org_id: mount.orgid,
                 capacity: mount.total,
@@ -872,7 +873,8 @@ angular.module('GKCommon.services', [])
                 subscriber_count: mount.subscribecount,
                 hasFolder: 1,
                 trash_size: mount.size_recycle,
-                trash_dateline: mount.dateline_recycle
+                trash_dateline: mount.dateline_recycle,
+                property:mount.property?JSON.parse(mount.property):''
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;
@@ -960,7 +962,7 @@ angular.module('GKCommon.services', [])
             getOrgMounts: function () {
                 var orgMounts = [];
                 angular.forEach(mounts, function (value) {
-                    if (value.type < 3) {
+                    if (value.type < 3 && !value.ent_id) {
                         orgMounts.push(value);
                     }
                 })
