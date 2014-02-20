@@ -144,10 +144,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 })
             }else{
                 var params = {
-                    mountid: mountId
+                    mountid: mountId,
+                    filehash:metadata.filehash
                 };
                 if(!file){
-                    params.filehash = metadata.filehash;
                     params.webpath = metadata.fullpath;
                 }else{
                     params.webpath = file.path;
