@@ -2694,9 +2694,9 @@ angular.module('gkClientIndex.services', [])
             getAuthOpts: function (currentFile, files, partition, mount) {
                 var opts = this.getDefaultOpts();
                 if (GKPartition.isTeamFilePartition(partition) || GKPartition.isEntFilePartition(partition)) {
-                    if(!GKAuth.check(mount,'','file_write')){
-                        this.disableOpt(opts, 'create');
-                    }
+//                    if(!GKAuth.check(mount,'','file_write')){
+//                        this.disableOpt(opts, 'create');
+//                    }
                     /**
                      * 团队文件夹的根目录
                      */
@@ -3348,7 +3348,7 @@ angular.module('gkClientIndex.services', [])
                         className: "add",
                         icon: 'icon_download',
                         callback: function () {
-                         var mount = GKMount.getMountById();
+                         var mount = GKMount.getMountById($scope.mountId);
                          if(!mount) return;
                          if(GKAuth.check(mount,'','file_write')){
                              alert('你没有权限在当前云库下添加文件或文件夹');
@@ -3461,7 +3461,7 @@ angular.module('gkClientIndex.services', [])
                         callback: function () {
                             var file = selectedFile[0];
                             var mountId = GKFileList.getOptFileMountId(file);
-                            var mount = GKMount.getMountById();
+                            var mount = GKMount.getMountById(mountId);
                             if(!mount){
                                 return;
                             }

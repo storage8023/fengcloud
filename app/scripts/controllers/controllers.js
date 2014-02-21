@@ -173,11 +173,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(param.mode == 'chat'){
                     $rootScope.$broadcast('clearMsgTime',{orgId: extend.mount.org_id})
                 }
+                if(extend.mode=='chat' && !GKAuth.check(extend.mount,param.partition,'file_discuss')){
+                    extend.mode = 'file';
+                }
             } else {
                 extend.file = {};
                 extend.mount = {};
-            }
-            if(extend.mode=='chat' && !GKAuth.check(extend.mount,param.partition,'file_discuss')){
                 extend.mode = 'file';
             }
             angular.extend($rootScope.PAGE_CONFIG, extend);
@@ -273,7 +274,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('showSelectFileDialog',function($event,param){
             var mountId = param.mountId;
-            var mount = GKMount.getMountById();
+            var mount = GKMount.getMountById(mountId);
             if(!mount){
                 return;
             }
@@ -623,7 +624,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setChatState = function(list){
             angular.forEach(list,function(item){
                 var orgId = item.receiver;
-                var mount = GKMount.getMountByOrgId();
+                var mount = GKMount.getMountByOrgId(orgId);
                 if(!mount) return;
                 if(!GKAuth.check(mount,'','file_discuss')){
                     return;
@@ -1315,7 +1316,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 alert('不能在当前路径添加文件');
                 return;
             }
-           if(!GKAuth.check(mount,'','file_write')){
+           if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
                alert('你没有权限在当前云库添加文件');
                return;
            }
