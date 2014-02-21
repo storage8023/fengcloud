@@ -2796,8 +2796,8 @@ angular.module('gkClientIndex.services', [])
                 if(!mount){
                     return;
                 }
-                if(!GKMount.check(mount,'','file_delete')){
-                    alert('你没有权限进行此操作');
+                if(!GKAuth.check(mount,'','file_delete')){
+                    alert('你没有权限删除当前库下的文件或文件夹');
                     return;
                 }
                 var files = [];
@@ -2920,10 +2920,6 @@ angular.module('gkClientIndex.services', [])
                         file = $rootScope.PAGE_CONFIG.file;
                     }
                     if (isSync) { //取消同步
-                        if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
-                            alert('你没有权限在当前云库同步文件夹');
-                            returnl
-                        }
                         if (!confirm('确定取消同步"' + file.filename + '" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
                             return;
                         }
@@ -2934,8 +2930,11 @@ angular.module('gkClientIndex.services', [])
                         GK.removeLinkPath(params).then(function () {
                             $rootScope.$broadcast('editFileSuccess', 'unsync', GKFileList.getOptFileMountId(file), file.fullpath)
                         });
-
                     } else {
+                        if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                            alert('你没有权限在当前云库同步文件夹');
+                            return;
+                        }
                         GKModal.sync($rootScope.PAGE_CONFIG.mount.mount_id, file.fullpath);
                     }
                 };
@@ -3350,7 +3349,7 @@ angular.module('gkClientIndex.services', [])
                         callback: function () {
                          var mount = GKMount.getMountById($scope.mountId);
                          if(!mount) return;
-                         if(GKAuth.check(mount,'','file_write')){
+                         if(!GKAuth.check(mount,'','file_write')){
                              alert('你没有权限在当前云库下添加文件或文件夹');
                              return;
                          }

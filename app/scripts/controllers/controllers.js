@@ -1677,7 +1677,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             if($rootScope.PAGE_CONFIG.mount && $rootScope.PAGE_CONFIG.mount.mount_id == mount.mount_id) {
-                angular.extend($scope.sidbarData,{
+                angular.extend($scope.rootSidebarData,{
                     photo:mount.logo,
                     title:mount.name
                 })
