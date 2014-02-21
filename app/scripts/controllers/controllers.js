@@ -239,7 +239,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('_inviteMember',function($event,param){
             var orgId = param.orgId;
             var mount = GKMount.getMountByOrgId(orgId);
-            console.log(mount);
             if(!mount) return;
             $rootScope.$broadcast('UpdateMembers',{mountid:mount.mount_id});
         })
@@ -247,7 +246,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('_uninviteMember',function($event,param){
             var orgId = param.orgId;
             var mount = GKMount.getMountByOrgId(orgId);
-            console.log(mount);
             if(!mount) return;
             $rootScope.$broadcast('UpdateMembers',{mountid:mount.mount_id});
         })
@@ -275,6 +273,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('showSelectFileDialog',function($event,param){
             var mountId = param.mountId;
+            var mount = GKMount.getMountById();
+            if(!mount){
+                return;
+            }
+            if(!GKAuth.check(mount,'','file_write')){
+                alert('你没有权限在当前云库添加文件');
+                return;
+            }
             GKModal.selectFile(mountId).result.then(function(re){
                 var iframe = GKFrame('ifame_chat');
                 if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
@@ -285,7 +291,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame','GKAuth',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame,GKAuth) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts(),//我的云库
             subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
@@ -617,6 +623,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setChatState = function(list){
             angular.forEach(list,function(item){
                 var orgId = item.receiver;
+                var mount = GKMount.getMountByOrgId();
+                if(!mount) return;
+                if(!GKAuth.check(mount,'','file_discuss')){
+                    return;
+                }
                 if($rootScope.PAGE_CONFIG.mount.org_id != orgId || $rootScope.PAGE_CONFIG.mode != 'chat'){
                     setNewMsgTime(orgId,item.time);
                 }
@@ -647,7 +658,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setNewMsgTime(orgId,0);
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.order = '+filename'; //当前的排序
@@ -1162,6 +1173,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     alert('该文件无本地缓存，离线状态下无法查看');
                     return;
                 }
+                var mountId = GKFileList.getOptFileMountId(file);
+                var mount = GKMount.getMountById(mountId);
+                if(!mount) return;
+                if(!GKAuth.check(mount,'','file_read')){
+                    alert('你没有权限查看该文件');
+                    return;
+                }
                 GK.open({
                     mountid: GKFileList.getOptFileMountId(file),
                     webpath: file.fullpath
@@ -1297,6 +1315,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 alert('不能在当前路径添加文件');
                 return;
             }
+           if(!GKAuth.check(mount,'','file_write')){
+               alert('你没有权限在当前云库添加文件');
+               return;
+           }
             var params = {
                 parent: $scope.path,
                 type: 'save',
@@ -1503,7 +1525,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth) {
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1550,7 +1572,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             sideBarData.menus = [];
             if (GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)) {
                 sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
-                if (GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)) {
+
+                if (GKAuth.check($rootScope.PAGE_CONFIG.mount,'','ent_org')) {
                     sideBarData.menus.push({
                         text: '安全设置',
                         icon: 'icon_manage',
@@ -1560,7 +1583,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         }
                     })
                 }
-                if (GKMount.isSuperAdmin($rootScope.PAGE_CONFIG.mount)) {
+                if (GKAuth.check($rootScope.PAGE_CONFIG.mount,'','org_upgrade')) {
                     sideBarData.menus.push({
                         text: '升级',
                         icon: 'icon_team_upgrade',
@@ -1738,6 +1761,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.atMember = function(memberName){
+            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_discuss')){
+                return;
+            }
             if($rootScope.PAGE_CONFIG.mode !='chat'){
                 var param = $location.search();
                 angular.extend(param,{

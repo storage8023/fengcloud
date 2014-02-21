@@ -35,7 +35,6 @@
             return '';
         }
         var re =  gkClient.gGetMessage(JSON.stringify(param));
-        //console.log(re);
         if(!re){
             return '';
         }else{
@@ -46,7 +45,6 @@
         if(typeof gkClient.gSendMessage === 'undefined'){
             return;
         }
-        console.log(param);
         gkClient.gSendMessage(JSON.stringify(param),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
@@ -661,7 +659,6 @@
         return gkClient.gGetUrl(JSON.stringify(params));
     },
     setMain:function(data){
-        console.log(data);
         return gkClient.gMain(JSON.stringify(data));
     },
     getUIPath: function(){

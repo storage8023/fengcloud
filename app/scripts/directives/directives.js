@@ -746,7 +746,6 @@ angular.module('gkClientIndex.directives', [])
                                 filename = defaultNewName
                             }
                             if(newFileExt){
-
                                 var ext = Util.String.getExt(filename);
                                 if(ext != newFileExt){
                                     filename+='.'+newFileExt;
@@ -1260,6 +1259,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                     $scope.showChatBtn = GKAuth.check(mount,'','file_discuss');
                     $scope.showLinkBtn = GKAuth.check(mount,'','file_link');
+                    $scope.showHistory = GKAuth.check(mount,'','file_history');
                 };
 
                 $scope.$watch('localFile', function (file, oldValue) {

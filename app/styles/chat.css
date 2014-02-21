@@ -189,10 +189,15 @@ section .msg_list{
 .chat_item.chat_item_mine .chat_main{
     float: right;
 }
-.chat_item.chat_item_mine .chat_main{
+.chat_item .chat_main .chat_text{
     -webkit-user-select:auto;
     user-select:auto;
 }
+.chat_item .chat_main .chat_text .file_icon_wrapper{
+    -webkit-user-select:none;
+    user-select:none;
+}
+
 .chat_item .avatar_wrapper{
     margin: 0 10px;
 }

@@ -869,30 +869,12 @@ angular.module('GKCommon.services', [])
         };
 
         var formatMountItem = function (mount) {
-            var property;
+            var properties={};
             if(mount.property){
-                property = JSON.parse(mount.property);
-            }else{
-                if(isMember(mount)){
-                    property = [
-                        'file_read',
-                        'file_write',
-                        'file_preview',
-                        'file_delete',
-                        'file_recycle',
-                        'file_delete_com',
-                        'file_recover',
-                        'file_history',
-                        'file_discuss',
-                        'file_link',
-                        'file_read_open'
-                    ];
-                }else{
-                    property = [
-                        'file_read',
-                        'file_preview',
-                    ];
-                }
+                properties = JSON.parse(mount.property);
+                if(!properties.permissions){
+                    properties.permissions = [];
+                 }
             }
             var newMount = {
                 mount_id: mount.mountid,
@@ -911,7 +893,7 @@ angular.module('GKCommon.services', [])
                 hasFolder: 1,
                 trash_size: mount.size_recycle,
                 trash_dateline: mount.dateline_recycle,
-                property:property
+                property:properties
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;
