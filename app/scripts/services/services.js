@@ -3269,7 +3269,13 @@ angular.module('gkClientIndex.services', [])
                             if (selectedFile.length == 1 && selectedFile[0].dir==1) {
                                 target = selectedFile[0].fullpath;
                             }
-
+                            var targetMount = $rootScope.PAGE_CONFIG.mount;
+                            var fromMount = GKMount.getMountById(data.mount_id);
+                            if(!fromMount) return;
+                            if(targetMount.storage_point != fromMount.storage_point){
+                               alert('不同的存储点之间不能复制或移动文件');
+                               return;
+                            }
                             if (data.code == 'ctrlC') {
                                 GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
                                     GKFileList.refreahData($scope);

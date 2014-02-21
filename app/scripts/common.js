@@ -893,7 +893,8 @@ angular.module('GKCommon.services', [])
                 hasFolder: 1,
                 trash_size: mount.size_recycle,
                 trash_dateline: mount.dateline_recycle,
-                property:properties
+                property:properties,
+                storage_point:mount.storage_point
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;
@@ -1932,7 +1933,7 @@ angular.module('GKCommon.filters', [])
  * @param params
  */
 var gkClientCallback = function (name, param) {
-    console.log(arguments);
+    console.log('gkClientCallback',arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
@@ -1950,7 +1951,7 @@ var gkClientCallback = function (name, param) {
  * @param params
  */
 var gkSiteCallback = function (name, params) {
-    console.log(arguments);
+    console.log('gkSiteCallback',arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
@@ -1959,7 +1960,7 @@ var gkSiteCallback = function (name, params) {
 };
 
 var gkFrameCallback = function (name, params) {
-    console.log(arguments);
+    console.log('gkFrameCallback',arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
