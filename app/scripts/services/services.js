@@ -275,7 +275,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 }
                             });
-                            if(GKAuth.check(mount,'','ent_member')){
+                            if(GKAuth.check(mount,'','org_member')){
                                 angular.extend(items, {
                                     'view_member': {
                                         name: '成员',
