@@ -2662,12 +2662,10 @@ angular.module('gkClientIndex.services', [])
                 }
                 switch (partition) {
                     case GKPartition.teamFile:
+                    case GKPartition.entFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
                             this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
-//                            if (!GKMount.isSuperAdmin(mount)) {
-//                                this.disableOpt(opts, 'clear_trash', 'del_completely')
-//                            }
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
                         }
@@ -2677,7 +2675,6 @@ angular.module('gkClientIndex.services', [])
                         if(!isSearch){
                         this.disableOpt(opts, 'goto');
                         }
-
                         break;
                     case GKPartition.subscribeFile:
                         this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
@@ -2841,7 +2838,7 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if(!mount) return;
                 if(!GKAuth.check(mount,'','file_delete_com')){
-                    alert('你没有权限进行此操作');
+                    alert('你没有权限清空该云库的回收站');
                     return;
                 }
                 if (!confirm('确定要清空该回收站？')) {
@@ -3201,7 +3198,7 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_disable',
                         callback: function () {
                                 if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete_com')){
-                                    alert('你没有权限进行此操作');
+                                    alert('你没有权限彻底删除当前云库下的文件或文件夹');
                                     return;
                                 }
                                 var fullpaths = [];
@@ -3304,6 +3301,10 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
+                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                                alert('你没有权限剪切当前云库下的文件或文件夹');
+                                return;
+                            }
                             var data = {
                                 code: 'ctrlX',
                                 mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -3320,6 +3321,10 @@ angular.module('gkClientIndex.services', [])
                         accesskeyText: context.getAccessKey('copy'),
                         callback: function () {
                             if (!selectedFile || !selectedFile.length) {
+                                return;
+                            }
+                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')){
+                                alert('你没有权限复制当前云库下的文件或文件夹');
                                 return;
                             }
                             var data = {
@@ -3340,7 +3345,7 @@ angular.module('gkClientIndex.services', [])
                          var mount = GKMount.getMountById();
                          if(!mount) return;
                          if(GKAuth.check(mount,'','file_write')){
-                             alert('你没有权限进行此操作');
+                             alert('你没有权限在当前云库下添加文件或文件夹');
                              return;
                          }
                          gkClientInterface.addFileDialog(function(addFiles){
@@ -3484,7 +3489,7 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             if(!GKAuth.check(mount,'','file_link')){
-                                alert('你没有权限进行此操作');
+                                alert('你没有权限获取改文件的临时链接');
                                 return;
                             }
                             GKModal.publish(mountId,file);
