@@ -21,6 +21,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         $scope.currentSession = null;
 
         var post = function(type,content,metadata,status){
+
             metadata = angular.isDefined(metadata) ? metadata : '';
             var now = new Date().getTime();
             var msgData = {
@@ -59,6 +60,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 $event.preventDefault();
                 return;
             }
+            if(postText.length>800){
+                alert('一次发送的消息字数不能超过800字，请分条发送');
+                return;
+            }
             $scope.postText = '';
             post('text',postText);
             $event.preventDefault();
@@ -66,6 +71,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
 
         $scope.postMessage = function(postText){
             if (!postText) {
+                return;
+            }
+            if(postText.length>800){
+                alert('一次发送的消息字数不能超过800字，请分条发送');
                 return;
             }
             $scope.postText = '';
@@ -289,7 +298,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
            gkClientInterface.addFile(params,function(re){
                 if(!re.error){
                     var list = re.list;
-                    if(!list) return;
+                    if(!list || !list.length) return;
                     angular.forEach(list,function(file){
                         var metadata = JSON.stringify({
                             mount_id: $scope.currentSession.mountid,
@@ -314,7 +323,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 mountId:$scope.currentSession.mountid
             })
         };
-
+        var lastOffset = 0;
         pendingTimer = $interval(function(){
             if(!chatContent.pendingMsg.length){
                 return;
@@ -325,8 +334,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     mountid: metadata.mount_id,
                     webpath: metadata.fullpath
                 });
+                console.log('info',info);
                 //上传完成
                 if (info.status == 1) {
+                    lastOffset = 0;
                     item.file = gkClientInterface.getFileInfo({
                         mountid: metadata.mount_id,
                         webpath: metadata.fullpath
@@ -335,7 +346,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     chatContent.pendingMsg.splice(key,1);
                     return;
                 }else{
-                    item.offset = Number(info.offset || 0);
+                    var offset = Number(info.offset || 0);
+                    if(offset<=lastOffset){
+                        return;
+                    }
+                    lastOffset = item.offset = offset;
                 }
             })
         },1000)
@@ -354,6 +369,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
 
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
+                    console.log('metadata',value.metadata);
                     if(value.metadata.fullpath){
                         value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
                         value.metadata.ext = Util.String.getExt(value.metadata.filename);

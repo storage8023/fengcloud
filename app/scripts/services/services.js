@@ -3125,7 +3125,17 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
-
+                            var hasUploadFile = false;
+                            angular.forEach(selectedFile,function(file){
+                                if(file.status == 1){
+                                    hasUploadFile = true;
+                                    return false;
+                                }
+                            })
+                            if(hasUploadFile){
+                               alert('上传中的文件或文件夹不能剪切');
+                               return;
+                            }
                             var data = {
                                 code: 'ctrlX',
                                 mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -3267,6 +3277,10 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_rename',
                         callback: function () {
                             var file = selectedFile[0];
+                            if(file.status==1){
+                                alert('上传中的文件或文件夹不能重命名');
+                                return;
+                            }
                             if (arguments.length <= 1) {
                                 file.rename = true;
                             }else{

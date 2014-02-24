@@ -527,7 +527,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (newMount['type'] > 2) {
                 list = $scope.orgSubscribeList;
             }
-            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],0,true)[0];
+            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],true)[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
             });
