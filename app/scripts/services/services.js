@@ -2043,6 +2043,11 @@ angular.module('gkClientIndex.services', [])
                     alert('文件名的长度不能超过255个字符');
                     return false;
                 }
+                var lastStr = filename.slice(filename.length-1);
+                if(lastStr === '.'){
+                    alert('无效的文件名');
+                    return;
+                }
                 return true;
             },
             /**
