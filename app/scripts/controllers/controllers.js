@@ -1611,7 +1611,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;
                 if(!$scope.localFile.fullpath){
                     $scope.sidebar = 'nofile';
-                    $scope.hideNoFile = false;
+                    if([GKPartition.teamFile,GKPartition.subscribeFile].indexOf($rootScope.PAGE_CONFIG.partition)>=0){
+                        $scope.hideNoFile = false;
+                    }else{
+                        $scope.hideNoFile = true;
+                    }
                 }else{
                     $scope.sidebar = 'singlefile';
                     $scope.hideNoFile = true;
