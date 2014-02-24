@@ -9,7 +9,6 @@ angular.module('gkClientFrame.controllers',[])
         };
 
         $scope.handleClick = function(type){
-
             if(type == 'lanchpad'){
                 gkClientInterface.launchpad();
             }else if(type == 'chat'){
@@ -46,7 +45,7 @@ angular.module('gkClientFrame.controllers',[])
             };
 
             $scope.showMessage = function(){
-                gkClientInterface.launchpad({type:'message'});
+                gkClientInterface.launchpad();
             };
 
             $scope.logout = function(){

@@ -59,6 +59,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 $event.preventDefault();
                 return;
             }
+            if(postText.length>800){
+                alert('一次发送的消息字数不能超过800字，请分条发送');
+                return;
+            }
             $scope.postText = '';
             post('text',postText);
             $event.preventDefault();
@@ -66,6 +70,10 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
 
         $scope.postMessage = function(postText){
             if (!postText) {
+                return;
+            }
+            if(postText.length>800){
+                alert('一次发送的消息字数不能超过800字，请分条发送');
                 return;
             }
             $scope.postText = '';
@@ -229,8 +237,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     $scope.scrollToIndex = $scope.currentMsgList.length-1;
                     //topWindow.gkFrameCallback('clearMsgTimeclearMsgTime',{orgId:$scope.currentSession.orgid});
                 });
-
-            $scope.focusTextarea = true;
+            $timeout(function(){
+                $scope.focusTextarea = true;
+            })
             //$scope.postText = postTextCache.get(String($scope.currentSession.orgid)) || '';
             $scope.postText = '';
 
@@ -298,7 +307,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
            gkClientInterface.addFile(params,function(re){
                 if(!re.error){
                     var list = re.list;
-                    if(!list) return;
+                    if(!list || !list.length) return;
                     angular.forEach(list,function(file){
                         var metadata = JSON.stringify({
                             mount_id: $scope.currentSession.mountid,
@@ -323,7 +332,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 mountId:$scope.currentSession.mountid
             })
         };
-
+        var lastOffset = 0;
         pendingTimer = $interval(function(){
             if(!chatContent.pendingMsg.length){
                 return;
@@ -336,6 +345,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 });
                 //上传完成
                 if (info.status == 1) {
+                    lastOffset = 0;
                     item.file = gkClientInterface.getFileInfo({
                         mountid: metadata.mount_id,
                         webpath: metadata.fullpath
@@ -344,7 +354,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     chatContent.pendingMsg.splice(key,1);
                     return;
                 }else{
-                    item.offset = Number(info.offset || 0);
+                    var offset = Number(info.offset || 0);
+                    if(offset<=lastOffset){
+                        return;
+                    }
+                    lastOffset = item.offset = offset;
                 }
             })
         },1000)

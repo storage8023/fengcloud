@@ -431,7 +431,6 @@ footer {
     right: 8px;
     text-align: center;
     line-height: 16px;
-    cursor: pointer;
     display: none;
 }
 
@@ -1027,14 +1026,12 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     z-index: 10;
     overflow: auto;
     background: #F1F1F2;
-    /*opacity: 1;*/
     border-left:1px solid #deddde;
     -webkit-transition:all linear .3s;
     transition:all linear .3s;
 }
 .right_sidebar.hide_no_file .no_file{
     left: 250px;
-    /*opacity: 0;*/
 }
 .right_sidebar .no_file .head_wrapper{
     padding: 10px 26px;

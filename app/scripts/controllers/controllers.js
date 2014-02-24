@@ -544,7 +544,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (newMount['type'] > 2) {
                 list = $scope.orgSubscribeList;
             }
-            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],0,true)[0];
+            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],true)[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
             });
@@ -1620,6 +1620,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             $scope.currentTab = 'member';
             getMember();
+
             if(param.mode == 'chat'){
                 $scope.hideNoFile = false;
             }else{
@@ -1640,12 +1641,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if ($rootScope.PAGE_CONFIG.filter == 'trash') {
                 return;
             }
+            if($rootScope.PAGE_CONFIG.mode == 'chat'){
+                return;
+            }
+            var  hideNoFile;
             $scope.selectedFileLength = selectedFile.length;
             if (!selectedFile.length) {
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;
                 if(!$scope.localFile.fullpath){
                     $scope.sidebar = 'nofile';
-                    $scope.hideNoFile = false;
+                    if([GKPartition.teamFile,GKPartition.subscribeFile].indexOf($rootScope.PAGE_CONFIG.partition)>=0){
+                        $scope.hideNoFile = false;
+                    }else{
+                        $scope.hideNoFile = true;
+                    }
                 }else{
                     $scope.sidebar = 'singlefile';
                     $scope.hideNoFile = true;

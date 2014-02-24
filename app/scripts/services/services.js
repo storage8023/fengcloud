@@ -74,21 +74,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKEnt;
     }])
-    .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
-        return {
-            getSyncByMountIdFullpath: function (mountId, fullpath) {
-                var syncedFiles = gkClientInterface.getLinkPath()['list'] || [];
-                var syncItem = null;
-                angular.forEach(syncedFiles, function (value) {
-                    if (value.mountid == mountId && value.webpath == fullpath) {
-                        syncItem = value;
-                        return false;
-                    }
-                })
-                return syncItem;
-            }
-        };
-    }])
+
     .factory('GKSideTree', ['GKFile', 'GKPartition','GKEnt', function (GKFile, GKPartition,GKEnt) {
         return {
             getTreeList:function(mounts){
@@ -2151,6 +2137,11 @@ angular.module('gkClientIndex.services', [])
                     alert('文件名的长度不能超过255个字符');
                     return false;
                 }
+                var lastStr = filename.slice(filename.length-1);
+                if(lastStr === '.'){
+                    alert('无效的文件名');
+                    return;
+                }
                 return true;
             },
             /**
@@ -3306,10 +3297,22 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
+			    
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
                                 alert('你没有权限剪切当前云库下的文件或文件夹');
                                 return;
                             }
+					       var hasUploadFile = false;
+                            angular.forEach(selectedFile,function(file){
+                                if(file.status == 1){
+                                    hasUploadFile = true;
+                                    return false;
+                                }
+                            })
+                            if(hasUploadFile){
+                               alert('上传中的文件或文件夹不能剪切');
+                               return;
+                            }		    
                             var data = {
                                 code: 'ctrlX',
                                 mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -3466,6 +3469,10 @@ angular.module('gkClientIndex.services', [])
                             }
                             if(!GKAuth.check(mount,'','file_write')){
                                 alert('你没有权限重命名该文件'+(file.dir==1?'夹':''));
+                                return;
+                            }
+			     if(file.status==1){
+                                alert('上传中的文件或文件夹不能重命名');
                                 return;
                             }
                             if (arguments.length <= 1) {

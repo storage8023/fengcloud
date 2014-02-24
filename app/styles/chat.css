@@ -302,7 +302,7 @@ display: table-cell;
 .chat_file .filename_wrapper{
     max-width: 76%;
     line-height: 16px;
-    padding: 0 0 0 10px;
+    padding: 0 10px 0 10px;
 }
 
 .chat_file .filename_wrapper .filename span{
