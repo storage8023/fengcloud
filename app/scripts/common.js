@@ -679,7 +679,6 @@ angular.module('GKCommon.directives', [])
                 var insertChar = function (input) {
                     input += ' ';
                     var newVal = $scope[$attrs.ngModel];
-
                     var newInputPos = inputPos;
                     var isInsert = newInputPos[1] != newVal.length;
                     newVal = newVal.substr(0, lastIndex + 1) + input + newVal.substr(inputPos[1], newVal.length);

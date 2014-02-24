@@ -21,7 +21,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         $scope.currentSession = null;
 
         var post = function(type,content,metadata,status){
-
             metadata = angular.isDefined(metadata) ? metadata : '';
             var now = new Date().getTime();
             var msgData = {
@@ -229,8 +228,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     $scope.scrollToIndex = $scope.currentMsgList.length-1;
                     //topWindow.gkFrameCallback('clearMsgTimeclearMsgTime',{orgId:$scope.currentSession.orgid});
                 });
-
-            $scope.focusTextarea = true;
+            $timeout(function(){
+                $scope.focusTextarea = true;
+            })
             //$scope.postText = postTextCache.get(String($scope.currentSession.orgid)) || '';
             $scope.postText = '';
 
@@ -334,7 +334,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     mountid: metadata.mount_id,
                     webpath: metadata.fullpath
                 });
-                console.log('info',info);
                 //上传完成
                 if (info.status == 1) {
                     lastOffset = 0;
@@ -369,7 +368,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
 
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
-                    console.log('metadata',value.metadata);
                     if(value.metadata.fullpath){
                         value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
                         value.metadata.ext = Util.String.getExt(value.metadata.filename);

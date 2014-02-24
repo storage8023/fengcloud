@@ -1586,6 +1586,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             $scope.currentTab = 'member';
             getMember();
+
             if(param.mode == 'chat'){
                 $scope.hideNoFile = false;
             }else{
@@ -1606,6 +1607,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if ($rootScope.PAGE_CONFIG.filter == 'trash') {
                 return;
             }
+            if($rootScope.PAGE_CONFIG.mode == 'chat'){
+                return;
+            }
+            var  hideNoFile;
             $scope.selectedFileLength = selectedFile.length;
             if (!selectedFile.length) {
                 $scope.localFile = $rootScope.PAGE_CONFIG.file;

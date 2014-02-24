@@ -35,7 +35,7 @@
         if(typeof gkClient.gSendMessage === 'undefined'){
             return;
         }
-        console.log('postChatMessage',param);
+        //console.log('postChatMessage',param);
         gkClient.gSendMessage(JSON.stringify(param),function(re){
             re = typeof re ==='object'?re:JSON.parse(re);
             if(typeof callback === 'function'){
