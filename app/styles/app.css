@@ -12,7 +12,13 @@
 html,body{
     overflow: hidden;
 }
-
+body#index_page{
+    position: absolute;
+    top:0;
+    left:0;
+    right: 0;
+    bottom: 0;
+}
 header {
     position: absolute;
     left:0;
