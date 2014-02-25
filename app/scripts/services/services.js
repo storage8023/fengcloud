@@ -2966,7 +2966,9 @@ angular.module('gkClientIndex.services', [])
                             var fullpath = file.fullpath;
                             var upPath = Util.String.dirName(fullpath);
                             var filename = file.filename;
-                            GKPath.gotoFile(mountId, upPath, fullpath);
+                            $timeout(function(){
+                                GKPath.gotoFile(mountId, upPath, fullpath);
+                            })
                         }
                     },
                     'open_with': {
