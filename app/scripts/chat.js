@@ -196,6 +196,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             $scope.currentSession = session;
             var extendParam = {};
             $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
+            chatContent.pendingMsg = [];
             var msgList = [];
             chatService.list($scope.currentSession.orgid,0,maxCount).then(function(re){
                     var minDataline = 0;
