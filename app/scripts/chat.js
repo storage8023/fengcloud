@@ -128,15 +128,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         $scope.openFile = function ($event,msg) {
             var metadata = msg.metadata;
             var mountId = Number($scope.currentSession.mountid);
-            var permissions = [];
-            if($scope.currentSession.property){
-                var properties = JSON.parse($scope.currentSession.property);
-                permissions = properties.permissions?permissions:[];
-            }
-            if(permissions.indexOf('file_read')<0){
-               alert('你没有权限查看改文件');
-               return;
-            }
             var file;
             if(!metadata.hash){
                 file = gkClientInterface.getFileInfo({
@@ -160,6 +151,15 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     webpath:fullpath+'/'
                 })
             }else{
+                var permissions = [];
+                if($scope.currentSession.property){
+                    var properties = JSON.parse($scope.currentSession.property);
+                    permissions = properties.permissions? properties.permissions:[];
+                }
+                if(permissions.indexOf('file_read')<0){
+                    alert('你没有权限查看改文件');
+                    return;
+                }
                 var params = {
                     mountid: mountId,
                     filehash:metadata.filehash
