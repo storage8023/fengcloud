@@ -1028,11 +1028,17 @@ angular.module('gkClientIndex.services', [])
                                     }
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     if (!mount) {
+                                        alert('该云库已被删除或你已退出该云库');
                                         return;
                                     }
                                     GKPath.gotoFile(mount.mount_id, '');
                                 } else if (opt.opt == 'view_org_member') {
                                     if (!item.org_id) {
+                                        return;
+                                    }
+                                    var mount = GKMount.getMountByOrgId(item.org_id);
+                                    if (!mount) {
+                                        alert('该云库已被删除或你已退出该云库');
                                         return;
                                     }
                                     context.teamMember(item.org_id);
@@ -1044,6 +1050,7 @@ angular.module('gkClientIndex.services', [])
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     var mountId = 0;
                                     if(!mount){
+                                        alert('该云库已被删除或你已退出该云库');
                                         return;
                                     }
                                     mountId = mount['mount_id'];
