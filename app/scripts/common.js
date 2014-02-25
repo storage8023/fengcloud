@@ -307,9 +307,6 @@ angular.module('GKCommon.directives', [])
                 $element.on('drop', function (event) {
                     event.preventDefault();
                 });
-                $element.on('mousemove', function (event) {
-                    event.preventDefault();
-                });
             }
         }
     }])
