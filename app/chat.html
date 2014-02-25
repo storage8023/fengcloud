@@ -32,6 +32,7 @@
             <section>
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
+                    <div class="empty" ng-if="!currentMsgList || !currentMsgList.length">没有讨论</div>
                     <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
                          ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_name}">
 
