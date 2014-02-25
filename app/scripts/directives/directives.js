@@ -1382,7 +1382,7 @@ angular.module('gkClientIndex.directives', [])
                         gkClientInterface.open({
                             mountid:mountId,
                             webpath:history.fullpath,
-                            version:version
+                            version:Number(version)
                         });
                     }
 
