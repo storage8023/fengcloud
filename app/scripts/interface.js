@@ -7,6 +7,28 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getDownloadUrl:function(param){
+        if(typeof gkClient.gGetDownloadUrl === 'undefined'){
+            return '';
+        }
+        var re =  gkClient.gGetDownloadUrl(JSON.stringify(param));
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
+    },
+    getCachePath:function(param){
+        if(typeof gkClient.gGetCachePath === 'undefined'){
+            return '';
+        }
+        var re =  gkClient.gGetCachePath(JSON.stringify(param));
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
+    },
     getEnt:function(param){
         if(typeof gkClient.gGetEnt === 'undefined'){
             return '';

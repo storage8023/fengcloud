@@ -1245,6 +1245,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var selectedFile = GKFileList.getSelectedFile();
             var dragIcon = jQuery('#drag_helper')[0];
             event.dataTransfer.setDragImage(dragIcon, -10, -10);
+            if(selectedFile.length == 1){
+                var re = gkClientInterface.getCachePath({
+                    filehash:selectedFile[0].filehash
+                });
+                var downloadUrl = re['path'];
+                if(!downloadUrl){
+//                    var downloadReq = gkClientInterface.getDownloadUrl({
+//                        webpath:selectedFile[0].fullpath,
+//                        mountid:GKFileList.getOptFileMountId(selectedFile[0]),
+//                    });
+//                    downloadUrl = downloadReq['list'][0]['url'];
+                }else{
+                    var fileDetail = 'application/octet-stream:'+selectedFile[0].filename+':'+downloadUrl;
+                    event.dataTransfer.setData("DownloadURL",fileDetail);
+                }
+            }
             angular.forEach(selectedFile, function (value) {
                 value.disableDrop = true;
             });
