@@ -514,7 +514,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if (GKPartition.isTeamFilePartition(partition)) {
                     $scope.orgTreeList.push(newOrg);
                 }else if(GKPartition.isEntFilePartition(partition)){
-                    var entId = newOrg['ent_id'];
+                    var entId = newOrg['data']['ent_id'];
                     if(!$scope.entTreeList[entId]){
                         var tempData= GKSideTree.getTreeList([newOrg]);
                         angular.extend($scope.entTreeList,tempData);
@@ -539,11 +539,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!newMount) {
                 return;
             }
-            var list = $scope.orgTreeList;
             var type = GKPartition.getPartitionByMountType(newMount['type'],newMount['ent_id']);
-            if (newMount['type'] > 2) {
+            var list;
+            if(GKPartition.isTeamFilePartition(type)){
+                list = $scope.orgTreeList;
+            }else if(GKPartition.isEntFilePartition(type)){
+                var entId = newMount['ent_id'];
+                list = $scope.entTreeList[entId]['data'];
+            }else if(GKPartition.isSubscribePartition(type)) {
                 list = $scope.orgSubscribeList;
             }
+            if(!list || !list.length) return;
             var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],true)[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
