@@ -1,7 +1,7 @@
 /* css reset 样式 */
 @charset "utf-8";
 /*CSS RESET*/
-
+html,
 body {
     color: #3f4754;
     -webkit-user-select: none;

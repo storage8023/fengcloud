@@ -292,6 +292,12 @@ angular.module('GKCommon.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
+                $element.on('dragstart', function (event) {
+                    var jTarget = jQuery(event.target);
+                    if(!jTarget.attr('draggable') && !jTarget.parents('[draggable]').size()){
+                        event.preventDefault();
+                    }
+                })
                 $element.on('dragover', function (event) {
                     event.preventDefault();
                 });
