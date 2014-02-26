@@ -207,7 +207,7 @@
                              bo-attr
                              bo-attr-data-dir="file.dir"
                              bo-attr-data-fullpath="file.fullpath"
-                             dragable="['entfile','teamfile'].indexOf(partition)>=0"
+                             dragable="['entfile','teamfile'].indexOf(partition)>=0 && filter !='trash'"
                              drag-begin="dragBegin($event,$index)"
                              drag-end="dragEnd($event,$index)"
                              dropable="file.dir==1 && !file.disableDrop && ['entfile','teamfile'].indexOf(partition)>=0"
