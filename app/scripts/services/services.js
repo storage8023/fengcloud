@@ -886,6 +886,7 @@ angular.module('gkClientIndex.services', [])
                         $rootScope.showNews = true;
                         $rootScope.$broadcast('newsOpen');
                         $scope.cancel = function () {
+                            $rootScope.showNews = false;
                             $modalInstance.dismiss('cancel');
                         };
 
@@ -1056,6 +1057,7 @@ angular.module('gkClientIndex.services', [])
                                     mountId = mount['mount_id'];
                                     GKPath.gotoFile(mountId, '', '','','','chat');
                                 }
+                                $rootScope.showNews = false;
                                 $modalInstance.close();
                             }
                         };
