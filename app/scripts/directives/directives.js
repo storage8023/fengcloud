@@ -743,6 +743,7 @@ angular.module('gkClientIndex.directives', [])
                         }
                         var defaultNewName = GKFileList.getDefualtNewName($scope,newFileExt);
                         var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
+                        console.log('isShare',isShare);
                         GKFileList.unSelectAll($scope);
                         $scope.submitNewFileName = function (filename) {
                             if (!filename.length) {
