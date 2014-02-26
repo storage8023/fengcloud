@@ -365,7 +365,7 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                 }).error(function (request) {
                         $scope.$apply(function () {
                             $scope.loading = false;
-                            $scope.errorMsg = GKException.getAjaxErrorMsg(request);
+                            $scope.errorMsg = GKException.getAjaxError(request)['msg'];
                         })
                     })
 
@@ -424,8 +424,10 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
             link: function ($scope) {
                 $scope.devices = [];
                 $scope.errorMsg = '';
+                $scope.loading = true;
                 GKApi.devicelist().success(function (data) {
                     $scope.$apply(function () {
+                        $scope.loading = false;
                         if (data && data.devices) {
                             $scope.devices = data.devices;
                         }
@@ -433,7 +435,8 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
 
                 }).error(function (request) {
                         $scope.$apply(function () {
-                            $scope.errorMsg = GKException.getAjaxErrorMsg(request);
+                            $scope.loading = false;
+                            $scope.errorMsg = GKException.getAjaxError(request)['msg'];
                         })
                     })
 

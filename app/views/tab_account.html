@@ -43,6 +43,7 @@
         </ul>
         <div class="mount_list_wrapper scrollbar">
             <h3>我创建的库</h3>
+            <div class="empty" ng-if="loading">正在加载...</div>
             <div ng-if="errorMsg" class="empty">{{errorMsg}}</div>
             <ul class="mount_list" ng-if="!errorMsg">
                 <li ng-repeat="mount in mounts">

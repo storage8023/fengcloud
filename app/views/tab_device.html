@@ -15,8 +15,9 @@
                <div>&nbsp;</div>
             </div>
             <div class="list">
-              <div class="empty" ng-if="errorMsg">
-
+              <div class="empty" ng-if="loading">正在加载...</div>
+              <div class="empty" ng-if="errorMsg" >
+                   {{errorMsg}}
               </div>
               <div class="item" ng-repeat="device in devices">
                      <div title="{{device.device_name|getDeviceName}}">
