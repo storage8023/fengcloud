@@ -3502,15 +3502,15 @@ angular.module('gkClientIndex.services', [])
                             if (selectedFile.length != 1 || selectedFile[0].dir != 0) {
                                 return;
                             }
-                            if(file.status==1){
-                                alert('上传中的文件不能获取临时链接');
-                                return;
-                            }
                             var file = selectedFile[0],
                                 parentFile = $rootScope.PAGE_CONFIG.file;
                             var mountId = GKFileList.getOptFileMountId(file);
                             var mount = GKMount.getMountById(mountId);
                             if(!mount){
+                                return;
+                            }
+                            if(file.status==1){
+                                alert('上传中的文件不能获取临时链接');
                                 return;
                             }
                             if(!GKAuth.check(mount,'','file_link')){
