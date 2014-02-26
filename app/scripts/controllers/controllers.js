@@ -1400,15 +1400,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var isSelected = false;
             var index;
             $scope.$apply(function(){
-                angular.forEach($scope.fileData,function(value,key){
-                    if(value.fullpath === fileItem.fullpath){
-                        angular.extend(value,fileItem);
-                        index = key;
-                        return false;
-                    }
-                })
+                if(GKPartition.isMountPartition($scope.partition)){
+                    angular.forEach($scope.fileData,function(value,key){
+                        if(value.fullpath === fileItem.fullpath){
+                            angular.extend(value,fileItem);
+                            index = key;
+                            return false;
+                        }
+                    })
+                }else if(GKPartition.isSmartFolderPartition($scope.partition)){
+                    angular.forEach($scope.fileData,function(value,key){
+                        if(value.fullpath === fileItem.fullpath && value.mount_id == fileItem.mount_id){
+                            angular.extend(value,fileItem);
+                            index = key;
+                            return false;
+                        }
+                    })
+                }
             })
-
             if(index !== undefined){
                 isSelected = GKFileList.checkIsSelectedByIndex(index);
                 GKFileListView.updateFileItem(index,fileItem);

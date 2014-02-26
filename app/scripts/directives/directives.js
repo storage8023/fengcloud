@@ -1196,7 +1196,6 @@ angular.module('gkClientIndex.directives', [])
                     var mount = GKMount.getMountById(mountId);
                     var fullpath = file.dir == 1 ? file.fullpath + '/' : file.fullpath;
                     var formatTag = [];
-
                     if (options.data != 'sidebar') {
                         lastGetRequest = GKApi.info(mountId, fullpath).success(function (data) {
                             $scope.$apply(function () {
@@ -1237,7 +1236,6 @@ angular.module('gkClientIndex.directives', [])
 
                             });
                     }
-
                     if (options.data != 'file') {
                         lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
                             $scope.$apply(function () {
@@ -1257,6 +1255,7 @@ angular.module('gkClientIndex.directives', [])
                                 //})
                             });
                     }
+
                     $scope.showChatBtn = GKAuth.check(mount,'','file_discuss');
                     $scope.showLinkBtn = GKAuth.check(mount,'','file_link');
                     $scope.showHistory = GKAuth.check(mount,'','file_history');
