@@ -1403,6 +1403,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var index;
             $scope.$apply(function(){
                 if(GKPartition.isMountPartition($scope.partition)){
+                    if(fileItem.mount_id != $rootScope.PAGE_CONFIG.mount.mount_id) return;
                     angular.forEach($scope.fileData,function(value,key){
                         if(value.fullpath === fileItem.fullpath){
                             angular.extend(value,fileItem);
