@@ -1531,13 +1531,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-
-        $scope.hideGuider = localStorageService.get(GKConstant.guideKey);
+        var guiderKey = GKConstant.guideKey+$rootScope.PAGE_CONFIG.user.member_id;
+        $scope.hideGuider = localStorageService.get(guiderKey);
         $scope.toggleGuider = function(hideGuider){
             if(!hideGuider){
-                localStorageService.remove(GKConstant.guideKey);
+                localStorageService.remove(guiderKey);
             }else{
-                localStorageService.add(GKConstant.guideKey,1);
+                localStorageService.add(guiderKey,1);
             }
             $scope.hideGuider = hideGuider;
         }

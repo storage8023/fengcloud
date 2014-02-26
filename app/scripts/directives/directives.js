@@ -43,7 +43,7 @@ angular.module('gkClientIndex.directives', [])
 
                 showDely = hideDely = 200;
                 guider = $compile(template)(scope);
-                storageKey = GKConstant.guideKey;
+                storageKey = GKConstant.guideKey+$rootScope.PAGE_CONFIG.user.member_id;
 
                 attrs.$observe('guider',function(value){
                     if(!value) return;
