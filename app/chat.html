@@ -81,7 +81,7 @@
 
             </section>
             <footer>
-                <textarea ng-trim="false" ng-blur="saveLastText(postText)" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过1000字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
+                <textarea ng-trim="false" ng-blur="saveLastText(postText)" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过800字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="btn_wrapper">
                     <span>你已输入了{{postText.length}}个字</span>
                     <button class="btn btn-primary post_btn" ng-click="postMessage(postText)">发 送</button>
