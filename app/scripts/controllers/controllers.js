@@ -1256,7 +1256,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var mount =  GKMount.getMountById(mountId);
                 if(mount && GKAuth.check(mount,'','file_read')){
                     var re = gkClientInterface.getCachePath({
-                        filehash:selectedFile[0].filehash
+                        filehash:selectedFile[0].filehash,
+                        mountid:mountId,
+                        webpath:selectedFile[0].fullpath
                     });
                     var downloadUrl = re['path'];
                     if(!downloadUrl){
