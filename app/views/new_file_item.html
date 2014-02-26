@@ -3,7 +3,7 @@
         <img ng-src="{{defaultNewName | getFileThumb:dir:isShare}}" alt=""/>
     </div>
     <div class="file_name">
-        <i class="file_icon {{defaultNewName | getFileIcon:dir:isShare}}"  ng-show="view=='list'"></i>
+        <i class="file_icon {{defaultNewName | getFileIcon:dir:isShare:isSync}}"  ng-show="view=='list'"></i>
         <input type="text" ng-model="filename" class="new_file_name form-control" name="file_name" class=""/>
     </div>
     <div class="last_edit_time" ng-show="view=='list'"><span>&nbsp;</span></div>

@@ -742,8 +742,8 @@ angular.module('gkClientIndex.directives', [])
                             dir = 1 ;
                         }
                         var defaultNewName = GKFileList.getDefualtNewName($scope,newFileExt);
-                        var isShare = $scope.partition == $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
-                        console.log('isShare',isShare);
+                        var isShare = $scope.PAGE_CONFIG.file.sharepath ? 1 : 0;
+                        var isSync = $scope.PAGE_CONFIG.file.syncpath ? 1 : 0;
                         GKFileList.unSelectAll($scope);
                         $scope.submitNewFileName = function (filename) {
                             if (!filename.length) {
@@ -759,7 +759,7 @@ angular.module('gkClientIndex.directives', [])
                             fn($scope, {filename: filename,dir:dir});
                         };
 
-                        newFileItem = $compile(angular.element('<new-file-item dir="{{'+dir+'}}" view="{{view}}" default-new-name="' + defaultNewName + '" is-share="{{' + isShare + '}}" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
+                        newFileItem = $compile(angular.element('<new-file-item dir="{{'+dir+'}}" view="{{view}}" default-new-name="' + defaultNewName + '" is-share="{{' + isShare + '}}" is-sync="{{' + isSync + '}}" on-submit="submitNewFileName(filename)"></new-file-item>'))($scope);
                         newFileItem.addClass('selected').prependTo($element);
                     } else {
                         if (newFileItem) {
@@ -851,6 +851,7 @@ angular.module('gkClientIndex.directives', [])
                 'onSubmit': '&',
                 'view': '@',
                 'isShare': '@',
+                'isSync': '@',
                 'defaultNewName': '@',
                 'dir':'@'
             },
