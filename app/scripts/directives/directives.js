@@ -346,6 +346,9 @@ angular.module('gkClientIndex.directives', [])
                                                         version:version
                                                     },function(msg){
                                                         if(!msg.error){
+                                                            angular.extend(msg,{
+                                                                mount_id:mountId
+                                                            });
                                                             alert('恢复成功');
                                                             $rootScope.$broadcast('UpdateFileInfo',msg);
                                                         }else{
