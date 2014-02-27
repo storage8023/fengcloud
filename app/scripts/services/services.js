@@ -1995,7 +1995,7 @@ angular.module('gkClientIndex.services', [])
             unlock: function (params) {
                 params.status = 0;
                 var deferred = $q.defer();
-                gkClientInterface.lock(params, function (re) {
+                gkClientInterface.toggleLock(params, function (re) {
                     if (re && !re.error) {
                         deferred.resolve(re);
                     } else {
@@ -2551,7 +2551,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout','GKFileListView', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout,GKFileListView) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -3396,13 +3396,12 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_lock',
                         callback: function () {
                             var file = selectedFile[0];
+                            var mountId = GKFileList.getOptFileMountId(file);
                             GK.lock({
                                 webpath: file.fullpath,
-                                mountid: $scope.mountId
+                                mountid: mountId
                             }).then(function () {
-                                    file.lock = 1;
-                                    file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
-                                    GKFileListView.updateFileItem(index,file);
+                                 $rootScope.$broadcast('editFileSuccess','lock', mountId,file.fullpath);
                                 })
 
                         }
@@ -3414,16 +3413,16 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_unlock',
                         callback: function () {
                             var file = selectedFile[0];
+                            var mountId = GKFileList.getOptFileMountId(file);
                             if (file.lock_member_id != $rootScope.PAGE_CONFIG.user.member_id) {
                                 alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
                                 return;
                             }
                             GK.unlock({
                                 webpath: file.fullpath,
-                                mountid: $scope.mountId
+                                mountid: mountId
                             }).then(function () {
-                                    file.lock = 0;
-                                    file.lock_member_name = '';
+                                    $rootScope.$broadcast('editFileSuccess','unlock', mountId,file.fullpath);
                                 })
 
                         }
@@ -3650,7 +3649,7 @@ angular.module('gkClientIndex.services', [])
                         elem.append('<s class="icon16x16 icon_down"></s>');
                     }
                     if(file.lock==1){
-                        elem.append('<s class="icon16x16 icon_lock_color" title="已被'+file.lock_member_name+'锁定"></s>');
+                        elem.append('<s class="icon16x16 icon_lock_green" title="已被'+file.lock_member_name+'锁定"></s>');
                     }
                 })
                 var atts = {
