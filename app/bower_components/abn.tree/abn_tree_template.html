@@ -6,7 +6,7 @@
       jqyoui-droppable="{onDrop:'drop(row.branch)',onOver:'dropOver(row.branch)',onOut:'dropOut(row.branch)'}"
       ng-class="{'hover':row.branch.hover,'active':row.branch.selected}"
       class="abn-tree-row level-{{row.level}}">
-      <a ng-click="user_clicks_branch($event,row.branch)" ng-dblclick="user_dblclicks_branch(row.branch)">
+      <a ng-click="user_clicks_branch($event,row.branch)" ng-dblclick="user_dblclicks_branch(row.branch)" title="{{ row.label }}">
           <span ng-class="row.tree_icon" ng-show="row.tree_icon" class="indented tree-icon" ng-style="{'margin-left':(row.level-1)*20}">
               <i ng-show="row.branch.hasChildren"></i>
           </span>

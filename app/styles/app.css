@@ -434,7 +434,7 @@ footer {
     width: 16px;
     height: 16px;
     top:7px;
-    right: 8px;
+    right: 4px;
     text-align: center;
     line-height: 16px;
     display: none;
@@ -2075,7 +2075,7 @@ body.resizing *{
     margin-right: 4px;
 }
 .file_property_dialog section .file_item .name{
-     font-size: 15px;
+    font-size: 15px;
     white-space: pre-wrap;
     word-wrap: break-word;
     word-break: break-all;
@@ -2098,12 +2098,12 @@ body.resizing *{
     max-height: 460px;
 }
 .slide_backdrop{
-  position: absolute;
+    position: absolute;
     top:0;
     left: 0;
     right: 0;
     bottom: 0;
-  z-index: 9999;
+    z-index: 9999;
 }
 .slide_backdrop .carousel{
     position: absolute;

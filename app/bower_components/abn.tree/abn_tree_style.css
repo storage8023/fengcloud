@@ -107,13 +107,16 @@ ul.nav.nav-list.abn-tree > li{
 
 
 ul.nav > li:not(.nav-header) > a{
-    padding: 1px 10px 1px 0;
+    padding: 1px 15px 1px 0;
     border-left:4px solid transparent;
     color:#9FA7AC;
     height: 30px;
     line-height: 30px;
     transition:background-color linear .1s;
     -webkit-transition:background-color linear .1s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 ul.nav.nav-list.abn-tree .tree-icon{
     background: none;
