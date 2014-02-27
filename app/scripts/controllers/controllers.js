@@ -1728,18 +1728,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 })
         };
 
-        $scope.$watch('currentTab',function(newValue,oldValue){
-            if(!newValue) return;
-            if(newValue == oldValue){
-                return;
-            }
-            $scope.memberLoading = true;
-            if(newValue == 'member'){
-                getMember();
-            }else{
-                getSubscriber();
-            }
-        })
 
         $scope.$on('UpdateMembers',function($event,param){
             if($rootScope.PAGE_CONFIG.mount.mount_id == param.mountid){

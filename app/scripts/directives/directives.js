@@ -1249,7 +1249,7 @@ angular.module('gkClientIndex.directives', [])
 //                    $scope.fileLoaded = false;
 //                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
-                });
+                },true);
                 $scope.fileLoaded = false;
                 $scope.sidebarLoaded = false;
                 getFileInfo($scope.localFile,{first:true});
