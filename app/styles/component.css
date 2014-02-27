@@ -1459,13 +1459,8 @@ text-align: center;
     transition:linear .1s;
     position: relative;
 }
-.tab_header > li > a > span{
-    display: inline;
-    position: absolute;
-    top:0;
-    right: 28px;
-    font-weight: bold;
-}
+
+
 .tab_header > li > a:hover,
 .tab_header > li > a:active{
 

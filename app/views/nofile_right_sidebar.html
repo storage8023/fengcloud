@@ -12,17 +12,13 @@
                 </button>
             </div>
         </div>
-        <div class="tab_wrapper" ng-if="PAGE_CONFIG.mount.type<=2" ng-class="PAGE_CONFIG.mount.type<2?'':'normal_member'">
-            <ul class="tab_header" ng-if="PAGE_CONFIG.mount.type<2">
-                <li><a href="javascript:void(0)" ng-class="currentTab=='member'?'active':''" ng-click="showTab('member')">成员<span ng-if="currentTab=='member'">+</span></a></li>
-                <li guider="subscribe" guider-placement="left" ><a href="javascript:void(0)" ng-class="currentTab=='subscriber'?'active':''" ng-click="showTab('subscriber')">订阅者<span ng-if="currentTab=='subscriber'">+</span></a></li>
-            </ul>
-            <div class="section_title" ng-if="PAGE_CONFIG.mount.type>=2">成员</div>
+        <div class="tab_wrapper normal_member" ng-if="PAGE_CONFIG.mount.type<=2">
+            <div class="section_title">成员<a href="javascript:;" class="add_member" ng-click="showAddMember()" title="添加成员" ng-if="PAGE_CONFIG.mount.type<2">+</a></div>
             <div class="tab_content">
                 <div class="tab_content_layer" ng-show="currentTab=='member'">
                     <ul class="scrollbar member_list">
                         <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members"  bindonce >
-                            <img class="avatar avatar_mini" src="{{member.member_id|getAvatarUrl}}" alt=""/>
+                            <img class="avatar avatar_mini" ng-src="{{member.member_id|getAvatarUrl}}" alt=""/>
                             <span bo-text="member.member_name"></span>
                             <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
                             <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
@@ -33,19 +29,6 @@
                             <span>(已邀请)</span>
                         </li>
                     </ul>
-                </div>
-                <div class="tab_content_layer" ng-if="PAGE_CONFIG.mount.type<2" ng-show="currentTab=='subscriber'">
-                    <div ng-if="memberLoading" class="empty">正在加载...</div>
-                    <div ng-if="!memberLoading">
-                        <div class="empty" ng-if="!subscribers || !subscribers.length">没有订阅者</div>
-                        <ul class="scrollbar subscriber_list">
-                            <li ng-repeat="subscriber in subscribers" bindonce>
-                                <img class="avatar avatar_mini" src="{{subscriber.member_id|getAvatarUrl}}" alt=""/>
-                                <span bo-text="subscriber.member_name"></span>
-
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>

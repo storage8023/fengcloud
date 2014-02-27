@@ -1708,6 +1708,14 @@ float: right;
 .right_sidebar .search_file .btn_wrapper{
     margin-top:8px;
 }
+.right_sidebar .section_title .add_member{
+    display: inline;
+    position: absolute;
+    top:0;
+    left: 50px;
+    font-weight: bold;
+    padding: 0 10px;
+}
 /**同步设置窗口**/
 
 .sync_settiong_dialog{
