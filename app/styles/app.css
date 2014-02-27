@@ -1502,6 +1502,13 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 .right_sidebar .file_detail_wrapper .history_list > li{
     padding:0 6px;
     border-bottom: 1px solid #f5f5f5;
+    -webkit-transition:all linear .3s;
+    transition:all linear .3s;
+
+}
+.right_sidebar .file_detail_wrapper .history_list > li.hover,
+.right_sidebar .file_detail_wrapper .history_list > li:hover{
+    border-bottom: 1px solid #448de8;
 }
 .right_sidebar .file_detail_wrapper .history_list > li.milestone{
     background-color: #fff1c6;
