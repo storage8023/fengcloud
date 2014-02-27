@@ -256,7 +256,7 @@ angular.module('gkClientIndex.directives', [])
                     return Number($scope.localFile.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id);
                 };
 
-                var getHash = function(){
+                var getHash = function(triggerElem){
                     return triggerElem.data('hash');
                 };
 
@@ -285,11 +285,14 @@ angular.module('gkClientIndex.directives', [])
                                 var dir = getDir(triggerElem);
                                 var fullpath = getFullpath(triggerElem);
                                 var mountId = getMountId();
-                                var hash = getHash();
+                                var hash = getHash(triggerElem);
                                 var file = gkClientInterface.getFileInfo({
-                                    hash:hash,
+                                    uuidhash:hash,
                                     mountid:mountId
                                 })
+                                if(!file|| !file.path){
+                                    return;
+                                }
                                 if(dir){
                                     if(triggerElem.hasClass('act_0')){
                                         return;
@@ -299,22 +302,18 @@ angular.module('gkClientIndex.directives', [])
                                             'open': {
                                                 name: '打开',
                                                 callback: function (key,opt) {
-                                                    var mountId = getMountId();
-                                                    if(!mountId) return;
                                                     $timeout(function(){
-                                                        GKPath.gotoFile(mountId,fullpath);
+                                                        GKPath.gotoFile(mountId,file.path);
                                                     })
                                                 }
                                             },
                                             'saveto': {
                                                 name: '保存到本地',
                                                 callback: function (key,opt) {
-                                                    var mountId = getMountId();
-                                                    if(!mountId) return;
                                                     var param = {
                                                         list:[{
                                                             mountid:mountId,
-                                                            webpath:fullpath,
+                                                            webpath:file.path,
                                                             dir:1
                                                         }]
                                                     }
@@ -333,11 +332,9 @@ angular.module('gkClientIndex.directives', [])
                                                     if(!version){
                                                         return;
                                                     }
-                                                    var mountId = getMountId();
-                                                    if(!mountId) return;
                                                     gkClientInterface.open({
                                                         mountid:mountId,
-                                                        webpath:fullpath,
+                                                        webpath:file.path,
                                                         version:version
                                                     });
                                                 }
@@ -348,11 +345,9 @@ angular.module('gkClientIndex.directives', [])
                                                     if(!version){
                                                         return;
                                                     }
-                                                    var mountId = getMountId();
-                                                    if(!mountId) return;
                                                     gkClientInterface.revert({
                                                         mountid:mountId,
-                                                        webpath:fullpath,
+                                                        webpath:file.path,
                                                         version:version
                                                     },function(msg){
                                                         if(!msg.error){
@@ -373,12 +368,10 @@ angular.module('gkClientIndex.directives', [])
                                                     if(!version){
                                                         return;
                                                     }
-                                                    var mountId = getMountId();
-                                                    if(!mountId) return;
                                                     var param = {
                                                         list:[{
                                                             mountid:mountId,
-                                                            webpath:fullpath,
+                                                            webpath:file.path,
                                                             version:version
                                                         }]
                                                     }

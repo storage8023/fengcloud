@@ -107,7 +107,11 @@
         if(typeof gkClient.gGetOrgMembers === 'undefined'){
             return '';
         }
-        return JSON.parse(gkClient.gGetOrgMembers(JSON.stringify(param)));
+        var re = gkClient.gGetOrgMembers(JSON.stringify(param));
+        if(!re){
+            return '';
+        }
+        return JSON.parse(re);
     },
     setWindowTop:function(){
         if(typeof gkClient.gSetForegroundWindow === 'undefined'){
