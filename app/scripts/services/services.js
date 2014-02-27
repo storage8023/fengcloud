@@ -3655,6 +3655,7 @@ angular.module('gkClientIndex.services', [])
         var selectedPath = '';
         var fileListElem = jQuery('.file_list');
         var currentView = 'list';
+        var smartFileList;
         var GKFileList = {
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
@@ -3826,7 +3827,7 @@ angular.module('gkClientIndex.services', [])
                                 deferred.reject(GKException.getAjaxErrorMsg(request));
                             });
                     } else {
-                        fileList = $filter('filter')($scope.fileData, {filename: searchArr[0]});
+                        fileList = $filter('filter')(smartFileList, {filename: searchArr[0]});
                         deferred.resolve(fileList);
                         $rootScope.$broadcast('searchStateChange','end');
                     }
@@ -3849,6 +3850,7 @@ angular.module('gkClientIndex.services', [])
                         });
                     } else {
                         GKSmartFolder.getList($scope.filter).then(function(list){
+                            smartFileList = list;
                             deferred.resolve(list);
                         },function(re){
                             deferred.reject(re);

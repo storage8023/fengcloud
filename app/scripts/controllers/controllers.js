@@ -1053,7 +1053,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.$on('$locationChangeSuccess',function(){
             setBread();
             getFileData();
-
         })
 
         $scope.getItemClasses = function(file){
