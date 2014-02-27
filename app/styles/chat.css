@@ -193,6 +193,9 @@ section .msg_list{
     -webkit-user-select:auto;
     user-select:auto;
 }
+.chat_item .chat_main .chat_text .text{
+    white-space: pre-wrap;
+}
 .chat_item .chat_main .chat_text .file_icon_wrapper{
     -webkit-user-select:none;
     user-select:none;

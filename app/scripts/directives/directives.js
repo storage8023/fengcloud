@@ -392,42 +392,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('sizeAdjust', ['$timeout', '$compile', function ($timeout, $compile) {
-        var template = '<size-elem content="{{content}}"></size-elem>';
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                var fakeDiv = jQuery('<div></div>');
-                fakeDiv.css($element.css()).css({
-                    'display': 'none',
-                    'word-wrap': 'break-word',
-                    'min-height': $element.height(),
-                    'height': 'auto'
-                }).insertAfter($element.css('overflow-y', 'hidden'));
-                $scope.$watch($attrs.ngModel, function (value) {
-                    value = String(value);
-                    var content = value.replace(/&/g, '&amp;')
-                        .replace(/</g, '&lt;')
-                        .replace(/>/g, '&gt;')
-                        .replace(/'/g, '&#039;')
-                        .replace(/"/g, '&quot;')
-                        .replace(/ /g, '&nbsp;')
-                        .replace(/((&nbsp;)*)&nbsp;/g, '$1 ')
-                        .replace(/\n/g, '<br/>')
-                        .replace(/<br \/>[ ]*$/, '<br />-')
-                        .replace(/<br \/> /g, '<br />&nbsp;');
-                    fakeDiv.html(content);
-                    $timeout(function () {
-                        $element.height(fakeDiv.height());
-                    },200)
-                })
-
-                $scope.$on('$destroy', function () {
-                    fakeDiv.remove();
-                })
-            }
-        };
-    }])
     .directive('fixScroll', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',

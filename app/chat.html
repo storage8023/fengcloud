@@ -47,7 +47,7 @@
                             </div>
                             <div class="chat_text">
                                 <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
-                                <span ng-bind="msg.content" ng-if="msg.type=='text'"></span>
+                                <span ng-bind="msg.content" ng-if="msg.type=='text'" class="text"></span>
                                 <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
                                     <div class="file_icon_wrapper">
                                         <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0">
