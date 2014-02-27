@@ -28,8 +28,9 @@
 
         </div>
         <div class="textarea_wrapper">
-            <textarea class="form-control" ng-model="message" placeholder="为里程碑添加描述"></textarea>
+            <textarea class="form-control" maxlength="140" ng-model="message" placeholder="为里程碑添加描述"></textarea>
         </div>
+        <div class="tip">最多可输入140字</div>
     </div>
 </div>
 <div class="modal-footer" ng-show="PAGE_CONFIG.networkConnected">

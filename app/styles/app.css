@@ -2165,6 +2165,9 @@ body.resizing *{
 .slide_backdrop .carousel .item .item_content_2{
     background: #fe7f47;
 }
+.set_milestone_dialog .tip{
+    margin-top: 10px;
+}
 .set_milestone_dialog,
 .publish_dialog{
     width: 434px;
