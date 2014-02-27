@@ -271,14 +271,8 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 });
                             }
-                            if (GKAuth.check(mount,'','ent_org')) {
+//                            if (GKAuth.check(mount,'','ent_org')) {
 //                                angular.extend(items, {
-//                                    'view_subscriber': {
-//                                        name: '订阅者',
-//                                        callback: function () {
-//                                            GKModal.teamSubscribe(data.org_id);
-//                                        }
-//                                    },
 //                                    'manage': {
 //                                        name: '安全设置',
 //                                        callback: function () {
@@ -286,16 +280,7 @@ angular.module('gkClientIndex.services', [])
 //                                        }
 //                                    }
 //                                })
-
-                                angular.extend(items, {
-                                    'manage': {
-                                        name: '安全设置',
-                                        callback: function () {
-                                            GKModal.teamManage(data.org_id);
-                                        }
-                                    }
-                                })
-                            }
+//                            }
                             if(GKAuth.check(mount,'','file_recycle')){
                                 angular.extend(items, {
                                     'trash': {
