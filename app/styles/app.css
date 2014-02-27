@@ -2076,6 +2076,7 @@ body.resizing *{
 }
 .file_property_dialog section .file_item .name{
      font-size: 15px;
+    white-space: pre-wrap;
 }
 .file_property_dialog section > div label{
     margin-bottom: 8px;
