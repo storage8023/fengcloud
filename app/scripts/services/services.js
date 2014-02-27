@@ -2605,7 +2605,6 @@ angular.module('gkClientIndex.services', [])
                     'new_txt_file',
                     'unsubscribe', //取消订阅
                     'new_folder', //新建
-                    'create', //创建
                     'create_sync_folder',
                     'add', //添加
                     'clear_trash', //清空回收站
