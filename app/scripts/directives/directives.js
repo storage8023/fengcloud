@@ -1140,7 +1140,6 @@ angular.module('gkClientIndex.directives', [])
                     }
                     return Number(mountID);
                 };
-
                 $scope.smarts = GKSmartFolder.getFolders(['recent','recent_visit']);
 
                 var getFileState = function (mountId, fullpath) {
@@ -1282,7 +1281,6 @@ angular.module('gkClientIndex.directives', [])
 //                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
                 });
-
                 $scope.fileLoaded = false;
                 $scope.sidebarLoaded = false;
                 getFileInfo($scope.localFile,{first:true});
@@ -1408,6 +1406,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.historyFilter = null;
 
                 $scope.$watch('onlyShowMileStone',function(newValue){
+                    console.log('onlyShowMileStone',newValue);
                     if(newValue){
                         $scope.historyFilter = {milestone:1};
                     }else{

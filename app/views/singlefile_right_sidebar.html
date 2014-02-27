@@ -47,7 +47,7 @@
                 </section>
 
             </div>
-            <section class="file_detail_wrapper" ng-if="showHistory" ng-show="showTab">
+            <section class="file_detail_wrapper" ng-show="showTab && showHistory">
                 <div class="section_title">
                     <button class="btn btn-opt" ng-show="localFile.dir==0" guider-placement="left" guider="milestone" ng-click="showMilestoneDialog(file)">里程碑</button>
                     <span>历史</span>
