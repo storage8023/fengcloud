@@ -3911,9 +3911,6 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileList;
     }])
-    .factory('GKHistory', ['$q', '$location', '$rootScope', function ($q, $location, $rootScope) {
-        return new GKHistory($q, $location, $rootScope);
-    }])
     .factory('GKChat', [function () {
         var GKChat = {
             src:'',
@@ -4181,60 +4178,3 @@ GKFileSearch.prototype.conditionSetOrder = function (orderField, orderType) {
 GKFileSearch.prototype.conditionSetLimit = function () {
     this.limit = [].slice.call(arguments);
 };
-
-function GKHistory($q, $location, $rootScope) {
-    var self = this,
-        update = true,
-        history = [],
-        current,
-        maxLen = 100,
-        reset = function () {
-            history = [$location.search()];
-            current = 0;
-            update = true;
-        },
-        go = function (fwd) {
-            var deferred = $q.defer();
-            if ((fwd && self.canForward()) || (!fwd && self.canBack())) {
-                update = false;
-                $location.search(history[fwd ? ++current : --current]);
-                return  deferred.resolve();
-            }
-            return deferred.reject();
-        };
-    this.canForward = function () {
-        return current < history.length - 1;
-    };
-    this.canBack = function () {
-        return current > 0;
-    }
-    this.back = function () {
-        return go();
-    }
-    this.forward = function () {
-        return go(true);
-    }
-
-    $rootScope.$on('$locationChangeSuccess', function () {
-        var params = $location.search();
-        if (!params.partition) return;
-        if (!jQuery.isEmptyObject(params)) {
-            var l = history.length,
-                cwd = params;
-            if (update) {
-                current >= 0 && l > current + 1 && history.splice(current + 1);
-                if (history[history.length - 1] != cwd) {
-                    history.push(cwd);
-                    if (history.length > maxLen) {
-                        history.splice(0, 1);
-                    }
-                }
-                current = history.length - 1;
-            }
-            update = true;
-        }
-        ;
-    });
-
-    reset();
-}

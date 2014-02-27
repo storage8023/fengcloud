@@ -197,8 +197,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
-        setPageConfig();
-
         $scope.$on('LinkStatus', function ($event, param) {
             $scope.$apply(function () {
                 $rootScope.PAGE_CONFIG.networkConnected = param.link;
@@ -289,8 +287,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame','GKAuth',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame,GKAuth) {
         $scope.GKPartition = GKPartition;
-        var orgMount = GKMount.getOrgMounts(),//我的云库
-            subscribeMount = GKMount.getSubscribeMounts(); //订阅的云库
+        var orgMount = GKMount.getOrgMounts();
 
         $scope.entTreeList = GKSideTree.getTreeList(GKMount.getMounts());
         /**
@@ -303,7 +300,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @type {*}
          */
         $scope.selectedBranch = null;
-        $scope.initSelectedBranch = $scope.orgTreeList[0];
+        if(!$location.search().partition){
+            $scope.initSelectedBranch = $scope.orgTreeList[0];
+        }
         var unSelectAllBranch = function () {
             if ($scope.selectedBranch) {
                 $scope.selectedBranch.selected = false;
@@ -365,7 +364,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['mountid'] = branch.data.mount_id;
                 pararm['entid'] = branch.data.ent_id||0;
                 pararm['filter'] = branch.data.filter || '';
-                pararm['mode'] = 'chat';
+                pararm['mode'] = $rootScope.PAGE_CONFIG.mode || 'chat';
             } else if (GKPartition.isSmartFolderPartition(partition)) {
                 pararm['filter'] = branch.data.filter;
             } else {
@@ -452,7 +451,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$locationChangeSuccess', function () {
             var param = $location.search();
-
             var filter='';
             if($scope.selectedBranch){
                 filter = $scope.selectedBranch.data.filter || '';
@@ -475,8 +473,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                 }
             }
-
-
         })
 
         /**
@@ -1056,13 +1052,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$locationChangeSuccess',function(){
             setBread();
-            $scope.limit = 100;
             getFileData();
 
         })
-
-        getFileData();
-        setBread();
 
         $scope.getItemClasses = function(file){
             var classes = {
@@ -1471,7 +1463,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             jQuery.contextMenu('destroy', '.file_list .list_body');
         })
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKHistory', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant',function ($scope, GKPath, $location, $filter, GKHistory, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant',function ($scope, GKPath, $location, $filter, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant) {
 
         $scope.changeMode = function(mode){
             var param = $location.search();
