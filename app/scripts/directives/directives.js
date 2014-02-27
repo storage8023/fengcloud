@@ -256,6 +256,10 @@ angular.module('gkClientIndex.directives', [])
                     return Number($scope.localFile.mount_id || $rootScope.PAGE_CONFIG.mount.mount_id);
                 };
 
+                var getHash = function(){
+                    return triggerElem.data('hash');
+                };
+
                 $scope.$watch($attrs.gkVersionContextmenu,function(newValue){
                     if(!newValue){
                         jQuery.contextMenu('destroy', '.history_list > li');
@@ -280,6 +284,12 @@ angular.module('gkClientIndex.directives', [])
                                 var triggerElem = jQuery($trigger);
                                 var dir = getDir(triggerElem);
                                 var fullpath = getFullpath(triggerElem);
+                                var mountId = getMountId();
+                                var hash = getHash();
+                                var file = gkClientInterface.getFileInfo({
+                                    hash:hash,
+                                    mountid:mountId
+                                })
                                 if(dir){
                                     if(triggerElem.hasClass('act_0')){
                                         return;

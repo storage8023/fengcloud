@@ -460,6 +460,7 @@
     },
     toggleLock: function (params,callback) {
         try {
+            console.log(params);
            gkClient.gLock(JSON.stringify(params),function(re){
                re = typeof re ==='object'?re:JSON.parse(re);
                if(typeof callback === 'function'){

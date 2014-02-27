@@ -812,6 +812,7 @@ angular.module('GKCommon.services', [])
                 } else {
                     switch (request.status) {
                         case 0:
+                        case 404:
                             errorMsg = '网络未连接或当前网络不支持HTTPS安全连接，请在“设置”中关闭HTTPS安全连接后重试';
                             break;
                         case 401:

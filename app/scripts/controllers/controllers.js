@@ -1610,7 +1610,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
             sideBarData.menus = [];
             if (GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)) {
-                sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + ',订阅 ' + $rootScope.PAGE_CONFIG.mount.subscriber_count + '人';
+                sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + '人';
 
                 if (GKAuth.check($rootScope.PAGE_CONFIG.mount,'','ent_org')) {
                     sideBarData.menus.push({

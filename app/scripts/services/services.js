@@ -2609,8 +2609,8 @@ angular.module('gkClientIndex.services', [])
                     'create_sync_folder',
                     'add', //添加
                     'clear_trash', //清空回收站
-                    //'lock',  //锁定
-                    //'unlock', //解锁
+                    'lock',  //锁定
+                    'unlock', //解锁
                     'sync',  //同步
                     'unsync',//不同步
                     'save',  //保存到
@@ -2673,7 +2673,10 @@ angular.module('gkClientIndex.services', [])
                             this.disableOpt(opts, 'paste');
                         }
                         if(!isSearch){
-                        this.disableOpt(opts, 'goto');
+                            this.disableOpt(opts, 'goto');
+                        }
+                        if(GKPartition.isTeamFilePartition(partition)){
+                            //this.disableOpt(opts, 'lock','unlock');
                         }
                         break;
                     case GKPartition.subscribeFile:

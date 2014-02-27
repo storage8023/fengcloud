@@ -1821,9 +1821,13 @@ body.resizing *{
     overflow: hidden;
     vertical-align: top;
 }
+
 .news_dialog .message_list li > div > .text .content{
     margin: 0 120px 0 0;
     padding: 10px 0 0 0;
+}
+.news_dialog .message_list li > div > .text .content .inner_text{
+    white-space: pre-wrap;
 }
 .news_dialog .message_list li > div.has_opt > .text .content {
     margin-top: -46px;
