@@ -53,9 +53,12 @@
                     <span>历史</span>
                 </div>
                 <div class="history_wrapper" ng-class="!histories.length || localFile.dir==1?'nocheckbox':''">
-                    <div class="empty" ng-if="!histories || !histories.length">没有历史</div>
+                    <div class="empty" ng-if="!histories || !histories.length">
+                        <span ng-if="!onlyShowMileStone">没有历史</span>
+                        <span ng-if="onlyShowMileStone">没有里程碑</span>
+                    </div>
                     <ul class="scrollbar history_list" gk-version-contextmenu="true">
-                        <li class="c_f_after {{'act_'+history.act}}" ng-dblclick="openFile(history)" title="{{history.property.message}}" ng-class="history.property.milestone?'milestone':''" ng-repeat="history in histories | filter:historyFilter" data-version="{{history.property.version}}" data-dir="{{history.dir}}" data-fullpath="{{history.fullpath}}" data-hash="{{history.hash}}">
+                        <li class="c_f_after {{'act_'+history.act}}" ng-dblclick="openFile(history)" title="{{history.property.message}}" ng-class="history.property.milestone?'milestone':''" ng-repeat="history in histories" data-version="{{history.property.version}}" data-dir="{{history.dir}}" data-fullpath="{{history.fullpath}}" data-hash="{{history.hash}}">
                             <div class="act_name">
                                 <div class="avatar_wrapper">
                                     <avatar class="avatar avatar_mini" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
@@ -78,7 +81,7 @@
                             </div>
                         </li>
                     </ul>
-                    <div class="checkbox_wrapper" ng-show="histories.length && localFile.dir==0"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
+                    <div class="checkbox_wrapper" ng-show="localFile.dir==0"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
                 </div>
             </section>
         </div>

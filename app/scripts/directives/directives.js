@@ -1084,7 +1084,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter) {
         return {
             replace: true,
             restrict: 'E',
@@ -1094,7 +1094,11 @@ angular.module('gkClientIndex.directives', [])
                 $scope.file = {};
                 $scope.showTab = false; //是否显示共享等tab
                 $scope.fileExist = false;
-                var fileInterval,lastGetRequest,lastClientSidebarRequest;
+                var fileInterval,
+                    lastGetRequest,
+                    lastClientSidebarRequest,
+                    histories;
+
                 var getOptMountId = function (file) {
                     var mountID;
                     if (!file) {
@@ -1212,13 +1216,14 @@ angular.module('gkClientIndex.directives', [])
                             $scope.$apply(function () {
                                 $scope.sidebarLoaded = true;
                                 if (data.history) {
-                                    $scope.histories = data.history.map(function(item){
+                                    histories = data.history.map(function(item){
                                         item.milestone = item.property?item.property.milestone : 0;
                                         return item;
                                     });
                                 }else{
-                                    $scope.histories = [];
+                                    histories = [];
                                 }
+                                $scope.histories = histories;
                             })
                         }).error(function(){
                                 //$scope.$apply(function () {
@@ -1327,7 +1332,7 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 $scope.showMilestoneDialog = function(file){
-                    var firstHistory = $scope.histories[0];
+                    var firstHistory = histories[0];
                     var oldMsg = '';
                     if(firstHistory){
                         oldMsg = firstHistory['property']?firstHistory['property']['message']||'' : '';
@@ -1367,14 +1372,13 @@ angular.module('gkClientIndex.directives', [])
                     getFileInfo($scope.localFile, {data: 'sidebar', type: type, cache: false});
                 })
 
-                $scope.historyFilter = null;
 
                 $scope.$watch('onlyShowMileStone',function(newValue){
                     console.log('onlyShowMileStone',newValue);
                     if(newValue){
-                        $scope.historyFilter = {milestone:1};
+                        $scope.histories = $filter('filter')(histories,{milestone:1});
                     }else{
-                        $scope.historyFilter = null;
+                        $scope.histories = histories;
                     }
                 })
 
