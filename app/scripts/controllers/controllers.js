@@ -153,11 +153,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     if(mount){
                         extend.file.filename = mount['name'];
                     }
-                }else{
-                   if(GKPartition.isSubscribePartition(param.partition)){
-                       var index = param.path.indexOf('/');
-                       extend.file.sharepath = index<0?param.path:param.path.slice(0,index);
-                   }
                 }
 
                 extend.mount = GKMount.getMountById(param.mountid);
@@ -303,12 +298,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile,0,true);
 
-
-        /**
-         * 订阅的云库
-         */
-        $scope.orgSubscribeList = GKFile.dealTreeData(subscribeMount, GKPartition.subscribeFile,0,true);
-
         /**
          * 初始选中
          * @type {*}
@@ -433,13 +422,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }
                 })
 
-            }else if (GKPartition.isSubscribePartition(param.partition)) {
-                angular.forEach($scope.orgSubscribeList, function (value) {
-                    if (value.data.mount_id == param.mountid) {
-                        branch = value;
-                        return false;
-                    }
-                })
             }else if(GKPartition.isSmartFolderPartition(param.partition)){
                 angular.forEach($scope.smartTreeList, function (value) {
                     if (value.data.filter == param.filter) {
@@ -521,8 +503,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     }else{
                         $scope.entTreeList[entId].data.push(newOrg);
                     }
-                }else if(GKPartition.isSubscribePartition(partition)){
-                    $scope.orgSubscribeList.push(newOrg);
                 }
             });
         })
@@ -546,8 +526,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }else if(GKPartition.isEntFilePartition(type)){
                 var entId = newMount['ent_id'];
                 list = $scope.entTreeList[entId]['data'];
-            }else if(GKPartition.isSubscribePartition(type)) {
-                list = $scope.orgSubscribeList;
             }
             if(!list || !list.length) return;
             var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],true)[0];
@@ -577,8 +555,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GKMount.removeTeamList($scope, mount.org_id);
                 }else if(GKPartition.isEntFilePartition(partition)){
                     GKMount.removeEntFileList($scope,mount.org_id,mount.ent_id);
-                }else {
-                    GKMount.removeOrgSubscribeList($scope, mount.org_id);
                 }
                 var currentMountId = $location.search().mountid;
                 if(currentMountId==mount.mount_id && $scope.orgTreeList && $scope.orgTreeList.length){
@@ -600,8 +576,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
             if (GKPartition.isTeamFilePartition(partition)) {
                 $scope.orgTreeList.push(newOrg);
-            }else {
-                $scope.orgSubscribeList.push(newOrg);
             }
             unSelectAllBranch();
             selectBreanch(newOrg,partition, true);
@@ -1610,32 +1584,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
             sideBarData.menus = [];
             if (GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)) {
-                sideBarData.atrrHtml = '成员 ' + $rootScope.PAGE_CONFIG.mount.member_count + '人';
-
-                if (GKAuth.check($rootScope.PAGE_CONFIG.mount,'','ent_org')) {
-                    sideBarData.menus.push({
-                        text: '安全设置',
-                        icon: 'icon_manage',
-                        name: 'manage_team',
-                        click: function () {
-                            GKModal.teamManage($rootScope.PAGE_CONFIG.mount.org_id);
-                        }
-                    })
-                }
-                if (GKAuth.check($rootScope.PAGE_CONFIG.mount,'','org_upgrade')) {
-                    sideBarData.menus.push({
-                        text: '升级',
-                        icon: 'icon_team_upgrade',
-                        name: 'team_upgrade',
-                        click: function () {
-                            var url = gkClientInterface.getUrl({
-                                sso: 1,
-                                url: '/pay/order?org_id=' + $rootScope.PAGE_CONFIG.mount.org_id
-                            })
-                            gkClientInterface.openUrl(url);
-                        }
-                    })
-                }
+                sideBarData.atrrHtml = '成员' + $rootScope.PAGE_CONFIG.mount.member_count + '人';
             }
             return sideBarData;
         };

@@ -2350,7 +2350,7 @@ angular.module('gkClientIndex.services', [])
                             mount_id: mountId
                         });
                         if (GKPartition.isTeamFilePartition(type) || GKPartition.isEntFilePartition(type)) {
-                            icon = value.sharepath || value.open == 1 ? 'icon_teamfolder' : 'icon_myfolder';
+                            icon = 'icon_myfolder';
                         }
                     }
                     var dropAble = false;
@@ -2551,7 +2551,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout','GKFileListView', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout,GKFileListView) {
         var GKOpt = {
             /**
              * 同步，不同步命令的逻辑
@@ -3402,6 +3402,7 @@ angular.module('gkClientIndex.services', [])
                             }).then(function () {
                                     file.lock = 1;
                                     file.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
+                                    GKFileListView.updateFileItem(index,file);
                                 })
 
                         }
@@ -3625,7 +3626,7 @@ angular.module('gkClientIndex.services', [])
                     'title':file.fullpath
                 });
 
-                var icon = $filter('getFileIcon')(file.filename,file.dir,(file.open||(PAGE_CONFIG.file.sharepath?1:0)),(file.sync||PAGE_CONFIG.file.syncpath?1:0)),
+                var icon = $filter('getFileIcon')(file.filename,file.dir,0,(file.sync||PAGE_CONFIG.file.syncpath?1:0)),
                     thumbUrl = $filter('getThumbUrl')(file.hash,file.filehash);
                 var thumbIcon = oldFileItem.find('.thumb i'),
                     fionIcon = oldFileItem.find('.file_icon_wrapper i');

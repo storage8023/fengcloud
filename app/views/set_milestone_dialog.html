@@ -10,9 +10,9 @@
         <div class="file_wrapper">
            <div class="icon_wrapper">
                <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
-                    ng-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"/>
+                    ng-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"/>
                <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
-                    error-src="{{file.filename | getFileThumb:file.dir:(file.open||(PAGE_CONFIG.file.sharepath?1:0)):file.sync}}"
+                    error-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"
                     ng-src="{{file.hash | getThumbUrl:file.filehash}}"/>
            </div>
            <div class="file_info">

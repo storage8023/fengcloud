@@ -4,19 +4,14 @@
         <div class="file_item">
             <div class="thumb" >
                 <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
-                     ng-src="{{ file.filename | getFileThumb:file.dir:(file.open||(parentFile.sharepath?1:0)):(file.sync||(parentFile.syncpath?1:0))}}" />
+                     ng-src="{{ file.filename | getFileThumb:file.dir:0:(file.sync||(parentFile.syncpath?1:0))}}" />
                 <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
-                     error-src="{{file.filename | getFileThumb:file.dir:(file.open||(parentFile.sharepath?1:0)):(file.sync||(parentFile.syncpath?1:0))}}"
+                     error-src="{{file.filename | getFileThumb:file.dir:0:(file.sync||(parentFile.syncpath?1:0))}}"
                      ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
             </div>
         <div class="file_name">
             <span title="{{file.fullpath}}" class="name" ng-bind="file.filename"></span>
         </div>
-        </div>
-        <div class="publish_opt">
-            <button class="btn btn-primary" ng-show="publishEnable && file.open==0" ng-click="setFilePublic(1,mountId)">公开该文件夹</button>
-            <button class="btn btn-danger"  ng-show="publishEnable && file.open==1" ng-click="setFilePublic(0,mountId)">取消公开该文件夹</button>
-            <button class="btn btn-default" ng-show="!publishEnable && (parentFile.sharepath||file.open==1)" disabled>该文件{{file.dir==1?'夹':''}}已公开</button>
         </div>
         <div class="create_time">
             <avatar class="avatar avatar_mini" gk-src="{{file.creator_member_id|getAvatarUrl}}"></avatar>
