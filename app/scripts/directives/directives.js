@@ -1046,7 +1046,10 @@ angular.module('gkClientIndex.directives', [])
 
                 $timeout(function(){
                     $scope.newMsg = !!localStorageService.get(unreadMsgKey);
-                },2000);
+                    $scope.openNews = function(){
+                        GKModal.news(GKNews, GKApi);
+                    }
+                },1500);
 
                 var t,count = 0;
                 $scope.$on('UpdateMessage', function () {
@@ -1067,10 +1070,6 @@ angular.module('gkClientIndex.directives', [])
                         count++;
                     },150);
                 })
-
-                $scope.openNews = function(){
-                    GKModal.news(GKNews, GKApi);
-                }
 
                 $scope.$on('newsOpen',function(){
                     if(t){
@@ -1507,7 +1506,11 @@ angular.module('gkClientIndex.directives', [])
                 }
                 var oldWidth = $element.width();
                 jQuery(window).on('resize.tool', function () {
-                    var grid = $element.width() - oldWidth;
+                    var newWidth = $element.width();
+                    if(newWidth<=0){
+                        return;
+                    }
+                    var grid = newWidth - oldWidth;
                     if (grid > 0) {
                         var lastHideBtn = toolOpt.find('button.opt_btn:hidden:first');
                         if (lastHideBtn.size() && grid > lastHideBtn.outerWidth(true)) {
@@ -1520,7 +1523,7 @@ angular.module('gkClientIndex.directives', [])
                                 }
                             }
                         }
-                    } else {
+                    } else{
                         setUI();
                     }
                     //TODO:resize完应该重新赋值oldWidth，但无法知道resize end事件
@@ -1628,7 +1631,7 @@ angular.module('gkClientIndex.directives', [])
                     }
                 };
 
-                $scope.$watch('breads', function () {
+                $scope.$watch('breads', function (val) {
                     $scope.hideBreads = [];
                     $element.find('.bread_list .bread_item:hidden').show();
                     $timeout(function () {
@@ -1638,10 +1641,16 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 var oldBreadWidth = $element.find('.bread').width();
+
                 jQuery(window).on('resize', function () {
                     $scope.$apply(function () {
-                        var grid = $element.find('.bread').width() - oldBreadWidth;
+                        var newBreadWidth = $element.find('.bread').width();
+                        if(newBreadWidth<=0){
+                            return;
+                        }
+                        var grid = newBreadWidth - oldBreadWidth;
                         if (grid > 0) {
+                            console.log('grid',1);
                             var lastHideBread = $element.find('.bread_list .bread_item:hidden').last();
                             if (lastHideBread.size()) {
                                 if (grid >= lastHideBread.outerWidth()) {
@@ -1649,7 +1658,7 @@ angular.module('gkClientIndex.directives', [])
                                     lastHideBread.show();
                                 }
                             }
-                        } else {
+                        } else if(grid<0) {
                             $timeout(function () {
                                 setBreadUI();
                                 return null;
