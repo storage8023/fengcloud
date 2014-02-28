@@ -703,6 +703,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             alert('你没有权限打开该文件');
                             return;
                         }
+                        if (!$rootScope.PAGE_CONFIG.networkConnected && !file.cache) {
+                            alert('该文件无本地缓存，离线状态下无法查看');
+                            return;
+                        }
                         gkClientInterface.open({
                             webpath: file.fullpath,
                             mountid: mountId,
