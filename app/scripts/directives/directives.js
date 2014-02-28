@@ -1542,9 +1542,7 @@ angular.module('gkClientIndex.directives', [])
                         setUI();
                     })
                 })
-//                $timeout(function () {
-//                    setUI();
-//                })
+
                 $scope.$on('$destroy', function () {
                     jQuery(window).off('resize.tool');
                     if (moreBtn && moreBtn.size()) {
