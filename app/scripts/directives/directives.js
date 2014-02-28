@@ -1263,6 +1263,11 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.postTag = function (tag) {
                     tag = String(tag);
+                    var reg = /\/|\\|\:|\*|\?|\"|<|>|\|/;
+                    if (reg.test(tag)) {
+                        alert('注释不能包含下列任何字符： / \\ : * ? " < > |');
+                        return;
+                    }
                     GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
