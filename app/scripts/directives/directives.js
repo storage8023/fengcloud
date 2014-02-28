@@ -557,15 +557,16 @@ angular.module('gkClientIndex.directives', [])
                  * 监听键盘事件
                  */
                 jQuery(document).on('keydown.shortcut', function ($event) {
+                    if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >=0) {
+                       return;
+                    }
                     $scope.$apply(function () {
                         var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
                         switch ($event.keyCode) {
                             case 13: //enter
-                                if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) < 0) {
-                                    var selectedFile = GKFileList.getSelectedFile();
-                                    if (selectedFile && selectedFile.length) {
-                                        $scope.handleDblClick(selectedFile[0]);
-                                    }
+                                var selectedFile = GKFileList.getSelectedFile();
+                                if (selectedFile && selectedFile.length) {
+                                    $scope.handleDblClick(selectedFile[0]);
                                 }
                                 break;
                             case 37: //up
@@ -1807,6 +1808,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.setSearchScope = function (searchScope) {
                     $scope.currentSearchScope = searchScope;
                 }
+
                 $scope.$on('$destroy', function () {
                     $('body').off('mousedown.resetsearch');
                     jQuery(window).off('resize');
