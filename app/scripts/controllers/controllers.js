@@ -353,7 +353,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 选中树节点的处理函数
          * @param branch
          */
-        $scope.handleSelect = function (branch,showChat, partition) {
+        $scope.handleSelect = function (branch, partition) {
             var pararm = {
                 partition: partition,
                 mode:'file'
@@ -553,7 +553,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     GKMount.removeEntFileList($scope,mount.org_id,mount.ent_id);
                 }
                 var currentMountId = $location.search().mountid;
-                if(currentMountId==mount.mount_id && $scope.orgTreeList && $scope.orgTreeList.length){
+                if(currentMountId==mount.mount_id){
                     selectBreanch($scope.orgTreeList[0], GKPartition.teamFile, true);
                 }
             });

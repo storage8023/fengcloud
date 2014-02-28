@@ -98,14 +98,13 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
             scope.selectedBranch = branch;
           if (branch.onSelect != null) {
             return $timeout(function() {
-              return branch.onSelect(branch,showChat);
+              return branch.onSelect(branch);
             },0);
           } else {
             if (scope.onSelect != null) {
               return $timeout(function() {
                 return scope.onSelect({
-                  branch: branch,
-                  showChat:showChat
+                  branch: branch
                 });
               },0);
             }

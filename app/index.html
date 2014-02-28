@@ -57,14 +57,15 @@
                       icon-node-collapse="icon_teamfolder"
                       selected-branch="selectedBranch"
                       init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,showChat,GKPartition.teamFile)"
+                      on-select="handleSelect(branch,GKPartition.teamFile)"
                       on-hint-click = "handleHintClick(branch)"
                       show-msg-icon="true"
                     >
             </abn-tree>
         </div>
         <div ng-repeat="tree in entTreeList">
-            <abn-tree tree-data="tree.data"
+            <abn-tree ng-if="tree.data&&tree.data.length"
+                      tree-data="tree.data"
                       header="{{tree.header}}"
                       icon-leaf="icon_file"
                       icon-expand="icon_fold"
@@ -73,7 +74,7 @@
                       icon-node-collapse="icon_teamfolder"
                       selected-branch="selectedBranch"
                       init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,showChat,GKPartition.entFile)"
+                      on-select="handleSelect(branch,GKPartition.entFile)"
                       on-hint-click = "handleHintClick(branch)"
                       show-msg-icon="true"
                     >
@@ -87,7 +88,7 @@
                   icon-node-expand="icon_smartfolder"
                   icon-node-collapse="icon_smartfolder"
                   selected-branch="selectedBranch"
-                  on-select="handleSelect(branch,showChat,GKPartition.smartFolder)"
+                  on-select="handleSelect(branch,GKPartition.smartFolder)"
                   class="smart_tree_list"
                 >
         </abn-tree>
