@@ -1342,6 +1342,10 @@ angular.module('gkClientIndex.directives', [])
                     });
                 }
 
+                /**
+                 * 双击打开历史版本
+                 * @param history
+                 */
                 $scope.openFile = function(history){
                     var mountId = getOptMountId($scope.file);
                     if(history.dir == 1){
@@ -1363,6 +1367,39 @@ angular.module('gkClientIndex.directives', [])
                 }
 
                 /**
+                 * 滚动加载历史
+                 */
+                $scope.disableScrollLoadHistory = false;
+                $scope.loadHistory = function(){
+                    var mountId = getOptMountId($scope.localFile);
+                    var fullpath = $scope.localFile.fullpath;
+                    $scope.disableScrollLoadHistory = true;
+                    GKApi.sideBar(mountId, fullpath,'history',false,histories.length).success(function (data) {
+                        $scope.$apply(function () {
+                            $scope.disableScrollLoadHistory = false;
+                            if (data.history) {
+                                var moreHistory = data.history.map(function(item){
+                                    item.milestone = item.property?item.property.milestone : 0;
+                                    return item;
+                                });
+                                histories = histories.concat(moreHistory);
+                                if($scope.onlyShowMileStone){
+                                    $scope.histories = $filter('filter')(histories,{milestone:1});
+                                }else{
+                                    $scope.histories = histories;
+                                }
+
+                            }
+
+                        })
+                    }).error(function(){
+                            $scope.$apply(function () {
+                                $scope.disableScrollLoadHistory = false;
+                            })
+                        })
+                };
+
+                /**
                  * 监听刷新事件
                  */
                 $scope.$on('refreshSidebar', function ($event,type) {
@@ -1374,7 +1411,6 @@ angular.module('gkClientIndex.directives', [])
 
 
                 $scope.$watch('onlyShowMileStone',function(newValue){
-                    console.log('onlyShowMileStone',newValue);
                     if(newValue){
                         $scope.histories = $filter('filter')(histories,{milestone:1});
                     }else{
