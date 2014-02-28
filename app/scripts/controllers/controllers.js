@@ -697,6 +697,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var item = {
                     name: value['name'],
                     callback: function () {
+                        var mount = GKMount.getMountById(mountId);
+                        if(!mount) return;
+                        if(!GKAuth.check(mount,'','file_read')){
+                            alert('你没有权限打开该文件');
+                            return;
+                        }
                         gkClientInterface.open({
                             webpath: file.fullpath,
                             mountid: mountId,

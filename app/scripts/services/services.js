@@ -3421,14 +3421,35 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
+                            if(GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition)){
+                                if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')){
+                                    alert('你没有权限保存该云库下的文件或文件夹');
+                                    return;
+                                }
+                            }
+                            var unAuthFile;
                             var files = [];
                             angular.forEach(selectedFile, function (value) {
+                                var mountId = GKFileList.getOptFileMountId(value);
+                                var mount = GKMount.getMountById(mountId);
+                                if(!mount){
+                                    return;
+                                }
+                                if(!GKAuth.check(mount,'','file_read')){
+                                    unAuthFile = value;
+                                    return false;
+                                }
                                 files.push({
                                     webpath: value.fullpath,
                                     mountid: GKFileList.getOptFileMountId(value),
                                     dir: Number(value.dir)
                                 })
                             });
+
+                            if(unAuthFile){
+                                alert('你没有权限保存 ' + unAuthFile.filename);
+                                return;
+                            }
                             var params = {
                                 list: files
                             };
