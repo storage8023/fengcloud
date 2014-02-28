@@ -1459,7 +1459,6 @@ angular.module('gkClientIndex.directives', [])
                             }
                         }
                     }
-
                     $scope.listName = listName;
                 })
 
@@ -1480,8 +1479,9 @@ angular.module('gkClientIndex.directives', [])
 
                 var moreBtn;
                 var toolOpt = $element.find('.opt_tool');
+
                 var setUI = function () {
-                    var grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
+                    var grid = $element.width() - toolOpt.outerWidth(true) - $element.find('.opt_view_change').outerWidth(true);
                     var count = 0;
                     while (grid < 0) {
                         if (count > 50) break;
@@ -1500,10 +1500,11 @@ angular.module('gkClientIndex.directives', [])
                         var lastBtnClone = jQuery('<li/>').append(lastBtn.find('> a').clone(true).removeClass('btn btn-opt'));
                         lastBtn.hide();
                         moreBtn.appendTo(toolOpt).find('.dropdown-menu').prepend(lastBtnClone);
-                        grid = $element.width() - toolOpt.width() - $element.find('.opt_view_change').outerWidth(true);
+                        grid = $element.width() - toolOpt.outerWidth() - $element.find('.opt_view_change').outerWidth(true);
                         count++;
                     }
-                }
+                };
+
                 var oldWidth = $element.width();
                 jQuery(window).on('resize.tool', function () {
                     var newWidth = $element.width();
@@ -1524,24 +1525,26 @@ angular.module('gkClientIndex.directives', [])
                             }
                         }
                     } else{
-                        setUI();
+                        $timeout(function(){
+                            setUI();
+                        })
                     }
                     //TODO:resize完应该重新赋值oldWidth，但无法知道resize end事件
                     //oldWidth = $element.width();
                 })
-                $scope.$watch('opts', function () {
-                    $timeout(function () {
-                        if (moreBtn && moreBtn.size()) {
-                            moreBtn.remove();
-                            moreBtn = null;
 
-                        }
+                $scope.$watch('opts', function (val) {
+                    if (moreBtn) {
+                        moreBtn.remove();
+                        moreBtn = null;
+                    }
+                    $timeout(function () {
                         setUI();
                     })
                 })
-                $timeout(function () {
-                    setUI();
-                })
+//                $timeout(function () {
+//                    setUI();
+//                })
                 $scope.$on('$destroy', function () {
                     jQuery(window).off('resize.tool');
                     if (moreBtn && moreBtn.size()) {
@@ -1650,7 +1653,6 @@ angular.module('gkClientIndex.directives', [])
                         }
                         var grid = newBreadWidth - oldBreadWidth;
                         if (grid > 0) {
-                            console.log('grid',1);
                             var lastHideBread = $element.find('.bread_list .bread_item:hidden').last();
                             if (lastHideBread.size()) {
                                 if (grid >= lastHideBread.outerWidth()) {
