@@ -3503,7 +3503,7 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             if(!GKAuth.check(mount,'','file_link')){
-                                alert('你没有权限获取改文件的临时链接');
+                                alert('你没有权限获取该文件的临时链接');
                                 return;
                             }
                             GKModal.publish(mountId,file);
