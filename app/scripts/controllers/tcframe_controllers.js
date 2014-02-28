@@ -3,7 +3,7 @@
 /* Controllers */
 
 angular.module('gkClientFrame.controllers',[])
-    .controller('initFrame',['$scope','GKApi','GKNews','$rootScope','GKDialog',function($scope,GKApi,GKNews,$rootScope,GKDialog){
+    .controller('initFrame',['$scope','GKApi','GKNews','$rootScope','GKDialog','localStorageService',function($scope,GKApi,GKNews,$rootScope,GKDialog,localStorageService){
         $rootScope.PAGE_CONFIG  ={
             user:gkClientInterface.getUser()
         };
@@ -21,13 +21,19 @@ angular.module('gkClientFrame.controllers',[])
         };
 
         if($rootScope.PAGE_CONFIG.user.member_id){
+
             var getNews = function(){
                 var news = GKNews.getNews();
                 if(news&&news.length){
                     $scope.messages = news.slice(0,4);
                 }
             };
-            GKNews.requestNews().then(function(){
+
+            GKNews.requestNews().then(function(news){
+                if(news && news.length){
+                    var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
+                    localStorageService.add(unreadMsgKey,true);
+                }
                 getNews();
             });
 
@@ -39,10 +45,6 @@ angular.module('gkClientFrame.controllers',[])
                     getNews();
                 });
             })
-
-            $scope.handleHeaderClick = function(){
-                gkClientInterface.launchpad();
-            };
 
             $scope.showMessage = function(){
                 gkClientInterface.launchpad();

@@ -1451,7 +1451,7 @@ angular.module('gkClientIndex.services', [])
                     var dateline = data['dateline'];
                     gkClientInterface.setMessageDate(dateline);
                     context.addNews(news);
-                    deferred.resolve();
+                    deferred.resolve(news);
                 }).error(function () {
                         deferred.resolve();
                     })

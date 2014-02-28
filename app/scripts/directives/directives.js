@@ -1033,7 +1033,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi) {
+    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout) {
         return {
             replace: true,
             restrict: 'E',
@@ -1043,7 +1043,11 @@ angular.module('gkClientIndex.directives', [])
             },
             link: function ($scope, $element) {
                 var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
-                $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+
+                $timeout(function(){
+                    $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+                },2000);
+
                 var t,count = 0;
                 $scope.$on('UpdateMessage', function () {
                     if(t){
