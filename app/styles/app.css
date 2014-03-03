@@ -1370,10 +1370,21 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 .right_sidebar .opt_wrapper button{
     margin: 0 2px;
 }
+.right_sidebar .post_textarea_wrapper{
+    background: #F1F1F2;
+    position: relative;
+}
 .right_sidebar .tags {
     margin:5px 12px 0 12px;
 }
-
+.right_sidebar .tags .tag_edit_btn{
+    margin-top: -25px;
+    -webkit-transition:all linear .2s;
+    transition:all linear .2s;
+}
+.right_sidebar .tags.edit .tag_edit_btn{
+    margin-top: 3px;
+}
 .right_sidebar .tags textarea{
     border-color:transparent;
     background: transparent;

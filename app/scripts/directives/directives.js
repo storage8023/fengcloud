@@ -1088,7 +1088,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document) {
         return {
             replace: true,
             restrict: 'E',
@@ -1096,6 +1096,9 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/singlefile_right_sidebar.html",
             link: function ($scope, $element) {
                 $scope.file = {};
+                $scope.tag = {
+                    content:''
+                };
                 $scope.showTab = false; //是否显示共享等tab
                 $scope.fileExist = false;
                 var fileInterval,
@@ -1182,6 +1185,7 @@ angular.module('gkClientIndex.directives', [])
                                 $scope.fileExist = true;
                                 var formatFile = GKFile.formatFileItem(data, 'api');
                                 angular.extend($scope.file, formatFile);
+                                $scope.tag.content = $scope.file.tag;
                                 if ($scope.file.cmd > 0 && mount && GKMount.isMember(mount)) {
                                     $scope.showTab = true;
                                 } else {
@@ -1250,6 +1254,7 @@ angular.module('gkClientIndex.directives', [])
                         fileInterval = null;
                     }
                     $scope.onlyShowMileStone = false;
+                    $scope.tag.content = '';
 //                    $scope.fileLoaded = false;
 //                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
@@ -1258,12 +1263,25 @@ angular.module('gkClientIndex.directives', [])
                 $scope.sidebarLoaded = false;
                 getFileInfo($scope.localFile,{first:true});
 
+                $scope.editingTag = false;
+                $scope.handleBlurAndFocus = function($event){
+                    if($event.type == 'focus'){
+                        $scope.editingTag = true;
+                    }else{
+                        $scope.editingTag = false;
+                    }
+
+                }
+
                 /**
                  * 添加tag
                  * @param tag
                  */
                 $scope.postTag = function (tag) {
                     tag = String(tag);
+                    if(tag == $scope.file.tag){
+                        return;
+                    }
                     var reg = /\/|\\|\:|\*|\?|\"|<|>|\|/;
                     if (reg.test(tag)) {
                         alert('注释不能包含下列任何字符： / \\ : * ? " < > |');
@@ -1272,6 +1290,11 @@ angular.module('gkClientIndex.directives', [])
                     GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
+                }
+
+                $scope.cancelPostTag = function(){
+                    $scope.editingTag = false;
+                    $scope.tag.content = $scope.file.tag;
                 }
 
                 /**

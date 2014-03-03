@@ -38,11 +38,17 @@
                         <button class="btn btn-opt" ng-show="showLinkBtn" guider="plink" guider-placement="left" ng-click="publishFile(file)">临时链接</button>
                         <button guider="chat" guider-placement="left" ng-show="showChatBtn" class="btn btn-opt" ng-click="startChat(file)">发送到讨论</button>
                     </div>
-                    <div class="tags">
+                    <div class="tags" ng-class="editingTag?'edit':''">
                         <div ng-if="!showTab">
                             {{file.tag}}
                         </div>
-                        <textarea guider="comment" guider-placement="left" ng-if="showTab" size-adjust focus-me="focusPostTextarea" ng-blur="postTag(file.tag)" maxlength="280" ng-keydown="handlePostKeyDown($event,file.tag)" class="form-control" placeholder="+添加注释" ng-model="file.tag"></textarea>
+                        <div class="post_textarea_wrapper">
+                            <textarea guider="comment" guider-placement="left" ng-focus="handleBlurAndFocus($event)" size-adjust focus-me="focusPostTextarea" ng-blur="handleBlurAndFocus($event)" maxlength="280" class="form-control" placeholder="+添加注释" ng-model="tag.content"></textarea>
+                        </div>
+                        <div class="tag_edit_btn">
+                            <button class="btn btn-primary" ng-click="postTag(tag.content)">确定</button>
+                            <button class="btn btn-default" ng-click="cancelPostTag()">取消</button>
+                        </div>
                     </div>
                 </section>
 
