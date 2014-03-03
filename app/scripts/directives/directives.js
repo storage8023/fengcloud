@@ -1607,7 +1607,9 @@ angular.module('gkClientIndex.directives', [])
                         || jQuery($event.target).hasClass('searching_label')
                         || jQuery($event.target).parents('.searching_label').size()
                         || jQuery($event.target).hasClass('hide_bread')
-                        || jQuery($event.target).parents('.hide_bread').size()) {
+                        || jQuery($event.target).parents('.hide_bread').size()
+                        || $scope.searchState == 'end'
+                        ) {
                         return;
                     }
                     $scope.searchState = 'start';

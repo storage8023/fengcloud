@@ -219,7 +219,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                         mountid: mountId,
                         webpath: param.fullpath
                     });
-                    console.log('extendParam-file',extendParam.file);
                     if(!extendParam.file || jQuery.isEmptyObject(extendParam.file)){
                        alert('文件已被删除');
                        return;
