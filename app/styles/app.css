@@ -350,13 +350,12 @@ footer {
 
 .left_sidebar .account{
     background: #24272B;
-    height:50px;
+    height:80px;
     color:#fff;
     overflow: hidden;
-    position: absolute;
+    position: fixed;
     top:0;
     left:0;
-    right: 0;
     z-index: 998;
 }
 .left_sidebar  .account .account_info{
@@ -394,7 +393,7 @@ footer {
 .left_sidebar .account .icon_ring{
     position: absolute;
     top:10px;
-    right: 5px;
+    right: -5px;
 }
 .left_sidebar .account .icon_ring .hint{
     position: absolute;
@@ -405,22 +404,22 @@ footer {
 .left_sidebar .account .icon_ring:hover{
     background-position: -40px -580px;
 }
+.left_sidebar .account .btn_wrapper{
+    margin: 10px 0 0 0;
+}
 
+.left_sidebar .account .btn_wrapper .btn{
+    padding: 2px 0;
+    width: 80px;
+    margin-left:12px;
+}
+.left_sidebar .account .btn_wrapper .btn i{
+    margin-right: 0;
+}
 .left_sidebar .tree_wrapper{
-    position: absolute;
-    top:50px;
-    left:0;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
+    padding-top:80px;
 }
-.left_sidebar .tree_wrapper .add_lib{
-    position: absolute;
-    right: 5px;
-    top:8px;
-    padding:1px 5px;
-    z-index: 11;
-}
+
 .left_sidebar ul.nav.nav-list.abn-tree .icon_trash{
     margin-left: 45px;
 }

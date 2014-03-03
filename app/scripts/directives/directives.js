@@ -1085,6 +1085,14 @@ angular.module('gkClientIndex.directives', [])
                 $scope.personalOpen = function ($scope) {
                     GKDialog.openSetting('account');
                 };
+
+                $scope.handleCreate = function () {
+                    GKModal.createTeam();
+                };
+
+                $scope.handleAdd = function () {
+                    GKModal.createTeam();
+                };
             }
         }
     }])

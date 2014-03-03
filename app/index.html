@@ -43,10 +43,9 @@
 <body id="index_page" ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''"
       ng-controller="initClient">
 <!-- 左侧边栏 -->
-<aside class="left_sidebar" ng-controller="leftSidebar">
+<aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
-    <div class="scrollbar tree_wrapper" contextmenu>
-        <a class="btn btn-primary add_lib" ng-click="handleAdd()" href="javascript:void(0)">+ 创建云库</a>
+    <div class="tree_wrapper" contextmenu>
         <div guider="lib" guider-placement="right">
             <abn-tree tree-data="orgTreeList"
                       header="我的云库"

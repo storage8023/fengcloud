@@ -653,6 +653,12 @@ a:hover > .icon16x16.icon_link,
 .icon16x16.icon_file_white{
     background-position: -24px -244px;
 }
+.icon16x16.icon_quote{
+    background-position: -4px -17244px;
+}
+.icon16x16.icon_quote_white{
+    background-position: -24px -1744px;
+}
 
 /*32x32*/
 .icon32x32{
@@ -971,6 +977,15 @@ a:hover > .icon16x16.icon_link,
 .btn-blue:active,
 .btn-blue:focus{
     color: #fff;
+}
+.btn-dark{
+    background-color: rgba(63,71,84,.6);
+}
+.btn-dark:hover,
+.btn-dark:active,
+.btn-dark:focus{
+    color: #fff;
+    background-color: rgba(63,71,84,1);
 }
 .btn-green{
     background-color: #52AE75;

@@ -373,11 +373,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $location.search(pararm);
         };
 
-
-        $scope.handleAdd = function (partition) {
-            GKModal.createTeam();
-        };
-
         $scope.handleDrop = function (branch) {
             var selectedFile = GKFileList.getSelectedFile();
             var file = branch.data;

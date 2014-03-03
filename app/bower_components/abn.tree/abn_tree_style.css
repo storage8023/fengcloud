@@ -69,7 +69,7 @@ ul.nav.nav-list.abn-tree>.active>a,
 ul.nav.nav-list.abn-tree>a:hover,
 ul.nav.nav-list.abn-tree>a:focus{
     text-decoration: none;
-    background-color: #000;
+    background-color: #448DE8;
     color:#fff;
 }
 /*ul.nav.nav-list.abn-tree > li > a:hover .tree-icon,*/
@@ -152,7 +152,7 @@ ul.nav.nav-list.abn-tree .icon_unfold i{
 
 ul.nav.abn-tree > .hover > a,
 ul.nav.abn-tree > li:not(.nav-header) > a:hover{
-    background: #393D42;
+    background: #448DE8;
     color:#fff;
 }
 ul.nav.nav-list.abn-tree > li.active > a{
