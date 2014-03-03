@@ -310,6 +310,16 @@ angular.module('GKCommon.directives', [])
             }
         }
     }])
+    .directive('gkOnload',['$parse',function($parse){
+        return function ($scope, $element, $attrs) {
+            var fn = $parse($attrs.gkOnload);
+            $element.on('load',function(){
+                $scope.$apply(function () {
+                    fn($scope, {$event: event});
+                });
+            })
+        };
+    }])
     .directive('ngDrop', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.ngDrop);
