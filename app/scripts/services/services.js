@@ -3383,6 +3383,12 @@ angular.module('gkClientIndex.services', [])
                         callback: function () {
                             var file = selectedFile[0];
                             var mountId = GKFileList.getOptFileMountId(file);
+                            var mount = GKMount.getMountById(mountId);
+                            if(!mount) return;
+                            if(!GKAuth.check(mount,'','file_write')){
+                                alert('你没有权限锁定该文件');
+                                return;
+                            }
                             GK.lock({
                                 webpath: file.fullpath,
                                 mountid: mountId
