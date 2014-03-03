@@ -59,11 +59,15 @@ angular.module("gkDragDrop",[])
                 dropable = newValue;
             });
 
+            var dragEnterFn = $parse(attrs.dragEnter);
             element.on('dragenter',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
                 if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return false;
+                scope.$apply(function () {
+                    dragEnterFn(scope, {$event: event});
+                });
             })
 
             var dragOverFn = $parse(attrs.dragOver);

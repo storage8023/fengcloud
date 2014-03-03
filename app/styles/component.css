@@ -637,15 +637,15 @@ a:hover > .icon16x16.icon_link,
     background-position: -4px -1644px;
 }
 .icon16x16.icon_recent_visit{
-    background-position: -4px -1720px;
+    background-position: -4px -1724px;
 }
 .icon16x16.icon_recent_visit_white{
-    background-position: -24px -1720px;
+    background-position: -24px -1724px;
 }
 .active .icon16x16.icon_recent_visit,
 .icon16x16.icon_recent_visit,
 .icon16x16.icon_recent_visit{
-    background-position: -44px -1720px;
+    background-position: -44px -1724px;
 }
 .icon16x16.icon_file{
     background-position: -4px -244px;
@@ -654,7 +654,7 @@ a:hover > .icon16x16.icon_link,
     background-position: -24px -244px;
 }
 .icon16x16.icon_quote{
-    background-position: -4px -17244px;
+    background-position: -4px -1744px;
 }
 .icon16x16.icon_quote_white{
     background-position: -24px -1744px;

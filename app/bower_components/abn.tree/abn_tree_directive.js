@@ -256,12 +256,9 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
 
 
      var expandedTimer;
-      scope.drop = function(event,ui,branch){
+      scope.drop = function(event,branch){
+          console.log('arguments',arguments);
           branch.hover = false;
-          if(expandedTimer){
-             $timeout.cancel(expandedTimer);
-              expandedTimer = null;
-          }
           if (scope.onDrop != null) {
               return $timeout(function() {
                   return scope.onDrop({
@@ -270,21 +267,12 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
               });
           }
       };
-      scope.dropOver = function(event,ui,branch){
+      scope.dropOver = function(event,branch){
           branch.hover = true;
-          expandedTimer = $timeout(function(){
-                  if(!branch.expanded){
-                      expand_branch(branch);
-                  }
-          },500)
       };
 
-      scope.dropOut = function(event,ui,branch){
+      scope.dropOut = function(event,branch){
           branch.hover = false;
-          if(expandedTimer){
-              $timeout.cancel(expandedTimer);
-              expandedTimer = null;
-          }
       };
       return scope.$watch('treeData', on_treeData_change, true);
     }

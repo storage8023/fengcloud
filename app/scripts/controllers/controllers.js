@@ -275,7 +275,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 alert('你没有权限在当前云库添加文件');
                 return;
             }
-            GKModal.selectFile(mountId).result.then(function(re){
+            GKModal.selectFile(mountId,'请选择添加到哪个目录').result.then(function(re){
                 var iframe = GKFrame('ifame_chat');
                 if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
                     iframe.gkFrameCallback('selectAddDirSuccess',re);
@@ -385,25 +385,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     webpath: value.fullpath
                 });
             });
-            var actName = '移动';
-            if (file.mount_id != $rootScope.PAGE_CONFIG.mount.mount_id) {
-                actName = '复制';
-            }
-            var toName = '';
-            if (toFullpath) {
-                toName = Util.String.baseName(toFullpath);
-            } else {
-                toName = GKMount.getMountById(toMountId)['name'];
-            }
-            var msg = '你确定要将 ' + Util.String.baseName(fromFullpathes[0]['webpath']) + (fromFullpathes.length > 1 ? '等' + fromFullpathes.length + '文件或文件夹' : '') + ' ' + actName + '到 ' + toName + ' 吗？';
-            if (!confirm(msg)) {
-                return;
-            }
-            if (file.mount_id == $rootScope.PAGE_CONFIG.mount.mount_id) {
-                GKFileOpt.move(toFullpath, toMountId, fromFullpathes, fromMountId);
-            } else {
-                GKFileOpt.copy(toFullpath, toMountId, fromFullpathes, fromMountId);
-            }
+
+            GKModal.selectFile(file.mount_id,'请选择复制到哪个目录').result.then(function(re){
+                GKFileOpt.copy(re.selectedPath, file.mount_id, fromFullpathes, fromMountId);
+            });
         };
 
         var selectBranchOnLocationChange = function(param){

@@ -2,8 +2,10 @@
   <li ng-show="header" class="nav-header"><span>{{ header }}</span></li>
   <li ng-repeat="row in tree_rows | filter:{visible:true}"
       data-branch="{{row.branch.data}}"
-      data-drop="true"
-      jqyoui-droppable="{onDrop:'drop(row.branch)',onOver:'dropOver(row.branch)',onOut:'dropOut(row.branch)'}"
+      dropable="true"
+      drag-over="dropOver($event,row.branch)"
+      drag-leave="dropOut($event,row.branch)"
+      drop-success="drop($event,row.branch)"
       ng-class="{'hover':row.branch.hover,'active':row.branch.selected}"
       class="abn-tree-row level-{{row.level}}">
       <a ng-click="user_clicks_branch($event,row.branch)" ng-dblclick="user_dblclicks_branch(row.branch)" title="{{ row.label }}">

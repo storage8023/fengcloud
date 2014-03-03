@@ -486,14 +486,14 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
-            selectFile:function(mountId){
+            selectFile:function(mountId,title){
                 var option = {
                     templateUrl: 'views/select_file_dialog.html',
                     windowClass: 'select_file_dialog',
                     controller: function ($scope,$modalInstance) {
                         var mount = GKMount.getMountById(mountId);
                         if(!mount) return;
-
+                        $scope.title = title;
                         $scope.fileData = [{
                             label:mount.name,
                             nodeImg : mount.logo,
