@@ -1272,14 +1272,19 @@ angular.module('gkClientIndex.directives', [])
                 getFileInfo($scope.localFile,{first:true});
 
                 $scope.editingTag = false;
-                $scope.handleBlurAndFocus = function($event){
-                    if($event.type == 'focus'){
-                        $scope.editingTag = true;
-                    }else{
-                        $scope.editingTag = false;
-                    }
-
+                $scope.handleFocus = function($event){
+                    $scope.editingTag = true;
                 }
+
+                $document.on('mousedown',function(e){
+                    if(jQuery(e.target).parents('.post_textarea_wrapper').size() || jQuery(e.target).hasClass('tag_edit')){
+                        return
+                    }
+                    $scope.$apply(function(){
+                        $scope.editingTag = false;
+                        $scope.tag.content = $scope.file.tag;
+                    })
+                })
 
                 /**
                  * 添加tag
@@ -1287,15 +1292,16 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.postTag = function (tag) {
                     tag = String(tag);
-                    if(tag == $scope.file.tag){
-                        return;
-                    }
                     var reg = /\/|\\|\:|\*|\?|\"|<|>|\|/;
                     if (reg.test(tag)) {
                         alert('注释不能包含下列任何字符： / \\ : * ? " < > |');
                         return;
                     }
-                    GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).error(function (request) {
+                    GKApi.setTag(getOptMountId($scope.file), $scope.file.fullpath, tag).success(function(){
+                        $scope.$apply(function(){
+                            $scope.editingTag = false;
+                        })
+                    }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
                 }

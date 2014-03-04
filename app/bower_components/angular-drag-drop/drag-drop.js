@@ -15,7 +15,7 @@ angular.module("gkDragDrop",[])
                 dragData = val;
             })
             var dragBeginFn = $parse(attrs.dragBegin);
-            element.on('dragstart',function(event){
+            element.on('dragstart.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 scope.$apply(function () {
                     dragBeginFn(scope, {$event: e});
@@ -33,7 +33,7 @@ angular.module("gkDragDrop",[])
                 })
             })
 
-            element.on('drag',function(event){
+            element.on('drag.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 helper&&helper.css({
                     'top': e.pageY,
@@ -42,11 +42,17 @@ angular.module("gkDragDrop",[])
             })
 
             var dragEndFn = $parse(attrs.dragEnd);
-            element.on('dragend',function(event){
+            element.on('dragend.gkDragDrop',function(event){
                 helper&&helper.remove();
                 scope.$apply(function () {
                     dragEndFn(scope, {$event: event});
                 });
+            })
+
+            scope.$on('$destory',function(){
+                element.off('dragstart.gkDragDrop');
+                element.off('drag.gkDragDrop');
+                element.off('dragend.gkDragDrop');
             })
         }
     }])
@@ -60,7 +66,7 @@ angular.module("gkDragDrop",[])
             });
 
             var dragEnterFn = $parse(attrs.dragEnter);
-            element.on('dragenter',function(event){
+            element.on('dragenter.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
                 if(data !== 'GK_DRAG_DROP') return;
@@ -71,7 +77,7 @@ angular.module("gkDragDrop",[])
             })
 
             var dragOverFn = $parse(attrs.dragOver);
-            element.on('dragover',function(event){
+            element.on('dragover.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
                 if(data !== 'GK_DRAG_DROP') return;
@@ -82,7 +88,7 @@ angular.module("gkDragDrop",[])
             })
 
             var dragLeaveFn = $parse(attrs.dragLeave);
-            element.on('dragleave',function(event){
+            element.on('dragleave.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
                 if(data !== 'GK_DRAG_DROP') return;
@@ -92,17 +98,9 @@ angular.module("gkDragDrop",[])
                 });
             })
 
-            element.on('dragover',function(event){
-                var e = event.originalEvent;
-                var data = e.dataTransfer.getData('text');
-                if(data !== 'GK_DRAG_DROP') return;
-                if(!dropable) return;
-                event.stopPropagation();
-                event.preventDefault();
-            })
 
             var dropFn = $parse(attrs.dropSuccess);
-            element.on('drop',function(event){
+            element.on('drop.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
                 if(data !== 'GK_DRAG_DROP') return;
@@ -110,6 +108,13 @@ angular.module("gkDragDrop",[])
                 event.stopPropagation();
                 event.preventDefault();
                 dropFn(scope, {$event: e});
+            })
+
+            scope.$on('$destory',function(){
+                element.off('dragenter.gkDragDrop');
+                element.off('dragover.gkDragDrop');
+                element.off('dragleave.gkDragDrop');
+                element.off('drop.gkDragDrop');
             })
         }
     }])

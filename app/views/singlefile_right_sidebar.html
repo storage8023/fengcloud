@@ -43,11 +43,11 @@
                             {{file.tag}}
                         </div>
                         <div class="post_textarea_wrapper">
-                            <textarea guider="comment" guider-placement="left" ng-focus="handleBlurAndFocus($event)" size-adjust focus-me="focusPostTextarea" ng-blur="handleBlurAndFocus($event)" maxlength="280" class="form-control" placeholder="+添加注释" ng-model="tag.content"></textarea>
+                            <textarea guider="comment" guider-placement="left" ng-focus="handleFocus($event)" size-adjust focus-me="focusPostTextarea" maxlength="280" class="form-control" placeholder="+添加注释" ng-model="tag.content"></textarea>
                         </div>
                         <div class="tag_edit_btn">
-                            <button class="btn btn-primary" ng-click="postTag(tag.content)">确定</button>
-                            <button class="btn btn-default" ng-click="cancelPostTag()">取消</button>
+                            <button class="btn btn-primary tag_edit" ng-click="postTag(tag.content)">确定</button>
+                            <button class="btn btn-default tag_edit" ng-click="cancelPostTag()">取消</button>
                         </div>
                     </div>
                 </section>
