@@ -59,14 +59,13 @@ ul.nav.nav-list.abn-tree > li{
    white-space: nowrap;
 }
 
-ul.nav.abn-tree > li:not(.nav-header) > a:hover,
-ul.nav.abn-tree > li:not(.nav-header) > a:focus{
-    background-color: transparent;
+
+ul.abn-tree > .hover > a,
+ul.abn-tree > li:not(.nav-header) > a:hover{
+    background: #393d42;
+    color:#fff;
 }
-/*ul.nav.nav-list.abn-tree > li > a:hover,*/
-/*ul.nav.nav-list.abn-tree > li > a:focus,*/
-ul.nav.nav-list.abn-tree>.active>a,
-ul.nav.nav-list.abn-tree>a:focus{
+ul.nav.nav-list.abn-tree>li.active>a{
     text-decoration: none;
     background-color: #448DE8;
     color:#fff;
@@ -150,11 +149,7 @@ ul.nav.nav-list.abn-tree .icon_unfold i{
 }
 
 
-ul.nav.abn-tree > .hover > a,
-ul.nav.abn-tree > li:not(.nav-header) > a:hover{
-    background: #393d42;
-    color:#fff;
-}
+
 ul.nav.nav-list.abn-tree > li.active > a{
 
     color: #fff;

@@ -380,6 +380,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 toMountId = file.mount_id,
                 fromFullpathes = [],
                 fromMountId = $rootScope.PAGE_CONFIG.mount.mount_id;
+            var mount = GKMount.getMountById(toMountId);
+            if(!mount) return;
+            if(!GKAuth.check(mount,'','file_write')){
+                alert('你没有权限将文件或文件夹复制到改云库');
+                return;
+            }
             angular.forEach(selectedFile, function (value) {
                 fromFullpathes.push({
                     webpath: value.fullpath
@@ -618,6 +624,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
+        $scope.mountReadable = true;
         $scope.order = '+filename'; //当前的排序
         if (GKPartition.isSmartFolderPartition($scope.partition) && $scope.filter == 'recent') {
             $scope.order = '-last_edit_time'; //当前的排序
@@ -1034,6 +1041,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope,param.selectedpath);
             setOpts();
             GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
+            if(GKPartition.isMountPartition($scope.partition)){
+                $scope.mountReadable = GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read');
+            }
         };
 
         $scope.gkChat = GKChat;
@@ -1281,7 +1291,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 toFullpath = file.fullpath,
                 fromMountId = $scope.mountId,
                 fromFullpathes = [];
-
+            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                alert('你没有权限在当前云库复制或移动文件');
+                return;
+            }
             angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 fromFullpathes.push({
                     webpath: value.fullpath
