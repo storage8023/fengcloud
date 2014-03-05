@@ -3867,7 +3867,7 @@ angular.module('gkClientIndex.services', [])
                             option.recycle = true;
                         } else {
                             var mount = GKMount.getMountById($scope.mountId);
-                            if (!GKAuth.check(mount,'','file_read_open')&&(GKPartition.isTeamFilePartition($scope.partition) || GKPartition.isEntFilePartition($scope.partition))) {
+                            if (mount.compare==1 && (GKPartition.isTeamFilePartition($scope.partition) || GKPartition.isEntFilePartition($scope.partition))) {
                                 source = 'client';
                                 option.current = 1;
                             }

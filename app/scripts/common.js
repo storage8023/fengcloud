@@ -910,7 +910,8 @@ angular.module('GKCommon.services', [])
                 trash_size: mount.size_recycle,
                 trash_dateline: mount.dateline_recycle,
                 property:properties,
-                storage_point:mount.storage_point
+                storage_point:mount.storage_point,
+                compare:mount.compare
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;
