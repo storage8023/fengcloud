@@ -234,13 +234,14 @@ right: -20px;
 .chat_item .chat_main .chat_text{
     background: #fff;
     border-radius: 3px;
-    padding: 5px 10px;
     position: relative;
     word-break: break-all;
     word-wrap: break-word;
     box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);
 }
-
+.chat_item .chat_main .chat_text .chat_text_inner{
+    padding: 5px 10px;
+}
 .chat_item.chat_item_mine .chat_main .chat_text{
    border-top-right-radius: 0;
 }
@@ -296,6 +297,11 @@ right: -20px;
 .chat_file{
     overflow: hidden;
     display: table;
+    position: relative;
+    padding: 5px;
+}
+.chat_item.has_content .chat_file{
+    border-top: 1px solid #f2f2f2;
 }
 .chat_file > div{
 display: table-cell;
@@ -344,8 +350,8 @@ display: table-cell;
 .chat_file .file_opt{
     clear: both;
     position: absolute;
-    top:5px;
-    right: 8px;
+    top:2px;
+    right: 5px;
 }
 
 .chat_file:hover .file_opt{

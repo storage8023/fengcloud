@@ -162,7 +162,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 }
                 var params = {
                     mountid: mountId,
-                    filehash:metadata.filehash
+                    filehash:metadata.filehash,
+                    uuidhash:metadata.hash
                 };
                 if(!file){
                     params.webpath = metadata.fullpath;

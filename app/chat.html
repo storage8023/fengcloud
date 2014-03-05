@@ -34,7 +34,7 @@
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="empty" ng-if="!currentMsgList || !currentMsgList.length">没有讨论</div>
                     <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
-                         ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_name}">
+                         ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_name,'has_content':msg.content}">
 
                         <div class="time_grid" ng-show="$index==0||(currentMsgList[$index-1]&&((msg['time']|date:'yyyy/MM/dd HH:mm') != (currentMsgList[$index-1]['time']|date:'yyyy/MM/dd HH:mm')))" ng-bind="msg.time|timeAgo"></div>
 
@@ -47,7 +47,9 @@
                             </div>
                             <div class="chat_text">
                                 <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
-                                <span ng-bind="msg.content" ng-if="msg.type=='text'" class="text"></span>
+                                <div class="chat_text_inner" ng-if="msg.content">
+                                    <span ng-bind="msg.content" class="text"></span>
+                                </div>
                                 <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
                                     <div class="file_icon_wrapper">
                                         <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0">
