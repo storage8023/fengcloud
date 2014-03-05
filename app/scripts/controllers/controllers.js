@@ -383,7 +383,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var mount = GKMount.getMountById(toMountId);
             if(!mount) return;
             if(!GKAuth.check(mount,'','file_write')){
-                alert('你没有权限将文件或文件夹复制到改云库');
+                alert('你没有权限将文件或文件夹复制到该云库');
                 return;
             }
             angular.forEach(selectedFile, function (value) {
@@ -395,6 +395,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.selectFile(file.mount_id,'请选择复制到哪个目录').result.then(function(re){
                 GKFileOpt.copy(re.selectedPath, file.mount_id, fromFullpathes, fromMountId);
             });
+        };
+
+        $scope.handleHeaderClick = function(tree){
+            var url = gkClientInterface.getUrl({
+                sso: 0,
+                url: gkClientInterface.getSiteDomain()+'/ent'
+            });
+            gkClientInterface.openUrl(url);
         };
 
         var selectBranchOnLocationChange = function(param){

@@ -1,12 +1,25 @@
 ul.nav.nav-list.abn-tree{
     font-size: 16px;
 }
-
-ul.nav.nav-list.abn-tree .nav-header a{
+ul.nav.nav-list.abn-tree .nav-header{
+    height: 32px;
+    line-height: 32px;
+    font-size: 14px;
+    padding: 0 10px;
+    padding-right: 20px;
+    position: relative;
+}
+ul.nav.nav-list.abn-tree .nav-header button{
     position: absolute;
-    right: 5px;
-    top:5px;
-    padding: 1px 5px;
+    right:0;
+    top:0;
+    padding:0 5px;
+    background: none;
+    border: 0 none;
+    height: 32px;
+}
+ul.nav.nav-list.abn-tree .nav-header button:hover i{
+    background-position: -24px -324px;
 }
 ul.nav.nav-list.abn-tree .tree-icon{
     width: 20px;
@@ -157,10 +170,3 @@ ul.nav.nav-list.abn-tree > li.active > a{
 
 }
 
-ul.nav.nav-list.abn-tree .nav-header{
-    height: 32px;
-    line-height: 32px;
-    font-size: 14px;
-    padding: 0 10px;
-
-}

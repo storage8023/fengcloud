@@ -85,12 +85,20 @@ angular.module('gkClientIndex.services', [])
                             partition = GKPartition.getPartitionByMountType(mount.member_type,mount.ent_id),
                             treeItem = GKFile.dealTreeItem(mount,partition, mount.mount_id,true);
                         var ent = GKEnt.getEnt(entId);
+
                         if(ent && ent.entname){
+                            var showHeaderBtn = false;
+                            if(ent.property){
+                                ent.property = JSON.parse(ent.property);
+                                showHeaderBtn = (ent.property.ent_admin==1);
+                            }
                             if(!treeList[entId]){
                                 treeList[entId] = {
                                     guider:!entId?'lib':'',
                                     header:ent.entname,
-                                    data:[treeItem]
+                                    data:[treeItem],
+                                    entId:ent.entid,
+                                    showHeaderBtn:showHeaderBtn
                                 };
                             }else{
                                 treeList[entId].data.push(treeItem);

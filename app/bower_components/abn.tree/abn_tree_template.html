@@ -1,5 +1,8 @@
 <ul class="nav nav-list abn-tree">
-  <li ng-show="header" class="nav-header"><span>{{ header }}</span></li>
+  <li ng-show="header" class="nav-header">
+      <span>{{ header }}</span>
+      <button ng-if="showHeaderBtn" ng-click="onHeaderClick()" title="点击进入管理后台"><i class="icon16x16 icon_manage"></i></button>
+  </li>
   <li ng-repeat="row in tree_rows | filter:{visible:true}"
       data-branch="{{row.branch.data}}"
       dropable="true"
