@@ -3864,7 +3864,8 @@ angular.module('gkClientIndex.services', [])
                                 deferred.reject(GKException.getAjaxErrorMsg(request));
                             });
                     } else {
-                        fileList = $filter('filter')(smartFileList, {filename: searchArr[0]});
+                        var fileData = smartFileList?smartFileList:$scope.fileData;
+                        fileList = $filter('filter')(fileData, {filename: searchArr[0]});
                         deferred.resolve(fileList);
                         $rootScope.$broadcast('searchStateChange','end');
                     }
@@ -3881,6 +3882,7 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                         GKFile.getFileList($scope.mountId, $scope.path, source,option).then(function(list){
+                            smartFileList = list;
                             deferred.resolve(list);
                         },function(re){
                             deferred.reject(re);
