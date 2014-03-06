@@ -374,8 +374,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 var sender = chatMember.getMemberItem(value.receiver, value.sender);
                 var extendValue = {
                     sender_name: sender ? sender['member_name'] : value.sender,
-                    is_vip: sender && sender.isvip ? true : false,
-                    sender_id:sender ? sender['member_id'] : value.sender,
+                    is_vip: sender && sender.isvip ? true : false
                 };
 
                 if (value.metadata) {

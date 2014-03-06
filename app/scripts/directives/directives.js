@@ -1091,7 +1091,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.handleAdd = function () {
-                    GKModal.createTeam();
+                    GKModal.joinTeam();
                 };
             }
         }

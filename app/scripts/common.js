@@ -1886,12 +1886,18 @@ angular.module('GKCommon.filters', [])
         }
     })
     .filter('getAvatarUrl', function () {
-        return function (memberId,isThumb) {
+        return function (memberId,isThumb,isUsername) {
             if(memberId == 0){
                 return 'images/unknow_photo.png';
             }
+            isUsername = angular.isDefined(isUsername)?isUsername:false;
             isThumb = angular.isDefined(isThumb)?isThumb:1;
-            return gkClientInterface.getSiteDomain()+'/index/avatar?id='+memberId+'&thumb='+isThumb;
+            if(isUsername){
+                return gkClientInterface.getSiteDomain()+'/index/avatar?name='+memberId+'&thumb='+isThumb;
+            }else{
+                return gkClientInterface.getSiteDomain()+'/index/avatar?id='+memberId+'&thumb='+isThumb;
+            }
+
         }
     })
     .filter('formatFileSize', function () {

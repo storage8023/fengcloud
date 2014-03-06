@@ -39,7 +39,7 @@
                         <div class="time_grid" ng-show="$index==0||(currentMsgList[$index-1]&&((msg['time']|date:'yyyy/MM/dd HH:mm') != (currentMsgList[$index-1]['time']|date:'yyyy/MM/dd HH:mm')))" ng-bind="msg.time|timeAgo"></div>
 
                         <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)">
-                            <avatar class="avatar" gk-src="{{msg.sender_id|getAvatarUrl}}"></avatar>
+                            <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl:0:true}}"></avatar>
                         </div>
                         <div class="chat_main" ng-class="msg.error>0?'error':''">
                             <div class="chat_member" ng-click="atMember(msg.sender_name)">

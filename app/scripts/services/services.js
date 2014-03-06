@@ -953,7 +953,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 }
                             } else {
-                                return 'btn-default';
+                                return 'btn-primary';
                             }
                         };
 
@@ -961,6 +961,11 @@ angular.module('gkClientIndex.services', [])
                             if (opt.type == 'request') {
                                 if (opt.opt == 'invite_accept' || opt.opt == 'invite_reject') {
                                     if (!confirm('你确定要' + opt.name + '该云库的邀请？')) {
+                                        return;
+                                    }
+                                }
+                                if(opt.opt == 'apply_accept'){
+                                    if (!confirm('你确定要' + opt.name + '该申请？')) {
                                         return;
                                     }
                                 }
@@ -1137,6 +1142,34 @@ angular.module('gkClientIndex.services', [])
                             return gkClientInterface.getUrl({
                                 sso: 1,
                                 url: '/org/regist'
+                            });
+                        }
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
+            joinTeam: function () {
+                var title = '加入云库';
+                var option = {
+                    templateUrl: 'views/join_team_dialog.html',
+                    windowClass: 'modal_frame join_team_dialog',
+                    controller: function ($scope, $modalInstance, src) {
+                        $scope.title = title;
+                        $scope.url = src;
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+
+                        $scope.$on('closeModal', function (event, param) {
+                            $modalInstance.dismiss('cancel');
+                        })
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/org/find_org'
                             });
                         }
                     }
