@@ -1,6 +1,6 @@
 'use strict';
-
-angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
+angular.module('LocalStorageModule').value('prefix', 'gkChat');
+angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
     .run(['$rootScope', function ($rootScope) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
@@ -8,7 +8,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             partition:'teamfile'
         }
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember','$angularCacheFactory','$window','$interval','GKApi',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember,$angularCacheFactory,$window,$interval,GKApi) {
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember','$window','$interval','GKApi','localStorageService',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember,$window,$interval,GKApi,localStorageService) {
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
@@ -182,15 +182,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             $event.stopPropagation();
         };
 
-        var postTextCache = $angularCacheFactory.get('postTextCache');
-        if(!postTextCache){
-            postTextCache = $angularCacheFactory('postTextCache',{
-                maxAge: 2592000000, //30天后过期
-                deleteOnExpire: 'aggressive',
-                storageMode: 'localStorage'
-            });
-        }
-
         $scope.remindMembers = [];
 
         var setList = function () {
@@ -220,8 +211,11 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                             }
                         });
                     }else{
-                        msgList = chatContent.getDefaultMsg();
-                        console.log(msgList);
+                        var defaultMsgCache= localStorageService.get('defaultMsgCache');;
+                        if(!defaultMsgCache || defaultMsgCache==$scope.currentSession.orgid){
+                            msgList = chatContent.getDefaultMsg();
+                            localStorageService.add('defaultMsgCache',$scope.currentSession.orgid);
+                        }
                     }
                     $scope.currentMsgList = msgList;
                 //文件
@@ -252,7 +246,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             $timeout(function(){
                 $scope.focusTextarea = true;
             })
-            //$scope.postText = postTextCache.get(String($scope.currentSession.orgid)) || '';
             $scope.postText = '';
 
         };
@@ -296,7 +289,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         setList();
 
         $scope.saveLastText = function(postText){
-            postTextCache.put($scope.currentSession.orgid,postText);
         };
 
         $scope.$on('UpdateMembers',function($event,param){
@@ -382,33 +374,33 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             getDefaultMsg:function(){
                 var msg = [
                     {
-                        content: 'Hi，我是韩梅梅，我将和我的小伙伴Watson一起，向你展示怎样在讨论中引用文件。',
+                        content: '亲爱的用户，你好！欢迎使用够快云库。我和我的同事在这里向你介绍一下如何在讨论中快速引用文件。',
                         receiver: 0,
-                        sender_name: '韩梅梅',
-                        sender:'韩梅梅',
+                        sender_name: '够快产品经理',
+                        sender:'够快产品经理',
                         time: new Date().getTime(),
                         type: 'file',
                         metadata:JSON.stringify({
                             mount_id: 3655,
                             dir:0,
                             filehash: '4956ba1ddec299adc6ae5158634c7d5cc1687655',
-                            filename:'拖拽文件.jpg'
+                            filename:'轻轻一拖，即刻发送.jpg'
                         })
                     },
                     {
                         content: '你可以直接将桌面的文件直接拖动到聊天窗口',
                         receiver: 0,
-                        sender_name: '韩梅梅',
-                        sender:'韩梅梅',
+                        sender_name: '够快产品经理',
+                        sender:'够快产品经理',
                         time: new Date().getTime(),
                         type: 'text',
                         metadata:''
                     },
                     {
-                        content: '很方便是不是，Watson你来介绍下另外一种实现方法吧。',
+                        content: '很方便是不是，现在让我们的技术总监向你介绍下另外一种实现方法吧。',
                         receiver: 0,
-                        sender_name: '韩梅梅',
-                        sender:'韩梅梅',
+                        sender_name: '够快产品经理',
+                        sender:'够快产品经理',
                         time: new Date().getTime(),
                         type: 'text',
                         metadata:''
@@ -416,22 +408,22 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     {
                         content: 'OK，另外一种其实也很简单，只需在文件列表页对选中的文件发起讨论就可以了。',
                         receiver: 0,
-                        sender_name: '李雷',
-                        sender:'李雷',
+                        sender_name: '够快技术总监',
+                        sender:'够快技术总监',
                         time: new Date().getTime(),
                         type: 'file',
                         metadata:JSON.stringify({
                             mount_id: 3655,
                             dir:0,
                             filehash: 'ab498105782fc60a12ad48f7523e37a805869f32',
-                            filename:'发送到讨论.jpg'
+                            filename:'一键点击，方便讨论.jpg'
                         })
                     },
                     {
                         content: '恩，这就是两种在讨论中引用文件的方式，现在你也可以和你的小伙伴一起沟通协作了。',
                         receiver: 0,
-                        sender_name: '韩梅梅',
-                        sender:'韩梅梅',
+                        sender_name: '够快产品经理',
+                        sender:'够快产品经理',
                         time: new Date().getTime(),
                         type: 'text',
                         metadata:''
@@ -439,26 +431,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     {
                         content: '这次就说到这啦，Bye。',
                         receiver: 0,
-                        sender_name: '韩梅梅',
-                        sender:'韩梅梅',
-                        time: new Date().getTime(),
-                        type: 'text',
-                        metadata:''
-                    },
-                    {
-                        content: '退出了该云库',
-                        receiver: 0,
-                        sender_name: '李雷',
-                        sender:'李雷',
-                        time: new Date().getTime(),
-                        type: 'text',
-                        metadata:''
-                    },
-                    {
-                        content: '退出了该云库',
-                        receiver: 0,
-                        sender_name: '韩梅梅',
-                        sender:'韩梅梅',
+                        sender_name: '够快产品经理',
+                        sender:'够快产品经理',
                         time: new Date().getTime(),
                         type: 'text',
                         metadata:''
@@ -524,15 +498,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         };
         return chatContent;
     }])
-    .factory('chatSession', ['GKMount','$angularCacheFactory','$filter', function (GKMount,$angularCacheFactory,$filter) {
-        var chatSessionCache = $angularCacheFactory.get('chatSessionCache');
-        if(!chatSessionCache){
-            chatSessionCache = $angularCacheFactory('postRemarkCache',{
-                maxAge: 2592000000, //30天后过期
-                deleteOnExpire: 'aggressive',
-                storageMode: 'localStorage'
-            });
-        }
+    .factory('chatSession', ['GKMount','$filter', function (GKMount,$filter) {
         var chatSession = {
             getSessionByMountId: function (mountId) {
                 return gkClientInterface.getMount({
