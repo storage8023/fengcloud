@@ -5,7 +5,7 @@
 .icon16x16{
     width: 16px;
     height: 16px;
-    background-image: url(../images/icon/icon16x16.png?v=12);
+    background-image: url(../images/icon/icon16x16.png?v=13);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -657,6 +657,16 @@ a:hover > .icon16x16.icon_link,
     background-position: -4px -1744px;
 }
 .icon16x16.icon_quote_white{
+    background-position: -24px -1744px;
+}
+
+.icon16x16.icon_edit{
+    background-position: -4px -1744px;
+}
+.icon16x16.icon_edit_white{
+    background-position: -24px -1744px;
+}
+.icon16x16.icon_edit_color{
     background-position: -24px -1744px;
 }
 
