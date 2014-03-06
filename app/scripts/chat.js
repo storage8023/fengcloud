@@ -171,6 +171,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     if(metadata.fullpath){
                         params.webpath = metadata.fullpath;
                     }else{
+                        params.webpath = metadata.filename;
                         params.mountid = metadata.mount_id;
                     }
 
