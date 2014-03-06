@@ -300,8 +300,8 @@ right: -20px;
     position: relative;
     padding: 5px;
 }
-.chat_item.has_content .chat_file{
-    border-top: 1px solid #f2f2f2;
+.chat_item.has_content .chat_text_inner{
+   border-bottom: 1px solid #f2f2f2;
 }
 .chat_file > div{
 display: table-cell;

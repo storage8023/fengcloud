@@ -130,10 +130,12 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             var mountId = Number($scope.currentSession.mountid);
             var file;
             if(!metadata.hash){
-                file = gkClientInterface.getFileInfo({
-                    mountid: Number(metadata.mount_id),
-                    webpath: metadata.fullpath
-                });
+                if(metadata.fullpath){
+                    file = gkClientInterface.getFileInfo({
+                        mountid: Number(metadata.mount_id),
+                        webpath: metadata.fullpath
+                    });
+                }
             }else{
                 file = gkClientInterface.getFileInfo({
                     mountid: Number(metadata.mount_id),
@@ -156,7 +158,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     var properties = JSON.parse($scope.currentSession.property);
                     permissions = properties.permissions? properties.permissions:[];
                 }
-                if(permissions.indexOf('file_read')<0){
+                if(permissions.indexOf('file_read')<0 && file){
                     alert('你没有权限查看改文件');
                     return;
                 }
@@ -170,6 +172,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 }else{
                     params.webpath = file.path;
                 }
+                console.log('params',params);
                 gkClientInterface.open(params);
             }
             $event.stopPropagation();
@@ -212,6 +215,8 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                                 maxMsgTime = time;
                             }
                         });
+                    }else{
+                        msgList = chatContent.getDefaultMsg();
                     }
                     $scope.currentMsgList = msgList;
                 //文件
@@ -367,40 +372,66 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
         },1000)
 
     }])
-    .factory('chatContent', ['chatMember', 'chatSession','$q', function (chatMember, chatSession,$q) {
+    .factory('chatContent', ['chatMember', 'chatSession','$q','$rootScope', function (chatMember, chatSession,$q,$rootScope) {
         var chatContent = {
+            getDefaultMsg:function(){
+                var msg = [
+                    {
+                        content: 'Hi，我是Holmes，我将和我的小伙伴Watson一起，向你展示怎样在讨论中引用文件。',
+                        receiver: 0,
+                        sender_name: 'Holmes',
+                        sender:'lin2',
+                        time: new Date().getTime(),
+                        type: 'file',
+                        metadata:JSON.stringify({
+                            mount_id: 1913,
+                            dir:0,
+                            filehash: '4553107dfc4da7ee1b552cd5cc86536ef96e200b',
+                            filename:'guide_1.png',
+                            filesize: 41632
+                        })
+                    }
+                ]
+                return msg.map(this.formatItem);
+            },
             pendingMsg:[],
             formatItem: function (value) {
                 var sender = chatMember.getMemberItem(value.receiver, value.sender);
                 var extendValue = {
-                    sender_name: sender ? sender['member_name'] : value.sender,
+                    sender_name: value.sender_name?value.sender_name:sender ? sender['member_name'] : value.sender,
                     is_vip: sender && sender.isvip ? true : false
                 };
 
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
-                    if(value.metadata.fullpath){
-                        value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
-                        value.metadata.ext = Util.String.getExt(value.metadata.filename);
+                    if(value.metadata.mount_id){
+                        if(value.metadata.fullpath){
+                            value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
+                            value.metadata.ext = Util.String.getExt(value.metadata.filename);
+                        }
+                        var file;
+                        if(!value.metadata.hash){
+                            if(value.metadata.fullpath){
+                                file = gkClientInterface.getFileInfo({
+                                    mountid: Number(value.metadata.mount_id),
+                                    webpath: value.metadata.fullpath
+                                });
+                            }
+                        }else{
+                            file = gkClientInterface.getFileInfo({
+                                mountid: Number(value.metadata.mount_id),
+                                uuidhash: value.metadata.hash
+                            });
+                        }
+                        if(file && !jQuery.isEmptyObject(file)){
+                            file.mount_id = Number(value.metadata.mount_id);
+                            extendValue.file = file;
+                        }
                     }
-                    var file;
-                    if(!value.metadata.hash){
-                        file = gkClientInterface.getFileInfo({
-                            mountid: Number(value.metadata.mount_id),
-                            webpath: value.metadata.fullpath
-                        });
-                    }else{
-                        file = gkClientInterface.getFileInfo({
-                            mountid: Number(value.metadata.mount_id),
-                            uuidhash: value.metadata.hash
-                        });
-                    }
-                    if(file && !jQuery.isEmptyObject(file)){
-                        file.mount_id = Number(value.metadata.mount_id);
-                        extendValue.file = file;
-                    }
+
                 }
-                angular.extend(value, extendValue)
+                angular.extend(value, extendValue);
+                console.log('value',value);
                 return value;
             },
             setItemError: function (msg, errorMsg) {
