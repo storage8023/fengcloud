@@ -8,7 +8,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             partition:'teamfile'
         }
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember','$angularCacheFactory','$window','$interval',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember,$angularCacheFactory,$window,$interval) {
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember','$angularCacheFactory','$window','$interval','GKApi',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember,$angularCacheFactory,$window,$interval,GKApi) {
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
@@ -311,6 +311,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                     var list = re.list;
                     if(!list || !list.length) return;
                     angular.forEach(list,function(file){
+                        GKApi.dragUpload($scope.currentSession.mountid,file.path);
                         var metadata = JSON.stringify({
                             mount_id: $scope.currentSession.mountid,
                             hash:  file.uuidhash||'',

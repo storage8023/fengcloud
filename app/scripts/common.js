@@ -1089,6 +1089,21 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            dragUpload:function(mountId,fullpath){
+                var params = {
+                    token: gkClientInterface.getToken(),
+                    mount_id: mountId,
+                    fullpath:fullpath
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/file/drag_upload',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             resetMessage:function(ids){
                 var params = {
                     token: gkClientInterface.getToken(),
