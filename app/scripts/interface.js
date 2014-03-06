@@ -416,7 +416,6 @@
     getSideTreeList: function (params) {
         try {
             var re = gkClient.gSideTreeList(JSON.stringify(params));
-            console.log(JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);
@@ -464,7 +463,6 @@
     },
     toggleLock: function (params,callback) {
         try {
-            console.log(params);
            gkClient.gLock(JSON.stringify(params),function(re){
                re = typeof re ==='object'?re:JSON.parse(re);
                if(typeof callback === 'function'){
