@@ -46,6 +46,14 @@ angular.module('gkClientFrame.controllers',[])
                 });
             })
 
+            $scope.$on('ResetMessage', function (e, data) {
+                GKApi.resetMessage(data.ids).success(function(re){
+                    angular.forEach(re,function(newItem){
+                        GKNews.updateNews(newItem.id, newItem);
+                    })
+                });
+            })
+
             $scope.showMessage = function(){
                 gkClientInterface.launchpad();
             };

@@ -1089,6 +1089,20 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            resetMessage:function(ids){
+                var params = {
+                    token: gkClientInterface.getToken(),
+                    ids: ids
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'GET',
+                    url: gkClientInterface.getApiHost() + '/1/updates/get_updates',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             delCompletely:function(mount_id, fullpaths){
                 var params = {
                     mount_id: mount_id,
