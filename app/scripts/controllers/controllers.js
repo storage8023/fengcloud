@@ -1780,7 +1780,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.slides = [];
         for(var i=1;i<4;i++){
             $scope.slides.push({
-                image:'images/guide_'+i+'.png?v=1'
+                image:'images/guide_'+i+'.png?v=2'
             });
         }
         $scope.handleClick = function(index){
@@ -1798,9 +1798,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return false;
             }
         }
-    }])
-    .controller('chatControl', ['$scope',function ($scope) {
-
     }])
 ;
 

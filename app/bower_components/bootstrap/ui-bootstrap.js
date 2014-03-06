@@ -493,6 +493,11 @@ angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
 
     //Prevent this user-triggered transition from occurring if there is already one in progress
     if (!$scope.$currentTransition) {
+        if($scope.onNext){
+            $scope.onNext({
+                index:newIndex
+            });
+        }
       return self.select(slides[newIndex], 'next');
     }
   };
@@ -638,7 +643,8 @@ angular.module('ui.bootstrap.carousel', ['ui.bootstrap.transition'])
     scope: {
       interval: '=',
       noTransition: '=',
-      noPause: '='
+      noPause: '=',
+      onNext:'&'
     }
   };
 }])

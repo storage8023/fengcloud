@@ -2147,13 +2147,13 @@ body.resizing *{
 .slide_backdrop .carousel-control.right{
     display: block;
     position: absolute;
-    width: 260px;
-    height: 43px;
+    width: 252px;
+    height: 47px;
     top:50%;
     left: 50%;
     text-indent: -9999px;
     cursor: pointer;
-    margin:136px 0 0 -330px;
+    margin:221px 0 0 -132px;
 }
 
 .slide_backdrop .carousel .carousel-inner,
@@ -2168,20 +2168,20 @@ body.resizing *{
 }
 .slide_backdrop .carousel .item .item_content img{
     position: absolute;
-    width: 660px;
-    height: 360px;
+    width: 800px;
+    height: 600px;
     top:50%;
     left: 50%;
-    margin: -180px 0 0 -330px;
+    margin: -300px 0 0 -400px;
 }
 .slide_backdrop .carousel .item .item_content_0{
-    background: #feae47;
+    background: #46c9ff;
 }
 .slide_backdrop .carousel .item .item_content_1{
-    background: #fe9447;
+    background: #53bf7c;
 }
 .slide_backdrop .carousel .item .item_content_2{
-    background: #fe7f47;
+    background: #deb851;
 }
 .set_milestone_dialog .tip{
     margin-top: 10px;
