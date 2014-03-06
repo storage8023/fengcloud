@@ -1251,6 +1251,7 @@ angular.module('gkClientIndex.directives', [])
                     $scope.showChatBtn = GKAuth.check(mount,'','file_discuss');
                     $scope.showLinkBtn = GKAuth.check(mount,'','file_link');
                     $scope.showHistory = GKAuth.check(mount,'','file_history');
+                    $scope.showMilestone = GKAuth.check(mount,'','file_history_unlimit');
                 };
 
                 $scope.$watch('localFile', function (file, oldValue) {

@@ -1,4 +1,4 @@
-<div class="single_file" ng-style="{'bottom':(showTab && showHistory?'35px':'0')}"  scroll-load="loadHistory()" disable-scroll="disableScrollLoadHistory" trigger-distance="20">
+<div class="single_file" ng-style="{'bottom':(showTab && showHistory&&showMilestone?'35px':'0')}"  scroll-load="loadHistory()" disable-scroll="disableScrollLoadHistory" trigger-distance="20">
     <div ng-show="fileLoaded && sidebarLoaded">
         <div ng-show="!fileExist">
             <filter-right-sidebar></filter-right-sidebar>
@@ -55,7 +55,7 @@
             </div>
             <section class="file_detail_wrapper" ng-show="showTab && showHistory">
                 <div class="section_title">
-                    <button class="btn btn-opt" ng-show="localFile.dir==0" guider-placement="left" guider="milestone" ng-click="showMilestoneDialog(localFile)">里程碑</button>
+                    <button class="btn btn-opt" ng-show="localFile.dir==0&&showMilestone" guider-placement="left" guider="milestone" ng-click="showMilestoneDialog(localFile)">里程碑</button>
                     <span>历史</span>
                 </div>
                 <div class="history_wrapper" ng-class="!histories.length || localFile.dir==1?'nocheckbox':''">
@@ -87,7 +87,7 @@
                             </div>
                         </li>
                     </ul>
-                    <div class="checkbox_wrapper" ng-show="localFile.dir==0"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
+                    <div class="checkbox_wrapper" ng-show="localFile.dir==0&&showMilestone"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
                 </div>
             </section>
         </div>
