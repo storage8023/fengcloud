@@ -1004,7 +1004,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         break;
                     case 'lock':
                         forEachFile(function (value,key) {
-                            value.lock = 1;
+                            value.lock = 2;
                             value.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
                             value.lock_member_id = $rootScope.PAGE_CONFIG.user.member_id;
                             GKFileListView.updateFileItem(key,value);

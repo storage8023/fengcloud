@@ -2670,7 +2670,7 @@ angular.module('gkClientIndex.services', [])
                             this.disableOpt(opts, 'goto');
                         }
                         if(GKPartition.isTeamFilePartition(partition)){
-                            //this.disableOpt(opts, 'lock','unlock');
+                            this.disableOpt(opts, 'lock','unlock');
                         }
                         break;
                     case GKPartition.subscribeFile:
@@ -2745,7 +2745,7 @@ angular.module('gkClientIndex.services', [])
                         context.setSyncOpt(opts, currentFile, file);
                     } else {
                         context.disableOpt(opts, 'sync', 'unsync');
-                        if (file.lock == 1) {
+                        if (file.lock > 0) {
                             context.disableOpt(opts, 'lock');
                         } else {
                             context.disableOpt(opts, 'unlock');
@@ -3506,7 +3506,7 @@ angular.module('gkClientIndex.services', [])
                                 alert('你没有权限重命名该文件'+(file.dir==1?'夹':''));
                                 return;
                             }
-			     if(file.status==1){
+			                if(file.status==1){
                                 alert('上传中的文件或文件夹不能重命名');
                                 return;
                             }
@@ -3669,8 +3669,8 @@ angular.module('gkClientIndex.services', [])
                     }else if(file.status==2){
                         elem.append('<s class="icon16x16 icon_down"></s>');
                     }
-                    if(file.lock==1){
-                        elem.append('<s class="icon16x16 icon_lock_green" title="已被'+file.lock_member_name+'锁定"></s>');
+                    if(file.lock>0){
+                        elem.append('<s class="icon16x16 '+(file.lock==1?'icon_lock_green':'icon_edit_color')+'" title="已被'+(file.lock==1?file.lock_member_name:'我')+'锁定"></s>');
                     }
                 })
                 var atts = {

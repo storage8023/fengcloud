@@ -940,14 +940,15 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     width: 32px;
     height: 32px;
 }
-.file_list .item .file_icon s.locked {
+.file_list .item .file_icon s.icon_lock_green,
+.file_list .item .file_icon s.icon_edit_color {
     display: inline-block;
     width: 16px;
     height: 16px;
     bottom: -2px;
+    left: auto;
     right: -4px;
     position: absolute;
-    background: url(../images/icon.png) no-repeat -2px -282px;
 }
 
 .file_list_wrapper .item.selected span{
