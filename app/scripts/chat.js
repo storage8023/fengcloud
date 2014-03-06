@@ -384,7 +384,7 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                             mount_id: 3655,
                             dir:0,
                             filehash: '4956ba1ddec299adc6ae5158634c7d5cc1687655',
-                            filename:'轻轻一拖，即刻发送.jpg'
+                            fullpath:'轻轻一拖，即刻发送.jpg'
                         })
                     },
                     {
@@ -416,7 +416,7 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                             mount_id: 3655,
                             dir:0,
                             filehash: 'ab498105782fc60a12ad48f7523e37a805869f32',
-                            filename:'一键点击，方便讨论.jpg'
+                            fullpath:'一键点击，方便讨论.jpg'
                         })
                     },
                     {
@@ -451,9 +451,9 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
                     if(value.metadata.mount_id){
-                        value.metadata.ext = Util.String.getExt(value.metadata.filename);
                         if(value.metadata.fullpath){
                             value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
+                            value.metadata.ext = Util.String.getExt(value.metadata.filename);
                         }
                         var file;
                         if(!value.metadata.hash){
@@ -474,7 +474,6 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                             extendValue.file = file;
                         }
                     }
-
                 }
                 angular.extend(value, extendValue);
                 return value;

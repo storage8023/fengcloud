@@ -386,7 +386,7 @@ font-size: 14px;
     left: 0;
     right: 0;
     height: 90px;
-    background:#33b59f url(../images/vip_banner.png) no-repeat 50%;
+    background:#33b59f url(../images/vip_banner.jpg) no-repeat 50%;
 }
 .account section.vip_account .view_banner{
     display: none;
