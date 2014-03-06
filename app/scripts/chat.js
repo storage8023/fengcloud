@@ -174,11 +174,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                         params.webpath = metadata.filename;
                         params.mountid = metadata.mount_id;
                     }
-
                 }else{
                     params.webpath = file.path;
                 }
-                console.log('params',params);
                 gkClientInterface.open(params);
             }
             $event.stopPropagation();
@@ -223,6 +221,7 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                         });
                     }else{
                         msgList = chatContent.getDefaultMsg();
+                        console.log(msgList);
                     }
                     $scope.currentMsgList = msgList;
                 //文件
@@ -383,21 +382,88 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
             getDefaultMsg:function(){
                 var msg = [
                     {
-                        content: 'Hi，我是Holmes，我将和我的小伙伴Watson一起，向你展示怎样在讨论中引用文件。',
+                        content: 'Hi，我是韩梅梅，我将和我的小伙伴Watson一起，向你展示怎样在讨论中引用文件。',
                         receiver: 0,
-                        sender_name: 'Holmes',
-                        sender:'lin2',
+                        sender_name: '韩梅梅',
+                        sender:'韩梅梅',
                         time: new Date().getTime(),
                         type: 'file',
                         metadata:JSON.stringify({
-                            mount_id: 1913,
+                            mount_id: 3655,
                             dir:0,
-                            filehash: '4553107dfc4da7ee1b552cd5cc86536ef96e200b',
-                            filename:'guide_1.png',
-                            filesize: 41632
+                            filehash: '4956ba1ddec299adc6ae5158634c7d5cc1687655',
+                            filename:'拖拽文件.jpg'
                         })
+                    },
+                    {
+                        content: '你可以直接将桌面的文件直接拖动到聊天窗口',
+                        receiver: 0,
+                        sender_name: '韩梅梅',
+                        sender:'韩梅梅',
+                        time: new Date().getTime(),
+                        type: 'text',
+                        metadata:''
+                    },
+                    {
+                        content: '很方便是不是，Watson你来介绍下另外一种实现方法吧。',
+                        receiver: 0,
+                        sender_name: '韩梅梅',
+                        sender:'韩梅梅',
+                        time: new Date().getTime(),
+                        type: 'text',
+                        metadata:''
+                    },
+                    {
+                        content: 'OK，另外一种其实也很简单，只需在文件列表页对选中的文件发起讨论就可以了。',
+                        receiver: 0,
+                        sender_name: '李雷',
+                        sender:'李雷',
+                        time: new Date().getTime(),
+                        type: 'file',
+                        metadata:JSON.stringify({
+                            mount_id: 3655,
+                            dir:0,
+                            filehash: 'ab498105782fc60a12ad48f7523e37a805869f32',
+                            filename:'发送到讨论.jpg'
+                        })
+                    },
+                    {
+                        content: '恩，这就是两种在讨论中引用文件的方式，现在你也可以和你的小伙伴一起沟通协作了。',
+                        receiver: 0,
+                        sender_name: '韩梅梅',
+                        sender:'韩梅梅',
+                        time: new Date().getTime(),
+                        type: 'text',
+                        metadata:''
+                    },
+                    {
+                        content: '这次就说到这啦，Bye。',
+                        receiver: 0,
+                        sender_name: '韩梅梅',
+                        sender:'韩梅梅',
+                        time: new Date().getTime(),
+                        type: 'text',
+                        metadata:''
+                    },
+                    {
+                        content: '退出了该云库',
+                        receiver: 0,
+                        sender_name: '李雷',
+                        sender:'李雷',
+                        time: new Date().getTime(),
+                        type: 'text',
+                        metadata:''
+                    },
+                    {
+                        content: '退出了该云库',
+                        receiver: 0,
+                        sender_name: '韩梅梅',
+                        sender:'韩梅梅',
+                        time: new Date().getTime(),
+                        type: 'text',
+                        metadata:''
                     }
-                ]
+                ];
                 return msg.map(this.formatItem);
             },
             pendingMsg:[],
@@ -411,9 +477,9 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
                 if (value.metadata) {
                     value.metadata = JSON.parse(value.metadata);
                     if(value.metadata.mount_id){
+                        value.metadata.ext = Util.String.getExt(value.metadata.filename);
                         if(value.metadata.fullpath){
                             value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
-                            value.metadata.ext = Util.String.getExt(value.metadata.filename);
                         }
                         var file;
                         if(!value.metadata.hash){
@@ -437,7 +503,6 @@ angular.module('gkChat', ['GKCommon','jmdobry.angular-cache','ui.bootstrap'])
 
                 }
                 angular.extend(value, extendValue);
-                console.log('value',value);
                 return value;
             },
             setItemError: function (msg, errorMsg) {
