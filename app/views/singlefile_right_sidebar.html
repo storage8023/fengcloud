@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="opt_wrapper" ng-show="showTab">
-                        <button class="btn btn-opt" ng-show="showLinkBtn" ng-click="publishFile(file)">临时链接</button>
+                        <button class="btn btn-opt" ng-show="localFile.dir==0&&showLinkBtn" ng-click="publishFile(file)">临时链接</button>
                         <button ng-show="showChatBtn" class="btn btn-opt" ng-click="startChat(file)">发送到讨论</button>
                     </div>
                     <div class="tags" ng-class="editingTag?'edit':''">
