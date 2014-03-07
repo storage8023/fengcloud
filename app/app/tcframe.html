@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN" ng-app="gkClientFrame" prevent-drag-drop>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" href="styles/base.css"/>
+    <link rel="stylesheet" href="styles/component.css"/>
+    <link rel="stylesheet" href="styles/tcframe.css"/>
+    <link rel="stylesheet" href="styles/tcframe_mac.css"/>
+    <script src="scripts/util.js"></script>
+    <script src="scripts/interface.js"></script>
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular/i18n/angular-locale_zh-cn.js"></script>
+    <script src="bower_components/angular-localstorage/angular-local-storage.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="scripts/common.js?v=1"></script>
+    <script src="scripts/directives/directives.js"></script>
+    <script src="scripts/filters/filters.js"></script>
+    <script src="scripts/controllers/tcframe_controllers.js"></script>
+    <script src="scripts/services/services.js"></script>
+    <script src="scripts/tcframe.js"></script>
+</head>
+<body ng-controller="initFrame">
+<ul class="quickmenu">
+    <li ng-click="handleClick('lanchpad')" class="lanchpad">
+        <i class="icon32x32 icon_logo_color"></i>
+        <span>云库</span>
+    </li>
+    <li ng-click="handleClick('chat')" class="chat">
+        <i class="icon32x32 icon_ring"></i>
+        <span>消息</span>
+    </li>
+    <li ng-click="handleClick('trasfer')" class="trasfer">
+        <i class="icon32x32 icon_transfer"></i>
+        <span>传输</span>
+    </li>
+    <li ng-click="handleClick('setting')" class="setting">
+        <i class="icon32x32 icon_setting"></i>
+        <span>设置</span>
+    </li>
+</ul>
+<div class="message_wrapper" ng-click="showMessage()">
+    <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">帐号未登录或正在登录</div>
+    <div class="member_info_wrapper" ng-if="PAGE_CONFIG.user.member_id">
+        <div class="member_photo">
+            <avatar gk-src="{{PAGE_CONFIG.user.avatar}}" class="avatar"></avatar>
+        </div>
+        <div class="member_name">
+            <div class="name" title="{{PAGE_CONFIG.user.member_name}}" ng-bind="PAGE_CONFIG.user.member_name"></div>
+            <div ng-if="PAGE_CONFIG.user.member_email" ng-bind="PAGE_CONFIG.user.member_email" class="email"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

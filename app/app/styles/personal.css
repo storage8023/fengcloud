@@ -1,0 +1,218 @@
+/******* Personal Information ********/
+#personal-wrapper{
+    background: #FCFCFC;
+}
+/* personal-information */
+.personal-img{
+    top:0;
+    right: 0;
+    left: 0;
+    position: relative;
+    height: 112px;
+}
+.personal-img img{
+    width: 100%;
+    height: 112px;
+}
+#personal-information{
+    top:0;
+    right: 0;
+    left: 0;
+    position:absolute;
+    height: 112px;
+
+}
+#personal-information .personal-picture{
+    width:62px;
+    height:62px;
+    border-radius:31px 31px 31px 31px;
+    margin-top: 18px;
+    margin-left: 40px;
+    overflow: hidden;
+}
+#personal-information .personal-picture a img{
+    width:62px;
+    height: 62px;
+}
+#personal-information .personal-message{
+    margin-left: 15px;
+    color: #FFF;
+    padding-top: 15px;
+}
+.personal-username span{
+    line-height: 30px;
+    font-size: 22px;
+    font-weight: bold;
+}
+.personal-email span{
+    line-height:25px;
+}
+.personal-contact .personal-contact-phone{
+    padding-right: 30px;
+    padding-left: 2px;
+}
+.personal-contact .personal-contact-stored{
+    padding-left: 2px;
+}
+.personal-contact li span{
+    font-size: 14px;
+    line-height: 25px;
+}
+/* personal-function */
+.personal-function{
+    width: 145px;
+    height:60px;
+    margin-top: 15px;
+}
+.personal-function-management a ,
+.personal-function-software a ,
+.personal-function-cancellation a{
+    line-height: 24px;
+    font-size: 13px;
+    color: #FFF;
+    padding-left: 22px;
+    cursor: pointer;
+}
+/* personal-title */
+#personal-title{
+    top:112px;
+    right: 0;
+    left: 0;
+    position: absolute;
+    height:55px;
+}
+#personal-title .personal-myteam{
+    margin: 22px 100px 0 20px;
+}
+#personal-title .personal-myteam span{
+    font-size: 24px;
+    color: #43576F;
+    line-height: 24px;
+}
+.personal-newteam{
+    padding:25px 50px 10px 0;
+}
+.personal-newteam a{
+    cursor: pointer;
+}
+.perdisplayNone{
+    display:none;
+}
+.perdisplayBlock{
+    display: block;
+}
+#personal-title .personal-newteam a{
+    line-height: 20px;
+    color: #666B6F;
+}
+/* personal-mangement */
+
+.personal-management-admin{
+    right: 10px;
+    left: 10px;
+    top: 167px;
+    bottom: 40px;
+    position: absolute;
+    margin: 5px 0;
+    border: 1px solid  #BEBFC4;
+    padding: 10px 0 0 30px;
+    overflow-y: auto;
+}
+.personal-management-admin-replace{
+    margin: 5px 0;
+    border: 0;
+    padding: 10px 0 0 30px;
+    overflow-y: auto;
+}
+.personal-management-team{
+    width:185px;
+    height:100px;
+    float: left;
+    border-radius: 6px 6px 6px 6px;
+    background: #F7F8FA;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+    z-index: 2;
+    border:1px solid #BEBFC4;
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+.personal-team-picture{
+    width:50px;
+    height:50px;
+    border-radius:25px 25px 25px 25px;
+    margin-top: 15px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+.personal-team-picture a img{
+    width: 50px;
+    height:50px;
+}
+.personal-management-information{
+    margin-left: 15px;
+    margin-top: 20px;
+}
+.personal-management-information .personal-team-name span{
+    font-size: 16px;
+    font-weight: bold;
+    color:#787879;
+}
+.personal-management-information .personal-team-competence span{
+    font-weight: bold;
+    color: #787879;
+}
+.personal-team-management-show{
+    width: 185px;
+    height: 24px;
+    margin-top: 76px;
+    background:#8B9EBF;
+    display: none;
+    border-radius: 0 0 3px 3px;
+}
+.personal-management-team:hover .personal-team-management-show{
+    display: block;
+}
+.personal-float-management{
+    padding-left: 25px;
+}
+.personal-float-quit{
+    padding-right: 15px;
+}
+.personal-float-management a,
+.personal-float-quit a{
+    line-height: 24px;
+    color:#F7FFFF;
+}
+.personal-management-add{
+    border:1px solid #CEBB9B;
+}
+.personal-team-management-add{
+    background:  #CEBB9B;
+}
+/* personal-footer */
+#personal-footer{
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    border-top: 1px solid #B7BBC4;
+    background: #E8EBF0;
+    height: 40px;
+}
+.personal-close{
+    float: right;
+    margin-right: 15px;
+    margin-top: 8px;
+    border-bottom: 1px solid #FEFFFF;
+    text-align: center;
+}
+.personal-close-button{
+    width: 65px;
+    height: 25px;
+    border-radius: 4px 4px 4px 4px;
+    font-size: 12px;
+    background:#E8E9EB;
+    border: 1px solid #C5C8CD;
+    cursor: pointer;
+}

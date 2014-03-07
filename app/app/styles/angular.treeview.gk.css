@@ -1,0 +1,13 @@
+.ng-tree{
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size:16px;
+    text-decoration: none;
+}
+
+.ng-tree .ng-binding{
+    padding: 0 0 0 20px;
+}

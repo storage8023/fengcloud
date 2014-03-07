@@ -1,0 +1,12 @@
+header{
+    top:auto;
+    bottom: 0;
+}
+ul.quickmenu{
+    top:auto;
+    bottom: 0;
+}
+.message_wrapper{
+    top:0;
+    bottom: 55px;
+}

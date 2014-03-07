@@ -1,0 +1,128 @@
+body{
+    background: #40464d;
+    color: #fff;
+    cursor: default !important;
+}
+header{
+   height: 40px;
+    background: #24272b;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+}
+header i.icon_logo{
+    margin-top: 4px;
+}
+header i.icon_logo:hover{
+    background-position: -40px -328px;
+}
+ul.quickmenu{
+    height: 55px;
+    background: #30363c;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+}
+
+ul.quickmenu li{
+    width: 25%;
+    height: 100%;
+    text-align: center;
+    float: left;
+    font-size: 13px;
+    color: #7F8999;
+}
+ul.quickmenu li:hover{
+   color: #448DE8;
+}
+ul.quickmenu li i,
+ul.quickmenu li span{
+    display: block;
+}
+
+ul.quickmenu li i{
+    margin: 2px auto 0;
+}
+ul.quickmenu li.chat:hover i{
+    background-position: -76px -580px;
+}
+ul.quickmenu li.message:hover i{
+    background-position: -76px -616px;
+}
+ul.quickmenu li.nearby:hover i{
+    background-position: -76px -4px;
+}
+ul.quickmenu li.trasfer:hover i{
+    background-position: -76px -760px;
+}
+ul.quickmenu li.setting:hover i{
+    background-position: -76px -148px;
+}
+ul.quickmenu li.transfering .icon_transfer{
+    background: url(../images/icon/transfering.gif) no-repeat center;
+}
+ul.quickmenu li span{
+    font-size: 12px;
+    height: 16px;
+    line-height: 16px;
+}
+.message_wrapper{
+    position: absolute;
+    top:55px;
+    left:0;
+    right: 0;
+    bottom: 0;
+}
+
+.message_wrapper .member_info_wrapper{
+    display: table;
+    height: 100%;
+    width: 100%;
+ }
+.message_wrapper .member_info_wrapper > div{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+
+}
+.message_wrapper .member_info_wrapper .member_photo{
+    text-align: right;
+    max-width: 74px;
+}
+.message_wrapper .member_info_wrapper .member_name{
+    text-align: left;
+}
+.message_wrapper .member_info_wrapper .member_name > div{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 10px;
+    max-width: 180px;
+    }
+.message_wrapper .member_info_wrapper .avatar{
+    width: 68px;
+    height: 68px;
+    border-radius: 34px;
+}
+.message_wrapper .member_info_wrapper .member_name .name{
+    font-size: 26px;
+}
+.message_wrapper .member_info_wrapper .member_name .email{
+   color: #ACB4BF;
+}
+header .logout{
+    position: absolute;
+    right: 15px;
+    width: 16px;
+    height: 16px;
+    display: block;
+    top:12px;
+}
+header .logout i{
+    display: block;
+    background: url(../images/icon/icon16x16.png) no-repeat -64px -64px;
+    height: 100%;
+}

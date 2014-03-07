@@ -1,0 +1,544 @@
+
+.form-control{
+    width: auto;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+.main{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:0;
+    bottom: 0;
+}
+aside{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    width: 158px;
+    background: #2A2E33;
+    color:#fff;
+    padding-top: 10px;
+}
+aside ul li{
+    height: 30px;
+    line-height: 30px;
+    font-size: 14px;
+    border-left: 4px solid transparent;
+    margin-top: 8px;
+}
+aside ul li i{
+    margin-left: 8px;
+    margin-right: 10px;
+}
+aside ul li:hover{
+   background-color: #393D42;
+}
+aside ul li.active{
+    border-left-color: #448DE8;
+    background: #1F2327;
+    font-weight: bold;
+}
+
+aside ul li.active i.icon_info{
+    background-position: -524px -24px
+}
+
+aside ul li.active i.icon_person{
+    background-position: -484px -24px;
+}
+
+aside ul li.active i.icon_computer{
+    background-position: -544px -24px;
+}
+
+aside ul li.active i.icon_sync{
+    background-position: -564px -24px;
+}
+
+aside ul li.active i.icon_network{
+    background-position: -584px -24px;
+}
+
+aside ul li.active i.icon_airplane{
+    background-position: -604px -24px;
+}
+footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    background: -webkit-gradient(linear,0 0,0 100%,from(#FBFBFB),to(#E3E4E5));
+    text-align: right;
+    border-top:1px solid #CDCED0;
+}
+footer .btn{
+    vertical-align: middle;
+    padding: 3px 13px;
+    margin: 8px 10px 0 0;
+}
+.content{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left:158px;
+    right: 0;
+}
+.content .section_head{
+    height: 35px;
+    border-bottom: 1px solid #CDCED0;
+    background: #F1F1F2;
+    padding:0 10px;
+    position: relative;
+}
+.content .section_head .global_opt_wrapper{
+    position: absolute;
+    right: 10px;
+    top:5px;
+}
+.content .section_head .global_opt_wrapper input[type="checkbox"]{
+    height: 23px;
+    vertical-align: middle;
+}
+.content .section_head .global_opt_wrapper button{
+    margin-right: 5px;
+}
+.content .section_head h2{
+    line-height: 35px;
+    font-size: 18px;
+}
+.content section{
+    font-size: 14px;
+    position: absolute;
+    top:35px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+.content section .form_layer{
+    margin:15px 0;
+}
+.content div label{
+    font-weight: normal;
+}
+.content  .advance section,
+.content  .network section,
+.content  .general section{
+    padding: 30px;
+}
+
+.list_wrapper .list .item > div,
+.list_wrapper .list_header > div{
+    float: left;
+    padding: 0 5px;
+}
+\
+.list_wrapper .list_header,
+.list_wrapper .list .item{
+    overflow: hidden;
+    zoom:1;
+    border-bottom:1px solid #EDEDED;
+}
+
+.list .item > div:nth-child(1),
+.list_header > div:nth-child(1){
+    width: 35%;
+    padding-left: 10px;
+}
+.list .item > div:nth-child(2),
+.list_header > div:nth-child(2){
+    width: 25%;
+}
+.list .item > div:nth-child(3),
+.list_wrapper .list_header > div:nth-child(3){
+    width: 25%;
+}
+.list .item > div:nth-child(4),
+.list_wrapper .list_header > div:nth-child(4){
+    width: 15%;
+}
+
+.device .list .item > div:nth-child(4){
+width: 112px;
+}
+.device .list .item > div:nth-child(4).no_del{
+    width: 56px;
+}
+.list .item .opts .btn-flat{
+    height: 34px;
+    line-height: 34px;
+    padding: 0 8px;
+    vertical-align: top;
+    display: none;
+}
+
+
+.list .item:hover .opts .btn-flat{
+    display: inline-block;
+}
+.sync .list .item .opts .btn-flat{
+    width: 68px;
+}
+.content .list_header div{
+    font-weight: normal;
+    line-height: 36px;
+    overflow: hidden;
+}
+.content .list_body div{
+    line-height: 30px;
+    font-size: 13px;
+}
+.content .list_wrapper .item{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.content .list{
+    font-size:13px ;
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top:35px;
+    overflow: auto;
+}
+
+.content .list .item{
+    line-height: 34px;
+}
+.content .list .dateline{
+    color:#ACB4BF;
+}
+.content .warning{
+    color:#E65353
+}
+.content .tip{
+    color: #ACB4BF;
+}
+
+.list .item .file_icon {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    margin: -2px 8px 0 0;
+    position: relative;
+
+}
+.sync .list .item > div:nth-child(1),
+.sync .list_header > div:nth-child(1){
+    width:50%;
+    padding-left: 15px;
+}
+.sync .list .item > div:nth-child(2),
+.sync .list_header > div:nth-child(2){
+    width: 35%;
+}
+.sync .list .item > div:nth-child(3),
+.sync .list_wrapper .list_header > div:nth-child(3){
+    width: 68px;
+    padding: 0;
+}
+
+.sync .list .item .icon_syncing{
+    background-position: -84px -64px;
+}
+
+.sync .list .item .icon_sync_pause{
+    background-position: -104px -64px;
+}
+
+.sync .list .item .icon_sync_done{
+    background-position: -84px -64px;
+}
+.account .member_info{
+    height: 94px;
+    padding: 15px;
+}
+.account .member_info > div{
+    float: left;
+}
+.account .member_info > div > div{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.account .photo_wrapper{
+    width: 64px;
+    height: 64px;
+    position: relative;
+    margin: 0 10px 0 0;
+}
+.account .photo_wrapper .loading{
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin: -8px 0 0 -8px;
+    width: 16px;
+    height: 16px;
+}
+.account .other_info{
+    width: 140px;
+}
+.account .other_info a:hover,
+.account .other_info a:active{
+    color: #738295;
+}
+.account img.avatar{
+    width: 64px;
+    height: 64px;
+    border-radius: 64px;
+    margin: 0;
+}
+.other_info .member_role i{
+   display: inline-block;
+    width: 13px;
+    height: 13px;
+    background: #7F8999;
+    color: #fff;
+    font-family: sans-serif;
+    font-style: normal;
+    border-radius: 2px;
+    line-height: 13px;
+    text-align: center;
+    vertical-align: middle;
+}
+.other_info .member_role .vip i{
+    background: #448DE8;
+}
+.account h3{
+font-size: 14px;
+}
+
+.account section .member_name{
+    font-size: 26px;
+}
+.account section ul.info_list{
+    margin-left: 240px;
+    color: #7F8999;
+    font-size: 13px;
+    margin-top: -83px;
+}
+.account section ul.info_list li{
+    margin: 1px 0;
+    line-height: 24px;
+}
+.account section ul.info_list li .icon16x16{
+    margin-right: 5px;
+}
+.account section ul.info_list li a{
+    color: #5595e9;
+}
+.account section ul.info_list .form-control{
+    padding:3px 5px;
+    height: 26px;
+    width: 120px;
+}
+.account section .mount_list_wrapper{
+    clear: both;
+    background: #f1f1f1;
+    border-top:1px solid #cecece;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:94px;
+    bottom: 90px;
+    overflow: auto;
+    padding: 10px;
+}
+.account section.vip_account .mount_list_wrapper{
+    bottom: 0;
+}
+.account section .mount_list li{
+    width: 100px;
+    float: left;
+    text-align: center;
+    margin: 10px 10px 0 10px;
+    font-size: 12px;
+}
+.account section .mount_list li .name{
+    font-size: 14px;
+}
+.account section .mount_list li > img{
+
+}
+.account section .mount_list li > div{
+    height: 20px;
+    line-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.account section .mount_list li .remain_day{
+    cursor: pointer;
+}
+.account section .mount_list li .expired{
+    color: #f00;
+}
+.account section .view_banner{
+   cursor: pointer;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 90px;
+    background:#33b59f url(../images/vip_banner.jpg) no-repeat 50%;
+}
+.account section.vip_account .view_banner{
+    display: none;
+}
+.advance .form_layer > div{
+    margin-top: 5px;
+}
+.advance input[type="text"]{
+    width: 50%;
+}
+
+/*传输队列的样式*/
+
+aside ul li.active i.icon_download_white{
+    background-position: -384px -4px;
+}
+
+aside ul li.active i.icon_upload_white{
+    background-position: -404px -4px;
+}
+
+aside ul li.active i.icon_sync2_white{
+    background-position: -424px -4px;
+}
+.transfer_page .content section{
+  top:0;
+}
+
+.transfer_page .list .item > div > *{
+    display: inline-block;
+    vertical-align: middle;
+}
+.transfer_page .list .item > div .btn-flat{
+    height: 40px;
+    line-height: 40px;
+}
+.transfer_page .download .list .item > div.opts{
+width: 56px;
+    padding: 0;
+}
+.transfer_page .list .item > div .progress{
+    width: 62%;
+    margin: -2px 0 0 0;
+    height: 13px;
+    vertical-align:middle;
+}
+
+.transfer_page .list .item > div:nth-child(1),
+ .transfer_page .list_header > div:nth-child(1){
+     width: 40%;
+}
+.transfer_page .list_header > div:nth-child(1){
+    /*padding-left: 34px;*/
+}
+.transfer_page .list .item > div:nth-child(2),
+.transfer_page .list_header > div:nth-child(2){
+    width: 35%;
+}
+.transfer_page .list .item > div:nth-child(3),
+.transfer_page .list_wrapper .list_header > div:nth-child(3){
+    width: 15%;
+
+}
+.transfer_page .list .item > div:nth-child(4),
+.transfer_page .list_wrapper .list_header > div:nth-child(4){
+    width: 10%;
+}
+
+.transfer_page .list_header{
+    background:#F1F1F2;
+    border-bottom: 1px solid #CDCED0;
+    font-size: 12px;
+    position: absolute;
+    left:0;
+    right: 0;
+    height: 35px;
+}
+.transfer_page .content .list_header div{
+    line-height: 34px;
+}
+.transfer_page .content .list .item{
+    line-height: 40px;
+    border-bottom: 0;
+}
+.transfer_page .main{
+    bottom:45px;
+}
+.transfer_page footer .f_l{
+    font-size: 13px;
+    margin: 13px 0 13px 13px;
+}
+.transfer_page footer .f_l .icon16x16{
+    margin-right: 3px;
+}
+.transfer_page .list .item > div .filesize{
+    width: 32%;
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.transfer_page .list .item > div .status_3{
+    color:#52AE75;
+}
+.transfer_page .list .item > div .status_2{
+    color:#F3A427;
+}
+
+.transfer_page .list .item .filename{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    padding-right: 42px;
+}
+
+.transfer_page .list_wrapper.has_sync_list .list{
+
+}
+.transfer_page .download .list .list_inner,
+.transfer_page .upload .list .list_inner {
+    position: absolute;
+    left: 0;
+    right: 0;
+
+}
+.transfer_page .download .list .list_inner:first-child,
+.transfer_page .upload .list .list_inner:first-child{
+    top:0;
+    height: 45%;
+    overflow: auto;
+}
+
+.transfer_page .download .list .list_inner:last-child,
+.transfer_page .upload .list .list_inner:last-child{
+    top:45%;
+    bottom:0;
+    height: 55%;
+}
+.transfer_page .download .list .list_grid,
+.transfer_page .upload .list .list_grid{
+    height: 24px;
+    line-height: 24px;
+    padding: 0 10px;
+    border-bottom: 1px solid #CDCED0;
+}
+.transfer_page .download .list .list_inner:last-child .list_layer,
+.transfer_page .upload .list .list_inner:last-child .list_layer{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top:24px;
+    bottom: 0;
+    overflow: auto;
+}

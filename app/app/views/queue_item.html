@@ -1,0 +1,27 @@
+<div class="item">
+    <div>
+        <i class="file_icon {{item.webpath|baseName|getFileIcon:(selectedTab.name=='sync'?1:item.dir)}}"></i>
+        <span class="filename" title="{{item.webpath|getQueueFileName:item.mountid}}">{{item.webpath|getQueueFileName:item.mountid}}</span>
+    </div>
+    <div ng-if="selectedTab.name!='sync'">
+        <span class="filesize">{{item.filesize|bitSize}}</span>
+
+        <div ng-if="item.status==1" class="progress progress-striped">
+            <div class="progress-bar progress-bar-info" role="progressbar"
+                 style="width:{{item.pos| getPercent:item.filesize}}"></div>
+        </div>
+        <span ng-if="item.status==2" class="status_{{item.status}}">等待</span>
+        <span ng-if="item.status==3" class="status_{{item.status}}">完成</span>
+    </div>
+    <div ng-if="selectedTab.name=='sync'">
+        <span ng-if="selectedTab.name=='sync' && item.num>0">正在同步{{item.num}}个文件</span>
+        <span ng-if="item.num<=0" class="status_{{item.status}}">同步完成</span>
+    </div>
+    <div>
+        <span ng-if="!item.time">--:--:--</span>
+        <span ng-if="item.time">{{item.time}}</span>
+    </div>
+    <div class="opts" ng-if="selectedTab.name=='download' && item.status!=3 && item.type!='syncdownload'">
+        <button class="btn btn-danger btn-flat remove" ng-click="removeTransfer(item)">取消</button>
+    </div>
+</div>

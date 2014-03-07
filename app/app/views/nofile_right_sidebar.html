@@ -1,0 +1,35 @@
+<div class="no_file no_file_{{partition}}">
+        <div class="head_wrapper">
+            <img alt="" ng-click="headClick()" src="images/default_logo.png" error-src="images/default_logo.png" ng-src="{{rootSidebarData.photo}}" />
+            <div class="info" ng-click="headClick()">
+                <div class="title" ng-bind="rootSidebarData.title"></div>
+                <div ng-bind-html="rootSidebarData.atrrHtml"></div>
+            </div>
+            <div class="btn_wrapper">
+                <button class="btn btn-opt" ng-repeat="menu in rootSidebarData.menus" ng-click="menu.click()">
+                    <i class="icon16x16" ng-class="menu.icon"></i>
+                    <span>{{menu.text}}</span>
+                </button>
+            </div>
+        </div>
+        <div class="tab_wrapper normal_member" ng-if="PAGE_CONFIG.mount.type<=2">
+            <div class="section_title">成员<a href="javascript:;" class="add_member" ng-click="showAddMember()" title="添加成员" ng-if="PAGE_CONFIG.mount.type<2">+</a></div>
+            <div class="tab_content">
+                <div class="tab_content_layer" ng-show="currentTab=='member'">
+                    <ul class="scrollbar member_list">
+                        <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members"  bindonce >
+                            <img class="avatar avatar_mini" ng-src="{{member.member_id|getAvatarUrl}}" alt=""/>
+                            <span bo-text="member.member_name"></span>
+                            <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
+                            <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
+                        </li>
+                        <li class="pending_member" ng-repeat="pendingMember in pendingMembers">
+                            <avatar class="avatar avatar_mini" gk-src="{{pendingMember.accept_member_id|getAvatarUrl}}"></avatar>
+                            <span ng-bind="pendingMember.name?pendingMember.name:pendingMember.email"></span>
+                            <span>(已邀请)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+</div>

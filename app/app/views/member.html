@@ -1,0 +1,13 @@
+<div class="account" >
+    <div class="account_info">
+        <avatar gk-src="{{user.avatar}}" class="photo avatar" ng-click="personalOpen()"></avatar>
+        <span ng-click = "personalOpen()" class="name">{{user.member_name}}</span>
+        <i class="icon32x32 icon_ring" ng-click="openNews()" title="{{newMsg?'有新消息':'消息'}}">
+            <span class="hint" ng-show="newMsg"></span>
+        </i>
+    </div>
+    <div class="btn_wrapper">
+        <button class="btn btn-dark add_lib" ng-click="handleCreate()" href="javascript:void(0)"><i>+</i> 创建云库</button>
+        <button class="btn btn-dark" ng-click="handleAdd()" href="javascript:void(0)"><i class="icon16x16 icon_quote_white"></i> 加入云库</button>
+    </div>
+</div>

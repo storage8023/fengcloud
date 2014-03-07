@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html ng-app="gkClientTransfer" prevent-drag-drop>
+<head>
+    <title>传输队列</title>
+    <meta http-equiv="content-type" content="text/html;charset = utf-8"/>
+    <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css"/>
+    <link rel="stylesheet" href="styles/bootstrap-gk.css" type="text/css"/>
+    <link rel="stylesheet" href="styles/base.css" type="text/css"/>
+    <link rel="stylesheet" href="styles/component.css" type="text/css"/>
+    <link rel="stylesheet" href="styles/setting.css" type="text/css"/>
+    <script src="scripts/interface.js" type="text/javascript"></script>
+    <script src="scripts/util.js" type="text/javascript"></script>
+    <script src="bower_components/jquery/jquery.js" type="text/javascript"></script>
+    <script src="bower_components/angular/angular.js" type="text/javascript"></script>
+    <script src="bower_components/bootstrap/ui-bootstrap.js"></script>
+    <script src="scripts/common.js?v=1"></script>
+    <script src="scripts/directives/directives.js" type="text/javascript"></script>
+    <script src="scripts/services/services.js" type="text/javascript"></script>
+    <script src="scripts/filters/filters.js" type="text/javascript"></script>
+    <script src="scripts/transfer.js" type="text/javascript"></script>
+</head>
+<body ng-controller="transferCtrl" class="transfer_page">
+<div>
+    <div class="main">
+        <aside>
+            <ul>
+                <li ng-repeat="tab in tabs" class="{{tab.classes}}" ng-click="selectTab(tab)"
+                    ng-class="selectedTab==tab?'active':''">
+                    <i class="icon16x16 {{tab.icon}}"></i><span ng-bind="tab.title"></span>
+                </li>
+            </ul>
+        </aside>
+        <div class="content">
+            <div ng-if="selectedTab.name=='upload'">
+                <tab-upload selected-tab="selectedTab"></tab-upload>
+            </div>
+            <div ng-if="selectedTab.name=='download'">
+                 <tab-download selected-tab="selectedTab"></tab-download>
+            </div>
+        </div>
+    </div>
+    <footer clas="c_f">
+        <span class="f_l"><i class="icon16x16 icon_up"></i><span>上传总速度：<em ng-show="uploadSpeed>0">{{uploadSpeed|bitSize}}/S</em><em ng-show="uploadSpeed<=0">-</em></span></span>
+        <span class="f_l"><i class="icon16x16 icon_down"></i><span>下载总速度：<em ng-show="downloadSpeed>0">{{downloadSpeed|bitSize}}/S</em><em ng-show="downloadSpeed<=0">-</em></span></span>
+    </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4>我的消息</h4>
+</div>
+<div class="scrollbar modal-body">
+    <div ng-show="!classifyNews || !classifyNews.length" class="empty">没有消息</div>
+    <ul class="news_list" ng-show="showList">
+        <li ng-repeat="new in classifyNews">
+            <div class="date">{{new.date_text}}</div>
+            <ul class="message_list">
+                <li ng-repeat="item in new.list" ng-switch="item.act" >
+                    <div class="c_f_after" ng-class="item.opts&&item.opts.length?'has_opt button_len_'+item.opts.length:''">
+                        <div class="time">{{item.dateline*1000|date:'H:mm'}}</div>
+                        <div class="text">
+                            <div class="opts" ng-class="'opts_len_'+item.opts.length" ng-if="item.opts && item.opts.length">
+                                <button ng-repeat="opt in item.opts" class="btn" ng-class="getBtnClasses(opt)" ng-click="handleOpt(opt,item)">{{opt.name}}
+                                </button>
+                            </div>
+                            <div class="content">
+                                <span>
+                                <team-logo ng-if="item.org_logo" class="avatar" gk-src="{{item.org_logo}}"></team-logo>
+                                <avatar class="avatar" gk-src="{{item.member_photo}}"></avatar>
+                            </span>
+                                <span class="inner_text" ng-bind="item.render_content"></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

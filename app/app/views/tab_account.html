@@ -1,0 +1,72 @@
+<div class="{{selectedTab.name}}">
+    <div class="section_head">
+        <h2>{{selectedTab.title}}</h2>
+        <span class="global_opt_wrapper">
+             <button class="btn btn-danger" ng-click="logOut()">从这台电脑上注销</button>
+        </span>
+    </div>
+    <section ng-class="PAGE_CONFIG.user.isvip==1?'vip_account':''">
+          <div class="member_info">
+              <div class="photo_wrapper">
+                   <avatar gk-src="{{PAGE_CONFIG.user.avatar}}" ng-click="setPhoto()" class="avatar"></avatar>
+                    <img class="loading" src="images/icon/loading16x16.gif" ng-show="uploading" alt />
+              </div>
+              <div class="other_info">
+                  <div class="member_name">
+                      {{PAGE_CONFIG.user.member_name}}
+                  </div>
+                  <div class="member_role">
+                      <a href="javascript:void(0)" ng-class="PAGE_CONFIG.user.isvip==1?'vip':''" ng-click="goToBuy()">
+                          <span ng-bind="PAGE_CONFIG.user.isvip|getMemberRoleName"></span>
+                          <i>v</i>
+                      </a>
+                  </div>
+              </div>
+          </div>
+        <ul class="info_list">
+            <li ng-repeat="attr in attrs" class="{{attr.name}}">
+                <i class="icon16x16 {{attr.icon}}"></i>
+                <span>{{attr.text}}</span>
+            </li>
+            <li>
+                <i class="icon16x16 icon_pen"></i>
+                <a href="javascript:void(0)" ng-show="!editPassword" ng-click="editPassword = !editPassword">
+                    修改密码
+                </a>
+                <span ng-show="editPassword">
+                    <input name="old_password" placeholder="请输入旧密码" class="form-control" ng-model="oldPassword" type="password" />
+                    <input name="new_password" placeholder="请输入新密码" class="form-control" ng-model="newPassword" type="password" />
+                    <button class="btn btn-primary" ng-disabled="editing" ng-click="editPasswordSubmit(oldPassword,newPassword)">确定</button>
+                    <button class="btn btn-default" ng-disabled="editing" ng-click="cancelEditPassowrd()">取消</button>
+                </span>
+            </li>
+        </ul>
+        <div class="mount_list_wrapper scrollbar">
+            <h3>我创建的库</h3>
+            <div class="empty" ng-if="loading">正在加载...</div>
+            <div ng-if="errorMsg" class="empty">{{errorMsg}}</div>
+            <ul class="mount_list" ng-if="!errorMsg">
+                <li ng-repeat="mount in mounts">
+                    <team-logo gk-src="{{mount.org_log_url}}" class="avatar"></team-logo>
+                    <div class="name">
+                        <span title="{{mount.org_name}}" ng-bind="mount.org_name"></span>
+                    </div>
+                    <div>
+                        <span ng-bind="mount.product_name"></span>
+                    </div>
+                    <div>
+                    <span class="remain_day" ng-if="mount.remain_days>=0" ng-click="goToBuy(mount.org_id)">
+                        <span ng-if="mount.remain_days==0" class="expired">
+                            {{mount.remain_days|formatRemainDay}}
+                        </span>
+                        <span ng-if="mount.remain_days>0">剩余时间:<span>{{mount.remain_days|formatRemainDay}}</span></span>
+                    </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="view_banner" ng-click="goToBuy()">
+
+        </div>
+    </section>
+</div>

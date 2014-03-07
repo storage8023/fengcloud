@@ -1,0 +1,32 @@
+<div class="bread_and_search_wrapper" ng-class="searchState?'searching '+searchState:''" guider-placement="bottom" guider="search" ng-click="showSearch($event)" >
+    <div class="dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
+        <a href="javascript:void(0)" dropdown-toggle><i class="gk_down_arrow"></i></a>
+        <ul class="dropdown-menu">
+            <li ng-repeat="hideBread in hideBreads">
+                <a href="javascript:void(0)" ng-click="selectBread($event,hideBread)">{{hideBread.name}}</a>
+            </li>
+        </ul>
+    </div>
+    <div class="bread" ng-style="breadStyle">
+        <ul class="bread_list">
+            <li class="bread_item" ng-repeat="bread in breads">
+                <!--<i class="icon16x16" ng-class="bread.icon" ng-if="!bread.logo && bread.icon"></i>-->
+                <!--<team-logo gk-src="{{bread.logo}}" ng-if="bread.logo" class="avatar avatar_mini"></team-logo>-->
+                <a  ng-click="selectBread($event,bread)" href="javascript:void(0)">{{bread.name}}</a><span ng-show="!$last" class="bread_grid"><i class="gk_left_arrow"></i></span>
+            </li>
+        </ul>
+    </div>
+    <i class="icon16x16 icon_search" ng-click="searchFile()"></i>
+    <i class="icon_cancel" ng-click="cancelSearch($event)">&times;</i>
+    <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"  ui-keydown="{'enter':'searchFile()'}"/>
+    <div class="searching_label dropdown">
+        <a href="javascript:void(0)" dropdown-toggle title="在 {{currentSearchScope['text']}} 中搜索：">
+            <span>在 {{currentSearchScope['text']}} 中搜索：</span><i ng-if="searchScopes.length>1" class="gk_down_arrow"></i>
+        </a>
+        <ul class="dropdown-menu" ng-if="searchScopes.length>1">
+            <li ng-repeat="searchScope in searchScopes">
+                <a href="javascript:void(0)" ng-click="setSearchScope(searchScope)">{{searchScope['text']}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
