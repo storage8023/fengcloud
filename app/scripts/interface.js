@@ -419,7 +419,9 @@
      */
     getSideTreeList: function (params) {
         try {
+
             var re = gkClient.gSideTreeList(JSON.stringify(params));
+            //console.log('getSideTreeList',JSON.parse(re));
             return JSON.parse(re);
         } catch (e) {
             this._handleException(e);

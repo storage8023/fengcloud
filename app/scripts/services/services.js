@@ -3937,6 +3937,8 @@ angular.module('gkClientIndex.services', [])
                 $scope.loadingFileData = true;
                 $scope.errorMsg = '';
                 GKFileList.getFileData($scope).then(function (newFileData) {
+                    console.log('$location',$location);
+                    console.log('newFileData',newFileData);
                     $scope.loadingFileData = false;
                     var order = $scope.order;
                     if ($scope.order.indexOf('filename') >= 0) {

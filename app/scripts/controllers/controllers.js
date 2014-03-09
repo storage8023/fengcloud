@@ -443,13 +443,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         };
 
-        $scope.$on('$locationChangeSuccess', function () {
+        $scope.$on('$locationChangeStart', function () {
             var param = $location.search();
             var filter='';
             if($scope.selectedBranch){
                 filter = $scope.selectedBranch.data.filter || '';
             }
-
             if(!$scope.selectedBranch){
                 selectBranchOnLocationChange(param);
             }else{
