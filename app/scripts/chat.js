@@ -567,13 +567,18 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
             },
             search: function (orgId, dateline, size) {
                 var deferred = $q.defer();
-                var re = gkClientInterface.getChatMessage({
+                gkClientInterface.getChatMessage({
                     'receiver':String(orgId),
                     'dateline':dateline,
                     'count':size,
                     'before':1
+                },function(re){
+                    if(!re.error){
+                        deferred.resolve(re);
+                    }else{
+                        deferred.reject(re);
+                    }
                 });
-                deferred.resolve(re);
                 return deferred.promise;
             },
             list: function (orgId,lastTime,count) {

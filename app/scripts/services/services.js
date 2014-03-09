@@ -521,6 +521,7 @@ angular.module('gkClientIndex.services', [])
                                 partition:GKPartition.teamFile
                             }
                         }).then(function(data){
+                                $scope.fileData[0].expanded = true;
                                 $scope.fileData[0].children = data;
                             });
 
