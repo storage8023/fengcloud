@@ -1729,10 +1729,8 @@ float: right;
 .right_sidebar .section_title .add_member{
     display: inline;
     position: absolute;
-    top:0;
-    left: 50px;
-    font-weight: bold;
-    padding: 0 10px;
+    top:5px;
+    right:6px;
 }
 /**同步设置窗口**/
 
