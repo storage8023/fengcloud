@@ -52,16 +52,16 @@
         }
         gkClient.gEditMember(JSON.stringify(param));
     },
-    getChatMessage:function(param){
+    getChatMessage:function(param,callback){
         if(typeof gkClient.gGetMessage === 'undefined'){
             return '';
         }
-        var re =  gkClient.gGetMessage(JSON.stringify(param));
-        if(!re){
-            return '';
-        }else{
-            return JSON.parse(re);
-        }
+        gkClient.gGetMessage(JSON.stringify(param),function(re){
+            re = typeof re ==='object'?re:JSON.parse(re);
+            if(typeof callback === 'function'){
+                callback(re);
+            }
+        });
     },
     postChatMessage:function(param,callback){
         if(typeof gkClient.gSendMessage === 'undefined'){

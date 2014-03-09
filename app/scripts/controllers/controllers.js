@@ -1557,7 +1557,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout) {
 
         $scope.GKPartition = GKPartition;
         /**
@@ -1625,8 +1625,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $scope.sidbarData = getSidbarData(param);
             }
             $scope.currentTab = 'member';
-            getMember();
-
+            $timeout(function(){
+                getMember();
+            })
             if(param.mode == 'chat'){
                 $scope.hideNoFile = false;
             }else{
@@ -1740,7 +1741,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('UpdateMembers',function($event,param){
             if($rootScope.PAGE_CONFIG.mount.mount_id == param.mountid){
-                getMember();
+                $timeout(function(){
+                    getMember();
+                })
             }
         })
 
