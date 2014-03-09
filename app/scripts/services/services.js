@@ -2253,13 +2253,14 @@ angular.module('gkClientIndex.services', [])
                     }
 
                 } else {
-                    var re = gkClientInterface.getFileList({webpath: fullpath, dir: option.dir, mountid: mountId,current:option.current});
-                    if (!re.error) {
-                        list = this.dealFileList(re['list'], 'client');
-                        deferred.resolve(list);
-                    } else {
-                        deferred.reject(GKException.getClientErrorMsg(re));
-                    }
+                   gkClientInterface.getFileList({webpath: fullpath, dir: option.dir, mountid: mountId,current:option.current},function(re){
+                        if (!re.error) {
+                            list = GKFile.dealFileList(re['list'], 'client');
+                            deferred.resolve(list);
+                        } else {
+                            deferred.reject(GKException.getClientErrorMsg(re));
+                        }
+                    });
                 }
                 return deferred.promise;
             },

@@ -219,6 +219,7 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                     }
                     $scope.currentMsgList = msgList;
                 //文件
+                console.log('fullpath',param);
                 if (param.fullpath) {
                     extendParam.file = gkClientInterface.getFileInfo({
                         mountid: mountId,
@@ -280,6 +281,7 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
         })
 
         $scope.$on('$locationChangeSuccess', function (event,newLocation,oldLocation) {
+            console.log('newLocation',newLocation == oldLocation);
             if(newLocation == oldLocation){
                 return;
             }

@@ -381,10 +381,14 @@
      *      ”dir”:1
      * }
      */
-    getFileList: function (params) {
+    getFileList: function (params,callback) {
         try {
-           var re = gkClient.gGetFileList(JSON.stringify(params));
-           return JSON.parse(re);
+           gkClient.gGetFileList(JSON.stringify(params),function(re){
+               re = typeof re ==='object'?re:JSON.parse(re);
+               if(typeof callback === 'function'){
+                   callback(re);
+               }
+           });
         } catch (e) {
             this._handleException(e);
         }

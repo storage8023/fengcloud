@@ -2,13 +2,13 @@
     <h3>同步设置</h3>
 </div>
 <div class="modal-body">
-    <p>将 "{{filename}}" 同步到本地。开启同步后，本地文件夹内的文件将自动与云端同步。</p>
+    <p>将 "{{filename}}" 同步到本地。开启同步后，本地文件夹内的文件将自动与云库同步。</p>
     <div>
         <label for="local_uri">本地位置：</label>
         <input class="form-control" readonly ng-model="localURI" type="text" name="local_uri" id="local_uri"/><button class="btn btn-default reset_local_uri" ng-click="reSetLocalPath()">更改</button>
     </div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()">确定</button>
+    <button class="btn btn-primary" ng-click="ok()">开启</button>
     <button class="btn btn-warning" ng-click="cancel()">取消</button>
 </div>
