@@ -499,3 +499,25 @@ footer .post_file_wrapper .chat_file{
 .right_sidebar .member_list li:hover{
     background-color: #E1E3E7;
 }
+
+.drag_to_chat{
+    position: absolute;
+    padding: 5px;
+    background: rgba(0,0,0,.4);
+    z-index: 10;
+    left:50%;
+    margin-left: -221px;
+    border-radius: 4px;
+    top:42px;
+}
+.drag_to_chat:before{
+    content: ' ';
+    width: 0;
+    height: 0;
+    display: block;
+    position: absolute;
+    border:8px solid transparent;
+    border-bottom-color: rgba(0,0,0,.4);
+    top:-16px;
+    right:100px;
+}

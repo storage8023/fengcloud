@@ -30,7 +30,10 @@
                 </div>
             </header>
             <section>
-                <div class="alert alert-warning tip" ng-if="showTip">直接把文件从桌面拖到讨论窗口，呈现给所有成员，方便开展讨论[<a href="javascript:void(0)">效果图</a>] <a class="close" ng-click="hideTip()" href="javascript:void(0)">&times;</a></div>
+                <div class="alert alert-warning tip" ng-if="showTip">直接把文件从桌面拖到讨论窗口，呈现给所有成员，方便开展讨论[<a href="javascript:void(0)" ng-mouseleave="togglerDragChat(false)" ng-mouseenter="togglerDragChat(true)">效果图</a>] <a class="close" ng-click="hideTip()" href="javascript:void(0)">&times;</a></div>
+                <div class="drag_to_chat" ng-show="showDragChat">
+                    <img src="images/drag_to_chat.png" />
+                </div>
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="empty" ng-if="!currentMsgList || !currentMsgList.length">没有讨论</div>

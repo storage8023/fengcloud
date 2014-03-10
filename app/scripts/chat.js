@@ -300,6 +300,11 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
         $scope.saveLastText = function(postText){
         };
 
+        $scope.showDragChat = false;
+        $scope.togglerDragChat = function(show){
+            $scope.showDragChat = show;
+        };
+
         $scope.$on('UpdateMembers',function($event,param){
             if($scope.currentSession.mountid == param.mountid){
                 chatMember.refreshMembers($scope.currentSession.orgid);
