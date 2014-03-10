@@ -159,7 +159,7 @@ section .msg_list{
 }
 
 .chat_item{
-    margin: 20px 0;
+    margin: 25px 0;
 }
 
 .chat_item .time_grid,
@@ -197,6 +197,7 @@ section .msg_list{
 .chat_item.chat_item_mine .chat_main{
     float: right;
 }
+
 .chat_item .chat_main .chat_text{
     -webkit-user-select:auto;
     user-select:auto;
@@ -234,7 +235,8 @@ right: -20px;
     display: inline-block;
 }
 .chat_item .chat_main .chat_member{
-    color: #8e98a8;
+    font-size: 13px;
+    color: #ACB4BF;
 }
 .chat_item .chat_main .chat_member .name{
     color: #3F4754;

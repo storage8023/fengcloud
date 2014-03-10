@@ -64,6 +64,7 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
     }])
     .controller('tabContentCtrl', ['$scope', function ($scope) {
         var clientInfo = gkClientInterface.getClientInfo();
+        console.log('clientInfo',clientInfo);
         $scope.clientInfo = clientInfo;
         var langOptions = [
             {
@@ -85,6 +86,8 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
         $scope.setting = {
             auto: clientInfo['auto'] == 1 ? true : false,
             prompt: clientInfo['prompt'] == 1 ? true : false,
+            msg: clientInfo['msg'] == 1 ? true : false,
+            msgsound: clientInfo['msgsound'] == 1 ? true : false,
             recycle: clientInfo['recycle'] == 1 ? true : false,
             local: clientInfo['local'] == 1 ? true : false,
             https: clientInfo['https'] == 1 ? true : false,
@@ -104,9 +107,15 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
             },
             {
                 type: 'checkbox',
-                label: '显示桌面通知',
-                name: 'prompt',
-                model: $scope.setting['prompt']
+                label: '消息提示音',
+                name: 'msgsound',
+                model: $scope.setting['msgsound']
+            },
+            {
+                type: 'checkbox',
+                label: '讨论冒泡提醒',
+                name: 'msg',
+                model: $scope.setting['msg']
             },
 //            {
 //                type:'checkbox',
