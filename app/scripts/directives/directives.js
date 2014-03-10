@@ -1374,7 +1374,8 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.startChat = function(file){
                     var mountId = getOptMountId(file);
-                    GKPath.gotoFile(mountId,'', '','','','chat');
+                    var param = $location.search();
+                    GKPath.gotoFile(mountId,param.path||'', param.selectedpath||'',param.view||'',param.filter||'','chat');
                     GKChat.setSrc(mountId,file.fullpath);
                 }
 
