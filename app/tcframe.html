@@ -41,7 +41,7 @@
         <span>设置</span>
     </li>
 </ul>
-<div ng-show="showUpgradeTip" class="upgrade_tip" ng-click="handleUpgradeClick()" ng-bind="upgradeTip">dddd</div>
+<div ng-show="showUpgradeTip && upgradeTip" class="upgrade_tip" ng-click="handleUpgradeClick()" ng-bind="upgradeTip"></div>
 <div class="message_wrapper" ng-click="showMessage()">
     <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">帐号未登录或正在登录</div>
     <div class="member_info_wrapper" ng-if="PAGE_CONFIG.user.member_id">
