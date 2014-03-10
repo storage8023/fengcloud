@@ -917,9 +917,15 @@ angular.module('GKCommon.services', [])
             return newMount;
         };
         var getMounts = function(){
-            return gkClientInterface.getSideTreeList({sidetype: 'org'})['list'].map(function(mount){
-                return formatMountItem(mount);
-            })
+            var re = gkClientInterface.getSideTreeList({sidetype: 'org'});
+            if(re && re['list']){
+                return re['list'].map(function(mount){
+                    return formatMountItem(mount);
+                })
+            }else{
+                return [];
+            }
+
         };
 
         var mounts = getMounts();
