@@ -20,6 +20,25 @@ angular.module('gkClientFrame.controllers',[])
             }
         };
 
+        $scope.showUpgradeTip = false;
+
+        $scope.$on('UpgradeClient',function($event,data){
+            if(!data) return;
+            var version = data['version'];
+            $scope.$apply(function(){
+                $scope.upgradeTip = gkClientInterface.isMacClient()?'客户端有新版本了，点击立即更新':'客户端已更新到'+version+'，点击重启后生效';
+                $scope.showUpgradeTip = true;
+            })
+        })
+
+        $scope.handleUpgradeClick = function(){
+            var msg = gkClientInterface.isMacClient()?'确定要升级客户端？':'确定要重启客户端？';
+            if(!confirm(msg)){
+                return;
+            }
+            gkClientInterface.upgradeClient();
+        }
+
         if($rootScope.PAGE_CONFIG.user.member_id){
 
             var getNews = function(){

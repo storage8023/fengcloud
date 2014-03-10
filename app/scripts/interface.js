@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    upgradeClient:function(){
+        if(typeof gkClient.gUpgradeClient === 'undefined'){
+            return;
+        }
+        gkClient.gUpgradeClient();
+    },
     needLoading:function(){
         if(typeof gkClient.gGetNeedloading === 'undefined'){
             return 0;

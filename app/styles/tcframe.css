@@ -126,3 +126,16 @@ header .logout i{
     background: url(../images/icon/icon16x16.png) no-repeat -64px -64px;
     height: 100%;
 }
+
+.upgrade_tip{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 55px;
+    height: 24px;
+    line-height: 24px;
+    background: #E65353;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+}

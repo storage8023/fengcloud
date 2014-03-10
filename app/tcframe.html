@@ -22,7 +22,7 @@
     <script src="scripts/services/services.js"></script>
     <script src="scripts/tcframe.js"></script>
 </head>
-<body ng-controller="initFrame">
+<body ng-controller="initFrame" ng-class="{'upgrade_tip_show':showUpgradeTip}">
 <ul class="quickmenu">
     <li ng-click="handleClick('lanchpad')" class="lanchpad">
         <i class="icon32x32 icon_logo_color"></i>
@@ -41,6 +41,7 @@
         <span>设置</span>
     </li>
 </ul>
+<div ng-show="showUpgradeTip" class="upgrade_tip" ng-click="handleUpgradeClick()" ng-bind="upgradeTip">dddd</div>
 <div class="message_wrapper" ng-click="showMessage()">
     <div class="empty" ng-if="!PAGE_CONFIG.user.member_id">帐号未登录或正在登录</div>
     <div class="member_info_wrapper" ng-if="PAGE_CONFIG.user.member_id">
