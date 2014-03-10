@@ -168,7 +168,7 @@ angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientI
                 })
                 $scope.loginByOauth = function(oauth){
                     var key = gkClientInterface.getOauthKey();
-                    var url = gkClientInterface.getSiteDomain()+'/account/oauth?oauth=' + oauth.name + '&key=' + key;
+                    var url = 'http://www.gokuai.com/account/oauth?oauth=' + oauth.name + '&key=' + key+'&client=yk';
                     GKDialog.openUrl(url,{
                         width: 700,
                         height: 500
