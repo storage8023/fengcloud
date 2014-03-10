@@ -366,12 +366,20 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                 //上传完成
                 if (info.status == 1) {
                     lastOffset = 0;
-                    item.file = gkClientInterface.getFileInfo({
-                        mountid: metadata.mount_id,
-                        webpath: metadata.fullpath
-                    });
-                    item.file.status=3;
+                    item.offset=metadata.filesize;
+                    console.log('offset',item.offset);
                     chatContent.pendingMsg.splice(key,1);
+                    $timeout(function(){
+                        item.file = gkClientInterface.getFileInfo({
+                            mountid: metadata.mount_id,
+                            webpath: metadata.fullpath
+                        });
+                        item.file.status=3;
+                        angular.extend(item.metadata,{
+                            filehash:item.file.filehash,
+                            hash:item.file.uuidhash
+                        });
+                    },500)
                     return;
                 }else{
                     var offset = Number(info.offset || 0);

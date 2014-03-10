@@ -54,11 +54,11 @@
                                 <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0}" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
                                     <div class="file_icon_wrapper">
                                         <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0">
-                                            <img error-src="" ng-src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}"/>
+                                            <img error-src="" ng-if="msg.metadata.hash&&msg.metadata.filehash" ng-src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}"/>
                                         </i>
                                         <i class="file_icon" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0"></i>
                                     </div>
-                                    <div class="filename_wrapper"  ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0">
+                                    <div class="filename_wrapper" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0">
                                         <div class="filename">
                                             <span ng-bind="msg.metadata.filename"></span>
                                         </div>

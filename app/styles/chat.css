@@ -327,7 +327,7 @@ right: -20px;
     float: right;
 }
 .chat_file .file_opt{
-
+    text-align: center;
 }
 
 .chat_file:hover .file_opt{
@@ -365,7 +365,7 @@ right: -20px;
     line-height: 5px;
     margin-top:0;
     margin-bottom: 0;
-    background: #F1F1F2;
+    background: transparent;
     box-shadow: none;
     -webkit-box-shadow:none;
 }
