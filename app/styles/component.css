@@ -674,7 +674,7 @@ a:hover > .icon16x16.icon_link,
 .icon32x32{
     width: 32px;
     height: 32px;
-    background-image: url(../images/icon/icon32x32.png?v=8);
+    background-image: url(../images/icon/icon32x32.png?v=9);
     background-repeat: no-repeat;
     display: inline-block;
     vertical-align: middle;
@@ -766,7 +766,7 @@ a:hover > .icon16x16.icon_link,
     background-position: -40px -326px;
 }
 .icon32x32.icon_story{
-    background-position: -40px -326px;
+    background-position: -4px -796px;
 }
 .icon_recycle{
     background: url(../images/icon/trash.png) no-repeat center;

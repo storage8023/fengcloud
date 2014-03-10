@@ -17,10 +17,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window) {
 
-        $scope.windowLoaded = false;
-        jQuery($window).on('load',function(){
-            $scope.windowLoaded = true;
-        })
+
 
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
@@ -32,6 +29,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             networkConnected: Number(gkClientInterface.getNetworkStatus())
         };
 
+        $scope.showLoading = gkClientInterface.needLoading() == 1?true:false;
+
+        $scope.$on('LoadFinish', function (e, data) {
+            $scope.$apply(function(){
+                $scope.showLoading = false
+            })
+        })
         /**
          * 监听打开消息的通知
          */

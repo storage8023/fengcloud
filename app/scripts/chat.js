@@ -213,9 +213,6 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                     }
                     $scope.currentMsgList = msgList;
                 //文件
-                console.log('fullpath',param);
-
-
 
                 if (param.fullpath) {
                     extendParam.file = gkClientInterface.getFileInfo({
@@ -367,7 +364,6 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                 if (info.status == 1) {
                     lastOffset = 0;
                     item.offset=metadata.filesize;
-                    console.log('offset',item.offset);
                     chatContent.pendingMsg.splice(key,1);
                     $timeout(function(){
                         item.file = gkClientInterface.getFileInfo({

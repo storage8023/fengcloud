@@ -42,7 +42,7 @@
 </head>
 <body id="index_page" ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''"
       ng-controller="initClient">
-<!-- 左侧边栏 -->
+<div class="loading" ng-show="showLoading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: #40464d url(images/loading.gif) no-repeat 50%"></div>
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="tree_wrapper" contextmenu>
@@ -301,6 +301,6 @@
     </carousel>
 </div>
 <img id="drag_helper" src="images/transparent.png" style="position: absolute;top:10000px;left:100px"/>
-<div class="loading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: rgba(36,39,43,1)" ng-show="!windowLoaded">加载中..</div>
+
 </body>
 </html>
