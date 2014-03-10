@@ -210,16 +210,13 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                                 maxMsgTime = time;
                             }
                         });
-                    }else{
-                        var defaultMsgCache= localStorageService.get('defaultMsgCache');;
-                        if(!defaultMsgCache || defaultMsgCache==$scope.currentSession.orgid){
-                            msgList = chatContent.getDefaultMsg();
-                            localStorageService.add('defaultMsgCache',$scope.currentSession.orgid);
-                        }
                     }
                     $scope.currentMsgList = msgList;
                 //文件
                 //console.log('fullpath',param);
+
+
+
                 if (param.fullpath) {
                     extendParam.file = gkClientInterface.getFileInfo({
                         mountid: mountId,
@@ -250,6 +247,16 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
             $scope.postText = '';
 
         };
+
+        var msgTip= localStorageService.get('msgTip');;
+        if(!msgTip){
+            $scope.showTip = true;
+        }
+
+        $scope.hideTip = function(){
+            $scope.showTip = false;
+            localStorageService.add('msgTip',1);
+        }
 
         $scope.$on('atMember',function(event,at){
             $timeout(function(){
@@ -338,6 +345,7 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
             topWindow.gkFrameCallback('showSelectFileDialog',{
                 mountId:$scope.currentSession.mountid
             })
+            $scope.hideTip();
         };
         var lastOffset = 0;
         pendingTimer = $interval(function(){
@@ -373,75 +381,6 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
     }])
     .factory('chatContent', ['chatMember', 'chatSession','$q','$rootScope', function (chatMember, chatSession,$q,$rootScope) {
         var chatContent = {
-            getDefaultMsg:function(){
-                var msg = [
-                    {
-                        content: '亲爱的用户，你好！欢迎使用够快云库。我和我的同事在这里向你介绍一下如何在讨论中快速引用文件。',
-                        receiver: 0,
-                        sender_name: '够快产品经理',
-                        sender:'够快产品经理',
-                        time: new Date().getTime(),
-                        type: 'file',
-                        metadata:JSON.stringify({
-                            mount_id: 3655,
-                            dir:0,
-                            filehash: '4956ba1ddec299adc6ae5158634c7d5cc1687655',
-                            fullpath:'轻轻一拖，即刻发送.jpg'
-                        })
-                    },
-                    {
-                        content: '你可以直接将桌面的文件直接拖动到聊天窗口',
-                        receiver: 0,
-                        sender_name: '够快产品经理',
-                        sender:'够快产品经理',
-                        time: new Date().getTime(),
-                        type: 'text',
-                        metadata:''
-                    },
-                    {
-                        content: '很方便是不是，现在让我们的技术总监向你介绍下另外一种实现方法吧。',
-                        receiver: 0,
-                        sender_name: '够快产品经理',
-                        sender:'够快产品经理',
-                        time: new Date().getTime(),
-                        type: 'text',
-                        metadata:''
-                    },
-                    {
-                        content: 'OK，另外一种其实也很简单，只需在文件列表页对选中的文件发起讨论就可以了。',
-                        receiver: 0,
-                        sender_name: '够快技术总监',
-                        sender:'够快技术总监',
-                        time: new Date().getTime(),
-                        type: 'file',
-                        metadata:JSON.stringify({
-                            mount_id: 3655,
-                            dir:0,
-                            filehash: 'ab498105782fc60a12ad48f7523e37a805869f32',
-                            fullpath:'一键点击，方便讨论.jpg'
-                        })
-                    },
-                    {
-                        content: '恩，这就是两种在讨论中引用文件的方式，现在你也可以和你的小伙伴一起沟通协作了。',
-                        receiver: 0,
-                        sender_name: '够快产品经理',
-                        sender:'够快产品经理',
-                        time: new Date().getTime(),
-                        type: 'text',
-                        metadata:''
-                    },
-                    {
-                        content: '这次就说到这啦，Bye。',
-                        receiver: 0,
-                        sender_name: '够快产品经理',
-                        sender:'够快产品经理',
-                        time: new Date().getTime(),
-                        type: 'text',
-                        metadata:''
-                    }
-                ];
-                return msg.map(this.formatItem);
-            },
             pendingMsg:[],
             formatItem: function (value) {
                 var sender = chatMember.getMemberItem(value.receiver, value.sender);

@@ -30,42 +30,34 @@
                 </div>
             </header>
             <section>
+                <div class="alert alert-warning tip" ng-if="showTip">直接把文件从桌面拖到讨论窗口，呈现给所有成员，方便开展讨论[<a href="javascript:void(0)">效果图</a>] <a class="close" ng-click="hideTip()" href="javascript:void(0)">&times;</a></div>
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="empty" ng-if="!currentMsgList || !currentMsgList.length">没有讨论</div>
-                    <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList"
-                         ng-class="{'chat_item_mine':msg.sender==PAGE_CONFIG.user.member_name,'has_content':msg.content}">
-
-                        <div class="time_grid" ng-show="$index==0||(currentMsgList[$index-1]&&((msg['time']|date:'yyyy/MM/dd HH:mm') != (currentMsgList[$index-1]['time']|date:'yyyy/MM/dd HH:mm')))" ng-bind="msg.time|timeAgo"></div>
-
+                    <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList" ng-class="{'has_content':msg.content}">
                         <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)">
                             <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl:0:true}}"></avatar>
                         </div>
                         <div class="chat_main" ng-class="msg.error>0?'error':''">
                             <div class="chat_member" ng-click="atMember(msg.sender_name)">
-                                <span ng-bind="msg.sender_name"></span>
+                                <span class="name" ng-bind="msg.sender_name"></span>
+                                <span class="dateline" ng-bind="msg.time|timeAgo"></span>
                             </div>
                             <div class="chat_text">
                                 <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
                                 <div class="chat_text_inner" ng-if="msg.content">
                                     <span ng-bind="msg.content" class="text"></span>
                                 </div>
-                                <div class="chat_file" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
+                                <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0}" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
                                     <div class="file_icon_wrapper">
-                                        <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0">
-                                            <img error-src="" ng-src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0"/>
+                                        <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0">
+                                            <img error-src="" ng-src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}"/>
                                         </i>
+                                        <i class="file_icon" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0"></i>
                                     </div>
-                                    <div class="filename_wrapper">
+                                    <div class="filename_wrapper"  ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0">
                                         <div class="filename">
                                             <span ng-bind="msg.metadata.filename"></span>
-                                        </div>
-                                        <div class="filesize" ng-if="msg.file && msg.file.status!=1">
-                                            <span ng-bind="msg.file.lastname"></span> 修改于 <span ng-bind="msg.file.lasttime*1000 | date:'yyyy/MM/dd HH:mm'"></span>
-                                        </div>
-                                        <div class="filesize" ng-if="msg.file && msg.file.status==1">
-                                            <div ng-if="msg.metadata.dir==1">上传中...</div>
-                                            <progressbar ng-if="msg.metadata.dir==0" max="msg.metadata.filesize" value="msg.offset" animate="true"></progressbar>
                                         </div>
                                     </div>
                                     <div class="file_opt" ng-show="msg.file">
