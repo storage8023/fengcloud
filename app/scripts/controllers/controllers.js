@@ -1759,21 +1759,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.teamOverview($rootScope.PAGE_CONFIG.mount.org_id);
         };
 
-        $scope.atMember = function(memberName){
-            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_discuss')){
-                return;
-            }
-            if($rootScope.PAGE_CONFIG.mode !='chat'){
-                var param = $location.search();
-                angular.extend(param,{
-                    mode:'chat'
-                })
-                $location.search(param);
-            }
-            var iframe = GKFrame('ifame_chat');
-            if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
-                iframe.gkFrameCallback('atMember',memberName);
-            }
+        $scope.atMember = function(member){
+            GKModal.teamCard($rootScope.PAGE_CONFIG.mount.org_id,member.member_id);
         };
 
     }])

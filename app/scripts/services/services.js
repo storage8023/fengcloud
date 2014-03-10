@@ -660,7 +660,8 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            teamCard: function (orgId) {
+            teamCard: function (orgId,memberId) {
+                memberId = angular.isDefined(memberId)?memberId:0;
                 var context = this;
                 var option = {
                     templateUrl: 'views/team_card_dialog.html',
@@ -676,7 +677,7 @@ angular.module('gkClientIndex.services', [])
                         src: function () {
                             return gkClientInterface.getUrl({
                                 sso: 1,
-                                url: '/manage/info?org_id=' + orgId
+                                url: '/manage/info?org_id=' + orgId+'&member_id='+memberId
                             });
                         }
                     }

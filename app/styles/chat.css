@@ -250,7 +250,7 @@ right: -20px;
     word-wrap: break-word;
 }
 .chat_item .chat_main .chat_text .chat_text_inner{
-color: #7F8999;
+   color: #7F8999;
 }
 .chat_item.chat_item_mine .chat_main .chat_text{
    border-top-right-radius: 0;
@@ -268,13 +268,13 @@ color: #7F8999;
     padding-right: 10px;
 }
 .chat_file{
-    overflow: hidden;
     display: table;
     position: relative;
     background: #F1F1F2;
     border:1px solid #e7e7e7;
     border-radius: 5px;
     padding:3px 5px;
+    min-width: 108px;
 }
 
 .chat_file > div{
@@ -321,12 +321,7 @@ color: #7F8999;
     width: 96px;
     height: 96px;
 }
-.chat_file .filename_wrapper .progress{
-    margin-bottom: 6px;
-    height: 5px;
-    line-height: 5px;
-    margin-top: 6px;
-}
+
 .chat_file .version_wrapper{
     margin: 0 0 0 5px;
     float: right;
@@ -359,6 +354,22 @@ color: #7F8999;
     font-style: normal;
     padding: 0 4px;
 }
+.chat_file .file_progress{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -10px;
+}
+.chat_file .file_progress .progress{
+    height: 5px;
+    line-height: 5px;
+    margin-top:0;
+    margin-bottom: 0;
+    background: #F1F1F2;
+    box-shadow: none;
+    -webkit-box-shadow:none;
+}
+
 footer textarea{
     position: absolute;
     top:0;

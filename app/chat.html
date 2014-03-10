@@ -66,6 +66,9 @@
                                     <div class="file_opt" ng-show="msg.file">
                                         <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
                                     </div>
+                                    <div class="file_progress" ng-if="msg.file && msg.file.status==1 && msg.metadata.dir==0">
+                                        <progressbar ng-if="msg.metadata.dir==0" max="msg.metadata.filesize" value="msg.offset" animate="true"></progressbar>
+                                    </div>
                                 </div>
                             </div>
                         </div>

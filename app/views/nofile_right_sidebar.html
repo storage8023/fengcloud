@@ -17,7 +17,7 @@
             <div class="tab_content">
                 <div class="tab_content_layer" ng-show="currentTab=='member'">
                     <ul class="scrollbar member_list">
-                        <li ng-dblclick="atMember(member.member_name)" ng-repeat="member in members"  bindonce >
+                        <li ng-dblclick="atMember(member)" ng-repeat="member in members"  bindonce >
                             <img class="avatar avatar_mini" ng-src="{{member.member_id|getAvatarUrl}}" alt=""/>
                             <span bo-text="member.member_name"></span>
                             <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
