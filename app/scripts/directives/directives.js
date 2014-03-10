@@ -1376,7 +1376,9 @@ angular.module('gkClientIndex.directives', [])
                     var mountId = getOptMountId(file);
                     var param = $location.search();
                     GKPath.gotoFile(mountId,param.path||'', param.selectedpath||'',param.view||'',param.filter||'','chat');
-                    GKChat.setSrc(mountId,file.fullpath);
+                    $timeout(function(){
+                        GKChat.setSrc(mountId,file.fullpath);
+                    })
                 }
 
                 $scope.showMilestoneDialog = function(file){

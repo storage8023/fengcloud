@@ -15,7 +15,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth) {
+    .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window) {
+
+        $scope.windowLoaded = false;
+        jQuery($window).on('load',function(){
+            $scope.windowLoaded = true;
+        })
+
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -42,6 +48,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(data.type=='addMember'){
                 GKModal.teamMember(data.orgId);
             }
+        })
+
+        $scope.$on('OpenChatOrg', function (e, data) {
+            if(!data || !data['orgid']){
+                return;
+            }
+            var mount = GKMount.getMountByOrgId(data['orgid']);
+            if(!mount) return;
+            $scope.$apply(function(){
+                GKPath.gotoFile(mount['mount_id'],'', '','','','chat');
+            })
         })
 
         $rootScope.$on('createTeamSuccess', function (event, param) {
@@ -1486,6 +1503,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var url = gkClientInterface.getUrl({
                 sso:1,
                 url: '/account/bbs'
+            });
+            gkClientInterface.openUrl(url);
+        }
+
+        $scope.visitStory = function(){
+            var url = gkClientInterface.getUrl({
+                sso:0,
+                url: gkClientInterface.getSiteDomain()+'/story'
             });
             gkClientInterface.openUrl(url);
         }

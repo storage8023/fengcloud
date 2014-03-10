@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    needLoading:function(){
+        if(typeof gkClient.gGetNeedloading === 'undefined'){
+            return 0;
+        }
+        return gkClient.gGetNeedloading();
+    },
     getDownloadUrl:function(param){
         if(typeof gkClient.gGetDownloadUrl === 'undefined'){
             return '';
