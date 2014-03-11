@@ -16,7 +16,6 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
             pendingMsg = [],
             pendingTimer,
             postedMsg = [];
-        $scope.view = 'chat';
         $scope.currentMsgList = [];
         $scope.currentSession = null;
 

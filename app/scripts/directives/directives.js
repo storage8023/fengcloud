@@ -1096,7 +1096,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document) {
+    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document','GKMode',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document,GKMode) {
         return {
             replace: true,
             restrict: 'E',
@@ -1375,7 +1375,12 @@ angular.module('gkClientIndex.directives', [])
                 $scope.startChat = function(file){
                     var mountId = getOptMountId(file);
                     var param = $location.search();
-                    GKPath.gotoFile(mountId,param.path||'', param.selectedpath||'',param.view||'',param.filter||'','chat');
+                    if(GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition)){
+                        GKMode.setMode('chat');
+                    }else{
+                        GKPath.gotoFile(mountId,param.path||'', param.selectedpath||'',param.view||'',param.filter||'','chat');
+                    }
+
                     $timeout(function(){
                         GKChat.setSrc(mountId,file.fullpath);
                     })

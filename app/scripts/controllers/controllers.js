@@ -15,10 +15,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window) {
-
-
-
+    .controller('initClient', ['localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: {},
@@ -153,7 +150,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var extend = {
                 filter: param.filter || '',
                 partition: param.partition,
-                mode: param.mode || 'chat'
+                mode: GKMode.getMode()
             };
             if (GKPartition.isMountPartition(param.partition)) {
                 if(!param.filter){
@@ -186,16 +183,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     trash_dateline: mount.dateline_recycle
                 })
 
-                if(param.mode == 'chat'){
+                if(extend.mode == 'chat'){
                     $rootScope.$broadcast('clearMsgTime',{orgId: extend.mount.org_id})
                 }
                 if(extend.mode=='chat' && !GKAuth.check(extend.mount,param.partition,'file_discuss')){
-                    extend.mode = 'file';
+                    GKMode.setMode(extend.mode);
                 }
             } else {
                 extend.file = {};
                 extend.mount = {};
-                extend.mode = 'file';
+                GKMode.setMode('file');
             }
             angular.extend($rootScope.PAGE_CONFIG, extend);
         }
@@ -306,7 +303,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
     }])
-    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame','GKAuth',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame,GKAuth) {
+    .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame','GKAuth','GKMode',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame,GKAuth,GKMode) {
         $scope.GKPartition = GKPartition;
         var orgMount = GKMount.getOrgMounts();
 
@@ -375,9 +372,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleSelect = function (branch, partition) {
+            var mode = 'file'
             var pararm = {
-                partition: partition,
-                mode:'file'
+                partition: partition
             };
 
             if (GKPartition.isMountPartition(partition)) {
@@ -385,12 +382,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 pararm['mountid'] = branch.data.mount_id;
                 pararm['entid'] = branch.data.ent_id||0;
                 pararm['filter'] = branch.data.filter || '';
-                pararm['mode'] = $rootScope.PAGE_CONFIG.mode || 'chat';
+                mode = $rootScope.PAGE_CONFIG.mode || 'chat';
             } else if (GKPartition.isSmartFolderPartition(partition)) {
                 pararm['filter'] = branch.data.filter;
             } else {
                 return;
             }
+            GKMode.setMode(mode);
             $location.search(pararm);
         };
 
@@ -1493,14 +1491,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             jQuery.contextMenu('destroy', '.file_list .list_body');
         })
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant',function ($scope, GKPath, $location, $filter, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant) {
+    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant','GKMode',function ($scope, GKPath, $location, $filter, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant,GKMode) {
 
         $scope.changeMode = function(mode){
-            var param = $location.search();
-            angular.extend(param,{
-                mode:mode
-            });
-            $location.search(param);
+            GKMode.setMode(mode);
         };
 
         $scope.visitBBS = function(){

@@ -74,7 +74,6 @@ angular.module('gkClientIndex.services', [])
         };
         return GKEnt;
     }])
-
     .factory('GKSideTree', ['GKFile', 'GKPartition','GKEnt', function (GKFile, GKPartition,GKEnt) {
         return {
             getTreeList:function(mounts){
@@ -1874,7 +1873,7 @@ angular.module('gkClientIndex.services', [])
 
         return GKFilter;
     }])
-    .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition) {
+    .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition','GKMode', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition,GKMode) {
         var GKPath = {
             gotoFile: function (mountId, path, selectFile,view,filter,mode) {
                 view = angular.isDefined(view)?view:'';
@@ -1890,10 +1889,10 @@ angular.module('gkClientIndex.services', [])
                     path: path,
                     selectedpath: selectFile,
                     view:view,
-                    filter:filter,
-                    mode:mode
+                    filter:filter
                 };
                 if (mount) {
+                    GKMode.setMode(mode);
                     $location.search(search);
                 }
             },
@@ -3987,6 +3986,23 @@ angular.module('gkClientIndex.services', [])
             }
         };
         return GKChat;
+    }])
+    .factory('GKMode', ['$rootScope','localStorageService',function ($rootScope,localStorageService) {
+        var key = 'gk_mode';
+        var GKMode = {
+            getMode:function(){
+                var re =  localStorageService.get(key);
+                if(['chat','file'].indexOf(re)<0){
+                    return 'chat';
+                }
+                return re;
+            },
+            setMode:function(mode){
+                $rootScope.PAGE_CONFIG.mode = mode;
+                localStorageService.add(key, mode);
+            }
+        };
+        return GKMode;
     }])
     .factory('GKDialog', [function () {
         return {
