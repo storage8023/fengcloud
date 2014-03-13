@@ -1,12 +1,14 @@
 'use strict';
-angular.module('LocalStorageModule').value('prefix', 'gkChat');
+angular.module('LocalStorageModule').value('prefix', 'gkClientIndex');
 angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
-    .run(['$rootScope', function ($rootScope) {
+    .run(['$rootScope','localStorageService', function ($rootScope,localStorageService) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser(),
             file: null,
-            partition:'teamfile'
+            partition:'teamfile',
+            mode:localStorageService.get('gk_mode') || 'chat'
         }
+
     }])
     .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember','$window','$interval','GKApi','localStorageService',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember,$window,$interval,GKApi,localStorageService) {
         var maxCount = 20,
@@ -184,6 +186,9 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
         $scope.remindMembers = [];
 
         var setList = function () {
+            if($rootScope.PAGE_CONFIG.mode != 'chat'){
+                return;
+            }
             postedMsg = [];
             var param = $location.search();
             var mountId = Number(param.mountid);
@@ -237,6 +242,7 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
                     $scope.scrollToIndex = $scope.currentMsgList.length-1;
                     //topWindow.gkFrameCallback('clearMsgTimeclearMsgTime',{orgId:$scope.currentSession.orgid});
                 });
+            $scope.chatLoaded = true;
             $timeout(function(){
                 $scope.focusTextarea = true;
             })
@@ -284,17 +290,17 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
         })
 
         $scope.$on('$locationChangeSuccess', function (event,newLocation,oldLocation) {
-            //console.log('newLocation',newLocation == oldLocation);
-            if(newLocation == oldLocation){
-                return;
-            }
+            $scope.chatLoaded = false;
             setList();
         })
 
-        setList();
+        $rootScope.$on('changeMode',function($event,mode){
+            $rootScope.PAGE_CONFIG.mode = mode;
+            if(mode == 'chat' && !$scope.chatLoaded){
+                setList();
+            }
 
-        $scope.saveLastText = function(postText){
-        };
+        })
 
         $scope.showDragChat = false;
         $scope.togglerDragChat = function(show){

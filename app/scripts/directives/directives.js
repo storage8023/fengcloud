@@ -1227,67 +1227,54 @@ angular.module('gkClientIndex.directives', [])
                     var mount = GKMount.getMountById(mountId);
                     var fullpath = file.dir == 1 ? file.fullpath + '/' : file.fullpath;
                     var formatTag = [];
-                    if (options.data != 'sidebar') {
-                        lastGetRequest = GKApi.info(mountId, fullpath).success(function (data) {
-                            $scope.$apply(function () {
+                    var extParam = {
+                        type:options.data == 'file'?'':'ext'
+                    };
+                    lastGetRequest = GKApi.info(mountId, fullpath,extParam).success(function (data) {
+                        $scope.$apply(function () {
+                            $scope.fileLoaded = true;
+                            $scope.fileExist = true;
+                            var formatFile = GKFile.formatFileItem(data, 'api');
+                            angular.extend($scope.file, formatFile);
+                            if (data.history) {
+                                histories = data.history.map(function(item){
+                                    item.milestone = item.property?item.property.milestone : 0;
+                                    return item;
+                                });
+                            }else{
+                                histories = [];
+                            }
+                            $scope.histories = histories;
+                            $scope.tag.content = $scope.file.tag;
+                            if ($scope.file.cmd > 0 && mount && GKMount.isMember(mount)) {
+                                $scope.showTab = true;
+                            } else {
+                                $scope.showTab = false;
+                            }
+                        });
+                    }).error(function (request,textStatus,errorThrown) {
                                 $scope.fileLoaded = true;
-                                $scope.fileExist = true;
-                                var formatFile = GKFile.formatFileItem(data, 'api');
-                                angular.extend($scope.file, formatFile);
-                                $scope.tag.content = $scope.file.tag;
-                                if ($scope.file.cmd > 0 && mount && GKMount.isMember(mount)) {
-                                    $scope.showTab = true;
-                                } else {
-                                    $scope.showTab = false;
+                                $scope.fileExist = false;
+                                var errorCode = GKException.getAjaxErroCode(request);
+                                if (errorCode == 404 || String(errorCode).slice(0, 3) != '404') {
+                                    return;
                                 }
-                            });
-
-                        }).error(function (request,textStatus,errorThrown) {
-                               //$scope.$apply(function () {
-                                    $scope.fileLoaded = true;
-                                    $scope.fileExist = false;
-                                    var errorCode = GKException.getAjaxErroCode(request);
-                                    if (errorCode == 404 || String(errorCode).slice(0, 3) != '404') {
-                                        return;
-                                    }
-                                    if (errorCode == 404024 && $scope.localFile.status != 1) {
-                                        $scope.sidbarData = {
-                                            icon: 'trash',
-                                            title: '云端已删除'
-                                        };
-                                        return;
-                                    }
+                                if (errorCode == 404024 && $scope.localFile.status != 1) {
                                     $scope.sidbarData = {
-                                        icon: 'uploading'
+                                        icon: 'trash',
+                                        title: '云端已删除'
                                     };
-                               //})
-                                    getFileState(mountId, file.fullpath);
-                                    fileInterval = $interval(function () {
-                                        getFileState(mountId, file.fullpath);
-                                    }, 1000);
-
-                            });
-                    }
-                    if (options.data != 'file') {
-                        lastClientSidebarRequest = GKApi.sideBar(mountId, fullpath, options.type, options.cache).success(function (data) {
-                            $scope.$apply(function () {
-                                $scope.sidebarLoaded = true;
-                                if (data.history) {
-                                    histories = data.history.map(function(item){
-                                        item.milestone = item.property?item.property.milestone : 0;
-                                        return item;
-                                    });
-                                }else{
-                                    histories = [];
+                                    return;
                                 }
-                                $scope.histories = histories;
-                            })
-                        }).error(function(){
-                                //$scope.$apply(function () {
-                                    $scope.sidebarLoaded = true;
-                                //})
-                            });
-                    }
+                                $scope.sidbarData = {
+                                    icon: 'uploading'
+                                };
+                                getFileState(mountId, file.fullpath);
+                                fileInterval = $interval(function () {
+                                    getFileState(mountId, file.fullpath);
+                                }, 1000);
+
+                        });
 
                     $scope.showChatBtn = GKAuth.check(mount,'','file_discuss');
                     $scope.showLinkBtn = GKAuth.check(mount,'','file_link');
@@ -1306,11 +1293,9 @@ angular.module('gkClientIndex.directives', [])
                     $scope.onlyShowMileStone = false;
                     $scope.tag.content = '';
 //                    $scope.fileLoaded = false;
-//                    $scope.sidebarLoaded = false;
                     getFileInfo(file);
                 },true);
                 $scope.fileLoaded = false;
-                $scope.sidebarLoaded = false;
                 getFileInfo($scope.localFile,{first:true});
 
                 $scope.editingTag = false;
@@ -1470,7 +1455,12 @@ angular.module('gkClientIndex.directives', [])
                     var mountId = getOptMountId($scope.localFile);
                     var fullpath = $scope.localFile.fullpath;
                     $scope.disableScrollLoadHistory = true;
-                    GKApi.sideBar(mountId, fullpath,'history',false,histories.length).success(function (data) {
+                    var extParam = {
+                        type:'ext',
+                        start: histories.length,
+                        date:'',
+                    }
+                    GKApi.info(mountId, fullpath,'history',false,histories.length).success(function (data) {
                         $scope.$apply(function () {
                             $scope.disableScrollLoadHistory = false;
                             if (data.history) {

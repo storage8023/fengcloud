@@ -986,9 +986,23 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileList.refreahData($scope);
         })
 
+        var loadFiledata = function(param){
+            if(param.view){
+                GKFileList.changeView($scope,param.view);
+            }
+            GKFileList.unSelectAll($scope);
+            GKFileList.refreahData($scope,param.selectedpath);
+            $scope.setOpts();
+            if(GKPartition.isMountPartition($scope.partition)){
+                $scope.mountReadable = GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read');
+            }
+            $scope.fileDataLoaded = true;
+        };
+
         var getFileData = function(){
             var param =  $location.search();
             if(!param.partition) return;
+            $scope.fileDataLoaded = false;
             $scope.path = param.path || '';
             $scope.partition = param.partition || GKPartition.teamFile;
             $scope.filter = param.filter || '';
@@ -996,17 +1010,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
             $scope.search = param.search || '';
             $scope.showHint =$rootScope.PAGE_CONFIG.file.syncpath?true:false;
-            if(param.view){
-                GKFileList.changeView($scope,param.view);
+            if($rootScope.PAGE_CONFIG.mode == 'file'){
+                loadFiledata(param);
             }
-            GKFileList.unSelectAll($scope);
-            GKFileList.refreahData($scope,param.selectedpath);
-            $scope.setOpts();
             GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
-            if(GKPartition.isMountPartition($scope.partition)){
-                $scope.mountReadable = GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read');
-            }
+
         };
+
+        $scope.$watch('PAGE_CONFIG.mode',function(val){
+            if(val == 'file' && !$scope.fileDataLoaded){
+                loadFiledata($location.search());
+            }
+        })
 
         $scope.gkChat = GKChat;
 
@@ -1584,19 +1599,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $timeout(function(){
                 getMember();
             })
-            if(param.mode == 'chat'){
+
+        })
+
+        $scope.$watch('PAGE_CONFIG.mode',function(val){
+            var param = $location.search();
+            if(val == 'chat'){
                 $scope.hideNoFile = false;
             }else{
-               if(param.path){
-                   $scope.hideNoFile = true;
-               }else{
-                   if(param.search || param.filter){
-                       $scope.hideNoFile = true;
-                   }else{
-                       $scope.hideNoFile = false;
-                   }
+                if(param.path){
+                    $scope.hideNoFile = true;
+                }else{
+                    if(param.search || param.filter){
+                        $scope.hideNoFile = true;
+                    }else{
+                        $scope.hideNoFile = false;
+                    }
 
-               }
+                }
             }
         })
 

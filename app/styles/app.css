@@ -768,6 +768,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     overflow: auto;
     bottom: 0;
     padding-top: 32px;
+    padding-bottom: 100px;
     outline: 0;
 }
 .file_list_wrapper .has_hint .list_body{

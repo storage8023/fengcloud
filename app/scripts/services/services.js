@@ -3981,8 +3981,6 @@ angular.module('gkClientIndex.services', [])
                 $scope.loadingFileData = true;
                 $scope.errorMsg = '';
                 GKFileList.getFileData($scope).then(function (newFileData) {
-                    //console.log('$location',$location);
-                    //console.log('newFileData',newFileData);
                     $scope.loadingFileData = false;
                     var order = $scope.order;
                     if ($scope.order.indexOf('filename') >= 0) {
@@ -4030,7 +4028,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKChat;
     }])
-    .factory('GKMode', ['$rootScope','localStorageService',function ($rootScope,localStorageService) {
+    .factory('GKMode', ['$rootScope','localStorageService','GKFrame',function ($rootScope,localStorageService,GKFrame) {
         var key = 'gk_mode';
         var GKMode = {
             getMode:function(){
@@ -4042,7 +4040,15 @@ angular.module('gkClientIndex.services', [])
             },
             setMode:function(mode){
                 $rootScope.PAGE_CONFIG.mode = mode;
+                if(mode == 'chat'){
+                    $rootScope.$broadcast('clearMsgTime',{orgId: $rootScope.PAGE_CONFIG.mount.org_id})
+                }
                 localStorageService.add(key, mode);
+                var iframe = GKFrame('ifame_chat');
+                if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
+                    iframe.gkFrameCallback('changeMode',mode);
+                }
+
             }
         };
         return GKMode;

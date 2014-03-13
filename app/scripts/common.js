@@ -1168,12 +1168,15 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            info:function(mount_id, fullpath){
+            info:function(mount_id, fullpath,extParam){
                 var params = {
                     mount_id: mount_id,
                     fullpath:fullpath,
                     token: gkClientInterface.getToken()
                 };
+                if(extParam && typeof extParam == 'object'){
+                    angular.extend(params,extParam);
+                }
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
@@ -1493,29 +1496,6 @@ angular.module('GKCommon.services', [])
                 return jQuery.ajax({
                     type: 'GET',
                     url: gkClientInterface.getApiHost() + '/1/file/inbox',
-                    data: params
-                });
-            },
-            sideBar: function (mount_id, fullpath, type, cache, start, date) {
-                cache = cache === undefined?true:cache;
-                var params = {
-                    mount_id: mount_id,
-                    fullpath: fullpath,
-                    type: type || '',
-                    start: start || '',
-                    date: date || '',
-                    token: gkClientInterface.getToken()
-                };
-                if(!cache){
-                    params.t = new Date().getTime();
-                }
-                angular.extend(params, defaultParams);
-                var sign = gkClientInterface.getApiAuthorization(params);
-                params.sign = sign;
-                return jQuery.ajax({
-                    type: 'GET',
-                    dataType: 'json',
-                    url: gkClientInterface.getApiHost() + '/1/file/client_sidebar',
                     data: params
                 });
             },

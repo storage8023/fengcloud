@@ -1,5 +1,5 @@
 <div class="single_file" ng-style="{'bottom':(showTab && showHistory&&showMilestone?'35px':'0')}"  scroll-load="loadHistory()" disable-scroll="disableScrollLoadHistory" trigger-distance="20">
-    <div ng-show="fileLoaded && sidebarLoaded">
+    <div ng-show="fileLoaded">
         <div ng-show="!fileExist">
             <filter-right-sidebar></filter-right-sidebar>
         </div>
@@ -91,5 +91,5 @@
             </section>
         </div>
     </div>
-    <div class="empty loading" ng-show="!fileLoaded || !sidebarLoaded">正在加载...</div>
+    <div class="empty loading" ng-show="!fileLoaded">正在加载...</div>
 </div>
