@@ -740,7 +740,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
+    right: 8px;
     z-index: 1;
     background: #fff;
     border-top:1px solid #fff;
@@ -834,6 +834,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     margin: -32px 0 0 0;
     font-size: 12px;
     height: 31px;
+    text-align: center;
 }
 
 .file_list_wrapper .last_edit_time span,
@@ -875,7 +876,6 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     padding: 5px 0;
     height: 42px;
     line-height: 32px;
-    -webkit-transition: background-color linear 0.1s;
 }
 
 .thumb_view .item .last_edit_time,
@@ -977,7 +977,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 
 .thumb_view .item.hover,
 .thumb_view .item:hover{
-    background-color:#E1E3E7;
+    /*background-color:#E1E3E7;*/
 }
 
 .thumb_view .item.selected {

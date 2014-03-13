@@ -2,6 +2,47 @@
 
 /* Directives */
 angular.module('gkClientIndex.directives', [])
+    .directive('fileContextMenu', ['GKAuth','$rootScope','GKFileList','GKOpt',function (GKAuth,$rootScope,GKFileList,GKOpt) {
+        return {
+            restrict: 'A',
+            link:function($scope, $element, $attrs ){
+                jQuery.contextMenu({
+                    selector:'.list_body',
+                    reposition: false,
+                    zIndex: 99,
+                    animation: {
+                        show: "show",
+                        hide: "hide"
+                    },
+                    build:function(){
+                        var isSearch = $scope.search.length ? true : false;
+                        var selectedFile = GKFileList.getSelectedFile();
+                        var optKeys = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, selectedFile, $rootScope.PAGE_CONFIG.partition, $rootScope.PAGE_CONFIG.filter, $rootScope.PAGE_CONFIG.mount, isSearch);
+                        var excludeRightOpts = [];
+                        var rightOpts = {};
+
+                        angular.forEach(optKeys, function (value) {
+                            if (excludeRightOpts.indexOf(value) < 0) {
+                                var opt = $scope.allOpts[value];
+                                if (opt) {
+                                    if (value == 'open_with' && jQuery.isEmptyObject(opt.items)) {
+                                        return;
+                                    }
+                                    if (value != 'open_with' && !!opt.items && jQuery.isEmptyObject(GKOpt.checkSubOpt(optKeys, opt.items))) {
+                                        return;
+                                    }
+                                    rightOpts[value] = opt;
+                                }
+                            }
+                        });
+                        return {
+                            items:rightOpts
+                        };
+                    }
+                });
+            }
+        }
+    }])
     .directive('guiderPopup', [function () {
         return {
             restrict: 'EA',
@@ -1096,7 +1137,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['$angularCacheFactory','GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document','GKMode',function ($angularCacheFactory,GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document,GKMode) {
+    .directive('singlefileRightSidebar', ['GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document','GKMode',function (GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document,GKMode) {
         return {
             replace: true,
             restrict: 'E',
@@ -1277,15 +1318,15 @@ angular.module('gkClientIndex.directives', [])
                     $scope.editingTag = true;
                 }
 
-                $document.on('mousedown',function(e){
-                    if(jQuery(e.target).parents('.post_textarea_wrapper').size() || jQuery(e.target).hasClass('tag_edit')){
-                        return
-                    }
-                    $scope.$apply(function(){
-                        $scope.editingTag = false;
-                        $scope.tag.content = $scope.file.tag;
-                    })
-                })
+//                $document.on('mousedown',function(e){
+//                    if(jQuery(e.target).parents('.post_textarea_wrapper').size() || jQuery(e.target).hasClass('tag_edit')){
+//                        return
+//                    }
+//                    $scope.$apply(function(){
+//                        $scope.editingTag = false;
+//                        $scope.tag.content = $scope.file.tag;
+//                    })
+//                })
 
                 /**
                  * 添加tag
@@ -1768,19 +1809,19 @@ angular.module('gkClientIndex.directives', [])
                     $event.stopPropagation();
                 };
 
-                $('body').on('mousedown.resetsearch', function (event) {
-                    $scope.$apply(function () {
-                        if (
-                            $(event.target).hasClass('bread_and_search_wrapper')
-                                || $(event.target).parents('.bread_and_search_wrapper').size()
-                                || $scope.searchState == 'loading'
-                                || $scope.searchState == 'end'
-                            ) {
-                            return;
-                        }
-                        resetSearch();
-                    })
-                })
+//                $('body').on('mousedown.resetsearch', function (event) {
+//                    $scope.$apply(function () {
+//                        if (
+//                            $(event.target).hasClass('bread_and_search_wrapper')
+//                                || $(event.target).parents('.bread_and_search_wrapper').size()
+//                                || $scope.searchState == 'loading'
+//                                || $scope.searchState == 'end'
+//                            ) {
+//                            return;
+//                        }
+//                        resetSearch();
+//                    })
+//                })
 
 
                 var getSearchScopes = function () {

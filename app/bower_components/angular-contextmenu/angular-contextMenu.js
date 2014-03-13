@@ -14,9 +14,8 @@ angular.module('angular-contextMenu', [])
     })
     .directive('contextMenu', [ "$timeout","contextMenuService", function ($timeout,contextMenuService) {
         return {
-            restrict: 'EA',
+            restrict: 'A',
             compile:function(element, attrs){
-
                 var hasSelector = attrs.contextMenuSelector,
                     selector;
 
@@ -28,7 +27,6 @@ angular.module('angular-contextMenu', [])
 
                 return function(scope, element, attrs){
                     var option = scope.$eval(attrs.contextMenu);
-
                     if(!hasSelector){
                         option.selector = '#'+selector;
                     }else{
@@ -37,8 +35,13 @@ angular.module('angular-contextMenu', [])
 
                     if (angular.isObject(option)) {
                         $timeout(function () {
-                            element.contextMenu(option);
+                            //element.contextMenu(option);
+                            jQuery.contextMenu(option);
                         });
+
+                        scope.$on('$destroy',function(){
+                            jQuery.contextMenu('destroy',  option.selector);
+                        })
                     }
                 }
             }

@@ -16,6 +16,11 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .factory('GKSope', [function () {
+        return {
+            rightSidebar:null
+        };
+    }])
     .factory('GKAuth', [function () {
         var GKAuth = {
             getPermissions:function(mount,partition){
@@ -2583,6 +2588,15 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout) {
         var GKOpt = {
+            checkSubOpt:function(optKeys, subOpts){
+                var cloneOpt = angular.extend({}, subOpts);
+                angular.forEach(cloneOpt, function (value, key) {
+                    if (optKeys.indexOf(key) < 0) {
+                        delete cloneOpt[key];
+                    }
+                });
+                return cloneOpt;
+            },
             /**
              * 同步，不同步命令的逻辑
              * @param opts
@@ -2602,6 +2616,7 @@ angular.module('gkClientIndex.services', [])
                 }
             },
             getOpts: function (currentFile, selectedFiles, partition, filter, mount, isSearch) {
+                console.log('arguments',arguments);
                 var opts,
                     partitionOpts,
                     multiOpts,
@@ -2990,6 +3005,7 @@ angular.module('gkClientIndex.services', [])
                 };
                 var allOpt = {
                     'goto': {
+                        key:'goto',
                         name: '位置',
                         index: 0,
                         icon: 'icon_location',
@@ -3006,6 +3022,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'open_with': {
+                        key:'open_with',
                         name: '打开方式',
                         index: 0,
                         icon: 'icon_open_with',
@@ -3013,6 +3030,7 @@ angular.module('gkClientIndex.services', [])
                         items: {}
                     },
                     'new_file': {
+                        key:'new_file',
                         name: '新建',
                         className: "new_folder",
                         icon: 'icon_newfolder',
@@ -3169,16 +3187,8 @@ angular.module('gkClientIndex.services', [])
                             },
                         }
                     },
-                    'unsubscribe': {
-                        index: 2,
-                        name: '取消订阅',
-                        icon: 'icon_remove',
-                        className: "unsubscribe",
-                        callback: function () {
-                            GKOpt.unsubscribe($rootScope.PAGE_CONFIG.mount.org_id);
-                        }
-                    },
                     'manage': {
+                        key:'manage',
                         index: 4,
                         name: '管理',
                         icon: 'icon_setting',
@@ -3188,6 +3198,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'clear_trash': {
+                        key:'clear_trash',
                         index: 5,
                         name: '清空回收站',
                         icon: 'icon_del',
@@ -3197,6 +3208,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'revert': {
+                        key:'revert',
                         index: 6,
                         name: '还原',
                         icon: 'icon_recover',
@@ -3225,6 +3237,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'del_completely': {
+                        key:'del_completely',
                         index: 20,
                         name: '彻底删除',
                         className: "del_completely",
@@ -3268,6 +3281,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'sync': {
+                        key:'sync',
                         index: 8,
                         name: '同步',
                         className: "sync",
@@ -3277,6 +3291,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'unsync': {
+                        key:'unsync',
                         index: 9,
                         name: '取消同步',
                         className: "unsync",
@@ -3286,6 +3301,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'paste': {
+                        key:'paste',
                         index: 10,
                         name: '粘贴',
                         className: "paste",
@@ -3331,6 +3347,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'cut': {
+                        key:'cut',
                         index: 11,
                         name: '剪切',
                         className: "cut",
@@ -3365,6 +3382,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'copy': {
+                        key:'copy',
                         index: 12,
                         name: '复制',
                         className: "copy",
@@ -3388,6 +3406,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'add': {
+                        key:'add',
                         index: 2,
                         name: '添加到云库',
                         className: "add",
@@ -3419,6 +3438,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'lock': {
+                        key:'lock',
                         index: 14,
                         name: '锁定',
                         className: "lock",
@@ -3442,6 +3462,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'unlock': {
+                        key:'unlock',
                         index: 15,
                         name: '解锁',
                         className: "unlock",
@@ -3463,6 +3484,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'save': {
+                        key:'save',
                         index: 16,
                         name: '保存到本地',
                         className: "save",
@@ -3508,6 +3530,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'del': {
+                        key:'del',
                         index: 22,
                         name: '删除',
                         className: "del",
@@ -3526,6 +3549,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'rename': {
+                        key:'rename',
                         index: 18,
                         name: '重命名',
                         className: "rename",
@@ -3555,6 +3579,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'link': {
+                        key:'link',
                         index: 19,
                         name: '临时链接',
                         className: "file_link",
@@ -3582,6 +3607,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'view_property': {
+                        key:'view_property',
                         index: 20,
                         name: '属性',
                         className: "file_property",
@@ -3598,6 +3624,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'order_by': {
+                        key:'order_by',
                         index: 21,
                         name: '排序方式',
                         icon: 'icon_orderby',
@@ -3721,13 +3748,14 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
         var fileListElem = jQuery('.file_list');
         var currentView = 'list';
         var smartFileList;
+        var lastSelectTimeout,lastUnSelectTimeout;
         var GKFileList = {
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
@@ -3740,6 +3768,9 @@ angular.module('gkClientIndex.services', [])
                 return selectedIndex.indexOf(index) >=0;
             },
             select: function ($scope, index, multiSelect) {
+                if(lastSelectTimeout){
+                    $timeout.cancel(lastSelectTimeout);
+                }
                 multiSelect = !angular.isDefined(multiSelect) ? false : multiSelect;
                 if (!multiSelect && selectedFile && selectedFile.length) {
                     this.unSelectAll($scope);
@@ -3748,16 +3779,28 @@ angular.module('gkClientIndex.services', [])
                     GKFileListView.selectItem(index);
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
-                    $rootScope.$broadcast('selectedFileChange',selectedFile);
+                    //lastSelectTimeout = $timeout(function(){
+                        $scope.setOpts(selectedFile);
+                        GKSope.rightSidebar.setRightSidebar(selectedFile);
+                    //},0)
+
+                    //$scope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelect: function ($scope, index) {
+                if(lastUnSelectTimeout){
+                    $timeout.cancel(lastUnSelectTimeout);
+                }
                 var i = selectedIndex.indexOf(index);
                 if (i >= 0) {
                     GKFileListView.unselectItem(index);
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
-                    $rootScope.$broadcast('selectedFileChange',selectedFile);
+                    //lastUnSelectTimeout = $timeout(function(){
+                       $scope.setOpts(selectedFile);
+                       GKSope.rightSidebar.setRightSidebar(selectedFile);
+                    //},0)
+                    //$scope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelectAll: function ($scope) {

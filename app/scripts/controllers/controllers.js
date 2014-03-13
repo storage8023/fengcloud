@@ -389,7 +389,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             GKMode.setMode(mode);
-            $location.search(pararm);
+            $timeout(function(){
+                $location.search(pararm);
+            })
         };
 
         $scope.handleDrop = function (branch) {
@@ -693,6 +695,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         var getOpenWithMenu = function (mountId, file, allOpts) {
+            if(!allOpts['open_with']) return;
             allOpts['open_with']['items'] = {};
             var ext = '.' + file.ext;
             var re = gkClientInterface.getOpenWithMenu({
@@ -739,7 +742,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             excludeRightOpts
             ; // 顶部要排除的操作
 
-        var setOpts = function (selectedFile) {
+        $scope.setOpts = function (selectedFile) {
             selectedFile = angular.isDefined(selectedFile)?selectedFile:[];
             $scope.allOpts = GKOpt.getAllOpts($scope,selectedFile);
             var isSearch = $scope.search.length ? true : false;
@@ -754,9 +757,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
              * 如果选择了文件，那么把currentOpts中的“同步”，“取消同步” 去掉
              */
             if (selectedFile.length) {
+                var currentOpts = [];
                 var currentOpts = GKOpt.getOpts($rootScope.PAGE_CONFIG.file, false, $scope.partition, $scope.filter, $scope.PAGE_CONFIG.mount, isSearch);
                 angular.forEach(['sync', 'unsync'], function (value) {
-                    var index = currentOpts.indexOf(value);
+                    var index=currentOpts.indexOf(value)
                     if (index >= 0) {
                         currentOpts.splice(index, 1);
                     }
@@ -768,7 +772,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     topOptKeys = optKeys;
                 } else {
                     topOptKeys = jQuery.merge(currentOpts, optKeys);
-                    topOptKeys = Util.Array.unique(topOptKeys);
+                    //topOptKeys = Util.Array.unique(topOptKeys);
                 }
                 if (selectedFile.length == 1 && selectedFile[0].dir == 0) {
                     getOpenWithMenu(GKFileList.getOptFileMountId(selectedFile[0]), selectedFile[0], $scope.allOpts);
@@ -777,70 +781,27 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 topOptKeys = optKeys;
             }
 
-            /**
-             * 扩展操作的值
-             */
-            var extendOpt = function (opt, key, isRightOpt) {
-                var extendParam = {};
-                if (!isRightOpt) {
-                    extendParam['key'] = key;
-                }
-                return angular.extend(opt, extendParam);
-            }
-
-            /**
-             * 检测subopt是否允许
-             */
-            var checkSubOpt = function (optKeys, subOpts) {
-                var cloneOpt = angular.extend({}, subOpts);
-                angular.forEach(cloneOpt, function (value, key) {
-                    if (optKeys.indexOf(key) < 0) {
-                        delete cloneOpt[key];
-                    }
-                });
-                return cloneOpt;
-            };
-
             angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     var opt = $scope.allOpts[value];
                     if (opt) {
                         if (opt.items) {
-                            var subItems = checkSubOpt(topOptKeys, opt.items);
+                            var subItems = GKOpt.checkSubOpt(topOptKeys, opt.items);
                             if (jQuery.isEmptyObject(subItems)) {
                                 return;
                             } else {
                                 opt.items = subItems;
                             }
                         }
-                        var item = extendOpt(opt, value, false);
-                        $scope.opts.push(item);
+                        $scope.opts.push(opt);
                     }
 
                 }
             });
 
+            //$scope.allOpts = null;
+        };
 
-            /**
-             * 右键的操作
-             */
-            angular.forEach(optKeys, function (value) {
-                if (excludeRightOpts.indexOf(value) < 0) {
-                    var opt = $scope.allOpts[value];
-                    if (opt) {
-                        if (value == 'open_with' && jQuery.isEmptyObject(opt.items)) {
-                            return;
-                        }
-                        if (value != 'open_with' && !!opt.items && jQuery.isEmptyObject(checkSubOpt(optKeys, opt.items))) {
-                            return;
-                        }
-                        var item = extendOpt(opt, value, true);
-                        $scope.rightOpts[value] = item;
-                    }
-                }
-            });
-            $scope.allOpts = null;
-        }
 
         $scope.triggleOptByShortCut = function (shortcut) {
             var opt = GKOpt.getOptByShortCut($scope.rightOpts, shortcut);
@@ -867,36 +828,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         var selectedFile;
-        /**
-         * 操作
-         * @type {Array}
-         */
-        $scope.$on('selectedFileChange',function($event,selectedFile){
-            selectedFile = selectedFile;
-            setOpts(selectedFile);
-        })
 
         $scope.$on('refreshOpt',function($event){
-            setOpts(selectedFile);
+            $scope.setOpts(selectedFile);
         })
 
-
-        $scope.$watch('rightOpts', function () {
-            jQuery.contextMenu('destroy', '.file_list .list_body');
-            /**
-             * 设置右键菜单
-             */
-            jQuery.contextMenu({
-                selector: '.file_list .list_body',
-                reposition: false,
-                zIndex: 99,
-                animation: {
-                    show: "show",
-                    hide: "hide"
-                },
-                items: $scope.rightOpts
-            });
-        })
 
         $scope.$watch('order', function (newValue) {
             if ($scope.rightOpts && $scope.rightOpts['order_by'] && $scope.rightOpts['order_by']['items']) {
@@ -1026,7 +962,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             value.lock_member_name = $rootScope.PAGE_CONFIG.user.member_name;
                             value.lock_member_id = $rootScope.PAGE_CONFIG.user.member_id;
                             GKFileListView.updateFileItem(key,value);
-                            setOpts(GKFileList.getSelectedFile());
+                            $scope.setOpts(GKFileList.getSelectedFile());
                         })
                         break;
                     case 'unlock':
@@ -1035,7 +971,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             value.lock_member_name = '';
                             value.lock_member_id = 0;
                             GKFileListView.updateFileItem(key,value);
-                            setOpts(GKFileList.getSelectedFile());
+                            $scope.setOpts(GKFileList.getSelectedFile());
                         })
                         break;
                 }
@@ -1065,7 +1001,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             GKFileList.unSelectAll($scope);
             GKFileList.refreahData($scope,param.selectedpath);
-            setOpts();
+            $scope.setOpts();
             GKChat.setSrc($rootScope.PAGE_CONFIG.mount.mount_id);
             if(GKPartition.isMountPartition($scope.partition)){
                 $scope.mountReadable = GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read');
@@ -1083,7 +1019,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.getItemClasses = function(file){
             var classes = {
+                //'selected':file.selected
                 'nocache' : file.cache==0 && file.dir==0
+
             };
             return classes;
         };
@@ -1140,7 +1078,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param $event
          * @param index
          */
-        $scope.handleClick = function ($event, index) {
+        $scope.handleClick = function ($event, index,file) {
             var fileItem = jQuery($event.target).hasClass('item')?jQuery($event.target):jQuery($event.target).parents('.item');
             var file = $scope.fileData[index];
             if ($event.ctrlKey || $event.metaKey) {
@@ -1163,11 +1101,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
 
             } else {
+                    //file.selected = true;
                 GKFileList.select($scope, index);
             }
             if (!$event.shiftKey) {
                 $scope.shiftLastIndex = index;
             }
+            $event.stopPropagation();
         };
 
         /**
@@ -1241,12 +1181,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
                 GKFileList.unSelectAll($scope);
             }
-            /**
-             * 为了修复框选组件的bug
-             */
-            $timeout(function(){
-                document.activeElement.blur();
-            },0);
         };
 
         $scope.dragBegin = function (event, index) {
@@ -1580,8 +1514,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout) {
-
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout','GKSope',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout,GKSope) {
+        GKSope.rightSidebar = $scope;
         $scope.GKPartition = GKPartition;
         /**
          * 监听已选择的文件
@@ -1589,7 +1523,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.shareMembers = []; //共享参与人
         $scope.remarks = []; //讨论
         $scope.histories = []; //历史
-        $scope.remindMembers = [];//可@的成员列表
         $scope.localFile = null;
         $scope.sidebar = 'nofile';
         $scope.localFile = $rootScope.PAGE_CONFIG.file;
@@ -1667,7 +1600,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
 
-        $scope.$on('selectedFileChange', function ($event, selectedFile) {
+        $scope.setRightSidebar = function(selectedFile){
             if ($rootScope.PAGE_CONFIG.filter == 'trash') {
                 return;
             }
@@ -1699,7 +1632,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                $scope.sidebar = 'multifile';
                 $scope.hideNoFile = true;
            }
-        })
+        }
 
         $scope.toggleNoFile = function(){
             $scope.hideNoFile = !$scope.hideNoFile;
