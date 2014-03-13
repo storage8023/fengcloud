@@ -1599,7 +1599,20 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $timeout(function(){
                 getMember();
             })
+            if($rootScope.PAGE_CONFIG.mode == 'chat'){
+                $scope.hideNoFile = false;
+            }else{
+                if(param.path){
+                    $scope.hideNoFile = true;
+                }else{
+                    if(param.search || param.filter){
+                        $scope.hideNoFile = true;
+                    }else{
+                        $scope.hideNoFile = false;
+                    }
 
+                }
+            }
         })
 
         $scope.$watch('PAGE_CONFIG.mode',function(val){
