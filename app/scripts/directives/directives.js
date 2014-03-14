@@ -40,6 +40,7 @@ angular.module('gkClientIndex.directives', [])
                         };
                     }
                 });
+
             }
         }
     }])

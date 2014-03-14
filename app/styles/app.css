@@ -360,6 +360,7 @@ footer {
     top:0;
     left:0;
     z-index: 998;
+    width: 192px;
 }
 .left_sidebar  .account .account_info{
     height: 32px;

@@ -2615,7 +2615,6 @@ angular.module('gkClientIndex.services', [])
                 }
             },
             getOpts: function (currentFile, selectedFiles, partition, filter, mount, isSearch) {
-                console.log('arguments',arguments);
                 var opts,
                     partitionOpts,
                     multiOpts,
