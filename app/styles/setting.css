@@ -267,6 +267,11 @@ width: 112px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.account .member_info .btn-warning{
+    font-size: 11px;
+    padding: 1px 5px;
+    margin-top: -2px;
+}
 .account .photo_wrapper{
     width: 64px;
     height: 64px;
@@ -307,8 +312,9 @@ width: 112px;
     text-align: center;
     vertical-align: middle;
 }
-.other_info .member_role .vip i{
-    background: #448DE8;
+.other_info .member_role .vip,
+.other_info .member_role .vip:hover{
+   color: #F39C12;
 }
 .account h3{
 font-size: 14px;

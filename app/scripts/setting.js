@@ -118,12 +118,6 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                 model: $scope.setting['msg']
             },
 //            {
-//                type:'checkbox',
-//                label:'别人删除与我共享的文件时，也进入我电脑的回收站',
-//                name:'recycle',
-//                model:$scope.setting['recycle']
-//            },
-//            {
 //                type:'select',
 //                label:'语言切换：',
 //                name:'language',

@@ -18,7 +18,7 @@
                   <div class="member_role">
                       <a href="javascript:void(0)" ng-class="PAGE_CONFIG.user.isvip==1?'vip':''" ng-click="goToBuy()">
                           <span ng-bind="PAGE_CONFIG.user.isvip|getMemberRoleName"></span>
-                          <i>v</i>
+                          <button class="btn btn-warning" ng-bind="PAGE_CONFIG.user.isvip==1?'续费':'升级VIP'"></button>
                       </a>
                   </div>
               </div>
