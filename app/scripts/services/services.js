@@ -4026,7 +4026,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKChat;
     }])
-    .factory('GKMode', ['$rootScope','localStorageService','GKFrame',function ($rootScope,localStorageService,GKFrame) {
+    .factory('GKMode', ['$rootScope','localStorageService','GKFrame','GKAuth','GKPartition',function ($rootScope,localStorageService,GKFrame,GKAuth,GKPartition) {
         var key = 'gk_mode';
         var GKMode = {
             getMode:function(){
@@ -4037,6 +4037,9 @@ angular.module('gkClientIndex.services', [])
                 return re;
             },
             setMode:function(mode){
+                if(mode == 'chat' && (!GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition) || !GKAuth.check($rootScope.PAGE_CONFIG.mount,$rootScope.PAGE_CONFIG.partition,'file_discuss'))){
+                    mode = 'file';
+                }
                 $rootScope.PAGE_CONFIG.mode = mode;
                 if(mode == 'chat'){
                     $rootScope.$broadcast('clearMsgTime',{orgId: $rootScope.PAGE_CONFIG.mount.org_id})

@@ -147,10 +147,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setPageConfig = function(){
             var param = $location.search();
             if(!param.partition) return;
+            var mode = GKMode.getMode();
             var extend = {
                 filter: param.filter || '',
-                partition: param.partition,
-                mode: GKMode.getMode()
+                partition: param.partition
             };
             if (GKPartition.isMountPartition(param.partition)) {
                 if(!param.filter){
@@ -183,18 +183,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     trash_dateline: mount.dateline_recycle
                 })
 
-                if(extend.mode == 'chat'){
-                    $rootScope.$broadcast('clearMsgTime',{orgId: extend.mount.org_id})
-                }
-                if(extend.mode=='chat' && !GKAuth.check(extend.mount,param.partition,'file_discuss')){
-                    GKMode.setMode(extend.mode);
-                }
+
             } else {
                 extend.file = {};
                 extend.mount = {};
-                GKMode.setMode('file');
             }
             angular.extend($rootScope.PAGE_CONFIG, extend);
+            GKMode.setMode(mode);
         }
 
         /**
