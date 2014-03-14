@@ -502,13 +502,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     return;
                 }
                 var partition = GKPartition.getPartitionByMountType(newOrg['type'],newOrg['ent_id']);
-                newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition,0,true)[0];
+                var mount = GKMount.addMount(newOrg);
+                newOrg = GKFile.dealTreeData([mount], partition,0,true)[0];
                 if (GKPartition.isTeamFilePartition(partition)) {
                     $scope.orgTreeList.push(newOrg);
                 }else if(GKPartition.isEntFilePartition(partition)){
-                    var entId = newOrg['data']['ent_id'];
+                    var entId = mount['ent_id'];
                     if(!$scope.entTreeList[entId]){
-                        var tempData= GKSideTree.getTreeList([newOrg]);
+                        var tempData= GKSideTree.getTreeList([mount]);
                         angular.extend($scope.entTreeList,tempData);
                     }else{
                         $scope.entTreeList[entId].data.push(newOrg);

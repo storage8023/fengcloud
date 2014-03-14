@@ -554,6 +554,7 @@
     open:function(params){
         try {
             params.opentype = 'open';
+            console.log('open',params);
             gkClient.gOpen(JSON.stringify(params));
         } catch (e) {
             this._handleException(e);

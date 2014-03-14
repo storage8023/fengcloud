@@ -89,7 +89,6 @@ angular.module('gkClientIndex.services', [])
                             partition = GKPartition.getPartitionByMountType(mount.member_type,mount.ent_id),
                             treeItem = GKFile.dealTreeItem(mount,partition, mount.mount_id,true);
                         var ent = GKEnt.getEnt(entId);
-
                         if(ent && ent.entname){
                             var showHeaderBtn = false;
                             if(ent.property){
@@ -2648,7 +2647,6 @@ angular.module('gkClientIndex.services', [])
                     'new_xls_file',
                     'new_ppt_file',
                     'new_txt_file',
-                    'unsubscribe', //取消订阅
                     'new_folder', //新建
                     'create_sync_folder',
                     'add', //添加
@@ -2724,10 +2722,10 @@ angular.module('gkClientIndex.services', [])
                         }
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
+                        this.disableOpt(opts, 'lock','unlock','link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
                     case GKPartition.smartFolder:
-                        this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        this.disableOpt(opts, 'lock','unlock','link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         break;
                 };
                 if (isSearch) {

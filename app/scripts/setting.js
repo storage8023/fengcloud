@@ -373,7 +373,8 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                     })
 
                 $scope.goToBuy = function (orgId) {
-                    var url = orgId==0?'/pay/order':'/pay/order?org_id='+orgId;
+                   orgId = typeof orgId === undefined?0:orgId;
+                    var url = orgId==0?'/pay/order':'/pay/order'+(orgId?'?org_id='+orgId:'');
                     var url = gkClientInterface.getUrl({
                         sso: 1,
                         url: url
