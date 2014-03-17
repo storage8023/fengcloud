@@ -7,6 +7,12 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    setDragStart:function(param){
+        if(typeof gkClient.gSetDragStart === 'undefined'){
+            return;
+        }
+        gkClient.gSetDragStart(JSON.stringify(param));
+    },
     upgradeClient:function(){
         if(typeof gkClient.gUpgradeClient === 'undefined'){
             return;
