@@ -3,9 +3,9 @@
     <section>
         <div class="file_item">
             <div class="thumb" >
-                <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
+                <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)<0"
                      ng-src="{{ file.filename | getFileThumb:file.dir:0:(file.sync||(parentFile.syncpath?1:0))}}" />
-                <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
+                <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0"
                      error-src="{{file.filename | getFileThumb:file.dir:0:(file.sync||(parentFile.syncpath?1:0))}}"
                      ng-src="{{file.hash | getThumbUrl:file.filehash}}" />
             </div>

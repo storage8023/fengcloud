@@ -19,7 +19,7 @@
     <script src="scripts/chat.js?v=7"></script>
     <script src="bower_components/angular/i18n/angular-locale_zh-cn.js?v=7"></script>
 </head>
-<body ng-controller="initChat">
+<body ng-controller="initChat" ng-keydown="handleSysKeyDown($event)">
 <div class="wrapper">
     <div class="main" ng-drop="handleChatDrop($event)" ng-class="hideMember?'member_hidden':''">
             <div class="empty" ng-if="error">{{error.msg}}</div>
@@ -51,14 +51,14 @@
                                 <div class="chat_text_inner" ng-if="msg.content">
                                     <span ng-bind="msg.content" class="text"></span>
                                 </div>
-                                <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0}" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
+                                <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0}" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
                                     <div class="file_icon_wrapper">
-                                        <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)>=0">
+                                        <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0">
                                             <img error-src="" ng-if="msg.metadata.hash&&msg.metadata.filehash" ng-src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}"/>
                                         </i>
-                                        <i class="file_icon" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0"></i>
+                                        <i class="file_icon" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)<0"></i>
                                     </div>
-                                    <div class="filename_wrapper" ng-if="['jpg','jpeg','png','gif'].indexOf(msg.metadata.ext)<0">
+                                    <div class="filename_wrapper" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)<0">
                                         <div class="filename">
                                             <span ng-bind="msg.metadata.filename"></span>
                                         </div>

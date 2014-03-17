@@ -45,6 +45,23 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
             })
         };
 
+        $scope.handleSysKeyDown = function($event){
+            if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >=0) {
+                return;
+            }
+            var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
+            if(ctrlKeyOn && $event.keyCode == 86){
+                var sysData = gkClientInterface.getClipboardData();
+                if(!sysData || !sysData.list || !sysData.list.length){
+                    return;
+                }
+                topWindow.gkFrameCallback('showSelectFileDialog',{
+                    mountId:$scope.currentSession.mountid,
+                    list:sysData.list
+                })
+            }
+        };
+
         /**
          * 发布新消息
          * @param $event

@@ -13,9 +13,9 @@
                 </div>
                 <section class="scrollbar">
                     <div class="file_icon">
-                        <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)<0"
+                        <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)<0"
                              ng-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"/>
-                        <img ng-if="['jpg','jpeg','png','gif'].indexOf(file.ext)>=0"
+                        <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0"
                              error-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"
                              ng-src="{{file.hash | getThumbUrl:file.filehash}}"/>
                     </div>

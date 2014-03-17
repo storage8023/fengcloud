@@ -3311,7 +3311,6 @@ angular.module('gkClientIndex.services', [])
                             }
                             var data = GKCilpboard.getData();
                             var targetMount = $rootScope.PAGE_CONFIG.mount;
-                            console.log('data',data);
                              if(data && data.files && data.files.length && data.mount_id){
                                  var target = $rootScope.PAGE_CONFIG.file.fullpath;
                                  if (selectedFile.length == 1 && selectedFile[0].dir==1) {
@@ -3345,40 +3344,20 @@ angular.module('gkClientIndex.services', [])
                                  }
                              }else{
                                  var sysData = gkClientInterface.getClipboardData();
-                                 console.log('sysData',sysData);
                                  if(!sysData || !sysData.list || !sysData.list.length){
                                      return;
                                  }
-                                 var path = '';
                                  if($rootScope.PAGE_CONFIG.mode == 'chat'){
-                                     path = '我的截图';
-                                     var addFile = function(){
+                                     GKModal.selectFile(targetMount.mount_id,'请选择添加到哪个目录').result.then(function(re){
                                          var iframe = GKFrame('ifame_chat');
                                          if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
-                                             iframe.gkFrameCallback('selectAddDirSuccess',{
-                                                 list:sysData.list,
-                                                 selectedPath:path
+                                             if(!re || re.selectedPath === undefined) return;
+                                             angular.extend(re,{
+                                                 list:sysData.list
                                              });
+                                             iframe.gkFrameCallback('selectAddDirSuccess',re);
                                          }
-                                     };
-                                     var file = gkClientInterface.getFileInfo({
-                                         webpath:path,
-                                         mountid:targetMount.mount_id
                                      });
-                                        console.log('file',file);
-                                     if(!file||!file.path){
-                                         gkClientInterface.createFolder({
-                                             webpath:path,
-                                             mountid:targetMount.mount_id,
-                                             dir:1
-                                         }, function (re) {
-                                             if (re && !re.error) {
-                                                 addFile();
-                                             }
-                                         });
-                                     }else{
-                                         addFile();
-                                     }
                                  }else{
                                      var params = {
                                          parent: $rootScope.PAGE_CONFIG.path,

@@ -291,6 +291,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.selectFile(mountId,'请选择添加到哪个目录').result.then(function(re){
                 var iframe = GKFrame('ifame_chat');
                 if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
+                    angular.extend(re,{
+                        list:param.list
+                    })
                     iframe.gkFrameCallback('selectAddDirSuccess',re);
                 }
                 return;
