@@ -7,6 +7,17 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    getClipboardData:function(){
+        if(typeof gkClient.gGetClipboardData === 'undefined'){
+            return '';
+        }
+        var re = gkClient.gGetClipboardData();
+        if(!re){
+            return '';
+        }else{
+            return JSON.parse(re);
+        }
+    },
     setDragStart:function(param){
         if(typeof gkClient.gSetDragStart === 'undefined'){
             return;

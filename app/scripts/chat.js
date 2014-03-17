@@ -317,10 +317,11 @@ angular.module('gkChat', ['GKCommon','ui.bootstrap','LocalStorageModule'])
         var dragFiles;
         $scope.$on('selectAddDirSuccess',function($event,param){
             var selectedPath = param.selectedPath;
+            var list = param.list || dragFiles.list;
             var params = {
                 parent: selectedPath,
                 type: 'save',
-                list: dragFiles.list,
+                list: list,
                 mountid: $scope.currentSession.mountid
            };
 

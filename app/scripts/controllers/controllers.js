@@ -800,7 +800,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.triggleOptByShortCut = function (shortcut) {
-            var opt = GKOpt.getOptByShortCut($scope.rightOpts, shortcut);
+            var opt = GKOpt.getOptByShortCut($scope.allOpts, shortcut);
             if (opt) {
                 opt['callback']();
             }
@@ -1204,7 +1204,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var selectedFile = GKFileList.getSelectedFile();
             var dragIcon = jQuery('#drag_helper')[0];
-            event.dataTransfer.setDragImage(dragIcon, -10, -10);
+            //event.dataTransfer.setDragImage(dragIcon, -10, -10);
             var list = [];
             angular.forEach(selectedFile, function (value) {
                 value.disableDrop = true;

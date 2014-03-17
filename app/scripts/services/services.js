@@ -2585,7 +2585,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout','GKFrame', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout,GKFrame) {
         var GKOpt = {
             checkSubOpt:function(optKeys, subOpts){
                 var cloneOpt = angular.extend({}, subOpts);
@@ -3310,37 +3310,89 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             var data = GKCilpboard.getData();
-                            if (!data || !data.files || !data.mount_id) return;
-                            var target = $rootScope.PAGE_CONFIG.file.fullpath;
-                            if (selectedFile.length == 1 && selectedFile[0].dir==1) {
-                                target = selectedFile[0].fullpath;
-                            }
                             var targetMount = $rootScope.PAGE_CONFIG.mount;
-                            var fromMount = GKMount.getMountById(data.mount_id);
-                            if(!fromMount) return;
-                            if(targetMount.storage_point != fromMount.storage_point){
-                               alert('不同的存储点之间不能复制或移动文件');
-                               return;
-                            }
-                            if (data.code == 'ctrlC') {
-                                GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
-                                    GKFileList.refreahData($scope);
-                                }, function (error) {
-                                    GKException.handleClientException(error);
-                                });
-                            } else if (data.code == 'ctrlX') {
-                                if($rootScope.PAGE_CONFIG.mount.mount_id != data.mount_id){
-                                    alert('不能将文件或文件夹剪切到另一个云库中');
-                                    return;
-                                }
-                                GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
-                                    GKFileList.refreahData($scope);
-                                    GKCilpboard.clearData();
-                                    $scope.$broadcast('refreshOpt');
-                                }, function (error) {
-                                    GKException.handleClientException(error);
-                                });
-                            }
+                            console.log('data',data);
+                             if(data && data.files && data.files.length && data.mount_id){
+                                 var target = $rootScope.PAGE_CONFIG.file.fullpath;
+                                 if (selectedFile.length == 1 && selectedFile[0].dir==1) {
+                                     target = selectedFile[0].fullpath;
+                                 }
+                                 var fromMount = GKMount.getMountById(data.mount_id);
+                                 if(!fromMount) return;
+                                 if(targetMount.storage_point != fromMount.storage_point){
+                                     alert('不同的存储点之间不能复制或移动文件');
+                                     return;
+                                 }
+                                 //清空剪切板的内容，如果不清空会跟系统的剪切板冲突
+                                 GKCilpboard.clearData();
+                                 if (data.code == 'ctrlC') {
+                                     GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
+                                         GKFileList.refreahData($scope);
+                                     }, function (error) {
+                                         GKException.handleClientException(error);
+                                     });
+                                 } else if (data.code == 'ctrlX') {
+                                     if($rootScope.PAGE_CONFIG.mount.mount_id != data.mount_id){
+                                         alert('不能将文件或文件夹剪切到另一个云库中');
+                                         return;
+                                     }
+                                     GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
+                                         GKFileList.refreahData($scope);
+                                         $scope.$broadcast('refreshOpt');
+                                     }, function (error) {
+                                         GKException.handleClientException(error);
+                                     });
+                                 }
+                             }else{
+                                 var sysData = gkClientInterface.getClipboardData();
+                                 console.log('sysData',sysData);
+                                 if(!sysData || !sysData.list || !sysData.list.length){
+                                     return;
+                                 }
+                                 var path = '';
+                                 if($rootScope.PAGE_CONFIG.mode == 'chat'){
+                                     path = '我的截图';
+                                     var addFile = function(){
+                                         var iframe = GKFrame('ifame_chat');
+                                         if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
+                                             iframe.gkFrameCallback('selectAddDirSuccess',{
+                                                 list:sysData.list,
+                                                 selectedPath:path
+                                             });
+                                         }
+                                     };
+                                     var file = gkClientInterface.getFileInfo({
+                                         webpath:path,
+                                         mountid:targetMount.mount_id
+                                     });
+                                        console.log('file',file);
+                                     if(!file||!file.path){
+                                         gkClientInterface.createFolder({
+                                             webpath:path,
+                                             mountid:targetMount.mount_id,
+                                             dir:1
+                                         }, function (re) {
+                                             if (re && !re.error) {
+                                                 addFile();
+                                             }
+                                         });
+                                     }else{
+                                         addFile();
+                                     }
+                                 }else{
+                                     var params = {
+                                         parent: $rootScope.PAGE_CONFIG.path,
+                                         type: 'save',
+                                         list: sysData.list,
+                                         mountid: targetMount.mount_id
+                                     };
+                                     GK.addFile(params).then(function () {
+                                         GKFileList.refreahData($scope);
+                                     }, function (error) {
+                                         GKException.handleClientException(error);
+                                     })
+                                 }
+                             }
                         }
                     },
                     'cut': {
