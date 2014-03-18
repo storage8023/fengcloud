@@ -1,0 +1,11 @@
+<div>
+    <div class="chat_content" ng-dblclick="openFile($event,msg)">
+        <div class="col_1" ng-if="msg.metadata.image">
+            <img ng-src="{{msg.metadata.image}}" alt=""/>
+        </div>
+        <div class="col_2">
+            <div ng-bind="msg.metadata.title" class="ext_title" title="{{msg.metadata.title}}"></div>
+            <div ng-bind="msg.metadata.content" class="ext_content"  ng-if="msg.metadata.content" title="{{msg.metadata.content}}"></div>
+        </div>
+    </div>
+</div>

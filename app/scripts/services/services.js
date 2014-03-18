@@ -3716,10 +3716,12 @@ angular.module('gkClientIndex.services', [])
                 this.getFileItem(index).removeClass('selected');
             },
             hoverItem:function(index){
-                this.getFileItem(index).addClass('hover');
+                //this.getFileItem(index).addClass('hover');
+                this.getFileItem(index).css('background','#e1e3e7');
             },
             unhoverItem:function(index){
-                this.getFileItem(index).removeClass('hover');
+                //this.getFileItem(index).removeClass('hover');
+                this.getFileItem(index).css('background','transparent');
             },
             removeFileItem:function(index){
                 this.getFileItem(index).remove();
@@ -4084,69 +4086,6 @@ angular.module('gkClientIndex.services', [])
         };
         return GKMode;
     }])
-    .factory('GKDialog', [function () {
-        return {
-            chat: function (mountId,fullpath,atMember) {
-                mountId = angular.isDefined(mountId)?mountId:0;
-                fullpath = angular.isDefined(fullpath)?fullpath:'';
-                atMember = angular.isDefined(atMember)?atMember:'';
-                var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
-                var data = {
-                    url: url,
-                    type:'single',
-                    width: 900,
-                    resize: 1,
-                    height: 580
-                };
-                gkClientInterface.setMain(data);
-            },
-            /**
-             * 打开设置框
-             */
-            openSetting: function (tab) {
-                tab = angular.isDefined(tab) ? tab : '';
-                var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/setting.html#/?tab=' + tab;
-                var data = {
-                    url: url,
-                    type: "sole",
-                    width: 794,
-                    resize: 0,
-                    height: 490
-                }
-                gkClientInterface.setMain(data);
-            },
-            /**
-             * 打开传输列表
-             */
-            openTransfer: function () {
-                var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/transfer.html';
-                var data = {
-                    url: url,
-                    type: "sole",
-                    width: 794,
-                    height: 490,
-                    resize: 0,
-                }
-                gkClientInterface.setMain(data);
-            },
-            openUrl: function (url, param) {
-                if (!url) return;
-                var defaultParam = {
-                    type: "sole",
-                    width: 794,
-                    height: 490,
-                    resize: 1
-                };
-                var param = angular.extend({}, defaultParam, param);
-                param.url = url;
-                gkClientInterface.setMain(param);
-            }
-        }
-    }
-    ])
     .factory('GKQueue', ['$rootScope', '$interval', function ($rootScope, $interval) {
         var dealList = function (oldList, newList, type) {
             angular.forEach(oldList, function (value,index) {

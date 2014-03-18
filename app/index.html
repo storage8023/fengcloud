@@ -211,6 +211,8 @@
                              ng-repeat="file in fileData | limitTo:limit"
                              ng-dblclick="handleDblClick(file)"
                              ng-click="handleClick($event,$index,file)"
+                             ng-mouseenter="handleOver($event,$index)"
+                             ng-mouseleave="handleOut($event,$index)"
                              ng-class="getItemClasses(file)"
                              bo-attr
                              bo-attr-data-dir="file.dir"
@@ -302,6 +304,5 @@
     </carousel>
 </div>
 <img id="drag_helper" src="images/transparent.png" style="position: absolute;top:10000px;left:100px"/>
-
 </body>
 </html>

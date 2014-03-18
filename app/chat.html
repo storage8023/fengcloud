@@ -37,7 +37,7 @@
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
                      scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
                     <div class="empty" ng-if="!currentMsgList || !currentMsgList.length">没有讨论</div>
-                    <div class="chat_item c_f_after" ng-repeat="msg in currentMsgList" ng-class="{'has_content':msg.content}">
+                    <div class="chat_item c_f_after chat_item_{{msg.type}}" ng-repeat="msg in currentMsgList" ng-class="{'has_content':msg.content}">
                         <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)">
                             <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl:0:true}}"></avatar>
                         </div>
@@ -48,41 +48,34 @@
                             </div>
                             <div class="chat_text">
                                 <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
-                                <div class="chat_text_inner" ng-if="msg.content">
-                                    <span ng-bind="msg.content" class="text"></span>
-                                </div>
-                                <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0}" ng-if="msg.type!='text'" ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
-                                    <div class="file_icon_wrapper">
-                                        <i class="file_icon128x128" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0">
-                                            <img error-src="" ng-if="msg.metadata.hash&&msg.metadata.filehash" ng-src="{{msg.metadata.hash | getThumbUrl:msg.metadata.filehash}}"/>
-                                        </i>
-                                        <i class="file_icon" ng-class="msg.metadata.filename | getFileIcon:msg.metadata.dir:0:0" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)<0"></i>
+                                <div ng-switch="msg.type">
+                                    <div ng-switch-when="file">
+                                        <chat-file msg="msg"></chat-file>
                                     </div>
-                                    <div class="filename_wrapper" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)<0">
-                                        <div class="filename">
-                                            <span ng-bind="msg.metadata.filename"></span>
-                                        </div>
+                                    <div ng-switch-when="audio">
+                                        <chat-audio msg="msg"></chat-audio>
                                     </div>
-                                    <div class="file_opt" ng-show="msg.file">
-                                        <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
+                                    <div ng-switch-when="ext">
+                                        <chat-ext msg="msg"></chat-ext>
                                     </div>
-                                    <div class="file_progress" ng-if="msg.file && msg.file.status==1 && msg.metadata.dir==0">
-                                        <progressbar ng-if="msg.metadata.dir==0" max="msg.metadata.filesize" value="msg.offset" animate="true"></progressbar>
+                                    <div ng-switch-default>
+                                        <chat-text msg="msg"></chat-text>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </section>
+            <ul class="toolbar">
+                <li ng-repeat="app in apps" ng-click="gotoApp(app)"><img ng-src="{{app.icon}}" title="{{app.name}}"/></li>
+            </ul>
             <footer>
                 <textarea ng-trim="false" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过800字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="btn_wrapper">
                     <span>你已输入了{{postText.length}}个字</span>
                     <button class="btn btn-primary post_btn" ng-click="postMessage(postText)">发 送</button>
                 </div>
-
             </footer>
             </div>
 

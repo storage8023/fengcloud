@@ -125,7 +125,7 @@ header .icon_person{
 }
 section {
     top: 45px;
-    bottom: 104px;
+    bottom: 140px;
 
 }
 section .loading{
@@ -267,7 +267,8 @@ right: -20px;
     padding-left: 30px;
     padding-right: 10px;
 }
-.chat_file{
+.chat_file,
+.chat_content{
     display: table;
     position: relative;
     background: #F1F1F2;
@@ -277,7 +278,8 @@ right: -20px;
     min-width: 108px;
 }
 
-.chat_file > div{
+.chat_file > div,
+.chat_content > div{
     display: table-cell;
     vertical-align: middle;
 }
@@ -295,11 +297,15 @@ right: -20px;
     font-size: 15px;
     line-height: 22px;
 }
+.chat_content .ext_content,
 .chat_file .filename_wrapper .filesize{
     font-size: 12px;
     margin-top: 1px;
     color: #7F8999;
     min-width: 180px;
+}
+.chat_content .ext_title{
+
 }
 .chat_file .file_icon_wrapper .file_icon{
     margin-top: 0;
@@ -531,4 +537,27 @@ footer .post_file_wrapper .chat_file{
     top:-16px;
     left:50%;
     margin-left: 106px;
+}
+
+.toolbar{
+    height: 36px;
+    border-top:1px solid #ccc;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 104px;
+    overflow: hidden;
+}
+
+.toolbar > li{
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin: 9px 10px 0 10px;
+    cursor: pointer;
+}
+
+.toolbar > li > img{
+    width: 16px;
+    height: 16px;
 }

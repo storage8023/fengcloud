@@ -1,0 +1,12 @@
+<div>
+    <div class="chat_content" ng-dblclick="openFile($event,msg)" title="{{msg.metadata.title}}">
+        <div class="col_1" ng-if="msg.metadata.image">
+            <img ng-src="{{msg.metadata.image}}" alt=""/>
+        </div>
+        <div class="col_2">
+            <audio controls="controls" autoplay="autoplay">
+                <source ng-src="{{msg.metadata.url}}" type="audio/mp3" />
+            </audio>
+        </div>
+    </div>
+</div>

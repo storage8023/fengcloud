@@ -1153,11 +1153,10 @@ button.close_window{
 .item.odd{
     background:transparent;
 }
-.item.hover,
-.item:hover{
+.item.hover{
     background-color:#e1e3e7;
 }
-
+.item.hover .opts,
 .item:hover .opts{
     right:0;
 }
