@@ -16,7 +16,7 @@ angular.module("gkDragDrop",[])
             })
             var dragBeginFn = $parse(attrs.dragBegin);
             element.on('dragstart.gkDragDrop',function(event){
-                console.log('dragstart');
+                //console.log('dragstart');
                 var e = event.originalEvent;
                 scope.$apply(function () {
                     dragBeginFn(scope, {$event: e});
@@ -35,7 +35,7 @@ angular.module("gkDragDrop",[])
             })
 
             element.on('drag.gkDragDrop',function(event){
-                console.log('drag');
+                //console.log('drag');
                 var e = event.originalEvent;
                 helper&&helper.css({
                     'top': e.pageY,
@@ -45,7 +45,7 @@ angular.module("gkDragDrop",[])
 
             var dragEndFn = $parse(attrs.dragEnd);
             element.on('dragend.gkDragDrop',function(event){
-                console.log('dragend');
+                //console.log('dragend');
                 helper&&helper.remove();
                 scope.$apply(function () {
                     dragEndFn(scope, {$event: event});

@@ -1730,7 +1730,7 @@ angular.module('gkClientIndex.services', [])
                     param,
                     cacheKey;
                 if(['star', 'diamond', 'moon', 'triangle', 'flower', 'heart','recent','recent_visit'].indexOf(filter)<0){
-                    return;
+                    return deferred.resolve(list);
                 }
                 cacheKey = filter+':';
                 if(!$rootScope.PAGE_CONFIG.networkConnected){

@@ -1207,7 +1207,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var selectedFile = GKFileList.getSelectedFile();
             var dragIcon = jQuery('#drag_helper')[0];
-            //event.dataTransfer.setDragImage(dragIcon, -10, -10);
+            event.dataTransfer.setDragImage(dragIcon, -10, -10);
             angular.forEach(selectedFile, function (value) {
                 value.disableDrop = true;
             });
@@ -1228,18 +1228,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var list = [];
             angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 value.disableDrop = false;
-                var mountId = GKFileList.getOptFileMountId(value);
-                var mount =  GKMount.getMountById(mountId);
-                if(mount && GKAuth.check(mount,'','file_read')){
-                    list.push({
-                        webpath:value.fullpath,
-                        mountid:mountId
-                    })
-                }
+//                var mountId = GKFileList.getOptFileMountId(value);
+//                var mount =  GKMount.getMountById(mountId);
+//                if(mount && GKAuth.check(mount,'','file_read')){
+//                    list.push({
+//                        webpath:value.fullpath,
+//                        mountid:mountId
+//                    })
+//                }
             });
-            list.length&&gkClientInterface.setDragStart({
-                list:list
-            });
+//            list.length&&gkClientInterface.setDragStart({
+//                list:list
+//            });
         };
 
         $scope.handleOver = function (event, index) {
