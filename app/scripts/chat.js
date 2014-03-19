@@ -685,32 +685,42 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             }
         }
     }])
-    .directive('chatFile', [function ($timeout) {
+    .directive('chatFile', [function () {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/chat_file.html",
         }
     }])
-    .directive('chatText', [function ($timeout) {
+    .directive('chatText', [function () {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/chat_text.html",
         }
     }])
-    .directive('chatExt', [function ($timeout) {
+    .directive('chatExt', [function () {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/chat_ext.html",
         }
     }])
-    .directive('chatAudio', [function ($timeout) {
+    .directive('chatAudio', [function () {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/chat_audio.html",
+        }
+    }])
+    .directive('chatBind', [function () {
+        return function(scope,element,attr){
+            scope.$watch(attr.ngBind, function ngBindWatchAction(value) {
+                // We are purposefully using == here rather than === because we want to
+                // catch when value is "null or undefined"
+                // jshint -W041
+                element.text(value == undefined ? '' : value);
+            });
         }
     }])
 
