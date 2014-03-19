@@ -3,6 +3,31 @@ angular.module('GKCommon',['GKCommon.directives','GKCommon.services','GKCommon.f
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('href', [function () {
+        return {
+            restrict: 'A',
+            link:function(scope,element,attrs){
+                element.on('click',function(e){
+                    var href = jQuery.trim(attrs.href);
+                    if (href && href.indexOf('#') != 0 && !/^javascript:.*?$/.test(href)) {
+                        if(href.indexOf('http')!=0 && href.indexOf('https')!=0){
+                            href = 'http://'+href;
+                        }
+                        var url = gkClientInterface.getUrl({
+                            sso:0,
+                            url:href
+                        });
+                        gkClientInterface.openUrl(url);
+                        e.preventDefault();
+                    }
+                })
+                scope.$on('$destroy',function(){
+                    element.off('click');
+                })
+
+            }
+        }
+    }])
     .directive('tipOverPopup', [function () {
         return {
             restrict: 'EA',

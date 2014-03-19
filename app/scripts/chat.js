@@ -321,7 +321,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 }
                 $scope.$apply(function () {
                     $scope.apps = data.apps;
-                    console.log('1', $scope.apps);
                 })
             });
 
@@ -713,13 +712,15 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             templateUrl: "views/chat_audio.html",
         }
     }])
-    .directive('chatBind', [function () {
+    .directive('chatBind', ['$compile',function ($compile) {
         return function(scope,element,attr){
-            scope.$watch(attr.ngBind, function ngBindWatchAction(value) {
-                // We are purposefully using == here rather than === because we want to
-                // catch when value is "null or undefined"
-                // jshint -W041
-                element.text(value == undefined ? '' : value);
+            scope.$watch(attr.chatBind, function (value) {
+                if(Util.RegExp.HTTPStrict.test(value)){
+                    var replacement = $compile(angular.element('<span>'+value.replace(Util.RegExp.HTTPStrict,'<a href="$&">$&</a>')+'</span>'))(scope);
+                    element.append(replacement);
+                }else{
+                    element.text(value == undefined ? '' : value);
+                }
             });
         }
     }])
