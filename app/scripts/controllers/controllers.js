@@ -1228,18 +1228,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var list = [];
             angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 value.disableDrop = false;
-//                var mountId = GKFileList.getOptFileMountId(value);
-//                var mount =  GKMount.getMountById(mountId);
-//                if(mount && GKAuth.check(mount,'','file_read')){
-//                    list.push({
-//                        webpath:value.fullpath,
-//                        mountid:mountId
-//                    })
-//                }
+                var mountId = GKFileList.getOptFileMountId(value);
+                var mount =  GKMount.getMountById(mountId);
+                if(mount && GKAuth.check(mount,'','file_read')){
+                    list.push({
+                        webpath:value.fullpath,
+                        mountid:mountId
+                    })
+                }
             });
-//            list.length&&gkClientInterface.setDragStart({
-//                list:list
-//            });
+            list.length&&gkClientInterface.setDragStart({
+                list:list
+            });
         };
 
         $scope.handleOver = function (event, index) {
@@ -1249,6 +1249,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleOut = function (event, index) {
             GKFileListView.unhoverItem(index);
         };
+
 
         $scope.handleDrop = function (file,index) {
             var toMountId = $scope.mountId,
