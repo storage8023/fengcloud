@@ -23,7 +23,7 @@ angular.module("gkDragDrop",[])
                 });
                 helper = angular.element($parse(attrs.dragHelper)(scope)());
                 var sendData = angular.toJson(dragData);
-                e.dataTransfer.setData("text", 'GK_DRAG_DROP');
+                //e.dataTransfer.setData("text", 'GK_DRAG_DROP');
                 e.dataTransfer.effectAllowed = 'move';
                 $document.find('body').append(helper);
                 helper.css({
@@ -72,7 +72,7 @@ angular.module("gkDragDrop",[])
             element.on('dragenter.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                if(data !== 'GK_DRAG_DROP') return;
+                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return false;
                 scope.$apply(function () {
                     dragEnterFn(scope, {$event: event});
@@ -83,7 +83,8 @@ angular.module("gkDragDrop",[])
             element.on('dragover.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                if(data !== 'GK_DRAG_DROP') return;
+                e.dataTransfer.dropEffect = 'move';
+                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return;
                 scope.$apply(function () {
                     dragOverFn(scope, {$event: event});
@@ -94,7 +95,7 @@ angular.module("gkDragDrop",[])
             element.on('dragleave.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                if(data !== 'GK_DRAG_DROP') return;
+                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return;
                 scope.$apply(function () {
                     dragLeaveFn(scope, {$event: event});
@@ -106,7 +107,7 @@ angular.module("gkDragDrop",[])
             element.on('drop.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                if(data !== 'GK_DRAG_DROP') return;
+                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return;
                 event.stopPropagation();
                 event.preventDefault();
