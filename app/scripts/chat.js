@@ -46,9 +46,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
 
         $scope.handleSysKeyDown = function ($event) {
-            if (['INPUT', 'TEXTAREA'].indexOf($event.target.nodeName) >= 0) {
-                return;
-            }
             var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
             if (ctrlKeyOn && $event.keyCode == 86) {
                 var sysData = gkClientInterface.getClipboardData();
