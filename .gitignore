@@ -2,3 +2,5 @@ logs/*
 !.gitkeep
 /.idea
 /.idea
+.*
+app/.*
