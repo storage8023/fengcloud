@@ -3360,7 +3360,7 @@ angular.module('gkClientIndex.services', [])
                                      });
                                  }else{
                                      var params = {
-                                         parent: $rootScope.PAGE_CONFIG.path,
+                                         parent: $rootScope.PAGE_CONFIG.file.fullpath,
                                          type: 'save',
                                          list: sysData.list,
                                          mountid: targetMount.mount_id
