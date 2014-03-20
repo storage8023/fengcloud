@@ -663,6 +663,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.shiftLastIndex = 0; //shift键盘的起始点
         $scope.search = '';
         $scope.view = 'list';
+        var draging = false;
 
         var setBread = function(){
             var param = $location.search();
@@ -1205,6 +1206,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (!GKFileList.checkIsSelectedByIndex(index)) {
                 GKFileList.select($scope, index);
             }
+            draging = true;
             var selectedFile = GKFileList.getSelectedFile();
             var dragIcon = jQuery('#drag_helper')[0];
             event.dataTransfer.setDragImage(dragIcon, -10, -10);
@@ -1225,6 +1227,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.dragEnd = function (event, index) {
+            draging = false;
             var list = [];
             angular.forEach(GKFileList.getSelectedFile(), function (value) {
                 value.disableDrop = false;
@@ -1252,6 +1255,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.handleDrop = function (file,index) {
+            if(!draging) return;
             var toMountId = $scope.mountId,
                 toFullpath = file.fullpath,
                 fromMountId = $scope.mountId,
@@ -1290,6 +1294,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.handleSysDrop = function ($event) {
+            if(draging) return;
             var dragFiles = gkClientInterface.getDragFiles();
             if (GKPartition.isSmartFolderPartition($scope.partition) || GKPartition.isSubscribePartition($scope.partition) || $scope.filter == 'trash') {
                 alert('不能在当前路径添加文件');
@@ -1299,14 +1304,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                alert('你没有权限在当前云库添加文件');
                return;
            }
+            var target = jQuery($event.target);
+            var parent = $scope.path;
+            var item = target.hasClass('file_item')?target:target.parents('.file_item');
+            if(item.size()){
+                parent = item.data('fullpath');
+            }
             var params = {
-                parent: $scope.path,
+                parent: parent,
                 type: 'save',
                 list: dragFiles.list,
                 mountid: $scope.mountId
             };
             GK.addFile(params).then(function () {
-                GKFileList.refreahData($scope);
+                //if(parent === $scope.path){
+                    GKFileList.refreahData($scope);
+                //}
             }, function (error) {
                 GKException.handleClientException(error);
             })

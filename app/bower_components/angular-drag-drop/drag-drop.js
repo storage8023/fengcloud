@@ -16,14 +16,12 @@ angular.module("gkDragDrop",[])
             })
             var dragBeginFn = $parse(attrs.dragBegin);
             element.on('dragstart.gkDragDrop',function(event){
-                //console.log('dragstart');
                 var e = event.originalEvent;
                 scope.$apply(function () {
                     dragBeginFn(scope, {$event: e});
                 });
                 helper = angular.element($parse(attrs.dragHelper)(scope)());
                 var sendData = angular.toJson(dragData);
-                //e.dataTransfer.setData("text", 'GK_DRAG_DROP');
                 e.dataTransfer.effectAllowed = 'move';
                 $document.find('body').append(helper);
                 helper.css({
@@ -35,7 +33,6 @@ angular.module("gkDragDrop",[])
             })
 
             element.on('drag.gkDragDrop',function(event){
-                //console.log('drag');
                 var e = event.originalEvent;
                 helper&&helper.css({
                     'top': e.pageY,
@@ -45,7 +42,6 @@ angular.module("gkDragDrop",[])
 
             var dragEndFn = $parse(attrs.dragEnd);
             element.on('dragend.gkDragDrop',function(event){
-                //console.log('dragend');
                 helper&&helper.remove();
                 scope.$apply(function () {
                     dragEndFn(scope, {$event: event});
@@ -72,7 +68,6 @@ angular.module("gkDragDrop",[])
             element.on('dragenter.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return false;
                 scope.$apply(function () {
                     dragEnterFn(scope, {$event: event});
@@ -84,7 +79,6 @@ angular.module("gkDragDrop",[])
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
                 e.dataTransfer.dropEffect = 'move';
-                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return;
                 scope.$apply(function () {
                     dragOverFn(scope, {$event: event});
@@ -95,7 +89,6 @@ angular.module("gkDragDrop",[])
             element.on('dragleave.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return;
                 scope.$apply(function () {
                     dragLeaveFn(scope, {$event: event});
@@ -107,9 +100,7 @@ angular.module("gkDragDrop",[])
             element.on('drop.gkDragDrop',function(event){
                 var e = event.originalEvent;
                 var data = e.dataTransfer.getData('text');
-                //if(data !== 'GK_DRAG_DROP') return;
                 if(!dropable) return;
-                event.stopPropagation();
                 event.preventDefault();
                 dropFn(scope, {$event: e});
             })
