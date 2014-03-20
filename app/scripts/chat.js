@@ -204,7 +204,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     url: metadata.url,
                     sso: 0
                 });
-                gkClientInterface.openUrl(url);
+                GKDialog.openUrl(url);
             }
             $event.stopPropagation();
         };
@@ -231,37 +231,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             chatService.list($scope.currentSession.orgid, 0, maxCount).then(function (re) {
                 var minDataline = 0;
                 if (re && re.list && re.list.length) {
-                    re.list.push({
-                        content: "",
-                        error: 0,
-                        is_vip: false,
-                        message: "",
-                        metadata: JSON.stringify({
-                            url: 'images/xj.mp3'
-                        }),
-                        receiver: "58",
-                        sender: "xugetest1",
-                        sender_name: "xugetest1",
-                        time: 1394434834551,
-                        type: "audio"
-                    });
-                    re.list.push({
-                        content: "",
-                        error: 0,
-                        is_vip: false,
-                        message: "",
-                        metadata: JSON.stringify({
-                            title: '大家一起来',
-                            content: '一起来讨论问',
-                            image: 'images/icon/image32x32.png',
-                            url: 'http://www.baidu.com'
-                        }),
-                        receiver: "58",
-                        sender: "xugetest1",
-                        sender_name: "xugetest1",
-                        time: 1394434834551,
-                        type: "ext"
-                    });
                     angular.forEach(re.list, function (item) {
                         chatContent.add(msgList, item);
                         var time = Number(item.time);
@@ -306,16 +275,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.postText = '';
             $scope.apps = null;
             GKApi.apps($scope.currentSession.orgid).success(function (data) {
-                data = {
-                    apps: [
-                        {
-                            id: 1,
-                            name: '话题',
-                            icon: 'images/icon/image32x32.png',
-                            url: 'http://www.baidu.com'
-                        }
-                    ]
-                }
                 if (!data || !data.apps || !data.apps.length) {
                     return;
                 }
@@ -333,22 +292,21 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         }
 
         $scope.gotoApp = function (app) {
-            //   GKApi.getAppKey($scope.currentSession.orgid,app.id).success(function(data){
-//               if(!data || !data.request_key){
-//                   return;
-//               }
-            //var request_key = data.request_key;
-            var request_key = '';
-            var url = app.url;
-            if (app.url.indexOf('?') >= 0) {
-                url += '&request_key=' + request_key;
-            } else {
-                url += '?request_key=' + request_key;
-            }
-            GKDialog.openUrl(url);
-//            }).error(function(req){
-//                GKException.handleAjaxException(req);
-//            })
+            GKApi.getAppKey($scope.currentSession.orgid, app.id).success(function (data) {
+                if (!data || !data.request_key) {
+                    return;
+                }
+                var request_key = data.request_key;
+                var url = app.url;
+                if (app.url.indexOf('?') >= 0) {
+                    url += '&request_key=' + request_key;
+                } else {
+                    url += '?request_key=' + request_key;
+                }
+                GKDialog.openUrl(url);
+            }).error(function (req) {
+                GKException.handleAjaxException(req);
+            })
         };
 
         $scope.hideTip = function () {
@@ -712,13 +670,13 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             templateUrl: "views/chat_audio.html",
         }
     }])
-    .directive('chatBind', ['$compile',function ($compile) {
-        return function(scope,element,attr){
+    .directive('chatBind', ['$compile', function ($compile) {
+        return function (scope, element, attr) {
             scope.$watch(attr.chatBind, function (value) {
-                if(Util.RegExp.HTTPStrict.test(value)){
-                    var replacement = $compile(angular.element('<span>'+value.replace(Util.RegExp.HTTPStrict,'<a href="$&">$&</a>')+'</span>'))(scope);
+                if (Util.RegExp.HTTPStrict.test(value)) {
+                    var replacement = $compile(angular.element('<span>' + value.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>') + '</span>'))(scope);
                     element.append(replacement);
-                }else{
+                } else {
                     element.text(value == undefined ? '' : value);
                 }
             });

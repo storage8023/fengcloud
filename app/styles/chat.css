@@ -125,8 +125,11 @@ header .icon_person{
 }
 section {
     top: 45px;
-    bottom: 140px;
+    bottom: 104px;
 
+}
+.has_toolbar section{
+    bottom: 140px;
 }
 section .loading{
     color: #ACB4BF;
@@ -557,11 +560,18 @@ footer .post_file_wrapper .chat_file{
     float: left;
     width: 16px;
     height: 16px;
-    margin: 9px 10px 0 10px;
+    margin: 8px 10px 0 10px;
     cursor: pointer;
 }
 
 .toolbar > li > img{
     width: 16px;
     height: 16px;
+    -webkit-filter:grayscale(100%);
+    filter:grayscale(100%);
+    filter:gray;
+}
+.toolbar > li > img:hover{
+    -webkit-filter:none;
+    filter:none;
 }

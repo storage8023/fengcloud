@@ -1,27 +1,55 @@
 'use strict';
-angular.module('GKCommon',['GKCommon.directives','GKCommon.services','GKCommon.filters']);
+angular.module('GKCommon', ['GKCommon.directives', 'GKCommon.services', 'GKCommon.filters']);
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('jplayer', [function () {
+        return {
+            restrict: 'E',
+            replace:true,
+            template:'<div></div>',
+            link: function (scope, element, attrs) {
+                attrs.$observe('source',function(){
+                    element.jPlayer({
+                        ready: function (event) {
+                            jQuery(this).jPlayer("setMedia", {
+                                mp3:attrs.source
+                            });
+                        },
+                        preload: 'metadata',
+                        solution: 'flash',
+                        swfPath: "bower_components/jPlayer",
+                        supplied: "mp3",
+                        wmode: "window",
+                        smoothPlayBar: true
+                    });
+                })
+
+                scope.$on('$destroy',function(){
+                    element.jPlayer('destroy');
+                })
+            }
+        }
+    }])
     .directive('href', [function () {
         return {
             restrict: 'A',
-            link:function(scope,element,attrs){
-                element.on('click',function(e){
+            link: function (scope, element, attrs) {
+                element.on('click', function (e) {
                     var href = jQuery.trim(attrs.href);
                     if (href && href.indexOf('#') != 0 && !/^javascript:.*?$/.test(href)) {
-                        if(href.indexOf('http')!=0 && href.indexOf('https')!=0){
-                            href = 'http://'+href;
+                        if (href.indexOf('http') != 0 && href.indexOf('https') != 0) {
+                            href = 'http://' + href;
                         }
                         var url = gkClientInterface.getUrl({
-                            sso:0,
-                            url:href
+                            sso: 0,
+                            url: href
                         });
                         gkClientInterface.openUrl(url);
                         e.preventDefault();
                     }
                 })
-                scope.$on('$destroy',function(){
+                scope.$on('$destroy', function () {
                     element.off('click');
                 })
 
@@ -36,24 +64,24 @@ angular.module('GKCommon.directives', [])
             templateUrl: 'views/tip_over_popup.html'
         }
     }])
-    .directive('tipOver', ['$compile', '$timeout', '$document', '$position',function ($compile, $timeout, $document, $position) {
+    .directive('tipOver', ['$compile', '$timeout', '$document', '$position', function ($compile, $timeout, $document, $position) {
         var directiveName = 'tip-over',
             startSym = '{{',
             endSym = '}}';
         var template =
-            '<'+ directiveName +'-popup '+
-                'content="'+startSym+'tt_content'+endSym+'" '+
-                'placement="'+startSym+'tt_placement'+endSym+'" '+
-                'is-open="tt_isOpen"'+
-                '>'+
-                '</'+ directiveName +'-popup>';
+            '<' + directiveName + '-popup ' +
+                'content="' + startSym + 'tt_content' + endSym + '" ' +
+                'placement="' + startSym + 'tt_placement' + endSym + '" ' +
+                'is-open="tt_isOpen"' +
+                '>' +
+                '</' + directiveName + '-popup>';
         return {
             restrict: 'EA',
             scope: true,
-            link: function link ( scope, element, attrs ) {
+            link: function link(scope, element, attrs) {
                 var type = 'tipOver',
                     prefix = 'tipOver';
-                var tooltip = $compile( template )( scope );
+                var tooltip = $compile(template)(scope);
                 var $body;
                 var popupTimeout;
                 var appendToBody = true;
@@ -63,8 +91,8 @@ angular.module('GKCommon.directives', [])
                 // TODO add ability to start tooltip opened
                 scope.tt_isOpen = false;
 
-                function toggleTooltipBind () {
-                    if ( ! scope.tt_isOpen ) {
+                function toggleTooltipBind() {
+                    if (!scope.tt_isOpen) {
                         showTooltipBind();
                     } else {
                         hideTooltipBind();
@@ -73,19 +101,19 @@ angular.module('GKCommon.directives', [])
 
                 // Show the tooltip with delay if specified, otherwise show it immediately
                 function showTooltipBind() {
-                        if(hideTimer){
-                            $timeout.cancel(hideTimer);
-                        }
-                        popupTimeout = $timeout( show, 200);
+                    if (hideTimer) {
+                        $timeout.cancel(hideTimer);
+                    }
+                    popupTimeout = $timeout(show, 200);
                 }
 
-                function hideTooltipBind () {
-                    if(hideTimer){
+                function hideTooltipBind() {
+                    if (hideTimer) {
                         $timeout.cancel(hideTimer);
                         hideTimer = null;
                     }
                     $timeout.cancel(popupTimeout);
-                    hideTimer = $timeout(hide,50);
+                    hideTimer = $timeout(hide, 50);
                 }
 
                 // Show the tooltip popup element.
@@ -96,7 +124,7 @@ angular.module('GKCommon.directives', [])
                         ttPosition;
 
                     // Don't show empty tooltips.
-                    if ( ! scope.tt_content ) {
+                    if (!scope.tt_content) {
                         return;
                     }
 
@@ -109,21 +137,21 @@ angular.module('GKCommon.directives', [])
 
                     // Now we add it to the DOM because need some info about it. But it's not
                     // visible yet anyway.
-                    if ( appendToBody) {
-                        $body = $body || $document.find( 'body' );
-                        $body.append( tooltip );
+                    if (appendToBody) {
+                        $body = $body || $document.find('body');
+                        $body.append(tooltip);
                     }
 
                     // Get the position of the directive element.
-                    position = appendToBody ? $position.offset( element ) : $position.position( element );
+                    position = appendToBody ? $position.offset(element) : $position.position(element);
 
                     // Get the height and width of the tooltip so we can center it.
-                    ttWidth = tooltip.prop( 'offsetWidth' );
-                    ttHeight = tooltip.prop( 'offsetHeight' );
+                    ttWidth = tooltip.prop('offsetWidth');
+                    ttHeight = tooltip.prop('offsetHeight');
 
                     // Calculate the tooltip's top and left coordinates to center it with
                     // this directive.
-                    switch ( scope.tt_placement ) {
+                    switch (scope.tt_placement) {
                         case 'right':
                             ttPosition = {
                                 top: position.top + position.height / 2 - ttHeight / 2,
@@ -154,19 +182,19 @@ angular.module('GKCommon.directives', [])
                     ttPosition.left += 'px';
 
                     // Now set the calculated positioning.
-                    tooltip.css( ttPosition );
+                    tooltip.css(ttPosition);
 
                     // And show the tooltip.
                     scope.tt_isOpen = true;
 
-                    tooltip.on('mouseenter',function(){
-                        if(hideTimer){
+                    tooltip.on('mouseenter', function () {
+                        if (hideTimer) {
                             $timeout.cancel(hideTimer);
                             hideTimer = null;
                         }
                     });
 
-                    tooltip.on('mouseleave',function(){
+                    tooltip.on('mouseleave', function () {
                         hideTooltipBind();
                     });
 
@@ -188,27 +216,27 @@ angular.module('GKCommon.directives', [])
 
                 //element.off('mouseenter',showTooltipBind);
                 //element.off('mouseleave',hideTooltipBind);
-                element.on('mouseenter',showTooltipBind);
-                element.on('mouseleave',hideTooltipBind);
+                element.on('mouseenter', showTooltipBind);
+                element.on('mouseleave', hideTooltipBind);
 
 
                 /**
                  * Observe the relevant attributes.
                  */
-                attrs.$observe( type, function ( val ) {
+                attrs.$observe(type, function (val) {
                     scope.tt_content = val;
                 });
 
-                attrs.$observe( prefix+'Placement', function ( val ) {
-                    scope.tt_placement = angular.isDefined( val ) ? val :'top';
+                attrs.$observe(prefix + 'Placement', function (val) {
+                    scope.tt_placement = angular.isDefined(val) ? val : 'top';
                 });
 
                 // if a tooltip is attached to <body> we need to remove it on
                 // location change as its parent scope will probably not be destroyed
                 // by the change.
-                if ( appendToBody ) {
-                    scope.$on('$locationChangeSuccess', function closeTooltipOnLocationChangeSuccess () {
-                        if ( scope.tt_isOpen ) {
+                if (appendToBody) {
+                    scope.$on('$locationChangeSuccess', function closeTooltipOnLocationChangeSuccess() {
+                        if (scope.tt_isOpen) {
                             hide();
                         }
                     });
@@ -217,10 +245,10 @@ angular.module('GKCommon.directives', [])
                 // Make sure tooltip is destroyed and removed.
                 scope.$on('$destroy', function onDestroyTooltip() {
                     $body = null;
-                    element.off('mouseenter',showTooltipBind);
-                    element.off('mouseleave',hideTooltipBind);
+                    element.off('mouseenter', showTooltipBind);
+                    element.off('mouseleave', hideTooltipBind);
                     tooltip.off('mouseenter').off('mouseleave');
-                    if ( scope.tt_isOpen ) {
+                    if (scope.tt_isOpen) {
                         hide();
                     } else {
                         tooltip.remove();
@@ -230,10 +258,10 @@ angular.module('GKCommon.directives', [])
             }
         }
     }])
-    .directive('insertTo', ['$timeout',function ($timeout) {
+    .directive('insertTo', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',
-            link: function ($scope, $element,$attrs) {
+            link: function ($scope, $element, $attrs) {
                 $scope.$watch($attrs.insertTo, function (input) {
                     if (input) {
                         var val = $scope[$attrs.ngModel];
@@ -319,7 +347,7 @@ angular.module('GKCommon.directives', [])
             link: function ($scope, $element, $attrs) {
                 $element.on('dragstart', function (event) {
                     var jTarget = jQuery(event.target);
-                    if(!jTarget.attr('draggable') && !jTarget.parents('[draggable]').size()){
+                    if (!jTarget.attr('draggable') && !jTarget.parents('[draggable]').size()) {
                         event.preventDefault();
                     }
                 })
@@ -335,10 +363,10 @@ angular.module('GKCommon.directives', [])
             }
         }
     }])
-    .directive('gkOnload',['$parse',function($parse){
+    .directive('gkOnload', ['$parse', function ($parse) {
         return function ($scope, $element, $attrs) {
             var fn = $parse($attrs.gkOnload);
-            $element.on('load',function(){
+            $element.on('load', function () {
                 $scope.$apply(function () {
                     fn($scope, {$event: event});
                 });
@@ -390,7 +418,7 @@ angular.module('GKCommon.directives', [])
                 var disableScroll = false;
                 if (attrs.triggerDistance != null) {
                     $scope.$watch(attrs.triggerDistance, function (value) {
-                        return triggerDistance = parseInt(value||0, 10);
+                        return triggerDistance = parseInt(value || 0, 10);
                     });
                 }
 
@@ -401,7 +429,7 @@ angular.module('GKCommon.directives', [])
                 }
 
                 var direction = 'down';
-                if(attrs.triggerDirection){
+                if (attrs.triggerDirection) {
                     direction = attrs.triggerDirection;
                 }
                 var startScrollTop = 0;
@@ -415,15 +443,15 @@ angular.module('GKCommon.directives', [])
                     scrollT = _self.scrollTop();
                     isScrollDown = scrollT > startScrollTop;
                     var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
-                    realDistance = direction =='down'?(scrollH - scrollT - clientHeight):scrollT;
-                    if(realDistance <= triggerDistance && !disableScroll){
-                        if(!isScrollDown && direction == 'up'){
+                    realDistance = direction == 'down' ? (scrollH - scrollT - clientHeight) : scrollT;
+                    if (realDistance <= triggerDistance && !disableScroll) {
+                        if (!isScrollDown && direction == 'up') {
                             if ($rootScope.$$phase) {
                                 return $scope.$eval(attrs.scrollLoad);
                             } else {
                                 return $scope.$apply(attrs.scrollLoad);
                             }
-                        }else if(isScrollDown && direction == 'down'){
+                        } else if (isScrollDown && direction == 'down') {
                             if ($rootScope.$$phase) {
                                 return $scope.$eval(attrs.scrollLoad);
                             } else {
@@ -526,19 +554,19 @@ angular.module('GKCommon.directives', [])
                             }
 
                             preSelectItem(newIndex);
-                            var itemHeight =  $element.find('li:eq(0)').height();
-                            var scrollTop = $element.find('li:eq('+newIndex+')').position().top;
-                            if(newIndex == 0){
+                            var itemHeight = $element.find('li:eq(0)').height();
+                            var scrollTop = $element.find('li:eq(' + newIndex + ')').position().top;
+                            if (newIndex == 0) {
                                 $element.scrollTop(0);
-                            }else if(newIndex == ($scope.list.length-1)){
+                            } else if (newIndex == ($scope.list.length - 1)) {
                                 $element.scrollTop(scrollTop);
-                            }else{
-                                if(step==-1){
+                            } else {
+                                if (step == -1) {
                                     var jTop = scrollTop;
                                     if (jTop >= -itemHeight && jTop < 0) {
                                         jTop.scrollTop(jTop.scrollTop() + jTop);
                                     }
-                                }else{
+                                } else {
                                     var jTop = scrollTop - $element.height();
                                     if (jTop >= 0 && jTop < itemHeight) {
                                         $element.scrollTop($element.scrollTop() + itemHeight + jTop);
@@ -672,7 +700,7 @@ angular.module('GKCommon.directives', [])
                         return;
                     }
                     var q = leftStr.slice(lastIndex + 1, leftStr.length); //获取@与光标位置之间的字符
-                    if(q===lastQ) return;
+                    if (q === lastQ) return;
                     //如果@与光标之间有空格，隐藏提示框
                     if (jQuery.trim(q).length != q.length) {
                         hide();
@@ -712,10 +740,10 @@ angular.module('GKCommon.directives', [])
                         checkAt();
                     }, 100);
                 }).bind('blur', function () {
-                        if (timer) {
-                            $interval.cancel(timer);
-                        }
-                    })
+                    if (timer) {
+                        $interval.cancel(timer);
+                    }
+                })
 
                 var insertChar = function (input) {
                     input += ' ';
@@ -768,30 +796,31 @@ angular.module('GKCommon.services', [])
         'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'],
         'SORT_MOVIE': ['mp4', 'mkv', 'rm', 'rmvb', 'avi', '3gp', 'flv', 'wmv', 'asf', 'mpeg', 'mpg', 'mov', 'ts', 'm4v'],
         'SORT_MUSIC': ['mp3', 'wma', 'wav', 'flac', 'ape', 'ogg', 'aac', 'm4a'],
-        'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd','bmp'],
+        'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd', 'bmp'],
         'SORT_DOCUMENT': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'odt', 'rtf', 'ods', 'csv', 'odp', 'txt'],
         'SORT_CODE': ['js', 'c', 'cpp', 'h', 'cs', 'vb', 'vbs', 'java', 'sql', 'ruby', 'php', 'asp', 'aspx', 'html', 'htm', 'py', 'jsp', 'pl', 'rb', 'm', 'css', 'go', 'xml', 'erl', 'lua', 'md'],
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
         'SORT_EXE': ['exe', 'bat', 'com']
     })
-    .factory('GKFrame', ['$window',function ($window) {
-        function GKFrame(frameName){
-            if(!$window.frames[frameName]){
+    .factory('GKFrame', ['$window', function ($window) {
+        function GKFrame(frameName) {
+            if (!$window.frames[frameName]) {
                 return;
             }
             return $window.frames[frameName];
         }
+
         return GKFrame;
     }])
-    .factory('GKWindowCom', ['$window',function ($window) {
+    .factory('GKWindowCom', ['$window', function ($window) {
         var GKWindowCom = {
-            post:function(windowName,data){
-                var win = gkClientInterface.getWindow({name:windowName});
-                if(!win) return;
-                win.postMessage(data,'*');
+            post: function (windowName, data) {
+                var win = gkClientInterface.getWindow({name: windowName});
+                if (!win) return;
+                win.postMessage(data, '*');
             },
-            message:function(callback){
-                $window.addEventListener('message',callback,false);
+            message: function (callback) {
+                $window.addEventListener('message', callback, false);
             }
         };
         return GKWindowCom;
@@ -799,22 +828,22 @@ angular.module('GKCommon.services', [])
 
     .factory('GKException', [function () {
         var GKException = {
-            getAjaxError:function(request,textStatus,errorThrown){
+            getAjaxError: function (request, textStatus, errorThrown) {
                 var error = {
-                    code:0,
-                    msg:'出错了'
+                    code: 0,
+                    msg: '出错了'
                 };
                 if (request.responseText) {
                     var result = JSON.parse(request.responseText);
-                    angular.extend(error,{
-                        code:result.error_code,
-                        msg:result.error_msg || request.responseText
+                    angular.extend(error, {
+                        code: result.error_code,
+                        msg: result.error_msg || request.responseText
                     })
                 } else {
                     error.code = request.status;
-                    if(textStatus === 'timeout'){
+                    if (textStatus === 'timeout') {
                         error.msg = '网络连接超时';
-                    }else{
+                    } else {
                         switch (request.status) {
                             case 0:
                             case 404:
@@ -884,8 +913,8 @@ angular.module('GKCommon.services', [])
             handleClientException: function (error) {
                 alert(error.message);
             },
-            handleAjaxException: function (request,textStatus,errorThrown) {
-                var errorMsg = this.getAjaxError(request,textStatus,errorThrown)['msg'];
+            handleAjaxException: function (request, textStatus, errorThrown) {
+                var errorMsg = this.getAjaxError(request, textStatus, errorThrown)['msg'];
                 alert(errorMsg);
             }
         };
@@ -897,29 +926,29 @@ angular.module('GKCommon.services', [])
          * 格式化mount数据
          * @param mount
          */
-        var isMember = function(mount){
+        var isMember = function (mount) {
             return mount && mount.type < 3;
         };
 
-        var isAdmin = function(mount){
+        var isAdmin = function (mount) {
             return mount && mount.type < 2;
         };
 
-        var isSuperAdmin = function(mount){
+        var isSuperAdmin = function (mount) {
             return mount && mount.type < 1;
         };
 
         var formatMountItem = function (mount) {
-            var properties={};
-            if(mount.property){
+            var properties = {};
+            if (mount.property) {
                 properties = JSON.parse(mount.property);
-                if(!properties.permissions){
+                if (!properties.permissions) {
                     properties.permissions = [];
-                 }
+                }
             }
             var newMount = {
                 mount_id: mount.mountid,
-                ent_id:mount.ent_id,
+                ent_id: mount.ent_id,
                 name: mount.name ? mount.name : '我的文件',
                 org_id: mount.orgid,
                 capacity: mount.total,
@@ -934,20 +963,20 @@ angular.module('GKCommon.services', [])
                 hasFolder: 1,
                 trash_size: mount.size_recycle,
                 trash_dateline: mount.dateline_recycle,
-                property:properties,
-                storage_point:mount.storage_point,
-                compare:mount.compare
+                property: properties,
+                storage_point: mount.storage_point,
+                compare: mount.compare
                 //hasFolder:mount.hasfolder||0
             };
             return newMount;
         };
-        var getMounts = function(){
+        var getMounts = function () {
             var re = gkClientInterface.getSideTreeList({sidetype: 'org'});
-            if(re && re['list']){
-                return re['list'].map(function(mount){
+            if (re && re['list']) {
+                return re['list'].map(function (mount) {
                     return formatMountItem(mount);
                 })
-            }else{
+            } else {
                 return [];
             }
 
@@ -956,7 +985,7 @@ angular.module('GKCommon.services', [])
         var mounts = getMounts();
 
         var GKMount = {
-            refreshMounts:function(){
+            refreshMounts: function () {
                 mounts = getMounts();
             },
             isMember: isMember,
@@ -1033,7 +1062,7 @@ angular.module('GKCommon.services', [])
             getJoinOrgMounts: function () {
                 var joinOrgMounts = [];
                 angular.forEach(mounts, function (value) {
-                    if (value.type <3 && value.type>0) {
+                    if (value.type < 3 && value.type > 0) {
                         joinOrgMounts.push(value);
                     }
                 })
@@ -1078,10 +1107,10 @@ angular.module('GKCommon.services', [])
                     }
                 });
             },
-            removeEntFileList: function ($scope, orgId,entId) {
+            removeEntFileList: function ($scope, orgId, entId) {
                 var mount = this.removeMountByOrgId(orgId);
                 if (!mount) return;
-                if(!$scope.entTreeList[entId]) return;
+                if (!$scope.entTreeList[entId]) return;
                 var list = $scope.entTreeList[entId].data;
                 angular.forEach(list, function (value, key) {
                     if (value.data.org_id == orgId) {
@@ -1118,15 +1147,15 @@ angular.module('GKCommon.services', [])
     ])
     .factory('GKDialog', [function () {
         return {
-            chat: function (mountId,fullpath,atMember) {
-                mountId = angular.isDefined(mountId)?mountId:0;
-                fullpath = angular.isDefined(fullpath)?fullpath:'';
-                atMember = angular.isDefined(atMember)?atMember:'';
+            chat: function (mountId, fullpath, atMember) {
+                mountId = angular.isDefined(mountId) ? mountId : 0;
+                fullpath = angular.isDefined(fullpath) ? fullpath : '';
+                atMember = angular.isDefined(atMember) ? atMember : '';
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId + '&fullpath=' + encodeURIComponent(fullpath) + '&at=' + encodeURIComponent(atMember);
                 var data = {
                     url: url,
-                    type:'single',
+                    type: 'single',
                     width: 900,
                     resize: 1,
                     height: 580
@@ -1183,11 +1212,11 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
-            getAppKey:function(orgId,appId){
+            getAppKey: function (orgId, appId) {
                 var params = {
                     token: gkClientInterface.getToken(),
                     org_id: orgId,
-                    app_id:appId
+                    a_id: appId
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
@@ -1198,7 +1227,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            apps:function(orgId){
+            apps: function (orgId) {
                 var params = {
                     token: gkClientInterface.getToken(),
                     org_id: orgId
@@ -1212,11 +1241,11 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            dragUpload:function(mountId,fullpath){
+            dragUpload: function (mountId, fullpath) {
                 var params = {
                     token: gkClientInterface.getToken(),
                     mount_id: mountId,
-                    fullpath:fullpath
+                    fullpath: fullpath
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
@@ -1227,7 +1256,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            resetMessage:function(ids){
+            resetMessage: function (ids) {
                 var params = {
                     token: gkClientInterface.getToken(),
                     ids: ids
@@ -1241,10 +1270,10 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            delCompletely:function(mount_id, fullpaths){
+            delCompletely: function (mount_id, fullpaths) {
                 var params = {
                     mount_id: mount_id,
-                    fullpaths:fullpaths,
+                    fullpaths: fullpaths,
                     token: gkClientInterface.getToken()
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
@@ -1256,7 +1285,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            clear:function(mount_id){
+            clear: function (mount_id) {
                 var params = {
                     mount_id: mount_id,
                     token: gkClientInterface.getToken()
@@ -1270,10 +1299,10 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            recycle:function(mount_id, fullpath){
+            recycle: function (mount_id, fullpath) {
                 var params = {
                     mount_id: mount_id,
-                    fullpath:fullpath,
+                    fullpath: fullpath,
                     token: gkClientInterface.getToken()
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
@@ -1285,14 +1314,14 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            info:function(mount_id, fullpath,extParam){
+            info: function (mount_id, fullpath, extParam) {
                 var params = {
                     mount_id: mount_id,
-                    fullpath:fullpath,
+                    fullpath: fullpath,
                     token: gkClientInterface.getToken()
                 };
-                if(extParam && typeof extParam == 'object'){
-                    angular.extend(params,extParam);
+                if (extParam && typeof extParam == 'object') {
+                    angular.extend(params, extParam);
                 }
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
@@ -1303,7 +1332,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            pendingMembers:function(orgId){
+            pendingMembers: function (orgId) {
                 var params = {
                     org_id: orgId,
                     token: gkClientInterface.getToken()
@@ -1317,11 +1346,11 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            subscriberList:function(orgId,start,limit){
+            subscriberList: function (orgId, start, limit) {
                 var params = {
                     org_id: orgId,
                     start: start,
-                    limit:limit,
+                    limit: limit,
                     token: gkClientInterface.getToken()
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
@@ -1333,7 +1362,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            publish:function(mountId,fullpath){
+            publish: function (mountId, fullpath) {
                 var params = {
                     mount_id: mountId,
                     fullpath: fullpath,
@@ -1348,7 +1377,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            markMilestone:function(mountId,fullpath,message){
+            markMilestone: function (mountId, fullpath, message) {
                 var params = {
                     mount_id: mountId,
                     fullpath: fullpath,
@@ -1577,7 +1606,7 @@ angular.module('GKCommon.services', [])
             },
             recentVisitList: function () {
                 var params = {
-                    size:100,
+                    size: 100,
                     token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -1591,7 +1620,7 @@ angular.module('GKCommon.services', [])
             },
             recentFileList: function () {
                 var params = {
-                    size:100,
+                    size: 100,
                     token: gkClientInterface.getToken()
                 };
                 angular.extend(params, defaultParams);
@@ -1761,8 +1790,8 @@ angular.module('GKCommon.services', [])
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'GET',
-                    async:false,
-                    dataType:'json',
+                    async: false,
+                    dataType: 'json',
                     url: gkClientInterface.getApiHost() + '/1/team/groups_and_members',
                     data: params
                 });
@@ -1886,7 +1915,7 @@ angular.module('GKCommon.services', [])
                     data: params
                 });
             },
-            servers:function(type){
+            servers: function (type) {
                 var params = {
                     type: type,
                     token: gkClientInterface.getToken()
@@ -1898,7 +1927,7 @@ angular.module('GKCommon.services', [])
                     type: 'POST',
                     url: gkClientInterface.getApiHost() + '/1/account/servers',
                     dataType: 'json',
-                    data:params
+                    data: params
                 });
             }
         }
@@ -1906,45 +1935,45 @@ angular.module('GKCommon.services', [])
     }])
 ;
 angular.module('GKCommon.filters', [])
-    .filter('strLen',function(){
-        return function(str){
+    .filter('strLen', function () {
+        return function (str) {
             return Util.String.strLen(str);
         }
     })
-    .filter('limitSize',function(){
-        return function(input, start,size) {
-            if(!angular.isArray(input)) return input;
-            if(size<0) return;
+    .filter('limitSize', function () {
+        return function (input, start, size) {
+            if (!angular.isArray(input)) return input;
+            if (size < 0) return;
 
             start = parseInt(start);
             size = parseInt(size)
 
-            var out = [],i, n,absStart,len = input.length;
-            absStart = Math.abs(start>=0?start:start+1);
-            if(absStart+size>input.length){
+            var out = [], i, n, absStart, len = input.length;
+            absStart = Math.abs(start >= 0 ? start : start + 1);
+            if (absStart + size > input.length) {
                 size = input.length - absStart;
             }
             if (start < 0) {
-                for (i = len+start; i>len+start-size; i--) {
+                for (i = len + start; i > len + start - size; i--) {
                     out.unshift(input[i]);
                 }
             } else {
-                for (i = start; i<start+size; i++) {
+                for (i = start; i < start + size; i++) {
                     out.push(input[i]);
                 }
             }
             return out;
         }
     })
-    .filter('orderObjectBy', function(){
-        return function(input, attribute) {
+    .filter('orderObjectBy', function () {
+        return function (input, attribute) {
             if (!angular.isObject(input)) return input;
             var array = [];
-            for(var objectKey in input) {
+            for (var objectKey in input) {
                 array.push(input[objectKey]);
             }
 
-            array.sort(function(a, b){
+            array.sort(function (a, b) {
                 a = parseInt(a[attribute]);
                 b = parseInt(b[attribute]);
                 return a - b;
@@ -1964,8 +1993,8 @@ angular.module('GKCommon.filters', [])
                 dateText = $filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
-            }else{
-                dateText =$filter('date')(dateline, 'yyyy年M月d日');
+            } else {
+                dateText = $filter('date')(dateline, 'yyyy年M月d日');
             }
             return dateText;
         }
@@ -1982,23 +2011,23 @@ angular.module('GKCommon.filters', [])
                 dateText = $filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
-            }else{
-                dateText =$filter('date')(dateline, 'yyyy年M月d日 HH:mm');
+            } else {
+                dateText = $filter('date')(dateline, 'yyyy年M月d日 HH:mm');
             }
             return dateText;
         }
     })
     .filter('getAvatarUrl', function () {
-        return function (memberId,isThumb,isUsername) {
-            if(memberId == 0){
+        return function (memberId, isThumb, isUsername) {
+            if (memberId == 0) {
                 return 'images/unknow_photo.png';
             }
-            isUsername = angular.isDefined(isUsername)?isUsername:false;
-            isThumb = angular.isDefined(isThumb)?isThumb:1;
-            if(isUsername){
-                return gkClientInterface.getSiteDomain()+'/index/avatar?name='+memberId+'&thumb='+isThumb;
-            }else{
-                return gkClientInterface.getSiteDomain()+'/index/avatar?id='+memberId+'&thumb='+isThumb;
+            isUsername = angular.isDefined(isUsername) ? isUsername : false;
+            isThumb = angular.isDefined(isThumb) ? isThumb : 1;
+            if (isUsername) {
+                return gkClientInterface.getSiteDomain() + '/index/avatar?name=' + memberId + '&thumb=' + isThumb;
+            } else {
+                return gkClientInterface.getSiteDomain() + '/index/avatar?id=' + memberId + '&thumb=' + isThumb;
             }
 
         }
@@ -2008,19 +2037,19 @@ angular.module('GKCommon.filters', [])
             return dir == 1 ? '-' : Util.Number.bitSize(filesize);
         }
     })
-    .filter('bitSize', function(){
+    .filter('bitSize', function () {
         return Util.Number.bitSize;
     })
-    .filter('baseName', function(){
+    .filter('baseName', function () {
         return Util.String.baseName;
     })
-    .filter('getPercent',function(){
-        return function(val,total){
-            return Math.round(val/total * 100)+'%';
+    .filter('getPercent', function () {
+        return function (val, total) {
+            return Math.round(val / total * 100) + '%';
         }
     })
-    .filter('getFileIconSuffix',['FILE_SORTS',function(FILE_SORTS){
-        return function(filename, dir, share, sync){
+    .filter('getFileIconSuffix', ['FILE_SORTS', function (FILE_SORTS) {
+        return function (filename, dir, share, sync) {
             var suffix = '';
             var sorts = FILE_SORTS;
             if (dir == 1) {
@@ -2054,36 +2083,36 @@ angular.module('GKCommon.filters', [])
             return suffix;
         }
     }])
-    .filter('getThumbUrl',[function(){
-        return function(hash,filehash){
+    .filter('getThumbUrl', [function () {
+        return function (hash, filehash) {
             return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
         }
     }])
-    .filter('getFileIcon',['$filter',function($filter){
-        return function(filename,dir,share,sync){
-            return 'icon_'+$filter('getFileIconSuffix')(filename,dir,share,sync);
+    .filter('getFileIcon', ['$filter', function ($filter) {
+        return function (filename, dir, share, sync) {
+            return 'icon_' + $filter('getFileIconSuffix')(filename, dir, share, sync);
         }
     }])
-    .filter('getFileThumb',['$filter',function($filter){
-        return function(filename,dir,share,sync){
-            return 'images/icon/' + $filter('getFileIconSuffix')(filename,dir,share,sync) + '128x128.png';
+    .filter('getFileThumb', ['$filter', function ($filter) {
+        return function (filename, dir, share, sync) {
+            return 'images/icon/' + $filter('getFileIconSuffix')(filename, dir, share, sync) + '128x128.png';
         }
     }])
-    .filter('formatCount',[function(){
-        return function(count,max){
-           max = angular.isDefined(max)?max:99;
-           if(count>max){
-               return max+'+';
-           }else{
-               return count;
-           }
+    .filter('formatCount', [function () {
+        return function (count, max) {
+            max = angular.isDefined(max) ? max : 99;
+            if (count > max) {
+                return max + '+';
+            } else {
+                return count;
+            }
         }
     }])
-    .directive('sizeAdjust', ['$timeout', '$window', function($timeout, $window) {
+    .directive('sizeAdjust', ['$timeout', '$window', function ($timeout, $window) {
         return {
             require: 'ngModel',
             restrict: 'A, C',
-            link: function(scope, element, attrs, ngModel){
+            link: function (scope, element, attrs, ngModel) {
 
                 // cache a reference to the DOM element
                 var ta = element[0],
@@ -2123,7 +2152,7 @@ angular.module('GKCommon.filters', [])
                         taStyle.getPropertyValue('-moz-box-sizing') === 'border-box' ||
                         taStyle.getPropertyValue('-webkit-box-sizing') === 'border-box',
                     boxOuter = !borderBox ? {width: 0, height: 0} : {
-                        width:  parseInt(taStyle.getPropertyValue('border-right-width'), 10) +
+                        width: parseInt(taStyle.getPropertyValue('border-right-width'), 10) +
                             parseInt(taStyle.getPropertyValue('padding-right'), 10) +
                             parseInt(taStyle.getPropertyValue('padding-left'), 10) +
                             parseInt(taStyle.getPropertyValue('border-left-width'), 10),
@@ -2170,11 +2199,11 @@ angular.module('GKCommon.filters', [])
                  * methods
                  */
 
-                function initMirror(){
+                function initMirror() {
                     mirrored = ta;
                     // copy the essential styles from the textarea to the mirror
                     taStyle = getComputedStyle(ta);
-                    angular.forEach(copyStyle, function(val){
+                    angular.forEach(copyStyle, function (val) {
                         mirrorStyle += val + ':' + taStyle.getPropertyValue(val) + ';';
                     });
                     mirror.setAttribute('style', mirrorStyle);
@@ -2221,14 +2250,14 @@ angular.module('GKCommon.filters', [])
                         }
 
                         // small delay to prevent an infinite loop
-                        $timeout(function(){
+                        $timeout(function () {
                             active = false;
                         }, 1);
 
                     }
                 }
 
-                function forceAdjust(){
+                function forceAdjust() {
                     active = false;
                     adjust();
                 }
@@ -2247,9 +2276,9 @@ angular.module('GKCommon.filters', [])
 
                 $win.bind('resize', forceAdjust);
 
-                scope.$watch(function(){
+                scope.$watch(function () {
                     return ngModel.$modelValue;
-                }, function(newValue){
+                }, function (newValue) {
                     forceAdjust();
                 });
 
@@ -2259,15 +2288,15 @@ angular.module('GKCommon.filters', [])
                  * destroy
                  */
 
-                scope.$on('$destroy', function(){
+                scope.$on('$destroy', function () {
                     $mirror.remove();
                     $win.unbind('resize', forceAdjust);
                 });
             }
         };
 
-    }]);;
-
+    }]);
+;
 
 
 /**
@@ -2276,7 +2305,7 @@ angular.module('GKCommon.filters', [])
  * @param params
  */
 var gkClientCallback = function (name, param) {
-    console.log('gkClientCallback',arguments);
+    console.log('gkClientCallback', arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
@@ -2294,7 +2323,7 @@ var gkClientCallback = function (name, param) {
  * @param params
  */
 var gkSiteCallback = function (name, params) {
-    console.log('gkSiteCallback',arguments);
+    console.log('gkSiteCallback', arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
@@ -2303,14 +2332,13 @@ var gkSiteCallback = function (name, params) {
 };
 
 var gkFrameCallback = function (name, params) {
-    console.log('gkFrameCallback',arguments);
+    console.log('gkFrameCallback', arguments);
     if (typeof name !== 'string') {
         name = String(name);
     }
     var rootScope = jQuery(document).scope();
     rootScope.$broadcast(name, params);
 };
-
 
 
 // 获取一个元素的所有css属性的patch, $(el).css()
@@ -2338,28 +2366,28 @@ jQuery.fn.css = function () {
 };
 
 
-CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius, fill, stroke) {
-        if (typeof stroke == "undefined") {
-            stroke = true;
-        }
-        if (typeof radius === "undefined") {
-            radius = 5;
-        }
-        this.beginPath();
-        this.moveTo(x + radius, y);
-        this.lineTo(x + width - radius, y);
-        this.quadraticCurveTo(x + width, y, x + width, y + radius);
-        this.lineTo(x + width, y + height - radius);
-        this.quadraticCurveTo(x + width, y + height, x + width - radius, y+ height);
-        this.lineTo(x + radius, y + height);
-        this.quadraticCurveTo(x, y + height, x, y + height - radius);
-        this.lineTo(x, y + radius);
-        this.quadraticCurveTo(x, y, x + radius, y);
-        this.closePath();
-        if (stroke) {
-            this.stroke();
-        }
-        if (fill) {
-            this.fill();
-        }
-    };
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radius, fill, stroke) {
+    if (typeof stroke == "undefined") {
+        stroke = true;
+    }
+    if (typeof radius === "undefined") {
+        radius = 5;
+    }
+    this.beginPath();
+    this.moveTo(x + radius, y);
+    this.lineTo(x + width - radius, y);
+    this.quadraticCurveTo(x + width, y, x + width, y + radius);
+    this.lineTo(x + width, y + height - radius);
+    this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    this.lineTo(x + radius, y + height);
+    this.quadraticCurveTo(x, y + height, x, y + height - radius);
+    this.lineTo(x, y + radius);
+    this.quadraticCurveTo(x, y, x + radius, y);
+    this.closePath();
+    if (stroke) {
+        this.stroke();
+    }
+    if (fill) {
+        this.fill();
+    }
+};
