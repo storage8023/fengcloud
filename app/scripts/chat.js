@@ -197,6 +197,12 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     gkClientInterface.open(params);
                 }
             } else {
+                var url = metadata.url;
+                if (url.indexOf('?') >= 0) {
+                    url += '&uuid=' + $rootScope.PAGE_CONFIG.user.uuid;
+                } else {
+                    url += '?uuid=' + + $rootScope.PAGE_CONFIG.user.uuid;
+                }
                 var url = gkClientInterface.getUrl({
                     url: metadata.url,
                     sso: 0
@@ -294,12 +300,14 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     return;
                 }
                 var request_key = data.request_key;
+                var uuid = data.uuid;
                 var url = app.url;
                 if (app.url.indexOf('?') >= 0) {
                     url += '&request_key=' + request_key;
                 } else {
                     url += '?request_key=' + request_key;
                 }
+                url+='&uuid='+uuid+'&token='+gkClientInterface.getToken();
                 GKDialog.openUrl(url);
             }).error(function (req) {
                 GKException.handleAjaxException(req);
