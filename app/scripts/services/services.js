@@ -1888,7 +1888,7 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
                 var search = {
-                    partition: mount['type'] > 2? GKPartition.subscribeFile : GKPartition.teamFile,
+                    partition: mount['ent_id']?GKPartition.entFile:mount['type'] > 2? GKPartition.subscribeFile : GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
                     selectedpath: selectFile,
