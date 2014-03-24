@@ -1218,7 +1218,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(mount && GKAuth.check(mount,'','file_read')){
                     list.push({
                         webpath:value.fullpath,
-                        mountid:mountId
+                        mountid:mountId,
+                        filehash:value.filehash
                     })
                 }
             });
@@ -1248,7 +1249,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(mount && GKAuth.check(mount,'','file_read')){
                     list.push({
                         webpath:value.fullpath,
-                        mountid:mountId
+                        mountid:mountId,
+                        filehash:value.filehash
                     })
                 }
             });
