@@ -24,6 +24,12 @@
         }
         gkClient.gSetDragStart(JSON.stringify(param));
     },
+    setDragEnd:function(param){
+        if(typeof gkClient.gSetDragEnd === 'undefined'){
+            return;
+        }
+        gkClient.gSetDragEnd(JSON.stringify(param));
+    },
     upgradeClient:function(){
         if(typeof gkClient.gUpgradeClient === 'undefined'){
             return;
