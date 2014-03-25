@@ -35,53 +35,45 @@
                         </div>
                     </div>
                     <div class="opt_wrapper" ng-show="showTab">
-                        <button class="btn btn-opt" ng-show="localFile.dir==0&&showLinkBtn" ng-click="publishFile(file)">临时链接</button>
-                        <button ng-show="showChatBtn" class="btn btn-opt" ng-click="startChat(file)">发送到讨论</button>
-                    </div>
-                    <div class="tags" ng-class="editingTag?'edit':''">
-                        <div ng-if="!showTab">
-                            {{file.tag}}
-                        </div>
-                        <div class="post_textarea_wrapper">
-                            <textarea guider="comment" guider-placement="left" ng-focus="handleFocus($event)" size-adjust focus-me="focusPostTextarea" maxlength="280" class="form-control" placeholder="+添加注释" ng-model="tag.content"></textarea>
-                        </div>
-                        <div class="tag_edit_btn">
-                            <button class="btn btn-primary tag_edit" ng-click="postTag(tag.content)">确定</button>
-                            <button class="btn btn-default tag_edit" ng-click="cancelPostTag()">取消</button>
-                        </div>
+                        <button class="btn btn-opt" ng-show="localFile.dir==0&&showLinkBtn" ng-click="publishFile(file)"><i class="icon16x16 icon_link"></i> 链接</button>
+                        <button ng-show="showChatBtn" class="btn btn-opt" ng-click="startChat(file)"><i class="icon16x16 icon_chat"></i> 引用</button>
+                        <button class="btn btn-opt" ng-click="showMilestoneDialog(file)"><i class="icon16x16 icon_bookmark"></i> 注释</button>
                     </div>
                 </section>
             </div>
             <section class="file_detail_wrapper" ng-show="showTab && showHistory">
                 <div class="section_title">
-                    <button class="btn btn-opt" ng-show="localFile.dir==0&&showMilestone" guider-placement="left" guider="milestone" ng-click="showMilestoneDialog(localFile)">里程碑</button>
                     <span>历史</span>
                 </div>
                 <div class="history_wrapper" ng-class="!histories.length || localFile.dir==1?'nocheckbox':''">
                     <div class="empty" ng-if="!histories || !histories.length">
-                        <span ng-if="!onlyShowMileStone">没有历史</span>
-                        <span ng-if="onlyShowMileStone">没有里程碑</span>
+                        <span>没有历史</span>
                     </div>
                     <ul class="scrollbar history_list" gk-version-contextmenu="true">
                         <li class="c_f_after {{'act_'+history.act}}" ng-dblclick="openFile(history)" title="{{history.property.message}}" ng-class="history.property.milestone?'milestone':''" ng-repeat="history in histories" data-version="{{history.property.version}}" data-dir="{{history.dir}}" data-fullpath="{{history.fullpath}}" data-hash="{{history.hash}}">
                             <div class="act_name">
                                 <div class="avatar_wrapper">
-                                    <avatar class="avatar avatar_mini" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
+                                    <avatar class="avatar" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
                                 </div>
                             </div>
                             <div class="act_info">
                                 <div class="filename_wrapper">
                                     <span class="version_index" ng-if="history.property && history.property.index_version>0">V{{history.property.index_version}}</span>
                                     <span class="name_size_wrapper">
-                                    <span class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
-                                       &nbsp;
-                                    <span class="version_size" title="{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}">{{history.dir==1?'&nbsp;':(history.property.filesize|bitSize)}}</span>
+                                          <span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span>
+                                          <span class="act">{{history.act_name}}</span>
+                                          了文件
                                     </span>
+                                    <br/>
+                                    <span ng-show="file.dir==1" class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
                                 </div>
+                                <ul class="tag_list">
+                                    <li ng-repeat="msg in history.messages">
+                                        <span ng-bind="msg.property.message"></span>
+                                    </li>
+                                </ul>
                                 <div class="other_info">
                                     <span class="act_dateline" title="{{history.dateline*1000 | date:'yyyy/MM/dd HH:mm'}}">{{history.dateline*1000 | dateAgo}}</span>
-                                    <span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span>
-                                    <span class="act">{{history.act_name}}</span>
                                 </div>
                             </div>
                         </li>

@@ -1377,18 +1377,19 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            markMilestone: function (mountId, fullpath, message) {
+            markMilestone: function (mountId, fullpath, message,isSendToChat) {
                 var params = {
                     mount_id: mountId,
                     fullpath: fullpath,
                     message: message,
+                    chat:isSendToChat,
                     token: gkClientInterface.getToken()
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
                 return jQuery.ajax({
                     type: 'POST',
-                    url: gkClientInterface.getApiHost() + '/1/file/set_milestone',
+                    url: gkClientInterface.getApiHost() + '/1/file/milestone_chat_tag',
                     dataType: 'json',
                     data: params
                 })

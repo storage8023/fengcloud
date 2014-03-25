@@ -1640,12 +1640,16 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(param.path){
                     $scope.hideNoFile = true;
                 }else{
-                    if(param.search || param.filter){
+                    if(GKFileList.getSelectedFile().length){
                         $scope.hideNoFile = true;
                     }else{
-                        $scope.hideNoFile = false;
-                    }
+                        if(param.search || param.filter){
+                            $scope.hideNoFile = true;
+                        }else{
+                            $scope.hideNoFile = false;
+                        }
 
+                    }
                 }
             }
         })

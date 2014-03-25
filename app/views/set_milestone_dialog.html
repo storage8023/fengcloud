@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4>设置里程碑</h4>
+    <h4>添加注释</h4>
 </div>
 <div class="modal-body">
     <div ng-show="!PAGE_CONFIG.networkConnected">
@@ -28,12 +28,15 @@
 
         </div>
         <div class="textarea_wrapper">
-            <textarea class="form-control" maxlength="140" ng-model="message" placeholder="为里程碑添加描述"></textarea>
+            <textarea class="form-control" maxlength="140" ng-model="message" placeholder="请输入注释内容，最多可输入140字"></textarea>
         </div>
-        <div class="tip">最多可输入140字</div>
+        <div class="checkbox_wrapper">
+            <input type="checkbox" name="send_to_chat" id="send_to_chat"  ng-model="isSendToChat"  />
+            <label for="send_to_chat">同时发送到讨论</label>
+        </div>
     </div>
 </div>
 <div class="modal-footer" ng-show="PAGE_CONFIG.networkConnected">
-    <button class="btn btn-primary" ng-click="markMilestone(message)">标记里程碑</button>
+    <button class="btn btn-primary" ng-click="markMilestone(message,isSendToChat)">确定</button>
     <button class="btn btn-default" ng-click="cancel()">取消</button>
 </div>
