@@ -42,7 +42,7 @@
 </head>
 <body id="index_page" ng-class="!PAGE_CONFIG.networkConnected?'nonetwork':''"
       ng-controller="initClient">
-<div class="loading" ng-show="showLoading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: #40464d url(images/loading.gif) no-repeat 50%"></div>
+<div class="loading" ng-show="showLoading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: #40464d url(images/loading.png) no-repeat 50%;text-align: center;padding-top: 400px;color:#2d3439;font-size:14px">正在加载...</div>
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
     <div class="tree_wrapper" contextmenu>
