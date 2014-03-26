@@ -3637,7 +3637,7 @@ angular.module('gkClientIndex.services', [])
                         className: "file_link",
                         icon: 'icon_link',
                         callback: function () {
-                            if (selectedFile.length != 1 || selectedFile[0].dir != 0) {
+                            if (selectedFile.length != 1) {
                                 return;
                             }
                             var file = selectedFile[0],
