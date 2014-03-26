@@ -62,7 +62,7 @@
                                     <span class="name_size_wrapper">
                                           <span class="act_member" title="{{history.member_name}}">{{history.member_name}}</span>
                                           <span class="act">{{history.act_name}}</span>
-                                          了文件
+                                          了文件<span ng-if="history.dir==1">夹</span>
                                     </span>
                                     <br/>
                                     <span ng-show="file.dir==1" class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
