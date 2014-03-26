@@ -2811,7 +2811,7 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach(files, function (file) {
                     context.disableOpt(opts, "add", "new_folder",'new_txt_file','new_ppt_file','new_xls_file','new_doc_file', 'new_file', "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
-                        context.disableOpt(opts, 'open_with', 'lock', 'unlock','link');
+                        context.disableOpt(opts, 'open_with', 'lock', 'unlock');
                         context.setSyncOpt(opts, currentFile, file);
                     } else {
                         context.disableOpt(opts, 'sync', 'unsync');
@@ -3632,7 +3632,7 @@ angular.module('gkClientIndex.services', [])
                     'link': {
                         key:'link',
                         index: 19,
-                        name: '临时链接',
+                        name: '分享链接',
                         className: "file_link",
                         icon: 'icon_link',
                         callback: function () {
