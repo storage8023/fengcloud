@@ -586,8 +586,31 @@ angular.module('gkClientIndex.services', [])
                     controller: function ($scope,$modalInstance) {
                         $scope.file = file;
                         $scope.link = '';
-                        $scope.publish = function(file){
-                            GKApi.publish(mountId,file.fullpath)
+                        $scope.options = [
+                            {
+                                name:'1'
+                            },
+                            {
+                                name:'7',
+                            },
+                            {
+                                name:'30'
+                            },
+                            {
+                                name:'90',
+                            },
+                            {
+                                name:'180',
+                            },
+                            {
+                                name:'360',
+                            }
+                        ];
+                        $scope.option =  $scope.options[0];
+                        $scope.publish = function(file,option){
+                            var now = Math.round(new Date().getTime()/1000);
+                            var deadline = now + parseInt(option.name) * 86400;
+                            GKApi.publish(mountId,file.fullpath,deadline)
                                 .success(function(data){
                                     $scope.$apply(function(){
                                         $scope.link = data.link;

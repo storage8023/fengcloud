@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()">&times;</button>
-    <h4>获取临时链接</h4>
+    <h4>获取分享链接</h4>
 </div>
 <div class="modal-body">
     <div ng-show="!PAGE_CONFIG.networkConnected">
@@ -27,14 +27,19 @@
            </div>
         </div>
         <div class="btn_wrapper">
-            <button ng-show="!link" class="btn btn-primary" ng-click="publish(file)">发 布</button>
+            <button ng-show="!link" class="btn btn-primary" ng-click="publish(file,option)">发 布</button>
             <div ng-show="!!link" class="input_wrapper">
                 <input type="text" ng-model="link" readonly class="form-control" />
                 <div>
                     <button class="btn btn-default" ng-click="copy(link)">复 制</button>
                 </div>
             </div>
-            <div class="tip">发布后链接将在48小时后自动失效</div>
+            <div class="tip">
+                发布后链接将在
+                <select ng-show="!link" name="dead_date" ng-model="option" id="dead_date" ng-options="option.name for option in options"></select>
+                <span ng-show="link" ng-bind="option.name"></span>
+                天后自动失效
+            </div>
         </div>
     </div>
 </div>

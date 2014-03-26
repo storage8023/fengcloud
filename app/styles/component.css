@@ -768,6 +768,9 @@ a:hover > .icon16x16.icon_link,
 .icon32x32.icon_story{
     background-position: -4px -796px;
 }
+.icon32x32.icon_upgrade{
+    background-position: -4px -832px;
+}
 .icon_recycle{
     background: url(../images/icon/trash.png) no-repeat center;
     background-size: 32px;

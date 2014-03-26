@@ -1479,6 +1479,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             gkClientInterface.openUrl(url);
         }
 
+        $scope.goToUpgrade = function(){
+            var url = gkClientInterface.getUrl({
+                sso:1,
+                url: gkClientInterface.getSiteDomain()+'/pay/order'
+            });
+            gkClientInterface.openUrl(url);
+        }
+
         $scope.showTransferQueue = function(){
             GKDialog.openTransfer();
         }

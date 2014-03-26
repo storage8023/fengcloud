@@ -1362,10 +1362,11 @@ angular.module('GKCommon.services', [])
                     data: params
                 })
             },
-            publish: function (mountId, fullpath) {
+            publish: function (mountId, fullpath,deadline) {
                 var params = {
                     mount_id: mountId,
                     fullpath: fullpath,
+                    deadline:deadline,
                     token: gkClientInterface.getToken()
                 };
                 var sign = gkClientInterface.getApiAuthorization(params);
