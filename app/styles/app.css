@@ -1618,6 +1618,9 @@ float: right;
     word-break: break-all;
     word-wrap: break-word;
 }
+.right_sidebar .file_detail_wrapper .history_list > li .act_info .tag_list li span{
+    white-space: pre-wrap;
+}
 .right_sidebar .file_detail_wrapper .history_list > li .act{
     color: #539CF5;
 }
