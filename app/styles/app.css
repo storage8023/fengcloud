@@ -1504,26 +1504,9 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     float: right;
     margin: 5px 10px 0 0;
 }
-.right_sidebar .file_detail_wrapper .checkbox_wrapper{
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    height: 35px;
-    line-height: 35px;
-    background-color: #f7f7f7;
-    padding: 0 10px;
-    color: #3F4754;
-    width: 250px;
-}
-.right_sidebar .file_detail_wrapper .checkbox_wrapper .input_checkbox{
-    margin: -2px 10px 0 0;
-    vertical-align: middle;
-}
-.right_sidebar .file_detail_wrapper .checkbox_wrapper label{
-    font-weight: normal;
-}
 
-.right_sidebar .file_detail_wrapper .nocheckbox .history_list{
+
+.right_sidebar .file_detail_wrapper .history_list{
     bottom: 0;
 }
 .right_sidebar .file_detail_wrapper .history_list > li{

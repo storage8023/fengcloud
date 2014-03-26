@@ -1321,7 +1321,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var target = jQuery($event.target);
             var parent = $scope.path;
             var item = target.hasClass('file_item')?target:target.parents('.file_item');
-            if(item.size()){
+            if(item.size() && item.data('dir')==1){
                 parent = item.data('fullpath');
             }
             var params = {

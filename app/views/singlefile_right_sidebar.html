@@ -1,4 +1,4 @@
-<div class="single_file" ng-style="{'bottom':(showTab && showHistory&&showMilestone?'35px':'0')}"  scroll-load="loadHistory()" disable-scroll="disableScrollLoadHistory" trigger-distance="20">
+<div class="single_file" scroll-load="loadHistory()" disable-scroll="disableScrollLoadHistory" trigger-distance="20">
     <div ng-show="fileLoaded">
         <div ng-show="!fileExist">
             <filter-right-sidebar></filter-right-sidebar>
@@ -78,7 +78,6 @@
                             </div>
                         </li>
                     </ul>
-                    <div class="checkbox_wrapper" ng-show="localFile.dir==0&&showMilestone"><input class="input_checkbox" id="only_show_milestone" type="checkbox" ng-model="onlyShowMileStone" /><label for="only_show_milestone">只显示里程碑</label></div>
                 </div>
             </section>
         </div>
