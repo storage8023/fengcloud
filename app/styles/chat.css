@@ -242,7 +242,7 @@ right: -20px;
     color: #ACB4BF;
 }
 .chat_item .chat_main .chat_member .name{
-    color: #3F4754;
+    color: #448de8;
 }
 .chat_item.chat_item_mine .chat_main .chat_member{
  text-align: right;
@@ -253,7 +253,7 @@ right: -20px;
     word-wrap: break-word;
 }
 .chat_item .chat_main .chat_text .chat_text_inner{
-   color: #7F8999;
+   color: #3F4754;
 }
 .chat_item .chat_main .chat_text .chat_text_inner a{
     color: #448DE8;

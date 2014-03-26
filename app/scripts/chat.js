@@ -688,4 +688,4 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             });
         }
     }])
-
+;
