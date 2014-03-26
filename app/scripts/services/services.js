@@ -2716,9 +2716,9 @@ angular.module('gkClientIndex.services', [])
                         if(!isSearch){
                             this.disableOpt(opts, 'goto');
                         }
-                        if(GKPartition.isTeamFilePartition(partition)){
-                            this.disableOpt(opts, 'lock','unlock');
-                        }
+//                        if(GKPartition.isTeamFilePartition(partition)){
+//                            this.disableOpt(opts, 'lock','unlock');
+//                        }
                         break;
                     case GKPartition.subscribeFile:
                         this.disableOpt(opts, 'lock','unlock','link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
@@ -3489,7 +3489,9 @@ angular.module('gkClientIndex.services', [])
                                 mountid: mountId
                             }).then(function () {
                                  $rootScope.$broadcast('editFileSuccess','lock', mountId,file.fullpath);
-                                })
+                                },function(re){
+                                GKException.handleClientException(re);
+                            })
 
                         }
                     },
@@ -3511,7 +3513,9 @@ angular.module('gkClientIndex.services', [])
                                 mountid: mountId
                             }).then(function () {
                                     $rootScope.$broadcast('editFileSuccess','unlock', mountId,file.fullpath);
-                                })
+                                },function(re){
+                                GKException.handleClientException(re);
+                            })
 
                         }
                     },
