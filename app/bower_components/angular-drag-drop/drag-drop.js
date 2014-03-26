@@ -83,6 +83,7 @@ angular.module("gkDragDrop",[])
                 scope.$apply(function () {
                     dragOverFn(scope, {$event: event});
                 });
+                event.preventDefault();
             })
 
             var dragLeaveFn = $parse(attrs.dragLeave);
