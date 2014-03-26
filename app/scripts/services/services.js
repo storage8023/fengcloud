@@ -3647,11 +3647,11 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             if(file.status==1){
-                                alert('上传中的文件不能获取临时链接');
+                                alert('上传中的文件不能获取分享链接');
                                 return;
                             }
                             if(!GKAuth.check(mount,'','file_link')){
-                                alert('你没有权限获取该文件的临时链接');
+                                alert('你没有权限获取该文件的分享链接');
                                 return;
                             }
                             GKModal.publish(mountId,file);
