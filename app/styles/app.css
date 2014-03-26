@@ -1111,7 +1111,9 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     text-overflow: ellipsis;
     vertical-align: middle;
 }
-
+.right_sidebar .no_file .tab_content ul li .role_name{
+    color: #ACB4BF;
+}
 .right_sidebar .no_file .tab_content ul li i.member_type_0{
     background-position: -4px -1664px;
 }

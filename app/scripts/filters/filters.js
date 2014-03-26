@@ -47,9 +47,9 @@ angular.module('gkClientIndex.filters', [])
           }else if(memberType==1){
               roleName = '管理员';
           }else if(memberType==2){
-              roleName = '成员';
+              roleName = '编辑者';
           }else{
-              roleName = '订阅者';
+              roleName = '查看者';
           }
             return roleName;
         }

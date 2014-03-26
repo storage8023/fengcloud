@@ -1728,13 +1728,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 orgid:$rootScope.PAGE_CONFIG.mount.org_id
             })
             var members = re.list || [];
-            angular.forEach(members,function(value,key){
-                if(value.member_id == $rootScope.PAGE_CONFIG.user.member_id){
-                    members.splice(key,1);
-                    members.unshift(value);
-                    return false;
+            members.sort(function(a,b){
+                if(a.member_id == $rootScope.PAGE_CONFIG.user.member_id){
+                    return -1;
+                }else if(b.member_id == $rootScope.PAGE_CONFIG.user.member_id){
+                    return 1;
                 }
-            })
+                else{
+                    return Number(a.member_type) - Number(b.member_type);
+                }
+            });
+
             $scope.members = members;
             GKApi.pendingMembers($rootScope.PAGE_CONFIG.mount.org_id).success(function(data){
                $scope.$apply(function(){

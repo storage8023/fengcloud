@@ -308,7 +308,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     url += '?request_key=' + request_key;
                 }
                 url+='&uuid='+uuid+'&token='+gkClientInterface.getToken();
-                alert(url);
                 GKDialog.openUrl(url);
             }).error(function (req) {
                 GKException.handleAjaxException(req);
