@@ -1310,7 +1310,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.handleSysDrop = function ($event) {
             if(draging) return;
             var dragFiles = gkClientInterface.getDragFiles();
-            if (GKPartition.isSmartFolderPartition($scope.partition) || GKPartition.isSubscribePartition($scope.partition) || $scope.filter == 'trash') {
+            if (GKPartition.isSmartFolderPartition($scope.partition) || GKPartition.isSubscribePartition($scope.partition) || $rootScope.PAGE_CONFIG.filter == 'trash') {
                 alert('不能在当前路径添加文件');
                 return;
             }

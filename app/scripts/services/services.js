@@ -3328,6 +3328,10 @@ angular.module('gkClientIndex.services', [])
                         icon: 'icon_paste',
                         accesskeyText: context.getAccessKey('paste'),
                         callback: function () {
+                            if (GKPartition.isSmartFolderPartition($rootScope.PAGE_CONFIG.partition) || GKPartition.isSubscribePartition($rootScope.PAGE_CONFIG.partition) || $scope.filter == 'trash') {
+                                alert('不能在当前路径添加文件');
+                                return;
+                            }
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
                                 alert('你没有权限将文件或文件夹粘贴到当前云库中');
                                 return;
