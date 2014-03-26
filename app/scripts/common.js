@@ -1053,29 +1053,11 @@ angular.module('GKCommon.services', [])
             getOrgMounts: function () {
                 var orgMounts = [];
                 angular.forEach(mounts, function (value) {
-                    if (value.type < 3 && !value.ent_id) {
+                    if (!value.ent_id) {
                         orgMounts.push(value);
                     }
                 })
                 return orgMounts;
-            },
-            getJoinOrgMounts: function () {
-                var joinOrgMounts = [];
-                angular.forEach(mounts, function (value) {
-                    if (value.type < 3 && value.type > 0) {
-                        joinOrgMounts.push(value);
-                    }
-                })
-                return joinOrgMounts;
-            },
-            getSubscribeMounts: function () {
-                var subscribeMounts = [];
-                angular.forEach(mounts, function (value) {
-                    if (value.org_id != 0 && value.type == 3) {
-                        subscribeMounts.push(value);
-                    }
-                })
-                return subscribeMounts;
             },
             addMount: function (newMount, $scope) {
                 var mountItem = formatMountItem(newMount);

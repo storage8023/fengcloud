@@ -15,10 +15,10 @@
                   <div class="member_name">
                       {{PAGE_CONFIG.user.member_name}}
                   </div>
-                  <div class="member_role">
+                  <div class="member_role" ng-show="PAGE_CONFIG.user.product_name">
                       <a href="javascript:void(0)" ng-class="PAGE_CONFIG.user.isvip==1?'vip':''" ng-click="goToBuy()">
-                          <span ng-bind="PAGE_CONFIG.user.isvip|getMemberRoleName"></span>
-                          <button class="btn btn-warning" ng-bind="PAGE_CONFIG.user.isvip==1?'续费':'升级VIP'"></button>
+                          <span ng-bind="PAGE_CONFIG.user.product_name"></span>
+                          <button class="btn btn-warning">升级与续费</button>
                       </a>
                   </div>
               </div>
@@ -65,8 +65,8 @@
                 </li>
             </ul>
         </div>
-        <div class="view_banner" ng-click="goToBuy()">
+        <!--<div class="view_banner" ng-click="goToBuy()">-->
 
-        </div>
+        <!--</div>-->
     </section>
 </div>
