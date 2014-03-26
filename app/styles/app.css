@@ -866,11 +866,11 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 .file_list_wrapper .list_view {
 
 }
-.file_list .item{
-     user-drag: element;
-    -khtml-user-drag: element;
-    -webkit-user-drag: element;
-}
+/*.file_list .item{*/
+     /*user-drag: element;*/
+    /*-khtml-user-drag: element;*/
+    /*-webkit-user-drag: element;*/
+/*}*/
 .file_list .item .last_edit_time,
 .file_list .item .file_type,
 .file_list .item .file_size {
