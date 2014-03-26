@@ -38,7 +38,7 @@
                 <span>
                 发布后链接将在
                     </span>
-                <input ng-show="!link" type="number" name="dead_date" id="dead_date" style="width: 45px" value="1" min="1" max="365" ng-mode="option"/>
+                <input ng-show="!link" type="number" name="dead_date" id="dead_date" style="width: 45px" min="1" max="365" ng-model="option"/>
                 <span ng-show="link" ng-bind="option"></span>
                    <span>
                 天后自动失效

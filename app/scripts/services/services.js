@@ -586,26 +586,6 @@ angular.module('gkClientIndex.services', [])
                     controller: function ($scope,$modalInstance) {
                         $scope.file = file;
                         $scope.link = '';
-                        $scope.options = [
-                            {
-                                name:'1'
-                            },
-                            {
-                                name:'7',
-                            },
-                            {
-                                name:'30'
-                            },
-                            {
-                                name:'90',
-                            },
-                            {
-                                name:'180',
-                            },
-                            {
-                                name:'360',
-                            }
-                        ];
                         $scope.option = 1;
                         $scope.publish = function(file,option){
                             var now = Math.round(new Date().getTime()/1000);
@@ -619,7 +599,7 @@ angular.module('gkClientIndex.services', [])
                                 .error(function(reqest){
                                     GKException.handleAjaxException(reqest);
                                 })
-                        }
+                        };
                         $scope.copy = function (innerLink) {
                             gkClientInterface.copyToClipboard(innerLink);
                             alert('已复制到剪切板');
