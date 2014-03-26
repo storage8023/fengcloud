@@ -1911,7 +1911,7 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
                 var search = {
-                    partition: mount['ent_id']?GKPartition.entFile:mount['type'] > 2? GKPartition.subscribeFile : GKPartition.teamFile,
+                    partition: mount['ent_id']?GKPartition.entFile: GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
                     selectedpath: selectFile,
@@ -1919,7 +1919,7 @@ angular.module('gkClientIndex.services', [])
                     filter:filter
                 };
                 if (mount) {
-                    GKMode.setMode(mode);
+                    GKMode.setMode(mode,search.partition,mount);
                     $location.search(search);
                 }
             },
@@ -2159,9 +2159,6 @@ angular.module('gkClientIndex.services', [])
                 var partition;
                 if(!entId){
                     partition = this.teamFile;
-                    if (type > 2) {
-                        partition = this.subscribeFile;
-                    }
                 }else{
                     partition = this.entFile;
                 }
@@ -4093,13 +4090,15 @@ angular.module('gkClientIndex.services', [])
                 }
                 return re;
             },
-            setMode:function(mode){
-                if(mode == 'chat' && (!GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition) || !GKAuth.check($rootScope.PAGE_CONFIG.mount,$rootScope.PAGE_CONFIG.partition,'file_discuss'))){
+            setMode:function(mode,partition,mount){
+                partition = partition === undefined ?$rootScope.PAGE_CONFIG.partition:partition;
+                mount = mount === undefined ? $rootScope.PAGE_CONFIG.mount:mount;
+                if(mode == 'chat' && (!GKPartition.isMountPartition(partition) || !GKAuth.check(mount,partition,'file_discuss'))){
                     mode = 'file';
                 }
                 $rootScope.PAGE_CONFIG.mode = mode;
                 if(mode == 'chat'){
-                    $rootScope.$broadcast('clearMsgTime',{orgId: $rootScope.PAGE_CONFIG.mount.org_id})
+                    $rootScope.$broadcast('clearMsgTime',{orgId: mount.org_id})
                 }
                 localStorageService.add(key, mode);
                 var iframe = GKFrame('ifame_chat');

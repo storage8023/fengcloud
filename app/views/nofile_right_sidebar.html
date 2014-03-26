@@ -20,8 +20,8 @@
                         <li ng-dblclick="atMember(member)" ng-repeat="member in members"  bindonce >
                             <img class="avatar avatar_mini" ng-src="{{member.member_id|getAvatarUrl}}" alt=""/>
                             <span bo-text="member.member_name"></span>
-                            <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
-                            <i bo-title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
+                            <i title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==0 " class="icon16x16 member_type_0" ></i>
+                            <i title="{{member.member_type|getMemberRoleName}}" bo-if="member.member_type==1 " class="icon16x16 member_type_1"></i>
                         </li>
                         <li class="pending_member" ng-repeat="pendingMember in pendingMembers">
                             <avatar class="avatar avatar_mini" gk-src="{{pendingMember.accept_member_id|getAvatarUrl}}"></avatar>

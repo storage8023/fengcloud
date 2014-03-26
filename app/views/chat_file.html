@@ -14,7 +14,7 @@
             <span ng-bind="msg.metadata.filename"></span>
         </div>
     </div>
-    <div class="file_opt">
+    <div class="file_opt" ng-if="msg.file">
         <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
     </div>
     <div class="file_progress" ng-if="msg.file.status==1 && msg.metadata.dir==0">
