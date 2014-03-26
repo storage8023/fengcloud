@@ -1244,7 +1244,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     right: 0;
     bottom: 0;
     overflow: auto;
-    background: #fff;
+    background: #f1f1f2;
 }
 .right_sidebar .single_file.folded .section_title button.fold{
     -webkit-transform: rotate(180deg);

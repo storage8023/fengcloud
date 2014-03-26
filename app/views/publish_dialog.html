@@ -35,10 +35,14 @@
                 </div>
             </div>
             <div class="tip">
+                <span>
                 发布后链接将在
-                <select ng-show="!link" name="dead_date" ng-model="option" id="dead_date" ng-options="option.name for option in options"></select>
-                <span ng-show="link" ng-bind="option.name"></span>
+                    </span>
+                <input ng-show="!link" type="number" name="dead_date" id="dead_date" style="width: 45px" value="1" min="1" max="365" ng-mode="option"/>
+                <span ng-show="link" ng-bind="option"></span>
+                   <span>
                 天后自动失效
+                       </span>
             </div>
         </div>
     </div>

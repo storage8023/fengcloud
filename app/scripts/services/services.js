@@ -606,10 +606,10 @@ angular.module('gkClientIndex.services', [])
                                 name:'360',
                             }
                         ];
-                        $scope.option =  $scope.options[0];
+                        $scope.option = 1;
                         $scope.publish = function(file,option){
                             var now = Math.round(new Date().getTime()/1000);
-                            var deadline = now + parseInt(option.name) * 86400;
+                            var deadline = now + parseInt(option) * 86400;
                             GKApi.publish(mountId,file.fullpath,deadline)
                                 .success(function(data){
                                     $scope.$apply(function(){
