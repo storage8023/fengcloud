@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientIndex.services','gkClientIndex.directives'])
-    .controller('loginCtrl',['$scope','md5','GKApi','GKException',function($scope,md5,GKApi,GKException){
+angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientIndex.services','gkClientIndex.directives','base64'])
+    .controller('loginCtrl',['$scope','md5','GKApi','GKException','$base64',function($scope,md5,GKApi,GKException,$base64){
         $scope.step = 'login';
         $scope.registDevice = gkClientInterface.getComputerInfo()['name'];
         $scope.siteDomain = gkClientInterface.getSiteDomain();
@@ -19,12 +19,17 @@ angular.module('gkClientLogin', ['GKCommon','ngAnimate','angular-md5','gkClientI
                 alert('请输入密码');
                 return;
             }
+            var encodePassword = '';
+            if($scope.username.indexOf('/')>=0 || $scope.username.indexOf('\\')>=0){
+                encodePassword = encodeURIComponent($base64.encode($scope.password));
+            }else{
+                encodePassword = md5.createHash($scope.password);
+            }
             $scope.loading = true;
             gkClientInterface.login({
                 username:$scope.username,
-                password:md5.createHash($scope.password)
+                password:encodePassword
             });
-
         };
 
         $scope.showStep = function(step){
