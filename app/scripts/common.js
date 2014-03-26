@@ -927,7 +927,7 @@ angular.module('GKCommon.services', [])
          * @param mount
          */
         var isMember = function (mount) {
-            return mount && mount.type < 3;
+            return mount && true;
         };
 
         var isAdmin = function (mount) {
