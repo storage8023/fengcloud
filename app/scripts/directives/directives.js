@@ -1420,7 +1420,9 @@ angular.module('gkClientIndex.directives', [])
                         oldMsg = firstHistory['property']?firstHistory['property']['message']||'' : '';
                     }
                     GKModal.setMilestone(getOptMountId(file),file,oldMsg).result.then(function(){
-                        getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
+                        $timeout(function(){
+                            getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
+                        },500);
                     });
                 }
 
