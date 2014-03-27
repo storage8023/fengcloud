@@ -327,6 +327,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         })
 
         $scope.$on('chatMessageUpdate', function (event, item) {
+            if(!$scope.currentSession) return;
             if (item.receiver == $scope.currentSession.orgid) {
                 chatService.list($scope.currentSession.orgid, maxMsgTime, maxCount).then(function (re) {
                     if (!re || !re.list || !re.list.length) {

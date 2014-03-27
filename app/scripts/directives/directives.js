@@ -1422,7 +1422,7 @@ angular.module('gkClientIndex.directives', [])
                     GKModal.setMilestone(getOptMountId(file),file,oldMsg).result.then(function(){
                         $timeout(function(){
                             getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
-                        },500);
+                        },1000);
                     });
                 }
 
@@ -1488,6 +1488,28 @@ angular.module('gkClientIndex.directives', [])
                         })
                 };
 
+                var setHistoryMinheight = function(){
+                    console.log($element.find('.history_wrapper').size());
+                    if(!$element.find('.history_wrapper').size()){
+                        return;
+                    }
+                    var minHeight = $element.outerHeight()- 166 - $element.find('.file_detail_wrapper .section_title').outerHeight();
+                    console.log('minHeight',minHeight);
+                    $element.find('.history_wrapper').css({
+                        'min-height':minHeight
+                    })
+                }
+
+                jQuery(window).on('resize.historyList',function(){
+                    $timeout(function(){
+                        setHistoryMinheight();
+                    })
+                })
+
+                $timeout(function(){
+                    setHistoryMinheight();
+                })
+
                 /**
                  * 监听刷新事件
                  */
@@ -1508,6 +1530,7 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $scope.$on('$destroy', function () {
+                    jQuery(window).off('resize.historyList');
                     if (fileInterval) {
                         $interval.cancel(fileInterval);
                         fileInterval = null;

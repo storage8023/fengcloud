@@ -1510,8 +1510,8 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 }
 
 
-.right_sidebar .file_detail_wrapper .history_list{
-    bottom: 0;
+.right_sidebar .file_detail_wrapper .history_wrapper{
+    background: #fff;
 }
 .right_sidebar .file_detail_wrapper .history_list > li{
     padding:0 6px;
@@ -1571,6 +1571,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .name_size_wrapper{
     line-height: 18px;
+    color: #ACB4BF;
 }
 .right_sidebar .file_detail_wrapper .history_list > li .act_info .filename{
     color: #3f4754;
@@ -1602,7 +1603,6 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     overflow: hidden;
     text-overflow: ellipsis;
     display: inline-block;
-    color:#539CF5;
     margin: 0 3px 0 0;
     max-width: 80px;
     vertical-align: middle;
