@@ -65,11 +65,11 @@
                                           了文件<span ng-if="history.dir==1">夹</span>
                                     </span>
                                     <br/>
-                                    <span ng-show="file.dir==1" class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
+                                    <span ng-show="file.hash!=history.hash" class="filename" title="{{history.fullpath|baseName}}">{{history.fullpath|baseName}}</span>
                                 </div>
-                                <ul class="tag_list">
-                                    <li ng-repeat="msg in history.messages">
-                                        <span ng-bind="msg.property.message"></span>
+                                <ul class="tag_list" ng-if="history.property && history.property.message">
+                                    <li>
+                                        "<span ng-bind="history.property.message"></span>"
                                     </li>
                                 </ul>
                                 <div class="other_info">
