@@ -69,7 +69,7 @@
                                 </div>
                                 <ul class="tag_list">
                                     <li ng-repeat="msg in history.messages">
-                                        <span ng-bind="msg.property.message"></span>
+                                        <span ng-bind="'\"'+msg.property.message+'\"'"></span>
                                     </li>
                                 </ul>
                                 <div class="other_info">

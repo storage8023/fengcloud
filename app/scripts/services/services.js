@@ -621,6 +621,7 @@ angular.module('gkClientIndex.services', [])
                     controller: function ($scope,$modalInstance) {
                         $scope.file = file;
                         $scope.message = oldMessage || '';
+                        $scope.isSendToChat = true;
                         $scope.markMilestone = function(message,isSendToChat){
                             GKApi.markMilestone(mountId,file.fullpath,message,isSendToChat?1:0)
                                 .success(function(){
