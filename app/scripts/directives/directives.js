@@ -1489,13 +1489,13 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var setHistoryMinheight = function(){
-                    console.log($element.find('.history_list').size());
-                    if(!$element.find('.history_list').size()){
+                    console.log($element.find('.history_wrapper').size());
+                    if(!$element.find('.history_wrapper').size()){
                         return;
                     }
                     var minHeight = $element.outerHeight()- 166 - $element.find('.file_detail_wrapper .section_title').outerHeight();
                     console.log('minHeight',minHeight);
-                    $element.find('.history_list').css({
+                    $element.find('.history_wrapper').css({
                         'min-height':minHeight
                     })
                 }
