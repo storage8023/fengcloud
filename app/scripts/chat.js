@@ -70,6 +70,11 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (keyCode != 13 || $scope.it_isOpen) {
                 return;
             }
+            if(keyCode == 13){
+
+            }else if(1){
+
+            }
             if (!postText) {
                 $event.preventDefault();
                 return;
@@ -90,6 +95,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (postText.length > 800) {
                 alert('一次发送的消息字数不能超过800字，请分条发送');
                 return;
+            }
+            if($scope.showTopicLabel){
+                postText = '#'+$scope.topic+'#'+postText
             }
             $scope.postText = '';
             post('text', postText);
@@ -452,6 +460,23 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 }
             })
         }, 1000)
+
+        $scope.textareaStyle = {
+            'text-indent':0
+        };
+
+        $scope.handleBlur = function($event,topic){
+            var target = jQuery($event.target);
+            var footer = target.parents('footer');
+            var label = footer.find('.topic_label');
+            $scope.showTopicLabel = true;
+            $timeout(function(){
+                $scope.textareaStyle = {
+                    'text-indent':label.outerWidth(true)
+                };
+            $scope.focusTextarea = true;
+            })
+        };
 
     }])
     .factory('chatContent', ['chatMember', 'chatSession', '$q', '$rootScope', function (chatMember, chatSession, $q, $rootScope) {

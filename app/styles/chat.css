@@ -263,7 +263,7 @@ right: -20px;
    border-top-right-radius: 0;
 }
 .chat_item .chat_main .chat_text .chat_text_inner .label{
-    font-size: inherit;
+    font-size: 13px;
     font-weight: normal;
 }
 .chat_item.vip_item .chat_text{
@@ -394,6 +394,7 @@ footer textarea{
     bottom: 34px;
     border:0 none;
     box-shadow: none;
+    z-index: 10;
 }
 footer .btn_wrapper{
     height: 34px;
@@ -458,6 +459,30 @@ footer .post_btn{
 footer .post_file_wrapper .chat_file{
     width: 270px;
     margin: 15px auto;
+}
+footer .label{
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: normal;
+}
+footer .topic_label{
+    position: absolute;
+    top:0;
+    left:0;
+    margin: 5px 0 0 5px;
+    z-index: 9;
+}
+footer .topic_label.show{
+    z-index:11;
+}
+footer .btn_wrapper .label{
+    margin:0 5px 0 5px;
+    position: relative;
+    top:5px;
 }
 .session_list{
     position: absolute;
