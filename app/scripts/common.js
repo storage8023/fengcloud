@@ -793,7 +793,7 @@ angular.module('GKCommon.directives', [])
 angular.module('GKCommon.services', [])
     .constant('newsKey', 'gkNews')
     .constant('FILE_SORTS', {
-        'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf','ai','cdr','psd','dmg','iso','md'],
+        'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf','ai','cdr','psd','dmg','iso','md','ipa','apk'],
         'SORT_MOVIE': ['mp4', 'mkv', 'rm', 'rmvb', 'avi', '3gp', 'flv', 'wmv', 'asf', 'mpeg', 'mpg', 'mov', 'ts', 'm4v'],
         'SORT_MUSIC': ['mp3', 'wma', 'wav', 'flac', 'ape', 'ogg', 'aac', 'm4a'],
         'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd', 'bmp','ai','cdr'],
