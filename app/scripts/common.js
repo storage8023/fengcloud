@@ -1974,7 +1974,7 @@ angular.module('GKCommon.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = $filter('date')(dateline, 'HH:mm');
+                dateText = '今天，' +$filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             } else {
@@ -1992,7 +1992,7 @@ angular.module('GKCommon.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = $filter('date')(dateline, 'HH:mm');
+                dateText = '今天，'+ $filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             } else {
