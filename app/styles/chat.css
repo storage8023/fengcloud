@@ -402,6 +402,9 @@ footer .btn_wrapper{
     left: 0;
     right: 0;
 }
+footer .btn_wrapper {
+
+}
 footer .btn_wrapper > span{
     float: left;
     margin-left: 10px;

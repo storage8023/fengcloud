@@ -71,7 +71,13 @@
                 <textarea ng-trim="false" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过800字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="btn_wrapper">
                     <span>你已输入了{{postText.length}}个字</span>
-                    <button class="btn btn-primary post_btn" ng-click="postMessage(postText)">发 送</button>
+                    <button class="btn btn-primary pull-right post_btn" ng-click="postMessage(postText)">发 送</button>
+                    <div class="topic_wrapper pull-right">
+                        <input type="checkbox"  class="form-control" name="only_show_topic" id="only_show_topic" />
+                        <label for="only_show_topic">只显示当前话题</label>
+                        <input type="text" class="form-control" placeholder="话题..." ng-model="topic" />
+                    </div>
+
                 </div>
             </footer>
             </div>
