@@ -262,25 +262,24 @@ angular.module('GKCommon.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-                $scope.$watch($attrs.insertTo, function (input) {
-                    if (input) {
-                        var val = $scope[$attrs.ngModel];
-                        var inputPos = Util.Input.getCurSor($element[0]).split('|');
-                        var isInsert = inputPos[1] != val.length ? 1 : 0;
-                        var l = val.substr(0, inputPos[0]);
-                        var r = val.substr(inputPos[1], val.length);
-                        val = l + input + r;
-                        $scope[$attrs.ngModel] = val;
-                        $timeout(function () {
-                            if (isInsert) {
-                                Util.Input.moveCur($element[0], parseInt(inputPos[0]) + (input).length);
-                            } else {
-                                Util.Input.moveCur($element[0], val.length);
-                            }
-                            return null;
-                        }, 0);
-                        $scope[$attrs.insertTo] = '';
-                    }
+                $attrs.$observe($attrs.insertTo,function (input) {
+                    if(!input) return;
+                    var val = $scope[$attrs.ngModel];
+                    var inputPos = Util.Input.getCurSor($element[0]).split('|');
+                    var isInsert = inputPos[1] != val.length ? 1 : 0;
+                    var l = val.substr(0, inputPos[0]);
+                    var r = val.substr(inputPos[1], val.length);
+                    val = l + input + r;
+                    $scope[$attrs.ngModel] = val;
+                    $timeout(function () {
+                        if (isInsert) {
+                            Util.Input.moveCur($element[0], parseInt(inputPos[0]) + (input).length);
+                        } else {
+                            Util.Input.moveCur($element[0], val.length);
+                        }
+                    }, 0);
+                    $scope[$attrs.insertTo] = '';
+
                 });
             }
         }
@@ -1171,7 +1170,7 @@ angular.module('GKCommon.services', [])
                     type: "sole",
                     width: 794,
                     height: 490,
-                    resize: 0,
+                    resize: 0
                 }
                 gkClientInterface.setMain(data);
             },
