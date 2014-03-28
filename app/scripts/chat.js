@@ -652,39 +652,42 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/chat_file.html",
+            templateUrl: "views/chat_file.html"
         }
     }])
     .directive('chatText', [function () {
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/chat_text.html",
+            templateUrl: "views/chat_text.html"
         }
     }])
     .directive('chatExt', [function () {
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/chat_ext.html",
+            templateUrl: "views/chat_ext.html"
         }
     }])
     .directive('chatAudio', [function () {
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/chat_audio.html",
+            templateUrl: "views/chat_audio.html"
         }
     }])
     .directive('chatBind', ['$compile', function ($compile) {
         return function (scope, element, attr) {
             scope.$watch(attr.chatBind, function (value) {
+                var bind = value;
                 if (Util.RegExp.HTTPStrict.test(value)) {
-                    var replacement = $compile(angular.element('<span>' + value.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>') + '</span>'))(scope);
-                    element.append(replacement);
-                } else {
-                    element.text(value == undefined ? '' : value);
+                    bind = value.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
+                if(Util.RegExp.POUND_TOPIC.test(bind)){
+                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span class="label label-success">$&</span> ');
+                }
+                bind = $compile(angular.element('<span>'+bind+'</span>'))(scope);
+                element.html(bind === undefined ? '' : bind);
             });
         }
     }])

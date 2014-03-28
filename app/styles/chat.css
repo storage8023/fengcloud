@@ -262,7 +262,10 @@ right: -20px;
 .chat_item.chat_item_mine .chat_main .chat_text{
    border-top-right-radius: 0;
 }
-
+.chat_item .chat_main .chat_text .chat_text_inner .label{
+    font-size: inherit;
+    font-weight: normal;
+}
 .chat_item.vip_item .chat_text{
     background: #fded1f;
     border:1px solid #bc9a02;
@@ -402,8 +405,33 @@ footer .btn_wrapper{
     left: 0;
     right: 0;
 }
-footer .btn_wrapper {
-
+footer .topic_wrapper{
+    color: #ACB4BF;
+}
+footer .topic_wrapper label{
+    font-weight:normal;
+}
+footer .topic_wrapper .input_text{
+    width: 80px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 3px 2px;
+    box-shadow:inset 1px 1px 1px rgba(0,0,0,.1);
+    margin:0 6px 0 6px;
+    outline: 0;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+footer .topic_wrapper .input_text:focus{
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+footer .topic_wrapper .input_checkbox{
+    vertical-align: middle;
+    margin-top: -2px;
 }
 footer .btn_wrapper > span{
     float: left;
