@@ -792,10 +792,10 @@ angular.module('GKCommon.directives', [])
 angular.module('GKCommon.services', [])
     .constant('newsKey', 'gkNews')
     .constant('FILE_SORTS', {
-        'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'],
+        'SORT_SPEC': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf','ai','cdr','psd','dmg','iso','md'],
         'SORT_MOVIE': ['mp4', 'mkv', 'rm', 'rmvb', 'avi', '3gp', 'flv', 'wmv', 'asf', 'mpeg', 'mpg', 'mov', 'ts', 'm4v'],
         'SORT_MUSIC': ['mp3', 'wma', 'wav', 'flac', 'ape', 'ogg', 'aac', 'm4a'],
-        'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd', 'bmp'],
+        'SORT_IMAGE': ['jpg', 'png', 'jpeg', 'gif', 'psd', 'bmp','ai','cdr'],
         'SORT_DOCUMENT': ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'odt', 'rtf', 'ods', 'csv', 'odp', 'txt'],
         'SORT_CODE': ['js', 'c', 'cpp', 'h', 'cs', 'vb', 'vbs', 'java', 'sql', 'ruby', 'php', 'asp', 'aspx', 'html', 'htm', 'py', 'jsp', 'pl', 'rb', 'm', 'css', 'go', 'xml', 'erl', 'lua', 'md'],
         'SORT_ZIP': ['rar', 'zip', '7z', 'cab', 'tar', 'gz', 'iso'],
@@ -1973,7 +1973,7 @@ angular.module('GKCommon.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = $filter('date')(dateline, 'HH:mm');
+                dateText = '今天，' +$filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             } else {
@@ -1991,7 +1991,7 @@ angular.module('GKCommon.filters', [])
             var date = $filter('date')(dateline, 'yyyy-MM-dd');
             var dateText = '';
             if (date == today) {
-                dateText = $filter('date')(dateline, 'HH:mm');
+                dateText = '今天，'+ $filter('date')(dateline, 'HH:mm');
             } else if (date == yesterday) {
                 dateText = '昨天，' + $filter('date')(dateline, 'HH:mm');
             } else {

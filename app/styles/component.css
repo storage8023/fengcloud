@@ -840,7 +840,24 @@ a:hover > .icon16x16.icon_link,
 .icon_execute {
     background-image: url(../images/icon/exe32x32.png);
 }
-
+.icon_ai {
+    background-image: url(../images/icon/ai32x32.png);
+}
+.icon_cdr {
+    background-image: url(../images/icon/cdr32x32.png);
+}
+.icon_dmg {
+    background-image: url(../images/icon/dmg32x32.png);
+}
+.icon_iso {
+    background-image: url(../images/icon/iso32x32.png);
+}
+.icon_md{
+    background-image: url(../images/icon/md32x32.png);
+}
+.icon_psd{
+    background-image: url(../images/icon/psd32x32.png);
+}
 /*文件夹*/
 .icon_folder {
     background-image: url(../images/icon/folder32x32.png);
@@ -858,6 +875,7 @@ a:hover > .icon16x16.icon_link,
 .icon_shared_folder {
     background-image: url(../images/icon/folder_share32x32.png);
 }
+
 
 /*********文件图标 128x128*******/
 
@@ -911,7 +929,25 @@ a:hover > .icon16x16.icon_link,
 .file_icon128x128.icon_execute {
     background-image: url(../images/icon/execute128x128.png);
 }
+.file_icon128x128.icon_ai {
+    background-image: url(../images/icon/ai128x128.png);
+}
+.file_icon128x128.icon_cdr {
+    background-image: url(../images/icon/cdr128x128.png);
+}
 
+.file_icon128x128.icon_dmg {
+    background-image: url(../images/icon/dmg128x128.png);
+}
+.file_icon128x128.icon_iso {
+    background-image: url(../images/icon/iso128x128.png);
+}
+.file_icon128x128.icon_md{
+    background-image: url(../images/icon/md128x128.png);
+}
+.file_icon128x128.icon_psd{
+    background-image: url(../images/icon/psd128x128.png);
+}
 /*文件夹*/
 .file_icon128x128.icon_folder {
     background-image: url(../images/icon/folder128x128.png);
