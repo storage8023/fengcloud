@@ -858,6 +858,14 @@ a:hover > .icon16x16.icon_link,
 .icon_psd{
     background-image: url(../images/icon/psd32x32.png);
 }
+
+.icon_ipa{
+    background-image: url(../images/icon/ipa32x32.png);
+}
+.icon_apk{
+    background-image: url(../images/icon/apk32x32.png);
+}
+
 /*文件夹*/
 .icon_folder {
     background-image: url(../images/icon/folder32x32.png);
@@ -928,7 +936,13 @@ a:hover > .icon16x16.icon_link,
 /*可执行文件*/
 .file_icon128x128.icon_execute {
     background-image: url(../images/icon/execute128x128.png);
+}.file_icon128x128.icon_ipa{
+     background-image: url(../images/icon/ipa128x128.png);
+ }
+.file_icon128x128.icon_apk{
+    background-image: url(../images/icon/apk128x128.png);
 }
+
 .file_icon128x128.icon_ai {
     background-image: url(../images/icon/ai128x128.png);
 }
@@ -948,12 +962,7 @@ a:hover > .icon16x16.icon_link,
 .file_icon128x128.icon_psd{
     background-image: url(../images/icon/psd128x128.png);
 }
-.file_icon128x128.icon_ipa{
-    background-image: url(../images/icon/ipa128x128.png);
-}
-.file_icon128x128.icon_apk{
-    background-image: url(../images/icon/apk128x128.png);
-}
+
 /*文件夹*/
 .file_icon128x128.icon_folder {
     background-image: url(../images/icon/folder128x128.png);
