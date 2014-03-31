@@ -240,7 +240,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             chatContent.pendingMsg = [];
             var msgList = [];
             chatService.list($scope.currentSession.orgid, 0, maxCount).then(function (re) {
-                var minDataline = 0;
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
                         chatContent.add(msgList, item);
@@ -466,6 +465,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
 
         $scope.handleBlur = function($event,topic){
+            if(!topic){
+                return;
+            }
             var target = jQuery($event.target);
             var footer = target.parents('footer');
             var label = footer.find('.topic_label');
@@ -477,6 +479,31 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.focusTextarea = true;
             })
         };
+
+        $scope.$watch('onlyShowTopic',function(val){
+            if(!$scope.currentSession) return;
+            var topic = '';
+            if(val){
+                topic = $scope.topic;
+            }
+            var msgList = [];
+            chatService.list($scope.currentSession.orgid, 0, maxCount,['#',topic,'#'].join('')).then(function (re) {
+                if (re && re.list && re.list.length) {
+                    angular.forEach(re.list, function (item) {
+                        chatContent.add(msgList, item);
+                        var time = Number(item.time);
+                        if (time < minMsgTime) {
+                            minMsgTime = time;
+                        }
+                        if (time > maxMsgTime) {
+                            maxMsgTime = time;
+                        }
+                    });
+                }
+                $scope.currentMsgList = msgList;
+                $scope.scrollToIndex = $scope.currentMsgList.length - 1;
+            });
+        })
 
     }])
     .factory('chatContent', ['chatMember', 'chatSession', '$q', '$rootScope', function (chatMember, chatSession, $q, $rootScope) {
@@ -620,13 +647,16 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 });
                 return deferred.promise;
             },
-            list: function (orgId, lastTime, count) {
+            list: function (orgId, lastTime, count,topic) {
+                console.log('arguments',arguments);
+                topic = angular.isDefined(topic)?topic:'';
                 var deferred = $q.defer();
                 gkClientInterface.getChatMessage({
                     'receiver': String(orgId),
                     'dateline': lastTime,
                     'count': count,
-                    'before': 0
+                    'before': 0,
+                    'topic':topic
                 }, function (re) {
                     if (!re.error) {
                         deferred.resolve(re);

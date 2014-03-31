@@ -433,6 +433,7 @@ footer .topic_wrapper .input_text:focus{
 footer .topic_wrapper .input_checkbox{
     vertical-align: middle;
     margin-top: -2px;
+    outline:0;
 }
 footer .btn_wrapper > span{
     float: left;
