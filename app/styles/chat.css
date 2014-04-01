@@ -265,6 +265,7 @@ right: -20px;
 .chat_item .chat_main .chat_text .chat_text_inner .label{
     font-size: 13px;
     font-weight: normal;
+    cursor: pointer;
 }
 .chat_item.vip_item .chat_text{
     background: #fded1f;
@@ -411,6 +412,7 @@ footer .topic_wrapper{
 }
 footer .topic_wrapper label{
     font-weight:normal;
+
 }
 footer .topic_wrapper .input_text{
     width: 80px;
@@ -484,6 +486,7 @@ footer .btn_wrapper .label{
     margin:0 5px 0 5px;
     position: relative;
     top:5px;
+    cursor: pointer;
 }
 .session_list{
     position: absolute;

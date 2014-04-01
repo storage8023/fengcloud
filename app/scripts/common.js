@@ -3,6 +3,202 @@ angular.module('GKCommon', ['GKCommon.directives', 'GKCommon.services', 'GKCommo
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('gkAutocomplete', ['$compile','$document','$position','$timeout',function ($compile,$document,$position,$timeout) {
+        var template = '<ul class="dropdown-menu" ng-show="showList" ng-mouseenter="mouseenter=true" ng-mouseleave="mouseenter=false">';
+        template += '<li ng-repeat="item in resultList">';
+        template += '<a href="javascript:;" ng-click="handleClick($index)" ng-mouseenter="handleMouseenter($index)" ng-class="{\'active\':item.preSelected}"><span ng-bind="item.value"></span></a>';
+        template += '</li>';
+        template += '</ul>';
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                ngModel: '=',
+                gkAutocomplete:'='
+            },
+            controller:function($scope){
+                $scope.resultList = [];
+                $scope.preSelectedIndex = -1;
+
+
+                $scope.preSelect = function(index){
+                    if($scope.preSelectedItem){
+                        $scope.preSelectedItem.preSelected = false;
+                    }
+                    if($scope.resultList[$scope.preSelectedIndex]){
+                        $scope.resultList[$scope.preSelectedIndex].preSelected = false;
+                    }
+                    $scope.preSelectedIndex = index;
+                    $scope.preSelectedItem = $scope.resultList[index];
+                    $scope.preSelectedItem.preSelected = true;
+                };
+
+            },
+            link: function (scope, element, attrs, ngModelController) {
+                var list = [],
+                    $body = $document.find('body'),
+                    $listElem,
+                    watching  = true;;
+
+
+                scope.showList = false;
+
+                $listElem = $compile(template)(scope).css({
+                    'position':'absolute',
+                    'display':'block',
+                    'top':0,
+                    'left':0,
+                    'z-index':99,
+                    'width':element.outerWidth()
+                });
+                $body.append($listElem);
+
+                var setPosition = function(){
+                    var position,
+                        height,
+                        ttHeight,
+                        ttPosition,
+                        buffer = 4;
+
+                    position = $position.offset(element);
+                    height = element.outerHeight();
+                    ttHeight = $listElem.outerHeight();
+
+                    ttPosition = {
+                        top: position.top + height+2,
+                        left: position.left
+                    }
+
+                    if (ttPosition.top + ttHeight > jQuery(window).height()) {
+                        ttPosition.top = position.top - ttHeight-buffer;
+                    }
+                    $listElem.css(ttPosition);
+                };
+
+                var search = function(keyword){
+                    var resultList = [];
+                    angular.forEach(list,function(item){
+                        if(item.value.indexOf(keyword)>=0){
+                            resultList.push(item);
+                        }
+                    });
+
+                    return resultList;
+                };
+
+                var show = function(){
+                    scope.showList = true;
+                    $timeout(function(){
+                        setPosition();
+                    })
+                };
+
+                var hide = function(){
+                    scope.showList = false;
+                };
+
+                var select = function(index){
+                    ngModelController.$setViewValue(scope.resultList[index].value);
+                    ngModelController.$render();
+                    element.focus();
+                };
+
+                scope.$watch('gkAutocomplete',function(val){
+                    if(!angular.isArray(val)){
+                        return;
+                    }
+                    scope.resultList = list = val;
+
+                })
+
+                scope.$watch('ngModel',function(val,oldVal){
+                    console.log('arguments',arguments);
+                    if(!watching ) return;
+                    if(val == oldVal) return;
+                    scope.resultList = search(val);
+                    if(scope.resultList.length){
+                        show();
+                        $timeout(function(){
+                            setPosition();
+                        })
+                    }else{
+                        hide();
+                    }
+
+                })
+
+                element.on({
+                    'focus.autocomplete':function(){
+                        scope.$apply(function(){
+                            show();
+                        })
+                    },
+                    'blur.autocomplete':function(event){
+                        if(scope.mouseenter) return;
+                        scope.$apply(function(){
+                            hide();
+                        })
+                    }
+                });
+
+                scope.handleClick = function(){
+                  watching = false;
+                  select(scope.preSelectedIndex);
+                    watching = true;
+                    hide();
+                };
+
+                scope.handleMouseenter = function(index){
+                    scope.preSelect(index);
+                };
+
+                var keyMap = {
+                    "up": 38,
+                    "down": 40,
+                    "enter": 13
+                };
+
+//                $document.on('click.autocomplete',function(e){
+//                    var $target = angular.element(e.target);
+//                    if($target.is(element)){
+//                        return;
+//                    }
+//                    scope.$apply(function(){
+//                        hide();
+//                    })
+//                });
+
+                $document.on('keydown.autocomplete',function(event){
+                    var keyCode = event.keyCode;
+                    switch(keyCode){
+                        case keyMap.up:
+                            if(scope.preSelectedIndex == 0){
+                                scope.preSelect(scope.resultList.length-1);
+                            }else{
+                                scope.preSelect(--scope.preSelectedIndex);
+                            }
+
+                            break;
+                        case keyMap.down:
+                            if(scope.preSelectedIndex == scope.resultList.length-1){
+                                scope.preSelect(0);
+                            }else{
+                                scope.preSelect(++scope.preSelectedIndex);
+                            }
+                            break;
+                        case keyMap.enter:
+                            select(scope.preSelectedIndex)
+                            break;
+                    }
+                })
+
+                scope.$on('$destroy',function(){
+                    element.off('.autocomplete');
+                    $listElem.remove();
+                });
+            }
+        }
+    }])
     .directive('jplayer', [function () {
         return {
             restrict: 'E',

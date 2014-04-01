@@ -68,7 +68,7 @@
                 <li ng-repeat="app in apps" ng-click="gotoApp(app)"><img ng-src="{{app.icon}}" title="{{app.name}}"/></li>
             </ul>
             <footer>
-                <span class="label label-success topic_label" ng-class="{'show':showTopicLabel}" ng-bind="'#'+topic+'#'"></span>
+                <span class="label label-success topic_label" ng-class="{'show':showTopicLabel}" ng-bind="topic"></span>
                 <textarea ng-style="textareaStyle" ng-trim="false" insert-to = "insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过800字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="btn_wrapper">
                     <span>你已输入了{{postText.length}}个字</span>
@@ -76,8 +76,8 @@
                     <div class="topic_wrapper pull-right">
                         <input type="checkbox" class="input_checkbox" ng-model="onlyShowTopic" name="only_show_topic" id="only_show_topic" />
                         <label for="only_show_topic"> 只显示当前话题</label>
-                        <span class="label label-success" ng-show="showTopicLabel" ng-click="showTopicLabel=false;textareaStyle={'text-indent':0};focusTopic=true" ng-bind="'#'+topic+'#'"></span>
-                        <input type="text" class="input_text" ng-show="!showTopicLabel" focus-me="focusTopic" placeholder="话题..." ng-blur="handleBlur($event,topic)" ng-model="topic" />
+                        <span class="label label-success" ng-show="showTopicLabel" ng-click="showTopicLabel=false;textareaStyle={'text-indent':0};focusTopic=true" ng-bind="topic"></span>
+                        <input gk-autocomplete="hintList" type="text" class="input_text" ng-show="!showTopicLabel" list="myTopic" focus-me="focusTopic" placeholder="话题..." ng-blur="handleBlur($event,topic)" ng-model="topic" />
                     </div>
 
                 </div>

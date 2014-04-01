@@ -10,16 +10,15 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         }
 
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember', '$window', '$interval', 'GKApi', 'localStorageService', 'GKDialog', function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember, $window, $interval, GKApi, localStorageService, GKDialog) {
+    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember', '$window', '$interval', 'GKApi', 'localStorageService', 'GKDialog','$document', function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember, $window, $interval, GKApi, localStorageService, GKDialog, $document) {
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
             topWindow = window.top,
-            pendingMsg = [],
-            pendingTimer,
             postedMsg = [];
         $scope.currentMsgList = [];
         $scope.currentSession = null;
+        $scope.onlyShowTopic = false;
 
         var post = function (type, content, metadata, status) {
             metadata = angular.isDefined(metadata) ? metadata : '';
@@ -45,6 +44,51 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             })
         };
 
+        var getList = function (lastTime, callback) {
+            var topic = '';
+            if ($scope.onlyShowTopic) {
+                topic = ['#', $scope.topic, '#'].join('');
+            }
+            chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
+                if (re && re.list && re.list.length) {
+                    angular.forEach(re.list, function (item) {
+                        chatContent.add($scope.currentMsgList, item);
+                        var time = Number(item.time);
+                        if (minMsgTime == 0 || time < minMsgTime) {
+                            minMsgTime = time;
+                        }
+                        if (time > maxMsgTime) {
+                            maxMsgTime = time;
+                        }
+                        if (postedMsg.indexOf(time) >= 0) {
+                            return;
+                        }
+                    });
+                }
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
+        };
+
+        var toggleTopicLabel = function(state){
+            if(state == 'show'){
+                var label = angular.element($document).find('.topic_label');
+                console.log('label',label);
+                $scope.showTopicLabel = true;
+                $timeout(function(){
+                    $scope.textareaStyle = {
+                        'text-indent': label.outerWidth(true)
+                    };
+                })
+            }else{
+                $scope.showTopicLabel = false;
+                $scope.textareaStyle = {
+                    'text-indent': 0
+                };
+            }
+        };
+
         $scope.handleSysKeyDown = function ($event) {
             var ctrlKeyOn = $event.ctrlKey || $event.metaKey;
             if (ctrlKeyOn && $event.keyCode == 86) {
@@ -67,25 +111,31 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
 
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
-            if (keyCode != 13 || $scope.it_isOpen) {
+            if ($scope.it_isOpen) {
                 return;
             }
-            if(keyCode == 13){
-
-            }else if(1){
-
-            }
-            if (!postText) {
+            if (keyCode == 13) {
+                if (!postText) {
+                    $event.preventDefault();
+                    return;
+                }
+                if (postText.length > 800) {
+                    alert('一次发送的消息字数不能超过800字，请分条发送');
+                    return;
+                }
+                if ($scope.showTopicLabel) {
+                    postText = '#' + $scope.topic + '#' + postText
+                }
+                $scope.postText = '';
+                post('text', postText);
                 $event.preventDefault();
-                return;
+            } else if (keyCode == 8) {
+                if($scope.showTopicLabel){
+                    $scope.topic = '';
+                    $scope.onlyShowTopic = false;
+                    toggleTopicLabel('hide');
+                }
             }
-            if (postText.length > 800) {
-                alert('一次发送的消息字数不能超过800字，请分条发送');
-                return;
-            }
-            $scope.postText = '';
-            post('text', postText);
-            $event.preventDefault();
         };
 
         $scope.postMessage = function (postText) {
@@ -96,8 +146,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 alert('一次发送的消息字数不能超过800字，请分条发送');
                 return;
             }
-            if($scope.showTopicLabel){
-                postText = '#'+$scope.topic+'#'+postText
+            if ($scope.showTopicLabel) {
+                postText = '#' + $scope.topic + '#' + postText
             }
             $scope.postText = '';
             post('text', postText);
@@ -115,7 +165,11 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 minDateline = $scope.currentMsgList[0]['time'];
             }
             $scope.firstLoading = scrollToBottom;
-            chatService.search($scope.currentSession.orgid, minDateline, 10).then(function (data) {
+            var topic = '';
+            if ($scope.onlyShowTopic) {
+                topic = ['#', $scope.topic, '#'].join('');
+            }
+            chatService.search($scope.currentSession.orgid, minDateline, 10, topic).then(function (data) {
                 if (!data || !data.list || !data.list.length) return;
                 var list = data.list;
                 var len = list.length;
@@ -209,7 +263,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (url.indexOf('?') >= 0) {
                     url += '&uuid=' + $rootScope.PAGE_CONFIG.user.uuid;
                 } else {
-                    url += '?uuid=' + + $rootScope.PAGE_CONFIG.user.uuid;
+                    url += '?uuid=' + +$rootScope.PAGE_CONFIG.user.uuid;
                 }
                 var url = gkClientInterface.getUrl({
                     url: metadata.url,
@@ -238,23 +292,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             var extendParam = {};
             $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
             chatContent.pendingMsg = [];
-            var msgList = [];
-            chatService.list($scope.currentSession.orgid, 0, maxCount).then(function (re) {
-                if (re && re.list && re.list.length) {
-                    angular.forEach(re.list, function (item) {
-                        chatContent.add(msgList, item);
-                        var time = Number(item.time);
-                        if (time < minMsgTime) {
-                            minMsgTime = time;
-                        }
-                        if (time > maxMsgTime) {
-                            maxMsgTime = time;
-                        }
-                    });
-                }
-                $scope.currentMsgList = msgList;
+            $scope.currentMsgList = [];
+            getList(0, function () {
                 //文件
-
                 if (param.fullpath) {
                     extendParam.file = gkClientInterface.getFileInfo({
                         mountid: mountId,
@@ -278,6 +318,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
 
                 $scope.scrollToIndex = $scope.currentMsgList.length - 1;
             });
+
             $scope.chatLoaded = true;
             $timeout(function () {
                 $scope.focusTextarea = true;
@@ -314,7 +355,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 } else {
                     url += '?request_key=' + request_key;
                 }
-                url+='&uuid='+uuid+'&token='+gkClientInterface.getToken();
+                url += '&uuid=' + uuid + '&token=' + gkClientInterface.getToken();
                 GKDialog.openUrl(url);
             }).error(function (req) {
                 GKException.handleAjaxException(req);
@@ -334,26 +375,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         })
 
         $scope.$on('chatMessageUpdate', function (event, item) {
-            if(!$scope.currentSession) return;
-            if (item.receiver == $scope.currentSession.orgid) {
-                chatService.list($scope.currentSession.orgid, maxMsgTime, maxCount).then(function (re) {
-                    if (!re || !re.list || !re.list.length) {
-                        return;
-                    }
-                    var newMsgList = re.list;
-                    angular.forEach(newMsgList, function (item) {
-                        var time = Number(item.time);
-                        if (time > maxMsgTime) {
-                            maxMsgTime = time;
-                        }
-                        if (postedMsg.indexOf(time) >= 0) {
-                            return;
-                        }
-                        chatContent.add($scope.currentMsgList, item);
-                        $scope.scrollToIndex = $scope.currentMsgList.length - 1;
-                    })
-                })
-            }
+            if (!$scope.currentSession) return;
+            if (item.receiver != $scope.currentSession.orgid) return;
+            getList(maxMsgTime);
         })
 
         $scope.$on('$locationChangeSuccess', function (event, newLocation, oldLocation) {
@@ -366,7 +390,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (mode == 'chat' && !$scope.chatLoaded) {
                 setList();
             }
-
         })
 
         $scope.showDragChat = false;
@@ -422,8 +445,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             })
             $scope.hideTip();
         };
+
         var lastOffset = 0;
-        pendingTimer = $interval(function () {
+        $interval(function () {
             if (!chatContent.pendingMsg.length) {
                 return;
             }
@@ -458,55 +482,56 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     lastOffset = item.offset = offset;
                 }
             })
-        }, 1000)
+        }, 1000);
 
         $scope.textareaStyle = {
-            'text-indent':0
+            'text-indent': 0
         };
 
-        $scope.handleBlur = function($event,topic){
-            if(!topic){
-                return;
-            }
-            var target = jQuery($event.target);
-            var footer = target.parents('footer');
-            var label = footer.find('.topic_label');
-            $scope.showTopicLabel = true;
+        $scope.quoteTopic = function(topic){
+            $scope.topic = topic;
+            toggleTopicLabel('show');
             $timeout(function(){
-                $scope.textareaStyle = {
-                    'text-indent':label.outerWidth(true)
-                };
-            $scope.focusTextarea = true;
+                $scope.focusTextarea = true;
             })
         };
 
-        $scope.$watch('onlyShowTopic',function(val){
-            if(!$scope.currentSession) return;
-            var topic = '';
-            if(val){
-                topic = $scope.topic;
-            }
-            var msgList = [];
-            chatService.list($scope.currentSession.orgid, 0, maxCount,['#',topic,'#'].join('')).then(function (re) {
-                if (re && re.list && re.list.length) {
-                    angular.forEach(re.list, function (item) {
-                        chatContent.add(msgList, item);
-                        var time = Number(item.time);
-                        if (time < minMsgTime) {
-                            minMsgTime = time;
-                        }
-                        if (time > maxMsgTime) {
-                            maxMsgTime = time;
-                        }
-                    });
-                }
-                $scope.currentMsgList = msgList;
+        var onlyShowTopic = function(){
+            if (!$scope.currentSession) return;
+            $scope.loadingHistoryMsg = true;
+            $scope.currentMsgList = [];
+            getList(minMsgTime, function () {
+                $scope.loadingHistoryMsg = false;
                 $scope.scrollToIndex = $scope.currentMsgList.length - 1;
             });
-        })
+        };
 
+        $scope.handleBlur = function ($event, topic) {
+            if (!topic){
+                return;
+            }
+            toggleTopicLabel('show');
+            if($scope.onlyShowTopic){
+                onlyShowTopic();
+            }
+            $timeout(function () {
+                $scope.focusTextarea = true;
+            })
+        };
+
+        $scope.hintList = [{
+            value:'dddd',
+        },
+            {
+                value:'xx'
+            }];
+
+        $scope.$watch('onlyShowTopic', function (val,oldVal) {
+            if(val == oldVal) return;
+            onlyShowTopic();
+        })
     }])
-    .factory('chatContent', ['chatMember', 'chatSession', '$q', '$rootScope', function (chatMember, chatSession, $q, $rootScope) {
+    .factory('chatContent', ['chatMember', function (chatMember) {
         var chatContent = {
             pendingMsg: [],
             formatItem: function (value) {
@@ -575,6 +600,30 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
         return chatSession;
     }])
+    .factory('chatTopic','localStorageService', [function (localStorageService) {
+        var prefix = 'chat_topic_';
+        var chatTopic = {
+            get: function (orgId) {
+                var re = localStorageService.get(prefix+orgId);
+                if(!re){
+                    return '';
+                }
+                return JSON.parse(prefix+orgId);
+            },
+            add:function(orgId,val){
+                var oldVal = this.get(orgId);
+                if(!oldVal){
+                    oldVal = [];
+                }
+                oldVal.push(val);
+                if(oldVal.length>5){
+                    oldVal.splice(0,1);
+                }
+                localStorageService.add(prefix+orgId, JSON.stringify(oldVal));
+            }
+        };
+        return chatSession;
+    }])
     .factory('chatMember', ['GKApi', function (GKApi) {
         var members = {};
         var chatMember = {
@@ -631,13 +680,15 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 });
                 return deferred.promise;
             },
-            search: function (orgId, dateline, size) {
+            search: function (orgId, dateline, size, topic) {
+                topic = angular.isDefined(topic) ? topic : '';
                 var deferred = $q.defer();
                 gkClientInterface.getChatMessage({
                     'receiver': String(orgId),
                     'dateline': dateline,
                     'count': size,
-                    'before': 1
+                    'before': 1,
+                    'topic': topic
                 }, function (re) {
                     if (!re.error) {
                         deferred.resolve(re);
@@ -647,16 +698,15 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 });
                 return deferred.promise;
             },
-            list: function (orgId, lastTime, count,topic) {
-                console.log('arguments',arguments);
-                topic = angular.isDefined(topic)?topic:'';
+            list: function (orgId, lastTime, count, topic) {
+                topic = angular.isDefined(topic) ? topic : '';
                 var deferred = $q.defer();
                 gkClientInterface.getChatMessage({
                     'receiver': String(orgId),
                     'dateline': lastTime,
                     'count': count,
                     'before': 0,
-                    'topic':topic
+                    'topic': topic
                 }, function (re) {
                     if (!re.error) {
                         deferred.resolve(re);
@@ -738,10 +788,10 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (Util.RegExp.HTTPStrict.test(value)) {
                     bind = value.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
-                if(Util.RegExp.POUND_TOPIC.test(bind)){
-                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span class="label label-success">$&</span> ');
+                if (Util.RegExp.POUND_TOPIC.test(bind)) {
+                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
                 }
-                bind = $compile(angular.element('<span>'+bind+'</span>'))(scope);
+                bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
                 element.html(bind === undefined ? '' : bind);
             });
         }
