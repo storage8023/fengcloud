@@ -240,6 +240,7 @@ right: -20px;
 .chat_item .chat_main .chat_member{
     font-size: 13px;
     color: #ACB4BF;
+
 }
 .chat_item .chat_main .chat_member .name{
     color: #448de8;
@@ -254,10 +255,18 @@ right: -20px;
 }
 .chat_item .chat_main .chat_text .chat_text_inner{
    color: #3F4754;
+    margin: 5px 0;
 }
 .chat_item .chat_main .chat_text .chat_text_inner a{
     color: #448DE8;
     text-decoration: underline;
+}
+.chat_item .chat_main .chat_text .chat_text_inner .at_member{
+    color: #448DE8;
+    cursor: pointer;
+}
+.chat_item .chat_main .chat_text .chat_text_inner .at_member.mine{
+color: #f16262;
 }
 .chat_item.chat_item_mine .chat_main .chat_text{
    border-top-right-radius: 0;

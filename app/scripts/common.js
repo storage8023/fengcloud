@@ -129,7 +129,8 @@ angular.module('GKCommon.directives', [])
 
                 element.on({
                     'focus.autocomplete':function(){
-                        scope.$apply(function(){
+                        if(!scope.resultList.length) return;
+                        $timeout(function(){
                             show();
                         })
                     },
@@ -458,7 +459,8 @@ angular.module('GKCommon.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-                $attrs.$observe($attrs.insertTo,function (input) {
+                $attrs.$observe('insertTo',function (input) {
+                    console.log('input',input);
                     if(!input) return;
                     var val = $scope[$attrs.ngModel];
                     var inputPos = Util.Input.getCurSor($element[0]).split('|');
