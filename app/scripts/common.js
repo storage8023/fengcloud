@@ -135,7 +135,6 @@ angular.module('GKCommon.directives', [])
                 })
 
                 scope.$watch('ngModel',function(val,oldVal){
-                    console.log('arguments',arguments);
                     if(!watching ) return;
                     if(val == oldVal) return;
                     scope.resultList = search(val);
@@ -482,7 +481,7 @@ angular.module('GKCommon.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-                $attrs.$observe('insertTo',function (input) {
+                $scope.$watch($attrs['insertTo'],function (input) {
                     if(!input) return;
                     var val = $scope[$attrs.ngModel];
                     var inputPos = Util.Input.getCurSor($element[0]).split('|');
@@ -499,12 +498,10 @@ angular.module('GKCommon.directives', [])
                             curPos =  val.length;
                         }
                     }
-                    console.log();
                     $timeout(function () {
                         Util.Input.moveCur($element[0],curPos);
                     });
                     $scope[$attrs.insertTo] = '';
-
                 });
             }
         }

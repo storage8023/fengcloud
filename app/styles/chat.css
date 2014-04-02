@@ -625,19 +625,23 @@ footer .btn_wrapper .label{
     right: 0;
     bottom: 104px;
     overflow: hidden;
+    padding: 0 8px;
 }
 
 .toolbar > li{
     float: left;
     width: 16px;
     height: 16px;
-    margin: 8px 10px 0 10px;
+    margin: 8px 8px 0 8px;
     cursor: pointer;
 }
 
 .toolbar > li > img{
     width: 16px;
     height: 16px;
+    /*opacity: .8;*/
+    transition:all linear .1s;
+    -webkit-transition:all linear .1s;
     -webkit-filter:grayscale(100%);
     filter:grayscale(100%);
     filter:gray;
@@ -645,4 +649,5 @@ footer .btn_wrapper .label{
 .toolbar > li > img:hover{
     -webkit-filter:none;
     filter:none;
+    /*opacity: 1;*/
 }

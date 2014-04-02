@@ -428,7 +428,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (item.receiver != $scope.currentSession.orgid) return;
 
             getList(maxMsgTime,function(){
-                console.log('isScrollBottom',$scope.isScrollBottom);
                 if($scope.isScrollBottom){
                     $scope.scrollToIndex = $scope.currentMsgList.length - 1;
                 }
@@ -647,12 +646,12 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             {
                 id: -1,
                 name: '话题',
-                icon: 'images/icon/pound16x16.png'
+                icon: 'images/icon/topic16x16.png'
             },
             {
                 id: 0,
                 name: '发送文件',
-                icon: 'images/icon/pound16x16.png'
+                icon: 'images/icon/upload16x16.png'
             }
         ];
 
@@ -888,7 +887,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             scope.$watch(attr.chatBind, function (value) {
                 var bind = value;
                 var atMatches =  value.match(Util.RegExp.AT);
-                console.log('atMatches',atMatches);
                 if(atMatches && atMatches.length){
                     atMatches = Util.Array.unique(atMatches);
                     angular.forEach(atMatches,function(val){
