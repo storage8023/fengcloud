@@ -888,6 +888,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             scope.$watch(attr.chatBind, function (value) {
                 var bind = value;
                 var atMatches =  value.match(Util.RegExp.AT);
+                console.log('atMatches',atMatches);
                 if(atMatches && atMatches.length){
                     atMatches = Util.Array.unique(atMatches);
                     angular.forEach(atMatches,function(val){
