@@ -426,7 +426,13 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         $scope.$on('chatMessageUpdate', function (event, item) {
             if (!$scope.currentSession) return;
             if (item.receiver != $scope.currentSession.orgid) return;
-            getList(maxMsgTime);
+
+            getList(maxMsgTime,function(){
+                console.log('isScrollBottom',$scope.isScrollBottom);
+                if($scope.isScrollBottom){
+                    $scope.scrollToIndex = $scope.currentMsgList.length - 1;
+                }
+            });
         })
 
         $scope.$on('$locationChangeSuccess', function (event, newLocation, oldLocation) {

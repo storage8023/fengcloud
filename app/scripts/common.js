@@ -3,6 +3,29 @@ angular.module('GKCommon', ['GKCommon.directives', 'GKCommon.services', 'GKCommo
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('checkScrollBottoom', [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope[attrs.checkScrollBottoom] = false;
+                element.on('scroll.checkScrollBottoom', function () {
+                    var _self = jQuery(this),
+                        scrollH = jQuery.isWindow(this) ? document.body.scrollHeight : element[0].scrollHeight,
+                        scrollT = _self.scrollTop();
+                    var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
+                    var realDistance = scrollH - scrollT - clientHeight;
+                    if(realDistance<=0){
+                        scope[attrs.checkScrollBottoom] = true;
+                    }else{
+                        scope[attrs.checkScrollBottoom] = false;
+                    }
+                });
+                scope.$on('$destroy', function () {
+                    element.off('.checkScrollBottoom');
+                })
+            }
+        }
+    }])
     .directive('gkAutocomplete', ['$compile','$document','$position','$timeout',function ($compile,$document,$position,$timeout) {
         var template = '<ul class="dropdown-menu" ng-show="showList" ng-mouseenter="mouseenter=true" ng-mouseleave="mouseenter=false">';
         template += '<li ng-repeat="item in resultList">';

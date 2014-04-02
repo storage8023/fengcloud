@@ -35,7 +35,9 @@
                     <img src="images/drag_to_chat.png" />
                 </div>
                 <div class="scrollbar msg_list" ng-show="!error" scroll-to-msg="scrollToIndex"
-                     scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg">
+                     scroll-load="handleScrollLoad()" trigger-direction="up" disable-scroll="loadingHistoryMsg"
+                     check-scroll-bottoom="isScrollBottom"
+                        >
                     <div class="empty" ng-if="!currentMsgList || !currentMsgList.length">没有讨论</div>
                     <div class="chat_item c_f_after chat_item_{{msg.type}}" ng-repeat="msg in currentMsgList" ng-class="{'has_content':msg.content}">
                         <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)">
