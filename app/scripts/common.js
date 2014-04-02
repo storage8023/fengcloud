@@ -460,7 +460,6 @@ angular.module('GKCommon.directives', [])
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
                 $attrs.$observe('insertTo',function (input) {
-                    console.log('input',input);
                     if(!input) return;
                     var val = $scope[$attrs.ngModel];
                     var inputPos = Util.Input.getCurSor($element[0]).split('|');
@@ -469,13 +468,18 @@ angular.module('GKCommon.directives', [])
                     var r = val.substr(inputPos[1], val.length);
                     val = l + input + r;
                     $scope[$attrs.ngModel] = val;
-                    $timeout(function () {
-                        if (isInsert) {
-                            Util.Input.moveCur($element[0], parseInt(inputPos[0]) + (input).length);
-                        } else {
-                            Util.Input.moveCur($element[0], val.length);
+                    var curPos = $attrs.cursorPos;
+                    if(!jQuery.isNumeric(curPos)){
+                        if(isInsert){
+                            curPos =  parseInt(inputPos[0]) + (input).length;
+                        }else{
+                            curPos =  val.length;
                         }
-                    }, 0);
+                    }
+                    console.log();
+                    $timeout(function () {
+                        Util.Input.moveCur($element[0],curPos);
+                    });
                     $scope[$attrs.insertTo] = '';
 
                 });
@@ -1387,6 +1391,32 @@ angular.module('GKCommon.services', [])
         }
     }
     ])
+    .factory('GKAuth', [function () {
+        var GKAuth = {
+            getPermissions:function(mount){
+                var permissions;
+                if(mount && !jQuery.isEmptyObject(mount)){
+                    permissions =mount.property?mount.property.permissions || []:[];
+                }else{
+                    permissions = [];
+                }
+                return permissions;
+            },
+            check:function(mount,partition){
+                var auths = Array.prototype.slice.call(arguments).slice(2);
+                var hasAuth = true;
+                var permissions = this.getPermissions(mount,partition);
+                for(var i=0;i<auths.length;i++){
+                    if(permissions.indexOf(auths[i])<0){
+                        hasAuth = false;
+                        break;
+                    }
+                }
+                return hasAuth;
+            }
+        };
+        return GKAuth;
+    }])
     .factory('GKApi', ['$http', function ($http) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};

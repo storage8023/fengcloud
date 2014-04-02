@@ -162,7 +162,7 @@ section .msg_list{
 }
 
 .chat_item{
-    margin: 25px 0;
+    margin: 15px 0;
 }
 
 .chat_item .time_grid,
@@ -418,6 +418,8 @@ footer .btn_wrapper{
 }
 footer .topic_wrapper{
     color: #ACB4BF;
+    line-height: 26px;
+    padding: 4px 0;
 }
 footer .topic_wrapper label{
     font-weight:normal;
@@ -480,6 +482,7 @@ footer .label{
     display: inline-block;
     font-size: 13px;
     font-weight: normal;
+    vertical-align: middle;
 }
 footer .topic_label{
     position: absolute;
@@ -490,11 +493,10 @@ footer .topic_label{
 }
 footer .topic_label.show{
     z-index:11;
+
 }
 footer .btn_wrapper .label{
-    margin:0 5px 0 5px;
-    position: relative;
-    top:5px;
+    margin:-2px 5px 0 5px;
     cursor: pointer;
 }
 .session_list{

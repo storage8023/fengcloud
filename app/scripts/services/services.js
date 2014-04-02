@@ -21,32 +21,7 @@ angular.module('gkClientIndex.services', [])
             rightSidebar:null
         };
     }])
-    .factory('GKAuth', [function () {
-        var GKAuth = {
-            getPermissions:function(mount,partition){
-                var permissions;
-                if(mount && !jQuery.isEmptyObject(mount)){
-                    permissions =mount.property?mount.property.permissions || []:[];
-                }else{
-                    permissions = [];
-                }
-                return permissions;
-            },
-            check:function(mount,partition){
-                var auths = Array.prototype.slice.call(arguments).slice(2);
-                var hasAuth = true;
-                var permissions = this.getPermissions(mount,partition);
-                for(var i=0;i<auths.length;i++){
-                    if(permissions.indexOf(auths[i])<0){
-                        hasAuth = false;
-                        break;
-                    }
-                }
-                return hasAuth;
-            }
-        };
-        return GKAuth;
-    }])
+
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath: function (mountId, fullpath) {

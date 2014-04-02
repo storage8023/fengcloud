@@ -10,7 +10,26 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         }
 
     }])
-    .controller('initChat', ['$scope', 'chatSession', '$location', '$timeout', 'chatContent', '$rootScope', 'chatService', 'GKException', 'chatMember', '$window', '$interval', 'GKApi', 'localStorageService', 'GKDialog','$document','chatTopic','$filter',function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember, $window, $interval, GKApi, localStorageService, GKDialog, $document,chatTopic,$filter) {
+    .controller('initChat', [
+        '$scope',
+        'chatSession',
+        '$location',
+        '$timeout',
+        'chatContent',
+        '$rootScope',
+        'chatService',
+        'GKException',
+        'chatMember',
+        '$window',
+        '$interval',
+        'GKApi',
+        'localStorageService',
+        'GKDialog',
+        '$document',
+        'chatTopic',
+        '$filter',
+        'GKAuth',
+        function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember, $window, $interval, GKApi, localStorageService, GKDialog, $document,chatTopic,$filter,GKAuth) {
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
@@ -330,7 +349,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     post('file', ['#',$scope.topic,'#'].join(''), metadata, extendParam.file.status == 1 ? 1 : 0);
                 }
                 $scope.scrollToIndex = $scope.currentMsgList.length - 1;
-                console.log('scrollToIndex',$scope.scrollToIndex);
             });
 
             $scope.chatLoaded = true;
@@ -338,16 +356,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 $scope.focusTextarea = true;
             })
             $scope.postText = '';
-            $scope.apps = null;
-            GKApi.apps($scope.currentSession.orgid).success(function (data) {
-                if (!data || !data.apps || !data.apps.length) {
-                    return;
-                }
-                $scope.$apply(function () {
-                    $scope.apps = data.apps;
-                })
+            chatSession.getApps($scope.currentSession.orgid).then(function(list){
+                $scope.apps = list;
             });
-
             $scope.topicHintList = $filter('orderBy')(chatTopic.get($scope.currentSession.orgid),'-dateline');
         };
         /**/
@@ -358,23 +369,46 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         }
 
         $scope.gotoApp = function (app) {
-            GKApi.getAppKey($scope.currentSession.orgid, app.id).success(function (data) {
-                if (!data || !data.request_key) {
-                    return;
-                }
-                var request_key = data.request_key;
-                var uuid = data.uuid;
-                var url = app.url;
-                if (app.url.indexOf('?') >= 0) {
-                    url += '&request_key=' + request_key;
-                } else {
-                    url += '?request_key=' + request_key;
-                }
-                url += '&uuid=' + uuid + '&token=' + gkClientInterface.getToken();
-                GKDialog.openUrl(url);
-            }).error(function (req) {
-                GKException.handleAjaxException(req);
-            })
+            switch (app.id){
+                case -1://#话题
+                    $scope.cursorPos = 1;
+                    $scope.insertStr = '##';
+                    break
+                case 0:
+                    if(!GKAuth.check($scope.currentSession,'','file_write')){
+                        alert('你没有权限在当前云库下添加文件或文件夹');
+                        return;
+                    }
+                    gkClientInterface.addFileDialog(function(addFiles){
+                        if (!addFiles || !addFiles.list || !addFiles.list.length) {
+                            return;
+                        }
+                        topWindow.gkFrameCallback('showSelectFileDialog', {
+                            mountId: $scope.currentSession.mountid,
+                            list:addFiles.list
+                        })
+                    });
+
+                    break
+                default:
+                    GKApi.getAppKey($scope.currentSession.orgid, app.id).success(function (data) {
+                        if (!data || !data.request_key) {
+                            return;
+                        }
+                        var request_key = data.request_key;
+                        var uuid = data.uuid;
+                        var url = app.url;
+                        if (app.url.indexOf('?') >= 0) {
+                            url += '&request_key=' + request_key;
+                        } else {
+                            url += '?request_key=' + request_key;
+                        }
+                        url += '&uuid=' + uuid + '&token=' + gkClientInterface.getToken();
+                        GKDialog.openUrl(url);
+                    }).error(function (req) {
+                        GKException.handleAjaxException(req);
+                    })
+            }
         };
 
         $scope.hideTip = function () {
@@ -602,12 +636,45 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
         return chatContent;
     }])
-    .factory('chatSession', ['GKMount', '$filter', function (GKMount, $filter) {
+    .factory('chatSession', ['$q','GKApi',function ($q,GKApi) {
+        var defaultApps = [
+            {
+                id: -1,
+                name: '话题',
+                icon: 'images/icon/pound16x16.png'
+            },
+            {
+                id: 0,
+                name: '发送文件',
+                icon: 'images/icon/pound16x16.png'
+            }
+        ];
+
         var chatSession = {
             getSessionByMountId: function (mountId) {
-                return gkClientInterface.getMount({
+                var mount = gkClientInterface.getMount({
                     mountid: Number(mountId)
+                })
+                if(mount.property){
+                    mount.property = JSON.parse(mount.property);
+                }
+                return mount;
+            },
+            getApps:function(orgId){
+                var deferred = $q.defer();
+                GKApi.apps(orgId).success(function (data) {
+                    var apps;
+                    if (!data || !data.apps || !data.apps.length) {
+                        apps = [];
+                    }else{
+                        apps = data.apps;
+                    }
+                    apps = defaultApps.concat(apps);
+                    deferred.resolve(apps);
+                }).error(function(req){
+                    deferred.reject(req);
                 });
+                return deferred.promise;
             }
         };
         return chatSession;
