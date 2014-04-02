@@ -2988,7 +2988,6 @@ angular.module('gkClientIndex.services', [])
                             var mountId = GKFileList.getOptFileMountId(file);
                             var fullpath = file.fullpath;
                             var upPath = Util.String.dirName(fullpath);
-                            var filename = file.filename;
                             $timeout(function(){
                                 GKPath.gotoFile(mountId, upPath, fullpath);
                             })
