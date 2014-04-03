@@ -296,7 +296,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     url += '?uuid=' + $rootScope.PAGE_CONFIG.user.uuid;
                 }
                  url = gkClientInterface.getUrl({
-                    url: metadata.url,
+                    url: url,
                     sso: 0
                 });
                 GKDialog.openUrl(url);
