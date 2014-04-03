@@ -77,7 +77,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
-                        chatContent.add($scope.currentMsgList, item);
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
                             minMsgTime = time;
@@ -88,6 +87,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                         if (postedMsg.indexOf(time) >= 0) {
                             return;
                         }
+                        chatContent.add($scope.currentMsgList, item);
                     });
                 }
                 if (typeof callback === 'function') {
