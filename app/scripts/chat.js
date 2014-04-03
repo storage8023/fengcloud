@@ -73,6 +73,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if ($scope.onlyShowTopic) {
                 topic = ['#', $scope.topic, '#'].join('');
             }
+            $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
@@ -92,6 +93,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (typeof callback === 'function') {
                     callback();
                 }
+                $scope.loadingHistoryMsg = false;
             });
         };
 
@@ -181,7 +183,12 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
          * @param scrollToBottom
          */
         $scope.postText = '';
+        var firstScrollLoad = true;
         $scope.handleScrollLoad = function (scrollToBottom) {
+            if(firstScrollLoad){
+                firstScrollLoad = false;
+                return;
+            }
             scrollToBottom = angular.isDefined(scrollToBottom) ? scrollToBottom : false;
             var minDateline = new Date().getTime();
             if ($scope.currentMsgList.length) {
@@ -310,7 +317,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (jQuery.isEmptyObject(session)) {
                 return;
             }
-            ;
             $scope.currentSession = session;
             var extendParam = {};
             $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
@@ -322,6 +328,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.textareaStyle = {
                 'text-indent': 0
             };
+            firstScrollLoad = true;
+
             getList(0, function () {
                 //文件
                 if (param.fullpath) {
@@ -347,6 +355,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     post('file', ['#',$scope.topic,'#'].join(''), metadata, extendParam.file.status == 1 ? 1 : 0);
                 }
                 $scope.scrollToIndex = $scope.currentMsgList.length - 1;
+
             });
 
             $scope.chatLoaded = true;
