@@ -201,9 +201,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (url.indexOf('?') >= 0) {
                     url += '&uuid=' + $rootScope.PAGE_CONFIG.user.uuid;
                 } else {
-                    url += '?uuid=' + + $rootScope.PAGE_CONFIG.user.uuid;
+                    url += '?uuid=' + $rootScope.PAGE_CONFIG.user.uuid;
                 }
-                var url = gkClientInterface.getUrl({
+                 url = gkClientInterface.getUrl({
                     url: metadata.url,
                     sso: 0
                 });
