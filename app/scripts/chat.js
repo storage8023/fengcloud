@@ -73,9 +73,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if ($scope.onlyShowTopic) {
                 topic = ['#', $scope.topic, '#'].join('');
             }
-            $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
-                $scope.loadingHistoryMsg = false;
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
                         chatContent.add($scope.currentMsgList, item);
