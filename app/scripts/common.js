@@ -1441,6 +1441,20 @@ angular.module('GKCommon.services', [])
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            sendValidEmail:function(email){
+                var params = {
+                    token: gkClientInterface.getToken(),
+                    email: email
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/account/resend_mail',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             getAppKey: function (orgId, appId) {
                 var params = {
                     token: gkClientInterface.getToken(),
