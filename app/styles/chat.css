@@ -275,6 +275,10 @@ color: #f16262;
     font-size: 13px;
     font-weight: normal;
     cursor: pointer;
+    max-width: 450px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .chat_item.vip_item .chat_text{
     background: #fded1f;

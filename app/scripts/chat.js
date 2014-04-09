@@ -906,7 +906,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
                 if (Util.RegExp.POUND_TOPIC.test(bind)) {
-                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
+                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1" class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
                 }
                 bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
                 element.html(bind === undefined ? '' : bind);
