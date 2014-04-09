@@ -1404,7 +1404,48 @@ angular.module('gkClientIndex.directives', [])
                                 GKException.handleAjaxException(request);
                             });
                     }
-                }
+                };
+
+                /**
+                 * 锁定、解锁
+                 * @param lock
+                 */
+                $scope.toggleLock = function(lock){
+                    var mountId = getOptMountId($scope.file);
+                    var mount = GKMount.getMountById(mountId);
+                    if(!mount) return;
+                  var param = {
+                      webpath: $scope.file.fullpath,
+                      mountid: mountId
+                  };
+                  if(lock){
+                      if(!GKAuth.check(mount,'','file_write')){
+                          alert('你没有权限锁定该文件');
+                          return;
+                      }
+                      param.status = 1;
+                  }else{
+                      param.status = 0;
+                  }
+                    gkClientInterface.toggleLock(param, function (re) {
+                        if (re && !re.error) {
+                            if(lock){
+                                $rootScope.$broadcast('editFileSuccess','lock', mountId,$scope.file.fullpath);
+                                $scope.$apply(function(){
+                                    $scope.localFile.lock = 2;
+                                })
+
+                            }else{
+                                $rootScope.$broadcast('editFileSuccess','unlock', mountId,$scope.file.fullpath);
+                                $scope.$apply(function(){
+                                    $scope.localFile.lock = 0;
+                                })
+                            }
+                        } else {
+                            GKException.handleClientException(re);
+                        }
+                    });
+                };
 
                 /**
                  * 打开生成临时链接的窗口

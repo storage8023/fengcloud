@@ -781,7 +781,7 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 
 .file_list_wrapper .list_view .file_name {
     margin-right: 340px;
-    height: 32px;
+    height: 31px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1389,6 +1389,12 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 }
 .right_sidebar .opt_wrapper button:hover .icon_bookmark{
     background-position: -24px -1064px;
+}
+.right_sidebar .opt_wrapper button:hover .icon_lock{
+    background-position: -24px -284px
+}
+.right_sidebar .opt_wrapper button:hover .icon_unlock{
+    background-position: -24px -304px
 }
 .right_sidebar .post_textarea_wrapper{
     background: #F1F1F2;

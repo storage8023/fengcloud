@@ -264,7 +264,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 } else {
                     var permissions = [];
                     if ($scope.currentSession.property) {
-                        var properties = JSON.parse($scope.currentSession.property);
+                        var properties = typeof $scope.currentSession.property === 'object'?$scope.currentSession.property:JSON.parse($scope.currentSession.property);
                         permissions = properties.permissions ? properties.permissions : [];
                     }
                     if (permissions.indexOf('file_read') < 0 && file) {
