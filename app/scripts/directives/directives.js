@@ -1455,23 +1455,6 @@ angular.module('gkClientIndex.directives', [])
                    GKModal.publish(getOptMountId(file),file);
                 };
 
-                /**
-                 * 打开聊天窗口
-                 */
-                $scope.startChat = function(file){
-                    var mountId = getOptMountId(file);
-                    var param = $location.search();
-                    if(GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition)){
-                        GKMode.setMode('chat');
-                    }else{
-                        GKPath.gotoFile(mountId,param.path||'', param.selectedpath||'',param.view||'',param.filter||'','chat');
-                    }
-
-                    $timeout(function(){
-                        GKChat.setSrc(mountId,file.fullpath);
-                    })
-                }
-
                 $scope.showMilestoneDialog = function(file){
                     var firstHistory = histories[0];
                     var oldMsg = '';
