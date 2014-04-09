@@ -279,6 +279,7 @@ color: #f16262;
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
+    vertical-align: middle;
 }
 .chat_item.vip_item .chat_text{
     background: #fded1f;
