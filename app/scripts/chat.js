@@ -155,7 +155,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 post('text', postText);
                 $event.preventDefault();
             } else if (keyCode == 8) {
-                if($scope.showTopicLabel){
+                if($scope.showTopicLabel && !postText.length){
                     $scope.topic = '';
                     $scope.onlyShowTopic = false;
                     toggleTopicLabel('hide');
