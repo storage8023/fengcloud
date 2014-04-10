@@ -62,7 +62,7 @@ angular.module('gkClientIndex.services', [])
                     if(mount.ent_id){
                         var entId = mount.ent_id,
                             partition = GKPartition.getPartitionByMountType(mount.member_type,mount.ent_id),
-                            treeItem = GKFile.dealTreeItem(mount,partition, mount.mount_id,true);
+                            treeItem = GKFile.dealTreeItem(mount, mount.mount_id);
                         var ent = GKEnt.getEnt(entId);
                         if(ent && ent.entname){
                             var showHeaderBtn = false;
@@ -186,7 +186,7 @@ angular.module('gkClientIndex.services', [])
                 if (exist) {
                     this.editSmartNode(list, node.type, node.name);
                 } else {
-                    var formatNode = GKFile.dealTreeData([node], GKPartition.smartFolder)[0]
+                    var formatNode = GKFile.dealTreeData([node])[0]
                     list.push(formatNode);
                 }
             },
@@ -1543,7 +1543,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKNews;
     }])
-    .factory('GKSmartFolder', ['GKFilter', '$filter', 'GKApi', '$q', 'GKException', 'GKFile', '$rootScope',function (GKFilter, $filter, GKApi, $q, GKException, GKFile,$rootScope) {
+    .factory('GKSmartFolder', ['GKFilter', '$filter', 'GKApi', '$q', 'GKException', 'GKFile', '$rootScope','GKPartition',function (GKFilter, $filter, GKApi, $q, GKException, GKFile,$rootScope,GKPartition) {
         var getFolderAliasByType = function (type) {
             var filter = '';
             switch (type) {
@@ -1584,6 +1584,7 @@ angular.module('gkClientIndex.services', [])
                 type: condition,
                 filter: filter,
                 icon: 'icon_' + filter,
+                partition:GKPartition.smartFolder
             };
             return item;
         };
@@ -2316,7 +2317,7 @@ angular.module('gkClientIndex.services', [])
                     }
                     var option  = {dir:1};
                     context.getFileList(branch.data.mount_id, branch.data.fullpath, source,option).then(function (list) {
-                        children = context.dealTreeData(list, branch.data.partition, branch.data.mount_id);
+                        children = context.dealTreeData(list, branch.data.mount_id);
                         /**
                          * 添加回收站
                          */
@@ -2329,27 +2330,22 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            dealTreeData: function (data, type, mountId,onlyRoot) {
-                onlyRoot = angular.isDefined(onlyRoot)?onlyRoot:false;
+            dealTreeData: function (data, mountId) {
                 var newData = [],
                     item,
-                    label,
                     context = this;
                 angular.forEach(data, function (value) {
-                    item = context.dealTreeItem(value,type, mountId,onlyRoot);
+                    item = context.dealTreeItem(value, mountId);
                     newData.push(item);
                 });
                 return newData;
             },
-            dealTreeItem:function(value,type, mountId,onlyRoot){
+            dealTreeItem:function(value, mountId){
                 var item = {},label;
-                angular.extend(value, {
-                    partition: type
-                });
                 /**
-                 * 我的云库，订阅的云库
+                 * 云库
                  */
-                if (GKPartition.isMountPartition(type)) {
+                if (value.mount_id) {
                     var icon = '';
                     if (!value.fullpath) {
                         label = value.name;
@@ -2359,24 +2355,22 @@ angular.module('gkClientIndex.services', [])
                         mountId && angular.extend(value, {
                             mount_id: mountId
                         });
-                        if (GKPartition.isTeamFilePartition(type) || GKPartition.isEntFilePartition(type)) {
-                            icon = 'icon_myfolder';
-                        }
+                        icon = 'icon_myfolder';
                     }
-                    var dropAble = false;
-                    if (GKPartition.isTeamFilePartition(type) || GKPartition.isEntFilePartition(type)) {
-                        dropAble = true;
-                    }
+                    var dropAble = true;
                     angular.extend(item, {
                         dropAble: dropAble,
                         label: label,
                         data: value,
-                        isParent: onlyRoot?false:true,
-                        hasChildren: onlyRoot?false:value.hasFolder == 1,
+                        isParent: false,
+                        hasChildren:false,
                         iconNodeExpand: icon,
                         iconNodeCollapse: icon
                     });
                 } else {
+                    /**
+                     * 智能文件夹
+                     */
                     item = {
                         label: value.name,
                         isParent: false,

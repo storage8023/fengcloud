@@ -303,14 +303,42 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame','GKAuth','GKMode',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame,GKAuth,GKMode) {
-        $scope.GKPartition = GKPartition;
-        var orgMount = GKMount.getOrgMounts();
 
-        $scope.entTreeList = GKSideTree.getTreeList(GKMount.getMounts());
+
+        var allMounts = GKMount.getMounts(),
+             orgMount = GKMount.getOrgMounts(),
+            smartFolders = GKSmartFolder.getFolders();
+
+        $scope.browseMode = 'chat';
+
+        $scope.GKPartition = GKPartition;
+
         /**
          * 我的云库
          */
-        $scope.orgTreeList = GKFile.dealTreeData(orgMount, GKPartition.teamFile,0,true);
+        $scope.orgTreeList = GKFile.dealTreeData(orgMount, 0);
+
+        /**
+         * 企业云库
+         */
+        $scope.entTreeList = GKSideTree.getTreeList(allMounts);
+
+
+        /**
+         * 智能文件夹
+         * @type {*}
+         */
+        $scope.smartTreeList = GKFile.dealTreeData(smartFolders,0);
+
+        var allTreeList = $scope.orgTreeList;
+
+        angular.forEach($scope.entTreeList,function(val){
+            allTreeList = allTreeList.concat(val.data);
+        });
+
+        allTreeList = allTreeList.concat($scope.smartTreeList);
+
+        $scope.allTreeList = allTreeList;
 
         /**
          * 初始选中
@@ -320,6 +348,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if(!$location.search().partition){
             $scope.initSelectedBranch = $scope.orgTreeList[0];
         }
+
         var unSelectAllBranch = function () {
             if ($scope.selectedBranch) {
                 $scope.selectedBranch.selected = false;
@@ -336,13 +365,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         };
-
-        /**
-         * 智能文件夹
-         * @type {*}
-         */
-        var smartFolders = GKSmartFolder.getFolders();
-        $scope.smartTreeList = GKFile.dealTreeData(smartFolders, GKPartition.smartFolder,0,true);
 
         $scope.$on('RemoveMagicObject', function ($event, param) {
             $scope.$apply(function () {
@@ -370,8 +392,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 选中树节点的处理函数
          * @param branch
          */
-        $scope.handleSelect = function (branch, partition) {
-            var mode = 'file'
+        $scope.handleSelect = function (branch) {
+            var mode = 'file';
+            var partition =  branch.data.partition;
             var pararm = {
                 partition: partition
             };
@@ -393,6 +416,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             })
         };
 
+        /**
+         * drop
+         * @param branch
+         */
         $scope.handleDrop = function (branch) {
             var selectedFile = GKFileList.getSelectedFile();
             var file = branch.data;
@@ -417,6 +444,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         };
 
+        /**
+         * 企业管理入口
+         * @param tree
+         */
         $scope.handleHeaderClick = function(tree){
             var url = gkClientInterface.getUrl({
                 sso: 1,
@@ -502,7 +533,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
                 var partition = GKPartition.getPartitionByMountType(newOrg['type'],newOrg['ent_id']);
                 var mount = GKMount.addMount(newOrg);
-                newOrg = GKFile.dealTreeData([mount], partition,0,true)[0];
+                newOrg = GKFile.dealTreeData([mount],0)[0];
                 if (GKPartition.isTeamFilePartition(partition)) {
                     $scope.orgTreeList.push(newOrg);
                 }else if(GKPartition.isEntFilePartition(partition)){
@@ -538,7 +569,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 list = $scope.entTreeList[entId]['data'];
             }
             if(!list || !list.length) return;
-            var newNode = GKFile.dealTreeData([newMount], type, newMount['mount_id'],true)[0];
+            var newNode = GKFile.dealTreeData([newMount], newMount['mount_id'])[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
             });
@@ -582,7 +613,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var partition = GKPartition.getPartitionByMountType(newOrg['type'],newOrg['ent_id']);
-            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)], partition,0,true)[0];
+            newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)],0)[0];
 
             if (GKPartition.isTeamFilePartition(partition)) {
                 $scope.orgTreeList.push(newOrg);
@@ -596,18 +627,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(!mount){
                 return;
             }
-            var partition = GKPartition.getPartitionByMountType(mount['type'],mount['ent_id']);
-            var list;
-            if (GKPartition.isTeamFilePartition(partition)) {
-                list = $scope.orgTreeList;
-            }else if(GKPartition.isEntFilePartition(partition)){
-                if(!$scope.entTreeList[mount['ent_id']]){
-                    return;
-                }
-                list = $scope.entTreeList[mount['ent_id']].data;
+            if($scope.browseMode == 'chat'){
+                list = $scope.allTreeList;
             }else{
-                list = $scope.joinOrgTreeList;
+                var partition = GKPartition.getPartitionByMountType(mount['type'],mount['ent_id']);
+                var list;
+                if (GKPartition.isTeamFilePartition(partition)) {
+                    list = $scope.orgTreeList;
+                }else if(GKPartition.isEntFilePartition(partition)){
+                    if(!$scope.entTreeList[mount['ent_id']]){
+                        return;
+                    }
+                    list = $scope.entTreeList[mount['ent_id']].data;
+                }
             }
+
             GKSideTree.editNode(list, mount['mount_id'], '', {newMsgTime:newMsgTime});
         };
 

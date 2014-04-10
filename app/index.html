@@ -45,53 +45,12 @@
 <div class="loading" ng-show="showLoading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: #40464d url(images/loading.png) no-repeat 50%;text-align: center;padding-top: 400px;color:#2d3439;font-size:14px">正在加载...</div>
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
+
     <div class="tree_wrapper" contextmenu>
-        <div guider="lib" guider-placement="right">
-            <abn-tree tree-data="orgTreeList"
-                      header="我的云库"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_teamfolder"
-                      icon-node-collapse="icon_teamfolder"
-                      selected-branch="selectedBranch"
-                      init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,GKPartition.teamFile)"
-                      on-hint-click = "handleHintClick(branch)"
-                      on-drop = "handleDrop(branch)"
-                      show-msg-icon="true"
-                    >
-            </abn-tree>
-        </div>
-        <div ng-repeat="tree in entTreeList">
-            <abn-tree ng-if="tree.data&&tree.data.length"
-                      tree-data="tree.data"
-                      header="{{tree.header}}"
-                      icon-leaf="icon_file"
-                      icon-expand="icon_fold"
-                      icon-collapse="icon_unfold"
-                      icon-node-expand="icon_teamfolder"
-                      icon-node-collapse="icon_teamfolder"
-                      selected-branch="selectedBranch"
-                      init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,GKPartition.entFile)"
-                      on-hint-click = "handleHintClick(branch)"
-                      on-drop = "handleDrop(branch)"
-                      show-msg-icon="true"
-                      show-header-btn="tree.showHeaderBtn"
-                      on-header-click="handleHeaderClick(tree)"
-                    >
-            </abn-tree>
-        </div>
-        <abn-tree tree-data="smartTreeList"
-                  header="智能文件夹"
-                  icon-leaf="icon_file"
-                  icon-expand="icon_fold"
-                  icon-collapse="icon_unfold"
-                  icon-node-expand="icon_smartfolder"
-                  icon-node-collapse="icon_smartfolder"
+        <abn-tree tree-data="allTreeList"
                   selected-branch="selectedBranch"
-                  on-select="handleSelect(branch,GKPartition.smartFolder)"
+                  order-by="'-newMsgTime'"
+                  on-select="handleSelect(branch)"
                   class="smart_tree_list"
                 >
         </abn-tree>
