@@ -303,8 +303,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
     }])
     .controller('leftSidebar', ['$scope', '$location', 'GKPath' , 'GKFile', '$rootScope', 'GKSmartFolder', 'GKMount', 'GKFilter', 'GKPartition', 'GKModal', 'GK', 'GKFileList', 'GKFileOpt', 'GKSideTree', 'GKApi', '$q','$timeout','$interval','localStorageService','GKWindowCom','GKFrame','GKAuth','GKMode',function ($scope, $location, GKPath, GKFile, $rootScope, GKSmartFolder, GKMount, GKFilter, GKPartition, GKModal, GK, GKFileList, GKFileOpt, GKSideTree, GKApi, $q,$timeout,$interval,localStorageService,GKWindowCom,GKFrame,GKAuth,GKMode) {
-
-
         var allMounts = GKMount.getMounts(),
              orgMount = GKMount.getOrgMounts(),
             smartFolders = GKSmartFolder.getFolders();
@@ -622,7 +620,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             selectBreanch(newOrg,partition, true);
         })
 
-        var setNewMsgTime = function(orgId,newMsgTime){
+        var setNewMsgTime = function(orgId,newMsgTime,timeType){
+            timeType = angular.isDefined(timeType)?timeType:'newMsgTime';
+            newMsgTime = parseInt(newMsgTime);
             var mount = GKMount.getMountByOrgId(orgId);
             if(!mount){
                 return;
@@ -641,8 +641,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     list = $scope.entTreeList[mount['ent_id']].data;
                 }
             }
-
-            GKSideTree.editNode(list, mount['mount_id'], '', {newMsgTime:newMsgTime});
+            var extObj = {};
+            extObj[timeType] = newMsgTime;
+            GKSideTree.editNode(list, mount['mount_id'], '', extObj);
         };
 
         var setChatState = function(list){
@@ -680,7 +681,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $rootScope.$on('clearMsgTime',function(event,param){
            var orgId = param.orgId;
-            setNewMsgTime(orgId,0);
+            setNewMsgTime(orgId,new Date().getTime(),'visitTime');
         })
     }])
     .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {

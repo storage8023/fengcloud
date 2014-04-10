@@ -48,10 +48,12 @@
 
     <div class="tree_wrapper" contextmenu>
         <abn-tree tree-data="allTreeList"
+                  init-selected-branch="initSelectedBranch"
+                  on-drop = "handleDrop(branch)"
                   selected-branch="selectedBranch"
-                  order-by="'-newMsgTime'"
+                  order-by="-branch.newMsgTime"
                   on-select="handleSelect(branch)"
-                  class="smart_tree_list"
+                  show-msg-icon="true"
                 >
         </abn-tree>
     </div>

@@ -2365,7 +2365,9 @@ angular.module('gkClientIndex.services', [])
                         isParent: false,
                         hasChildren:false,
                         iconNodeExpand: icon,
-                        iconNodeCollapse: icon
+                        iconNodeCollapse: icon,
+                        newMsgTime:0,
+                        visitTime:0
                     });
                 } else {
                     /**
@@ -2377,7 +2379,9 @@ angular.module('gkClientIndex.services', [])
                         data: value,
                         hasChildren: false,
                         iconNodeExpand: value.icon,
-                        iconNodeCollapse: value.icon
+                        iconNodeCollapse: value.icon,
+                        newMsgTime:-1,
+                        visitTime:0
                     };
                 }
                 return item;
