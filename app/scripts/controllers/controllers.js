@@ -150,7 +150,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var mode = GKMode.getMode();
             var extend = {
                 filter: param.filter || '',
-                partition: param.partition
+                partition: param.partition,
+                entId: param.entid || 0
             };
             if (GKPartition.isMountPartition(param.partition)) {
                 if(!param.filter){
@@ -653,9 +654,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.errorMsg = '';
         $scope.mountReadable = true;
         $scope.order = '+filename'; //当前的排序
-        if (GKPartition.isSmartFolderPartition($scope.partition) && $scope.filter == 'recent') {
-            $scope.order = '-last_edit_time'; //当前的排序
-        }
+
         $scope.allOpts = null;
         $scope.rightOpts = [];
         $scope.showHint = false;
@@ -1554,7 +1553,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout','GKSope',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout,GKSope) {
+    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout','GKSope','GKEnt',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout,GKSope,GKEnt) {
         GKSope.rightSidebar = $scope;
         $scope.GKPartition = GKPartition;
         /**
@@ -1566,6 +1565,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.localFile = null;
         $scope.sidebar = 'nofile';
         $scope.localFile = $rootScope.PAGE_CONFIG.file;
+        $scope.showMemberManageBtn = false;
         var getSidbarData = function(params){
             var sideBarData;
             if(params.search){
@@ -1614,6 +1614,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
             $scope.rootSidebarData = getRootSidebarData(param);
+
             if(param.path){
                 $scope.sidebar = 'singlefile';
             }else if(param.filter||param.search){
@@ -1623,7 +1624,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.currentTab = 'member';
             $timeout(function(){
                 getMember();
-            })
+            });
             if($rootScope.PAGE_CONFIG.mode == 'chat'){
                 $scope.hideNoFile = false;
             }else{
@@ -1636,6 +1637,24 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         $scope.hideNoFile = false;
                     }
 
+                }
+            }
+            /**
+             * 显示或隐藏成员管理功能
+             * @type {boolean}
+             */
+            $scope.showMemberManageBtn = false;
+            if(GKPartition.isTeamFilePartition($rootScope.PAGE_CONFIG.partition)){
+                if(GKMount.isAdmin($rootScope.PAGE_CONFIG.mount)){
+                    $scope.showMemberManageBtn = true;
+                }
+            }else if(GKPartition.isEntFilePartition($rootScope.PAGE_CONFIG.partition)){
+                var ent = GKEnt.getEnt($rootScope.PAGE_CONFIG.entId);
+                if(ent && ent.entname){
+                    if(ent.property){
+                        ent.property = JSON.parse(ent.property);
+                        $scope.showMemberManageBtn = (ent.property.ent_admin==1);
+                    }
                 }
             }
         })
@@ -1720,7 +1739,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.showAddMember = function(){
-            GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+            if(!GKPartition.isEntFilePartition($rootScope.PAGE_CONFIG.partition)){
+                GKModal.teamMember($rootScope.PAGE_CONFIG.mount.org_id);
+            }else{
+                var url = gkClientInterface.getUrl({
+                    sso: 1,
+                    url: gkClientInterface.getSiteDomain()+'/ent/dispatch?ent_id='+$rootScope.PAGE_CONFIG.entId
+                });
+                gkClientInterface.openUrl(url);
+            }
         };
 
         var getMember = function(){

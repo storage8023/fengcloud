@@ -1,6 +1,6 @@
 <div>
 <div class="chat_text_inner" ng-if="msg.content">
-    <span ng-bind="msg.content" class="text"></span>
+    <span chat-bind="msg.content" class="text"></span>
 </div>
 <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0}"  ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
     <div class="file_icon_wrapper">

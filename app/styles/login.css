@@ -153,6 +153,9 @@ font-size: 14px;
 .oauth_list li >a{
     display: block;
     width: 16px;
-    height: 16px;
+    height: 18px;
     margin-right: 10px;
+}
+.oauth_list li > a > i{
+    height: 100%;
 }

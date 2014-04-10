@@ -313,7 +313,7 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                     },
                     {
                         icon: 'icon_computer',
-                        name: 'mail',
+                        name: 'device',
                         text: '当前使用设备：' + (device ? device : '')
                     }
                 ];
@@ -414,6 +414,24 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                             })
                         })
                 }
+
+                $scope.goToValidEmail = function(){
+                    console.log('email',$rootScope.PAGE_CONFIG.user);
+                    if(!Util.Validation.isEmail($rootScope.PAGE_CONFIG.user.member_email)){
+                        return;
+                    }
+                    GKApi.sendValidEmail($rootScope.PAGE_CONFIG.user.member_email);
+                    var host = Util.Email.getSMTPByEmail($rootScope.PAGE_CONFIG.user.member_email);
+                    if(host){
+                        var url = gkClientInterface.getUrl({
+                            url:'http://' + host,
+                            sso:0
+                        });
+                        gkClientInterface.openUrl(url);
+                    }else{
+                        alert('验证邮件已发送，请登录邮箱进行验证');
+                    }
+                };
 
             }
         }
