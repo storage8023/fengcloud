@@ -654,9 +654,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.errorMsg = '';
         $scope.mountReadable = true;
         $scope.order = '+filename'; //当前的排序
-        if (GKPartition.isSmartFolderPartition($scope.partition) && $scope.filter == 'recent') {
-            $scope.order = '-last_edit_time'; //当前的排序
-        }
+
         $scope.allOpts = null;
         $scope.rightOpts = [];
         $scope.showHint = false;

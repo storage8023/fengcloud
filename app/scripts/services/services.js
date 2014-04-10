@@ -47,7 +47,7 @@ angular.module('gkClientIndex.services', [])
                    };
                }else{
                    return gkClientInterface.getEnt({
-                       entid:parseInt(entId)
+                       entid:entId
                    });
                }
             }
@@ -598,7 +598,7 @@ angular.module('gkClientIndex.services', [])
                         $scope.message = '';
                         $scope.isSendToChat = true;
                         $scope.markMilestone = function(message,isSendToChat){
-                            GKApi.markMilestone(mountId,file.fullpath,message,1)
+                            GKApi.markMilestone(mountId,file.fullpath,message,isSendToChat?1:0)
                                 .success(function(){
                                     $modalInstance.close();
                                 })
