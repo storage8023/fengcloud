@@ -418,8 +418,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.handleHeaderClick = function(tree){
             var url = gkClientInterface.getUrl({
-                sso: 0,
-                url: gkClientInterface.getSiteDomain()+'/ent'
+                sso: 1,
+                url: gkClientInterface.getSiteDomain()+'/ent/dispatch?ent_id='+tree.entId
             });
             gkClientInterface.openUrl(url);
         };
