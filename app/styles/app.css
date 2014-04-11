@@ -707,6 +707,12 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 .toolbar button.open .opt.file_link i{
     background-position: -24px -1604px;
 }
+.context-menu-item.encrypt:hover i,
+.toolbar button:hover .opt.encrypt i,
+.toolbar button:active .opt.encrypt i,
+.toolbar button.open .opt.encrypt i{
+    background-position: -24px -1904px;
+}
 .bread {
     height: 26px;
     line-height: 26px;

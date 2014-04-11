@@ -670,6 +670,16 @@ a:hover > .icon16x16.icon_link,
     background-position: -44px -1764px;
 }
 
+.icon16x16.icon_encrypt{
+    background-position: -4px -1904px;
+}
+a:hover > .icon16x16.icon_encrypt,
+.icon16x16.icon_encrypt_white{
+    background-position: -24px -1904px;
+}
+.icon16x16.icon_encrypt_color{
+    background-position: -44px -1904px;
+}
 /*32x32*/
 .icon32x32{
     width: 32px;
