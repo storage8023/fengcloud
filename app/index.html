@@ -46,7 +46,60 @@
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
 
-    <div class="tree_wrapper" contextmenu>
+    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='file'">
+        <abn-tree tree-data="smartTreeList"
+                  header="智能文件夹"
+                  icon-leaf="icon_file"
+                  icon-expand="icon_fold"
+                  icon-collapse="icon_unfold"
+                  icon-node-expand="icon_smartfolder"
+                  icon-node-collapse="icon_smartfolder"
+                  selected-branch="selectedBranch"
+                  on-select="handleSelect(branch)"
+                  class="smart_tree_list"
+                >
+        </abn-tree>
+        <div guider="lib" guider-placement="right">
+            <abn-tree tree-data="orgTreeList"
+                      header="我的云库"
+                      icon-leaf="icon_file"
+                      icon-expand="icon_fold"
+                      icon-collapse="icon_unfold"
+                      icon-node-expand="icon_teamfolder"
+                      icon-node-collapse="icon_teamfolder"
+                      selected-branch="selectedBranch"
+                      init-selected-branch="initSelectedBranch"
+                      on-select="handleSelect(branch)"
+                      on-hint-click = "handleHintClick(branch)"
+                      on-drop = "handleDrop(branch)"
+                      show-msg-icon="true"
+                    >
+            </abn-tree>
+        </div>
+        <div ng-repeat="tree in entTreeList">
+            <abn-tree ng-if="tree.data&&tree.data.length"
+                      tree-data="tree.data"
+                      header="{{tree.header}}"
+                      icon-leaf="icon_file"
+                      icon-expand="icon_fold"
+                      icon-collapse="icon_unfold"
+                      icon-node-expand="icon_teamfolder"
+                      icon-node-collapse="icon_teamfolder"
+                      selected-branch="selectedBranch"
+                      init-selected-branch="initSelectedBranch"
+                      on-select="handleSelect(branch)"
+                      on-hint-click = "handleHintClick(branch)"
+                      on-drop = "handleDrop(branch)"
+                      show-msg-icon="true"
+                      show-header-btn="tree.showHeaderBtn"
+                      on-header-click="handleHeaderClick(tree)"
+                    >
+            </abn-tree>
+        </div>
+
+    </div>
+
+    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='chat'">
         <abn-tree tree-data="allTreeList"
                   init-selected-branch="initSelectedBranch"
                   on-drop = "handleDrop(branch)"
@@ -62,9 +115,13 @@
 <div class="main">
 <header ng-controller="header">
     <div class="tabbar">
-        <ul>
+        <ul ng-if="PAGE_CONFIG.browserMode== 'chat'">
             <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
             <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
+        </ul>
+        <ul ng-if="PAGE_CONFIG.browserMode== 'file'">
+            <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
+            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
         </ul>
     </div>
     <div class="menu">

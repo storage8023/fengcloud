@@ -1094,7 +1094,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout','$document',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout,$document) {
+    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout','GKBrowserMode',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout,GKBrowserMode) {
         return {
             replace: true,
             restrict: 'E',
@@ -1183,11 +1183,15 @@ angular.module('gkClientIndex.directives', [])
 
                 $element.find('.toggle_btn_wrapper').click(function(){
                     var $this = jQuery(this);
-                    if($this.hasClass('toggle_btn_2')){
-                        $this.removeClass('toggle_btn_2');
-                    }else{
-                        $this.addClass('toggle_btn_2');
-                    }
+                    $scope.$apply(function(){
+                        if($this.hasClass('toggle_btn_2')){
+                            GKBrowserMode.setMode('chat');
+                            $this.removeClass('toggle_btn_2');
+                        }else{
+                            GKBrowserMode.setMode('file');
+                            $this.addClass('toggle_btn_2');
+                        }
+                    })
                 })
             }
         }
@@ -1498,6 +1502,9 @@ angular.module('gkClientIndex.directives', [])
                         oldMsg = firstHistory['property']?firstHistory['property']['message']||'' : '';
                     }
                     GKModal.setMilestone(getOptMountId(file),file,oldMsg).result.then(function(){
+                        if($rootScope.PAGE_CONFIG.browserMode == 'chat'){
+                            GKMode.setMode('chat');
+                        }
                         $timeout(function(){
                             getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
                         },1000);

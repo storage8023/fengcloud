@@ -21,7 +21,23 @@ angular.module('gkClientIndex.services', [])
             rightSidebar:null
         };
     }])
-
+    .factory('GKBrowserMode', ['$rootScope','localStorageService',function ($rootScope,localStorageService) {
+        var key = 'gk_browser_mode';
+        var GKBrowserMode = {
+            getMode:function(){
+                var re =  localStorageService.get(key);
+                if(['chat','file'].indexOf(re)<0){
+                    return 'file';
+                }
+                return re;
+            },
+            setMode:function(mode){
+                $rootScope.PAGE_CONFIG.browserMode = mode;
+                localStorageService.add(key, mode);
+            }
+        };
+        return GKBrowserMode;
+    }])
     .factory('GKSync', [function (GKPartition, GKModal, GKOpt) {
         return {
             getSyncByMountIdFullpath: function (mountId, fullpath) {
@@ -3362,7 +3378,7 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
-			    
+
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
                                 alert('你没有权限剪切当前云库下的文件或文件夹');
                                 return;
@@ -3377,7 +3393,7 @@ angular.module('gkClientIndex.services', [])
                             if(hasUploadFile){
                                alert('上传中的文件或文件夹不能剪切');
                                return;
-                            }		    
+                            }
                             var data = {
                                 code: 'ctrlX',
                                 mount_id: $rootScope.PAGE_CONFIG.mount.mount_id,
@@ -4037,15 +4053,17 @@ angular.module('gkClientIndex.services', [])
         };
         return GKChat;
     }])
-    .factory('GKMode', ['$rootScope','localStorageService','GKFrame','GKAuth','GKPartition',function ($rootScope,localStorageService,GKFrame,GKAuth,GKPartition) {
+    .factory('GKMode', ['$rootScope','localStorageService','GKFrame','GKAuth','GKPartition','GKBrowserMode',function ($rootScope,localStorageService,GKFrame,GKAuth,GKPartition,GKBrowserMode) {
         var key = 'gk_mode';
         var GKMode = {
             getMode:function(){
-                var re =  localStorageService.get(key);
-                if(['chat','file'].indexOf(re)<0){
-                    return 'chat';
-                }
-                return re;
+                return GKBrowserMode.getMode();
+//
+//                var re =  localStorageService.get(key);
+//                if(['chat','file'].indexOf(re)<0){
+//                    return 'chat';
+//                }
+//                return re;
             },
             setMode:function(mode,partition,mount){
                 partition = partition === undefined ?$rootScope.PAGE_CONFIG.partition:partition;
@@ -4057,12 +4075,11 @@ angular.module('gkClientIndex.services', [])
                 if(mode == 'chat'){
                     $rootScope.$broadcast('clearMsgTime',{orgId: mount.org_id})
                 }
-                localStorageService.add(key, mode);
                 var iframe = GKFrame('ifame_chat');
                 if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
                     iframe.gkFrameCallback('changeMode',mode);
                 }
-
+                //localStorageService.add(key, mode);
             }
         };
         return GKMode;
