@@ -1162,9 +1162,23 @@ angular.module('gkClientIndex.directives', [])
                     gkClientInterface.openUrl(url);
                 };
 
+                var hideTimer;
+
                 var settingsWrapper = $element.find('.setting_wrapper_dropdown');
-                $element.find('.account_info').on('mouseenter',function(){
-                    settingsWrapper.fadeIn(200);
+
+                $element.find('.account_info,.setting_wrapper_dropdown').on('mouseenter',function(){
+                    if(hideTimer){
+                       $timeout.cancel(hideTimer);
+                    }
+                    settingsWrapper.fadeIn(100);
+                    $element.addClass('hover');
+                })
+
+                $element.find('.account_info,.setting_wrapper_dropdown').on('mouseleave',function(){
+                    hideTimer = $timeout(function(){
+                        settingsWrapper.fadeOut(100);
+                        $element.removeClass('hover');
+                    },200)
                 })
 
                 $element.find('.toggle_btn_wrapper').click(function(){
