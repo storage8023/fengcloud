@@ -1094,7 +1094,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout) {
+    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout','$document',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout,$document) {
         return {
             replace: true,
             restrict: 'E',
@@ -1153,6 +1153,28 @@ angular.module('gkClientIndex.directives', [])
                 $scope.handleAdd = function () {
                     GKModal.joinTeam();
                 };
+
+                $scope.gotoUpgrade = function () {
+                    var url = gkClientInterface.getUrl({
+                        sso:1,
+                        url: gkClientInterface.getSiteDomain()+'/pay/order'
+                    });
+                    gkClientInterface.openUrl(url);
+                };
+
+                var settingsWrapper = $element.find('.setting_wrapper_dropdown');
+                $element.find('.account_info').on('mouseenter',function(){
+                    settingsWrapper.fadeIn(200);
+                })
+
+                $element.find('.toggle_btn_wrapper').click(function(){
+                    var $this = jQuery(this);
+                    if($this.hasClass('toggle_btn_2')){
+                        $this.removeClass('toggle_btn_2');
+                    }else{
+                        $this.addClass('toggle_btn_2');
+                    }
+                })
             }
         }
     }])
