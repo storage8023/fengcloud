@@ -9,7 +9,7 @@
     },
     crypt:function(param,callback){
         console.log('cryptParam',arguments);
-        if(typeof gkClient.crypt === 'undefined'){
+        if(typeof gkClient.gCrypt === 'undefined'){
             return ;
         }
         gkClient.gCrypt(JSON.stringify(param),function(re){
