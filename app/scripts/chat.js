@@ -465,7 +465,12 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 };
 
                 if (value.metadata) {
-                    value.metadata = JSON.parse(value.metadata);
+                    try{
+                        value.metadata = JSON.parse(value.metadata);
+                    }catch(e){
+                        value.metadata = '';
+                        console.log(' JSON Parse Error',e);
+                    }
                     if (value.metadata.mount_id) {
                         if (value.metadata.fullpath) {
                             value.metadata.filename = Util.String.baseName(value.metadata.fullpath);
