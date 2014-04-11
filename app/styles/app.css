@@ -451,7 +451,8 @@ footer {
     position: relative;
     height: 20px;
     line-height: 20px;
-    margin-top: 5px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 .left_sidebar .account .setting_wrapper_dropdown > li .toggle_btn_wrapper .toggle_btn{
     position: absolute;
@@ -462,7 +463,9 @@ footer {
     display: inline-block;
    text-align: center;
     z-index: 10;
-    color: #63666A;
+    color: #707377;
+    transition:color linear .2s;
+    -webkit-transition:color linear .2s;
 }
 .left_sidebar .account .setting_wrapper_dropdown > li .toggle_btn_wrapper .bg{
     position: absolute;
@@ -483,11 +486,18 @@ footer {
 }
 .left_sidebar .account .setting_wrapper_dropdown > li .toggle_btn_wrapper .toggle_btn:nth-child(1){
     right: 50%;
+    color:#fff;
 }
 .left_sidebar .account .setting_wrapper_dropdown > li .toggle_btn_wrapper .toggle_btn:nth-child(2){
     left: 50%;
 }
-.left_sidebar .tree_wrapper{
+.left_sidebar .account .setting_wrapper_dropdown > li .toggle_btn_2 .toggle_btn:nth-child(2){
+    color:#fff;
+ }
+.left_sidebar .account .setting_wrapper_dropdown > li .toggle_btn_2 .toggle_btn:nth-child(1){
+    color: #707377;
+}
+ .left_sidebar .tree_wrapper{
     padding-top:80px;
 }
 
