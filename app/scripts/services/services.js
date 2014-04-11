@@ -2669,7 +2669,8 @@ angular.module('gkClientIndex.services', [])
                     'order_by_file_size',
                     'order_by_file_type',
                     'order_by_last_edit_time',
-                    'link'
+                    'link',
+                    'encrypt' //加密
                 ];
             },
             /**
@@ -2763,7 +2764,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getCurrentOpts: function (currentFile, partition) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, 'link','view_property', "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
+                this.disableOpt(opts, 'encrypt','link','view_property', "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
                 if (GKCilpboard.isEmpty()) {
                     this.disableOpt(opts, 'paste');
                 }
@@ -2776,7 +2777,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts, 'link','new_file', 'view_property', 'open_with', "goto", "sync", "unsync", "rename", "lock", "unlock");
+                    this.disableOpt(opts, 'encrypt','link','new_file', 'view_property', 'open_with', "goto", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
@@ -2789,7 +2790,7 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach(files, function (file) {
                     context.disableOpt(opts, "add", "new_folder",'new_txt_file','new_ppt_file','new_xls_file','new_doc_file', 'new_file', "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
-                        context.disableOpt(opts, 'open_with', 'lock', 'unlock');
+                        context.disableOpt(opts, 'encrypt','open_with', 'lock', 'unlock');
                         context.setSyncOpt(opts, currentFile, file);
                     } else {
                         context.disableOpt(opts, 'sync', 'unsync');
@@ -3002,6 +3003,28 @@ angular.module('gkClientIndex.services', [])
                     return true;
                 };
                 var allOpt = {
+                    'encrypt': {
+                        key:'encrypt',
+                        index: 21,
+                        name: '加密',
+                        className: "encrypt",
+                        icon: 'icon_encrypt',
+                        callback: function () {
+                            if (selectedFile.length != 1) {
+                                return;
+                            }
+                            var file = selectedFile[0];
+                            if(file.dir ==1) return;
+                            var mountId = GKFileList.getOptFileMountId(file);
+                            gkClientInterface.crypt({
+                                mountid:mountId,
+                                webpath:file.fullpath,
+                                encrypt:1
+                            },function(){
+                                alert('加密成功');
+                            });
+                        }
+                    },
                     'goto': {
                         key:'goto',
                         name: '位置',
@@ -3706,6 +3729,7 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                     }
+
                 };
                 return allOpt;
             }

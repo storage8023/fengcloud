@@ -7,6 +7,18 @@
     _handleException: function (e) {
         throw new Error(e.name + ":" + e.message);
     },
+    crypt:function(param,callback){
+        console.log('cryptParam',arguments);
+        if(typeof gkClient.crypt === 'undefined'){
+            return ;
+        }
+        gkClient.gCrypt(JSON.stringify(param),function(re){
+            re = typeof re ==='object'?re:JSON.parse(re);
+            if(typeof callback === 'function'){
+                callback(re);
+            }
+        });
+    },
     getClipboardData:function(){
         if(typeof gkClient.gGetClipboardData === 'undefined'){
             return '';
