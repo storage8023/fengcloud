@@ -1495,8 +1495,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant','GKMode',function ($scope, GKPath, $location, $filter, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant,GKMode) {
 
         $scope.changeMode = function(mode){
-            //GKMode.setMode(mode);
-            $rootScope.PAGE_CONFIG.mode = mode;
+            GKMode.setMode(mode);
         };
 
         $scope.visitBBS = function(){
