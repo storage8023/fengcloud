@@ -335,7 +335,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             allTreeList = allTreeList.concat(val.data);
         });
 
-        allTreeList = allTreeList.concat($scope.smartTreeList);
+        //allTreeList = allTreeList.concat($scope.smartTreeList);
 
         $scope.allTreeList = allTreeList;
 
