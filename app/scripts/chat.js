@@ -403,7 +403,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                             return;
                         }
                         var request_key = data.request_key;
-                        console.log('requestKey',request_key);
                         var uuid = data.uuid;
                         var url = app.url;
                         if (app.url.indexOf('?') >= 0) {

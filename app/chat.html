@@ -21,7 +21,7 @@
 </head>
 <body ng-controller="initChat" ng-keydown="handleSysKeyDown($event)">
 <div class="wrapper">
-    <div class="main" ng-drop="handleChatDrop($event)" ng-class="{'has_toolbar':apps&&apps.length}">
+    <div class="main" ng-drop="handleChatDrop($event)" ng-class="{'no_toolbar':!apps||!apps.length}">
             <div class="empty" ng-if="error">{{error.msg}}</div>
             <div class="content">
             <header>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </section>
-            <ul class="toolbar" ng-show="apps && apps.length">
+            <ul class="toolbar" ng-hide="!apps || !apps.length">
                 <li ng-repeat="app in apps" ng-click="gotoApp(app)"><img ng-src="{{app.icon}}" title="{{app.name}}"/></li>
             </ul>
             <footer>
