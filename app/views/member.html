@@ -12,13 +12,17 @@
             <a href="javascript:;" ng-click="personalOpen()"><i class="icon16x16 icon_info_white"></i><span>帐号信息</span></a>
         </li>
         <li>
-            <a href="javascript:;" ng-click="openNews()" ><i class="icon16x16 icon_message_white"></i><span>消息</span><span class="red" ng-show="newMsg">有新消息!</span></a>
+            <a href="javascript:;" ng-click="openNews()" >
+                <i class="icon16x16 icon_message_white"></i>
+                <span>消息</span>
+                <span class="important" ng-show="newMsg">有新消息!</span>
+            </a>
         </li>
         <li>
             <a href="javascript:;" ng-click="gotoUpgrade()"><i class="icon16x16 icon_team_upgrade_white"></i><span>帐号升级</span></a>
         </li>
         <li>
-            <a class="toggle_btn_wrapper" ng-class="PAGE_CONFIG.browserMode=='chat'?'toggle_btn_2':''" href="javascript:;">
+            <a class="toggle_btn_wrapper" ng-class="mode=='file'?'toggle_btn_2':''" href="javascript:;">
                 <span class="toggle_btn">讨论模式</span>
                 <span class="toggle_btn">文件模式</span>
                 <span class="bg"></span>

@@ -1100,7 +1100,8 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             templateUrl: "views/member.html",
             scope: {
-                user: '='
+                user: '=',
+                mode:'='
             },
             link: function ($scope, $element) {
                 var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
@@ -1175,6 +1176,7 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $element.find('.account_info,.setting_wrapper_dropdown').on('mouseleave',function(){
+                    //return;
                     hideTimer = $timeout(function(){
                         settingsWrapper.fadeOut(100);
                         $element.removeClass('hover');
