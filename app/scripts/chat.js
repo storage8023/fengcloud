@@ -560,6 +560,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (!$scope.currentSession) return;
             $scope.loadingHistoryMsg = true;
             $scope.currentMsgList = [];
+            postedMsg = [];
             getList(minMsgTime, function () {
                 $scope.loadingHistoryMsg = false;
                 $scope.scrollToIndex = $scope.currentMsgList.length - 1;
