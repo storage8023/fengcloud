@@ -379,6 +379,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             switch (app.id){
                 case -1://#话题
                     $scope.cursorPos = 1;
+                    $scope.insertPos = 0;
                     $scope.insertStr = '##';
                     break
                 case 0:
@@ -559,6 +560,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             if (!$scope.currentSession) return;
             $scope.loadingHistoryMsg = true;
             $scope.currentMsgList = [];
+            postedMsg = [];
             getList(minMsgTime, function () {
                 $scope.loadingHistoryMsg = false;
                 $scope.scrollToIndex = $scope.currentMsgList.length - 1;
