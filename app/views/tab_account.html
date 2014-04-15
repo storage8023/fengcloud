@@ -27,7 +27,7 @@
             <li ng-repeat="attr in attrs" class="{{attr.name}}">
                 <i class="icon16x16 {{attr.icon}}"></i>
                 <span>{{attr.text}}</span>
-                <a href="javascript:;" ng-if="attr.name=='mail' && PAGE_CONFIG.user.validate==0" ng-click="goToValidEmail()">验证邮箱</a>
+                <a href="javascript:;" ng-if="attr.name=='mail' && PAGE_CONFIG.user.validate==0" ng-click="goToValidEmail()" tooltip-append-to-body="true" tooltip="验证成功后，重启客户端生效">验证邮箱</a>
             </li>
             <li>
                 <i class="icon16x16 icon_pen"></i>
