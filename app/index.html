@@ -2,7 +2,7 @@
 <html lang="zh-CN" ng-app="gkClientIndex" prevent-drag-drop>
 <head>
     <meta charset="utf-8">
-    <title>够快云库456</title>
+    <title>够快云库</title>
     <link rel="stylesheet" href="bower_components/bootstrap/bootstrap.css?v=8"/>
     <link rel="stylesheet" href="styles/bootstrap-gk.css?v=8"/>
     <link rel="stylesheet" href="styles/jquery-ui-gk.css?v=8"/>
@@ -44,8 +44,8 @@
       ng-controller="initClient">
 <div class="loading" ng-show="showLoading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: #40464d url(images/loading.png) no-repeat 50%;text-align: center;padding-top: 400px;color:#2d3439;font-size:14px">正在加载...</div>
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
-    <member user="PAGE_CONFIG.user" new-msg="newMsg"></member>
-    <div class="tree_wrapper" contextmenu>
+    <member user="PAGE_CONFIG.user" new-msg="newMsg" mode="PAGE_CONFIG.browserMode"></member>
+    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='file'">
         <div guider="lib" guider-placement="right">
             <abn-tree tree-data="orgTreeList"
                       header="我的云库"
@@ -56,7 +56,7 @@
                       icon-node-collapse="icon_teamfolder"
                       selected-branch="selectedBranch"
                       init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,GKPartition.teamFile)"
+                      on-select="handleSelect(branch)"
                       on-hint-click = "handleHintClick(branch)"
                       on-drop = "handleDrop(branch)"
                       show-msg-icon="true"
@@ -74,7 +74,7 @@
                       icon-node-collapse="icon_teamfolder"
                       selected-branch="selectedBranch"
                       init-selected-branch="initSelectedBranch"
-                      on-select="handleSelect(branch,GKPartition.entFile)"
+                      on-select="handleSelect(branch)"
                       on-hint-click = "handleHintClick(branch)"
                       on-drop = "handleDrop(branch)"
                       show-msg-icon="true"
@@ -91,8 +91,20 @@
                   icon-node-expand="icon_smartfolder"
                   icon-node-collapse="icon_smartfolder"
                   selected-branch="selectedBranch"
-                  on-select="handleSelect(branch,GKPartition.smartFolder)"
+                  on-select="handleSelect(branch)"
                   class="smart_tree_list"
+                >
+        </abn-tree>
+    </div>
+
+    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='chat'">
+        <abn-tree tree-data="allTreeList"
+                  init-selected-branch="initSelectedBranch"
+                  on-drop = "handleDrop(branch)"
+                  selected-branch="selectedBranch"
+                  order-by="-branch.newMsgTime"
+                  on-select="handleSelect(branch)"
+                  show-msg-icon="true"
                 >
         </abn-tree>
     </div>
@@ -101,9 +113,13 @@
 <div class="main">
 <header ng-controller="header">
     <div class="tabbar">
-        <ul>
+        <ul ng-if="PAGE_CONFIG.browserMode== 'chat'">
             <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
             <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
+        </ul>
+        <ul ng-if="PAGE_CONFIG.browserMode== 'file'">
+            <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
+            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
         </ul>
     </div>
     <div class="menu">

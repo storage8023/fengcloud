@@ -1,13 +1,32 @@
 <div class="account" >
     <div class="account_info">
-        <avatar gk-src="{{user.avatar}}" class="photo avatar" ng-click="personalOpen()"></avatar>
-        <span ng-click = "personalOpen()" class="name">{{user.member_name}}</span>
-        <i class="icon32x32 icon_ring" ng-click="openNews()" title="{{newMsg?'有新消息':'消息'}}">
-            <span class="hint" ng-show="newMsg"></span>
-        </i>
+        <avatar gk-src="{{user.avatar}}" class="photo avatar"></avatar>
+        <span class="name">{{user.member_name}}</span>
     </div>
     <div class="btn_wrapper">
         <button class="btn btn-dark add_lib" ng-click="handleCreate()" href="javascript:void(0)"><i>+</i> 创建云库</button>
         <button class="btn btn-dark" ng-click="handleAdd()" href="javascript:void(0)"><i class="icon16x16 icon_quote_white"></i> 加入云库</button>
     </div>
+    <ul class="dropdown-menu setting_wrapper_dropdown">
+        <li>
+            <a href="javascript:;" ng-click="personalOpen()"><i class="icon16x16 icon_info_white"></i><span>帐号信息</span></a>
+        </li>
+        <li>
+            <a href="javascript:;" ng-click="openNews()" >
+                <i class="icon16x16 icon_message_white"></i>
+                <span>消息</span>
+                <span class="important" ng-show="newMsg">有新消息!</span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:;" ng-click="gotoUpgrade()"><i class="icon16x16 icon_team_upgrade_white"></i><span>帐号升级</span></a>
+        </li>
+        <li>
+            <a class="toggle_btn_wrapper" ng-class="mode=='file'?'toggle_btn_2':''" href="javascript:;">
+                <span class="toggle_btn">讨论模式</span>
+                <span class="toggle_btn">文件模式</span>
+                <span class="bg"></span>
+            </a>
+        </li>
+    </ul>
 </div>

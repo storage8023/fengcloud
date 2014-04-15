@@ -1,3 +1,6 @@
+.important{
+    color: #E65353 !important;
+}
 /* css 通用组件样式 */
 .btn > i{
     margin-right: 5px;

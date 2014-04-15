@@ -1149,7 +1149,7 @@ angular.module('GKCommon.services', [])
 
         return GKException;
     }])
-    .factory('GKMount', [function () {
+    .factory('GKMount', ['GKPartition',function (GKPartition) {
         /**
          * 格式化mount数据
          * @param mount
@@ -1174,7 +1174,9 @@ angular.module('GKCommon.services', [])
                     properties.permissions = [];
                 }
             }
+            var partition = GKPartition.getPartitionByMountType(mount.type,mount.ent_id);
             var newMount = {
+                partition:partition,
                 mount_id: mount.mountid,
                 ent_id: mount.ent_id,
                 name: mount.name ? mount.name : '我的文件',
