@@ -363,9 +363,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 $scope.focusTextarea = true;
             })
             $scope.postText = '';
-            chatSession.getApps($scope.currentSession.orgid).then(function(list){
-                $scope.apps = list;
-            });
+//            chatSession.getApps($scope.currentSession.orgid).then(function(list){
+//                $scope.apps = list;
+//            });
             $scope.topicHintList = $filter('orderBy')(chatTopic.get($scope.currentSession.orgid),'-dateline');
         };
         /**/
@@ -910,9 +910,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (Util.RegExp.HTTPStrict.test(bind)) {
                     bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
-                if (Util.RegExp.POUND_TOPIC.test(bind)) {
-                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1" class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
-                }
+//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
+//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1" class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
+//                }
                 bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
                 element.html(bind === undefined ? '' : bind);
             });
