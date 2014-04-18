@@ -1,7 +1,10 @@
 'use strict';
 angular.module('LocalStorageModule').value('prefix', 'gkClientIndex');
-angular.module('gkClientIndex', ['angular-contextMenu','treeControl','GKCommon','pasvaz.bindonce','gkClientIndex.controllers', 'gkClientIndex.filters', 'gkClientIndex.directives', 'gkClientIndex.services', 'LocalStorageModule', 'ui.directives', 'ui.utils', 'ui.bootstrap','ngSanitize', 'LocalStorageModule','gkDragDrop'])
-    .config(['$sceDelegateProvider',function ($sceDelegateProvider) {
+angular.module('gkClientIndex', ['gettext','angular-contextMenu','treeControl','GKCommon','pasvaz.bindonce','gkClientIndex.controllers', 'gkClientIndex.filters', 'gkClientIndex.directives', 'gkClientIndex.services', 'LocalStorageModule', 'ui.directives', 'ui.utils', 'ui.bootstrap','ngSanitize', 'LocalStorageModule','gkDragDrop'])
+    .run(function (gettextCatalog) {
+        gettextCatalog.debug = true;
+        //gettextCatalog.currentLanguage = 'en_US';
+    }).config(['$sceDelegateProvider',function ($sceDelegateProvider) {
         var siteDomain = gkClientInterface.getSiteDomain();
         $sceDelegateProvider.resourceUrlWhitelist([
             'self',
@@ -16,7 +19,7 @@ angular.module('gkClientIndex', ['angular-contextMenu','treeControl','GKCommon',
             'http://*.yunku.cn/**',
             'https://*.yunku.cn/**'
         ]);
-    }])
+    }]);
 ;
 
 

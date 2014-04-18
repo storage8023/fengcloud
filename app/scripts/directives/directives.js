@@ -1633,7 +1633,7 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout','$rootScope', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout,$rootScope) {
+    .directive('toolbar', ['GKI18n','gettext','GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout','$rootScope', function (GKI18n,gettext,GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout,$rootScope) {
         return {
             replace: true,
             restrict: 'E',
@@ -1642,7 +1642,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.$on('$locationChangeSuccess', function () {
                     var param = $location.search(), listName = '';
                     if (param.search) {
-                        listName = '搜索结果';
+                        listName = GKI18n.getText(gettext('搜索结果'));
                     } else {
                         if (GKPartition.isSmartFolderPartition(param.partition) && param.filter) {
                             listName = GKSmartFolder.getSmartFoldeName(param.filter);
@@ -1682,7 +1682,7 @@ angular.module('gkClientIndex.directives', [])
                         if (!moreBtn) {
                             var moreBtnHtml = '<button class="f_l dropdown">';
                             moreBtnHtml += '<a dropdown-toggle class="btn btn-opt opt" href="javascript:void(0);" ng-class="">';
-                            moreBtnHtml += '<span>更多</span>';
+                            moreBtnHtml += '<span translate>更多</span>';
                             moreBtnHtml += '<i class="gk_down_arrow"></i>';
                             moreBtnHtml += '</a>';
                             moreBtnHtml += '<ul class="dropdown-menu">';

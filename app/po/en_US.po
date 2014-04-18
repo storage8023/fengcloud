@@ -1,0 +1,305 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: fengcloud\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: app/scripts/services/services.js
+msgid "上传中的文件或文件夹不能重命名"
+msgstr "error,current file or folder is uploading"
+
+#: app/scripts/services/services.js
+msgid "不能在已同步的目录中再创建同步文件夹"
+msgstr "can not create sync folder in sync folder"
+
+#: app/scripts/services/services.js
+msgid "你没有权限保存"
+msgstr "you have no permit to save"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限保存该云库下的文件或文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+msgid "你没有权限在当前云库下添加文件或文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+msgid "你没有权限重命名该"
+msgstr "you have no permit to rest the file name"
+
+#: app/scripts/services/services.js
+msgid "你没有权限锁定该文件"
+msgstr "you have no permit to lock current file"
+
+#: app/scripts/services/services.js
+msgid "保存到本地"
+msgstr "save to location"
+
+#: app/scripts/services/services.js
+msgid "分享链接"
+msgstr "share link"
+
+#: app/views/member.html
+msgid "创建云库"
+msgstr "create cloud"
+
+#: app/scripts/services/services.js
+msgid "创建公开文件夹"
+msgstr "create public folder"
+
+#: app/scripts/services/services.js
+msgid "创建同步文件夹"
+msgstr "create sync folder"
+
+#: app/scripts/services/services.js
+msgid "删除"
+msgstr "delete"
+
+#: app/index.html
+msgid "前往"
+msgstr "goto"
+
+#: app/scripts/services/services.js
+msgid "剪切"
+msgstr "Cut"
+
+#: app/views/member.html
+msgid "加入云库"
+msgstr "join cloud"
+
+#: app/scripts/services/services.js
+msgid "同步"
+msgstr "sync"
+
+#: app/index.html
+msgid "同步的文件夹"
+msgstr "sync folder"
+
+#: app/scripts/services/services.js
+msgid "名称不能为空"
+msgstr "name can not be null"
+
+#: app/scripts/services/services.js
+msgid "名称不能包含下列任何字符"
+msgstr "name can not container flow char"
+
+#: app/scripts/services/services.js
+msgid "名称的长度不能超过15个字符"
+msgstr "name's length can not lager then 15"
+
+#: app/scripts/services/services.js
+msgid "回收站"
+msgstr "delete area"
+
+#: app/scripts/services/services.js
+msgid "复制"
+msgstr "copy"
+
+#: app/index.html
+msgid "够快云库"
+msgstr "feng cloud"
+
+#: app/index.html app/scripts/services/services.js
+msgid "大小"
+msgstr "size"
+
+#: app/scripts/services/services.js
+msgid "属性"
+msgstr "property"
+
+#: app/views/member.html
+msgid "帐号信息"
+msgstr "account"
+
+#: app/views/member.html
+msgid "帐号升级"
+msgstr "upgrade account"
+
+#: app/views/nofile_right_sidebar.html
+msgid "成员"
+msgstr "member"
+
+#: app/scripts/controllers/controllers.js
+msgid "成员[[]]人"
+msgstr "member[[]]"
+
+#: app/views/nofile_right_sidebar.html
+msgid "成员管理"
+msgstr "manage"
+
+#: app/scripts/services/services.js
+msgid "排序方式"
+msgstr "order list"
+
+#: app/scripts/controllers/controllers.js app/scripts/directives/directives.js
+#: app/scripts/services/services.js
+msgid "搜索结果"
+msgstr "search result"
+
+#: app/index.html app/scripts/services/services.js
+msgid "文件"
+msgstr "file"
+
+#: app/index.html app/scripts/services/services.js
+msgid "文件名"
+msgstr "file name"
+
+#: app/scripts/services/services.js
+msgid "文件夹"
+msgstr "folder"
+
+#: app/views/member.html
+msgid "文件模式"
+msgstr "file"
+
+#: app/scripts/services/services.js
+msgid "新建"
+msgstr "create"
+
+#: app/scripts/services/services.js
+msgid "新建 Microsoft Excel 工作表"
+msgstr "create Microsoft Excel"
+
+#: app/scripts/services/services.js
+msgid "新建 Microsoft PowerPoint 演示文稿"
+msgstr "create Microsoft PowerPoint "
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "新建 Microsoft Word 文档"
+msgstr "create word"
+
+#: app/scripts/services/services.js
+msgid "新建Excel文档"
+msgstr "create excel"
+
+#: app/scripts/services/services.js
+msgid "新建PPT文档"
+msgstr "create ppt"
+
+#: app/scripts/services/services.js
+msgid "新建Word文档"
+msgstr "create word"
+
+#: app/scripts/services/services.js
+msgid "新建文件夹"
+msgstr "create folder"
+
+#: app/scripts/services/services.js
+msgid "新建文本文档"
+msgstr "create txt"
+
+#: app/index.html app/scripts/services/services.js
+msgid "最后修改时间"
+msgstr "update time"
+
+#: app/scripts/services/services.js
+msgid "最近修改的文件"
+msgstr "modify file laster"
+
+#: app/scripts/services/services.js
+msgid "最近访问的文件"
+msgstr "visit file laster"
+
+#: app/views/member.html
+msgid "有新消息!"
+msgstr "new"
+
+#: app/scripts/services/services.js
+msgid "未找到相关搜索结果"
+msgstr "can not search file"
+
+#: app/index.html
+msgid "正在加载..."
+msgstr "loading..."
+
+#: app/views/member.html
+msgid "消息"
+msgstr "message"
+
+#: app/scripts/services/services.js
+msgid "添加到云库"
+msgstr "add to cloud"
+
+#: app/index.html app/scripts/services/services.js
+msgid "类型"
+msgstr "catagory"
+
+#: app/scripts/services/services.js
+msgid "粘贴"
+msgstr "paste"
+
+#: app/index.html
+msgid "自动提示已关闭，点击这里可以重新开启"
+msgstr "click to open tooltips"
+
+#: app/scripts/services/services.js
+msgid "解锁"
+msgstr "unlock"
+
+#: app/index.html
+msgid "讨论"
+msgstr "discuss"
+
+#: app/views/member.html
+msgid "讨论模式"
+msgstr "discouss"
+
+#: app/index.html
+msgid "设置"
+msgstr "setting"
+
+#: app/scripts/services/services.js
+msgid "该文件夹为空"
+msgstr "current folder is blank"
+
+#: app/scripts/services/services.js
+msgid "重命名"
+msgstr "rename"
+
+#: app/scripts/services/services.js
+msgid "锁定"
+msgstr "lock"
+
+#~ msgid "关闭帮助提示"
+#~ msgstr "close tooltips"
+
+#~ msgid "升级"
+#~ msgstr "upgrade"
+
+#~ msgid "开启帮助提示"
+#~ msgstr "open tooltips"
+
+#~ msgid "我的云库"
+#~ msgstr "my cloud"
+
+#~ msgid "打开传输队列"
+#~ msgstr "open transfer"
+
+#~ msgid "故事"
+#~ msgstr "story"
+
+#~ msgid "智能文件夹"
+#~ msgstr "folder"
+
+#~ msgid "更多"
+#~ msgstr "more"
+
+#~ msgid "正在传输"
+#~ msgstr "transfering"
+
+#~ msgid "访问用户社区"
+#~ msgstr "access to the community"
+
+#~ msgid "已邀请"
+#~ msgstr "invited"

@@ -1589,7 +1589,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout','GKSope','GKEnt',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout,GKSope,GKEnt) {
+    .controller('rightSidebar', ['GKI18n','gettext','$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout','GKSope','GKEnt',function (GKI18n,gettext,$scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout,GKSope,GKEnt) {
         GKSope.rightSidebar = $scope;
         $scope.GKPartition = GKPartition;
         /**
@@ -1606,7 +1606,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var sideBarData;
             if(params.search){
                 sideBarData =  {
-                    title: '搜索结果',
+                    title: GKI18n.getText(gettext('搜索结果')),
                     tip: '',
                     icon: 'search'
                 };
