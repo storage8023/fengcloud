@@ -898,6 +898,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         return function (scope, element, attr) {
             scope.$watch(attr.chatBind, function (value) {
                 var bind = value;
+                bind = bind.replace(/>/g, '&gt;')
+                bind = bind.replace(/</g, '&lt;');
                 var atMatches =  value.match(Util.RegExp.AT);
                 if(atMatches && atMatches.length){
                     atMatches = Util.Array.unique(atMatches);
@@ -906,8 +908,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                         bind = bind.replace(new RegExp(val, 'g'), '<span ng-click="atMember(\''+name+'\')" class="at_member'+(name==$rootScope.PAGE_CONFIG.user.member_name?' mine':'')+'">'+val+'</span>');
                     });
                 }
-                bind = bind.replace(/>/g, '&gt;')
-                bind = bind.replace(/</g, '&lt;');
+
                 if (Util.RegExp.HTTPStrict.test(bind)) {
                     bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
