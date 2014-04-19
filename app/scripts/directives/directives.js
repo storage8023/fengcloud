@@ -1301,6 +1301,14 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.openFile = function(history){
                     var mountId = getOptMountId($scope.file);
+                    //判断文件是否存在，不存在则不能打开
+                    var file = gkClientInterface.getFileInfo({
+                        mountid: mountId,
+                        webpath: history.fullpath
+                    });
+                    if(!file || !file.mount_id)
+                        return;
+
                     if(history.dir == 1){
                         if(history.act == 0) return;
                         GKPath.gotoFile(mountId,history.fullpath);
