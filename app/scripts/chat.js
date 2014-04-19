@@ -898,6 +898,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         return function (scope, element, attr) {
             scope.$watch(attr.chatBind, function (value) {
                 var bind = value;
+                //对html文本和js代码转义
+                bind = bind.replace(/>/g, '&gt;')
+                bind = bind.replace(/</g, '&lt;');
                 var atMatches =  value.match(Util.RegExp.AT);
                 if(atMatches && atMatches.length){
                     atMatches = Util.Array.unique(atMatches);
