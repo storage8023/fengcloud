@@ -578,7 +578,12 @@ angular.module('gkClientIndex.services', [])
                         $scope.file = file;
                         $scope.link = '';
                         $scope.option = 1;
+                        var maxOption = 365;
                         $scope.publish = function(file,option){
+                            if(!option || option > maxOption){
+                                alert("失效时间为不超过"+maxOption+"天的数值!");
+                                return;
+                            }
                             var now = Math.round(new Date().getTime()/1000);
                             var deadline = now + parseInt(option) * 86400;
                             GKApi.publish(mountId,file.fullpath,deadline)
