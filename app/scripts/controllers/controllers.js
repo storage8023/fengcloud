@@ -1568,26 +1568,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             }
         ];
-        var guiderKey = GKConstant.guideKey+$rootScope.PAGE_CONFIG.user.member_id;
-        $scope.hideGuider = localStorageService.get(guiderKey);
-        $scope.toggleGuider = function(hideGuider){
-            if(!hideGuider){
-                localStorageService.remove(guiderKey);
-            }else{
-                localStorageService.add(guiderKey,1);
-            }
-            $scope.hideGuider = hideGuider;
-        }
-        $scope.showHelpTip = false;
-        $scope.$on('toggleGuider',function(event,hideGuider){
-            $scope.hideGuider = hideGuider;
-            if(hideGuider){
-                $scope.showHelpTip = true;
-                $timeout(function(){
-                    $scope.showHelpTip = false;
-                },2000)
-            }
-        })
     }])
     .controller('rightSidebar', ['$scope', 'GKFile', 'GKOpen', 'GKFilter', '$rootScope', 'GKApi', '$http', '$location', 'GKFileList', 'GKPartition', 'GKModal', 'GKMount', 'GKSmartFolder','GKDialog', 'GKChat','GKFrame','GKAuth','$timeout','GKSope','GKEnt',function ($scope, GKFile, GKOpen, GKFilter, $rootScope, GKApi, $http, $location, GKFileList, GKPartition, GKModal, GKMount, GKSmartFolder,GKDialog,GKChat,GKFrame,GKAuth,$timeout,GKSope,GKEnt) {
         GKSope.rightSidebar = $scope;
