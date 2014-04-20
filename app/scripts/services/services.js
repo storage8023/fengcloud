@@ -578,7 +578,12 @@ angular.module('gkClientIndex.services', [])
                         $scope.file = file;
                         $scope.link = '';
                         $scope.option = 1;
+                        var maxOption = 365;
                         $scope.publish = function(file,option){
+                            if(!option || option > maxOption){
+                                alert("失效时间为不超过"+maxOption+"天的数值!");
+                                return;
+                            }
                             var now = Math.round(new Date().getTime()/1000);
                             var deadline = now + parseInt(option) * 86400;
                             GKApi.publish(mountId,file.fullpath,deadline)
@@ -3380,7 +3385,7 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
 
-                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')||!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
                                 alert('你没有权限剪切当前云库下的文件或文件夹');
                                 return;
                             }
