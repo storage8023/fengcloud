@@ -2180,6 +2180,13 @@ angular.module('GKCommon.services', [])
         }
         return GKApi;
     }])
+    .factory('GKI18n',['gettextCatalog',function(gettextCatalog){
+        return{
+            getText: function (strText) {
+                return gettextCatalog.getString(strText)
+            }
+        }
+    }])
 ;
 angular.module('GKCommon.filters', [])
     .filter('strLen', function () {

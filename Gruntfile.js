@@ -313,8 +313,35 @@ module.exports = function (grunt) {
           ]
         }
       }
-    }
+    },
+
+      nggettext_extract: {
+          pot: {
+              options: {
+                  startDelim: '[[',
+                  endDelim: ']]'
+              },
+              files: {
+                  'app/po/template.pot': ['app/*.html','app/views/*.html','app/scripts/*.js','app/scripts/*/*.js']
+              }
+          }
+      },
+
+      nggettext_compile: {
+          all: {
+              files: {
+                  'app/scripts/translations.js': ['app/po/*.po']
+              }
+          }
+      }
+
   });
+
+
+
+    grunt.loadNpmTasks('grunt-angular-gettext');
+
+    grunt.registerTask('gruntGetText', ['nggettext_extract', 'nggettext_compile']);
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {

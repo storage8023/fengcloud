@@ -1,0 +1,267 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: app/scripts/services/services.js
+msgid "上传中的文件或文件夹不能重命名"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "不能在已同步的目录中再创建同步文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限保存"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限保存该云库下的文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限在当前云库下添加文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限重命名该"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限锁定该文件"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "保存到本地"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "分享链接"
+msgstr ""
+
+#: app/views/member.html
+msgid "创建云库"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "创建公开文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "创建同步文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "删除"
+msgstr ""
+
+#: app/index.html
+msgid "前往"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "剪切"
+msgstr ""
+
+#: app/views/member.html
+msgid "加入云库"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "同步"
+msgstr ""
+
+#: app/index.html
+msgid "同步的文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "名称不能为空"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "名称不能包含下列任何字符"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "名称的长度不能超过15个字符"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "回收站"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "复制"
+msgstr ""
+
+#: app/index.html
+msgid "够快云库"
+msgstr ""
+
+#: app/index.html
+#: app/scripts/services/services.js
+msgid "大小"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "属性"
+msgstr ""
+
+#: app/views/member.html
+msgid "帐号信息"
+msgstr ""
+
+#: app/views/member.html
+msgid "帐号升级"
+msgstr ""
+
+#: app/views/nofile_right_sidebar.html
+msgid "成员"
+msgstr ""
+
+#: app/scripts/controllers/controllers.js
+msgid "成员[[]]人"
+msgstr ""
+
+#: app/views/nofile_right_sidebar.html
+msgid "成员管理"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "排序方式"
+msgstr ""
+
+#: app/scripts/controllers/controllers.js
+#: app/scripts/directives/directives.js
+#: app/scripts/services/services.js
+msgid "搜索结果"
+msgstr ""
+
+#: app/index.html
+#: app/scripts/services/services.js
+msgid "文件"
+msgstr ""
+
+#: app/index.html
+#: app/scripts/services/services.js
+msgid "文件名"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "文件夹"
+msgstr ""
+
+#: app/views/member.html
+msgid "文件模式"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建 Microsoft Excel 工作表"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建 Microsoft PowerPoint 演示文稿"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建 Microsoft Word 文档"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建Excel文档"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建PPT文档"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建Word文档"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "新建文本文档"
+msgstr ""
+
+#: app/index.html
+#: app/scripts/services/services.js
+msgid "最后修改时间"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "最近修改的文件"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "最近访问的文件"
+msgstr ""
+
+#: app/views/member.html
+msgid "有新消息!"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "未找到相关搜索结果"
+msgstr ""
+
+#: app/index.html
+msgid "正在加载..."
+msgstr ""
+
+#: app/views/member.html
+msgid "消息"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "添加到云库"
+msgstr ""
+
+#: app/index.html
+#: app/scripts/services/services.js
+msgid "类型"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "粘贴"
+msgstr ""
+
+#: app/index.html
+msgid "自动提示已关闭，点击这里可以重新开启"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "解锁"
+msgstr ""
+
+#: app/index.html
+msgid "讨论"
+msgstr ""
+
+#: app/views/member.html
+msgid "讨论模式"
+msgstr ""
+
+#: app/index.html
+msgid "设置"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "该文件夹为空"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "重命名"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "锁定"
+msgstr ""
