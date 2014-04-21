@@ -1,6 +1,10 @@
 <div class="account" >
     <div class="account_info">
         <avatar gk-src="{{user.avatar}}" class="photo avatar"></avatar>
+        <!--消息提醒-->
+            <span ng-show="newMsg" style="position:absolute;top:-5px;left:35px;">
+              <i class="hint"></i>
+            </span>
         <span class="name">{{user.member_name}}</span>
     </div>
     <div class="btn_wrapper">

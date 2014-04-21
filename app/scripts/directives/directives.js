@@ -44,14 +44,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('guiderPopup', [function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {  content: '@', placement: '@',turnOffGuide:'&',closeGuide:'&'},
-            templateUrl: 'views/guider_popup.html'
-        }
-    }])
     .directive('checkAuth', ['GKAuth','$rootScope',function (GKAuth,$rootScope) {
         return {
             restrict: 'A',
@@ -64,216 +56,6 @@ angular.module('gkClientIndex.directives', [])
                     }else{
                         element.show();
                     }
-                })
-            }
-        }
-    }])
-    .directive('guider', ['$compile','$document','$position','$timeout','localStorageService','GKConstant','$rootScope',function ($compile,$document,$position,$timeout,localStorageService,GKConstant,$rootScope) {
-        var template = '<guider-popup content="{{guiderContent}}" close-guide="closeGuide()" turn-off-guide="turnOffGuide()" placement="{{placement}}"></guider-popup>';
-        return {
-            restrict: 'A',
-            scope:true,
-            link:function(scope, element, attrs ){
-                var showTimer,
-                    hideTimer,
-                    showDely,
-                    hideDely,
-                    $body,
-                    guider,
-                    storageKey,
-                    isOpen;
-
-                showDely = hideDely = 200;
-                guider = $compile(template)(scope);
-                storageKey = GKConstant.guideKey+$rootScope.PAGE_CONFIG.user.member_id;
-
-                attrs.$observe('guider',function(value){
-                    if(!value) return;
-                    jQuery.ajax({
-                        url:'views/guider_'+value+'.html',
-                        dataType:'html'
-                    }).success(function(data){
-                            scope.$apply(function(){
-                                scope.guiderContent = data;
-                            })
-                        }).error(function(){
-                            scope.$apply(function(){
-                                scope.guiderContent = '';
-                            })
-                        })
-
-                })
-
-                attrs.$observe('guiderPlacement',function(value){
-                    scope.placement = angular.isDefined(value)?value:'left';
-                })
-
-                scope.closeGuide = function(){
-                    cancelBind();
-                }
-
-                scope.turnOffGuide = function(){
-                    cancelBind();
-                    localStorageService.add(storageKey,1);
-                    $rootScope.$broadcast('toggleGuider',1);
-                }
-
-                var hide = function(){
-                    guider.hide();
-                    isOpen = false;
-                };
-                var bufferPosition =  10;
-                var position = function(guiderElem){
-                    var base,
-                        tWidth,
-                        tHeight,
-                        attachToHeight,
-                        attachToWidth,
-                        arrowHeigth,
-                        arrowWidth,
-                        arrowElem,
-                        top,
-                        left,
-                        positionType;
-
-                    positionType  = 'absolute';
-                    arrowElem = guiderElem.find('.arrow');
-                    base = $position.offset(element);
-                    top = base.top;
-                    left = base.left;
-                    tWidth = guider.width();
-                    tHeight = guider.height();
-                    attachToHeight = element.outerHeight();
-                    attachToWidth = element.outerWidth();
-                    arrowHeigth = arrowElem.outerHeight();
-                    arrowWidth = arrowElem.outerWidth();
-                    $body = $body || $document.find('body');
-
-                    var placementMap = {
-                        'right':[attachToHeight/2 - tHeight/2, arrowWidth + attachToWidth],
-                        'left':[attachToHeight/2 - tHeight/2, -tWidth - arrowWidth],
-                        'top':[-arrowHeigth - tHeight, attachToWidth/2 - tWidth/2],
-                        'bottom':[arrowHeigth + attachToHeight, attachToWidth/2 - tWidth/2]
-                    };
-                    var offset = placementMap[scope.placement];
-                    top += offset[0];
-                    left += offset[1];
-
-                    var minTop = 0+bufferPosition;
-                    var maxTop = $(window).height()-tHeight-bufferPosition;
-                    var minLeft = 0+bufferPosition;
-                    var maxLeft = $(window).width()-tWidth-bufferPosition;
-                    if(top<minTop){
-                        arrowElem.css({
-                            'margin-top':(arrowHeigth/2+(minTop-top))*-1
-                        })
-                        top = minTop;
-                    }
-
-                    if(top>maxTop){
-                        arrowElem.css({
-                            'margin-top':(arrowHeigth/2+(top-maxTop))*-1
-                        })
-                        top = maxTop;
-                    }
-
-                    if(left<minLeft){
-                        arrowElem.css({
-                            'margin-left':(arrowWidth/2+(minLeft-left))*-1
-                        })
-                        left = minLeft;
-                    }
-
-                    if(left>maxLeft){
-                        arrowElem.css({
-                            'margin-left':(arrowWidth/2+(maxLeft-left))*-1
-                        })
-                        left = maxLeft;
-                    }
-
-                    guiderElem.css({
-                        "position": positionType,
-                        "top": top,
-                        "left": left,
-                        "z-index":9999
-                    });
-                };
-
-                var show =function(){
-                    if(!scope.guiderContent){
-                        return;
-                    }
-
-                    guider.css({
-                        'top':'0',
-                        'left':'0',
-                        'display':'block'
-                    })
-
-                    $body = $body || $document.find('body');
-                    $body.append(guider);
-                    position(guider);
-                    isOpen = true;
-                    guider.on('mouseenter',function(){
-                        if(hideTimer){
-                            $timeout.cancel(hideTimer);
-                            hideTimer = null;
-                        }
-                    });
-
-                    guider.on('mouseleave',function(){
-                        //return;
-                        hideTimer =  $timeout(hide,hideDely);
-                    });
-                };
-
-                var cancelBind = function(){
-                    $timeout.cancel(showTimer);
-                    $timeout.cancel(hideTimer);
-                    showTimer = hideTimer = null;
-                    hide();
-                }
-
-
-                element.on('mouseenter.guider',function(event){
-                    if(localStorageService.get(storageKey)){
-                        return;
-                    }
-                    if(isOpen) return;
-                    showTimer = $timeout(function(){
-                        show();
-                    },showDely);
-                });
-
-                element.on('mouseleave.guider',function(){
-                    if(showTimer){
-                        $timeout.cancel(showTimer);
-                        showTimer = null;
-                    }
-                    hideTimer =  $timeout(hide,hideDely);
-                });
-
-                element.on('click.guider',function(){
-                    if(showTimer){
-                        $timeout.cancel(showTimer);
-                        showTimer = null;
-                    }
-                    hide();
-                });
-
-                jQuery(window).on('resize.guider',function(){
-                    if(isOpen){
-                        position(guider);
-                    }
-                })
-
-                scope.$on('$destroy',function(){
-                    cancelBind();
-                    guider.remove();
-                    jQuery(window).off('resize.guider');
-                    element.off('mousedown.guider');
-                    element.off('mouseenter.guider');
-                    element.off('mouseleave.guider');
                 })
             }
         }
@@ -1519,6 +1301,14 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.openFile = function(history){
                     var mountId = getOptMountId($scope.file);
+                    //判断文件是否存在，不存在则不能打开
+                    var file = gkClientInterface.getFileInfo({
+                        mountid: mountId,
+                        webpath: history.fullpath
+                    });
+                    if(!file || !file.mount_id)
+                        return;
+
                     if(history.dir == 1){
                         if(history.act == 0) return;
                         GKPath.gotoFile(mountId,history.fullpath);

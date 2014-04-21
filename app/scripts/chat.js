@@ -363,9 +363,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 $scope.focusTextarea = true;
             })
             $scope.postText = '';
-            chatSession.getApps($scope.currentSession.orgid).then(function(list){
-                $scope.apps = list;
-            });
+//            chatSession.getApps($scope.currentSession.orgid).then(function(list){
+//                $scope.apps = list;
+//            });
             $scope.topicHintList = $filter('orderBy')(chatTopic.get($scope.currentSession.orgid),'-dateline');
         };
         /**/
@@ -900,6 +900,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         return function (scope, element, attr) {
             scope.$watch(attr.chatBind, function (value) {
                 var bind = value;
+                //对html文本和js代码转义
+                bind = bind.replace(/>/g, '&gt;')
+                bind = bind.replace(/</g, '&lt;');
                 var atMatches =  value.match(Util.RegExp.AT);
                 if(atMatches && atMatches.length){
                     atMatches = Util.Array.unique(atMatches);
@@ -912,9 +915,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (Util.RegExp.HTTPStrict.test(bind)) {
                     bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
-                if (Util.RegExp.POUND_TOPIC.test(bind)) {
-                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1" class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
-                }
+//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
+//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1" class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
+//                }
                 bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
                 element.html(bind === undefined ? '' : bind);
             });

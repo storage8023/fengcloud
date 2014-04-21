@@ -46,7 +46,7 @@
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg" mode="PAGE_CONFIG.browserMode"></member>
     <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='file'">
-        <div guider="lib" guider-placement="right">
+        <div>
             <abn-tree tree-data="orgTreeList"
                       header="我的云库"
                       icon-leaf="icon_file"
@@ -134,9 +134,6 @@
         </span>
           <span ng-click="visitStory()" title="故事">
             <i class="icon32x32 icon_story"></i>
-        </span>
-        <span ng-click="toggleGuider(!hideGuider)" title="{{hideGuider?'开启帮助提示':'关闭帮助提示'}}" ng-class="hideGuider?'hide_guider':''">
-            <i class="icon32x32 icon_what"></i>
         </span>
         <span class="more_menu dropdown" title="更多">
             <a href="javascript:void(0);" dropdown-toggle><i class="icon32x32 icon_menu"></i></a>

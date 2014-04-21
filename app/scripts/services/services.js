@@ -578,7 +578,12 @@ angular.module('gkClientIndex.services', [])
                         $scope.file = file;
                         $scope.link = '';
                         $scope.option = 1;
+                        var maxOption = 365;
                         $scope.publish = function(file,option){
+                            if(!option || option > maxOption){
+                                alert("失效时间为不超过"+maxOption+"天的数值!");
+                                return;
+                            }
                             var now = Math.round(new Date().getTime()/1000);
                             var deadline = now + parseInt(option) * 86400;
                             GKApi.publish(mountId,file.fullpath,deadline)
@@ -2333,7 +2338,7 @@ angular.module('gkClientIndex.services', [])
                     }
                     var option  = {dir:1};
                     context.getFileList(branch.data.mount_id, branch.data.fullpath, source,option).then(function (list) {
-                        children = context.dealTreeData(list, branch.data.mount_id);
+                        children = context.dealTreeData(list, branch.data.mount_id,true);
                         /**
                          * 添加回收站
                          */
@@ -2346,22 +2351,23 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            dealTreeData: function (data, mountId) {
+            dealTreeData: function (data, mountId,isTreeView) {
                 var newData = [],
                     item,
                     context = this;
                 angular.forEach(data, function (value) {
-                    item = context.dealTreeItem(value, mountId);
+                    item = context.dealTreeItem(value, mountId,isTreeView);
                     newData.push(item);
                 });
                 return newData;
             },
-            dealTreeItem:function(value, mountId){
+            dealTreeItem:function(value, mountId,isTreeView){
+                isTreeView = isTreeView === undefined ? false : isTreeView;
                 var item = {},label;
                 /**
                  * 云库
                  */
-                if (value.mount_id) {
+                if (mountId || value.mount_id) {
                     var icon = '';
                     if (!value.fullpath) {
                         label = value.name;
@@ -2378,8 +2384,8 @@ angular.module('gkClientIndex.services', [])
                         dropAble: dropAble,
                         label: label,
                         data: value,
-                        isParent: false,
-                        hasChildren:false,
+                        isParent: !isTreeView?false:true,
+                        hasChildren: !isTreeView?false:value.hasFolder == 1,
                         iconNodeExpand: icon,
                         iconNodeCollapse: icon,
                         newMsgTime:0,
