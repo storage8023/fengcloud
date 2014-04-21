@@ -51,6 +51,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 type: type,
                 metadata: metadata
             };
+            topWindow.gkFrameCallback('ChatMessageUpdate', {
+                list:[msgData]
+            })
             var newMsg = chatContent.add($scope.currentMsgList, msgData);
             if (!newMsg) {
                 return;

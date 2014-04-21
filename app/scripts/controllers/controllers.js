@@ -644,7 +644,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var extObj = {};
             extObj[timeType] = newMsgTime;
-            GKSideTree.editNode(list, mount['mount_id'], '', extObj);
+            var node =  GKSideTree.editNode(list, mount['mount_id'], '', extObj);
+            if((node.newMsgTime > node.visitTime) && ($rootScope.PAGE_CONFIG.mode == 'file' || $rootScope.PAGE_CONFIG.mount.org_id != orgId)){
+                GKSideTree.editNode(list, mount['mount_id'], '', {
+                    showNewIcon : true
+                });
+
+            }else{
+                GKSideTree.editNode(list, mount['mount_id'], '', {
+                    showNewIcon : false
+                });
+            }
         };
 
         var setChatState = function(list){
@@ -655,9 +665,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(!GKAuth.check(mount,'','file_discuss')){
                     return;
                 }
-                if($rootScope.PAGE_CONFIG.mount.org_id != orgId || $rootScope.PAGE_CONFIG.mode != 'chat'){
-                    setNewMsgTime(orgId,item.time);
-                }
+                 setNewMsgTime(orgId,item.time);
                 var iframe = GKFrame('ifame_chat');
                 if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
                     iframe.gkFrameCallback('chatMessageUpdate',item);

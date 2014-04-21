@@ -171,6 +171,7 @@ angular.module('gkClientIndex.services', [])
                 if (node) {
                     angular.extend(node, param);
                 }
+                return node;
             },
             findSmartNode: function (list, condition) {
                 var node = null;
