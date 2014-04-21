@@ -995,6 +995,10 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     width: 128px;
     height: 128px;
 }
+.file_list .item  .file_icon128x128 img{
+    width: 128px;
+    height: 128px;
+}
 .list_view .item .thumb{
     display: none;
 }
