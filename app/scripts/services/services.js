@@ -4065,7 +4065,7 @@ angular.module('gkClientIndex.services', [])
         var key = 'gk_mode';
         var GKMode = {
             getMode:function(){
-                return GKBrowserMode.getMode();
+                return $rootScope.PAGE_CONFIG.mode || GKBrowserMode.getMode();
 //
 //                var re =  localStorageService.get(key);
 //                if(['chat','file'].indexOf(re)<0){
