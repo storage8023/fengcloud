@@ -334,9 +334,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         angular.forEach($scope.entTreeList,function(val){
             allTreeList = allTreeList.concat(val.data);
         });
-
-        //allTreeList = allTreeList.concat($scope.smartTreeList);
-
         $scope.allTreeList = allTreeList;
 
         /**
@@ -347,6 +344,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if(!$location.search().partition){
             $scope.initSelectedBranch = $scope.orgTreeList[0];
         }
+        $scope.$on('initSelectedBranch',function(){
+            $timeout(function(){
+                unSelectAllBranch();
+                $scope.allTreeList[0].newMsgTime = new Date().getTime();
+                selectBreanch($scope.allTreeList[0],$scope.allTreeList[0].data.partition,true);
+            })
+        })
 
         var unSelectAllBranch = function () {
             if ($scope.selectedBranch) {
