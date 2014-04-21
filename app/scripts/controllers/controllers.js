@@ -360,6 +360,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         var selectBreanch = function (branch, partition, isListFile) {
+
             if (!angular.equals($scope.selectedBranch, branch)) {
                 branch.selected = true;
                 $scope.selectedBranch = branch;
@@ -539,6 +540,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 newOrg = GKFile.dealTreeData([mount],0)[0];
                 if (GKPartition.isTeamFilePartition(partition)) {
                     $scope.orgTreeList.push(newOrg);
+                    $scope.allTreeList.push(newOrg);
                 }else if(GKPartition.isEntFilePartition(partition)){
                     var entId = mount['ent_id'];
                     if(!$scope.entTreeList[entId]){
@@ -546,7 +548,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         angular.extend($scope.entTreeList,tempData);
                     }else{
                         $scope.entTreeList[entId].data.push(newOrg);
+
                     }
+                    $scope.allTreeList.push(newOrg);
                 }
             });
         })
@@ -564,17 +568,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var type = GKPartition.getPartitionByMountType(newMount['type'],newMount['ent_id']);
-            var list;
+            var list,allArrItem;
             if(GKPartition.isTeamFilePartition(type)){
                 list = $scope.orgTreeList;
+                allArrItem = $scope.allTreeList;
             }else if(GKPartition.isEntFilePartition(type)){
                 var entId = newMount['ent_id'];
                 list = $scope.entTreeList[entId]['data'];
+                allArrItem = $scope.allTreeList.entTreeList[entId]['data'];;
             }
             if(!list || !list.length) return;
+            if(!allArrItem || !allArrItem.length) return;
             var newNode = GKFile.dealTreeData([newMount], newMount['mount_id'])[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
+                GKSideTree.editNode(allArrItem, newMount['mount_id'], '', newNode);
             });
             $rootScope.$broadcast('editOrgObjectSuccess',newMount);
         })
@@ -617,9 +625,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var partition = GKPartition.getPartitionByMountType(newOrg['type'],newOrg['ent_id']);
             newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)],0)[0];
-
             if (GKPartition.isTeamFilePartition(partition)) {
                 $scope.orgTreeList.push(newOrg);
+                $scope.allTreeList.push(newOrg);
             }
             unSelectAllBranch();
             selectBreanch(newOrg,partition, true);
