@@ -3385,7 +3385,7 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
 
-                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
                                 alert('你没有权限剪切当前云库下的文件或文件夹');
                                 return;
                             }
