@@ -3386,9 +3386,10 @@ angular.module('gkClientIndex.services', [])
                             }
 
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
-                                alert('你没有权限剪切当前云库下的文件或文件夹');
+                                alert('你没有权限删除当前库下的文件或文件夹');
                                 return;
                             }
+
 					       var hasUploadFile = false;
                             angular.forEach(selectedFile,function(file){
                                 if(file.status == 1){
