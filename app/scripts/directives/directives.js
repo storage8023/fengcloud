@@ -44,14 +44,6 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('guiderPopup', [function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {  content: '@', placement: '@',turnOffGuide:'&',closeGuide:'&'},
-            templateUrl: 'views/guider_popup.html'
-        }
-    }])
     .directive('checkAuth', ['GKAuth','$rootScope',function (GKAuth,$rootScope) {
         return {
             restrict: 'A',
@@ -64,216 +56,6 @@ angular.module('gkClientIndex.directives', [])
                     }else{
                         element.show();
                     }
-                })
-            }
-        }
-    }])
-    .directive('guider', ['$compile','$document','$position','$timeout','localStorageService','GKConstant','$rootScope',function ($compile,$document,$position,$timeout,localStorageService,GKConstant,$rootScope) {
-        var template = '<guider-popup content="{{guiderContent}}" close-guide="closeGuide()" turn-off-guide="turnOffGuide()" placement="{{placement}}"></guider-popup>';
-        return {
-            restrict: 'A',
-            scope:true,
-            link:function(scope, element, attrs ){
-                var showTimer,
-                    hideTimer,
-                    showDely,
-                    hideDely,
-                    $body,
-                    guider,
-                    storageKey,
-                    isOpen;
-
-                showDely = hideDely = 200;
-                guider = $compile(template)(scope);
-                storageKey = GKConstant.guideKey+$rootScope.PAGE_CONFIG.user.member_id;
-
-                attrs.$observe('guider',function(value){
-                    if(!value) return;
-                    jQuery.ajax({
-                        url:'views/guider_'+value+'.html',
-                        dataType:'html'
-                    }).success(function(data){
-                            scope.$apply(function(){
-                                scope.guiderContent = data;
-                            })
-                        }).error(function(){
-                            scope.$apply(function(){
-                                scope.guiderContent = '';
-                            })
-                        })
-
-                })
-
-                attrs.$observe('guiderPlacement',function(value){
-                    scope.placement = angular.isDefined(value)?value:'left';
-                })
-
-                scope.closeGuide = function(){
-                    cancelBind();
-                }
-
-                scope.turnOffGuide = function(){
-                    cancelBind();
-                    localStorageService.add(storageKey,1);
-                    $rootScope.$broadcast('toggleGuider',1);
-                }
-
-                var hide = function(){
-                    guider.hide();
-                    isOpen = false;
-                };
-                var bufferPosition =  10;
-                var position = function(guiderElem){
-                    var base,
-                        tWidth,
-                        tHeight,
-                        attachToHeight,
-                        attachToWidth,
-                        arrowHeigth,
-                        arrowWidth,
-                        arrowElem,
-                        top,
-                        left,
-                        positionType;
-
-                    positionType  = 'absolute';
-                    arrowElem = guiderElem.find('.arrow');
-                    base = $position.offset(element);
-                    top = base.top;
-                    left = base.left;
-                    tWidth = guider.width();
-                    tHeight = guider.height();
-                    attachToHeight = element.outerHeight();
-                    attachToWidth = element.outerWidth();
-                    arrowHeigth = arrowElem.outerHeight();
-                    arrowWidth = arrowElem.outerWidth();
-                    $body = $body || $document.find('body');
-
-                    var placementMap = {
-                        'right':[attachToHeight/2 - tHeight/2, arrowWidth + attachToWidth],
-                        'left':[attachToHeight/2 - tHeight/2, -tWidth - arrowWidth],
-                        'top':[-arrowHeigth - tHeight, attachToWidth/2 - tWidth/2],
-                        'bottom':[arrowHeigth + attachToHeight, attachToWidth/2 - tWidth/2]
-                    };
-                    var offset = placementMap[scope.placement];
-                    top += offset[0];
-                    left += offset[1];
-
-                    var minTop = 0+bufferPosition;
-                    var maxTop = $(window).height()-tHeight-bufferPosition;
-                    var minLeft = 0+bufferPosition;
-                    var maxLeft = $(window).width()-tWidth-bufferPosition;
-                    if(top<minTop){
-                        arrowElem.css({
-                            'margin-top':(arrowHeigth/2+(minTop-top))*-1
-                        })
-                        top = minTop;
-                    }
-
-                    if(top>maxTop){
-                        arrowElem.css({
-                            'margin-top':(arrowHeigth/2+(top-maxTop))*-1
-                        })
-                        top = maxTop;
-                    }
-
-                    if(left<minLeft){
-                        arrowElem.css({
-                            'margin-left':(arrowWidth/2+(minLeft-left))*-1
-                        })
-                        left = minLeft;
-                    }
-
-                    if(left>maxLeft){
-                        arrowElem.css({
-                            'margin-left':(arrowWidth/2+(maxLeft-left))*-1
-                        })
-                        left = maxLeft;
-                    }
-
-                    guiderElem.css({
-                        "position": positionType,
-                        "top": top,
-                        "left": left,
-                        "z-index":9999
-                    });
-                };
-
-                var show =function(){
-                    if(!scope.guiderContent){
-                        return;
-                    }
-
-                    guider.css({
-                        'top':'0',
-                        'left':'0',
-                        'display':'block'
-                    })
-
-                    $body = $body || $document.find('body');
-                    $body.append(guider);
-                    position(guider);
-                    isOpen = true;
-                    guider.on('mouseenter',function(){
-                        if(hideTimer){
-                            $timeout.cancel(hideTimer);
-                            hideTimer = null;
-                        }
-                    });
-
-                    guider.on('mouseleave',function(){
-                        //return;
-                        hideTimer =  $timeout(hide,hideDely);
-                    });
-                };
-
-                var cancelBind = function(){
-                    $timeout.cancel(showTimer);
-                    $timeout.cancel(hideTimer);
-                    showTimer = hideTimer = null;
-                    hide();
-                }
-
-
-                element.on('mouseenter.guider',function(event){
-                    if(localStorageService.get(storageKey)){
-                        return;
-                    }
-                    if(isOpen) return;
-                    showTimer = $timeout(function(){
-                        show();
-                    },showDely);
-                });
-
-                element.on('mouseleave.guider',function(){
-                    if(showTimer){
-                        $timeout.cancel(showTimer);
-                        showTimer = null;
-                    }
-                    hideTimer =  $timeout(hide,hideDely);
-                });
-
-                element.on('click.guider',function(){
-                    if(showTimer){
-                        $timeout.cancel(showTimer);
-                        showTimer = null;
-                    }
-                    hide();
-                });
-
-                jQuery(window).on('resize.guider',function(){
-                    if(isOpen){
-                        position(guider);
-                    }
-                })
-
-                scope.$on('$destroy',function(){
-                    cancelBind();
-                    guider.remove();
-                    jQuery(window).off('resize.guider');
-                    element.off('mousedown.guider');
-                    element.off('mouseenter.guider');
-                    element.off('mouseleave.guider');
                 })
             }
         }
@@ -335,95 +117,113 @@ angular.module('gkClientIndex.directives', [])
                                 if(!file|| !file.path){
                                     return;
                                 }
+                                var items = {};
                                 if(dir){
                                     if(triggerElem.hasClass('act_0')){
                                         return;
                                     }
-                                    return {
-                                        items:{
-                                            'open': {
-                                                name: '打开',
-                                                callback: function (key,opt) {
-                                                    $timeout(function(){
-                                                        GKPath.gotoFile(mountId,file.path);
-                                                    })
+                                    items = {
+                                        'open': {
+                                            name: '打开',
+                                            callback: function (key,opt) {
+                                                $timeout(function(){
+                                                    GKPath.gotoFile(mountId,file.path);
+                                                })
+                                            }
+                                        },
+                                        'goto': {
+                                            name: '位置',
+                                            callback: function (key,opt) {
+                                                $timeout(function(){
+                                                    GKPath.gotoFile(mountId, Util.String.dirName(file.path),file.path);
+                                                })
+                                            }
+                                        },
+                                        'saveto': {
+                                            name: '保存到本地',
+                                            callback: function (key,opt) {
+                                                var param = {
+                                                    list:[{
+                                                        mountid:mountId,
+                                                        webpath:file.path,
+                                                        dir:1
+                                                    }]
                                                 }
-                                            },
-                                            'saveto': {
-                                                name: '保存到本地',
-                                                callback: function (key,opt) {
-                                                    var param = {
-                                                        list:[{
-                                                            mountid:mountId,
-                                                            webpath:file.path,
-                                                            dir:1
-                                                        }]
-                                                    }
-                                                    gkClientInterface.saveToLocal(param);
-                                                }
+                                                gkClientInterface.saveToLocal(param);
                                             }
                                         }
-                                    }
+                                    };
                                 }else{
                                     var version = getVersion(triggerElem);
-                                    return {
-                                        items:{
-                                            'open': {
-                                                name: '打开',
-                                                callback: function (key,opt) {
-                                                    if(!version){
-                                                        return;
+                                    items = {
+                                        'open': {
+                                            name: '打开',
+                                            callback: function (key,opt) {
+                                                if(!version){
+                                                    return;
+                                                }
+                                                gkClientInterface.open({
+                                                    mountid:mountId,
+                                                    webpath:file.path,
+                                                    version:version
+                                                });
+                                            }
+                                        },
+                                        'goto': {
+                                            name: '位置',
+                                            callback: function (key,opt) {
+                                                $timeout(function(){
+                                                    GKPath.gotoFile(mountId, Util.String.dirName(file.path),file.path);
+                                                })
+                                            }
+                                        },
+                                        'recover': {
+                                            name: '还原',
+                                            callback: function (key,opt) {
+                                                if(!version){
+                                                    return;
+                                                }
+                                                gkClientInterface.revert({
+                                                    mountid:mountId,
+                                                    webpath:file.path,
+                                                    version:version
+                                                },function(msg){
+                                                    if(!msg.error){
+                                                        angular.extend(msg,{
+                                                            mount_id:mountId
+                                                        });
+                                                        alert('恢复成功');
+                                                        $rootScope.$broadcast('UpdateFileInfo',msg);
+                                                    }else{
+                                                        GKException.handleClientException(msg);
                                                     }
-                                                    gkClientInterface.open({
+                                                });
+                                            }
+                                        },
+                                        'saveto': {
+                                            name: '保存到本地',
+                                            callback: function (key,opt) {
+                                                if(!version){
+                                                    return;
+                                                }
+                                                var param = {
+                                                    list:[{
                                                         mountid:mountId,
                                                         webpath:file.path,
                                                         version:version
-                                                    });
+                                                    }]
                                                 }
-                                            },
-                                            'recover': {
-                                                name: '还原',
-                                                callback: function (key,opt) {
-                                                    if(!version){
-                                                        return;
-                                                    }
-                                                    gkClientInterface.revert({
-                                                        mountid:mountId,
-                                                        webpath:file.path,
-                                                        version:version
-                                                    },function(msg){
-                                                        if(!msg.error){
-                                                            angular.extend(msg,{
-                                                                mount_id:mountId
-                                                            });
-                                                            alert('恢复成功');
-                                                            $rootScope.$broadcast('UpdateFileInfo',msg);
-                                                        }else{
-                                                            GKException.handleClientException(msg);
-                                                        }
-                                                    });
-                                                }
-                                            },
-                                            'saveto': {
-                                                name: '保存到本地',
-                                                callback: function (key,opt) {
-                                                    if(!version){
-                                                        return;
-                                                    }
-                                                    var param = {
-                                                        list:[{
-                                                            mountid:mountId,
-                                                            webpath:file.path,
-                                                            version:version
-                                                        }]
-                                                    }
-                                                    gkClientInterface.saveToLocal(param);
-                                                }
+                                                gkClientInterface.saveToLocal(param);
                                             }
                                         }
-                                    }
+                                    };
                                 }
-
+                                if($scope.localFile.dir == 0){
+                                    delete items['goto'];
+                                }
+                                return {
+                                    items:items
+                                };
                             }
                         });
                     }
@@ -1076,13 +876,14 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout) {
+    .directive('member', ['GKPartition','GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout','GKBrowserMode',function (GKPartition,GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout,GKBrowserMode) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/member.html",
             scope: {
-                user: '='
+                user: '=',
+                mode:'='
             },
             link: function ($scope, $element) {
                 var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
@@ -1135,6 +936,51 @@ angular.module('gkClientIndex.directives', [])
                 $scope.handleAdd = function () {
                     GKModal.joinTeam();
                 };
+
+                $scope.gotoUpgrade = function () {
+                    var url = gkClientInterface.getUrl({
+                        sso:1,
+                        url: gkClientInterface.getSiteDomain()+'/pay/order'
+                    });
+                    gkClientInterface.openUrl(url);
+                };
+
+                var hideTimer;
+
+                var settingsWrapper = $element.find('.setting_wrapper_dropdown');
+
+                $element.find('.account_info,.setting_wrapper_dropdown').on('mouseenter',function(){
+                    if(hideTimer){
+                       $timeout.cancel(hideTimer);
+                    }
+                    settingsWrapper.fadeIn(100);
+                    $element.addClass('hover');
+                })
+
+                $element.find('.account_info,.setting_wrapper_dropdown').on('mouseleave',function(){
+                    //return;
+                    hideTimer = $timeout(function(){
+                        settingsWrapper.fadeOut(100);
+                        $element.removeClass('hover');
+                    },200)
+                })
+
+                $element.find('.toggle_btn_wrapper').click(function(){
+                    var $this = jQuery(this);
+                    $scope.$apply(function(){
+                        if($this.hasClass('toggle_btn_2')){
+                            GKBrowserMode.setMode('chat');
+                            $this.removeClass('toggle_btn_2');
+                            //判断是否为智能文件夹
+                            if(GKPartition.isSmartFolderPartition($rootScope.PAGE_CONFIG.partition)){
+                                $rootScope.$broadcast("initSelectedBranch");
+                            }
+                        }else{
+                            GKBrowserMode.setMode('file');
+                            $this.addClass('toggle_btn_2');
+                        }
+                    })
+                })
             }
         }
     }])
@@ -1386,7 +1232,48 @@ angular.module('gkClientIndex.directives', [])
                                 GKException.handleAjaxException(request);
                             });
                     }
-                }
+                };
+
+                /**
+                 * 锁定、解锁
+                 * @param lock
+                 */
+                $scope.toggleLock = function(lock){
+                    var mountId = getOptMountId($scope.file);
+                    var mount = GKMount.getMountById(mountId);
+                    if(!mount) return;
+                  var param = {
+                      webpath: $scope.file.fullpath,
+                      mountid: mountId
+                  };
+                  if(lock){
+                      if(!GKAuth.check(mount,'','file_write')){
+                          alert('你没有权限锁定该文件');
+                          return;
+                      }
+                      param.status = 1;
+                  }else{
+                      param.status = 0;
+                  }
+                    gkClientInterface.toggleLock(param, function (re) {
+                        if (re && !re.error) {
+                            if(lock){
+                                $rootScope.$broadcast('editFileSuccess','lock', mountId,$scope.file.fullpath);
+                                $scope.$apply(function(){
+                                    $scope.localFile.lock = 2;
+                                })
+
+                            }else{
+                                $rootScope.$broadcast('editFileSuccess','unlock', mountId,$scope.file.fullpath);
+                                $scope.$apply(function(){
+                                    $scope.localFile.lock = 0;
+                                })
+                            }
+                        } else {
+                            GKException.handleClientException(re);
+                        }
+                    });
+                };
 
                 /**
                  * 打开生成临时链接的窗口
@@ -1396,23 +1283,6 @@ angular.module('gkClientIndex.directives', [])
                    GKModal.publish(getOptMountId(file),file);
                 };
 
-                /**
-                 * 打开聊天窗口
-                 */
-                $scope.startChat = function(file){
-                    var mountId = getOptMountId(file);
-                    var param = $location.search();
-                    if(GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition)){
-                        GKMode.setMode('chat');
-                    }else{
-                        GKPath.gotoFile(mountId,param.path||'', param.selectedpath||'',param.view||'',param.filter||'','chat');
-                    }
-
-                    $timeout(function(){
-                        GKChat.setSrc(mountId,file.fullpath);
-                    })
-                }
-
                 $scope.showMilestoneDialog = function(file){
                     var firstHistory = histories[0];
                     var oldMsg = '';
@@ -1420,6 +1290,9 @@ angular.module('gkClientIndex.directives', [])
                         oldMsg = firstHistory['property']?firstHistory['property']['message']||'' : '';
                     }
                     GKModal.setMilestone(getOptMountId(file),file,oldMsg).result.then(function(){
+                        if($rootScope.PAGE_CONFIG.browserMode == 'chat'){
+                            GKMode.setMode('chat');
+                        }
                         $timeout(function(){
                             getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
                         },1000);
@@ -1432,6 +1305,14 @@ angular.module('gkClientIndex.directives', [])
                  */
                 $scope.openFile = function(history){
                     var mountId = getOptMountId($scope.file);
+                    //判断文件是否存在，不存在则不能打开
+                    var file = gkClientInterface.getFileInfo({
+                        mountid: mountId,
+                        webpath: history.fullpath
+                    });
+                    if(!file || !file.mount_id)
+                        return;
+
                     if(history.dir == 1){
                         if(history.act == 0) return;
                         GKPath.gotoFile(mountId,history.fullpath);
@@ -1461,7 +1342,7 @@ angular.module('gkClientIndex.directives', [])
                     var extParam = {
                         type:'ext',
                         start: histories.length,
-                        date:'',
+                        date:''
                     }
                     GKApi.info(mountId, fullpath,'history',false,histories.length).success(function (data) {
                         $scope.$apply(function () {
@@ -1489,12 +1370,10 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var setHistoryMinheight = function(){
-                    console.log($element.find('.history_wrapper').size());
                     if(!$element.find('.history_wrapper').size()){
                         return;
                     }
                     var minHeight = $element.outerHeight()- 166 - $element.find('.file_detail_wrapper .section_title').outerHeight();
-                    console.log('minHeight',minHeight);
                     $element.find('.history_wrapper').css({
                         'min-height':minHeight
                     })

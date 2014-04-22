@@ -15,14 +15,14 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
       onExpand: '&',
       initSelectedBranch:'=',
       onDrop:'&',
-      onHintClick:'&',
       onHeaderClick:'&',
-      showHeaderBtn:'='
+      showHeaderBtn:'=',
+      showMsgIcon:'=',
+      orderBy:'='
     },
     link: function(scope, element, attrs) {
       var expand_level, for_each_branch, on_treeData_change, select_branch, selected_branch,expand_branch,index;
        index  = 20;
-      scope.showMsgIcon = !!attrs['onHintClick'];
 
       if (attrs.iconExpand == null) {
         attrs.iconExpand = 'icon-plus';
@@ -137,7 +137,8 @@ module.directive('abnTree', ['$timeout','$parse','$window',function($timeout,$pa
                   },0);
               }
           }
-      }
+      };
+
         /**
          * 点击节点
          * @param $event

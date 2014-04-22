@@ -3,6 +3,225 @@ angular.module('GKCommon', ['GKCommon.directives', 'GKCommon.services', 'GKCommo
 
 /* Directives */
 angular.module('GKCommon.directives', [])
+    .directive('checkScrollBottoom', [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                scope[attrs.checkScrollBottoom] = false;
+                element.on('scroll.checkScrollBottoom', function () {
+                    var _self = jQuery(this),
+                        scrollH = jQuery.isWindow(this) ? document.body.scrollHeight : element[0].scrollHeight,
+                        scrollT = _self.scrollTop();
+                    var clientHeight = jQuery.isWindow(this) ? document.documentElement.clientHeight || document.body.clientHeight : this.clientHeight;
+                    var realDistance = scrollH - scrollT - clientHeight;
+                    if(realDistance<=0){
+                        scope[attrs.checkScrollBottoom] = true;
+                    }else{
+                        scope[attrs.checkScrollBottoom] = false;
+                    }
+                });
+                scope.$on('$destroy', function () {
+                    element.off('.checkScrollBottoom');
+                })
+            }
+        }
+    }])
+    .directive('gkAutocomplete', ['$compile','$document','$position','$timeout',function ($compile,$document,$position,$timeout) {
+        var template = '<ul class="dropdown-menu" ng-show="showList" ng-mouseenter="mouseenter=true" ng-mouseleave="mouseenter=false">';
+        template += '<li ng-repeat="item in resultList">';
+        template += '<a href="javascript:;" ng-click="handleClick($index)" ng-mouseenter="handleMouseenter($index)" ng-class="{\'active\':item.preSelected}"><span ng-bind="item.value"></span></a>';
+        template += '</li>';
+        template += '</ul>';
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            scope: {
+                ngModel: '=',
+                gkAutocomplete:'='
+            },
+            controller:function($scope){
+                $scope.resultList = [];
+                $scope.preSelectedIndex = -1;
+
+
+                $scope.preSelect = function(index){
+                    if($scope.preSelectedItem){
+                        $scope.preSelectedItem.preSelected = false;
+                    }
+                    if($scope.resultList[$scope.preSelectedIndex]){
+                        $scope.resultList[$scope.preSelectedIndex].preSelected = false;
+                    }
+                    $scope.preSelectedIndex = index;
+                    $scope.preSelectedItem = $scope.resultList[index];
+                    $scope.preSelectedItem.preSelected = true;
+                };
+
+            },
+            link: function (scope, element, attrs, ngModelController) {
+                var list = [],
+                    $body = $document.find('body'),
+                    $listElem,
+                    watching  = true;;
+
+
+                scope.showList = false;
+
+                $listElem = $compile(template)(scope).css({
+                    'position':'absolute',
+                    'display':'block',
+                    'top':0,
+                    'left':0,
+                    'z-index':99,
+                    'width':element.outerWidth()
+                });
+                $body.append($listElem);
+
+                var setPosition = function(){
+                    var position,
+                        height,
+                        ttHeight,
+                        ttPosition,
+                        buffer = 4;
+
+                    position = $position.offset(element);
+                    height = element.outerHeight();
+                    ttHeight = $listElem.outerHeight();
+
+                    ttPosition = {
+                        top: position.top + height+2,
+                        left: position.left
+                    }
+
+                    if (ttPosition.top + ttHeight > jQuery(window).height()) {
+                        ttPosition.top = position.top - ttHeight-buffer;
+                    }
+                    $listElem.css(ttPosition);
+                };
+
+                var search = function(keyword){
+                    var resultList = [];
+                    angular.forEach(list,function(item){
+                        if(item.value.indexOf(keyword)>=0){
+                            resultList.push(item);
+                        }
+                    });
+
+                    return resultList;
+                };
+
+                var show = function(){
+                    scope.showList = true;
+                    $timeout(function(){
+                        setPosition();
+                    })
+                };
+
+                var hide = function(){
+                    scope.showList = false;
+                };
+
+                var select = function(index){
+                    ngModelController.$setViewValue(scope.resultList[index].value);
+                    ngModelController.$render();
+                    element.focus();
+                };
+
+                scope.$watch('gkAutocomplete',function(val){
+                    if(!angular.isArray(val)){
+                        return;
+                    }
+                    scope.resultList = list = val;
+
+                })
+
+                scope.$watch('ngModel',function(val,oldVal){
+                    if(!watching ) return;
+                    if(val == oldVal) return;
+                    scope.resultList = search(val);
+                    if(scope.resultList.length){
+                        show();
+                        $timeout(function(){
+                            setPosition();
+                        })
+                    }else{
+                        hide();
+                    }
+
+                })
+
+                element.on({
+                    'focus.autocomplete':function(){
+                        if(!scope.resultList.length) return;
+                        $timeout(function(){
+                            show();
+                        })
+                    },
+                    'blur.autocomplete':function(event){
+                        if(scope.mouseenter) return;
+                        scope.$apply(function(){
+                            hide();
+                        })
+                    }
+                });
+
+                scope.handleClick = function(){
+                  watching = false;
+                  select(scope.preSelectedIndex);
+                    watching = true;
+                    hide();
+                };
+
+                scope.handleMouseenter = function(index){
+                    scope.preSelect(index);
+                };
+
+                var keyMap = {
+                    "up": 38,
+                    "down": 40,
+                    "enter": 13
+                };
+
+//                $document.on('click.autocomplete',function(e){
+//                    var $target = angular.element(e.target);
+//                    if($target.is(element)){
+//                        return;
+//                    }
+//                    scope.$apply(function(){
+//                        hide();
+//                    })
+//                });
+
+                $document.on('keydown.autocomplete',function(event){
+                    var keyCode = event.keyCode;
+                    switch(keyCode){
+                        case keyMap.up:
+                            if(scope.preSelectedIndex == 0){
+                                scope.preSelect(scope.resultList.length-1);
+                            }else{
+                                scope.preSelect(--scope.preSelectedIndex);
+                            }
+
+                            break;
+                        case keyMap.down:
+                            if(scope.preSelectedIndex == scope.resultList.length-1){
+                                scope.preSelect(0);
+                            }else{
+                                scope.preSelect(++scope.preSelectedIndex);
+                            }
+                            break;
+                        case keyMap.enter:
+                            select(scope.preSelectedIndex)
+                            break;
+                    }
+                })
+
+                scope.$on('$destroy',function(){
+                    element.off('.autocomplete');
+                    $listElem.remove();
+                });
+            }
+        }
+    }])
     .directive('jplayer', [function () {
         return {
             restrict: 'E',
@@ -262,25 +481,27 @@ angular.module('GKCommon.directives', [])
         return {
             restrict: 'A',
             link: function ($scope, $element, $attrs) {
-                $scope.$watch($attrs.insertTo, function (input) {
-                    if (input) {
-                        var val = $scope[$attrs.ngModel];
-                        var inputPos = Util.Input.getCurSor($element[0]).split('|');
-                        var isInsert = inputPos[1] != val.length ? 1 : 0;
-                        var l = val.substr(0, inputPos[0]);
-                        var r = val.substr(inputPos[1], val.length);
-                        val = l + input + r;
-                        $scope[$attrs.ngModel] = val;
-                        $timeout(function () {
-                            if (isInsert) {
-                                Util.Input.moveCur($element[0], parseInt(inputPos[0]) + (input).length);
-                            } else {
-                                Util.Input.moveCur($element[0], val.length);
-                            }
-                            return null;
-                        }, 0);
-                        $scope[$attrs.insertTo] = '';
+                $scope.$watch($attrs['insertTo'],function (input) {
+                    if(!input) return;
+                    var val = $scope[$attrs.ngModel];
+                    var inputPos = Util.Input.getCurSor($element[0]).split('|');
+                    var isInsert = inputPos[1] != val.length ? 1 : 0;
+                    var l = val.substr(0, inputPos[0]);
+                    var r = val.substr(inputPos[1], val.length);
+                    val = l + input + r;
+                    $scope[$attrs.ngModel] = val;
+                    var curPos = $attrs.cursorPos;
+                    if(!jQuery.isNumeric(curPos)){
+                        if(isInsert){
+                            curPos =  parseInt(inputPos[0]) + (input).length;
+                        }else{
+                            curPos =  val.length;
+                        }
                     }
+                    $timeout(function () {
+                        Util.Input.moveCur($element[0],curPos);
+                    });
+                    $scope[$attrs.insertTo] = '';
                 });
             }
         }
@@ -921,7 +1142,7 @@ angular.module('GKCommon.services', [])
 
         return GKException;
     }])
-    .factory('GKMount', [function () {
+    .factory('GKMount', ['GKPartition',function (GKPartition) {
         /**
          * 格式化mount数据
          * @param mount
@@ -946,7 +1167,9 @@ angular.module('GKCommon.services', [])
                     properties.permissions = [];
                 }
             }
+            var partition = GKPartition.getPartitionByMountType(mount.type,mount.ent_id);
             var newMount = {
+                partition:partition,
                 mount_id: mount.mountid,
                 ent_id: mount.ent_id,
                 name: mount.name ? mount.name : '我的文件',
@@ -1044,7 +1267,7 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 })
-                return myMount;
+                return myMount;n
             },
             /**
              * 获取我的云库的mount
@@ -1100,6 +1323,13 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 });
+
+                angular.forEach($scope.allTreeList, function (value, key) {
+                     if (value.data.org_id == orgId){
+                         $scope.allTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
             },
             removeTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);
@@ -1110,6 +1340,13 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 });
+                angular.forEach($scope.allTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.allTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
+
             },
             removeJoinTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);
@@ -1171,7 +1408,7 @@ angular.module('GKCommon.services', [])
                     type: "sole",
                     width: 794,
                     height: 490,
-                    resize: 0,
+                    resize: 0
                 }
                 gkClientInterface.setMain(data);
             },
@@ -1190,10 +1427,50 @@ angular.module('GKCommon.services', [])
         }
     }
     ])
+    .factory('GKAuth', [function () {
+        var GKAuth = {
+            getPermissions:function(mount){
+                var permissions;
+                if(mount && !jQuery.isEmptyObject(mount)){
+                    permissions =mount.property?mount.property.permissions || []:[];
+                }else{
+                    permissions = [];
+                }
+                return permissions;
+            },
+            check:function(mount,partition){
+                var auths = Array.prototype.slice.call(arguments).slice(2);
+                var hasAuth = true;
+                var permissions = this.getPermissions(mount,partition);
+                for(var i=0;i<auths.length;i++){
+                    if(permissions.indexOf(auths[i])<0){
+                        hasAuth = false;
+                        break;
+                    }
+                }
+                return hasAuth;
+            }
+        };
+        return GKAuth;
+    }])
     .factory('GKApi', ['$http', function ($http) {
         $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
         var defaultParams = {};
         var GKApi = {
+            sendValidEmail:function(email){
+                var params = {
+                    token: gkClientInterface.getToken(),
+                    email: email
+                };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                    type: 'POST',
+                    url: gkClientInterface.getApiHost() + '/1/account/resend_mail',
+                    dataType: 'json',
+                    data: params
+                })
+            },
             getAppKey: function (orgId, appId) {
                 var params = {
                     token: gkClientInterface.getToken(),
