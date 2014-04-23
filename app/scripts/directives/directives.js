@@ -1028,6 +1028,7 @@ angular.module('gkClientIndex.directives', [])
                             $interval.cancel(fileInterval);
                             fileInterval = null;
                         }
+
                         getFileInfo($scope.localFile);
                         return;
                     }
@@ -1077,6 +1078,7 @@ angular.module('gkClientIndex.directives', [])
                     var extParam = {
                         type:options.data == 'file'?'':'ext'
                     };
+
                     lastGetRequest = GKApi.info(mountId, fullpath,extParam).success(function (data) {
                         $scope.$apply(function () {
                             $scope.fileLoaded = true;
@@ -1106,7 +1108,7 @@ angular.module('gkClientIndex.directives', [])
                                 if (errorCode == 404 || String(errorCode).slice(0, 3) != '404') {
                                     return;
                                 }
-                                if (errorCode == 404024 && $scope.localFile.status != 1) {
+                                if (errorCode == 40402 && $scope.localFile.status != 1) {
                                     $scope.sidbarData = {
                                         icon: 'trash',
                                         title: '云端已删除'
