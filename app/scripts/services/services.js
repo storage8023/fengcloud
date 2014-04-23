@@ -1895,8 +1895,10 @@ angular.module('gkClientIndex.services', [])
                     path: path,
                     selectedpath: selectFile,
                     view:view,
-                    filter:filter
+                    filter:filter,
+                    entid:mount['ent_id']?mount['ent_id']:-1
                 };
+
                 if (mount) {
                     GKMode.setMode(mode,search.partition,mount);
                     $location.search(search);
