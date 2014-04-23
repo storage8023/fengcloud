@@ -2184,6 +2184,9 @@ angular.module('GKCommon.services', [])
         return{
             getText: function (strText) {
                 return gettextCatalog.getString(strText)
+            },
+            getRelaceText:function(strText,replaceStrArr){
+                return gettextCatalog.getString(strText,replaceStrArr)
             }
         }
     }])

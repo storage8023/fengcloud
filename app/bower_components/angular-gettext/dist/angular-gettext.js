@@ -46,8 +46,22 @@ angular.module('gettext').factory('gettextCatalog', [
         var plurals = stringTable[string] || [];
         return plurals[n];
       },
-      getString: function (string) {
-        return this.getStringForm(string, 0) || prefixDebug(string);
+      getString: function (string,arr) {
+           if(!arr || !(arr instanceof Array) || arr.length == 0) {
+               return this.getStringForm(string, 0) || prefixDebug(string);
+           }else{
+                var str = this.getStringForm(string, 0) || prefixDebug(string);
+               var replaceArr = str.match(/\[[/\d\]]/g);
+               if(replaceArr && replaceArr.length > 0){
+                   angular.forEach(replaceArr,function(value){
+                      var index = value.match(/\d+/g)[0];
+                      if(index < arr.length){
+                          str = str.replace(new RegExp("\\[(["+index+"])]","g"), arr[index]);
+                      }
+                   });
+               }
+               return str;
+           }
       },
       getPlural: function (n, string, stringPlural) {
         var form = gettextPlurals(this.currentLanguage, n);

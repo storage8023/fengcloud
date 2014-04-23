@@ -45,6 +45,10 @@ msgstr "you have no permit to lock current file"
 msgid "保存到本地"
 msgstr "save to location"
 
+#: app/index.html
+msgid "关闭帮助提示"
+msgstr "close tooltips"
+
 #: app/scripts/services/services.js
 msgid "分享链接"
 msgstr "share link"
@@ -76,6 +80,10 @@ msgstr "Cut"
 #: app/views/member.html
 msgid "加入云库"
 msgstr "join cloud"
+
+#: app/index.html
+msgid "升级"
+msgstr "upgrade"
 
 #: app/scripts/services/services.js
 msgid "同步"
@@ -114,6 +122,10 @@ msgid "大小"
 msgstr "size"
 
 #: app/scripts/services/services.js
+msgid "失效时间为不超过[0]天的数值!"
+msgstr "the data number must less then [0]"
+
+#: app/scripts/services/services.js
 msgid "属性"
 msgstr "property"
 
@@ -125,17 +137,25 @@ msgstr "account"
 msgid "帐号升级"
 msgstr "upgrade account"
 
+#: app/index.html
+msgid "开启帮助提示"
+msgstr "open tooltips"
+
 #: app/views/nofile_right_sidebar.html
 msgid "成员"
 msgstr "member"
 
-#: app/scripts/controllers/controllers.js
-msgid "成员[[]]人"
-msgstr "member[[]]"
-
 #: app/views/nofile_right_sidebar.html
 msgid "成员管理"
 msgstr "manage"
+
+#: app/index.html
+msgid "我的云库"
+msgstr "my cloud"
+
+#: app/index.html
+msgid "打开传输队列"
+msgstr "open transfer"
 
 #: app/scripts/services/services.js
 msgid "排序方式"
@@ -145,6 +165,10 @@ msgstr "order list"
 #: app/scripts/services/services.js
 msgid "搜索结果"
 msgstr "search result"
+
+#: app/index.html
+msgid "故事"
+msgstr "story"
 
 #: app/index.html app/scripts/services/services.js
 msgid "文件"
@@ -199,6 +223,14 @@ msgstr "create folder"
 msgid "新建文本文档"
 msgstr "create txt"
 
+#: app/index.html
+msgid "智能文件夹"
+msgstr "folder"
+
+#: app/index.html
+msgid "更多"
+msgstr "more"
+
 #: app/index.html app/scripts/services/services.js
 msgid "最后修改时间"
 msgstr "update time"
@@ -218,6 +250,10 @@ msgstr "new"
 #: app/scripts/services/services.js
 msgid "未找到相关搜索结果"
 msgstr "can not search file"
+
+#: app/index.html
+msgid "正在传输"
+msgstr "transfering"
 
 #: app/index.html
 msgid "正在加载..."
@@ -259,6 +295,10 @@ msgstr "discouss"
 msgid "设置"
 msgstr "setting"
 
+#: app/index.html
+msgid "访问用户社区"
+msgstr "access to the community"
+
 #: app/scripts/services/services.js
 msgid "该文件夹为空"
 msgstr "current folder is blank"
@@ -271,35 +311,8 @@ msgstr "rename"
 msgid "锁定"
 msgstr "lock"
 
-#~ msgid "关闭帮助提示"
-#~ msgstr "close tooltips"
-
-#~ msgid "升级"
-#~ msgstr "upgrade"
-
-#~ msgid "开启帮助提示"
-#~ msgstr "open tooltips"
-
-#~ msgid "我的云库"
-#~ msgstr "my cloud"
-
-#~ msgid "打开传输队列"
-#~ msgstr "open transfer"
-
-#~ msgid "故事"
-#~ msgstr "story"
-
-#~ msgid "智能文件夹"
-#~ msgstr "folder"
-
-#~ msgid "更多"
-#~ msgstr "more"
-
-#~ msgid "正在传输"
-#~ msgstr "transfering"
-
-#~ msgid "访问用户社区"
-#~ msgstr "access to the community"
+#~ msgid "成员[[]]人"
+#~ msgstr "member[[]]"
 
 #~ msgid "已邀请"
 #~ msgstr "invited"

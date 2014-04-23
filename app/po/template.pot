@@ -35,6 +35,10 @@ msgstr ""
 msgid "保存到本地"
 msgstr ""
 
+#: app/index.html
+msgid "关闭帮助提示"
+msgstr ""
+
 #: app/scripts/services/services.js
 msgid "分享链接"
 msgstr ""
@@ -65,6 +69,10 @@ msgstr ""
 
 #: app/views/member.html
 msgid "加入云库"
+msgstr ""
+
+#: app/index.html
+msgid "升级"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -105,6 +113,10 @@ msgid "大小"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "失效时间为不超过[0]天的数值!"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "属性"
 msgstr ""
 
@@ -116,16 +128,24 @@ msgstr ""
 msgid "帐号升级"
 msgstr ""
 
+#: app/index.html
+msgid "开启帮助提示"
+msgstr ""
+
 #: app/views/nofile_right_sidebar.html
 msgid "成员"
 msgstr ""
 
-#: app/scripts/controllers/controllers.js
-msgid "成员[[]]人"
-msgstr ""
-
 #: app/views/nofile_right_sidebar.html
 msgid "成员管理"
+msgstr ""
+
+#: app/index.html
+msgid "我的云库"
+msgstr ""
+
+#: app/index.html
+msgid "打开传输队列"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -136,6 +156,10 @@ msgstr ""
 #: app/scripts/directives/directives.js
 #: app/scripts/services/services.js
 msgid "搜索结果"
+msgstr ""
+
+#: app/index.html
+msgid "故事"
 msgstr ""
 
 #: app/index.html
@@ -193,6 +217,14 @@ msgid "新建文本文档"
 msgstr ""
 
 #: app/index.html
+msgid "智能文件夹"
+msgstr ""
+
+#: app/index.html
+msgid "更多"
+msgstr ""
+
+#: app/index.html
 #: app/scripts/services/services.js
 msgid "最后修改时间"
 msgstr ""
@@ -211,6 +243,10 @@ msgstr ""
 
 #: app/scripts/services/services.js
 msgid "未找到相关搜索结果"
+msgstr ""
+
+#: app/index.html
+msgid "正在传输"
 msgstr ""
 
 #: app/index.html
@@ -252,6 +288,10 @@ msgstr ""
 
 #: app/index.html
 msgid "设置"
+msgstr ""
+
+#: app/index.html
+msgid "访问用户社区"
 msgstr ""
 
 #: app/scripts/services/services.js

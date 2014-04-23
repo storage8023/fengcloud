@@ -317,10 +317,6 @@ module.exports = function (grunt) {
 
       nggettext_extract: {
           pot: {
-              options: {
-                  startDelim: '[[',
-                  endDelim: ']]'
-              },
               files: {
                   'app/po/template.pot': ['app/*.html','app/views/*.html','app/scripts/*.js','app/scripts/*/*.js']
               }

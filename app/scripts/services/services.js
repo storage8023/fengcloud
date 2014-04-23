@@ -474,7 +474,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
+    .factory('GKModal', ['GKI18n','gettext','$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function (GKI18n,gettext,$rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -581,7 +581,7 @@ angular.module('gkClientIndex.services', [])
                         var maxOption = 365;
                         $scope.publish = function(file,option){
                             if(!option || option > maxOption){
-                                alert("失效时间为不超过"+maxOption+"天的数值!");
+                                alert(GKI18n.getRelaceText(gettext("失效时间为不超过[0]天的数值!"),[maxOption]));
                                 return;
                             }
                             var now = Math.round(new Date().getTime()/1000);
