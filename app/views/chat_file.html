@@ -1,6 +1,8 @@
 <div>
 <div class="chat_text_inner" ng-if="msg.content">
-    <span chat-bind="msg.content" class="text"></span>
+    <span class="chat_text_span">
+        <span chat-bind="msg.content" class="text"></span>
+    </span>
 </div>
 <div class="chat_file" ng-class="{'chat_file_thumb':['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0}"  ng-dblclick="openFile($event,msg)" data-dir="{{msg.meta.dir}}" title="{{msg.metadata.filename}}">
     <div class="file_icon_wrapper">
@@ -15,7 +17,10 @@
         </div>
     </div>
     <div class="file_opt" ng-if="msg.file">
-        <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_location"></i></button>
+        <span ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0" ng-bind="msg.metadata.filename|subFileName">
+
+        </span>
+        <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_search"></i></button>
     </div>
     <div class="file_progress" ng-if="msg.file.status==1 && msg.metadata.dir==0">
         <progressbar ng-if="msg.metadata.dir==0" max="msg.metadata.filesize" value="msg.offset" animate="true"></progressbar>

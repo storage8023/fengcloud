@@ -219,7 +219,7 @@ section .msg_list{
 .chat_item .chat_main{
    float: left;
    margin: -2px 0 0 0;
-   max-width: 85%;
+   max-width: 89%;
    font-size: 14px;
 }
 .chat_item .chat_main .icon_warning{
@@ -255,6 +255,13 @@ right: -20px;
 .chat_item .chat_main .chat_text .chat_text_inner{
    color: #3F4754;
     margin: 5px 0;
+}
+.chat_text_inner .chat_text_span{
+    border:1px solid #e3e6ea;
+    background-color: #FFFFFF;
+    border-radius: 4px;
+    display: inline-block;
+    padding:5px;
 }
 .chat_item .chat_main .chat_text .chat_text_inner a{
     color: #448DE8;
@@ -295,10 +302,10 @@ color: #f16262;
 .chat_content{
     display: table;
     position: relative;
-    background: #F1F1F2;
+    background: #F5F7F9;
     border:1px solid #e7e7e7;
-    border-radius: 5px;
-    padding:3px 5px;
+    border-radius: 4px;
+    /*padding:3px 5px;*/
     min-width: 108px;
 }
 
@@ -342,14 +349,14 @@ color: #f16262;
 .chat_file .file_icon_wrapper .file_icon128x128{
     margin-top: 0;
     display: inline-block;
-    width: 96px;
-    height: 96px;
+    width: 108px;
+    height: 108px;
     background-size: 96px;
     vertical-align: middle;
 }
 .chat_file .file_icon_wrapper .file_icon128x128 img{
-    width: 96px;
-    height: 96px;
+    width: 100%;
+    height: 100%;
 }
 
 .chat_file .version_wrapper{
