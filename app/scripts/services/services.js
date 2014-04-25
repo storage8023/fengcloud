@@ -574,37 +574,20 @@ angular.module('gkClientIndex.services', [])
             publish: function (mountId, file) {
                 var option = {
                     templateUrl: 'views/publish_dialog.html',
-                    windowClass: 'publish_dialog',
-                    controller: function ($scope,$modalInstance) {
-                        $scope.file = file;
-                        $scope.link = '';
-                        $scope.option = 1;
-                        var maxOption = 365;
-                        $scope.publish = function(file,option){
-                            if(!option || option > maxOption){
-                                alert("失效时间为不超过"+maxOption+"天的数值!");
-                                return;
-                            }
-                            var now = Math.round(new Date().getTime()/1000);
-                            var deadline = now + parseInt(option) * 86400;
-                            GKApi.publish(mountId,file.fullpath,deadline)
-                                .success(function(data){
-                                    $scope.$apply(function(){
-                                        $scope.link = data.link;
-                                    })
-                                })
-                                .error(function(reqest){
-                                    GKException.handleAjaxException(reqest);
-                                })
-                        };
-                        $scope.copy = function (innerLink) {
-                            gkClientInterface.copyToClipboard(innerLink);
-                            alert('已复制到剪切板');
-                        };
-
+                    windowClass: 'modal_frame publish_dialog',
+                    controller: function ($scope,$modalInstance,src) {
+                        $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/mount/file_link_publish?mount_id='+mountId+'&fullpath='+file.fullpath
+                            });
+                        }
                     }
                 };
                 option = angular.extend({}, defaultOption, option);
