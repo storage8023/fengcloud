@@ -489,6 +489,34 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            fileUpdateDetail:function(param){
+
+                var option = {
+                    templateUrl: 'views/file_updatemsg_dialog.html',
+                    windowClass: 'chat_file_update_dialog',
+                    controller: function ($scope,$modalInstance) {
+                        /**
+                         * 打开文件位置
+                         * @param msg
+                         */
+                        $scope.goToFile = function ($event, fullpath) {
+                            var fullpath = fullpath;
+                            window.top.gkFrameCallback('OpenMountPath', {
+                                mountid: param.mountId,
+                                webpath: fullpath
+                            });
+                            $modalInstance.dismiss('cancel');
+                            $event.stopPropagation();
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
             selectFile:function(mountId,title){
                 var option = {
                     templateUrl: 'views/select_file_dialog.html',

@@ -40,7 +40,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         $scope.onlyShowTopic = false;
 
 
+
         var post = function (type, content, metadata, status) {
+            topWindow.gkFrameCallback('openFileUpdateDetail',{mountId:$scope.currentSession.mountid});
             metadata = angular.isDefined(metadata) ? metadata : '';
             var now = new Date().getTime();
             var msgData = {
