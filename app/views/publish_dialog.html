@@ -6,44 +6,10 @@
     <div ng-show="!PAGE_CONFIG.networkConnected">
         <network-unconnect></network-unconnect>
     </div>
-    <div ng-show="PAGE_CONFIG.networkConnected">
-        <div class="file_wrapper">
-           <div class="icon_wrapper">
-               <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)<0"
-                    ng-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"/>
-               <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0"
-                    error-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"
-                    ng-src="{{file.hash | getThumbUrl:file.filehash}}"/>
-           </div>
-           <div class="file_info">
-               <div class="filename_wrapper">
-                   <span class="filename" title="{{file.filename}}">{{file.filename}}</span>
-               </div>
-              <div class="other_info">
-                  <span class="last_member_name">{{file.last_member_name}}</span>
-                  <span class="last_edit_time">{{file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'}}</span>
-                  <span class="filesize" ng-show="file.dir==0">{{file.filesize|bitSize}}</span>
-              </div>
-           </div>
-        </div>
-        <div class="btn_wrapper">
-            <button ng-show="!link" class="btn btn-primary" ng-click="publish(file,option)">发 布</button>
-            <div ng-show="!!link" class="input_wrapper">
-                <input type="text" ng-model="link" readonly class="form-control" />
-                <div>
-                    <button class="btn btn-default" ng-click="copy(link)">复 制</button>
-                </div>
-            </div>
-            <div class="tip">
-                <span>
-                发布后链接将在
-                    </span>
-                <input ng-show="!link" type="number" name="dead_date" id="dead_date" style="width: 45px" min="1" max="365" ng-model="option"/>
-                <span ng-show="link" ng-bind="option"></span>
-                   <span>
-                天后自动失效
-                       </span>
-            </div>
-        </div>
+
+    <div ng-if="PAGE_CONFIG.networkConnected">
+        <div ng-show="!loaded" class="empty">正在加载...</div>
+        <iframe ng-show="loaded" gk-onload="loaded=true" id="team_overview_modal" frameborder="0"
+                ng-src="{{url}}"></iframe>
     </div>
 </div>
