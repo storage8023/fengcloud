@@ -18,20 +18,20 @@ angular.module('gkClientIndex.services', [])
     })
     .factory('GKSope', [function () {
         return {
-            rightSidebar:null
+            rightSidebar: null
         };
     }])
-    .factory('GKBrowserMode', ['$rootScope','localStorageService',function ($rootScope,localStorageService) {
+    .factory('GKBrowserMode', ['$rootScope', 'localStorageService', function ($rootScope, localStorageService) {
         var key = 'gk_browser_mode';
         var GKBrowserMode = {
-            getMode:function(){
-                var re =  localStorageService.get(key);
-                if(['chat','file'].indexOf(re)<0){
+            getMode: function () {
+                var re = localStorageService.get(key);
+                if (['chat', 'file'].indexOf(re) < 0) {
                     return 'file';
                 }
                 return re;
             },
-            setMode:function(mode){
+            setMode: function (mode) {
                 $rootScope.PAGE_CONFIG.browserMode = mode;
                 localStorageService.add(key, mode);
             }
@@ -56,45 +56,45 @@ angular.module('gkClientIndex.services', [])
     .factory('GKEnt', [function () {
         var GKEnt = {
             getEnt: function (entId) {
-               if(!entId){
-                   return {
-                       entid:0,
-                       entname:'我的云库'
-                   };
-               }else{
-                   return gkClientInterface.getEnt({
-                       entid:entId
-                   });
-               }
+                if (!entId) {
+                    return {
+                        entid: 0,
+                        entname: '我的云库'
+                    };
+                } else {
+                    return gkClientInterface.getEnt({
+                        entid: entId
+                    });
+                }
             }
         };
         return GKEnt;
     }])
-    .factory('GKSideTree', ['GKFile', 'GKPartition','GKEnt', function (GKFile, GKPartition,GKEnt) {
+    .factory('GKSideTree', ['GKFile', 'GKPartition', 'GKEnt', function (GKFile, GKPartition, GKEnt) {
         return {
-            getTreeList:function(mounts){
+            getTreeList: function (mounts) {
                 var treeList = {};
-                angular.forEach(mounts,function(mount){
-                    if(mount.ent_id){
+                angular.forEach(mounts, function (mount) {
+                    if (mount.ent_id) {
                         var entId = mount.ent_id,
-                            partition = GKPartition.getPartitionByMountType(mount.member_type,mount.ent_id),
+                            partition = GKPartition.getPartitionByMountType(mount.member_type, mount.ent_id),
                             treeItem = GKFile.dealTreeItem(mount, mount.mount_id);
                         var ent = GKEnt.getEnt(entId);
-                        if(ent && ent.entname){
+                        if (ent && ent.entname) {
                             var showHeaderBtn = false;
-                            if(ent.property){
+                            if (ent.property) {
                                 ent.property = JSON.parse(ent.property);
-                                showHeaderBtn = (ent.property.ent_admin==1);
+                                showHeaderBtn = (ent.property.ent_admin == 1);
                             }
-                            if(!treeList[entId]){
+                            if (!treeList[entId]) {
                                 treeList[entId] = {
-                                    guider:!entId?'lib':'',
-                                    header:ent.entname,
-                                    data:[treeItem],
-                                    entId:ent.entid,
-                                    showHeaderBtn:showHeaderBtn
+                                    guider: !entId ? 'lib' : '',
+                                    header: ent.entname,
+                                    data: [treeItem],
+                                    entId: ent.entid,
+                                    showHeaderBtn: showHeaderBtn
                                 };
-                            }else{
+                            } else {
                                 treeList[entId].data.push(treeItem);
                             }
                         }
@@ -224,7 +224,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', 'GKFile', 'GKMount', 'GKSmartFolder','GKPath', '$rootScope','GKAuth',function (GKPartition, GKModal, GKOpt, GKFile, GKMount, GKSmartFolder,GKPath,$rootScope,GKAuth) {
+    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', 'GKFile', 'GKMount', 'GKSmartFolder', 'GKPath', '$rootScope', 'GKAuth', function (GKPartition, GKModal, GKOpt, GKFile, GKMount, GKSmartFolder, GKPath, $rootScope, GKAuth) {
         return {
             getSidebarMenu: function ($trigger) {
                 var data = $trigger.data('branch');
@@ -239,7 +239,7 @@ angular.module('gkClientIndex.services', [])
                 }
                 if (GKPartition.isTeamFilePartition(partition) || GKPartition.isEntFilePartition(partition)) {
                     if (data.filter == 'trash') {
-                        if(GKAuth.check(mount,'','file_delete_com')){
+                        if (GKAuth.check(mount, '', 'file_delete_com')) {
                             items = {
                                 'clear_trash': {
                                     name: '清空回收站',
@@ -266,7 +266,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 }
                             });
-                            if(GKAuth.check(mount,'','org_member')){
+                            if (GKAuth.check(mount, '', 'org_member')) {
                                 angular.extend(items, {
                                     'view_member': {
                                         name: '成员',
@@ -286,20 +286,20 @@ angular.module('gkClientIndex.services', [])
 //                                    }
 //                                })
 //                            }
-                            if(GKAuth.check(mount,'','file_recycle')){
+                            if (GKAuth.check(mount, '', 'file_recycle')) {
                                 angular.extend(items, {
                                     'trash': {
                                         name: '回收站',
                                         callback: function () {
-                                            $rootScope.$apply(function(){
-                                                GKPath.gotoFile(mountId, '','','','trash');
+                                            $rootScope.$apply(function () {
+                                                GKPath.gotoFile(mountId, '', '', '', 'trash');
                                             })
                                         }
                                     }
                                 })
                             }
 
-                            if (GKAuth.check(mount,'','org_upgrade')) {
+                            if (GKAuth.check(mount, '', 'org_upgrade')) {
                                 angular.extend(items, {
                                     'team_upgrade': {
                                         name: '升级',
@@ -341,7 +341,7 @@ angular.module('gkClientIndex.services', [])
                     }
 
                 } else if (GKPartition.isSubscribePartition(data.partition)) {
-                    if(!data.fullpath){
+                    if (!data.fullpath) {
                         items = {
                             'view_dashboard': {
                                 name: '资料',
@@ -362,7 +362,7 @@ angular.module('gkClientIndex.services', [])
                                 }
                             }
                         };
-                    }else{
+                    } else {
                         items = {
                             'view_property': {
                                 name: '属性',
@@ -381,7 +381,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     }
 
-                } else if (GKPartition.isSmartFolderPartition(data.partition) && data.type > 0 ) {
+                } else if (GKPartition.isSmartFolderPartition(data.partition) && data.type > 0) {
                     items = {
                         'rename': {
                             name: '修改名称',
@@ -475,50 +475,52 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
+    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi', function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile, GKApi) {
         var defaultOption = {
             backdrop: 'static'
         };
-        var getOrgName = function(orgId){
+        var getOrgName = function (orgId) {
             var orgName = '';
             var mount = GKMount.getMountByOrgId(orgId);
-            if(mount){
-                orgName = '（'+mount.name+'）';
+            if (mount) {
+                orgName = '（' + mount.name + '）';
             }
             return orgName;
         };
 
         return{
-            selectFile:function(mountId,title){
+            selectFile: function (mountId, title) {
                 var option = {
                     templateUrl: 'views/select_file_dialog.html',
                     windowClass: 'select_file_dialog',
-                    controller: function ($scope,$modalInstance) {
+                    controller: function ($scope, $modalInstance) {
                         var mount = GKMount.getMountById(mountId);
-                        if(!mount) return;
+                        if (!mount) return;
                         $scope.title = title;
-                        $scope.fileData = [{
-                            label:mount.name,
-                            nodeImg : mount.logo,
-                            hasChildren:true,
-                            isParent: true,
-                            data:{
-                                mount_id:mountId,
-                                fullpath:'',
-                                partition:GKPartition.teamFile
+                        $scope.fileData = [
+                            {
+                                label: mount.name,
+                                nodeImg: mount.logo,
+                                hasChildren: true,
+                                isParent: true,
+                                data: {
+                                    mount_id: mountId,
+                                    fullpath: '',
+                                    partition: GKPartition.teamFile
+                                }
                             }
-                        }];
+                        ];
                         $scope.initSelectedBranch = $scope.fileData[0];
                         GKFile.getChildNode({
-                            data:{
-                                mount_id:mountId,
-                                fullpath:'',
-                                partition:GKPartition.teamFile
+                            data: {
+                                mount_id: mountId,
+                                fullpath: '',
+                                partition: GKPartition.teamFile
                             }
-                        }).then(function(data){
-                                $scope.fileData[0].expanded = true;
-                                $scope.fileData[0].children = data;
-                            });
+                        }).then(function (data) {
+                            $scope.fileData[0].expanded = true;
+                            $scope.fileData[0].children = data;
+                        });
 
                         $scope.handleExpand = function (branch) {
                             if (branch.expanded) {
@@ -533,10 +535,10 @@ angular.module('gkClientIndex.services', [])
                             selectedFile = branch;
                         };
 
-                        $scope.ok = function(){
-                            if(!selectedFile) return;
+                        $scope.ok = function () {
+                            if (!selectedFile) return;
                             $modalInstance.close({
-                                selectedPath:selectedFile.data.fullpath
+                                selectedPath: selectedFile.data.fullpath
                             });
                         };
 
@@ -552,13 +554,13 @@ angular.module('gkClientIndex.services', [])
                 var option = {
                     templateUrl: 'views/chose_drag_dialog.html',
                     windowClass: 'chose_drag_dialog',
-                    controller: function ($scope,$modalInstance) {
+                    controller: function ($scope, $modalInstance) {
                         $scope.msg = msg;
-                        $scope.copy = function(){
+                        $scope.copy = function () {
                             $modalInstance.close('copy');
                         };
 
-                        $scope.move = function(){
+                        $scope.move = function () {
                             $modalInstance.close('move');
                         };
 
@@ -574,57 +576,40 @@ angular.module('gkClientIndex.services', [])
             publish: function (mountId, file) {
                 var option = {
                     templateUrl: 'views/publish_dialog.html',
-                    windowClass: 'publish_dialog',
-                    controller: function ($scope,$modalInstance) {
-                        $scope.file = file;
-                        $scope.link = '';
-                        $scope.option = 1;
-                        var maxOption = 365;
-                        $scope.publish = function(file,option){
-                            if(!option || option > maxOption){
-                                alert("失效时间为不超过"+maxOption+"天的数值!");
-                                return;
-                            }
-                            var now = Math.round(new Date().getTime()/1000);
-                            var deadline = now + parseInt(option) * 86400;
-                            GKApi.publish(mountId,file.fullpath,deadline)
-                                .success(function(data){
-                                    $scope.$apply(function(){
-                                        $scope.link = data.link;
-                                    })
-                                })
-                                .error(function(reqest){
-                                    GKException.handleAjaxException(reqest);
-                                })
-                        };
-                        $scope.copy = function (innerLink) {
-                            gkClientInterface.copyToClipboard(innerLink);
-                            alert('已复制到剪切板');
-                        };
-
+                    windowClass: 'modal_frame publish_dialog',
+                    controller: function ($scope, $modalInstance, src) {
+                        $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/mount/file_link_publish?mount_id=' + mountId + '&fullpath=' + file.fullpath
+                            });
+                        }
                     }
                 };
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
 
             },
-            setMilestone:function(mountId,file,oldMessage){
+            setMilestone: function (mountId, file, oldMessage) {
                 var option = {
                     templateUrl: 'views/set_milestone_dialog.html',
                     windowClass: 'set_milestone_dialog',
-                    controller: function ($scope,$modalInstance) {
+                    controller: function ($scope, $modalInstance) {
                         $scope.file = file;
                         $scope.message = '';
                         $scope.isSendToChat = true;
-                        $scope.markMilestone = function(message,isSendToChat){
-                            GKApi.markMilestone(mountId,file.fullpath,message,isSendToChat?1:0)
-                                .success(function(){
+                        $scope.markMilestone = function (message, isSendToChat) {
+                            GKApi.markMilestone(mountId, file.fullpath, message, isSendToChat ? 1 : 0)
+                                .success(function () {
                                     $modalInstance.close();
                                 })
-                                .error(function(reqest){
+                                .error(function (reqest) {
                                     GKException.handleAjaxException(reqest);
                                 })
                         };
@@ -636,12 +621,12 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            openNew: function (url,title) {
+            openNew: function (url, title) {
                 var context = this;
                 var option = {
                     templateUrl: 'views/new_unname_dialog.html',
                     windowClass: 'modal_frame new_unname_dialog',
-                    controller: function ($scope, $modalInstance, src,title) {
+                    controller: function ($scope, $modalInstance, src, title) {
                         $scope.url = src;
                         $scope.title = title;
                         $scope.cancel = function () {
@@ -656,7 +641,7 @@ angular.module('gkClientIndex.services', [])
                         src: function () {
                             return url;
                         },
-                        title:function(){
+                        title: function () {
                             return title;
                         }
                     }
@@ -664,8 +649,8 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            teamCard: function (orgId,memberId) {
-                memberId = angular.isDefined(memberId)?memberId:0;
+            teamCard: function (orgId, memberId) {
+                memberId = angular.isDefined(memberId) ? memberId : 0;
                 var context = this;
                 var option = {
                     templateUrl: 'views/team_card_dialog.html',
@@ -681,7 +666,7 @@ angular.module('gkClientIndex.services', [])
                         src: function () {
                             return gkClientInterface.getUrl({
                                 sso: 1,
-                                url: '/manage/info?org_id=' + orgId+'&member_id='+memberId
+                                url: '/manage/info?org_id=' + orgId + '&member_id=' + memberId
                             });
                         }
                     }
@@ -710,8 +695,8 @@ angular.module('gkClientIndex.services', [])
                             })
                         })
 
-                        $scope.$on('closeModal', function (event,name) {
-                            if(!name){
+                        $scope.$on('closeModal', function (event, name) {
+                            if (!name) {
                                 $modalInstance.dismiss('cancel');
                             }
                         })
@@ -836,10 +821,10 @@ angular.module('gkClientIndex.services', [])
                             gkClientInterface.selectPath({
                                 path: $scope.localURI,
                                 disable_root: true
-                            },function(re){
+                            }, function (re) {
                                 var newPath = re.path;
                                 if (newPath) {
-                                    $scope.$apply(function(){
+                                    $scope.$apply(function () {
                                         $scope.localURI = newPath;
                                     })
                                 }
@@ -919,14 +904,14 @@ angular.module('gkClientIndex.services', [])
                                 });
 
                             }).error(function () {
-                                    $scope.loading = false;
-                                })
+                                $scope.loading = false;
+                            })
                         };
-                        var updateClassifyNews = function(id,newData){
-                            angular.forEach($scope.classifyNews,function(value){
-                                angular.forEach(value.list,function(item){
-                                    if(item.id == id){
-                                        angular.extend(item,newData);
+                        var updateClassifyNews = function (id, newData) {
+                            angular.forEach($scope.classifyNews, function (value) {
+                                angular.forEach(value.list, function (item) {
+                                    if (item.id == id) {
+                                        angular.extend(item, newData);
                                         return false;
                                     }
                                 })
@@ -970,7 +955,7 @@ angular.module('gkClientIndex.services', [])
                                         return;
                                     }
                                 }
-                                if(opt.opt == 'apply_accept'){
+                                if (opt.opt == 'apply_accept') {
                                     if (!confirm('你确定要' + opt.name + '该申请？')) {
                                         return;
                                     }
@@ -989,7 +974,7 @@ angular.module('gkClientIndex.services', [])
                                     $scope.$apply(function () {
                                         item.opts = [];
                                         if (data && data.updates) {
-                                            angular.forEach(data.updates,function(newItem){
+                                            angular.forEach(data.updates, function (newItem) {
                                                 updateClassifyNews(newItem.id, newItem);
                                                 GKNews.updateNews(newItem.id, newItem);
                                             })
@@ -998,14 +983,14 @@ angular.module('gkClientIndex.services', [])
                                     });
 
                                 }).error(function (request) {
-                                        var code = GKException.getAjaxErroCode(request);
-                                        if(code==403322){
-                                            context.createTeam('加入云库');
-                                        }else{
-                                            GKException.handleAjaxException(request);
-                                        }
+                                    var code = GKException.getAjaxErroCode(request);
+                                    if (code == 403322) {
+                                        context.createTeam('加入云库');
+                                    } else {
+                                        GKException.handleAjaxException(request);
+                                    }
 
-                                    });
+                                });
                             } else if (opt.type == 'url') {
                                 var url = gkClientInterface.getUrl({
                                     url: opt.url,
@@ -1022,7 +1007,8 @@ angular.module('gkClientIndex.services', [])
                                         height: 490
                                     }
                                     gkClientInterface.setMain(data);
-                                };
+                                }
+                                ;
                                 $modalInstance.close();
                             } else if (opt.type == 'view') {
                                 if (opt.opt == 'view_file') {
@@ -1056,12 +1042,12 @@ angular.module('gkClientIndex.services', [])
                                 else if (opt.opt == 'view_chat') {
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     var mountId = 0;
-                                    if(!mount){
+                                    if (!mount) {
                                         alert('该云库已被删除或你已退出该云库');
                                         return;
                                     }
                                     mountId = mount['mount_id'];
-                                    GKPath.gotoFile(mountId, '', '','','','chat');
+                                    GKPath.gotoFile(mountId, '', '', '', '', 'chat');
                                 }
                                 $rootScope.showNews = false;
                                 $modalInstance.close();
@@ -1081,7 +1067,7 @@ angular.module('gkClientIndex.services', [])
 
                                 }).error(function () {
 
-                                    });
+                                });
                             } else {
                                 GKApi.teamInviteReject(item['org_id'], item['property']['invite_code']).success(function () {
                                     $scope.$apply(function () {
@@ -1090,7 +1076,7 @@ angular.module('gkClientIndex.services', [])
 
                                 }).error(function () {
 
-                                    });
+                                });
                             }
 
                         };
@@ -1385,8 +1371,8 @@ angular.module('gkClientIndex.services', [])
                                 GKApi.teamInviteJoin(orgId, code).success(function () {
 
                                 }).error(function (request) {
-                                        GKException.handleAjaxException(request);
-                                    });
+                                    GKException.handleAjaxException(request);
+                                });
                             }
                         });
                         opts.push({
@@ -1396,8 +1382,8 @@ angular.module('gkClientIndex.services', [])
                                 GKApi.teamInviteReject(orgId, code).success(function () {
 
                                 }).error(function (request) {
-                                        GKException.handleAjaxException(request);
-                                    });
+                                    GKException.handleAjaxException(request);
+                                });
                             }
                         });
                     case 'accepted':
@@ -1502,8 +1488,8 @@ angular.module('gkClientIndex.services', [])
                     context.addNews(news);
                     deferred.resolve(news);
                 }).error(function () {
-                        deferred.resolve();
-                    })
+                    deferred.resolve();
+                })
                 return deferred.promise;
             },
             getNews: function () {
@@ -1565,7 +1551,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKNews;
     }])
-    .factory('GKSmartFolder', ['GKFilter', '$filter', 'GKApi', '$q', 'GKException', 'GKFile', '$rootScope','GKPartition',function (GKFilter, $filter, GKApi, $q, GKException, GKFile,$rootScope,GKPartition) {
+    .factory('GKSmartFolder', ['GKFilter', '$filter', 'GKApi', '$q', 'GKException', 'GKFile', '$rootScope', 'GKPartition', function (GKFilter, $filter, GKApi, $q, GKException, GKFile, $rootScope, GKPartition) {
         var getFolderAliasByType = function (type) {
             var filter = '';
             switch (type) {
@@ -1606,7 +1592,7 @@ angular.module('gkClientIndex.services', [])
                 type: condition,
                 filter: filter,
                 icon: 'icon_' + filter,
-                partition:GKPartition.smartFolder
+                partition: GKPartition.smartFolder
             };
             return item;
         };
@@ -1731,70 +1717,71 @@ angular.module('gkClientIndex.services', [])
                     source = 'api',
                     param,
                     cacheKey;
-                if(['star', 'diamond', 'moon', 'triangle', 'flower', 'heart','recent','recent_visit'].indexOf(filter)<0){
+                if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart', 'recent', 'recent_visit'].indexOf(filter) < 0) {
                     return deferred.resolve(list);
                 }
-                cacheKey = filter+':';
-                if(!$rootScope.PAGE_CONFIG.networkConnected){
+                cacheKey = filter + ':';
+                if (!$rootScope.PAGE_CONFIG.networkConnected) {
                     list = gkClientInterface.getCache({
-                        key:cacheKey
+                        key: cacheKey
                     });
-                    if(!list) list = [];
-                    list = list.map(function(value){
-                        if(value.dir == 0 && value.filehash){
+                    if (!list) list = [];
+                    list = list.map(function (value) {
+                        if (value.dir == 0 && value.filehash) {
                             value.cache = gkClientInterface.checkFileCache(value.filehash);
                         }
                         return value;
                     })
-                    deferred.resolve(list);;
-                }else{
-                if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf(filter) >= 0) {
-                    /**
-                     * 加星标的文件
-                     */
-                    var type = GKFilter.getFilterType(filter);
-                    GKApi.starFileList(type).success(function (data) {
-                        list = GKFile.dealFileList(data['list'], source);
-                        param = {
-                            key:cacheKey,
-                            value:JSON.stringify(list)
-                        }
-                        gkClientInterface.addCache(param);
-                        deferred.resolve(list);
-                    }).error(function (request) {
+                    deferred.resolve(list);
+                    ;
+                } else {
+                    if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf(filter) >= 0) {
+                        /**
+                         * 加星标的文件
+                         */
+                        var type = GKFilter.getFilterType(filter);
+                        GKApi.starFileList(type).success(function (data) {
+                            list = GKFile.dealFileList(data['list'], source);
+                            param = {
+                                key: cacheKey,
+                                value: JSON.stringify(list)
+                            }
+                            gkClientInterface.addCache(param);
+                            deferred.resolve(list);
+                        }).error(function (request) {
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
-                    /**
-                     * 最近修改的文件
-                     */
-                } else if (filter == 'recent') {
-                    GKApi.recentFileList(filter).success(function (data) {
-                        list = GKFile.dealFileList(data['list'], source);
-                        param = {
-                            key:cacheKey,
-                            value:JSON.stringify(list)
-                        }
-                        gkClientInterface.addCache(param);
-                        deferred.resolve(list);
-                    }).error(function (request) {
+                        /**
+                         * 最近修改的文件
+                         */
+                    } else if (filter == 'recent') {
+                        GKApi.recentFileList(filter).success(function (data) {
+                            list = GKFile.dealFileList(data['list'], source);
+                            param = {
+                                key: cacheKey,
+                                value: JSON.stringify(list)
+                            }
+                            gkClientInterface.addCache(param);
+                            deferred.resolve(list);
+                        }).error(function (request) {
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
-                    /**
-                     * 最近访问的文件
-                     */
-                }else if(filter == 'recent_visit'){
-                    GKApi.starFileList(255).success(function (data) {
-                        list = GKFile.dealFileList(data['list'], source);
-                        param = {
-                            key:cacheKey,
-                            value:JSON.stringify(list)
-                        }
-                        gkClientInterface.addCache(param);
-                        deferred.resolve(list);
-                    }).error(function (request) {
+                        /**
+                         * 最近访问的文件
+                         */
+                    } else if (filter == 'recent_visit') {
+                        GKApi.starFileList(255).success(function (data) {
+                            list = GKFile.dealFileList(data['list'], source);
+                            param = {
+                                key: cacheKey,
+                                value: JSON.stringify(list)
+                            }
+                            gkClientInterface.addCache(param);
+                            deferred.resolve(list);
+                        }).error(function (request) {
                             deferred.reject(GKException.getAjaxErrorMsg(request));
                         });
-                }
+                    }
                 }
                 return deferred.promise;
             }
@@ -1879,10 +1866,10 @@ angular.module('gkClientIndex.services', [])
 
         return GKFilter;
     }])
-    .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition','GKMode', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition,GKMode) {
+    .factory('GKPath', ['$location', 'GKMount', 'GKSmartFolder', 'GKFilter', 'GKPartition', 'GKMode', function ($location, GKMount, GKSmartFolder, GKFilter, GKPartition, GKMode) {
         var GKPath = {
-            gotoFile: function (mountId, path, selectFile,view,filter,mode) {
-                view = angular.isDefined(view)?view:'';
+            gotoFile: function (mountId, path, selectFile, view, filter, mode) {
+                view = angular.isDefined(view) ? view : '';
                 selectFile = angular.isDefined(selectFile) ? selectFile : '';
                 filter = angular.isDefined(filter) ? filter : '';
                 mode = angular.isDefined(mode) ? mode : 'file';
@@ -1890,15 +1877,15 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if (!mount) return;
                 var search = {
-                    partition: mount['ent_id']?GKPartition.entFile: GKPartition.teamFile,
+                    partition: mount['ent_id'] ? GKPartition.entFile : GKPartition.teamFile,
                     mountid: mountId,
                     path: path,
                     selectedpath: selectFile,
-                    view:view,
-                    filter:filter
+                    view: view,
+                    filter: filter
                 };
                 if (mount) {
-                    GKMode.setMode(mode,search.partition,mount);
+                    GKMode.setMode(mode, search.partition, mount);
                     $location.search(search);
                 }
             },
@@ -2128,41 +2115,41 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKPartition', [function(){
+    .factory('GKPartition', [function () {
         var GKPartition = {
             teamFile: 'teamfile',
             entFile: 'entfile',
             smartFolder: 'smartfolder',
             subscribeFile: 'subscribefile',
-            getPartitionByMountType : function(type,entId){
+            getPartitionByMountType: function (type, entId) {
                 var partition;
-                if(!entId){
+                if (!entId) {
                     partition = this.teamFile;
-                }else{
+                } else {
                     partition = this.entFile;
                 }
                 return partition;
             },
-            isMountPartition:function(partition){
-                return [this.teamFile,this.entFile,this.subscribeFile].indexOf(partition) >= 0;
+            isMountPartition: function (partition) {
+                return [this.teamFile, this.entFile, this.subscribeFile].indexOf(partition) >= 0;
             },
-            isSubscribePartition:function(partition){
+            isSubscribePartition: function (partition) {
                 return this.subscribeFile == partition;
             },
-            isSmartFolderPartition:function(partition){
+            isSmartFolderPartition: function (partition) {
                 return this.smartFolder == partition;
             },
-            isTeamFilePartition:function(partition){
+            isTeamFilePartition: function (partition) {
                 return this.teamFile == partition;
             },
-            isEntFilePartition:function(partition){
+            isEntFilePartition: function (partition) {
                 return this.entFile == partition;
             }
 
         };
         return GKPartition;
     }])
-    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException','$rootScope','$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException,$rootScope,$filter) {
+    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException', '$rootScope', '$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException, $rootScope, $filter) {
         var GKFile = {
             checkFilename: function (filename) {
                 if (!filename.length) {
@@ -2178,8 +2165,8 @@ angular.module('gkClientIndex.services', [])
                     alert('文件名的长度不能超过255个字符');
                     return false;
                 }
-                var lastStr = filename.slice(filename.length-1);
-                if(lastStr === '.'){
+                var lastStr = filename.slice(filename.length - 1);
+                if (lastStr === '.') {
                     alert('无效的文件名');
                     return;
                 }
@@ -2211,53 +2198,53 @@ angular.module('gkClientIndex.services', [])
                     start: 0,
                     dir: 0,
                     recycle: false,
-                    current:0
+                    current: 0
                 };
                 option = angular.extend({}, defaultOption, option);
                 if (source == 'api') {
                     if (!option.recycle) {
-                        var cacheKey = mountId+':'+fullpath;
-                        if(!$rootScope.PAGE_CONFIG.networkConnected){
+                        var cacheKey = mountId + ':' + fullpath;
+                        if (!$rootScope.PAGE_CONFIG.networkConnected) {
                             list = gkClientInterface.getCache({
-                                key:cacheKey
+                                key: cacheKey
                             });
-                            if(!list) list = [];
-                            if(option.dir==1){
-                                list = $filter('filter')(list,{dir:1});
-                            }else{
-                                list = list.map(function(value){
-                                    if(value.dir == 0 && value.filehash){
+                            if (!list) list = [];
+                            if (option.dir == 1) {
+                                list = $filter('filter')(list, {dir: 1});
+                            } else {
+                                list = list.map(function (value) {
+                                    if (value.dir == 0 && value.filehash) {
                                         value.cache = gkClientInterface.checkFileCache(value.filehash);
                                     }
                                     return value;
                                 })
                             }
                             deferred.resolve(list);
-                        }else{
+                        } else {
                             GKApi.list(mountId, fullpath, option.start, option.size, option.dir).success(function (data) {
                                 list = GKFile.dealFileList(data['list'], source);
                                 var param = {
-                                    key:cacheKey,
-                                    value:JSON.stringify(list)
+                                    key: cacheKey,
+                                    value: JSON.stringify(list)
                                 }
                                 gkClientInterface.addCache(param);
                                 deferred.resolve(list);
                             }).error(function (request) {
-                                    deferred.reject(GKException.getAjaxErrorMsg(request));
-                                })
+                                deferred.reject(GKException.getAjaxErrorMsg(request));
+                            })
                         }
-                    ;
+                        ;
                     } else {
                         GKApi.recycle(mountId, '').success(function (data) {
                             list = data['list'];
                             deferred.resolve(GKFile.dealFileList(list, source));
                         }).error(function (request) {
-                                deferred.reject(GKException.getAjaxErrorMsg(request));
-                            })
+                            deferred.reject(GKException.getAjaxErrorMsg(request));
+                        })
                     }
 
                 } else {
-                   gkClientInterface.getFileList({webpath: fullpath, dir: option.dir, mountid: mountId,current:option.current},function(re){
+                    gkClientInterface.getFileList({webpath: fullpath, dir: option.dir, mountid: mountId, current: option.current}, function (re) {
                         if (!re.error) {
                             list = GKFile.dealFileList(re['list'], 'client');
                             deferred.resolve(list);
@@ -2337,9 +2324,9 @@ angular.module('gkClientIndex.services', [])
                     if (GKPartition.isSubscribePartition(branch.data.partition)) {
                         source = 'api';
                     }
-                    var option  = {dir:1};
-                    context.getFileList(branch.data.mount_id, branch.data.fullpath, source,option).then(function (list) {
-                        children = context.dealTreeData(list, branch.data.mount_id,true);
+                    var option = {dir: 1};
+                    context.getFileList(branch.data.mount_id, branch.data.fullpath, source, option).then(function (list) {
+                        children = context.dealTreeData(list, branch.data.mount_id, true);
                         /**
                          * 添加回收站
                          */
@@ -2352,19 +2339,19 @@ angular.module('gkClientIndex.services', [])
                 }
                 return deferred.promise;
             },
-            dealTreeData: function (data, mountId,isTreeView) {
+            dealTreeData: function (data, mountId, isTreeView) {
                 var newData = [],
                     item,
                     context = this;
                 angular.forEach(data, function (value) {
-                    item = context.dealTreeItem(value, mountId,isTreeView);
+                    item = context.dealTreeItem(value, mountId, isTreeView);
                     newData.push(item);
                 });
                 return newData;
             },
-            dealTreeItem:function(value, mountId,isTreeView){
+            dealTreeItem: function (value, mountId, isTreeView) {
                 isTreeView = isTreeView === undefined ? false : isTreeView;
-                var item = {},label;
+                var item = {}, label;
                 /**
                  * 云库
                  */
@@ -2385,12 +2372,12 @@ angular.module('gkClientIndex.services', [])
                         dropAble: dropAble,
                         label: label,
                         data: value,
-                        isParent: !isTreeView?false:true,
-                        hasChildren: !isTreeView?false:value.hasFolder == 1,
+                        isParent: !isTreeView ? false : true,
+                        hasChildren: !isTreeView ? false : value.hasFolder == 1,
                         iconNodeExpand: icon,
                         iconNodeCollapse: icon,
-                        newMsgTime:0,
-                        visitTime:0
+                        newMsgTime: 0,
+                        visitTime: 0
                     });
                 } else {
                     /**
@@ -2403,8 +2390,8 @@ angular.module('gkClientIndex.services', [])
                         hasChildren: false,
                         iconNodeExpand: value.icon,
                         iconNodeCollapse: value.icon,
-                        newMsgTime:-1,
-                        visitTime:0
+                        newMsgTime: -1,
+                        visitTime: 0
                     };
                 }
                 return item;
@@ -2435,9 +2422,9 @@ angular.module('gkClientIndex.services', [])
                         hash: value.hash,
                         open: value.publish || 0,
                         hasFolder: 1,
-                        tag:value.tag||'',
-                        version:value.version,
-                        index:value.index
+                        tag: value.tag || '',
+                        version: value.version,
+                        index: value.index
                     };
                 } else {
                     var fileName = Util.String.baseName(value.path);
@@ -2470,9 +2457,9 @@ angular.module('gkClientIndex.services', [])
                         hash: value.uuidhash,
                         open: value.open || 0,
                         hasFolder: value.hasfolder || 0,
-                        tag:'',
-                        version:value.version,
-                        index:0
+                        tag: '',
+                        version: value.version,
+                        index: 0
                     };
                 }
                 return file;
@@ -2582,9 +2569,9 @@ angular.module('gkClientIndex.services', [])
         };
         return GKClipboard
     }])
-    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder','GKAuth','$timeout','GKFrame', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder,GKAuth,$timeout,GKFrame) {
+    .factory('GKOpt', ['GKFile', 'GKPartition', 'GKMount', '$rootScope', 'GK', '$q', 'GKFileList', 'GKPath', 'GKModal', 'GKOpen', 'GKCilpboard', 'GKException', 'GKApi', 'GKFilter', 'GKFileOpt', 'GKSmartFolder', 'GKAuth', '$timeout', 'GKFrame', function (GKFile, GKPartition, GKMount, $rootScope, GK, $q, GKFileList, GKPath, GKModal, GKOpen, GKCilpboard, GKException, GKApi, GKFilter, GKFileOpt, GKSmartFolder, GKAuth, $timeout, GKFrame) {
         var GKOpt = {
-            checkSubOpt:function(optKeys, subOpts){
+            checkSubOpt: function (optKeys, subOpts) {
                 var cloneOpt = angular.extend({}, subOpts);
                 angular.forEach(cloneOpt, function (value, key) {
                     if (optKeys.indexOf(key) < 0) {
@@ -2693,9 +2680,9 @@ angular.module('gkClientIndex.services', [])
              * */
             getPartitionOpts: function (partition, filter, mount, isSearch) {
                 var opts = this.getDefaultOpts();
-                if(gkClientInterface.isWindowsClient()){
+                if (gkClientInterface.isWindowsClient()) {
                     //this.disableOpt(opts, 'new_txt_file');
-                }else{
+                } else {
                     this.disableOpt(opts, 'new_doc_file', 'new_ppt_file', 'new_xls_file');
                 }
                 switch (partition) {
@@ -2703,14 +2690,14 @@ angular.module('gkClientIndex.services', [])
                     case GKPartition.entFile:
                         this.disableOpt(opts, 'nearby', 'unsubscribe');
                         if (filter == 'trash') {
-                            this.disableOpt(opts, 'link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
+                            this.disableOpt(opts, 'link', 'new_txt_file', 'new_ppt_file', 'new_xls_file', 'new_doc_file', 'view_property', 'open_with', 'create_sync_folder', "add", "new_folder", "sync", "unsync", "paste", "rename", "save", "del", "cut", "copy", "lock", "unlock", "order_by", 'manage', 'create');
                         } else {
                             this.disableOpt(opts, "clear_trash", "revert", "del_completely");
                         }
                         if (GKCilpboard.isEmpty()) {
                             this.disableOpt(opts, 'paste');
                         }
-                        if(!isSearch){
+                        if (!isSearch) {
                             this.disableOpt(opts, 'goto');
                         }
 //                        if(GKPartition.isTeamFilePartition(partition)){
@@ -2718,14 +2705,15 @@ angular.module('gkClientIndex.services', [])
 //                        }
                         break;
                     case GKPartition.subscribeFile:
-                        this.disableOpt(opts, 'lock','unlock','link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
+                        this.disableOpt(opts, 'lock', 'unlock', 'link', 'new_txt_file', 'new_ppt_file', 'new_xls_file', 'new_doc_file', 'create_sync_folder', 'new_file', 'goto', "new_folder", "manage", "create", 'add', 'clear_trash', 'sync', 'unsync', 'rename', 'del', 'paste', 'cut', 'lock', 'unlock', 'del_completely', 'revert');
                         break;
                     case GKPartition.smartFolder:
-                        this.disableOpt(opts, 'lock','unlock','link','new_txt_file','new_ppt_file','new_xls_file','new_doc_file','del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
+                        this.disableOpt(opts, 'lock', 'unlock', 'link', 'new_txt_file', 'new_ppt_file', 'new_xls_file', 'new_doc_file', 'del', 'rename', 'create_sync_folder', 'new_file', 'revert', 'del_completely', 'del', 'rename', 'nearby', 'unsubscribe', 'create', 'add', 'clear_trash', 'manage', 'new_folder', 'sync', 'unsync', 'paste', 'copy', 'cut');
                         break;
-                };
+                }
+                ;
                 if (isSearch) {
-                    this.disableOpt(opts, 'new_txt_file','new_ppt_file','new_xls_file','new_doc_file','sync', 'unsync', 'new_file','new_folder', 'add', 'create', 'paste', 'manage');
+                    this.disableOpt(opts, 'new_txt_file', 'new_ppt_file', 'new_xls_file', 'new_doc_file', 'sync', 'unsync', 'new_file', 'new_folder', 'add', 'create', 'paste', 'manage');
                 }
                 return opts;
             },
@@ -2749,7 +2737,7 @@ angular.module('gkClientIndex.services', [])
                     } else {
                         this.disableOpt(opts, 'create');
                     }
-                }else{
+                } else {
                     this.disableOpt(opts, 'link');
                 }
                 return opts;
@@ -2759,7 +2747,7 @@ angular.module('gkClientIndex.services', [])
              * */
             getCurrentOpts: function (currentFile, partition) {
                 var opts = this.getDefaultOpts();
-                this.disableOpt(opts, 'link','view_property', "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
+                this.disableOpt(opts, 'link', 'view_property', "goto", "rename", "save", "cut", "copy", "lock", "unlock", "del", 'revert', 'del_completely');
                 if (GKCilpboard.isEmpty()) {
                     this.disableOpt(opts, 'paste');
                 }
@@ -2772,7 +2760,7 @@ angular.module('gkClientIndex.services', [])
             getMultiSelectOpts: function (files) {
                 var opts = this.getDefaultOpts();
                 if (files && files.length > 1) {
-                    this.disableOpt(opts, 'link','new_file', 'view_property', 'open_with', "goto", "sync", "unsync", "rename", "lock", "unlock");
+                    this.disableOpt(opts, 'link', 'new_file', 'view_property', 'open_with', "goto", "sync", "unsync", "rename", "lock", "unlock");
                 }
                 return opts;
             },
@@ -2783,7 +2771,7 @@ angular.module('gkClientIndex.services', [])
                 var opts = this.getDefaultOpts();
                 var context = this;
                 angular.forEach(files, function (file) {
-                    context.disableOpt(opts, "add", "new_folder",'new_txt_file','new_ppt_file','new_xls_file','new_doc_file', 'new_file', "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
+                    context.disableOpt(opts, "add", "new_folder", 'new_txt_file', 'new_ppt_file', 'new_xls_file', 'new_doc_file', 'new_file', "order_by", 'clear_trash', 'create', 'manage', 'nearby', 'unsubscribe');
                     if (file.dir == 1) {
                         context.disableOpt(opts, 'open_with', 'lock', 'unlock');
                         context.setSyncOpt(opts, currentFile, file);
@@ -2834,10 +2822,10 @@ angular.module('gkClientIndex.services', [])
             },
             del: function (mountId, fullpathes) {
                 var mount = GKMount.getMountById(mountId);
-                if(!mount){
+                if (!mount) {
                     return;
                 }
-                if(!GKAuth.check(mount,'','file_delete')){
+                if (!GKAuth.check(mount, '', 'file_delete')) {
                     alert('你没有权限删除当前库下的文件或文件夹');
                     return;
                 }
@@ -2872,13 +2860,13 @@ angular.module('gkClientIndex.services', [])
                         }
                     })
                 }).error(function (request) {
-                        GKException.handleAjaxException(request);
-                    });
+                    GKException.handleAjaxException(request);
+                });
             },
             clearTrash: function (mountId) {
                 var mount = GKMount.getMountById(mountId);
-                if(!mount) return;
-                if(!GKAuth.check(mount,'','file_delete_com')){
+                if (!mount) return;
+                if (!GKAuth.check(mount, '', 'file_delete_com')) {
                     alert('你没有权限清空该云库的回收站');
                     return;
                 }
@@ -2888,8 +2876,8 @@ angular.module('gkClientIndex.services', [])
                 GKApi.clear(mountId).success(function () {
                     $rootScope.$broadcast('clearTrashSuccess', mountId);
                 }).error(function (request) {
-                        GKException.handleAjaxException(request);
-                    });
+                    GKException.handleAjaxException(request);
+                });
             },
             renameSmartFolder: function (condition, name) {
                 var deferred = $q.defer();
@@ -2916,39 +2904,39 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.order = asc + type;
             },
-            getAccessKey:function(cmd){
+            getAccessKey: function (cmd) {
                 var accesskeyMap = {
-                    copy:{
-                        mac:'⌘C',
-                        pc:'Ctrl+C'
+                    copy: {
+                        mac: '⌘C',
+                        pc: 'Ctrl+C'
                     },
-                    cut:{
-                        mac:'⌘X',
-                        pc:'Ctrl+X'
+                    cut: {
+                        mac: '⌘X',
+                        pc: 'Ctrl+X'
                     },
-                    paste:{
-                        mac:'⌘V',
-                        pc:'Ctrl+V'
+                    paste: {
+                        mac: '⌘V',
+                        pc: 'Ctrl+V'
                     },
-                    del:{
-                        mac:'',
-                        pc:'Delete'
+                    del: {
+                        mac: '',
+                        pc: 'Delete'
                     },
-                    save:{
-                        mac:'⌘S',
-                        pc:'Ctrl+S'
+                    save: {
+                        mac: '⌘S',
+                        pc: 'Ctrl+S'
                     },
-                    view_property:{
-                        mac:'⌘P',
-                        pc:'Ctrl+P'
+                    view_property: {
+                        mac: '⌘P',
+                        pc: 'Ctrl+P'
                     }
                 };
-                var os = gkClientInterface.isMacClient()?'mac':'pc';
+                var os = gkClientInterface.isMacClient() ? 'mac' : 'pc';
                 cmd = cmd.toLowerCase();
-                return accesskeyMap[cmd]?accesskeyMap[cmd][os] ||'':'';
+                return accesskeyMap[cmd] ? accesskeyMap[cmd][os] || '' : '';
             },
 
-            getAllOpts: function ($scope,selectedFile) {
+            getAllOpts: function ($scope, selectedFile) {
                 var context = this;
                 var toggleSync = function (isSync) {
                     var params,
@@ -2972,7 +2960,7 @@ angular.module('gkClientIndex.services', [])
                             $rootScope.$broadcast('editFileSuccess', 'unsync', GKFileList.getOptFileMountId(file), file.fullpath)
                         });
                     } else {
-                        if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                        if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_write')) {
                             alert('你没有权限在当前云库同步文件夹');
                             return;
                         }
@@ -2990,8 +2978,8 @@ angular.module('gkClientIndex.services', [])
                     });
                     return files;
                 }
-                var checkCreate = function(){
-                    if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                var checkCreate = function () {
+                    if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_write')) {
                         alert('你没有权限在当前云库新建文件或文件夹');
                         return false;
                     }
@@ -2999,7 +2987,7 @@ angular.module('gkClientIndex.services', [])
                 };
                 var allOpt = {
                     'goto': {
-                        key:'goto',
+                        key: 'goto',
                         name: '位置',
                         index: 0,
                         icon: 'icon_location',
@@ -3009,13 +2997,13 @@ angular.module('gkClientIndex.services', [])
                             var mountId = GKFileList.getOptFileMountId(file);
                             var fullpath = file.fullpath;
                             var upPath = Util.String.dirName(fullpath);
-                            $timeout(function(){
+                            $timeout(function () {
                                 GKPath.gotoFile(mountId, upPath, fullpath);
                             })
                         }
                     },
                     'open_with': {
-                        key:'open_with',
+                        key: 'open_with',
                         name: '打开方式',
                         index: 0,
                         icon: 'icon_open_with',
@@ -3023,7 +3011,7 @@ angular.module('gkClientIndex.services', [])
                         items: {}
                     },
                     'new_file': {
-                        key:'new_file',
+                        key: 'new_file',
                         name: '新建',
                         className: "new_folder",
                         icon: 'icon_newfolder',
@@ -3034,7 +3022,7 @@ angular.module('gkClientIndex.services', [])
                                 index: 0,
                                 className: "new_folder",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     if (arguments.length <= 1) {
@@ -3053,7 +3041,7 @@ angular.module('gkClientIndex.services', [])
                                 index: 1,
                                 className: "create",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     GKModal.createTeamFolder($scope.mountId, '', 1);
@@ -3064,19 +3052,19 @@ angular.module('gkClientIndex.services', [])
                                 index: 2,
                                 className: "sync_folder",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     var mountId = $scope.mountId;
                                     var fullpath = $rootScope.PAGE_CONFIG.file.fullpath;
-                                    if($rootScope.PAGE_CONFIG.file.syncpath){
+                                    if ($rootScope.PAGE_CONFIG.file.syncpath) {
                                         alert('不能在已同步的目录中再创建同步文件夹');
                                         return;
                                     }
                                     var localUri = '', defaultName = '';
-                                   gkClientInterface.selectPath({
+                                    gkClientInterface.selectPath({
                                         disable_root: 1
-                                    },function(re){
+                                    }, function (re) {
                                         localUri = re.path;
                                         if (!localUri) {
                                             return;
@@ -3103,7 +3091,7 @@ angular.module('gkClientIndex.services', [])
                                 index: 3,
                                 className: "new_doc_file",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     if (arguments.length <= 1) {
@@ -3123,7 +3111,7 @@ angular.module('gkClientIndex.services', [])
                                 index: 4,
                                 className: "new_ppt_file",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     if (arguments.length <= 1) {
@@ -3143,7 +3131,7 @@ angular.module('gkClientIndex.services', [])
                                 index: 5,
                                 className: "new_xls_file",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     if (arguments.length <= 1) {
@@ -3163,7 +3151,7 @@ angular.module('gkClientIndex.services', [])
                                 index: 6,
                                 className: "new_txt_file",
                                 callback: function () {
-                                    if(!checkCreate()){
+                                    if (!checkCreate()) {
                                         return;
                                     }
                                     if (arguments.length <= 1) {
@@ -3181,7 +3169,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'manage': {
-                        key:'manage',
+                        key: 'manage',
                         index: 4,
                         name: '管理',
                         icon: 'icon_setting',
@@ -3191,7 +3179,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'clear_trash': {
-                        key:'clear_trash',
+                        key: 'clear_trash',
                         index: 5,
                         name: '清空回收站',
                         icon: 'icon_del',
@@ -3201,7 +3189,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'revert': {
-                        key:'revert',
+                        key: 'revert',
                         index: 6,
                         name: '还原',
                         icon: 'icon_recover',
@@ -3230,51 +3218,51 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'del_completely': {
-                        key:'del_completely',
+                        key: 'del_completely',
                         index: 20,
                         name: '彻底删除',
                         className: "del_completely",
                         icon: 'icon_disable',
                         callback: function () {
-                                if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete_com')){
-                                    alert('你没有权限彻底删除当前云库下的文件或文件夹');
-                                    return;
+                            if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_delete_com')) {
+                                alert('你没有权限彻底删除当前云库下的文件或文件夹');
+                                return;
+                            }
+                            var fullpaths = [];
+                            var hasDir = false;
+                            angular.forEach(selectedFile, function (value) {
+                                if (value.dir == 1) {
+                                    hasDir = true;
                                 }
-                                var fullpaths = [];
-                                var hasDir = false;
-                                angular.forEach(selectedFile, function (value) {
-                                    if(value.dir==1){
-                                        hasDir = true;
-                                    }
-                                    fullpaths.push(value.dir == 1 ? value.fullpath + '/' : value.fullpath);
-                                });
-                                var msg;
-                                if(selectedFile.length ==1){
-                                    msg = '你确定要删除这个文件'+(hasDir?'夹':'')+'？';
-                                }else{
-                                    msg = '你确定要删除这'+selectedFile.length+'个文件'+(hasDir?'和文件夹':'')+'？';
-                                }
-                                if(!confirm(msg)){
-                                    return;
-                                }
-                                GKApi.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths).success(function () {
-                                    $scope.$apply(function(){
-                                        angular.forEach(selectedFile, function (value) {
-                                            angular.forEach($scope.fileData, function (file, key) {
-                                                if (value == file) {
-                                                    $scope.fileData.splice(key, 1);
-                                                }
-                                            })
-                                        });
-                                        GKFileList.unSelectAll();
-                                    })
-                                }).error(function () {
-
+                                fullpaths.push(value.dir == 1 ? value.fullpath + '/' : value.fullpath);
+                            });
+                            var msg;
+                            if (selectedFile.length == 1) {
+                                msg = '你确定要删除这个文件' + (hasDir ? '夹' : '') + '？';
+                            } else {
+                                msg = '你确定要删除这' + selectedFile.length + '个文件' + (hasDir ? '和文件夹' : '') + '？';
+                            }
+                            if (!confirm(msg)) {
+                                return;
+                            }
+                            GKApi.delCompletely($rootScope.PAGE_CONFIG.mount.mount_id, fullpaths).success(function () {
+                                $scope.$apply(function () {
+                                    angular.forEach(selectedFile, function (value) {
+                                        angular.forEach($scope.fileData, function (file, key) {
+                                            if (value == file) {
+                                                $scope.fileData.splice(key, 1);
+                                            }
+                                        })
                                     });
+                                    GKFileList.unSelectAll();
+                                })
+                            }).error(function () {
+
+                            });
                         }
                     },
                     'sync': {
-                        key:'sync',
+                        key: 'sync',
                         index: 8,
                         name: '同步',
                         className: "sync",
@@ -3284,7 +3272,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'unsync': {
-                        key:'unsync',
+                        key: 'unsync',
                         index: 9,
                         name: '取消同步',
                         className: "unsync",
@@ -3294,7 +3282,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'paste': {
-                        key:'paste',
+                        key: 'paste',
                         index: 10,
                         name: '粘贴',
                         className: "paste",
@@ -3305,77 +3293,77 @@ angular.module('gkClientIndex.services', [])
                                 alert('不能在当前路径添加文件');
                                 return;
                             }
-                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
+                            if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_write')) {
                                 alert('你没有权限将文件或文件夹粘贴到当前云库中');
                                 return;
                             }
                             var data = GKCilpboard.getData();
                             var targetMount = $rootScope.PAGE_CONFIG.mount;
-                             if(data && data.files && data.files.length && data.mount_id){
-                                 var target = $rootScope.PAGE_CONFIG.file.fullpath;
-                                 if (selectedFile.length == 1 && selectedFile[0].dir==1) {
-                                     target = selectedFile[0].fullpath;
-                                 }
-                                 var fromMount = GKMount.getMountById(data.mount_id);
-                                 if(!fromMount) return;
-                                 if(targetMount.storage_point != fromMount.storage_point){
-                                     alert('不同的存储点之间不能复制或移动文件');
-                                     return;
-                                 }
-                                 //清空剪切板的内容，如果不清空会跟系统的剪切板冲突
-                                 GKCilpboard.clearData();
-                                 if (data.code == 'ctrlC') {
-                                     GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
-                                         GKFileList.refreahData($scope);
-                                     }, function (error) {
-                                         GKException.handleClientException(error);
-                                     });
-                                 } else if (data.code == 'ctrlX') {
-                                     if($rootScope.PAGE_CONFIG.mount.mount_id != data.mount_id){
-                                         alert('不能将文件或文件夹剪切到另一个云库中');
-                                         return;
-                                     }
-                                     GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
-                                         GKFileList.refreahData($scope);
-                                         $scope.$broadcast('refreshOpt');
-                                     }, function (error) {
-                                         GKException.handleClientException(error);
-                                     });
-                                 }
-                             }else{
-                                 var sysData = gkClientInterface.getClipboardData();
-                                 if(!sysData || !sysData.list || !sysData.list.length){
-                                     return;
-                                 }
-                                 if($rootScope.PAGE_CONFIG.mode == 'chat'){
-                                     GKModal.selectFile(targetMount.mount_id,'请选择添加到哪个目录').result.then(function(re){
-                                         var iframe = GKFrame('ifame_chat');
-                                         if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
-                                             if(!re || re.selectedPath === undefined) return;
-                                             angular.extend(re,{
-                                                 list:sysData.list
-                                             });
-                                             iframe.gkFrameCallback('selectAddDirSuccess',re);
-                                         }
-                                     });
-                                 }else{
-                                     var params = {
-                                         parent: $rootScope.PAGE_CONFIG.file.fullpath,
-                                         type: 'save',
-                                         list: sysData.list,
-                                         mountid: targetMount.mount_id
-                                     };
-                                     GK.addFile(params).then(function () {
-                                         GKFileList.refreahData($scope);
-                                     }, function (error) {
-                                         GKException.handleClientException(error);
-                                     })
-                                 }
-                             }
+                            if (data && data.files && data.files.length && data.mount_id) {
+                                var target = $rootScope.PAGE_CONFIG.file.fullpath;
+                                if (selectedFile.length == 1 && selectedFile[0].dir == 1) {
+                                    target = selectedFile[0].fullpath;
+                                }
+                                var fromMount = GKMount.getMountById(data.mount_id);
+                                if (!fromMount) return;
+                                if (targetMount.storage_point != fromMount.storage_point) {
+                                    alert('不同的存储点之间不能复制或移动文件');
+                                    return;
+                                }
+                                //清空剪切板的内容，如果不清空会跟系统的剪切板冲突
+                                GKCilpboard.clearData();
+                                if (data.code == 'ctrlC') {
+                                    GKFileOpt.copy(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
+                                        GKFileList.refreahData($scope);
+                                    }, function (error) {
+                                        GKException.handleClientException(error);
+                                    });
+                                } else if (data.code == 'ctrlX') {
+                                    if ($rootScope.PAGE_CONFIG.mount.mount_id != data.mount_id) {
+                                        alert('不能将文件或文件夹剪切到另一个云库中');
+                                        return;
+                                    }
+                                    GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
+                                        GKFileList.refreahData($scope);
+                                        $scope.$broadcast('refreshOpt');
+                                    }, function (error) {
+                                        GKException.handleClientException(error);
+                                    });
+                                }
+                            } else {
+                                var sysData = gkClientInterface.getClipboardData();
+                                if (!sysData || !sysData.list || !sysData.list.length) {
+                                    return;
+                                }
+                                if ($rootScope.PAGE_CONFIG.mode == 'chat') {
+                                    GKModal.selectFile(targetMount.mount_id, '请选择添加到哪个目录').result.then(function (re) {
+                                        var iframe = GKFrame('ifame_chat');
+                                        if (iframe && typeof iframe.gkFrameCallback !== 'undefined') {
+                                            if (!re || re.selectedPath === undefined) return;
+                                            angular.extend(re, {
+                                                list: sysData.list
+                                            });
+                                            iframe.gkFrameCallback('selectAddDirSuccess', re);
+                                        }
+                                    });
+                                } else {
+                                    var params = {
+                                        parent: $rootScope.PAGE_CONFIG.file.fullpath,
+                                        type: 'save',
+                                        list: sysData.list,
+                                        mountid: targetMount.mount_id
+                                    };
+                                    GK.addFile(params).then(function () {
+                                        GKFileList.refreahData($scope);
+                                    }, function (error) {
+                                        GKException.handleClientException(error);
+                                    })
+                                }
+                            }
                         }
                     },
                     'cut': {
-                        key:'cut',
+                        key: 'cut',
                         index: 11,
                         name: '剪切',
                         className: "cut",
@@ -3386,21 +3374,21 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
 
-                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
+                            if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_delete')) {
                                 alert('你没有权限删除当前库下的文件或文件夹');
                                 return;
                             }
 
-					       var hasUploadFile = false;
-                            angular.forEach(selectedFile,function(file){
-                                if(file.status == 1){
+                            var hasUploadFile = false;
+                            angular.forEach(selectedFile, function (file) {
+                                if (file.status == 1) {
                                     hasUploadFile = true;
                                     return false;
                                 }
                             })
-                            if(hasUploadFile){
-                               alert('上传中的文件或文件夹不能剪切');
-                               return;
+                            if (hasUploadFile) {
+                                alert('上传中的文件或文件夹不能剪切');
+                                return;
                             }
                             var data = {
                                 code: 'ctrlX',
@@ -3411,7 +3399,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'copy': {
-                        key:'copy',
+                        key: 'copy',
                         index: 12,
                         name: '复制',
                         className: "copy",
@@ -3421,7 +3409,7 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
-                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')){
+                            if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_read')) {
                                 alert('你没有权限复制当前云库下的文件或文件夹');
                                 return;
                             }
@@ -3435,19 +3423,19 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'add': {
-                        key:'add',
+                        key: 'add',
                         index: 2,
                         name: '添加到云库',
                         className: "add",
                         icon: 'icon_download',
                         callback: function () {
-                         var mount = GKMount.getMountById($scope.mountId);
-                         if(!mount) return;
-                         if(!GKAuth.check(mount,'','file_write')){
-                             alert('你没有权限在当前云库下添加文件或文件夹');
-                             return;
-                         }
-                         gkClientInterface.addFileDialog(function(addFiles){
+                            var mount = GKMount.getMountById($scope.mountId);
+                            if (!mount) return;
+                            if (!GKAuth.check(mount, '', 'file_write')) {
+                                alert('你没有权限在当前云库下添加文件或文件夹');
+                                return;
+                            }
+                            gkClientInterface.addFileDialog(function (addFiles) {
                                 if (!addFiles || !addFiles.list || !addFiles.list.length) {
                                     return;
                                 }
@@ -3467,7 +3455,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'lock': {
-                        key:'lock',
+                        key: 'lock',
                         index: 14,
                         name: '锁定',
                         className: "lock",
@@ -3476,8 +3464,8 @@ angular.module('gkClientIndex.services', [])
                             var file = selectedFile[0];
                             var mountId = GKFileList.getOptFileMountId(file);
                             var mount = GKMount.getMountById(mountId);
-                            if(!mount) return;
-                            if(!GKAuth.check(mount,'','file_write')){
+                            if (!mount) return;
+                            if (!GKAuth.check(mount, '', 'file_write')) {
                                 alert('你没有权限锁定该文件');
                                 return;
                             }
@@ -3485,15 +3473,15 @@ angular.module('gkClientIndex.services', [])
                                 webpath: file.fullpath,
                                 mountid: mountId
                             }).then(function () {
-                                 $rootScope.$broadcast('editFileSuccess','lock', mountId,file.fullpath);
-                                },function(re){
+                                $rootScope.$broadcast('editFileSuccess', 'lock', mountId, file.fullpath);
+                            }, function (re) {
                                 GKException.handleClientException(re);
                             })
 
                         }
                     },
                     'unlock': {
-                        key:'unlock',
+                        key: 'unlock',
                         index: 15,
                         name: '解锁',
                         className: "unlock",
@@ -3509,15 +3497,15 @@ angular.module('gkClientIndex.services', [])
                                 webpath: file.fullpath,
                                 mountid: mountId
                             }).then(function () {
-                                    $rootScope.$broadcast('editFileSuccess','unlock', mountId,file.fullpath);
-                                },function(re){
+                                $rootScope.$broadcast('editFileSuccess', 'unlock', mountId, file.fullpath);
+                            }, function (re) {
                                 GKException.handleClientException(re);
                             })
 
                         }
                     },
                     'save': {
-                        key:'save',
+                        key: 'save',
                         index: 16,
                         name: '保存到本地',
                         className: "save",
@@ -3527,8 +3515,8 @@ angular.module('gkClientIndex.services', [])
                             if (!selectedFile || !selectedFile.length) {
                                 return;
                             }
-                            if(GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition)){
-                                if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')){
+                            if (GKPartition.isMountPartition($rootScope.PAGE_CONFIG.partition)) {
+                                if (!GKAuth.check($rootScope.PAGE_CONFIG.mount, '', 'file_read')) {
                                     alert('你没有权限保存该云库下的文件或文件夹');
                                     return;
                                 }
@@ -3538,10 +3526,10 @@ angular.module('gkClientIndex.services', [])
                             angular.forEach(selectedFile, function (value) {
                                 var mountId = GKFileList.getOptFileMountId(value);
                                 var mount = GKMount.getMountById(mountId);
-                                if(!mount){
+                                if (!mount) {
                                     return;
                                 }
-                                if(!GKAuth.check(mount,'','file_read')){
+                                if (!GKAuth.check(mount, '', 'file_read')) {
                                     unAuthFile = value;
                                     return false;
                                 }
@@ -3552,7 +3540,7 @@ angular.module('gkClientIndex.services', [])
                                 })
                             });
 
-                            if(unAuthFile){
+                            if (unAuthFile) {
                                 alert('你没有权限保存 ' + unAuthFile.filename);
                                 return;
                             }
@@ -3563,7 +3551,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'del': {
-                        key:'del',
+                        key: 'del',
                         index: 22,
                         name: '删除',
                         className: "del",
@@ -3582,7 +3570,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'rename': {
-                        key:'rename',
+                        key: 'rename',
                         index: 18,
                         name: '重命名',
                         className: "rename",
@@ -3591,28 +3579,28 @@ angular.module('gkClientIndex.services', [])
                             var file = selectedFile[0];
                             var mountId = GKFileList.getOptFileMountId(file);
                             var mount = GKMount.getMountById(mountId);
-                            if(!mount){
+                            if (!mount) {
                                 return;
                             }
-                            if(!GKAuth.check(mount,'','file_write')){
-                                alert('你没有权限重命名该文件'+(file.dir==1?'夹':''));
+                            if (!GKAuth.check(mount, '', 'file_write')) {
+                                alert('你没有权限重命名该文件' + (file.dir == 1 ? '夹' : ''));
                                 return;
                             }
-			                if(file.status==1){
+                            if (file.status == 1) {
                                 alert('上传中的文件或文件夹不能重命名');
                                 return;
                             }
                             if (arguments.length <= 1) {
                                 file.rename = true;
-                            }else{
-                                $scope.$apply(function(){
+                            } else {
+                                $scope.$apply(function () {
                                     file.rename = true;
                                 })
                             }
                         }
                     },
                     'link': {
-                        key:'link',
+                        key: 'link',
                         index: 19,
                         name: '分享链接',
                         className: "file_link",
@@ -3625,22 +3613,22 @@ angular.module('gkClientIndex.services', [])
                                 parentFile = $rootScope.PAGE_CONFIG.file;
                             var mountId = GKFileList.getOptFileMountId(file);
                             var mount = GKMount.getMountById(mountId);
-                            if(!mount){
+                            if (!mount) {
                                 return;
                             }
-                            if(file.status==1){
+                            if (file.status == 1) {
                                 alert('上传中的文件不能获取分享链接');
                                 return;
                             }
-                            if(!GKAuth.check(mount,'','file_link')){
+                            if (!GKAuth.check(mount, '', 'file_link')) {
                                 alert('你没有权限获取该文件的分享链接');
                                 return;
                             }
-                            GKModal.publish(mountId,file);
+                            GKModal.publish(mountId, file);
                         }
                     },
                     'view_property': {
-                        key:'view_property',
+                        key: 'view_property',
                         index: 20,
                         name: '属性',
                         className: "file_property",
@@ -3657,7 +3645,7 @@ angular.module('gkClientIndex.services', [])
                         }
                     },
                     'order_by': {
-                        key:'order_by',
+                        key: 'order_by',
                         index: 21,
                         name: '排序方式',
                         icon: 'icon_orderby',
@@ -3708,87 +3696,87 @@ angular.module('gkClientIndex.services', [])
         };
         return GKOpt
     }])
-    .factory('GKFileListView', ['$compile','$filter','$rootScope',function ($compile,$filter,$rootScope) {
+    .factory('GKFileListView', ['$compile', '$filter', '$rootScope', function ($compile, $filter, $rootScope) {
         var fileListElem = angular.element('.file_list .list_body');
         var GKFileListView = {
-            getFileItem:function(index){
-                return fileListElem.find('> div > .file_item:eq('+index+')');
+            getFileItem: function (index) {
+                return fileListElem.find('> div > .file_item:eq(' + index + ')');
             },
-            selectItem:function(index){
+            selectItem: function (index) {
                 this.getFileItem(index).addClass('selected');
             },
-            unselectItem:function(index){
+            unselectItem: function (index) {
                 this.getFileItem(index).removeClass('selected');
             },
-            hoverItem:function(index){
+            hoverItem: function (index) {
                 this.getFileItem(index).addClass('hover');
             },
-            unhoverItem:function(index){
+            unhoverItem: function (index) {
                 this.getFileItem(index).removeClass('hover');
             },
-            removeFileItem:function(index){
+            removeFileItem: function (index) {
                 this.getFileItem(index).remove();
             },
-            updateFileItem:function(index,file){
+            updateFileItem: function (index, file) {
                 var PAGE_CONFIG = $rootScope.PAGE_CONFIG;
                 var oldFileItem = this.getFileItem(index);
-                oldFileItem.data('fullpath',file.fullpath);
+                oldFileItem.data('fullpath', file.fullpath);
                 oldFileItem.find('.file_name span').prop({
-                    'title':file.fullpath
+                    'title': file.fullpath
                 }).text(file.filename);
 
                 oldFileItem.find('.file_name,.thumb,.file_icon_wrapper').prop({
-                    'title':file.fullpath
+                    'title': file.fullpath
                 });
 
-                var icon = $filter('getFileIcon')(file.filename,file.dir,0,(file.sync||PAGE_CONFIG.file.syncpath?1:0)),
-                    thumbUrl = $filter('getThumbUrl')(file.hash,file.filehash);
+                var icon = $filter('getFileIcon')(file.filename, file.dir, 0, (file.sync || PAGE_CONFIG.file.syncpath ? 1 : 0)),
+                    thumbUrl = $filter('getThumbUrl')(file.hash, file.filehash);
                 var thumbIcon = oldFileItem.find('.thumb i'),
                     fionIcon = oldFileItem.find('.file_icon_wrapper i');
 
-                angular.forEach([thumbIcon,fionIcon],function(elem){
+                angular.forEach([thumbIcon, fionIcon], function (elem) {
                     elem.removeClass();
-                    if(thumbIcon == elem){
-                        thumbIcon.addClass('file_icon128x128 '+icon);
-                    }else{
-                        fionIcon.addClass('file_icon '+icon);
+                    if (thumbIcon == elem) {
+                        thumbIcon.addClass('file_icon128x128 ' + icon);
+                    } else {
+                        fionIcon.addClass('file_icon ' + icon);
                     }
                     var thumbImg = elem.find('img');
-                    if(!thumbImg.size()){
+                    if (!thumbImg.size()) {
                         thumbImg = jQuery('<img />');
                     }
-                    thumbImg.prop('src',thumbUrl);
+                    thumbImg.prop('src', thumbUrl);
                     elem.find('s').remove();
-                    if(file.status ==1){
+                    if (file.status == 1) {
                         elem.append('<s class="icon16x16 icon_up"></s>');
-                    }else if(file.status==2){
+                    } else if (file.status == 2) {
                         elem.append('<s class="icon16x16 icon_down"></s>');
                     }
-                    if(file.lock>0){
-                        elem.append('<s class="icon16x16 '+(file.lock==1?'icon_lock_green':'icon_edit_color')+'" title="已被'+(file.lock==1?file.lock_member_name:'我')+'锁定"></s>');
+                    if (file.lock > 0) {
+                        elem.append('<s class="icon16x16 ' + (file.lock == 1 ? 'icon_lock_green' : 'icon_edit_color') + '" title="已被' + (file.lock == 1 ? file.lock_member_name : '我') + '锁定"></s>');
                     }
                 })
                 var atts = {
-                    'last_edit_time':$filter('date')(file.last_edit_time*1000,'yyyy/MM/dd HH:mm'),
-                    'file_type':$filter('getFileType')(file.filename,file.dir,file.ext),
-                    'file_size':file.dir==1?'-':$filter('bitSize')(file.filesize)
+                    'last_edit_time': $filter('date')(file.last_edit_time * 1000, 'yyyy/MM/dd HH:mm'),
+                    'file_type': $filter('getFileType')(file.filename, file.dir, file.ext),
+                    'file_size': file.dir == 1 ? '-' : $filter('bitSize')(file.filesize)
                 };
-                angular.forEach(atts,function(value,key){
-                    oldFileItem.find('.' +key+ ' span').text(value);
+                angular.forEach(atts, function (value, key) {
+                    oldFileItem.find('.' + key + ' span').text(value);
                 })
                 return oldFileItem;
             }
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth', 'GKMount', 'GKSope', function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder, GKAuth, GKMount, GKSope) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
         var fileListElem = jQuery('.file_list');
         var currentView = 'list';
         var smartFileList;
-        var lastSelectTimeout,lastUnSelectTimeout;
+        var lastSelectTimeout, lastUnSelectTimeout;
         var GKFileList = {
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
@@ -3797,11 +3785,11 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.order = asc + type;
             },
-            checkIsSelectedByIndex:function(index){
-                return selectedIndex.indexOf(index) >=0;
+            checkIsSelectedByIndex: function (index) {
+                return selectedIndex.indexOf(index) >= 0;
             },
             select: function ($scope, index, multiSelect) {
-                if(lastSelectTimeout){
+                if (lastSelectTimeout) {
                     $timeout.cancel(lastSelectTimeout);
                 }
                 multiSelect = !angular.isDefined(multiSelect) ? false : multiSelect;
@@ -3813,15 +3801,15 @@ angular.module('gkClientIndex.services', [])
                     selectedFile.push($scope.fileData[index]);
                     selectedIndex.push(index);
                     //lastSelectTimeout = $timeout(function(){
-                        $scope.setOpts(selectedFile);
-                        GKSope.rightSidebar.setRightSidebar(selectedFile);
+                    $scope.setOpts(selectedFile);
+                    GKSope.rightSidebar.setRightSidebar(selectedFile);
                     //},0)
 
                     //$scope.$broadcast('selectedFileChange',selectedFile);
                 }
             },
             unSelect: function ($scope, index) {
-                if(lastUnSelectTimeout){
+                if (lastUnSelectTimeout) {
                     $timeout.cancel(lastUnSelectTimeout);
                 }
                 var i = selectedIndex.indexOf(index);
@@ -3830,8 +3818,8 @@ angular.module('gkClientIndex.services', [])
                     selectedIndex.splice(i, 1);
                     selectedFile.splice(i, 1);
                     //lastUnSelectTimeout = $timeout(function(){
-                       $scope.setOpts(selectedFile);
-                       GKSope.rightSidebar.setRightSidebar(selectedFile);
+                    $scope.setOpts(selectedFile);
+                    GKSope.rightSidebar.setRightSidebar(selectedFile);
                     //},0)
                     //$scope.$broadcast('selectedFileChange',selectedFile);
                 }
@@ -3873,8 +3861,8 @@ angular.module('gkClientIndex.services', [])
                 $scope.view = currentView = view;
 
             },
-            getCurrentView:function(){
-              return currentView;
+            getCurrentView: function () {
+                return currentView;
             },
             getOptFileMountId: function (file) {
                 var mountID = 0;
@@ -3890,8 +3878,8 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach($scope.fileData, function (file, key) {
                     if (value == file) {
                         $scope.fileData.splice(key, 1);
-                        if(selectedIndex.indexOf(key)>=0){
-                            context.unSelect($scope,key);
+                        if (selectedIndex.indexOf(key) >= 0) {
+                            context.unSelect($scope, key);
                         }
                     }
                 })
@@ -3903,9 +3891,9 @@ angular.module('gkClientIndex.services', [])
                 });
                 GKFileList.unSelectAll($scope);
             },
-            getPreNameByExt:function(ext){
+            getPreNameByExt: function (ext) {
                 var preName = '';
-                switch (ext){
+                switch (ext) {
                     case 'doc':
                         preName = '新建 Microsoft Word 文档';
                         break;
@@ -3924,13 +3912,13 @@ angular.module('gkClientIndex.services', [])
                 }
                 return preName;
             },
-            getDefualtNewName: function ($scope,ext) {
-                ext = angular.isDefined(ext)?ext:'';
+            getDefualtNewName: function ($scope, ext) {
+                ext = angular.isDefined(ext) ? ext : '';
                 var preName = this.getPreNameByExt(ext);
                 var count = 0;
                 do {
                     var exist = false;
-                    var defaultFileName = preName + (!count ? '' : '(' + count + ')')+(ext?'.'+ext:'');
+                    var defaultFileName = preName + (!count ? '' : '(' + count + ')') + (ext ? '.' + ext : '');
                     angular.forEach($scope.fileData, function (value) {
                         if (String(value.filename) === defaultFileName) {
                             exist = true;
@@ -3943,9 +3931,9 @@ angular.module('gkClientIndex.services', [])
             },
             getFileData: function ($scope, options) {
                 var defaultOptions = {
-                    start:0
+                    start: 0
                 }
-                options = angular.extend({},defaultOptions,options);
+                options = angular.extend({}, defaultOptions, options);
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
@@ -3953,32 +3941,32 @@ angular.module('gkClientIndex.services', [])
                     var searchArr = $scope.search.split('|');
                     if (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash') {
                         source = 'api';
-                        $rootScope.$broadcast('searchStateChange','loading');
+                        $rootScope.$broadcast('searchStateChange', 'loading');
                         var fileSearch = new GKFileSearch();
                         fileSearch.conditionIncludeKeyword(searchArr[0]);
                         var mountId = 0;
-                        if(['mount','path'].indexOf(searchArr[1])>=0){
+                        if (['mount', 'path'].indexOf(searchArr[1]) >= 0) {
                             fileSearch.conditionIncludeMountId($scope.PAGE_CONFIG.mount.mount_id);
                             mountId = $scope.PAGE_CONFIG.mount.mount_id;
                         }
 
-                        if(searchArr[1] == 'path'){
+                        if (searchArr[1] == 'path') {
                             fileSearch.conditionIncludePath($scope.path);
                         }
                         var condition = fileSearch.getCondition();
                         GKApi.searchFile(condition, mountId).success(function (data) {
-                            $rootScope.$broadcast('searchStateChange','end');
+                            $rootScope.$broadcast('searchStateChange', 'end');
                             fileList = data['list'];
                             deferred.resolve(GKFile.dealFileList(fileList, source));
                         }).error(function (request) {
-                                $rootScope.$broadcast('searchStateChange','end');
-                                deferred.reject(GKException.getAjaxErrorMsg(request));
-                            });
+                            $rootScope.$broadcast('searchStateChange', 'end');
+                            deferred.reject(GKException.getAjaxErrorMsg(request));
+                        });
                     } else {
-                        var fileData = smartFileList?smartFileList:$scope.fileData;
+                        var fileData = smartFileList ? smartFileList : $scope.fileData;
                         fileList = $filter('filter')(fileData, {filename: searchArr[0]});
                         deferred.resolve(fileList);
-                        $rootScope.$broadcast('searchStateChange','end');
+                        $rootScope.$broadcast('searchStateChange', 'end');
                     }
                 } else {
                     if (GKPartition.isMountPartition($scope.partition)) {
@@ -3987,22 +3975,22 @@ angular.module('gkClientIndex.services', [])
                             option.recycle = true;
                         } else {
                             var mount = GKMount.getMountById($scope.mountId);
-                            if (mount.compare==1 && (GKPartition.isTeamFilePartition($scope.partition) || GKPartition.isEntFilePartition($scope.partition))) {
+                            if (mount.compare == 1 && (GKPartition.isTeamFilePartition($scope.partition) || GKPartition.isEntFilePartition($scope.partition))) {
                                 source = 'client';
                                 option.current = 1;
                             }
                         }
-                        GKFile.getFileList($scope.mountId, $scope.path, source,option).then(function(list){
+                        GKFile.getFileList($scope.mountId, $scope.path, source, option).then(function (list) {
                             smartFileList = list;
                             deferred.resolve(list);
-                        },function(re){
+                        }, function (re) {
                             deferred.reject(re);
                         });
                     } else {
-                        GKSmartFolder.getList($scope.filter).then(function(list){
+                        GKSmartFolder.getList($scope.filter).then(function (list) {
                             smartFileList = list;
                             deferred.resolve(list);
-                        },function(re){
+                        }, function (re) {
                             deferred.reject(re);
                         });
                     }
@@ -4022,12 +4010,12 @@ angular.module('gkClientIndex.services', [])
                     }
                     $scope.fileData = $filter('orderBy')(newFileData, order);
                     if (selectPath) {
-                        $timeout(function(){
+                        $timeout(function () {
                             GKFileList.unSelectAll($scope);
                             var selectedPathArr = selectPath.split('|');
-                            angular.forEach($scope.fileData, function (value,key) {
-                                if(selectedPathArr.indexOf(value.fullpath)>=0){
-                                    context.select($scope,key);
+                            angular.forEach($scope.fileData, function (value, key) {
+                                if (selectedPathArr.indexOf(value.fullpath) >= 0) {
+                                    context.select($scope, key);
                                 }
                             });
                         })
@@ -4036,7 +4024,7 @@ angular.module('gkClientIndex.services', [])
                     if (!$scope.fileData || !$scope.fileData.length) {
                         if ($scope.search) {
                             $scope.errorMsg = '未找到相关搜索结果';
-                        }else{
+                        } else {
                             $scope.errorMsg = '该文件夹为空';
                         }
                     }
@@ -4050,21 +4038,22 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKChat', [function () {
         var GKChat = {
-            src:'',
-            setSrc:function(mountId,fullpath,atMember){
-                mountId = angular.isDefined(mountId)?mountId:0;
-                fullpath = angular.isDefined(fullpath)?fullpath:'';
-                atMember = angular.isDefined(atMember)?atMember:''; var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
+            src: '',
+            setSrc: function (mountId, fullpath, atMember) {
+                mountId = angular.isDefined(mountId) ? mountId : 0;
+                fullpath = angular.isDefined(fullpath) ? fullpath : '';
+                atMember = angular.isDefined(atMember) ? atMember : '';
+                var UIPath = gkClientInterface.getUIPath();
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId + '&fullpath=' + encodeURIComponent(fullpath) + '&at=' + encodeURIComponent(atMember);
                 this.src = url;
             }
         };
         return GKChat;
     }])
-    .factory('GKMode', ['$rootScope','localStorageService','GKFrame','GKAuth','GKPartition','GKBrowserMode',function ($rootScope,localStorageService,GKFrame,GKAuth,GKPartition,GKBrowserMode) {
+    .factory('GKMode', ['$rootScope', 'localStorageService', 'GKFrame', 'GKAuth', 'GKPartition', 'GKBrowserMode', function ($rootScope, localStorageService, GKFrame, GKAuth, GKPartition, GKBrowserMode) {
         var key = 'gk_mode';
         var GKMode = {
-            getMode:function(){
+            getMode: function () {
                 return $rootScope.PAGE_CONFIG.mode || GKBrowserMode.getMode();
 //
 //                var re =  localStorageService.get(key);
@@ -4073,19 +4062,19 @@ angular.module('gkClientIndex.services', [])
 //                }
 //                return re;
             },
-            setMode:function(mode,partition,mount){
-                partition = partition === undefined ?$rootScope.PAGE_CONFIG.partition:partition;
-                mount = mount === undefined ? $rootScope.PAGE_CONFIG.mount:mount;
-                if(mode == 'chat' && (!GKPartition.isMountPartition(partition) || !GKAuth.check(mount,partition,'file_discuss'))){
+            setMode: function (mode, partition, mount) {
+                partition = partition === undefined ? $rootScope.PAGE_CONFIG.partition : partition;
+                mount = mount === undefined ? $rootScope.PAGE_CONFIG.mount : mount;
+                if (mode == 'chat' && (!GKPartition.isMountPartition(partition) || !GKAuth.check(mount, partition, 'file_discuss'))) {
                     mode = 'file';
                 }
                 $rootScope.PAGE_CONFIG.mode = mode;
-                if(mode == 'chat'){
-                    $rootScope.$broadcast('clearMsgTime',{orgId: mount.org_id})
+                if (mode == 'chat') {
+                    $rootScope.$broadcast('clearMsgTime', {orgId: mount.org_id})
                 }
                 var iframe = GKFrame('ifame_chat');
-                if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
-                    iframe.gkFrameCallback('changeMode',mode);
+                if (iframe && typeof iframe.gkFrameCallback !== 'undefined') {
+                    iframe.gkFrameCallback('changeMode', mode);
                 }
                 //localStorageService.add(key, mode);
             }
@@ -4094,15 +4083,15 @@ angular.module('gkClientIndex.services', [])
     }])
     .factory('GKDialog', [function () {
         return {
-            chat: function (mountId,fullpath,atMember) {
-                mountId = angular.isDefined(mountId)?mountId:0;
-                fullpath = angular.isDefined(fullpath)?fullpath:'';
-                atMember = angular.isDefined(atMember)?atMember:'';
+            chat: function (mountId, fullpath, atMember) {
+                mountId = angular.isDefined(mountId) ? mountId : 0;
+                fullpath = angular.isDefined(fullpath) ? fullpath : '';
+                atMember = angular.isDefined(atMember) ? atMember : '';
                 var UIPath = gkClientInterface.getUIPath();
-                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
+                var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId + '&fullpath=' + encodeURIComponent(fullpath) + '&at=' + encodeURIComponent(atMember);
                 var data = {
                     url: url,
-                    type:'single',
+                    type: 'single',
                     width: 900,
                     resize: 1,
                     height: 580
@@ -4157,7 +4146,7 @@ angular.module('gkClientIndex.services', [])
     ])
     .factory('GKQueue', ['$rootScope', '$interval', function ($rootScope, $interval) {
         var dealList = function (oldList, newList, type) {
-            angular.forEach(oldList, function (value,index) {
+            angular.forEach(oldList, function (value, index) {
                 var localUri = '';
                 if (['download', 'syncdownload'].indexOf(type) >= 0) {
                     localUri = value.path;
@@ -4176,7 +4165,7 @@ angular.module('gkClientIndex.services', [])
                         return false;
                     }
                 });
-                if(!has){
+                if (!has) {
                     oldList.splice(index, 1);
                 }
             });

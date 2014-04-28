@@ -2365,7 +2365,9 @@ padding: 6px 21px;
     margin-bottom: 10px;
 }
 .publish_dialog .modal-body{
-    padding: 35px 15px;
+    height: 280px;
+    overflow: hidden;
+    padding: 10px 0;
 }
 .member_info_wrapper{
     padding: 5px 0;
