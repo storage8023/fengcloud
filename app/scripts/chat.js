@@ -42,7 +42,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
 
 
         var post = function (type, content, metadata, status) {
-            topWindow.gkFrameCallback('openFileUpdateDetail',{mountId:$scope.currentSession.mountid});
             metadata = angular.isDefined(metadata) ? metadata : '';
             var now = new Date().getTime();
             var msgData = {
@@ -81,6 +80,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
+
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
@@ -99,6 +99,16 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     callback();
                 }
                 $scope.loadingHistoryMsg = false;
+
+                /*测试数据*/
+                var myData = {
+                    content: "最近15分钟内有23个文件操作",
+                    time: 1398416298496,
+                    type: "file_update"
+                }
+                chatContent.add($scope.currentMsgList, myData);
+
+                console.log($scope.currentMsgList)
             });
         };
 
@@ -132,6 +142,10 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 })
             }
         };
+
+        $scope.openFileUpdateDetail = function(){
+            topWindow.gkFrameCallback('openFileUpdateDetail',{mountId:$scope.currentSession.mountid});
+        }
 
         /**
          * 发布新消息
@@ -884,6 +898,13 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             replace: true,
             restrict: 'E',
             templateUrl: "views/chat_text.html"
+        }
+    }])
+    .directive('chatFileUpdate', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/chat_fileupdate.html"
         }
     }])
     .directive('chatExt', [function () {

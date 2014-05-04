@@ -1,0 +1,21 @@
+<div>
+<div class="avatar_wrapper"  style="margin-left:-16px;">
+    <avatar class="avatar" gk-src="images/icon/file_update_title.png"></avatar>
+</div>
+<div class="chat_main" ng-class="msg.error>0?'error':''">
+    <div class="chat_member">
+        <span class="name">文件更新</span>
+        <span class="dateline" ng-bind="msg.time|timeAgo"></span>
+    </div>
+    <div class="chat_text">
+        <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
+        <div class="chat_text_inner">
+                <span class="chat_file_update_span" ng-click="openFileUpdateDetail()">
+                     <img error-src=""  ng-src="images/icon/file_update_icon.png"/>
+                    <span chat-bind="msg.content" class="text"></span>
+                 </span>
+        </div>
+
+    </div>
+</div>
+</div>

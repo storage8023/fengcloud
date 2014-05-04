@@ -263,6 +263,22 @@ right: -20px;
     display: inline-block;
     padding:5px;
 }
+
+/*文件更新消息样式*/
+.chat_text_inner .chat_file_update_span{
+    border:1px solid #FAD28D;
+    background-color: #FCFBEC;
+    border-radius: 4px;
+    display: inline-block;
+    cursor: pointer;
+    padding:10px;
+}
+.chat_text_inner .chat_file_update_span img{
+   width:32px;
+   height: 32px;
+}
+/*===文件更新消息样式===*/
+
 .chat_item .chat_main .chat_text .chat_text_inner a{
     color: #448DE8;
     text-decoration: underline;

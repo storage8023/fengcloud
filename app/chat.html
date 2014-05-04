@@ -42,29 +42,39 @@
 
                     <div class="img-line-border" style="border:0px;border-left:2px solid #D9DDE2;margin-left:25px;">
                     <div class="chat_item c_f_after chat_item_{{msg.type}}" ng-repeat="msg in currentMsgList" ng-class="{'has_content':msg.content}">
-                        <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)" style="margin-left:-16px;">
-                            <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl:0:true}}"></avatar>
-                        </div>
-                        <div class="chat_main" ng-class="msg.error>0?'error':''">
-                            <div class="chat_member" ng-click="atMember(msg.sender_name)">
-                                <span class="name" ng-bind="msg.sender_name"></span>
-                                <span class="dateline" ng-bind="msg.time|timeAgo"></span>
+
+                        <div ng-switch="msg.type">
+                            <div ng-switch-when="file_update">
+                                <chat-file-update msg="msg"></chat-file-update>
                             </div>
-                            <div class="chat_text">
-                                <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
-                                <div ng-switch="msg.type">
-                                    <div ng-switch-when="file">
-                                        <chat-file msg="msg"></chat-file>
+                            <div ng-switch-default>
+                                <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)" style="margin-left:-17px;">
+                                    <avatar class="avatar" gk-src="{{msg.sender|getAvatarUrl:0:true}}"></avatar>
+                                </div>
+                                <div class="chat_main" ng-class="msg.error>0?'error':''">
+                                    <div class="chat_member" ng-click="atMember(msg.sender_name)">
+                                        <span class="name" ng-bind="msg.sender_name"></span>
+                                        <span class="dateline" ng-bind="msg.time|timeAgo"></span>
                                     </div>
-                                    <div ng-switch-when="ext">
-                                        <chat-ext msg="msg"></chat-ext>
-                                    </div>
-                                    <div ng-switch-default>
-                                        <chat-text msg="msg"></chat-text>
+                                    <div class="chat_text">
+                                        <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
+                                        <div ng-switch="msg.type">
+                                            <div ng-switch-when="file">
+                                                <chat-file msg="msg"></chat-file>
+                                            </div>
+                                            <div ng-switch-when="ext">
+                                                <chat-ext msg="msg"></chat-ext>
+                                            </div>
+                                            <div ng-switch-default>
+                                                <chat-text msg="msg"></chat-text>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                           </div>
                         </div>
+
+
                     </div>
                     </div>
 
