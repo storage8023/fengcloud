@@ -483,8 +483,15 @@ angular.module('GKCommon.directives', [])
             link: function ($scope, $element, $attrs) {
                 $scope.$watch($attrs['insertTo'],function (input) {
                     if(!input) return;
+                    var inputPos
+                    var insertPos = $attrs['insertPos'];
                     var val = $scope[$attrs.ngModel];
-                    var inputPos = Util.Input.getCurSor($element[0]).split('|');
+                    if(jQuery.isNumeric(insertPos)){
+                        inputPos = [insertPos,0];
+                        //$attrs['insertPos'] = undefined;
+                    }else{
+                        inputPos = Util.Input.getCurSor($element[0]).split('|');
+                    }
                     var isInsert = inputPos[1] != val.length ? 1 : 0;
                     var l = val.substr(0, inputPos[0]);
                     var r = val.substr(inputPos[1], val.length);

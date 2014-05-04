@@ -85,7 +85,7 @@
             </ul>
             <footer>
                 <span class="label label-success topic_label" ng-class="{'show':showTopicLabel}" ng-bind="topic" title="{{topic}}"></span>
-                <textarea ng-style="textareaStyle" cursor-pos="{{cursorPos}}" ng-trim="false" insert-to="insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过800字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
+                <textarea ng-style="textareaStyle" cursor-pos="{{cursorPos}}" ng-trim="false" insert-pos="{{insertPos}}" insert-to="insertStr" ng-model="postText" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right" placeholder="按Enter键发送，不超过800字" class="scrollbar post_text" ng-keydown="handleKeyDown($event,postText)"></textarea>
                 <div class="btn_wrapper">
                     <span>你已输入了{{postText.length}}个字</span>
                     <button class="btn btn-primary pull-right post_btn" ng-click="postMessage(postText)">发 送</button>
@@ -94,7 +94,7 @@
                         <input type="checkbox" class="input_checkbox" ng-disabled="!showTopicLabel" ng-model="onlyShowTopic" name="only_show_topic" id="only_show_topic" />
                         <label for="only_show_topic"> 只显示当前话题</label>
                         <span class="label label-success" ng-show="showTopicLabel" ng-click="showTopicLabel=false;textareaStyle={'text-indent':0};focusTopic=true" ng-bind="topic" title="{{topic}}"></span>
-                        <input type="text" class="input_text"  ng-show="!showTopicLabel" list="myTopic" focus-me="focusTopic" placeholder="话题..." ng-blur="handleBlur($event,topic)" ng-model="topic" />
+                        <input type="text" class="input_text" maxlength="255"  ng-show="!showTopicLabel" list="myTopic" focus-me="focusTopic" placeholder="话题..." ng-blur="handleBlur($event,topic)" ng-model="topic" />
                     </div>
 
                 </div>
