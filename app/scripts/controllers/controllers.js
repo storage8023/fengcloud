@@ -329,7 +329,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders,0);
 
-        var allTreeList = $scope.orgTreeList;
+        var allTreeList = $scope.orgTreeList.concat([]);
 
         angular.forEach($scope.entTreeList,function(val){
             allTreeList = allTreeList.concat(val.data);
