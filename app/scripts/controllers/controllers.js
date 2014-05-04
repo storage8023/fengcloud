@@ -429,6 +429,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleDrop = function (branch) {
+            if($rootScope.PAGE_CONFIG.partition && "smartfolder" == $rootScope.PAGE_CONFIG.partition){
+                alert("智能文件夹下的文件不允许此操作!");
+                return;
+            }
             var selectedFile = GKFileList.getSelectedFile();
             var file = branch.data;
             var toFullpath = file.fullpath,
