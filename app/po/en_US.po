@@ -29,9 +29,8 @@ msgid "上传中的文件不能获取分享链接"
 msgstr "cannot get share link if file is uploading"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "上传中的文件或文件夹不能剪切"
-msgstr "error,current file or folder is uploading"
+msgstr "error,current file or folder is uploading!"
 
 #: app/scripts/services/services.js
 msgid "上传中的文件或文件夹不能重命名"
@@ -66,53 +65,44 @@ msgid "你没有权限保存"
 msgstr "you have no permit to save"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限保存该云库下的文件或文件夹"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit tosave current cloud file or folder!"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限删除当前库下的文件或文件夹"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to delete current cloud file or folder!"
 
 #: app/scripts/services/services.js
 msgid "你没有权限在当前云库下添加文件或文件夹"
 msgstr "you have no permit to  add file or folder in current cloud"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限在当前云库同步文件夹"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to sync folder in current cloud"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限在当前云库新建文件或文件夹"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to  create file or folder in current cloud"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限复制当前云库下的文件或文件夹"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to  copy file or folder in current cloud"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限将文件或文件夹粘贴到当前云库中"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to  add file or folder in current cloud!"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限彻底删除当前云库下的文件或文件夹"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to  destroy this cloud files and folders"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限清空该云库的回收站"
-msgstr "you have no permit to  add file or folder in current cloud"
+msgstr "you have no permit to  clear recycle in current cloud"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你没有权限获取该文件的分享链接"
-msgstr "you have no permit to lock current file"
+msgstr "you have no permit to get share link for this file"
 
 #: app/scripts/services/services.js
 msgid "你没有权限重命名该"
@@ -123,33 +113,28 @@ msgid "你没有权限锁定该文件"
 msgstr "you have no permit to lock current file"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你确定要[0]该云库的邀请？"
-msgstr "are you to [0] this folder?"
+msgstr "are you sure to [0] this invitation？"
 
 #: app/scripts/services/services.js
 msgid "你确定要[0]该文件夹？"
 msgstr "are you to [0] this folder?"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你确定要[0]该申请？"
-msgstr "are you to [0] this folder?"
+msgstr "are you sure to [0] this folder?"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你确定要删除这[0]个?"
-msgstr "are you sure to delete [0]?"
+msgstr "are you sure to delete this [0]?"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你确定要删除这个[0]?"
-msgstr "are you sure to delete [0]?"
+msgstr "are you sure to delete [0] ？"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "你确定要取消订阅该云库？"
-msgstr "are you to [0] this folder?"
+msgstr "are you sure to unread this cloud？"
 
 #: app/scripts/services/services.js
 msgid "你确定要将 [0] 与 [1] 进行同步？"
@@ -353,19 +338,16 @@ msgid "文件名"
 msgstr "file name"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "文件名不能为空"
-msgstr "name can not be null"
+msgstr "file name can not be null！"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "文件名不能包含下列任何字符"
-msgstr "name can not container flow char"
+msgstr "file name can not contain current charecter"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "文件名的长度不能超过255个字符"
-msgstr "name's length can not lager then 15"
+msgstr "file name's length can not large than 255"
 
 #: app/scripts/services/services.js
 msgid "文件夹"
@@ -392,9 +374,8 @@ msgid "新建 Microsoft PowerPoint 演示文稿"
 msgstr "create Microsoft PowerPoint "
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "新建 Microsoft Word 文档"
-msgstr "create word"
+msgstr "create Microsoft Word"
 
 #: app/scripts/services/services.js
 msgid "新建Excel文档"
@@ -474,7 +455,7 @@ msgstr "add to cloud"
 
 #: app/scripts/services/services.js
 msgid "清空回收站"
-msgstr "clear"
+msgstr "clear recycle"
 
 #: app/scripts/services/services.js
 msgid "确定取消同步[0]吗？取消后，两个文件夹将来发生的变化不会相互同步。"
@@ -489,7 +470,6 @@ msgid "确定要清空该回收站？"
 msgstr "are you sure to clear this recycle?"
 
 #: app/scripts/services/services.js
-#, fuzzy
 msgid "管理"
 msgstr "manage"
 
