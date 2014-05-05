@@ -26,7 +26,7 @@
                         <div title="创建人：{{file.creator_member_name}}">创建人：<span
                                 ng-bind="file.creator_member_name"></span></div>
                        
-                        <div class="smart" guider="mark" guider-placement="left">
+                        <div class="smart">
                             <a href="javascript:void(0)" ng-repeat="smart in smarts"
                                ng-class="isSmartAdd(file.favorite,smart.filter)?'active':''"
                                ng-click="toggleSmart(smart.filter,file.favorite)">
