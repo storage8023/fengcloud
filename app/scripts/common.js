@@ -2285,7 +2285,8 @@ angular.module('GKCommon.filters', [])
             return dateText;
         }
     })
-    .filter('getAvatarUrl', function () {
+    .filter('getAvatarUrl', ['$rootScope',function ($rootScope) {
+        var siteDomain = $rootScope && $rootScope.siteDomain ? $rootScope.siteDomain : gkClientInterface.getSiteDomain();
         return function (memberId, isThumb, isUsername) {
             if (memberId == 0) {
                 return 'images/unknow_photo.png';
@@ -2293,13 +2294,13 @@ angular.module('GKCommon.filters', [])
             isUsername = angular.isDefined(isUsername) ? isUsername : false;
             isThumb = angular.isDefined(isThumb) ? isThumb : 1;
             if (isUsername) {
-                return gkClientInterface.getSiteDomain() + '/index/avatar?name=' + memberId + '&thumb=' + isThumb;
+                return siteDomain + '/index/avatar?name=' + memberId + '&thumb=' + isThumb;
             } else {
-                return gkClientInterface.getSiteDomain() + '/index/avatar?id=' + memberId + '&thumb=' + isThumb;
+                return siteDomain + '/index/avatar?id=' + memberId + '&thumb=' + isThumb;
             }
 
         }
-    })
+    }])
     .filter('formatFileSize', function () {
         return function (filesize, dir) {
             return dir == 1 ? '-' : Util.Number.bitSize(filesize);
@@ -2351,9 +2352,10 @@ angular.module('GKCommon.filters', [])
             return suffix;
         }
     }])
-    .filter('getThumbUrl', [function () {
+    .filter('getThumbUrl', ['$rootScope',function ($rootScope) {
+        var siteDomain = $rootScope && $rootScope.siteDomain ? $rootScope.siteDomain : gkClientInterface.getSiteDomain();
         return function (hash, filehash) {
-            return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
+            return siteDomain + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
         }
     }])
     .filter('getFileIcon', ['$filter', function ($filter) {
