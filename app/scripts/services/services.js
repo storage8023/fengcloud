@@ -254,13 +254,13 @@ angular.module('gkClientIndex.services', [])
                         if (!fullpath) {
                             angular.extend(items, {
                                 'view_dashboard': {
-                                    name: '资料',
+                                    name: GKI18n.getText(gettext('资料')),
                                     callback: function () {
                                         GKModal.teamOverview(orgId);
                                     }
                                 },
                                 'view_card': {
-                                    name: '名片',
+                                    name: GKI18n.getText(gettext('名片')),
                                     callback: function () {
                                         GKModal.teamCard(orgId);
                                     }
@@ -269,7 +269,7 @@ angular.module('gkClientIndex.services', [])
                             if(GKAuth.check(mount,'','org_member')){
                                 angular.extend(items, {
                                     'view_member': {
-                                        name: '成员',
+                                        name: GKI18n.getText(gettext('成员')),
                                         callback: function () {
                                             GKModal.teamMember(data.org_id);
                                         }
@@ -289,7 +289,7 @@ angular.module('gkClientIndex.services', [])
                             if(GKAuth.check(mount,'','file_recycle')){
                                 angular.extend(items, {
                                     'trash': {
-                                        name: '回收站',
+                                        name: GKI18n.getText(gettext('回收站')),
                                         callback: function () {
                                             $rootScope.$apply(function(){
                                                 GKPath.gotoFile(mountId, '','','','trash');
@@ -302,7 +302,7 @@ angular.module('gkClientIndex.services', [])
                             if (GKAuth.check(mount,'','org_upgrade')) {
                                 angular.extend(items, {
                                     'team_upgrade': {
-                                        name: '升级',
+                                        name: GKI18n.getText(gettext('升级')),
                                         callback: function () {
                                             var url = gkClientInterface.getUrl({
                                                 sso: 1,
@@ -316,7 +316,7 @@ angular.module('gkClientIndex.services', [])
                         } else {
                             angular.extend(items, {
                                 'view_property': {
-                                    name: '属性',
+                                    name: GKI18n.getText(gettext('属性')),
                                     callback: function () {
                                         var parentFile = {
                                             mount_id: mountId,
@@ -330,7 +330,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                 },
                                 'del': {
-                                    name: '删除',
+                                    name: GKI18n.getText(gettext('删除')),
                                     callback: function () {
                                         GKOpt.del(mountId, [fullpath]);
                                     }
@@ -344,19 +344,19 @@ angular.module('gkClientIndex.services', [])
                     if(!data.fullpath){
                         items = {
                             'view_dashboard': {
-                                name: '资料',
+                                name: GKI18n.getText(gettext('资料')),
                                 callback: function () {
                                     GKModal.teamOverview(orgId);
                                 }
                             },
                             'view_card': {
-                                name: '名片',
+                                name: GKI18n.getText(gettext('名片')),
                                 callback: function () {
                                     GKModal.teamCard(orgId);
                                 }
                             },
                             'unsubscribe': {
-                                name: '取消订阅',
+                                name: GKI18n.getText(gettext('取消订阅')),
                                 callback: function () {
                                     GKOpt.unsubscribe(orgId);
                                 }
@@ -365,7 +365,7 @@ angular.module('gkClientIndex.services', [])
                     }else{
                         items = {
                             'view_property': {
-                                name: '属性',
+                                name: GKI18n.getText(gettext('属性')),
                                 callback: function () {
                                     var parentFile = {
                                         mount_id: mountId,
@@ -384,7 +384,7 @@ angular.module('gkClientIndex.services', [])
                 } else if (GKPartition.isSmartFolderPartition(data.partition) && data.type > 0 ) {
                     items = {
                         'rename': {
-                            name: '修改名称',
+                            name: GKI18n.getText(gettext('修改名称')),
                             callback: function () {
                                 var label = $trigger.find('.tree-label');
                                 label.hide();
@@ -767,7 +767,7 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                         $scope.setFilePublic = function (open, mountId) {
-                            var msg = '你确定要' + (open == 1 ? '公开' : '取消公开') + '该文件夹？';
+                            var msg = GKI18n.getReplaceText(gettext('你确定要[0]该文件夹？'),[(open == 1 ?GKI18n.getText(gettext('公开')) : GKI18n.getText(gettext('取消公开')))]);
                             if (!confirm(msg)) {
                                 return;
                             }
@@ -797,7 +797,7 @@ angular.module('gkClientIndex.services', [])
 
                         $scope.copy = function (innerLink) {
                             gkClientInterface.copyToClipboard(innerLink);
-                            alert('已复制到剪切板');
+                            alert(GKI18n.getText(gettext('已复制到剪切板')));
                         };
 
                         $scope.goto = function (localUri) {
@@ -861,7 +861,7 @@ angular.module('gkClientIndex.services', [])
                             var new_local_uri = $scope.localURI;
                             var trimPath = Util.String.rtrim(Util.String.rtrim(new_local_uri, '/'), '\\\\');
                             var currentFilename = $scope.filename;
-                            if (!confirm('你确定要将 ' + currentFilename + ' 与 ' + trimPath + ' 进行同步？')) {
+                            if (!confirm(GKI18n.getReplaceText(gettext('你确定要将 [0] 与 [1] 进行同步？'),[ currentFilename , trimPath]))){
                                 return;
                             }
                             var params = {};
@@ -875,7 +875,7 @@ angular.module('gkClientIndex.services', [])
                                     $rootScope.$broadcast('editFileSuccess', 'sync', mountId, fullpath);
                                     $modalInstance.close();
                                 })
-                                alert('同步设置成功');
+                                alert(GKI18n.getText(gettext('同步设置成功')));
                             });
                         };
 
@@ -977,12 +977,12 @@ angular.module('gkClientIndex.services', [])
                         $scope.handleOpt = function (opt, item) {
                             if (opt.type == 'request') {
                                 if (opt.opt == 'invite_accept' || opt.opt == 'invite_reject') {
-                                    if (!confirm('你确定要' + opt.name + '该云库的邀请？')) {
+                                    if (!confirm(GKI18n.getReplaceText(gettext('你确定要[0]该云库的邀请？'),[opt.name]))) {
                                         return;
                                     }
                                 }
                                 if(opt.opt == 'apply_accept'){
-                                    if (!confirm('你确定要' + opt.name + '该申请？')) {
+                                    if (!confirm(GKI18n.getReplaceText(gettext('你确定要[0]该申请？'),[opt.name]))) {
                                         return;
                                     }
                                 }
@@ -1011,7 +1011,7 @@ angular.module('gkClientIndex.services', [])
                                 }).error(function (request) {
                                         var code = GKException.getAjaxErroCode(request);
                                         if(code==403322){
-                                            context.createTeam('加入云库');
+                                            context.createTeam(GKI18n.getText(gettext('加入云库')));
                                         }else{
                                             GKException.handleAjaxException(request);
                                         }
@@ -1046,7 +1046,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     if (!mount) {
-                                        alert('该云库已被删除或你已退出该云库');
+                                        alert(GKI18n.getText(gettext('该云库已被删除或你已退出该云库')));
                                         return;
                                     }
                                     GKPath.gotoFile(mount.mount_id, '');
@@ -1056,7 +1056,7 @@ angular.module('gkClientIndex.services', [])
                                     }
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     if (!mount) {
-                                        alert('该云库已被删除或你已退出该云库');
+                                        alert(GKI18n.getText(gettext('该云库已被删除或你已退出该云库')));
                                         return;
                                     }
                                     context.teamMember(item.org_id);
@@ -1068,7 +1068,7 @@ angular.module('gkClientIndex.services', [])
                                     var mount = GKMount.getMountByOrgId(item.org_id);
                                     var mountId = 0;
                                     if(!mount){
-                                        alert('该云库已被删除或你已退出该云库');
+                                        alert(GKI18n.getText(gettext('该云库已被删除或你已退出该云库')));
                                         return;
                                     }
                                     mountId = mount['mount_id'];
@@ -1132,7 +1132,7 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open(option);
             },
             createTeam: function (title) {
-                title = angular.isDefined(title) ? title : '创建云库';
+                title = angular.isDefined(title) ? title : GKI18n.getText(gettext('创建云库'));
                 var option = {
                     templateUrl: 'views/create_team_dialog.html',
                     windowClass: 'modal_frame create_team_dialog',
@@ -1167,7 +1167,7 @@ angular.module('gkClientIndex.services', [])
                 return $modal.open(option);
             },
             joinTeam: function () {
-                var title = '加入云库';
+                var title = GKI18n.getText(gettext('加入云库'));
                 var option = {
                     templateUrl: 'views/join_team_dialog.html',
                     windowClass: 'modal_frame join_team_dialog',
@@ -1368,7 +1368,7 @@ angular.module('gkClientIndex.services', [])
             }
         }
     }])
-    .factory('GKNews', ['localStorageService', 'GKApi', '$filter', 'GKDialog', 'GKPath', 'GKException', '$q', function (localStorageService, GKApi, $filter, GKDialog, GKPath, GKException, $q) {
+    .factory('GKNews', ['GKI18n','gettext','localStorageService', 'GKApi', '$filter', 'GKDialog', 'GKPath', 'GKException', '$q', function (GKI18n,gettext,localStorageService, GKApi, $filter, GKDialog, GKPath, GKException, $q) {
         var newsKey = 'gknews_' + gkClientInterface.getUser()['member_id'];
         var GKNews = {
             getOptsByItem: function (item) {
@@ -1377,7 +1377,7 @@ angular.module('gkClientIndex.services', [])
                     case 'file':
                         opts.push({
                             classes: 'btn-primary',
-                            text: '查看',
+                            text: GKI18n.getText(gettext('查看')),
                             click: function (item) {
                                 var orgId = item.org_id,
                                     mountId = item.mount_id,
@@ -1389,7 +1389,7 @@ angular.module('gkClientIndex.services', [])
                     case 'invite':
                         opts.push({
                             classes: 'btn-default',
-                            text: '接收',
+                            text: GKI18n.getText(gettext('接收')),
                             click: function (item) {
                                 var orgId = item.orgId;
                                 var code = item.code;
@@ -1402,7 +1402,7 @@ angular.module('gkClientIndex.services', [])
                         });
                         opts.push({
                             classes: 'btn-danger',
-                            text: '拒绝',
+                            text: GKI18n.getText(gettext('拒绝')),
                             click: function (item) {
                                 GKApi.teamInviteReject(orgId, code).success(function () {
 
@@ -1414,7 +1414,7 @@ angular.module('gkClientIndex.services', [])
                     case 'accepted':
                         opts.push({
                             classes: 'btn-primary',
-                            text: '查看',
+                            text: GKI18n.getText(gettext('查看')),
                             click: function (item) {
                                 GKDialog.openTeamMember();
                             }
@@ -1422,7 +1422,7 @@ angular.module('gkClientIndex.services', [])
                     case 'join_success':
                         opts.push({
                             classes: 'btn-primary',
-                            text: '查看',
+                            text: GKI18n.getText(gettext('查看')),
                             click: function (item) {
                                 var orgId = item.org_id,
                                     mountId = item.mount_id,
@@ -1433,7 +1433,7 @@ angular.module('gkClientIndex.services', [])
                     case 'new_device':
                         opts.push({
                             classes: 'btn-primary',
-                            text: '查看',
+                            text: GKI18n.getText(gettext('查看')),
                             click: function (item) {
                                 GKDialog.openSetting('device');
                             }
@@ -1441,7 +1441,7 @@ angular.module('gkClientIndex.services', [])
                     case 'product':
                         opts.push({
                             classes: 'btn-primary',
-                            text: '查看',
+                            text: GKI18n.getText(gettext('查看')),
                             click: function (item) {
                                 var url = item.url;
                                 url = gkClientInterface.getUrl({
@@ -1465,11 +1465,11 @@ angular.module('gkClientIndex.services', [])
                 angular.forEach(news, function (value) {
                     var date = value.date;
                     //value.opts = context.getOptsByItem(value);
-                    var dateText = $filter('date')(value.dateline * 1000, 'yyyy年M月d日');
+                    var dateText = $filter('date')(value.dateline * 1000, GKI18n.getText(gettext('yyyy年M月d日')));
                     if (date == today) {
-                        dateText = '今天，' + $filter('date')(now, 'yyyy年M月d日');
+                        dateText = GKI18n.getText(gettext('今天'))+"，" + $filter('date')(now, GKI18n.getText(gettext('yyyy年M月d日')));
                     } else if (date == yesterday) {
-                        dateText = '昨天，' + $filter('date')(yesterdayTimestamp, 'yyyy年M月d日');
+                        dateText = GKI18n.getText(gettext('昨天'))+"，" + $filter('date')(yesterdayTimestamp, GKI18n.getText(gettext('yyyy年M月d日')));
                     }
                     var existClassifyItem = context.getClassifyItemByDate(date, classifyNews);
                     if (!existClassifyItem) {
@@ -2175,25 +2175,25 @@ angular.module('gkClientIndex.services', [])
         };
         return GKPartition;
     }])
-    .factory('GKFile', ['FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException','$rootScope','$filter', function (FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException,$rootScope,$filter) {
+    .factory('GKFile', ['GKI18n','gettext','FILE_SORTS', 'GKPartition', 'GKFilter', '$q', 'GKApi', 'GKException','$rootScope','$filter', function (GKI18n,gettext,FILE_SORTS, GKPartition, GKFilter, $q, GKApi, GKException,$rootScope,$filter) {
         var GKFile = {
             checkFilename: function (filename) {
                 if (!filename.length) {
-                    alert('文件名不能为空');
+                    alert(GKI18n.getText(gettext('文件名不能为空')));
                     return false;
                 }
                 var reg = /\/|\\|\:|\*|\?|\"|<|>|\|/;
                 if (reg.test(filename)) {
-                    alert('文件名不能包含下列任何字符： / \\ : * ? " < > |');
+                    alert(GKI18n.getText(gettext('文件名不能包含下列任何字符'))+'： / \\ : * ? " < > |');
                     return false;
                 }
                 if (filename.length > 255) {
-                    alert('文件名的长度不能超过255个字符');
+                    alert(GKI18n.getText(gettext('文件名的长度不能超过255个字符')));
                     return false;
                 }
                 var lastStr = filename.slice(filename.length-1);
                 if(lastStr === '.'){
-                    alert('无效的文件名');
+                    alert(GKI18n.getText(gettext('无效的文件名')));
                     return;
                 }
                 return true;
@@ -2328,7 +2328,7 @@ angular.module('gkClientIndex.services', [])
             },
             getTrashNode: function (mount_id, partition) {
                 var node = {
-                    label: '回收站',
+                    label: GKI18n.getText(gettext('回收站')),
                     isParent: false,
                     dropAble: false,
                     data: {
@@ -2504,31 +2504,31 @@ angular.module('gkClientIndex.services', [])
              * @param dir
              */
             getFileType: function (type, dir) {
-                return dir ? '文件夹' : GKFile.getFileTypeName(type);
+                return dir ? GKI18n.getText(gettext('文件夹')) : GKFile.getFileTypeName(type);
             },
             getFileTypeName: function (type) {
                 var typeName;
                 switch (type) {
                     case 'movie':
-                        typeName = '视频';
+                        typeName = GKI18n.getText(gettext('视频'));
                         break;
                     case 'music':
-                        typeName = '音频';
+                        typeName = GKI18n.getText(gettext('音频'));
                         break;
                     case 'image':
-                        typeName = '图像';
+                        typeName = GKI18n.getText(gettext('图像'));
                         break;
                     case 'document':
-                        typeName = '文档';
+                        typeName = GKI18n.getText(gettext('文档'));
                         break;
                     case 'compress':
-                        typeName = '压缩文件';
+                        typeName = GKI18n.getText(gettext('压缩文件'));
                         break;
                     case 'execute':
-                        typeName = '可执行文件';
+                        typeName = GKI18n.getText(gettext('可执行文件'));
                         break;
                     default:
-                        typeName = '文件';
+                        typeName = GKI18n.getText(gettext('文件'));
                         break;
                 }
                 return typeName;
@@ -2851,7 +2851,7 @@ angular.module('gkClientIndex.services', [])
                     return;
                 }
                 if(!GKAuth.check(mount,'','file_delete')){
-                    alert('你没有权限删除当前库下的文件或文件夹');
+                    alert(GKI18n.getText(gettext('你没有权限删除当前库下的文件或文件夹')));
                     return;
                 }
                 var files = [];
@@ -2864,7 +2864,7 @@ angular.module('gkClientIndex.services', [])
                     list: files,
                     mountid: mountId
                 };
-                var confirmMsg = '确定要删除' + (fullpathes.length == 1 ? '“' + Util.String.baseName(fullpathes[0]) + '”' : '这' + fullpathes.length + '个文件（夹）') + '吗?';
+                var confirmMsg = GKI18n.getReplaceText(gettext('确定要删除[0]吗?'),[(fullpathes.length == 1) ? '“' + Util.String.baseName(fullpathes[0]) + '”' :GKI18n.getReplaceText(gettext('这[0]个文件（夹）'),[fullpathes.length])]);
                 if (!confirm(confirmMsg)) {
                     return;
                 }
@@ -2875,7 +2875,7 @@ angular.module('gkClientIndex.services', [])
                 });
             },
             unsubscribe: function (org_id) {
-                if (!confirm('你确定要取消订阅该云库？')) {
+                if (!confirm(GKI18n.getText(gettext('你确定要取消订阅该云库？')))) {
                     return;
                 }
                 GKApi.teamQuit(org_id).success(function () {
@@ -2892,10 +2892,10 @@ angular.module('gkClientIndex.services', [])
                 var mount = GKMount.getMountById(mountId);
                 if(!mount) return;
                 if(!GKAuth.check(mount,'','file_delete_com')){
-                    alert('你没有权限清空该云库的回收站');
+                    alert(GKI18n.getText(gettext('你没有权限清空该云库的回收站')));
                     return;
                 }
-                if (!confirm('确定要清空该回收站？')) {
+                if (!confirm(GKI18n.getText(gettext('确定要清空该回收站？')))) {
                     return;
                 }
                 GKApi.clear(mountId).success(function () {
@@ -2974,7 +2974,7 @@ angular.module('gkClientIndex.services', [])
                         file = $rootScope.PAGE_CONFIG.file;
                     }
                     if (isSync) { //取消同步
-                        if (!confirm('确定取消同步"' + file.filename + '" 吗？取消后，两个文件夹将来发生的变化不会相互同步。')) {
+                        if (!confirm(GKI18n.getReplaceText(gettext('确定取消同步[0]吗？取消后，两个文件夹将来发生的变化不会相互同步。'),[file.filename]))) {
                             return;
                         }
                         params = {
@@ -2986,7 +2986,7 @@ angular.module('gkClientIndex.services', [])
                         });
                     } else {
                         if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
-                            alert('你没有权限在当前云库同步文件夹');
+                            alert(GKI18n.getText(gettext('你没有权限在当前云库同步文件夹')));
                             return;
                         }
                         GKModal.sync($rootScope.PAGE_CONFIG.mount.mount_id, file.fullpath);
@@ -3005,7 +3005,7 @@ angular.module('gkClientIndex.services', [])
                 }
                 var checkCreate = function(){
                     if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
-                        alert('你没有权限在当前云库新建文件或文件夹');
+                        alert(GKI18n.getText(gettext('你没有权限在当前云库新建文件或文件夹')));
                         return false;
                     }
                     return true;
@@ -3013,7 +3013,7 @@ angular.module('gkClientIndex.services', [])
                 var allOpt = {
                     'goto': {
                         key:'goto',
-                        name: '位置',
+                        name: GKI18n.getText(gettext('位置')),
                         index: 0,
                         icon: 'icon_location',
                         className: "goto",
@@ -3029,7 +3029,7 @@ angular.module('gkClientIndex.services', [])
                     },
                     'open_with': {
                         key:'open_with',
-                        name: '打开方式',
+                        name: GKI18n.getText(gettext('打开方式')),
                         index: 0,
                         icon: 'icon_open_with',
                         className: "open_with",
@@ -3196,7 +3196,7 @@ angular.module('gkClientIndex.services', [])
                     'manage': {
                         key:'manage',
                         index: 4,
-                        name: '管理',
+                        name: GKI18n.getText(gettext('管理')),
                         icon: 'icon_setting',
                         className: "manage",
                         callback: function () {
@@ -3206,7 +3206,7 @@ angular.module('gkClientIndex.services', [])
                     'clear_trash': {
                         key:'clear_trash',
                         index: 5,
-                        name: '清空回收站',
+                        name: GKI18n.getText(gettext('清空回收站')),
                         icon: 'icon_del',
                         className: "clear_trash",
                         callback: function () {
@@ -3216,7 +3216,7 @@ angular.module('gkClientIndex.services', [])
                     'revert': {
                         key:'revert',
                         index: 6,
-                        name: '还原',
+                        name: GKI18n.getText(gettext('还原')),
                         icon: 'icon_recover',
                         className: "revert",
                         callback: function () {
@@ -3245,12 +3245,12 @@ angular.module('gkClientIndex.services', [])
                     'del_completely': {
                         key:'del_completely',
                         index: 20,
-                        name: '彻底删除',
+                        name: GKI18n.getText(gettext('彻底删除')),
                         className: "del_completely",
                         icon: 'icon_disable',
                         callback: function () {
                                 if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete_com')){
-                                    alert('你没有权限彻底删除当前云库下的文件或文件夹');
+                                    alert(GKI18n.getText(gettext('你没有权限彻底删除当前云库下的文件或文件夹')));
                                     return;
                                 }
                                 var fullpaths = [];
@@ -3263,9 +3263,9 @@ angular.module('gkClientIndex.services', [])
                                 });
                                 var msg;
                                 if(selectedFile.length ==1){
-                                    msg = '你确定要删除这个文件'+(hasDir?'夹':'')+'？';
+                                    msg = GKI18n.getReplaceText(gettext('你确定要删除这个[0]?'),[(hasDir?GKI18n.getText(gettext('文件夹')):GKI18n.getText(gettext('文件')))]);
                                 }else{
-                                    msg = '你确定要删除这'+selectedFile.length+'个文件'+(hasDir?'和文件夹':'')+'？';
+                                    msg = GKI18n.getReplaceText(gettext('你确定要删除这[0]个?'),[(hasDir?GKI18n.getText(gettext('文件夹')):GKI18n.getText(gettext('文件')))]);
                                 }
                                 if(!confirm(msg)){
                                     return;
@@ -3299,7 +3299,7 @@ angular.module('gkClientIndex.services', [])
                     'unsync': {
                         key:'unsync',
                         index: 9,
-                        name: '取消同步',
+                        name: GKI18n.getText(gettext('取消同步')),
                         className: "unsync",
                         icon: 'icon_disable',
                         callback: function () {
@@ -3315,11 +3315,11 @@ angular.module('gkClientIndex.services', [])
                         accesskeyText: context.getAccessKey('paste'),
                         callback: function () {
                             if (GKPartition.isSmartFolderPartition($rootScope.PAGE_CONFIG.partition) || GKPartition.isSubscribePartition($rootScope.PAGE_CONFIG.partition) || $scope.filter == 'trash') {
-                                alert('不能在当前路径添加文件');
+                                alert(GKI18n.getText(gettext('不能在当前路径添加文件')));
                                 return;
                             }
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_write')){
-                                alert('你没有权限将文件或文件夹粘贴到当前云库中');
+                                alert(GKI18n.getText(gettext('你没有权限将文件或文件夹粘贴到当前云库中')));
                                 return;
                             }
                             var data = GKCilpboard.getData();
@@ -3332,7 +3332,7 @@ angular.module('gkClientIndex.services', [])
                                  var fromMount = GKMount.getMountById(data.mount_id);
                                  if(!fromMount) return;
                                  if(targetMount.storage_point != fromMount.storage_point){
-                                     alert('不同的存储点之间不能复制或移动文件');
+                                     alert(GKI18n.getText(gettext('不同的存储点之间不能复制或移动文件')));
                                      return;
                                  }
                                  //清空剪切板的内容，如果不清空会跟系统的剪切板冲突
@@ -3345,7 +3345,7 @@ angular.module('gkClientIndex.services', [])
                                      });
                                  } else if (data.code == 'ctrlX') {
                                      if($rootScope.PAGE_CONFIG.mount.mount_id != data.mount_id){
-                                         alert('不能将文件或文件夹剪切到另一个云库中');
+                                         alert(GKI18n.getText(gettext('不能将文件或文件夹剪切到另一个云库中')));
                                          return;
                                      }
                                      GKFileOpt.move(target, $rootScope.PAGE_CONFIG.mount.mount_id, data.files, data.mount_id).then(function () {
@@ -3361,7 +3361,7 @@ angular.module('gkClientIndex.services', [])
                                      return;
                                  }
                                  if($rootScope.PAGE_CONFIG.mode == 'chat'){
-                                     GKModal.selectFile(targetMount.mount_id,'请选择添加到哪个目录').result.then(function(re){
+                                     GKModal.selectFile(targetMount.mount_id,GKI18n.getText(gettext('请选择添加到哪个目录'))).result.then(function(re){
                                          var iframe = GKFrame('ifame_chat');
                                          if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
                                              if(!re || re.selectedPath === undefined) return;
@@ -3400,7 +3400,7 @@ angular.module('gkClientIndex.services', [])
                             }
 
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
-                                alert('你没有权限删除当前库下的文件或文件夹');
+                                alert(GKI18n.getText(gettext('你没有权限删除当前库下的文件或文件夹')));
                                 return;
                             }
 
@@ -3412,7 +3412,7 @@ angular.module('gkClientIndex.services', [])
                                 }
                             })
                             if(hasUploadFile){
-                               alert('上传中的文件或文件夹不能剪切');
+                               alert(GKI18n.getText(gettext('上传中的文件或文件夹不能剪切')));
                                return;
                             }
                             var data = {
@@ -3435,7 +3435,7 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')){
-                                alert('你没有权限复制当前云库下的文件或文件夹');
+                                alert(GKI18n.getText(gettext('你没有权限复制当前云库下的文件或文件夹')));
                                 return;
                             }
                             var data = {
@@ -3515,7 +3515,7 @@ angular.module('gkClientIndex.services', [])
                             var file = selectedFile[0];
                             var mountId = GKFileList.getOptFileMountId(file);
                             if (file.lock_member_id != $rootScope.PAGE_CONFIG.user.member_id) {
-                                alert(file.lock_member_name + ' 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 ' + file.lock_member_name + ' 先将其解锁。');
+                                alert(GKI18n.getReplaceText(gettext("[0] 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 [1] 先将其解锁。"),[file.lock_member_name,file.lock_member_name]));
                                 return;
                             }
                             GK.unlock({
@@ -3642,11 +3642,11 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
                             if(file.status==1){
-                                alert('上传中的文件不能获取分享链接');
+                                alert(GKI18n.getText(gettext('上传中的文件不能获取分享链接')));
                                 return;
                             }
                             if(!GKAuth.check(mount,'','file_link')){
-                                alert('你没有权限获取该文件的分享链接');
+                                alert(GKI18n.getText(gettext('你没有权限获取该文件的分享链接')));
                                 return;
                             }
                             GKModal.publish(mountId,file);
@@ -3721,7 +3721,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKOpt
     }])
-    .factory('GKFileListView', ['$compile','$filter','$rootScope',function ($compile,$filter,$rootScope) {
+    .factory('GKFileListView', ['GKI18n','gettext','$compile','$filter','$rootScope',function (GKI18n,gettext,$compile,$filter,$rootScope) {
         var fileListElem = angular.element('.file_list .list_body');
         var GKFileListView = {
             getFileItem:function(index){
@@ -3778,7 +3778,7 @@ angular.module('gkClientIndex.services', [])
                         elem.append('<s class="icon16x16 icon_down"></s>');
                     }
                     if(file.lock>0){
-                        elem.append('<s class="icon16x16 '+(file.lock==1?'icon_lock_green':'icon_edit_color')+'" title="已被'+(file.lock==1?file.lock_member_name:'我')+'锁定"></s>');
+                        elem.append('<s class="icon16x16 '+(file.lock==1?'icon_lock_green':'icon_edit_color')+'" title="'+GKI18n.getReplaceText(gettext("已被[0]锁定"),[(file.lock==1?file.lock_member_name:GKI18n.getText(gettext('我')))])+'"></s>');
                     }
                 })
                 var atts = {

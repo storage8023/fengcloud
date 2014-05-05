@@ -1644,7 +1644,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             sideBarData.tip = $rootScope.PAGE_CONFIG.mount.org_description || '';
             sideBarData.menus = [];
             if (GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)) {
-                sideBarData.atrrHtml = '成员' + $rootScope.PAGE_CONFIG.mount.member_count + '人';
+                sideBarData.atrrHtml = GKI18n.getReplaceText(gettext('成员[0]人'),[$rootScope.PAGE_CONFIG.mount.member_count]);
             }
             return sideBarData;
         };

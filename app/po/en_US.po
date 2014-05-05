@@ -13,12 +13,53 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: app/scripts/services/services.js
+msgid ""
+"[0] 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 [1] 先"
+"将其解锁。"
+msgstr ""
+"this file is locked by [0] and you can view it, you must let [1] to unlock "
+"it if you need modify it!"
+
+#: app/scripts/services/services.js
+msgid "yyyy年M月d日"
+msgstr "yyyy-MM-dd"
+
+#: app/scripts/services/services.js
+msgid "上传中的文件不能获取分享链接"
+msgstr "cannot get share link if file is uploading"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "上传中的文件或文件夹不能剪切"
+msgstr "error,current file or folder is uploading"
+
+#: app/scripts/services/services.js
 msgid "上传中的文件或文件夹不能重命名"
 msgstr "error,current file or folder is uploading"
 
 #: app/scripts/services/services.js
+msgid "不同的存储点之间不能复制或移动文件"
+msgstr "cannot copy and move file on different cloud"
+
+#: app/scripts/services/services.js
 msgid "不能在已同步的目录中再创建同步文件夹"
 msgstr "can not create sync folder in sync folder"
+
+#: app/scripts/services/services.js
+msgid "不能在当前路径添加文件"
+msgstr "can not add file in current path"
+
+#: app/scripts/services/services.js
+msgid "不能将文件或文件夹剪切到另一个云库中"
+msgstr "can not cut file to other cloud"
+
+#: app/scripts/services/services.js
+msgid "今天"
+msgstr "today"
+
+#: app/scripts/services/services.js
+msgid "位置"
+msgstr "position"
 
 #: app/scripts/services/services.js
 msgid "你没有权限保存"
@@ -30,8 +71,48 @@ msgid "你没有权限保存该云库下的文件或文件夹"
 msgstr "you have no permit to  add file or folder in current cloud"
 
 #: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限删除当前库下的文件或文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
 msgid "你没有权限在当前云库下添加文件或文件夹"
 msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限在当前云库同步文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限在当前云库新建文件或文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限复制当前云库下的文件或文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限将文件或文件夹粘贴到当前云库中"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限彻底删除当前云库下的文件或文件夹"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限清空该云库的回收站"
+msgstr "you have no permit to  add file or folder in current cloud"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你没有权限获取该文件的分享链接"
+msgstr "you have no permit to lock current file"
 
 #: app/scripts/services/services.js
 msgid "你没有权限重命名该"
@@ -42,14 +123,55 @@ msgid "你没有权限锁定该文件"
 msgstr "you have no permit to lock current file"
 
 #: app/scripts/services/services.js
+#, fuzzy
+msgid "你确定要[0]该云库的邀请？"
+msgstr "are you to [0] this folder?"
+
+#: app/scripts/services/services.js
+msgid "你确定要[0]该文件夹？"
+msgstr "are you to [0] this folder?"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你确定要[0]该申请？"
+msgstr "are you to [0] this folder?"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你确定要删除这[0]个?"
+msgstr "are you sure to delete [0]?"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你确定要删除这个[0]?"
+msgstr "are you sure to delete [0]?"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "你确定要取消订阅该云库？"
+msgstr "are you to [0] this folder?"
+
+#: app/scripts/services/services.js
+msgid "你确定要将 [0] 与 [1] 进行同步？"
+msgstr "are you sure sync [[0]] to [[1]]？"
+
+#: app/scripts/services/services.js
 msgid "保存到本地"
 msgstr "save to location"
+
+#: app/scripts/services/services.js
+msgid "修改名称"
+msgstr "modify name"
+
+#: app/scripts/services/services.js
+msgid "公开"
+msgstr "open"
 
 #: app/scripts/services/services.js
 msgid "分享链接"
 msgstr "share link"
 
-#: app/views/member.html
+#: app/views/member.html app/scripts/services/services.js
 msgid "创建云库"
 msgstr "create cloud"
 
@@ -73,13 +195,33 @@ msgstr "goto"
 msgid "剪切"
 msgstr "Cut"
 
-#: app/views/member.html
+#: app/views/member.html app/scripts/services/services.js
 msgid "加入云库"
 msgstr "join cloud"
 
-#: app/index.html
+#: app/index.html app/scripts/services/services.js
 msgid "升级"
 msgstr "upgrade"
+
+#: app/scripts/services/services.js
+msgid "压缩文件"
+msgstr "zip file"
+
+#: app/scripts/services/services.js
+msgid "取消公开"
+msgstr "closed"
+
+#: app/scripts/services/services.js
+msgid "取消同步"
+msgstr "remove sync"
+
+#: app/scripts/services/services.js
+msgid "取消订阅"
+msgstr "unregisted"
+
+#: app/scripts/services/services.js
+msgid "可执行文件"
+msgstr "executable files"
 
 #: app/scripts/services/services.js
 msgid "同步"
@@ -88,6 +230,14 @@ msgstr "sync"
 #: app/index.html
 msgid "同步的文件夹"
 msgstr "sync folder"
+
+#: app/scripts/services/services.js
+msgid "同步设置成功"
+msgstr "sync success"
+
+#: app/scripts/services/services.js
+msgid "名片"
+msgstr "business card"
 
 #: app/scripts/services/services.js
 msgid "名称不能为空"
@@ -103,7 +253,11 @@ msgstr "name's length can not lager then 15"
 
 #: app/scripts/services/services.js
 msgid "回收站"
-msgstr "delete area"
+msgstr "recycle"
+
+#: app/scripts/services/services.js
+msgid "图像"
+msgstr "images"
 
 #: app/scripts/services/services.js
 msgid "复制"
@@ -121,6 +275,14 @@ msgstr "size"
 msgid "属性"
 msgstr "property"
 
+#: app/scripts/services/services.js
+msgid "已复制到剪切板"
+msgstr "already copy to clipboard"
+
+#: app/scripts/services/services.js
+msgid "已被[0]锁定"
+msgstr "locked by [0]"
+
 #: app/views/member.html
 msgid "帐号信息"
 msgstr "account"
@@ -129,7 +291,11 @@ msgstr "account"
 msgid "帐号升级"
 msgstr "upgrade account"
 
-#: app/views/nofile_right_sidebar.html
+#: app/scripts/services/services.js
+msgid "彻底删除"
+msgstr "remove"
+
+#: app/views/nofile_right_sidebar.html app/scripts/services/services.js
 msgid "成员"
 msgstr "member"
 
@@ -141,7 +307,11 @@ msgstr "members:[0]"
 msgid "成员管理"
 msgstr "manage"
 
-#: app/index.html
+#: app/scripts/services/services.js
+msgid "我"
+msgstr "me"
+
+#: app/index.html app/scripts/services/services.js
 msgid "我的云库"
 msgstr "my cloud"
 
@@ -150,8 +320,20 @@ msgid "打开传输队列"
 msgstr "open transfer"
 
 #: app/scripts/services/services.js
+msgid "打开方式"
+msgstr "open by"
+
+#: app/scripts/services/services.js
+msgid "拒绝"
+msgstr "reject"
+
+#: app/scripts/services/services.js
 msgid "排序方式"
 msgstr "order list"
+
+#: app/scripts/services/services.js
+msgid "接收"
+msgstr "accept"
 
 #: app/scripts/controllers/controllers.js app/scripts/directives/directives.js
 #: app/scripts/services/services.js
@@ -171,12 +353,31 @@ msgid "文件名"
 msgstr "file name"
 
 #: app/scripts/services/services.js
+#, fuzzy
+msgid "文件名不能为空"
+msgstr "name can not be null"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "文件名不能包含下列任何字符"
+msgstr "name can not container flow char"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "文件名的长度不能超过255个字符"
+msgstr "name's length can not lager then 15"
+
+#: app/scripts/services/services.js
 msgid "文件夹"
 msgstr "folder"
 
 #: app/views/member.html
 msgid "文件模式"
 msgstr "file"
+
+#: app/scripts/services/services.js
+msgid "文档"
+msgstr "document"
 
 #: app/scripts/services/services.js
 msgid "新建"
@@ -215,6 +416,14 @@ msgstr "create folder"
 msgid "新建文本文档"
 msgstr "create txt"
 
+#: app/scripts/services/services.js
+msgid "无效的文件名"
+msgstr "invalid file name"
+
+#: app/scripts/services/services.js
+msgid "昨天"
+msgstr "yestoday"
+
 #: app/index.html
 msgid "智能文件夹"
 msgstr "folder"
@@ -243,6 +452,10 @@ msgstr "new"
 msgid "未找到相关搜索结果"
 msgstr "can not search file"
 
+#: app/scripts/services/services.js
+msgid "查看"
+msgstr "view"
+
 #: app/index.html
 msgid "正在传输"
 msgstr "transfering"
@@ -259,6 +472,27 @@ msgstr "message"
 msgid "添加到云库"
 msgstr "add to cloud"
 
+#: app/scripts/services/services.js
+msgid "清空回收站"
+msgstr "clear"
+
+#: app/scripts/services/services.js
+msgid "确定取消同步[0]吗？取消后，两个文件夹将来发生的变化不会相互同步。"
+msgstr "are you sure to remove sync [0]?"
+
+#: app/scripts/services/services.js
+msgid "确定要删除[0]吗?"
+msgstr "are you sure to delete [0]?"
+
+#: app/scripts/services/services.js
+msgid "确定要清空该回收站？"
+msgstr "are you sure to clear this recycle?"
+
+#: app/scripts/services/services.js
+#, fuzzy
+msgid "管理"
+msgstr "manage"
+
 #: app/index.html app/scripts/services/services.js
 msgid "类型"
 msgstr "catagory"
@@ -266,6 +500,10 @@ msgstr "catagory"
 #: app/scripts/services/services.js
 msgid "粘贴"
 msgstr "paste"
+
+#: app/scripts/services/services.js
+msgid "视频"
+msgstr "video"
 
 #: app/scripts/services/services.js
 msgid "解锁"
@@ -288,8 +526,28 @@ msgid "访问用户社区"
 msgstr "access to the community"
 
 #: app/scripts/services/services.js
+msgid "该云库已被删除或你已退出该云库"
+msgstr "this cloud is deleted or you are outed!"
+
+#: app/scripts/services/services.js
 msgid "该文件夹为空"
 msgstr "current folder is blank"
+
+#: app/scripts/services/services.js
+msgid "请选择添加到哪个目录"
+msgstr "please select directory"
+
+#: app/scripts/services/services.js
+msgid "资料"
+msgstr "material"
+
+#: app/scripts/services/services.js
+msgid "还原"
+msgstr "revert"
+
+#: app/scripts/services/services.js
+msgid "这[0]个文件（夹）"
+msgstr "this [0] files(folders)"
 
 #: app/scripts/services/services.js
 msgid "重命名"
@@ -298,6 +556,10 @@ msgstr "rename"
 #: app/scripts/services/services.js
 msgid "锁定"
 msgstr "lock"
+
+#: app/scripts/services/services.js
+msgid "音频"
+msgstr "music"
 
 #~ msgid "关闭帮助提示"
 #~ msgstr "close tooltips"

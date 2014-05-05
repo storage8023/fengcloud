@@ -4,11 +4,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: app/scripts/services/services.js
+msgid "[0] 已经锁定了这个文件。你只能以只读方式查看它。如果你需要修改它，请让 [1] 先将其解锁。"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "yyyy年M月d日"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "上传中的文件不能获取分享链接"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "上传中的文件或文件夹不能剪切"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "上传中的文件或文件夹不能重命名"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "不同的存储点之间不能复制或移动文件"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "不能在已同步的目录中再创建同步文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "不能在当前路径添加文件"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "不能将文件或文件夹剪切到另一个云库中"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "今天"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "位置"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -20,7 +56,39 @@ msgid "你没有权限保存该云库下的文件或文件夹"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "你没有权限删除当前库下的文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "你没有权限在当前云库下添加文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限在当前云库同步文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限在当前云库新建文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限复制当前云库下的文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限将文件或文件夹粘贴到当前云库中"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限彻底删除当前云库下的文件或文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限清空该云库的回收站"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你没有权限获取该文件的分享链接"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -32,7 +100,43 @@ msgid "你没有权限锁定该文件"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "你确定要[0]该云库的邀请？"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你确定要[0]该文件夹？"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你确定要[0]该申请？"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你确定要删除这[0]个?"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你确定要删除这个[0]?"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你确定要取消订阅该云库？"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "你确定要将 [0] 与 [1] 进行同步？"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "保存到本地"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "修改名称"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "公开"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -40,6 +144,7 @@ msgid "分享链接"
 msgstr ""
 
 #: app/views/member.html
+#: app/scripts/services/services.js
 msgid "创建云库"
 msgstr ""
 
@@ -64,11 +169,33 @@ msgid "剪切"
 msgstr ""
 
 #: app/views/member.html
+#: app/scripts/services/services.js
 msgid "加入云库"
 msgstr ""
 
 #: app/index.html
+#: app/scripts/services/services.js
 msgid "升级"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "压缩文件"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "取消公开"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "取消同步"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "取消订阅"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "可执行文件"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -77,6 +204,14 @@ msgstr ""
 
 #: app/index.html
 msgid "同步的文件夹"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "同步设置成功"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "名片"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -96,6 +231,10 @@ msgid "回收站"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "图像"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "复制"
 msgstr ""
 
@@ -112,6 +251,14 @@ msgstr ""
 msgid "属性"
 msgstr ""
 
+#: app/scripts/services/services.js
+msgid "已复制到剪切板"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "已被[0]锁定"
+msgstr ""
+
 #: app/views/member.html
 msgid "帐号信息"
 msgstr ""
@@ -120,7 +267,12 @@ msgstr ""
 msgid "帐号升级"
 msgstr ""
 
+#: app/scripts/services/services.js
+msgid "彻底删除"
+msgstr ""
+
 #: app/views/nofile_right_sidebar.html
+#: app/scripts/services/services.js
 msgid "成员"
 msgstr ""
 
@@ -130,6 +282,10 @@ msgstr ""
 
 #: app/views/nofile_right_sidebar.html
 msgid "成员管理"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "我"
 msgstr ""
 
 #: app/index.html
@@ -142,7 +298,19 @@ msgid "打开传输队列"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "打开方式"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "拒绝"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "排序方式"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "接收"
 msgstr ""
 
 #: app/scripts/controllers/controllers.js
@@ -166,11 +334,27 @@ msgid "文件名"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "文件名不能为空"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "文件名不能包含下列任何字符"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "文件名的长度不能超过255个字符"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "文件夹"
 msgstr ""
 
 #: app/views/member.html
 msgid "文件模式"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "文档"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -209,6 +393,14 @@ msgstr ""
 msgid "新建文本文档"
 msgstr ""
 
+#: app/scripts/services/services.js
+msgid "无效的文件名"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "昨天"
+msgstr ""
+
 #: app/index.html
 msgid "智能文件夹"
 msgstr ""
@@ -238,6 +430,10 @@ msgstr ""
 msgid "未找到相关搜索结果"
 msgstr ""
 
+#: app/scripts/services/services.js
+msgid "查看"
+msgstr ""
+
 #: app/index.html
 msgid "正在传输"
 msgstr ""
@@ -258,6 +454,22 @@ msgstr ""
 msgid "清空回收站"
 msgstr ""
 
+#: app/scripts/services/services.js
+msgid "确定取消同步[0]吗？取消后，两个文件夹将来发生的变化不会相互同步。"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "确定要删除[0]吗?"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "确定要清空该回收站？"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "管理"
+msgstr ""
+
 #: app/index.html
 #: app/scripts/services/services.js
 msgid "类型"
@@ -265,6 +477,10 @@ msgstr ""
 
 #: app/scripts/services/services.js
 msgid "粘贴"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "视频"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -288,7 +504,27 @@ msgid "访问用户社区"
 msgstr ""
 
 #: app/scripts/services/services.js
+msgid "该云库已被删除或你已退出该云库"
+msgstr ""
+
+#: app/scripts/services/services.js
 msgid "该文件夹为空"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "请选择添加到哪个目录"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "资料"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "还原"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "这[0]个文件（夹）"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -297,4 +533,8 @@ msgstr ""
 
 #: app/scripts/services/services.js
 msgid "锁定"
+msgstr ""
+
+#: app/scripts/services/services.js
+msgid "音频"
 msgstr ""
