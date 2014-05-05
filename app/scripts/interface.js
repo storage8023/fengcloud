@@ -333,6 +333,7 @@
         return gkClient.gSiteDomain()+'/link';
     },
     getSiteDomain:function(){
+        console.log('siteDomain');
         return gkClient.gSiteDomain();
     },
     login:function(params){

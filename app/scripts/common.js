@@ -483,8 +483,15 @@ angular.module('GKCommon.directives', [])
             link: function ($scope, $element, $attrs) {
                 $scope.$watch($attrs['insertTo'],function (input) {
                     if(!input) return;
+                    var inputPos
+                    var insertPos = $attrs['insertPos'];
                     var val = $scope[$attrs.ngModel];
-                    var inputPos = Util.Input.getCurSor($element[0]).split('|');
+                    if(jQuery.isNumeric(insertPos)){
+                        inputPos = [insertPos,0];
+                        //$attrs['insertPos'] = undefined;
+                    }else{
+                        inputPos = Util.Input.getCurSor($element[0]).split('|');
+                    }
                     var isInsert = inputPos[1] != val.length ? 1 : 0;
                     var l = val.substr(0, inputPos[0]);
                     var r = val.substr(inputPos[1], val.length);
@@ -1267,7 +1274,7 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 })
-                return myMount;
+                return myMount;n
             },
             /**
              * 获取我的云库的mount
@@ -1323,6 +1330,13 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 });
+
+                angular.forEach($scope.allTreeList, function (value, key) {
+                     if (value.data.org_id == orgId){
+                         $scope.allTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
             },
             removeTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);
@@ -1333,6 +1347,13 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 });
+                angular.forEach($scope.allTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.allTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
+
             },
             removeJoinTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);
@@ -2274,7 +2295,8 @@ angular.module('GKCommon.filters', [])
             return dateText;
         }
     })
-    .filter('getAvatarUrl', function () {
+    .filter('getAvatarUrl', ['$rootScope',function ($rootScope) {
+        var siteDomain = $rootScope && $rootScope.siteDomain ? $rootScope.siteDomain : gkClientInterface.getSiteDomain();
         return function (memberId, isThumb, isUsername) {
             if (memberId == 0) {
                 return 'images/unknow_photo.png';
@@ -2282,13 +2304,13 @@ angular.module('GKCommon.filters', [])
             isUsername = angular.isDefined(isUsername) ? isUsername : false;
             isThumb = angular.isDefined(isThumb) ? isThumb : 1;
             if (isUsername) {
-                return gkClientInterface.getSiteDomain() + '/index/avatar?name=' + memberId + '&thumb=' + isThumb;
+                return siteDomain + '/index/avatar?name=' + memberId + '&thumb=' + isThumb;
             } else {
-                return gkClientInterface.getSiteDomain() + '/index/avatar?id=' + memberId + '&thumb=' + isThumb;
+                return siteDomain + '/index/avatar?id=' + memberId + '&thumb=' + isThumb;
             }
 
         }
-    })
+    }])
     .filter('formatFileSize', function () {
         return function (filesize, dir) {
             return dir == 1 ? '-' : Util.Number.bitSize(filesize);
@@ -2340,9 +2362,10 @@ angular.module('GKCommon.filters', [])
             return suffix;
         }
     }])
-    .filter('getThumbUrl', [function () {
+    .filter('getThumbUrl', ['$rootScope',function ($rootScope) {
+        var siteDomain = $rootScope && $rootScope.siteDomain ? $rootScope.siteDomain : gkClientInterface.getSiteDomain();
         return function (hash, filehash) {
-            return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
+            return siteDomain + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
         }
     }])
     .filter('getFileIcon', ['$filter', function ($filter) {

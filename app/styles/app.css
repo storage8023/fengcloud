@@ -995,6 +995,10 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     width: 128px;
     height: 128px;
 }
+.file_list .item  .file_icon128x128 img{
+    width: 128px;
+    height: 128px;
+}
 .list_view .item .thumb{
     display: none;
 }
@@ -2361,7 +2365,9 @@ padding: 6px 21px;
     margin-bottom: 10px;
 }
 .publish_dialog .modal-body{
-    padding: 35px 15px;
+    height: 300px;
+    overflow: hidden;
+    padding: 10px 0;
 }
 .member_info_wrapper{
     padding: 5px 0;
@@ -2399,4 +2405,39 @@ padding: 6px 21px;
     padding: 15px 0;
     height: 290px;
     max-height: 290px;
+}
+
+/*讨论里面文件更新的消息点击详情dialog*/
+.chat_file_update_dialog{
+    width:500px;
+    margin-left:-250px;
+}
+.chat_file_update_dialog .modal-body{
+    padding:5px 0;
+}
+.chat_file_update_dialog .modal-body div{
+    border-top:1px solid #33393F;
+    height:42px;
+    vertical-align: middle;
+    line-height: 40px;
+    padding:0 20px;
+}
+.chat_file_update_dialog .modal-body div span img{
+    width:32px;
+    height:32px;
+    border-radius: 16px;
+}
+.chat_file_update_dialog .modal-body div button{
+    float:right;
+    background:none;
+    border: 0px;
+    margin:10px 0;
+    display: none;
+}
+.chat_file_update_dialog .modal-body div:hover{
+    background: #4D565F;
+}
+
+.chat_file_update_dialog .modal-body div:hover button{
+    display: block;
 }

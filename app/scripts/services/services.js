@@ -171,6 +171,7 @@ angular.module('gkClientIndex.services', [])
                 if (node) {
                     angular.extend(node, param);
                 }
+                return node;
             },
             findSmartNode: function (list, condition) {
                 var node = null;
@@ -488,6 +489,34 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            fileUpdateDetail:function(param){
+
+                var option = {
+                    templateUrl: 'views/file_updatemsg_dialog.html',
+                    windowClass: 'chat_file_update_dialog',
+                    controller: function ($scope,$modalInstance) {
+                        /**
+                         * 打开文件位置
+                         * @param msg
+                         */
+                        $scope.goToFile = function ($event, fullpath) {
+                            var fullpath = fullpath;
+                            window.top.gkFrameCallback('OpenMountPath', {
+                                mountid: param.mountId,
+                                webpath: fullpath
+                            });
+                            $modalInstance.dismiss('cancel');
+                            $event.stopPropagation();
+                        };
+
+                        $scope.cancel = function () {
+                            $modalInstance.dismiss('cancel');
+                        };
+                    }
+                };
+                option = angular.extend({}, defaultOption, option);
+                return $modal.open(option);
+            },
             selectFile:function(mountId,title){
                 var option = {
                     templateUrl: 'views/select_file_dialog.html',
@@ -573,37 +602,20 @@ angular.module('gkClientIndex.services', [])
             publish: function (mountId, file) {
                 var option = {
                     templateUrl: 'views/publish_dialog.html',
-                    windowClass: 'publish_dialog',
-                    controller: function ($scope,$modalInstance) {
-                        $scope.file = file;
-                        $scope.link = '';
-                        $scope.option = 1;
-                        var maxOption = 365;
-                        $scope.publish = function(file,option){
-                            if(!option || option > maxOption){
-                                alert(GKI18n.getRelaceText(gettext("失效时间为不超过[0]天的数值!"),[maxOption]));
-                                return;
-                            }
-                            var now = Math.round(new Date().getTime()/1000);
-                            var deadline = now + parseInt(option) * 86400;
-                            GKApi.publish(mountId,file.fullpath,deadline)
-                                .success(function(data){
-                                    $scope.$apply(function(){
-                                        $scope.link = data.link;
-                                    })
-                                })
-                                .error(function(reqest){
-                                    GKException.handleAjaxException(reqest);
-                                })
-                        };
-                        $scope.copy = function (innerLink) {
-                            gkClientInterface.copyToClipboard(innerLink);
-                            alert('已复制到剪切板');
-                        };
-
+                    windowClass: 'modal_frame publish_dialog',
+                    controller: function ($scope,$modalInstance,src) {
+                        $scope.url = src;
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+                    },
+                    resolve: {
+                        src: function () {
+                            return gkClientInterface.getUrl({
+                                sso: 1,
+                                url: '/mount/file_link_publish?mount_id='+mountId+'&fullpath='+file.fullpath
+                            });
+                        }
                     }
                 };
                 option = angular.extend({}, defaultOption, option);
@@ -1894,8 +1906,10 @@ angular.module('gkClientIndex.services', [])
                     path: path,
                     selectedpath: selectFile,
                     view:view,
-                    filter:filter
+                    filter:filter,
+                    entid:mount['ent_id']?mount['ent_id']:-1
                 };
+
                 if (mount) {
                     GKMode.setMode(mode,search.partition,mount);
                     $location.search(search);
@@ -2367,7 +2381,7 @@ angular.module('gkClientIndex.services', [])
                 /**
                  * 云库
                  */
-                if (value.mount_id || mountId) {
+                if (mountId || value.mount_id) {
                     var icon = '';
                     if (!value.fullpath) {
                         label = value.name;
@@ -3385,10 +3399,11 @@ angular.module('gkClientIndex.services', [])
                                 return;
                             }
 
-                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_read')||!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
-                                alert('你没有权限剪切当前云库下的文件或文件夹');
+                            if(!GKAuth.check($rootScope.PAGE_CONFIG.mount,'','file_delete')){
+                                alert('你没有权限删除当前库下的文件或文件夹');
                                 return;
                             }
+
 					       var hasUploadFile = false;
                             angular.forEach(selectedFile,function(file){
                                 if(file.status == 1){
@@ -4063,7 +4078,7 @@ angular.module('gkClientIndex.services', [])
         var key = 'gk_mode';
         var GKMode = {
             getMode:function(){
-                return GKBrowserMode.getMode();
+                return $rootScope.PAGE_CONFIG.mode || GKBrowserMode.getMode();
 //
 //                var re =  localStorageService.get(key);
 //                if(['chat','file'].indexOf(re)<0){

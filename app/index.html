@@ -104,7 +104,7 @@
                   init-selected-branch="initSelectedBranch"
                   on-drop = "handleDrop(branch)"
                   selected-branch="selectedBranch"
-                  order-by="-branch.newMsgTime"
+                  order-by="['-branch.newMsgTime']"
                   on-select="handleSelect(branch)"
                   show-msg-icon="true"
                 >
@@ -151,12 +151,7 @@
                 </li>
             </ul>
         </span>
-        <div class="popover bottom help_tip_popover" ng-class="showHelpTip?'show_tip':''">
-            <div class="arrow"></div>
-            <div class="popover-inner">
-                <div class="popover-content" translate>自动提示已关闭，点击这里可以重新开启</div>
-            </div>
-        </div>
+
     </div>
 </header>
 
@@ -208,7 +203,7 @@
                 </div>
                 <div class="scrollbar list_body"
                      ng-drop="handleSysDrop($event)"
-                     ng-mousedown="handleMouseDown($event)"
+                     ng-click="unSelectAllFile($event)"
                      ng-right-click="handleRightClick($event)"
                      ng-model="testModel"
                      scroll-load="handleScrollLoad()"
@@ -241,7 +236,7 @@
                              bo-attr
                              bo-attr-data-dir="file.dir"
                              bo-attr-data-fullpath="file.fullpath"
-                             dragable="['entfile','teamfile'].indexOf(partition)>=0 && filter !='trash' && mountReadable"
+                             dragable="['entfile','teamfile','smartfolder'].indexOf(partition)>=0 && filter !='trash' && mountReadable"
                              drag-begin="dragBegin($event,$index)"
                              drag-end="dragEnd($event,$index)"
                              dropable="file.dir==1 && !file.disableDrop && ['entfile','teamfile'].indexOf(partition)>=0"

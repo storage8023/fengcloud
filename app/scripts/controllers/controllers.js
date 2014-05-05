@@ -17,6 +17,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
     }])
     .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
         $rootScope.PAGE_CONFIG = {
+            siteDomain:gkClientInterface.getSiteDomain(),
             user: gkClientInterface.getUser(),
             file: {},
             mount: {},
@@ -99,6 +100,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKModal.teamManage(orgId);
         })
 
+        /*打开文件更新消息窗口*/
+        $scope.$on('openFileUpdateDetail',function(scope,option){
+            GKModal.fileUpdateDetail(option);
+        });
         $scope.$on('openUrl', function ($event, param) {
             var sso = Number(param.sso) || 0;
             var url = gkClientInterface.getUrl({
@@ -329,14 +334,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          */
         $scope.smartTreeList = GKFile.dealTreeData(smartFolders,0);
 
-        var allTreeList = $scope.orgTreeList;
+        var allTreeList = $scope.orgTreeList.concat([]);
 
         angular.forEach($scope.entTreeList,function(val){
             allTreeList = allTreeList.concat(val.data);
         });
-
-        //allTreeList = allTreeList.concat($scope.smartTreeList);
-
         $scope.allTreeList = allTreeList;
 
         /**
@@ -347,6 +349,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if(!$location.search().partition){
             $scope.initSelectedBranch = $scope.orgTreeList[0];
         }
+        $scope.$on('initSelectedBranch',function(){
+            $timeout(function(){
+                unSelectAllBranch();
+                $scope.allTreeList[0].newMsgTime = new Date().getTime();
+                selectBreanch($scope.allTreeList[0],$scope.allTreeList[0].data.partition,true);
+            })
+        })
 
         var unSelectAllBranch = function () {
             if ($scope.selectedBranch) {
@@ -356,6 +365,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         var selectBreanch = function (branch, partition, isListFile) {
+
             if (!angular.equals($scope.selectedBranch, branch)) {
                 branch.selected = true;
                 $scope.selectedBranch = branch;
@@ -420,6 +430,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param branch
          */
         $scope.handleDrop = function (branch) {
+            if($rootScope.PAGE_CONFIG.partition && "smartfolder" == $rootScope.PAGE_CONFIG.partition){
+                alert("智能文件夹下的文件不允许此操作!");
+                return;
+            }
             var selectedFile = GKFileList.getSelectedFile();
             var file = branch.data;
             var toFullpath = file.fullpath,
@@ -535,6 +549,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 newOrg = GKFile.dealTreeData([mount],0)[0];
                 if (GKPartition.isTeamFilePartition(partition)) {
                     $scope.orgTreeList.push(newOrg);
+                    $scope.allTreeList.push(newOrg);
                 }else if(GKPartition.isEntFilePartition(partition)){
                     var entId = mount['ent_id'];
                     if(!$scope.entTreeList[entId]){
@@ -542,7 +557,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         angular.extend($scope.entTreeList,tempData);
                     }else{
                         $scope.entTreeList[entId].data.push(newOrg);
+
                     }
+                    $scope.allTreeList.push(newOrg);
                 }
             });
         })
@@ -560,17 +577,21 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             var type = GKPartition.getPartitionByMountType(newMount['type'],newMount['ent_id']);
-            var list;
+            var list,allArrItem;
             if(GKPartition.isTeamFilePartition(type)){
                 list = $scope.orgTreeList;
+                allArrItem = $scope.allTreeList;
             }else if(GKPartition.isEntFilePartition(type)){
                 var entId = newMount['ent_id'];
                 list = $scope.entTreeList[entId]['data'];
+                allArrItem = $scope.allTreeList.entTreeList[entId]['data'];;
             }
             if(!list || !list.length) return;
+            if(!allArrItem || !allArrItem.length) return;
             var newNode = GKFile.dealTreeData([newMount], newMount['mount_id'])[0];
             $timeout(function(){
                 GKSideTree.editNode(list, newMount['mount_id'], '', newNode);
+                GKSideTree.editNode(allArrItem, newMount['mount_id'], '', newNode);
             });
             $rootScope.$broadcast('editOrgObjectSuccess',newMount);
         })
@@ -613,9 +634,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var partition = GKPartition.getPartitionByMountType(newOrg['type'],newOrg['ent_id']);
             newOrg = GKFile.dealTreeData([GKMount.addMount(newOrg)],0)[0];
-
             if (GKPartition.isTeamFilePartition(partition)) {
                 $scope.orgTreeList.push(newOrg);
+                $scope.allTreeList.push(newOrg);
             }
             unSelectAllBranch();
             selectBreanch(newOrg,partition, true);
@@ -644,7 +665,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
             var extObj = {};
             extObj[timeType] = newMsgTime;
-            GKSideTree.editNode(list, mount['mount_id'], '', extObj);
+            var node =  GKSideTree.editNode(list, mount['mount_id'], '', extObj);
+            if((node.newMsgTime > node.visitTime) && ($rootScope.PAGE_CONFIG.mode == 'file' || $rootScope.PAGE_CONFIG.mount.org_id != orgId)){
+                GKSideTree.editNode(list, mount['mount_id'], '', {
+                    showNewIcon : true
+                });
+
+            }else{
+                GKSideTree.editNode(list, mount['mount_id'], '', {
+                    showNewIcon : false
+                });
+            }
         };
 
         var setChatState = function(list){
@@ -655,9 +686,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 if(!GKAuth.check(mount,'','file_discuss')){
                     return;
                 }
-                if($rootScope.PAGE_CONFIG.mount.org_id != orgId || $rootScope.PAGE_CONFIG.mode != 'chat'){
-                    setNewMsgTime(orgId,item.time);
-                }
+                 setNewMsgTime(orgId,item.time);
                 var iframe = GKFrame('ifame_chat');
                 if(iframe && typeof iframe.gkFrameCallback !== 'undefined'){
                     iframe.gkFrameCallback('chatMessageUpdate',item);
@@ -1220,10 +1249,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         /**
-         * 监听mousedown事件
+         * unselect all file
          * @param event
          */
-        $scope.handleMouseDown = function (event) {
+        $scope.unSelectAllFile = function (event) {
             var $target = jQuery(event.target);
             if((['TEXTAREA','INPUT','BUTTON'].indexOf(event.target.nodeName))>=0){
                 return;
