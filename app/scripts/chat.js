@@ -106,9 +106,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     time: 1398416298496,
                     type: "file_update"
                 }
-                chatContent.add($scope.currentMsgList, myData);
-
-                console.log($scope.currentMsgList)
+               // chatContent.add($scope.currentMsgList, myData);
+               // console.log($scope.currentMsgList)
             });
         };
 

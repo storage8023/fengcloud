@@ -35,10 +35,6 @@ msgstr ""
 msgid "保存到本地"
 msgstr ""
 
-#: app/index.html
-msgid "关闭帮助提示"
-msgstr ""
-
 #: app/scripts/services/services.js
 msgid "分享链接"
 msgstr ""
@@ -113,10 +109,6 @@ msgid "大小"
 msgstr ""
 
 #: app/scripts/services/services.js
-msgid "失效时间为不超过[0]天的数值!"
-msgstr ""
-
-#: app/scripts/services/services.js
 msgid "属性"
 msgstr ""
 
@@ -128,12 +120,12 @@ msgstr ""
 msgid "帐号升级"
 msgstr ""
 
-#: app/index.html
-msgid "开启帮助提示"
-msgstr ""
-
 #: app/views/nofile_right_sidebar.html
 msgid "成员"
+msgstr ""
+
+#: app/scripts/controllers/controllers.js
+msgid "成员[0]人"
 msgstr ""
 
 #: app/views/nofile_right_sidebar.html
@@ -141,6 +133,7 @@ msgid "成员管理"
 msgstr ""
 
 #: app/index.html
+#: app/scripts/services/services.js
 msgid "我的云库"
 msgstr ""
 
@@ -261,6 +254,10 @@ msgstr ""
 msgid "添加到云库"
 msgstr ""
 
+#: app/scripts/services/services.js
+msgid "清空回收站"
+msgstr ""
+
 #: app/index.html
 #: app/scripts/services/services.js
 msgid "类型"
@@ -268,10 +265,6 @@ msgstr ""
 
 #: app/scripts/services/services.js
 msgid "粘贴"
-msgstr ""
-
-#: app/index.html
-msgid "自动提示已关闭，点击这里可以重新开启"
 msgstr ""
 
 #: app/scripts/services/services.js

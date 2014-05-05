@@ -53,13 +53,13 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKEnt', [function () {
+    .factory('GKEnt', ['GKI18n','gettext',function (GKI18n,gettext) {
         var GKEnt = {
             getEnt: function (entId) {
                if(!entId){
                    return {
                        entid:0,
-                       entname:'我的云库'
+                       entname:GKI18n.getText(gettext('我的云库'))
                    };
                }else{
                    return gkClientInterface.getEnt({
@@ -224,7 +224,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKContextMenu', ['GKPartition', 'GKModal', 'GKOpt', 'GKFile', 'GKMount', 'GKSmartFolder','GKPath', '$rootScope','GKAuth',function (GKPartition, GKModal, GKOpt, GKFile, GKMount, GKSmartFolder,GKPath,$rootScope,GKAuth) {
+    .factory('GKContextMenu', ['GKI18n','gettext','GKPartition', 'GKModal', 'GKOpt', 'GKFile', 'GKMount', 'GKSmartFolder','GKPath', '$rootScope','GKAuth',function (GKI18n,gettext,GKPartition, GKModal, GKOpt, GKFile, GKMount, GKSmartFolder,GKPath,$rootScope,GKAuth) {
         return {
             getSidebarMenu: function ($trigger) {
                 var data = $trigger.data('branch');
@@ -242,7 +242,7 @@ angular.module('gkClientIndex.services', [])
                         if(GKAuth.check(mount,'','file_delete_com')){
                             items = {
                                 'clear_trash': {
-                                    name: '清空回收站',
+                                    name: GKI18n.getText(gettext('清空回收站')),
                                     callback: function () {
                                         GKOpt.clearTrash(mountId);
                                     }
