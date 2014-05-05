@@ -1697,8 +1697,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var ent = GKEnt.getEnt($rootScope.PAGE_CONFIG.entId);
                 if(ent && ent.entname){
                     if(ent.property){
-                        ent.property = JSON.parse(ent.property);
-                        $scope.showMemberManageBtn = (ent.property.ent_admin==1);
+                        $scope.showMemberManageBtn = GKAuth.check($rootScope.PAGE_CONFIG.mount,'','ent_member');
                     }
                 }
             }
@@ -1789,7 +1788,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }else{
                 var url = gkClientInterface.getUrl({
                     sso: 1,
-                    url: gkClientInterface.getSiteDomain()+'/ent/dispatch?ent_id='+$rootScope.PAGE_CONFIG.entId
+                    url: gkClientInterface.getSiteDomain()+'/ent/org?org_id='+$rootScope.PAGE_CONFIG.mount.org_id
                 });
                 gkClientInterface.openUrl(url);
             }
