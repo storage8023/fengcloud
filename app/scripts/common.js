@@ -2345,7 +2345,8 @@ angular.module('GKCommon.filters', [])
         }
     }])
     .filter('getThumbUrl', [function () {
-        return function (hash, filehash) {
+        return function (hash, filehash,filename) {
+            //console.log('getThumbUrl',filename);
             return  gkClientInterface.getSiteDomain() + '/index/thumb?hash=' + hash + '&filehash=' + filehash;
         }
     }])

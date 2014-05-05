@@ -3730,10 +3730,13 @@ angular.module('gkClientIndex.services', [])
                 });
 
                 var icon = $filter('getFileIcon')(file.filename, file.dir, 0, (file.sync || PAGE_CONFIG.file.syncpath ? 1 : 0)),
-                    thumbUrl = $filter('getThumbUrl')(file.hash, file.filehash);
+                    thumbUrl = '';
                 var thumbIcon = oldFileItem.find('.thumb i'),
                     fionIcon = oldFileItem.find('.file_icon_wrapper i');
 
+                if(['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0){
+                    thumbUrl = $filter('getThumbUrl')(file.hash, file.filehash,file.fullpath)
+                }
                 angular.forEach([thumbIcon, fionIcon], function (elem) {
                     elem.removeClass();
                     if (thumbIcon == elem) {
@@ -3741,11 +3744,12 @@ angular.module('gkClientIndex.services', [])
                     } else {
                         fionIcon.addClass('file_icon ' + icon);
                     }
-                    var thumbImg = elem.find('img');
-                    if (!thumbImg.size()) {
-                        thumbImg = jQuery('<img />');
+                    if(thumbUrl){
+                        var thumbImg = elem.find('img');
+                        if (thumbImg.size()) {
+                            thumbImg.prop('src', thumbUrl);
+                        }
                     }
-                    thumbImg.prop('src', thumbUrl);
                     elem.find('s').remove();
                     if (file.status == 1) {
                         elem.append('<s class="icon16x16 icon_up"></s>');
