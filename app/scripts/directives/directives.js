@@ -876,7 +876,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/nofile_right_sidebar.html"
         }
     }])
-    .directive('member', ['GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout','GKBrowserMode',function (GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout,GKBrowserMode) {
+    .directive('member', ['GKPartition','GKDialog', '$rootScope', 'localStorageService','$interval','GKModal','GKNews','GKApi','$timeout','GKBrowserMode',function (GKPartition,GKDialog,$rootScope,localStorageService,$interval,GKModal,GKNews,GKApi,$timeout,GKBrowserMode) {
         return {
             replace: true,
             restrict: 'E',
@@ -971,6 +971,10 @@ angular.module('gkClientIndex.directives', [])
                         if($this.hasClass('toggle_btn_2')){
                             GKBrowserMode.setMode('chat');
                             $this.removeClass('toggle_btn_2');
+                            //判断是否为智能文件夹
+                            if(GKPartition.isSmartFolderPartition($rootScope.PAGE_CONFIG.partition)){
+                                $rootScope.$broadcast("initSelectedBranch");
+                            }
                         }else{
                             GKBrowserMode.setMode('file');
                             $this.addClass('toggle_btn_2');
@@ -1024,6 +1028,7 @@ angular.module('gkClientIndex.directives', [])
                             $interval.cancel(fileInterval);
                             fileInterval = null;
                         }
+
                         getFileInfo($scope.localFile);
                         return;
                     }
@@ -1073,6 +1078,7 @@ angular.module('gkClientIndex.directives', [])
                     var extParam = {
                         type:options.data == 'file'?'':'ext'
                     };
+
                     lastGetRequest = GKApi.info(mountId, fullpath,extParam).success(function (data) {
                         $scope.$apply(function () {
                             $scope.fileLoaded = true;
@@ -1102,7 +1108,7 @@ angular.module('gkClientIndex.directives', [])
                                 if (errorCode == 404 || String(errorCode).slice(0, 3) != '404') {
                                     return;
                                 }
-                                if (errorCode == 404024 && $scope.localFile.status != 1) {
+                                if (errorCode == 40402 && $scope.localFile.status != 1) {
                                     $scope.sidbarData = {
                                         icon: 'trash',
                                         title: '云端已删除'

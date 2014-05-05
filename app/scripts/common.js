@@ -1274,7 +1274,7 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 })
-                return myMount;
+                return myMount;n
             },
             /**
              * 获取我的云库的mount
@@ -1330,6 +1330,13 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 });
+
+                angular.forEach($scope.allTreeList, function (value, key) {
+                     if (value.data.org_id == orgId){
+                         $scope.allTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
             },
             removeTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);
@@ -1340,6 +1347,13 @@ angular.module('GKCommon.services', [])
                         return false;
                     }
                 });
+                angular.forEach($scope.allTreeList, function (value, key) {
+                    if (value.data.org_id == orgId) {
+                        $scope.allTreeList.splice(key, 1);
+                        return false;
+                    }
+                });
+
             },
             removeJoinTeamList: function ($scope, orgId) {
                 var mount = this.removeMountByOrgId(orgId);

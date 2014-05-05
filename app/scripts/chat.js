@@ -40,6 +40,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         $scope.onlyShowTopic = false;
 
 
+
         var post = function (type, content, metadata, status) {
             metadata = angular.isDefined(metadata) ? metadata : '';
             var now = new Date().getTime();
@@ -51,6 +52,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 type: type,
                 metadata: metadata
             };
+            topWindow.gkFrameCallback('ChatMessageUpdate', {
+                list:[msgData]
+            })
             var newMsg = chatContent.add($scope.currentMsgList, msgData);
             if (!newMsg) {
                 return;
@@ -76,6 +80,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
+
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
@@ -94,6 +99,16 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     callback();
                 }
                 $scope.loadingHistoryMsg = false;
+
+                /*测试数据*/
+                var myData = {
+                    content: "最近15分钟内有23个文件操作",
+                    time: 1398416298496,
+                    type: "file_update"
+                }
+                chatContent.add($scope.currentMsgList, myData);
+
+                console.log($scope.currentMsgList)
             });
         };
 
@@ -127,6 +142,10 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 })
             }
         };
+
+        $scope.openFileUpdateDetail = function(){
+            topWindow.gkFrameCallback('openFileUpdateDetail',{mountId:$scope.currentSession.mountid});
+        }
 
         /**
          * 发布新消息
@@ -363,9 +382,10 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 $scope.focusTextarea = true;
             })
             $scope.postText = '';
-//            chatSession.getApps($scope.currentSession.orgid).then(function(list){
-//                $scope.apps = list;
-//            });
+            /**工具栏**/
+            chatSession.getApps($scope.currentSession.orgid).then(function(list){
+                $scope.apps = list;
+            });
             $scope.topicHintList = $filter('orderBy')(chatTopic.get($scope.currentSession.orgid),'-dateline');
         };
         /**/
@@ -882,6 +902,13 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             templateUrl: "views/chat_text.html"
         }
     }])
+    .directive('chatFileUpdate', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/chat_fileupdate.html"
+        }
+    }])
     .directive('chatExt', [function () {
         return {
             replace: true,
@@ -915,12 +942,20 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 if (Util.RegExp.HTTPStrict.test(bind)) {
                     bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
-//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
-//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1" class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
-//                }
+                /**工具栏**/
+                if (Util.RegExp.POUND_TOPIC.test(bind)) {
+                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1"  class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
+                }
                 bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
                 element.html(bind === undefined ? '' : bind);
             });
         }
     }])
+    .filter('subFileName',[function(){
+        return function(strFileName){
+            if(!strFileName || strFileName.length <= 5) return strFileName;
+            strFileName = strFileName.substring(0,5) + "...";
+            return strFileName;
+        }
+    }]);
 ;
