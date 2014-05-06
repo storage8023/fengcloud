@@ -1,45 +1,49 @@
 /**
  * Created by admin on 13-11-4.
  */
-angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.services', 'gkClientIndex.directives', 'ui.bootstrap'])
-    .controller('settingCtrl', ['$scope', '$location', '$rootScope', 'GKApi', function ($scope, $location, $rootScope, GKApi) {
+angular.module('gkClientSetting', ['gettext','GKCommon','angular-md5','gkClientIndex.services', 'gkClientIndex.directives', 'ui.bootstrap'])
+    .run(function (gettextCatalog) {
+        gettextCatalog.debug = true;
+        gettextCatalog.currentLanguage = 'en_US';
+    })
+    .controller('settingCtrl', ['$scope', '$location', '$rootScope', 'GKApi','GKI18n','gettext', function ($scope, $location, $rootScope, GKApi,GKI18n,gettext) {
         $rootScope.PAGE_CONFIG = {
             user: gkClientInterface.getUser()
         };
         $scope.tabs = [
             {
                 name: 'general',
-                title: '通用',
+                title: GKI18n.getText(gettext('通用')),
                 icon: 'icon_info',
                 directive: 'tabGeneral'
             },
             {
                 name: 'account',
-                title: '帐号',
+                title: GKI18n.getText(gettext('帐号')),
                 icon: 'icon_person',
                 directive: 'tabAccount'
             },
             {
                 name: 'device',
-                title: '设备',
+                title: GKI18n.getText(gettext('设备')),
                 icon: 'icon_computer',
                 directive: 'tabComputer'
             },
             {
                 name: 'sync',
-                title: '同步',
+                title: GKI18n.getText(gettext('同步')),
                 icon: 'icon16x16 icon_sync',
                 directive: 'tabSync'
             },
             {
                 name: 'network',
-                title: '网络',
+                title: GKI18n.getText(gettext('网络')),
                 icon: 'icon_network',
                 directive: 'tabNetwork'
             },
             {
                 name: 'advance',
-                title: '高级',
+                title: GKI18n.getText(gettext('高级')),
                 icon: 'icon_plane',
                 directive: 'tabAdvance'
             }
@@ -117,21 +121,21 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
                 name: 'msg',
                 model: $scope.setting['msg']
             },
-//            {
-//                type:'select',
-//                label:'语言切换：',
-//                name:'language',
-//                options:langOptions,
-//                tip:'（软件下次启动时生效）',
-//                model:selectedLang,
-//                change:function(val,e){
-//                    var val = Util.Array.getObjectByKeyValue( $scope.generalSetting,'name','language');
-//                    var params = {
-//                        type:Number(val.model.value)
-//                    };
-//                    gkClientInterface.setChangeLanguage(params);
-//                }
-//            }
+            {
+                type:'select',
+                label:'语言切换：',
+                name:'language',
+                options:langOptions,
+                tip:'（软件下次启动时生效）',
+                model:selectedLang,
+                change:function(val,e){
+                    var val = Util.Array.getObjectByKeyValue( $scope.generalSetting,'name','language');
+                    var params = {
+                        type:Number(val.model.value)
+                    };
+                    gkClientInterface.setChangeLanguage(params);
+                }
+            }
         ];
 
         var isMac = gkClientInterface.isMacClient();

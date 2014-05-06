@@ -139,11 +139,16 @@ msgstr ""
 msgid "公开"
 msgstr ""
 
+#: app/scripts/controllers/controllers.js
+msgid "关于"
+msgstr ""
+
 #: app/scripts/services/services.js
 msgid "分享链接"
 msgstr ""
 
 #: app/views/member.html
+#: app/scripts/controllers/controllers.js
 #: app/scripts/services/services.js
 msgid "创建云库"
 msgstr ""
@@ -198,6 +203,7 @@ msgstr ""
 msgid "可执行文件"
 msgstr ""
 
+#: app/scripts/setting.js
 #: app/scripts/services/services.js
 msgid "同步"
 msgstr ""
@@ -259,12 +265,20 @@ msgstr ""
 msgid "已被[0]锁定"
 msgstr ""
 
+#: app/scripts/setting.js
+msgid "帐号"
+msgstr ""
+
 #: app/views/member.html
 msgid "帐号信息"
 msgstr ""
 
 #: app/views/member.html
 msgid "帐号升级"
+msgstr ""
+
+#: app/scripts/controllers/controllers.js
+msgid "帮助"
 msgstr ""
 
 #: app/scripts/services/services.js
@@ -479,6 +493,10 @@ msgstr ""
 msgid "粘贴"
 msgstr ""
 
+#: app/scripts/setting.js
+msgid "网络"
+msgstr ""
+
 #: app/scripts/services/services.js
 msgid "视频"
 msgstr ""
@@ -495,7 +513,13 @@ msgstr ""
 msgid "讨论模式"
 msgstr ""
 
+#: app/scripts/setting.js
+msgid "设备"
+msgstr ""
+
 #: app/index.html
+#: app/setting.html
+#: app/scripts/controllers/controllers.js
 msgid "设置"
 msgstr ""
 
@@ -527,6 +551,14 @@ msgstr ""
 msgid "这[0]个文件（夹）"
 msgstr ""
 
+#: app/scripts/controllers/controllers.js
+msgid "退出"
+msgstr ""
+
+#: app/scripts/setting.js
+msgid "通用"
+msgstr ""
+
 #: app/scripts/services/services.js
 msgid "重命名"
 msgstr ""
@@ -537,4 +569,8 @@ msgstr ""
 
 #: app/scripts/services/services.js
 msgid "音频"
+msgstr ""
+
+#: app/scripts/setting.js
+msgid "高级"
 msgstr ""

@@ -1521,7 +1521,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             jQuery.contextMenu('destroy', '.file_list .list_body');
         })
     }])
-    .controller('header', ['$scope', 'GKPath', '$location', '$filter', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant','GKMode',function ($scope, GKPath, $location, $filter, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant,GKMode) {
+    .controller('header', ['GKI18n','gettext','$scope', 'GKPath', '$location', '$filter', 'GKApi', '$rootScope', '$document', '$compile', '$timeout', 'GKDialog', 'GKFind', 'GKModal', 'GKPartition','localStorageService','$interval','GKNews','GKConstant','GKMode',function (GKI18n,gettext,$scope, GKPath, $location, $filter, GKApi, $rootScope, $document, $compile, $timeout, GKDialog, GKFind, GKModal, GKPartition,localStorageService,$interval,GKNews,GKConstant,GKMode) {
 
         $scope.changeMode = function(mode){
             GKMode.setMode(mode);
@@ -1563,19 +1563,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.items = [
             {
-                item: "创建云库",
+                item: GKI18n.getText(gettext("创建云库")),
                 menuclick: function () {
                     var createTeamDialog = GKModal.createTeam();
                 }
             },
             {
-                item: "设置",
+                item: GKI18n.getText(gettext("设置")),
                 menuclick: function () {
                     GKDialog.openSetting();
                 }
             },
             {
-                item: "帮助",
+                item: GKI18n.getText(gettext("帮助")),
                 menuclick: function () {
                     var url = gkClientInterface.getUrl({
                         sso: 1,
@@ -1585,13 +1585,13 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }
             },
             {
-                item: "关于",
+                item: GKI18n.getText(gettext("关于")),
                 menuclick: function () {
                     gkClientInterface.openAbout();
                 }
             },
             {
-                item: "退出",
+                item: GKI18n.getText(gettext("退出")),
                 menuclick: function () {
                     gkClientInterface.quit();
                 }

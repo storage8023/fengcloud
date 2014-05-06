@@ -152,11 +152,16 @@ msgstr "modify name"
 msgid "公开"
 msgstr "open"
 
+#: app/scripts/controllers/controllers.js
+msgid "关于"
+msgstr "about"
+
 #: app/scripts/services/services.js
 msgid "分享链接"
 msgstr "share link"
 
-#: app/views/member.html app/scripts/services/services.js
+#: app/views/member.html app/scripts/controllers/controllers.js
+#: app/scripts/services/services.js
 msgid "创建云库"
 msgstr "create cloud"
 
@@ -208,7 +213,7 @@ msgstr "unregisted"
 msgid "可执行文件"
 msgstr "executable files"
 
-#: app/scripts/services/services.js
+#: app/scripts/setting.js app/scripts/services/services.js
 msgid "同步"
 msgstr "sync"
 
@@ -268,13 +273,21 @@ msgstr "already copy to clipboard"
 msgid "已被[0]锁定"
 msgstr "locked by [0]"
 
+#: app/scripts/setting.js
+msgid "帐号"
+msgstr "account"
+
 #: app/views/member.html
 msgid "帐号信息"
-msgstr "account"
+msgstr "account info"
 
 #: app/views/member.html
 msgid "帐号升级"
 msgstr "upgrade account"
+
+#: app/scripts/controllers/controllers.js
+msgid "帮助"
+msgstr "help"
 
 #: app/scripts/services/services.js
 msgid "彻底删除"
@@ -481,6 +494,10 @@ msgstr "catagory"
 msgid "粘贴"
 msgstr "paste"
 
+#: app/scripts/setting.js
+msgid "网络"
+msgstr "network"
+
 #: app/scripts/services/services.js
 msgid "视频"
 msgstr "video"
@@ -497,7 +514,11 @@ msgstr "discuss"
 msgid "讨论模式"
 msgstr "discouss"
 
-#: app/index.html
+#: app/scripts/setting.js
+msgid "设备"
+msgstr "device"
+
+#: app/index.html app/scripts/controllers/controllers.js
 msgid "设置"
 msgstr "setting"
 
@@ -529,6 +550,14 @@ msgstr "revert"
 msgid "这[0]个文件（夹）"
 msgstr "this [0] files(folders)"
 
+#: app/scripts/controllers/controllers.js
+msgid "退出"
+msgstr "exit"
+
+#: app/scripts/setting.js
+msgid "通用"
+msgstr "common"
+
 #: app/scripts/services/services.js
 msgid "重命名"
 msgstr "rename"
@@ -540,6 +569,10 @@ msgstr "lock"
 #: app/scripts/services/services.js
 msgid "音频"
 msgstr "music"
+
+#: app/scripts/setting.js
+msgid "高级"
+msgstr "Advanced"
 
 #~ msgid "关闭帮助提示"
 #~ msgstr "close tooltips"
