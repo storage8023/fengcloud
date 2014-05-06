@@ -1757,7 +1757,7 @@ angular.module('gkClientIndex.services', [])
                         }
                         return value;
                     })
-                    deferred.resolve(list);;
+                    deferred.resolve(list);
                 }else{
                 if (['star', 'diamond', 'moon', 'triangle', 'flower', 'heart'].indexOf(filter) >= 0) {
                     /**
@@ -3754,23 +3754,27 @@ angular.module('gkClientIndex.services', [])
                     'title':file.fullpath
                 });
 
-                var icon = $filter('getFileIcon')(file.filename,file.dir,0,(file.sync||PAGE_CONFIG.file.syncpath?1:0)),
-                    thumbUrl = $filter('getThumbUrl')(file.hash,file.filehash);
+                var icon = $filter('getFileIcon')(file.filename, file.dir, 0, (file.sync || PAGE_CONFIG.file.syncpath ? 1 : 0)),
+                    thumbUrl = '';
                 var thumbIcon = oldFileItem.find('.thumb i'),
                     fionIcon = oldFileItem.find('.file_icon_wrapper i');
 
-                angular.forEach([thumbIcon,fionIcon],function(elem){
+                if(['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0){
+                    thumbUrl = $filter('getThumbUrl')(file.hash, file.filehash,file.fullpath)
+                }
+                angular.forEach([thumbIcon, fionIcon], function (elem) {
                     elem.removeClass();
                     if(thumbIcon == elem){
                         thumbIcon.addClass('file_icon128x128 '+icon);
                     }else{
                         fionIcon.addClass('file_icon '+icon);
                     }
-                    var thumbImg = elem.find('img');
-                    if(!thumbImg.size()){
-                        thumbImg = jQuery('<img />');
+                    if(thumbUrl){
+                        var thumbImg = elem.find('img');
+                        if (thumbImg.size()) {
+                            thumbImg.prop('src', thumbUrl);
+                        }
                     }
-                    thumbImg.prop('src',thumbUrl);
                     elem.find('s').remove();
                     if(file.status ==1){
                         elem.append('<s class="icon16x16 icon_up"></s>');
@@ -4067,7 +4071,8 @@ angular.module('gkClientIndex.services', [])
             setSrc:function(mountId,fullpath,atMember){
                 mountId = angular.isDefined(mountId)?mountId:0;
                 fullpath = angular.isDefined(fullpath)?fullpath:'';
-                atMember = angular.isDefined(atMember)?atMember:''; var UIPath = gkClientInterface.getUIPath();
+                atMember = angular.isDefined(atMember)?atMember:''; 
+		var UIPath = gkClientInterface.getUIPath();
                 var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
                 this.src = url;
             }

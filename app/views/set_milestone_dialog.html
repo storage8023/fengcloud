@@ -13,7 +13,7 @@
                     ng-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"/>
                <img ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0"
                     error-src="{{file.filename | getFileThumb:file.dir:0:file.sync}}"
-                    ng-src="{{file.hash | getThumbUrl:file.filehash}}"/>
+                    ng-src="{{file.hash | getThumbUrl:file.filehash:file.fullpath}}"/>
            </div>
            <div class="file_info">
                <div class="filename_wrapper">
