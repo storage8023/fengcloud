@@ -246,7 +246,7 @@ angular.module('gkClientIndex.services', [])
                                     callback: function () {
                                         GKOpt.clearTrash(mountId);
                                     }
-                                },
+                                }
                             }
                         }
                     } else {
@@ -475,7 +475,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
+    .factory('GKModal', ['$rootScope', '$modal', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -489,16 +489,17 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
-            fileUpdateDetail:function(param){
-
+            summaryDetail:function(param){
                 var option = {
-                    templateUrl: 'views/file_updatemsg_dialog.html',
+                    templateUrl: 'views/summary_dialog.html',
                     windowClass: 'chat_file_update_dialog',
                     controller: function ($scope,$modalInstance) {
-                        /**
-                         * 打开文件位置
-                         * @param msg
-                         */
+                        GKChat.getSummarys(param).then(function(data){
+                            console.log("=========500=========");
+                            console.log(data);
+                            $scope.summarys = data.updates;
+                        });
+                        //打开文件位置
                         $scope.goToFile = function ($event, fullpath) {
                             var fullpath = fullpath;
                             window.top.gkFrameCallback('OpenMountPath', {
@@ -1923,7 +1924,7 @@ angular.module('gkClientIndex.services', [])
                     path: paramArr[1] | '',
                     mountid: paramArr[3] || 0,
                     filter: paramArr[4] || '',
-                    search: paramArr[5] || '',
+                    search: paramArr[5] || ''
                 };
                 return '/file?' + jQuery.param(params);
             },
@@ -4065,7 +4066,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileList;
     }])
-    .factory('GKChat', [function () {
+    .factory('GKChat', ['$q','GKApi','GKException',function ($q,GKApi,GKException) {
         var GKChat = {
             src:'',
             setSrc:function(mountId,fullpath,atMember){
@@ -4075,6 +4076,18 @@ angular.module('gkClientIndex.services', [])
 		var UIPath = gkClientInterface.getUIPath();
                 var url = 'file:///' + UIPath + '/chat.html#/?mountid=' + mountId+'&fullpath='+encodeURIComponent(fullpath)+'&at='+encodeURIComponent(atMember);
                 this.src = url;
+            },
+            getSummarys:function(params) {
+                var deferred = $q.defer();
+                //查询出来的消息
+                GKApi.summarys(params.mountId, params.from, params.to, params.start, params.size).success(function (data) {
+                    console.log("=========services line 4085===========");
+                    console.log(data);
+                    deferred.resolve(data);
+                }).error(function (request) {
+                    deferred.reject(GKException.getAjaxErrorMsg(request));
+                })
+                return deferred.promise;
             }
         };
         return GKChat;

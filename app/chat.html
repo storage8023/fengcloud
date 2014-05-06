@@ -44,8 +44,8 @@
                     <div class="chat_item c_f_after chat_item_{{msg.type}}" ng-repeat="msg in currentMsgList" ng-class="{'has_content':msg.content}">
 
                         <div ng-switch="msg.type">
-                            <div ng-switch-when="file_update">
-                                <chat-file-update msg="msg"></chat-file-update>
+                            <div ng-switch-when="summary">
+                                <chat-summary msg="msg"></chat-summary>
                             </div>
                             <div ng-switch-default>
                                 <div class="avatar_wrapper" ng-click="atMember(msg.sender_name)" style="margin-left:-17px;">

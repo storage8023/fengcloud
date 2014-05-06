@@ -10,7 +10,7 @@
     <div class="chat_text">
         <i title="{{msg.errorMsg}}" class="icon16x16 icon_warning"></i>
         <div class="chat_text_inner">
-                <span class="chat_file_update_span" ng-click="openFileUpdateDetail()">
+                <span class="chat_file_update_span" ng-click="openSummaryDetail($event,msg)">
                      <img error-src=""  ng-src="images/icon/file_update_icon.png"/>
                     <span chat-bind="msg.content" class="text"></span>
                  </span>

@@ -101,8 +101,8 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         /*打开文件更新消息窗口*/
-        $scope.$on('openFileUpdateDetail',function(scope,option){
-            GKModal.fileUpdateDetail(option);
+        $scope.$on('openSummaryDetail',function(scope,option){
+            GKModal.summaryDetail(option);
         });
         $scope.$on('openUrl', function ($event, param) {
             var sso = Number(param.sso) || 0;

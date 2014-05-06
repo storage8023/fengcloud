@@ -80,7 +80,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
-
+                    console.log("=============chat.js 83   list msg=============");
+                    console.log(re);
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
@@ -99,15 +100,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     callback();
                 }
                 $scope.loadingHistoryMsg = false;
-
-                /*测试数据*/
-                var myData = {
-                    content: "最近15分钟内有23个文件操作",
-                    time: 1398416298496,
-                    type: "file_update"
-                }
-                chatContent.add($scope.currentMsgList, myData);
-
                 console.log($scope.currentMsgList)
             });
         };
@@ -143,8 +135,15 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             }
         };
 
-        $scope.openFileUpdateDetail = function(){
-            topWindow.gkFrameCallback('openFileUpdateDetail',{mountId:$scope.currentSession.mountid});
+        $scope.openSummaryDetail = function($event,msg){
+            console.log("==============chat.js 148 ================");
+            var param = {
+                mountId:$scope.currentSession.mountid,
+                from:msg.metadata.from,
+                to:msg.metadata.to
+            }
+            console.log(param);
+            topWindow.gkFrameCallback('openSummaryDetail',param);
         }
 
         /**
@@ -902,11 +901,11 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             templateUrl: "views/chat_text.html"
         }
     }])
-    .directive('chatFileUpdate', [function () {
+    .directive('chatSummary', [function () {
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/chat_fileupdate.html"
+            templateUrl: "views/chat_summary.html"
         }
     }])
     .directive('chatExt', [function () {
