@@ -353,7 +353,7 @@ footer {
 
 .left_sidebar .account{
     background: #24272B;
-    height:110px;
+    height:80px;
     color:#fff;
     position: fixed;
     top:0;
@@ -505,7 +505,8 @@ footer {
     color: #707377;
 }
  .left_sidebar .tree_wrapper{
-    padding-top:110px;
+    padding-top:80px;
+    padding-bottom:35px;
 }
 
 .left_sidebar ul.nav.nav-list.abn-tree .icon_trash{

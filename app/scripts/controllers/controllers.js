@@ -357,15 +357,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         }
 
         //监听是否转入搜索视图
-        var currSearchText = "";
+        $scope.searchText = "";
+        $scope.$watch("searchText",function(nValue,oldValue){
+            $scope.$emit("searchTextChange",nValue);
+        });
         $scope.$watch(function(){
             return $scope.allTreeList.length;
         },function(nValue,oValue){
-             $scope.$emit("searchTextChange",currSearchText);
+             $scope.$emit("searchTextChange",$scope.searchText);
         });
         $scope.$on('searchTextChange',function(obj,searchText){
             if(searchText && searchText.length > 0){
-                currSearchText = searchText;
                 $scope.searchTreeList = [];
                 angular.forEach($scope.allTreeList,function(treeNode){
                     if(treeNode.label.indexOf(searchText) != -1){
@@ -378,7 +380,11 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $rootScope.PAGE_CONFIG.isSearch = false;
             }
         });
-
+        //清空搜索
+        $scope.clearSearchText = function(){
+            $scope.searchText = "";
+        }
+    //end
         $scope.$on('initSelectedBranch',function(){
             $timeout(function(){
                 unSelectAllBranch();
