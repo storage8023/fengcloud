@@ -494,27 +494,39 @@ angular.module('gkClientIndex.services', [])
                     templateUrl: 'views/summary_dialog.html',
                     windowClass: 'chat_file_update_dialog',
                     controller: function ($scope,$modalInstance) {
+                        var perPageItemNum = 11;
                         $scope.loadSummarySuccess = false;
                         $scope.summarys = [];
+                        $scope.ableScroll = true;
+                        $scope.showMoreLoading = false;
+                        //在加载数据未完成前不允许再次滚动到底部加载
+                        $scope.isLoading = false;
+                        param.size = perPageItemNum;
                         GKChat.getSummarys(param).then(function(data){
-                            console.log("=========500=========");
-                            console.log(data);
                             if(data && data.updates){
-                                angular.forEach(data.updates,function(value){
-                                    var file_fullpath = value.fullpath;
-                                    var fileName = file_fullpath;
-                                    var index = file_fullpath.lastIndexOf("/");
-                                    if(index != -1){
-                                        fileName = file_fullpath.substring(index+1);
-                                    }
-                                    value.fileName = fileName;
-                                });
-                                $scope.summarys = data.updates;
-                            }else{
-
+                               if(data.updates.length < perPageItemNum) $scope.ableScroll = false;
+                               else data.updates.splice(data.updates.length - 1,1);
+                               formatData(data.updates,$scope.summarys);
                             }
                             $scope.loadSummarySuccess = true;
                         });
+                        //滚动加载
+                        $scope.handleScrollLoad = function(){
+                            if(!$scope.isLoading) {
+                                $scope.isLoading = true;
+                                param.start = $scope.summarys.length;
+                                $scope.showMoreLoading = true;
+                                GKChat.getSummarys(param).then(function (data) {
+                                    if (data && data.updates) {
+                                        if (data.updates.length < perPageItemNum) $scope.ableScroll = false;
+                                        else data.updates.splice(data.updates.length - 1, 1);
+                                        formatData(data.updates, $scope.summarys);
+                                    }
+                                    $scope.showMoreLoading = false;
+                                    $scope.isLoading = false;
+                                });
+                            }
+                        }
                         //打开文件位置
                         $scope.goToFile = function ($event, fullpath) {
                             var fullpath = fullpath;
@@ -529,6 +541,21 @@ angular.module('gkClientIndex.services', [])
                         $scope.cancel = function () {
                             $modalInstance.dismiss('cancel');
                         };
+                        var formatData = function(listValue,arrObj){
+                            angular.forEach(listValue,function(value){
+                                var file_fullpath = value.fullpath;
+                                var fileName = file_fullpath;
+                                var index = file_fullpath.lastIndexOf("/");
+                                if(index != -1){
+                                    fileName = file_fullpath.substring(index+1);
+                                }
+                                value.fileName = fileName;
+                                if(arrObj){
+                                    arrObj.push(value);
+                                }
+                            });
+                            return listValue;
+                        }
                     }
                 };
                 option = angular.extend({}, defaultOption, option);
@@ -4097,8 +4124,6 @@ angular.module('gkClientIndex.services', [])
                 var deferred = $q.defer();
                 //查询出来的消息
                 GKApi.summarys(params.mountId, params.from, params.to, params.start, params.size).success(function (data) {
-                    console.log("=========services line 4085===========");
-                    console.log(data);
                     deferred.resolve(data);
                 }).error(function (request) {
                     deferred.reject(GKException.getAjaxErrorMsg(request));

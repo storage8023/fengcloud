@@ -2,7 +2,7 @@
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4>文件更新</h4>
 </div>
-<div class="modal-body scrollbar">
+<div class="modal-body scrollbar"  scroll-load="handleScrollLoad()" trigger-direction="down" disable-scroll="!ableScroll">
        <div ng-show="!loadSummarySuccess" id="loading" style="text-align: center; vertical-align: middle;">
             正在加载...
        </div>
@@ -17,5 +17,9 @@
                 <i class="icon16x16 icon_search"></i>
             </button>
         </div>
+
        </div>
+</div>
+<div ng-show="showMoreLoading" id="summary_more_loading">
+    数据加载中...
 </div>

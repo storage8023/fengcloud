@@ -655,7 +655,6 @@ angular.module('GKCommon.directives', [])
                         return disableScroll = !!value;
                     });
                 }
-
                 var direction = 'down';
                 if (attrs.triggerDirection) {
                     direction = attrs.triggerDirection;

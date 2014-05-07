@@ -80,8 +80,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
-                    console.log("=============chat.js 83   list msg=============");
-                    console.log(re);
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
@@ -100,7 +98,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     callback();
                 }
                 $scope.loadingHistoryMsg = false;
-                console.log($scope.currentMsgList)
             });
         };
 
@@ -136,13 +133,11 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
 
         $scope.openSummaryDetail = function($event,msg){
-            console.log("==============chat.js 148 ================");
             var param = {
                 mountId:$scope.currentSession.mountid,
                 from:msg.metadata.from,
                 to:msg.metadata.to
             }
-            console.log(param);
             topWindow.gkFrameCallback('openSummaryDetail',param);
         }
 

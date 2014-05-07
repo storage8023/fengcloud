@@ -2442,3 +2442,19 @@ padding: 6px 21px;
 .chat_file_update_dialog .modal-body #content div:hover button{
     display: block;
 }
+
+.chat_file_update_dialog #summary_more_loading
+{
+    position: absolute;
+    width:500px;
+    height:30px;
+    line-height: 32px;
+    text-align:center;
+    vertical-align: middle;
+    background-color:#999;
+    z-index:1001;
+    bottom:10px;
+    filter:alpha(opacity=50);
+    -moz-opacity:0.5;
+    opacity:0.5;
+}
