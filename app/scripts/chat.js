@@ -377,12 +377,12 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             })
             $scope.postText = '';
             /**工具栏**/
-            chatSession.getApps($scope.currentSession.orgid).then(function(list){
-                $scope.apps = list;
-            });
-            $scope.topicHintList = $filter('orderBy')(chatTopic.get($scope.currentSession.orgid),'-dateline');
+//            chatSession.getApps($scope.currentSession.orgid).then(function(list){
+//                $scope.apps = list;
+//            });
+//            $scope.topicHintList = $filter('orderBy')(chatTopic.get($scope.currentSession.orgid),'-dateline');
         };
-        /**/
+
 
         var msgTip = localStorageService.get('msgTip');
         if (!msgTip) {
@@ -937,9 +937,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                     bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
                 }
                 /**工具栏**/
-                if (Util.RegExp.POUND_TOPIC.test(bind)) {
-                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1"  class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
-                }
+//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
+//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1"  class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
+//                }
                 bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
                 element.html(bind === undefined ? '' : bind);
             });
