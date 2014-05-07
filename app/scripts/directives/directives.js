@@ -887,14 +887,16 @@ angular.module('gkClientIndex.directives', [])
             },
             link: function ($scope, $element) {
                 var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
-
                 $timeout(function(){
                     $scope.newMsg = !!localStorageService.get(unreadMsgKey);
                     $scope.openNews = function(){
                         GKModal.news(GKNews, GKApi);
                     }
                 },1500);
-
+                $scope.searchText = "";
+                $scope.$watch("searchText",function(nValue,oldValue){
+                    $scope.$emit("searchTextChange",nValue);
+                });
                 var t,count = 0;
                 $scope.$on('UpdateMessage', function () {
                     if(t){
