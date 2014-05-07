@@ -2,16 +2,20 @@
     <button type="button" class="close" ng-click="cancel()">&times;</button>
     <h4>文件更新</h4>
 </div>
-<div class="modal-body">
-    <div ng-repeat="summary in summarys">
-         <span>
-             <img error-src=""  ng-src="{{summary.member_photo}}"/>
-            <span>&nbsp;&nbsp;{{summary.member_name}}&nbsp;&nbsp;{{summary.act_name+"了"}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-             <span style="color: #50ACF3">{{summary.fullpath}}</span>
-         </span>
-        <button ng-click="goToFile($event,summary.fullpath)">
-            <i class="icon16x16 icon_search"></i>
-        </button>
-    </div>
-
+<div class="modal-body scrollbar">
+       <div ng-show="!loadSummarySuccess" id="loading" style="text-align: center; vertical-align: middle;">
+            正在加载...
+       </div>
+       <div ng-show="loadSummarySuccess" id="content">
+        <div ng-repeat="summary in summarys">
+             <span>
+                 <img error-src=""  ng-src="{{summary.member_photo}}"/>
+                <span>&nbsp;&nbsp;{{summary.member_name}}&nbsp;&nbsp;{{summary.act_name+"了"}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                 <span style="color: #50ACF3">{{summary.fileName}}</span>
+             </span>
+            <button ng-click="goToFile($event,summary.fullpath)">
+                <i class="icon16x16 icon_search"></i>
+            </button>
+        </div>
+       </div>
 </div>

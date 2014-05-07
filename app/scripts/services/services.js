@@ -494,10 +494,26 @@ angular.module('gkClientIndex.services', [])
                     templateUrl: 'views/summary_dialog.html',
                     windowClass: 'chat_file_update_dialog',
                     controller: function ($scope,$modalInstance) {
+                        $scope.loadSummarySuccess = false;
+                        $scope.summarys = [];
                         GKChat.getSummarys(param).then(function(data){
                             console.log("=========500=========");
                             console.log(data);
-                            $scope.summarys = data.updates;
+                            if(data && data.updates){
+                                angular.forEach(data.updates,function(value){
+                                    var file_fullpath = value.fullpath;
+                                    var fileName = file_fullpath;
+                                    var index = file_fullpath.lastIndexOf("/");
+                                    if(index != -1){
+                                        fileName = file_fullpath.substring(index+1);
+                                    }
+                                    value.fileName = fileName;
+                                });
+                                $scope.summarys = data.updates;
+                            }else{
+
+                            }
+                            $scope.loadSummarySuccess = true;
                         });
                         //打开文件位置
                         $scope.goToFile = function ($event, fullpath) {

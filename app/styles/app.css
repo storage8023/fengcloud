@@ -2414,30 +2414,31 @@ padding: 6px 21px;
 }
 .chat_file_update_dialog .modal-body{
     padding:5px 0;
+    max-height:400px;
 }
-.chat_file_update_dialog .modal-body div{
+.chat_file_update_dialog .modal-body #content div{
     border-top:1px solid #33393F;
     height:42px;
     vertical-align: middle;
     line-height: 40px;
     padding:0 20px;
 }
-.chat_file_update_dialog .modal-body div span img{
+.chat_file_update_dialog .modal-body #content div span img{
     width:32px;
     height:32px;
     border-radius: 16px;
 }
-.chat_file_update_dialog .modal-body div button{
+.chat_file_update_dialog .modal-body #content div button{
     float:right;
     background:none;
     border: 0px;
     margin:10px 0;
     display: none;
 }
-.chat_file_update_dialog .modal-body div:hover{
+.chat_file_update_dialog .modal-body #content div:hover{
     background: #4D565F;
 }
 
-.chat_file_update_dialog .modal-body div:hover button{
+.chat_file_update_dialog .modal-body #content div:hover button{
     display: block;
 }
