@@ -1779,7 +1779,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }else{
                 var url = gkClientInterface.getUrl({
                     sso: 1,
-                    url: gkClientInterface.getSiteDomain()+'/ent/org?org_id='+$rootScope.PAGE_CONFIG.mount.org_id
+                    url: gkClientInterface.getSiteDomain()+'/ent/dispatch?ent_id='+$rootScope.PAGE_CONFIG.mount.ent_id+'&org_id='+$rootScope.PAGE_CONFIG.mount.org_id
                 });
                 gkClientInterface.openUrl(url);
             }
