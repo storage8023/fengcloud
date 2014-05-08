@@ -358,9 +358,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         //监听是否转入搜索视图
         $scope.searchText = "";
-        $scope.$watch("searchText",function(nValue,oldValue){
-            $scope.$emit("searchTextChange",nValue);
-        });
+        $scope.curIsActive = false;
         $scope.$watch(function(){
             return $scope.allTreeList.length;
         },function(nValue,oValue){
@@ -380,9 +378,14 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $rootScope.PAGE_CONFIG.isSearch = false;
             }
         });
+        $scope.startSearch = function(){
+            $scope.$emit("searchTextChange",$scope.searchText);
+        }
+
         //清空搜索
-        $scope.clearSearchText = function(){
+        $scope.clearSearch = function(){
             $scope.searchText = "";
+            $scope.$emit("searchTextChange",$scope.searchText);
         }
     //end
         $scope.$on('initSelectedBranch',function(){

@@ -121,11 +121,10 @@
         </abn-tree>
     </div>
 
-    <div style="position: fixed;height: 35px;width:192px;text-align: center; bottom:0px;background-color:#24272b;padding-top:5px;">
-        <input type="text"  ng-model="searchText"  placeholder="输入库名搜索" style="border-radius: 16px; border: 0px; padding:0 10px; background-color: #c4c4c4; width:90%; height:24px;"/>
-        <div style="position: absolute;width:16px; height: 16px;right:5%;bottom:10px;" ng-click="clearSearchText();">
-
-        </div>
+    <div class="search_area">
+        <button ng-click="startSearch();">  <i class="icon16x16 icon_search"></i></button>
+        <input type="text"  ng-model="searchText"  placeholder="输入库名搜索"/>
+        <button ng-click="clearSearch();" ng-show="searchText.length">  <i class="icon16x16 icon_clear"></i> </button>
     </div>
 </aside>
 

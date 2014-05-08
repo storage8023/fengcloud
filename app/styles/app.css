@@ -540,6 +540,8 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 .left_sidebar .smart_tree_list ul.nav.nav-list.abn-tree .node_icon{
     margin-left: 11px;
 }
+
+
 .right_sidebar,
 .nearby_sidebar{
     right: 0;
@@ -2458,4 +2460,58 @@ padding: 6px 21px;
     filter:alpha(opacity=50);
     -moz-opacity:0.5;
     opacity:0.5;
+}
+
+/*云库树节点搜索区域样式*/
+.icon_clear{
+    background: url(../images/icon/clear.png);
+}
+
+.search_area{
+    position: fixed;
+    height: 35px;
+    width:200px;
+    text-align: center;
+    bottom:0px;
+    background-color:#24272b;
+    padding-top:5px;
+    border-top: 1px solid #000000;
+}
+.search_area input{
+    border-radius: 16px;
+    border: 0px;
+    padding:0 25px;
+    background-color: #40464d;
+    width:90%;
+    height:24px;
+}
+
+.search_area input:focus{
+  background-color: #FFFFFF;
+}
+
+.search_area button{
+    border:0px;
+    position: absolute;
+    width:16px;
+    height: 16px;
+    bottom:11px;
+    background:none;
+}
+.search_area button >i {
+    margin-right: 0;
+    margin-top: 0;
+    opacity: .5;
+}
+.search_area button:hover >i {
+    opacity: 1;
+}
+
+.search_area button:nth-child(1){
+    left:5%;
+    margin-left:5px;
+}
+.search_area button:nth-last-child(1){
+    right:5%;
+    margin-right:5px;
 }
