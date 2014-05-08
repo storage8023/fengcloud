@@ -1310,10 +1310,9 @@ angular.module('gkClientIndex.directives', [])
                     //判断文件是否存在，不存在则不能打开
                     var file = gkClientInterface.getFileInfo({
                         mountid: mountId,
-                        webpath: history.fullpath
+                        uuidhash: history.hash
                     });
-                    if(!file || !file.mount_id)
-                        return;
+                    if(!file) return;
 
                     if(history.dir == 1){
                         if(history.act == 0) return;
@@ -1326,7 +1325,7 @@ angular.module('gkClientIndex.directives', [])
                         if(!mountId) return;
                         gkClientInterface.open({
                             mountid:mountId,
-                            webpath:history.fullpath,
+                            webpath:file.path,
                             version:Number(version)
                         });
                     }
