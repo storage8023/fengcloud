@@ -147,7 +147,7 @@ header .tabbar li.current i.icon_file_white{
     background: #fff;
     height: 26px;
     position: relative;
-    margin: 0 10px;
+    margin: 0 10px 0 60px;
     top:6px;
 }
 .bread_and_search_wrapper .searching_label{
@@ -2458,3 +2458,21 @@ padding: 6px 21px;
     -moz-opacity:0.5;
     opacity:0.5;
 }
+/*前进后退按钮样式*/
+.forword-back{
+    width: 16px;
+    height: 16px;
+    background-image: url(../images/icon/forword-back.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 5px;
+}
+
+.forword{
+    background-position:-16px 0px;
+}
+.back{
+    background-position:-16px -16px;
+}
+
