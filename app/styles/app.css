@@ -2498,12 +2498,10 @@ padding: 6px 21px;
     bottom:11px;
     background:none;
 }
+ 
 .search_area button >i {
     margin-right: 0;
     margin-top: 0;
-    opacity: .5;
-}
-.search_area button:hover >i {
     opacity: 1;
 }
 

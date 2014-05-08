@@ -378,10 +378,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 $rootScope.PAGE_CONFIG.isSearch = false;
             }
         });
-        $scope.startSearch = function(){
-            $scope.$emit("searchTextChange",$scope.searchText);
-        }
-
+        $scope.$watch("searchText",function(nValue,oValue){
+            $scope.$emit("searchTextChange",nValue);
+        });
         //清空搜索
         $scope.clearSearch = function(){
             $scope.searchText = "";
