@@ -384,7 +384,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         //清空搜索
         $scope.clearSearch = function(){
             $scope.searchText = "";
-            $scope.$emit("searchTextChange",$scope.searchText);
         }
     //end
         $scope.$on('initSelectedBranch',function(){
