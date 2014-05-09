@@ -45,7 +45,7 @@
 <div class="loading" ng-show="showLoading" style="position: absolute;left:0;right:0;bottom:0;top:0;z-index: 9999;background: #40464d url(images/loading.png) no-repeat 50%;text-align: center;padding-top: 400px;color:#2d3439;font-size:14px">正在加载...</div>
 <aside class="scrollbar dark left_sidebar" ng-controller="leftSidebar">
     <member user="PAGE_CONFIG.user" new-msg="newMsg" mode="PAGE_CONFIG.browserMode"></member>
-    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='file'">
+    <div class="tree_wrapper" contextmenu ng-if="!PAGE_CONFIG.isSearch && PAGE_CONFIG.browserMode=='file'">
         <div>
             <abn-tree tree-data="orgTreeList"
                       header="我的云库"
@@ -97,7 +97,7 @@
         </abn-tree>
     </div>
 
-    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='chat'">
+    <div class="tree_wrapper" contextmenu ng-if="!PAGE_CONFIG.isSearch && PAGE_CONFIG.browserMode=='chat'">
         <abn-tree tree-data="allTreeList"
                   init-selected-branch="initSelectedBranch"
                   on-drop = "handleDrop(branch)"
@@ -107,6 +107,24 @@
                   show-msg-icon="true"
                 >
         </abn-tree>
+    </div>
+
+    <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.isSearch">
+        <abn-tree tree-data="searchTreeList"
+                  init-selected-branch="initSelectedBranch"
+                  on-drop = "handleDrop(branch)"
+                  selected-branch="selectedBranch"
+                  order-by="['-branch.newMsgTime']"
+                  on-select="handleSelect(branch)"
+                  show-msg-icon="true"
+                >
+        </abn-tree>
+    </div>
+
+    <div class="search_area">
+        <button disabled>  <i class="icon16x16 icon_search"></i></button>
+        <input type="text"  ng-model="searchText"  placeholder="输入库名搜索"/>
+        <button ng-click="clearSearch();" ng-show="searchText.length">  <i class="icon16x16 icon_clear"></i> </button>
     </div>
 </aside>
 

@@ -414,6 +414,37 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if(!$location.search().partition){
             $scope.initSelectedBranch = $scope.orgTreeList[0];
         }
+
+        //监听是否转入搜索视图
+        $scope.searchText = "";
+        $scope.curIsActive = false;
+        $scope.$watch(function(){
+            return $scope.allTreeList.length;
+        },function(nValue,oValue){
+             $scope.$emit("searchTextChange",$scope.searchText);
+        });
+        $scope.$on('searchTextChange',function(obj,searchText){
+            if(searchText && searchText.length > 0){
+                $scope.searchTreeList = [];
+                angular.forEach($scope.allTreeList,function(treeNode){
+                    if(treeNode.label.indexOf(searchText) != -1){
+                        $scope.searchTreeList.push(treeNode);
+                    }
+                });
+                $scope.initSelectedBranch = $scope.searchTreeList[0];
+                $rootScope.PAGE_CONFIG.isSearch = true;
+            }else{
+                $rootScope.PAGE_CONFIG.isSearch = false;
+            }
+        });
+        $scope.$watch("searchText",function(nValue,oValue){
+            $scope.$emit("searchTextChange",nValue);
+        });
+        //清空搜索
+        $scope.clearSearch = function(){
+            $scope.searchText = "";
+        }
+    //end
         $scope.$on('initSelectedBranch',function(){
             $timeout(function(){
                 unSelectAllBranch();
