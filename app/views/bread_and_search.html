@@ -1,11 +1,13 @@
 <div>
+
 <div style="float:left;width:50px;margin-left:10px; margin-top:6px;">
-    <a href="#">
-        <li class="forword-back back"></li>
+    <a href="javascript:;" ng-click="PAGE_CONFIG.visitHistory.clickPrev();">
+        <li title="后退" ng-class="PAGE_CONFIG.visitHistory.hasPrev()?'forword-back back-active':'forword-back back'"></li>
     </a>
+
     &nbsp;&nbsp;
-    <a href="#">
-        <li class="forword-back forword"></li>
+    <a href="javascript:;" ng-click="PAGE_CONFIG.visitHistory.clickNext();">
+        <li title="前进" ng-class="PAGE_CONFIG.visitHistory.hasNext()?'forword-back forword-active':'forword-back forword'"></li>
     </a>
 </div>
 <div class="bread_and_search_wrapper" ng-class="searchState?'searching '+searchState:''" ng-click="showSearch($event)" >

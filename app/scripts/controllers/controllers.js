@@ -15,7 +15,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
+    .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope','GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
         $rootScope.PAGE_CONFIG = {
             siteDomain:gkClientInterface.getSiteDomain(),
             user: gkClientInterface.getUser(),
@@ -25,7 +25,72 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             mode:'',
             browserMode:GKBrowserMode.getMode(),
             partition:'',
-            networkConnected: Number(gkClientInterface.getNetworkStatus())
+            networkConnected: Number(gkClientInterface.getNetworkStatus()),
+            visitHistory:{
+                //记录访问历史，实现回退前进功能
+                historyArr:[],
+                selectedHistory:{},
+                //清空历史游标
+                clearHistoryFlag:function(){
+                    angular.forEach(this.historyArr,function(value){
+                        if(value && value.selected){
+                            value.selected = false;
+                        }
+                    });
+                },
+                //获取当前所在的历史
+                getHistory:function(){
+                    var currHistory = {};
+                    for(var i=0;i<this.historyArr.length;i++){
+                        var value = this.historyArr[i];
+                        if(value && value.selected){
+                            currHistory = value;
+                            break;
+                        }
+                    }
+                    return currHistory;
+                },
+
+                hasPrev:function(){
+                    if(this.historyArr){
+                        var len = this.historyArr.length;
+                        if(len > 1){
+                            var currIndex = this.selectedHistory.index;
+                            if(currIndex > 0) return true;
+                        }
+                    }
+                    return false;
+                },
+                hasNext:function(){
+                    if(this.historyArr) {
+                        var len = this.historyArr.length;
+                        if (len > 1) {
+                            var currIndex = this.selectedHistory.index;
+                            if(currIndex < len-1) return true;
+                        }
+                    }
+                    return false;
+                },
+                clickPrev:function(){
+                   if(this.hasPrev()) {
+                       var index = this.selectedHistory.index;
+                       this.historyArr[index].selected = false;
+                       this.historyArr[index - 1].selected = true;
+                       this.selectedHistory = this.historyArr[index - 1];
+                       $location.search(this.selectedHistory);
+                   }
+                },
+                clickNext:function(){
+                    if(this.hasNext()) {
+                        var index = this.selectedHistory.index;
+                        this.historyArr[index].selected = false;
+                        this.historyArr[index + 1].selected = true;
+                        this.selectedHistory = this.historyArr[index + 1];
+                        $location.search(this.selectedHistory);
+                    }
+                }
+            }
+
         };
 
         $scope.showLoading = gkClientInterface.needLoading() == 1?true:false;
@@ -1092,6 +1157,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.limit = 100;
 
         $scope.$on('$locationChangeSuccess',function(){
+            var param = $location.search();
+
+            //记录访问历史
+            if($rootScope.PAGE_CONFIG.mode && $rootScope.PAGE_CONFIG.mode=='file' && !param.isHistory) {
+                var history = $rootScope.PAGE_CONFIG.visitHistory.selectedHistory;
+                //如果当前点击的节点跟当前选中的历史节点相同，则不做处理
+                if(param.partition == history.partition && param.mountid == history.mountid && param.path == history.path){
+                    return ;
+                }
+                $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();
+                param.selected = true;
+                param.isHistory = true;
+                param.index = $rootScope.PAGE_CONFIG.visitHistory.historyArr.length;
+                $rootScope.PAGE_CONFIG.visitHistory.selectedHistory = param;
+                $rootScope.PAGE_CONFIG.visitHistory.historyArr.push(param);
+            }
             setBread();
             getFileData();
         })
