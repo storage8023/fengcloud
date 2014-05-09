@@ -721,7 +721,7 @@ angular.module('GKCommon.directives', [])
             restrict: 'E',
             replace: true,
             scope: { list: '=', onSelect: '&', 'isOpen': '&'},
-            template: '<ul class="dropdown-menu input_tip_list" ng-show="isOpen()">'
+            template: '<ul class="dropdown-menu input_tip_list scrollbar" ng-show="isOpen()">'
                 + '<li ng-repeat="item in list"><a  ng-mouseenter="handleMouseEnter($index)" ng-click="handleClick($event,$index)" ng-class="item.selected?\'active\':\'\'" title="{{item.member_name}}" href="javascript:void(0)">{{item.member_name}}</a></li>'
                 + '</ul>',
             link: function ($scope, $element, $attrs) {
@@ -844,7 +844,6 @@ angular.module('GKCommon.directives', [])
 
                     ttWidth = inputtip.outerWidth();
                     ttHeight = inputtip.outerHeight();
-
                     /**
                      * 获取光标在输入框的位置
                      * @type {*}
@@ -855,11 +854,9 @@ angular.module('GKCommon.directives', [])
                         top: cursorPosition.top + lineHeight,
                         left: cursorPosition.left
                     }
-
                     if (ttPosition.top + ttHeight > jQuery(window).height()) {
-                        ttPosition.top = ttPosition.top - ttHeight - lineHeight - parseInt($element.css('line-height').replace('px'));
+                        ttPosition.top = ttPosition.top - ttHeight - $element[0].scrollTop;
                     }
-
                     if (ttPosition.left + ttWidth > jQuery(window).width()) {
                         ttPosition.left = ttPosition.left - ttWidth;
                     }
