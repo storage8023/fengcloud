@@ -17,9 +17,9 @@
         </div>
     </div>
     <div class="file_opt" ng-if="msg.file">
-        <span ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0" ng-bind="msg.metadata.filename">
+        <span class="filt_opt_name" ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0" ng-bind="msg.metadata.filename">
         </span>
-        <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_search"></i></button>
+        <button title="位置" style="{{['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0?' display: block;float: right;margin-top: -20px;':''}}" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_search"></i></button>
     </div>
     <div class="file_progress" ng-if="msg.file.status==1 && msg.metadata.dir==0">
         <progressbar ng-if="msg.metadata.dir==0" max="msg.metadata.filesize" value="msg.offset" animate="true"></progressbar>
