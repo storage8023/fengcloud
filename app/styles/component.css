@@ -907,7 +907,7 @@ a:hover > .icon16x16.icon_link,
 
 /*图片文件*/
 .file_icon128x128.icon_image {
-    background-image: url(../images/icon/image128x128.png);
+    background: url(../images/icon/image128x128.png) no-repeat;
 }
 
 /*文档文件*/
