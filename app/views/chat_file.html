@@ -17,8 +17,7 @@
         </div>
     </div>
     <div class="file_opt" ng-if="msg.file">
-        <span ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0" ng-bind="msg.metadata.filename|subFileName">
-
+        <span ng-if="['jpg','jpeg','png','gif','bmp'].indexOf(msg.metadata.ext)>=0" ng-bind="msg.metadata.filename">
         </span>
         <button title="位置" class="" ng-click="goToFile($event,msg.file)"><i class="icon16x16 icon_search"></i></button>
     </div>

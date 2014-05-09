@@ -8,12 +8,12 @@
        </div>
        <div ng-show="loadSummarySuccess" id="content">
         <div ng-repeat="summary in summarys">
-             <span>
+             <span class="summary-item">
                  <img error-src=""  ng-src="{{summary.member_photo}}"/>
                 <span>&nbsp;&nbsp;{{summary.member_name}}&nbsp;&nbsp;{{summary.act_name+"了"}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                 <span style="color: #50ACF3">{{summary.fileName}}</span>
+                <span style="color: #50ACF3;" ng-bind="summary.fileName" title="{{summary.fileName}}"></span>
              </span>
-            <button ng-click="goToFile($event,summary.fullpath)">
+            <button ng-click="goToFile($event,summary.fullpath)" title="位置">
                 <i class="icon16x16 icon_search"></i>
             </button>
         </div>

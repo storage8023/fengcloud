@@ -2458,3 +2458,12 @@ padding: 6px 21px;
     -moz-opacity:0.5;
     opacity:0.5;
 }
+
+.chat_file_update_dialog .modal-body .summary-item{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    display:block;
+    float: left;
+    width:420px;
+}

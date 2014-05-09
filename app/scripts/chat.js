@@ -944,12 +944,4 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 element.html(bind === undefined ? '' : bind);
             });
         }
-    }])
-    .filter('subFileName',[function(){
-        return function(strFileName){
-            if(!strFileName || strFileName.length <= 5) return strFileName;
-            strFileName = strFileName.substring(0,5) + "...";
-            return strFileName;
-        }
     }]);
-;
