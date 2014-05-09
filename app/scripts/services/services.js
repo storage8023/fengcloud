@@ -529,8 +529,16 @@ angular.module('gkClientIndex.services', [])
                             }
                         }
                         //打开文件位置
-                        $scope.goToFile = function ($event, fullpath) {
-                            var fullpath = fullpath;
+                        $scope.goToFile = function ($event, summary) {
+                           var file = gkClientInterface.getFileInfo({
+                                mountid: Number(summary.mount_id),
+                                uuidhash: summary.hash
+                            });
+                            if(!file || !file.path){
+                              alert("定位失败，文件已删除！");
+                              return;
+                            }
+                            var fullpath = file.path;
                             window.top.gkFrameCallback('OpenMountPath', {
                                 mountid: param.mountId,
                                 webpath: fullpath
