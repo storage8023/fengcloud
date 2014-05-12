@@ -431,7 +431,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         $scope.searchTreeList.push(treeNode);
                     }
                 });
-                $scope.initSelectedBranch = $scope.searchTreeList[0];
+                //$scope.initSelectedBranch = $scope.searchTreeList[0];
                 $rootScope.PAGE_CONFIG.isSearch = true;
             }else{
                 $rootScope.PAGE_CONFIG.isSearch = false;
@@ -1189,7 +1189,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
-
+            console.log(param)
             //记录访问历史
             if($rootScope.PAGE_CONFIG.mode && $rootScope.PAGE_CONFIG.mode=='file' && !param.isHistory) {
                 var history = $rootScope.PAGE_CONFIG.visitHistory.selectedHistory;
