@@ -383,6 +383,14 @@ color: #f16262;
     text-align: center;
 }
 
+.chat_file .file_opt .filt_opt_name{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:96px;
+    display:block;
+}
+
 .chat_file:hover .file_opt{
 
 }

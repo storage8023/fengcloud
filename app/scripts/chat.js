@@ -80,6 +80,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
+
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
@@ -647,6 +648,9 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                         }
                     }
                 }
+                if(value.type == 'summary' && value.metadata){
+                    value.content = gkClient.gGetMetadataChange('{"count":'+value.metadata.count+',"from":'+value.metadata.from+',"to":'+value.metadata.to+'}');
+                }
                 angular.extend(value, extendValue);
                 return value;
             },
@@ -944,12 +948,4 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                 element.html(bind === undefined ? '' : bind);
             });
         }
-    }])
-    .filter('subFileName',[function(){
-        return function(strFileName){
-            if(!strFileName || strFileName.length <= 5) return strFileName;
-            strFileName = strFileName.substring(0,5) + "...";
-            return strFileName;
-        }
     }]);
-;
