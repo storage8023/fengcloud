@@ -503,7 +503,6 @@ angular.module('gkClientIndex.services', [])
                         $scope.isLoading = false;
                         param.size = perPageItemNum;
                         GKChat.getSummarys(param).then(function(data){
-                            console.log(data);
                             if(data && data.updates){
                                if(data.updates.length < perPageItemNum) $scope.ableScroll = false;
                                else data.updates.splice(data.updates.length - 1,1);
