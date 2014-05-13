@@ -21,7 +21,8 @@
                                     <span style="color:#c4c7cb;" ng-bind="discuss.time|timeAgo"></span>
                               </span>
                         </div>
-                         <span>{{discuss.content}}
+                         <span>
+                             <span chat-bind="discuss.content" class="text"></span>
                              <i title="消息发送失败" class="icon16x16 icon_warning" ng-show="!discuss.status"></i>
                          </span>
 

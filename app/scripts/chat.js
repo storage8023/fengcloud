@@ -833,31 +833,4 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             templateUrl: "views/chat_audio.html"
         }
     }])
-    .directive('chatBind', ['$compile', '$rootScope',function ($compile,$rootScope) {
-        return function (scope, element, attr) {
-            scope.$watch(attr.chatBind, function (value) {
-                var bind = value;
-                //对html文本和js代码转义
-                bind = bind.replace(/>/g, '&gt;')
-                bind = bind.replace(/</g, '&lt;');
-                var atMatches =  value.match(Util.RegExp.AT);
-                if(atMatches && atMatches.length){
-                    atMatches = Util.Array.unique(atMatches);
-                    angular.forEach(atMatches,function(val){
-                        var name = jQuery.trim(val.replace('@',''));
-                        bind = bind.replace(new RegExp(val, 'g'), '<span ng-click="atMember(\''+name+'\')" class="at_member'+(name==$rootScope.PAGE_CONFIG.user.member_name?' mine':'')+'">'+val+'</span>');
-                    });
-                }
 
-                if (Util.RegExp.HTTPStrict.test(bind)) {
-                    bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
-                }
-                /**工具栏**/
-//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
-//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1"  class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
-//                }
-                bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
-                element.html(bind === undefined ? '' : bind);
-            });
-        }
-    }]);
