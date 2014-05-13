@@ -4,9 +4,10 @@
             <span style="font-size: 14px; color: #464952;margin-left:10px;">文件讨论</span>
             <span style="display: block;float: right;margin-right:10px;cursor:pointer;" ng-click="cancel();"><i class="icon16x16 icon_clear"></i></span>
         </header>
-        <section class="scrollbar discuss-list" style="position:absolute;top:45px;left:0px;right:0px;padding: 0px;bottom: 100px; overflow: auto;">
-            <ul class="scrollbar history_list" >
-                <li class="c_f_after" ng-repeat="discuss in discussionList">
+        <section class="scrollbar discuss-list" style="position:absolute;top:45px;left:0px;right:0px;padding: 0px;bottom: 100px; overflow: auto;"
+                 scroll-to-msg="scrollToIndex">
+            <ul class="history_list" >
+                <li class="chat_item c_f_after " ng-repeat="discuss in discussionList">
                     <div  style="width:22px; float: left;margin-right:20px;">
                         <div>
                             <avatar class="avatar" gk-src="{{discuss.sender|getAvatarUrl:0:true}}"></avatar>
@@ -29,7 +30,7 @@
             </ul>
         </section>
         <footer style="height:100px">
-             <textarea ng-style="textareaStyle" ng-model="discussContent"   placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;" ng-keydown="handleKeyDown($event,discussContent)"></textarea>
+             <textarea ng-style="textareaStyle" ng-model="discussContent" focus-me="focusTextarea" input-tip="@" input-tip-list="remindMembers" input-tip-placement="top right"  placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;" ng-keydown="handleKeyDown($event,discussContent)"></textarea>
              <div class="btn_wrapper">
                 <span class="ng-binding">你已输入了{{discussContent.length}}个字</span>
                 <button class="btn btn-primary pull-right post_btn" ng-click="sendDiscussion(discussContent)">发 送</button>

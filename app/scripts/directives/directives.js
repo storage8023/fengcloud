@@ -1918,41 +1918,51 @@ angular.module('gkClientIndex.directives', [])
                 scope.currentDiscussFile = null;
                 scope.discussionList = [];
                 scope.discussContent = "";
-                scope.$on("updateDiscussMsg",function(obj,item){
+                scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
                     if(!scope.currentDiscussFile){
                         return;
                     }
                     console.log(scope.currentDiscussFile);
                     console.log("================udpate discuss msg===================");
-                    console.log(item);
-                    console.log(item.sender == $rootScope.PAGE_CONFIG.user.member_name);
-                    if(item.sender == $rootScope.PAGE_CONFIG.user.member_name){
-                        return;
-                    }
-                    else{
-                        console.log(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id);
-                        if(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id){
-                            console.log(scope.currentDiscussFile.filehash == item.file.filehash);
-                            if(scope.currentDiscussFile.filehash == item.file.filehash){
-                                 console.log("===== my message =====");
+                    angular.forEach(discussHistoryArr,function(item){
+                        console.log(item);
+                        console.log(item.sender == $rootScope.PAGE_CONFIG.user.member_name);
+                        if(item.sender == $rootScope.PAGE_CONFIG.user.member_name){
+                            return;
+                        }
+                        else{
+                            console.log(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id);
+                            if(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id){
+                                console.log(scope.currentDiscussFile.filehash == item.file.filehash);
+                                if(scope.currentDiscussFile.filehash == item.file.filehash){
+                                    console.log("===== my message =====");
+                                    scope.discussionList.push(item);
+                                    scope.scrollToIndex = scope.discussionList.length -1;
+                                }
                             }
                         }
-                    }
+                    });
+
                 });
                 scope.$on("showDiscussHistory",function(obj,file){
                     scope.currentDiscussFile = file;
                     scope.canShowHistory = true;
                     element.animate({right:0},300);
                     console.log(file);
+
                     GKFile.getDiscussHistory(file).then(function(data){
                         scope.discussionList = [];
-                        console.log("=============discuss history================");
                         angular.forEach(data.list,function(value){
                             value.status = true
                             scope.discussionList.push(value);
                         });
+                        scope.scrollToIndex = scope.discussionList.length -1;
                     });
                 });
+                scope.$on("closeDiscussHistory",function(){
+                   close();
+                });
+
                 scope.handleKeyDown = function ($event, message) {
                     var msg = GKKeyEvent.postMsgKeyDown($event,message);
                     if(msg == "-1" || msg == "0"){
@@ -1985,6 +1995,7 @@ angular.module('gkClientIndex.directives', [])
                         type:"text"
                     }
                     scope.discussionList.push(newDisscussMsg)
+                    scope.scrollToIndex = scope.discussionList.length -1;
                     GKApi.markMilestone(scope.currentDiscussFile.mount_id,scope.currentDiscussFile.fullpath,message,1)
                         .success(function(data){
                             newDisscussMsg.status=true;
@@ -1994,10 +2005,16 @@ angular.module('gkClientIndex.directives', [])
                             console.log(scope.discussionList)
                         })
                 };
-                scope.cancel = function(){
+
+                var close = function(){
                     element.animate({right:ELEMENT_RIGHT},200,function(){
                         scope.canShowHistory = false;
+                        scope.discussionList = [];
                     });
+                };
+
+                scope.cancel = function(){
+                    close();
                 };
                 $timeout(function(){
                     element.css("right",ELEMENT_RIGHT+"px");

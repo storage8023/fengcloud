@@ -1012,6 +1012,25 @@ angular.module('GKCommon.directives', [])
             }
         }
     }])
+    .directive('scrollToMsg', ['$timeout', function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                $scope.$watch($attrs.scrollToMsg, function (value, oldValue) {
+                    if (angular.isNumber(value)) {
+                        if (value < 0) value = 0;
+                        $timeout(function () {
+                            var chatItem = $element.find('.chat_item:eq(' + value + ')');
+                            if (chatItem.size()) {
+                                $element.scrollTop(chatItem.position().top + $element.scrollTop());
+                            }
+                        });
+                        $scope[$attrs.scrollToMsg] = undefined;
+                    }
+                });
+            }
+        }
+    }])
 ;
 /* Services */
 angular.module('GKCommon.services', [])

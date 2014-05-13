@@ -82,6 +82,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 console.log("===chat message ===");
                 console.log(re);
+                var discussHistoryArr = [];
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
@@ -97,9 +98,13 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
 
                         chatContent.add($scope.currentMsgList, item);
                         if(item.type && item.type == 'file'){
-                            topWindow.gkFrameCallback("updateDiscussMsg",{item:item});
+                            discussHistoryArr.push(item);
                         }
                     });
+
+                    if(discussHistoryArr.length > 0){
+                        topWindow.gkFrameCallback("updateDiscussMsg",{discussHistoryArr:discussHistoryArr});
+                    }
                 }
                 if (typeof callback === 'function') {
                     callback();
@@ -865,25 +870,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             }
         }
     }])
-    .directive('scrollToMsg', ['$timeout', function ($timeout) {
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                $scope.$watch($attrs.scrollToMsg, function (value, oldValue) {
-                    if (angular.isNumber(value)) {
-                        if (value < 0) value = 0;
-                        $timeout(function () {
-                            var chatItem = $element.find('.chat_item:eq(' + value + ')');
-                            if (chatItem.size()) {
-                                $element.scrollTop(chatItem.position().top + $element.scrollTop());
-                            }
-                        });
-                        $scope[$attrs.scrollToMsg] = undefined;
-                    }
-                });
-            }
-        }
-    }])
+
     .directive('chatFile', [function () {
         return {
             replace: true,
