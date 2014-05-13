@@ -1286,6 +1286,8 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.showMilestoneDialog = function(file){
+                    $scope.$emit("showDiscussHistory",file);
+                    return;
                     var firstHistory = histories[0];
                     var oldMsg = '';
                     if(firstHistory){
