@@ -1160,6 +1160,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         //判断讨论历史窗口是否打开
         $scope.showDisscussHitoryWin = false;
         $scope.handleClick = function ($event, index,file) {
+            //如果文件或文件夹讨论历史窗口被打开，则加载数据
             if($scope.showDisscussHitoryWin){
                 $scope.$broadcast("showDiscussHistory",file);
             }
@@ -1263,6 +1264,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
+                //如果文件或文件夹讨论历史窗口被打开，则关闭
+                if($scope.showDisscussHitoryWin){
+                    $scope.$broadcast('closeDiscussHistory');
+                }
                 GKFileList.unSelectAll($scope);
             }
         };

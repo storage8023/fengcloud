@@ -1954,6 +1954,9 @@ angular.module('gkClientIndex.directives', [])
                         }
                     });
                 });
+                scope.$on("closeDiscussHistory",function(){
+                   close();
+                });
                 scope.$on("showDiscussHistory",function(obj,file){
                     scope.showDisscussHitoryWin = true;
                     scope.loadDiscussionhistory = true;
