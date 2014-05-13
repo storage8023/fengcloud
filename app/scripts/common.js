@@ -2176,6 +2176,21 @@ angular.module('GKCommon.services', [])
                     data: params
                 });
             },
+            disscussHistory:function(mountId,path){
+                 var params = {
+                     mount_id:mountId,
+                     fullpath:path,
+                     token:gkClientInterface.getToken(),
+                 };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                     type:'GET',
+                     url:gkClientInterface.getApiHost() + '/1/file/remark',
+                    data:params
+                });
+
+            },
             list: function (mountId, fullpath, start, size, dir) {
                 var params = {
                     mount_id: mountId,

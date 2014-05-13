@@ -1907,7 +1907,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
-    .directive('discussHistory',['$timeout','$interval',function($timeout,$interval){
+    .directive('discussHistory',['$timeout','$interval','GKFile',function($timeout,$interval,GKFile){
         return{
             restrict: 'E',
             replace: true,
@@ -1916,9 +1916,13 @@ angular.module('gkClientIndex.directives', [])
                 var ELEMENT_RIGHT = -300;
                 scope.canShowHistory = false;
                 scope.$on("showDiscussHistory",function(obj,file){
-
                     scope.canShowHistory = true;
                     element.animate({right:0},300);
+                    console.log(file);
+                    GKFile.getDiscussHistory(file).then(function(data){
+                        console.log("=============discuss history================")
+                        console.log(data);
+                    });
                 });
                 scope.cancel = function(){
                     element.animate({right:ELEMENT_RIGHT},200,function(){

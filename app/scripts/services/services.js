@@ -2268,6 +2268,16 @@ angular.module('gkClientIndex.services', [])
 
                 return formatedFile;
             },
+            getDiscussHistory:function(file){
+                var deferred = $q.defer();
+                //查询出来的消息
+                GKApi.disscussHistory(file.mount_id,file.fullpath).success(function (data) {
+                    deferred.resolve(data);
+                }).error(function (request) {
+                    deferred.reject(GKException.getAjaxErrorMsg(request));
+                })
+                return deferred.promise;
+            },
             getFileList: function (mountId, fullpath, source, option) {
                 var deferred = $q.defer(),
                     list;
