@@ -2467,7 +2467,11 @@ padding: 6px 21px;
     float: left;
     width:420px;
 }
-
+/*云库树节点搜索区域样式*/
+.icon_clear{
+    height:17px;
+    background: url(../images/icon/clear.png);
+}
 
 footer textarea{
     position: absolute;
