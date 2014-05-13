@@ -834,6 +834,13 @@
         } catch (e) {
             this._handleException(e);
         }
+    },
+    getSummaryText:function(count,from,to){
+        try {
+           return  gkClient.gGetMetadataChange('{"count":' + count + ',"from":' + from + ',"to":' + to + '}');
+        }catch(e){
+            this._handleException(e);
+        }
     }
 };
 

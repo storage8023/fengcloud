@@ -2229,6 +2229,34 @@ angular.module('GKCommon.services', [])
         }
         return GKApi;
     }])
+    .factory('GKKeyEvent',[function(){
+        return{
+            postMsgKeyDown: function ($event, postText,showTopicLabel,isToolTipOpen,topic) {
+
+                var keyCode = $event.keyCode;
+                if (isToolTipOpen) {
+                    return "-1";
+                }
+                if (keyCode == 13) {
+                    if (!postText && !showTopicLabel) {
+                        $event.preventDefault();
+                        return "-1";
+                    }
+                    if (postText.length > 800) {
+                        alert('一次发送的消息字数不能超过800字，请分条发送');
+                        return "-1";
+                    }
+                    if (showTopicLabel) {
+                        postText = '#' + topic + '#' + postText
+                    }
+                    $event.preventDefault();
+
+                    return postText;
+                }
+                return "0";
+             }
+        }
+    }])
 ;
 angular.module('GKCommon.filters', [])
     .filter('strLen', function () {

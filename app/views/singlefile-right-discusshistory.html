@@ -6,84 +6,33 @@
         </header>
         <section class="scrollbar discuss-list" style="position:absolute;top:45px;left:0px;right:0px;padding: 0px;bottom: 100px; overflow: auto;">
             <ul class="scrollbar history_list" >
-                <li class="c_f_after">
+                <li class="c_f_after" ng-repeat="discuss in discussionList">
                     <div  style="width:22px; float: left;margin-right:20px;">
                         <div>
-                            <avatar class="avatar" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
+                            <avatar class="avatar" gk-src="{{discuss.sender|getAvatarUrl:0:true}}"></avatar>
                         </div>
                     </div>
                     <div  style="float:left;width:230px">
                         <div>
                               <span>
-                                    <span style="color: #88B9E0;">许海浩</span>
-                                    <span style="color:#c4c7cb;">今天 16:14</span>
+                                    <span style="color: #88B9E0;" ng-bind="discuss.sender"></span>
+                                    <span style="color:#c4c7cb;" ng-bind="discuss.time|timeAgo"></span>
                               </span>
                         </div>
-                         <span>这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看</span>
+                         <span>{{discuss.content}}
+                             <i title="消息发送失败" class="icon16x16 icon_warning" ng-show="!discuss.status"></i>
+                         </span>
 
                     </div>
                 </li>
 
-                <li class="c_f_after">
-                    <div  style="width:22px; float: left;margin-right:20px;">
-                        <div>
-                            <avatar class="avatar" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
-                        </div>
-                    </div>
-                    <div  style="float:left;width:230px">
-                        <div>
-                              <span>
-                                    <span style="color: #88B9E0;">许海浩</span>
-                                    <span style="color:#c4c7cb;">今天 16:14</span>
-                              </span>
-                        </div>
-                        <span>这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看</span>
-
-                    </div>
-                </li>
-
-                <li class="c_f_after">
-                    <div  style="width:22px; float: left;margin-right:20px;">
-                        <div>
-                            <avatar class="avatar" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
-                        </div>
-                    </div>
-                    <div  style="float:left;width:230px">
-                        <div>
-                              <span>
-                                    <span style="color: #88B9E0;">许海浩</span>
-                                    <span style="color:#c4c7cb;">今天 16:14</span>
-                              </span>
-                        </div>
-                        <span>这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看</span>
-
-                    </div>
-                </li>
-
-                <li class="c_f_after">
-                    <div  style="width:22px; float: left;margin-right:20px;">
-                        <div>
-                            <avatar class="avatar" gk-src="{{history.member_id|getAvatarUrl}}"></avatar>
-                        </div>
-                    </div>
-                    <div  style="float:left;width:230px">
-                        <div>
-                              <span>
-                                    <span style="color: #88B9E0;">许海浩</span>
-                                    <span style="color:#c4c7cb;">今天 16:14</span>
-                              </span>
-                        </div>
-                        <span>这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看这个文件已经更新了，大家一起来看看</span>
-
-                    </div>
-                </li>
             </ul>
         </section>
         <footer style="height:100px">
-             <textarea ng-style="textareaStyle"   placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;"></textarea>
+             <textarea ng-style="textareaStyle" ng-model="discussContent"   placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;" ng-keydown="handleKeyDown($event,discussContent)"></textarea>
              <div class="btn_wrapper">
-                <span class="ng-binding">你已输入了0个字</span>
-                <button class="btn btn-primary pull-right post_btn">发 送</button>
+                <span class="ng-binding">你已输入了{{discussContent.length}}个字</span>
+                <button class="btn btn-primary pull-right post_btn" ng-click="sendDiscussion(discussContent)">发 送</button>
              </div>
 
         </footer>

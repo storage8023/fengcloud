@@ -687,6 +687,7 @@ angular.module('gkClientIndex.services', [])
                                 .success(function(){
                                     $modalInstance.close();
                                 })
+
                                 .error(function(reqest){
                                     GKException.handleAjaxException(reqest);
                                 })
