@@ -1905,4 +1905,29 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
+    .directive('discussHistory',['$timeout','$interval',function($timeout,$interval){
+        return{
+            restrict: 'E',
+            replace: true,
+            templateUrl: "views/singlefile-right-discusshistory.html",
+            link:function(scope, element, attrs){
+                var ELEMENT_RIGHT = -300;
+                scope.canShowHistory = false;
+                scope.$on("showDiscussHistory",function(obj,file){
+
+                    scope.canShowHistory = true;
+                    element.animate({right:0},300);
+                });
+                scope.cancel = function(){
+                    element.animate({right:ELEMENT_RIGHT},200,function(){
+                        scope.canShowHistory = false;
+                    });
+
+                }
+                $timeout(function(){
+                    element.css("right",ELEMENT_RIGHT+"px");
+                });
+            }
+        }
+    }])
 ;

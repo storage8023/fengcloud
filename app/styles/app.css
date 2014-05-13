@@ -2467,3 +2467,52 @@ padding: 6px 21px;
     float: left;
     width:420px;
 }
+
+
+footer textarea{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 34px;
+    border:0 none;
+    box-shadow: none;
+    z-index: 10;
+}
+footer .btn_wrapper{
+    height: 34px;
+    line-height: 34px;
+    background: #F4F4F6;
+    border-top: 1px solid #ceded7;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+footer .btn_wrapper > span{
+    float: left;
+    margin-left: 10px;
+    color: #ACB4BF;
+}
+footer .post_btn{
+    width: 94px;
+    padding: 0;
+    height: 34px;
+    line-height: 34px;
+    margin-top: -1px;
+    float: right;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+}
+
+footer .btn_wrapper .label{
+    margin:-2px 5px 0 5px;
+    cursor: pointer;
+}
+
+.discuss-list .history_list .c_f_after{
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:10px;
+
+}
