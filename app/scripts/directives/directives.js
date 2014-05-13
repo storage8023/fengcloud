@@ -1976,10 +1976,12 @@ angular.module('gkClientIndex.directives', [])
                     GKFile.getDiscussHistory(file).then(function(data){
                         console.log("===========data============");
                         console.log(data);
-                        angular.forEach(data.list,function(value){
+                        for(var i=data.list.length-1;i>=0;i--){
+                            var value = data.list[i];
                             value.status = true
                             scope.discussionList.push(value);
-                        });
+                        }
+
                         scope.scrollToIndex = scope.discussionList.length -1;
                         scope.loadDiscussionhistory = false;
                     },function(data){
