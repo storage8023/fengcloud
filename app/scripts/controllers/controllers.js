@@ -1194,9 +1194,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if($rootScope.PAGE_CONFIG.mode && $rootScope.PAGE_CONFIG.mode=='file' && !param.isHistory) {
                 var history = $rootScope.PAGE_CONFIG.visitHistory.selectedHistory;
                 //如果当前点击的节点跟当前选中的历史节点相同，则不做处理
-                if(param.partition == history.partition && param.mountid == history.mountid && param.path == history.path){
-                    return ;
-                }
+//                if(param.partition == history.partition && param.mountid == history.mountid && param.path == history.path){
+//                    return ;
+//                }
                 $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();
                 param.selected = true;
                 param.isHistory = true;

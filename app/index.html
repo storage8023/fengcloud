@@ -123,7 +123,7 @@
 
     <div class="search_area">
         <button disabled>  <i class="icon16x16 icon_search"></i></button>
-        <input type="text"  ng-model="searchText"  placeholder="输入库名搜索"/>
+        <input type="text"  ng-model="searchText"  placeholder="输入库名搜索" style="{{(searchText.length > 0)?'background-color:#ffffff;':''}}"/>
         <button ng-click="clearSearch();" ng-show="searchText.length" title="清空">  <i class="icon16x16 icon_clear"></i> </button>
     </div>
 </aside>
