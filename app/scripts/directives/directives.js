@@ -1918,6 +1918,17 @@ angular.module('gkClientIndex.directives', [])
                 scope.currentDiscussFile = null;
                 scope.discussionList = [];
                 scope.discussContent = "";
+                scope.loadDiscussionhistory = true;
+                scope.$on('$locationChangeStart',function() {
+                    close();
+                });
+                scope.$watch(function(){
+                    return $rootScope.PAGE_CONFIG.mode;
+                },function(value,oldValue){
+                    if(value == 'chat'){
+                        close();
+                    }
+                })
                 scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
                     if(!scope.currentDiscussFile){
                         return;
@@ -1942,26 +1953,37 @@ angular.module('gkClientIndex.directives', [])
                             }
                         }
                     });
-
                 });
                 scope.$on("showDiscussHistory",function(obj,file){
+                    scope.showDisscussHitoryWin = true;
+                    scope.loadDiscussionhistory = true;
+                    console.log($rootScope.PAGE_CONFIG.mount)
+                    if(file && !file.mount_id){
+                        file.mount_id = $rootScope.PAGE_CONFIG.mount.mount_id;
+                    }
+
+                    console.log("======showDiscussHistory=========");
+                    console.log(arguments);
+                    scope.discussionList = [];
                     scope.currentDiscussFile = file;
                     scope.canShowHistory = true;
                     element.animate({right:0},300);
                     console.log(file);
 
                     GKFile.getDiscussHistory(file).then(function(data){
-                        scope.discussionList = [];
+                        console.log("===========data============");
+                        console.log(data);
                         angular.forEach(data.list,function(value){
                             value.status = true
                             scope.discussionList.push(value);
                         });
                         scope.scrollToIndex = scope.discussionList.length -1;
+                        scope.loadDiscussionhistory = false;
+                    },function(data){
+                        scope.loadDiscussionhistory = false;
                     });
                 });
-                scope.$on("closeDiscussHistory",function(){
-                   close();
-                });
+
 
                 scope.handleKeyDown = function ($event, message) {
                     var msg = GKKeyEvent.postMsgKeyDown($event,message);
@@ -2007,6 +2029,8 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var close = function(){
+                    scope.showDisscussHitoryWin = false;
+                    scope.loadDiscussionhistory = true;
                     element.animate({right:ELEMENT_RIGHT},200,function(){
                         scope.canShowHistory = false;
                         scope.discussionList = [];

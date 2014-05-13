@@ -6,7 +6,8 @@
         </header>
         <section class="scrollbar discuss-list" style="position:absolute;top:45px;left:0px;right:0px;padding: 0px;bottom: 100px; overflow: auto;"
                  scroll-to-msg="scrollToIndex">
-            <ul class="history_list" >
+            <div ng-show="loadDiscussionhistory" style="text-align: center; vertical-align: middle;width:100%;height:100%;">数据加载中...</div>
+            <ul ng-show="!loadDiscussionhistory" class="history_list" >
                 <li class="chat_item c_f_after " ng-repeat="discuss in discussionList">
                     <div  style="width:22px; float: left;margin-right:20px;">
                         <div>
