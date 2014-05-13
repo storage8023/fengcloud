@@ -707,7 +707,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.$apply(function(){
                 setChatState(list);
             });
-            console.log("==========controller ChatMessageUpdate ===========" + $rootScope.PAGE_CONFIG.mode);
             if($rootScope.PAGE_CONFIG.mode == 'file')
                 $scope.$parent.$broadcast("loadDiscussHistory",list);
         })
@@ -1164,11 +1163,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             maxMsgTime = 0,
             minMsgTime = 0;
         $scope.$on("loadDiscussHistory",function(obj,items){
-            console.log("==========controller load message===========");
-            console.log(items);
             chatService.list($scope.PAGE_CONFIG.mount.org_id, maxMsgTime, maxCount, '').then(function (re) {
-                console.log("===chat message ===");
-                console.log(re);
                 var discussHistoryArr = [];
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
@@ -1186,8 +1181,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             discussHistoryArr.push(item);
                         }
                     });
-                    console.log("---------discussHistoryArr----------")
-                    console.log(discussHistoryArr);
                     if(discussHistoryArr.length > 0){
                         $scope.$broadcast("updateDiscussMsg",discussHistoryArr);
                     }

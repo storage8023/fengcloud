@@ -1933,20 +1933,9 @@ angular.module('gkClientIndex.directives', [])
                     if(!scope.currentDiscussFile){
                         return;
                     }
-                    console.log(scope.currentDiscussFile);
-                    console.log("================udpate discuss msg===================");
-                    console.log(discussHistoryArr);
                     angular.forEach(discussHistoryArr,function(item){
-                        console.log("=---------item----------------=")
-                        console.log(item);
-                        console.log(item.sender == $rootScope.PAGE_CONFIG.user.member_name);
-                        if(item.sender == $rootScope.PAGE_CONFIG.user.member_name){
-                            return;
-                        }
-                        else{
-                            console.log(item);
+                        if(item.sender != $rootScope.PAGE_CONFIG.user.member_name){
                             if(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id){
-                                console.log(scope.currentDiscussFile);
                                 var fileInfo = JSON.parse(item.metadata);
                                 if(scope.currentDiscussFile.hash == fileInfo.hash){
                                     item.status = true;
@@ -1963,22 +1952,16 @@ angular.module('gkClientIndex.directives', [])
                 scope.$on("showDiscussHistory",function(obj,file){
                     scope.showDisscussHitoryWin = true;
                     scope.loadDiscussionhistory = true;
-                    console.log($rootScope.PAGE_CONFIG.mount)
                     if(file && !file.mount_id){
                         file.mount_id = $rootScope.PAGE_CONFIG.mount.mount_id;
                     }
 
-                    console.log("======showDiscussHistory=========");
-                    console.log(arguments);
                     scope.discussionList = [];
                     scope.currentDiscussFile = file;
                     scope.canShowHistory = true;
                     element.animate({right:0},300);
-                    console.log(file);
 
                     GKFile.getDiscussHistory(file).then(function(data){
-                        console.log("===========data============");
-                        console.log(data);
                         for(var i=data.list.length-1;i>=0;i--){
                             var value = data.list[i];
                             value.status = true
@@ -2032,7 +2015,6 @@ angular.module('gkClientIndex.directives', [])
                         })
                         .error(function(reqest){
                             newDisscussMsg.status=false;
-                            console.log(scope.discussionList)
                         })
                 };
 
