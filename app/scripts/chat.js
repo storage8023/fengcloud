@@ -80,9 +80,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             }
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
-                console.log("===chat message ===");
-                console.log(re);
-                var discussHistoryArr = [];
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
@@ -95,16 +92,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                         if (postedMsg.indexOf(time) >= 0) {
                             return;
                         }
-
                         chatContent.add($scope.currentMsgList, item);
-                        if(item.type && item.type == 'file'){
-                            discussHistoryArr.push(item);
-                        }
                     });
-
-                    if(discussHistoryArr.length > 0){
-                        topWindow.gkFrameCallback("updateDiscussMsg",{discussHistoryArr:discussHistoryArr});
-                    }
                 }
                 if (typeof callback === 'function') {
                     callback();
@@ -448,8 +437,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         })
 
         $scope.$on('chatMessageUpdate', function (event, item) {
-            console.log("====chat message update===")
-            console.log(item);
             if (!$scope.currentSession) return;
             if (item.receiver != $scope.currentSession.orgid) return;
 
@@ -794,67 +781,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
         return chatTopic;
     }])
-    .factory('chatService', ['$q', function ($q) {
-        var chat = {
-            add: function (type, orgId, content, metadata, time, status) {
-                var deferred = $q.defer();
-                metadata = angular.isDefined(metadata) ? metadata : '';
-                status = angular.isDefined(status) ? status : 0;
-                gkClientInterface.postChatMessage({
-                    'content': content,
-                    'receiver': String(orgId),
-                    'metadata': metadata,
-                    'type': type,
-                    'time': time,
-                    status: status
-                }, function (re) {
-                    if (!re.error) {
-                        deferred.resolve(re);
-                    } else {
-                        deferred.reject(re);
-                    }
-                });
-                return deferred.promise;
-            },
-            search: function (orgId, dateline, size, topic) {
-                topic = angular.isDefined(topic) ? topic : '';
-                var deferred = $q.defer();
-                gkClientInterface.getChatMessage({
-                    'receiver': String(orgId),
-                    'dateline': dateline,
-                    'count': size,
-                    'before': 1,
-                    'topic': topic
-                }, function (re) {
-                    if (!re.error) {
-                        deferred.resolve(re);
-                    } else {
-                        deferred.reject(re);
-                    }
-                });
-                return deferred.promise;
-            },
-            list: function (orgId, lastTime, count, topic) {
-                topic = angular.isDefined(topic) ? topic : '';
-                var deferred = $q.defer();
-                gkClientInterface.getChatMessage({
-                    'receiver': String(orgId),
-                    'dateline': lastTime,
-                    'count': count,
-                    'before': 0,
-                    'topic': topic
-                }, function (re) {
-                    if (!re.error) {
-                        deferred.resolve(re);
-                    } else {
-                        deferred.reject(re);
-                    }
-                });
-                return deferred.promise;
-            }
-        };
-        return chat;
-    }])
+
     .directive('scrollToBottom', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',

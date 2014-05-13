@@ -1068,7 +1068,67 @@ angular.module('GKCommon.services', [])
         };
         return GKWindowCom;
     }])
-
+    .factory('chatService', ['$q', function ($q) {
+        var chat = {
+            add: function (type, orgId, content, metadata, time, status) {
+                var deferred = $q.defer();
+                metadata = angular.isDefined(metadata) ? metadata : '';
+                status = angular.isDefined(status) ? status : 0;
+                gkClientInterface.postChatMessage({
+                    'content': content,
+                    'receiver': String(orgId),
+                    'metadata': metadata,
+                    'type': type,
+                    'time': time,
+                    status: status
+                }, function (re) {
+                    if (!re.error) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            },
+            search: function (orgId, dateline, size, topic) {
+                topic = angular.isDefined(topic) ? topic : '';
+                var deferred = $q.defer();
+                gkClientInterface.getChatMessage({
+                    'receiver': String(orgId),
+                    'dateline': dateline,
+                    'count': size,
+                    'before': 1,
+                    'topic': topic
+                }, function (re) {
+                    if (!re.error) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            },
+            list: function (orgId, lastTime, count, topic) {
+                topic = angular.isDefined(topic) ? topic : '';
+                var deferred = $q.defer();
+                gkClientInterface.getChatMessage({
+                    'receiver': String(orgId),
+                    'dateline': lastTime,
+                    'count': count,
+                    'before': 0,
+                    'topic': topic
+                }, function (re) {
+                    if (!re.error) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            }
+        };
+        return chat;
+    }])
     .factory('GKException', [function () {
         var GKException = {
             getAjaxError: function (request, textStatus, errorThrown) {

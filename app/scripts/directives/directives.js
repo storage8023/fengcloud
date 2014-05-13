@@ -1935,18 +1935,21 @@ angular.module('gkClientIndex.directives', [])
                     }
                     console.log(scope.currentDiscussFile);
                     console.log("================udpate discuss msg===================");
+                    console.log(discussHistoryArr);
                     angular.forEach(discussHistoryArr,function(item){
+                        console.log("=---------item----------------=")
                         console.log(item);
                         console.log(item.sender == $rootScope.PAGE_CONFIG.user.member_name);
                         if(item.sender == $rootScope.PAGE_CONFIG.user.member_name){
                             return;
                         }
                         else{
-                            console.log(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id);
+                            console.log(item);
                             if(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id){
-                                console.log(scope.currentDiscussFile.filehash == item.file.filehash);
-                                if(scope.currentDiscussFile.filehash == item.file.filehash){
-                                    console.log("===== my message =====");
+                                console.log(scope.currentDiscussFile);
+                                var fileInfo = JSON.parse(item.metadata);
+                                if(scope.currentDiscussFile.hash == fileInfo.hash){
+                                    item.status = true;
                                     scope.discussionList.push(item);
                                     scope.scrollToIndex = scope.discussionList.length -1;
                                 }

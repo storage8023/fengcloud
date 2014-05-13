@@ -706,7 +706,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
            var list = param['list'];
             $scope.$apply(function(){
                 setChatState(list);
-            })
+            });
+            console.log("==========controller ChatMessageUpdate ===========" + $rootScope.PAGE_CONFIG.mode);
+            if($rootScope.PAGE_CONFIG.mode == 'file')
+                $scope.$parent.$broadcast("loadDiscussHistory",list);
         })
 
         $rootScope.$on('clearMsgTime',function(event,param){
@@ -714,7 +717,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setNewMsgTime(orgId,new Date().getTime(),'visitTime');
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount','chatService',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount,chatService) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.mountReadable = true;
@@ -1157,6 +1160,41 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param $event
          * @param index
          */
+        var maxCount = 20,
+            maxMsgTime = 0,
+            minMsgTime = 0;
+        $scope.$on("loadDiscussHistory",function(obj,items){
+            console.log("==========controller load message===========");
+            console.log(items);
+            chatService.list($scope.PAGE_CONFIG.mount.org_id, maxMsgTime, maxCount, '').then(function (re) {
+                console.log("===chat message ===");
+                console.log(re);
+                var discussHistoryArr = [];
+                if (re && re.list && re.list.length) {
+                    angular.forEach(re.list, function (item) {
+
+                        var time = Number(item.time);
+                        if (minMsgTime == 0 || time < minMsgTime) {
+                            minMsgTime = time;
+                        }
+                        if (time > maxMsgTime) {
+                            maxMsgTime = time;
+                        }
+                        //如果是当前用户发送的消息，直接过滤
+
+                        if(item.sender != $rootScope.PAGE_CONFIG.user.member_name && item.type && item.type == 'file'){
+                            discussHistoryArr.push(item);
+                        }
+                    });
+                    console.log("---------discussHistoryArr----------")
+                    console.log(discussHistoryArr);
+                    if(discussHistoryArr.length > 0){
+                        $scope.$broadcast("updateDiscussMsg",discussHistoryArr);
+                    }
+                }
+            });
+        });
+
         //判断讨论历史窗口是否打开
         $scope.showDisscussHitoryWin = false;
         $scope.handleClick = function ($event, index,file) {
