@@ -1157,6 +1157,40 @@ angular.module('GKCommon.services', [])
         };
         return chat;
     }])
+    .factory('chatMember', ['GKApi', function (GKApi) {
+        var members = {};
+        var chatMember = {
+            getMembers: function (orgId) {
+                if (!members[orgId]) {
+                    var re = gkClientInterface.getOrgMembers({
+                        orgid: orgId
+                    });
+                    members[orgId] = re.list || [];
+                }
+                return members[orgId];
+            },
+            getMemberItem: function (orgId, memberId) {
+                var members = this.getMembers(orgId),
+                    member;
+                angular.forEach(members, function (value) {
+                    if (value.username == memberId) {
+                        member = value;
+                        return false;
+                    }
+                })
+                return member;
+            },
+            refreshMembers: function (orgId) {
+                if (members[orgId] !== undefined) {
+                    var re = gkClientInterface.getOrgMembers({
+                        orgid: orgId
+                    });
+                    members[orgId] = re.list || [];
+                }
+            }
+        };
+        return chatMember;
+    }])
     .factory('GKException', [function () {
         var GKException = {
             getAjaxError: function (request, textStatus, errorThrown) {

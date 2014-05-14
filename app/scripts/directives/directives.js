@@ -1907,7 +1907,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
-    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent){
+    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember){
         return{
             restrict: 'E',
             replace: true,
@@ -1919,6 +1919,7 @@ angular.module('gkClientIndex.directives', [])
                 scope.discussionList = [];
                 scope.discussContent = "";
                 scope.loadDiscussionhistory = true;
+                scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
                     close();
                 });
@@ -1977,7 +1978,7 @@ angular.module('gkClientIndex.directives', [])
 
 
                 scope.handleKeyDown = function ($event, message) {
-                    var msg = GKKeyEvent.postMsgKeyDown($event,message);
+                    var msg = GKKeyEvent.postMsgKeyDown($event,message,'',scope.it_isOpen);
                     if(msg == "-1" || msg == "0"){
                        return;
                     }else{
