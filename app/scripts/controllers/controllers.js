@@ -38,17 +38,40 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         }
                     });
                 },
-                //获取当前所在的历史
-                getHistory:function(){
-                    var currHistory = {};
-                    for(var i=0;i<this.historyArr.length;i++){
-                        var value = this.historyArr[i];
-                        if(value && value.selected){
-                            currHistory = value;
-                            break;
+                removeHistory:function(fullpath) {
+                    var indexArr = [];
+                    if (fullpath && fullpath.length > 0){
+                        for (var i = 0; i < this.historyArr.length; i++) {
+                            var value = this.historyArr[i];
+                            if (value && value.mountid == $rootScope.PAGE_CONFIG.mount.mount_id && value.path.indexOf(fullpath) != -1) {
+                                indexArr.push(value.index);
+                                if (value.selected) {
+                                    if (this.historyArr[value.index - 1])
+                                        this.historyArr[value.index - 1].selected = true;
+                                    else if (this.historyArr[value.index + 1])
+                                        this.historyArr[value.index + 1].selected = true;
+                                }
+                            }
+                        }
+                    }else if(fullpath && fullpath.length == 0){
+                        if (value && value.mountid == $rootScope.PAGE_CONFIG.mount.mount_id){
+                            indexArr.push(value.index);
+                            if (value.selected) {
+                                if (this.historyArr[value.index - 1])
+                                    this.historyArr[value.index - 1].selected = true;
+                                else if (this.historyArr[value.index + 1])
+                                    this.historyArr[value.index + 1].selected = true;
+                            }
                         }
                     }
-                    return currHistory;
+                    if(!indexArr || indexArr.length == 0) return;
+                    for(var i=indexArr.length - 1;i>=0;i--){
+                        this.historyArr.splice(indexArr[i],1);
+                    }
+                    for(var i=0;i<this.historyArr.length;i++){
+                        this.historyArr[i].index = i;
+                        if(this.historyArr[i].selected) this.selectedHistory = this.historyArr[i];
+                    }
                 },
 
                 hasPrev:function(){
@@ -1187,31 +1210,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.limit = 100;
 
-        //比较两个对象是否具有相同的属性和相同的属性值
-        var checkObjEquils = function(obj1,obj2){
-               var objKeys_1 = [];
-               var objKeys_2 = [];
-               for(var key_1 in obj1){
-                   objKeys_1.push(key_1);
-               }
-               for(var key_2 in obj2){
-                   objKeys_2.push(key_2);
-               }
-               objKeys_1.sort();
-               objKeys_2.sort();
-               if(objKeys_1.length != objKeys_2.length) return false;
-               var eqLen = 0;
-               for(var i=0;i<objKeys_1.length;i++){
-                    if(objKeys_1[i] == objKeys_2[i]){
-                        if(obj1[objKeys_1[i]] == obj2[objKeys_2[i]]){
-                            eqLen++;
-                        }else{return false;}
-                    }else{return false;}
-               }
-            if(eqLen == objKeys_1.length) return true;
-            return false;
-        }
-
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
 
@@ -1225,8 +1223,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         curParam[pro] = history[pro];
                     }
                 }
-                var isEquils = checkObjEquils(param,curParam);
-                if(isEquils){
+                if(Util.object.checkObjEquils(param,curParam)){
                     return ;
                 }
                 $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();

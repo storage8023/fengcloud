@@ -19,6 +19,33 @@ var Util = {
     }
 };
 
+Util.object = {
+    //比较两个对象是否具有相同的属性和相同的属性值
+     checkObjEquils:function(obj1,obj2){
+        var objKeys_1 = [];
+        var objKeys_2 = [];
+        for(var key_1 in obj1){
+            objKeys_1.push(key_1);
+        }
+        for(var key_2 in obj2){
+            objKeys_2.push(key_2);
+        }
+        objKeys_1.sort();
+        objKeys_2.sort();
+        if(objKeys_1.length != objKeys_2.length) return false;
+        var eqLen = 0;
+        for(var i=0;i<objKeys_1.length;i++){
+            if(objKeys_1[i] == objKeys_2[i]){
+                if(obj1[objKeys_1[i]] == obj2[objKeys_2[i]]){
+                    eqLen++;
+                }else{return false;}
+            }else{return false;}
+        }
+        if(eqLen == objKeys_1.length) return true;
+        return false;
+    }
+}
+
 Util.String = {
     escapeHtml:function(text){
         return text
