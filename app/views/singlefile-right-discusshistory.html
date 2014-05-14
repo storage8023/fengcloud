@@ -1,13 +1,12 @@
 
-    <div  style="width:300px;height:100%; position:absolute;background-color: #ffffff;z-index:111;right:-300px;bottom:0px; border-left:1px solid #D0D0D0;box-shadow:0px 0px 10px rgba(0,0,0,0.3);" >
-        <header style="width:100%;height:45px; background-color:#E2E3E7;vertical-align: middle; ">
+    <div class="disscuss-history">
+        <header>
             <span style="font-size: 14px; color: #464952;margin-left:10px;">文件讨论</span>
             <span style="display: block;float: right;margin-right:10px;cursor:pointer;" ng-click="cancel();"><i class="icon16x16 icon_clear"></i></span>
         </header>
-        <section class="scrollbar discuss-list" style="position:absolute;top:45px;left:0px;right:0px;padding: 0px;bottom: 100px; overflow: auto;"
-                 scroll-to-msg="scrollToIndex">
+        <section  class="scrollbar discuss-list"   scroll-to-msg="scrollToIndex">
             <div ng-show="loadDiscussionhistory" style="text-align: center; vertical-align: middle;width:100%;height:100%;">数据加载中...</div>
-            <ul ng-show="!loadDiscussionhistory" class="history_list" >
+            <ul ng-show="!loadDiscussionhistory">
                 <li class="chat_item c_f_after " ng-repeat="discuss in discussionList">
                     <div  style="width:22px; float: left;margin-right:20px;">
                         <div>
@@ -15,11 +14,10 @@
                         </div>
                     </div>
                     <div  style="float:left;width:230px">
-                        <div>
-                              <span>
+                        <div class="chat_member" ng-click="atMember(discuss.sender)">
                                     <span style="color: #88B9E0;" ng-bind="discuss.sender"></span>
                                     <span style="color:#c4c7cb;" ng-bind="discuss.time|timeAgo"></span>
-                              </span>
+
                         </div>
                          <span>
                              <span chat-bind="discuss.content" class="text"></span>
@@ -28,10 +26,10 @@
 
                     </div>
                 </li>
-
             </ul>
+
         </section>
-        <footer style="height:100px">
+        <footer>
              <textarea ng-style="textareaStyle" ng-model="discussContent" focus-me="focusTextarea" insert-to="insertStr" input-tip="@"  input-tip-placement="top right"  placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;" ng-keydown="handleKeyDown($event,discussContent)"></textarea>
              <div class="btn_wrapper">
                 <span class="ng-binding">你已输入了{{discussContent.length}}个字</span>

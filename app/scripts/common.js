@@ -2322,6 +2322,8 @@ angular.module('GKCommon.services', [])
                      mount_id:mountId,
                      fullpath:path,
                      token:gkClientInterface.getToken(),
+                     start:0,
+                     size:999999
                  };
                 var sign = gkClientInterface.getApiAuthorization(params);
                 params.sign = sign;
