@@ -1187,16 +1187,48 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.limit = 100;
 
+        //比较两个对象是否具有相同的属性和相同的属性值
+        var checkObjEquils = function(obj1,obj2){
+               var objKeys_1 = [];
+               var objKeys_2 = [];
+               for(var key_1 in obj1){
+                   objKeys_1.push(key_1);
+               }
+               for(var key_2 in obj2){
+                   objKeys_2.push(key_2);
+               }
+               objKeys_1.sort();
+               objKeys_2.sort();
+               if(objKeys_1.length != objKeys_2.length) return false;
+               var eqLen = 0;
+               for(var i=0;i<objKeys_1.length;i++){
+                    if(objKeys_1[i] == objKeys_2[i]){
+                        if(obj1[objKeys_1[i]] == obj2[objKeys_2[i]]){
+                            eqLen++;
+                        }else{return false;}
+                    }else{return false;}
+               }
+            if(eqLen == objKeys_1.length) return true;
+            return false;
+        }
+
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
-            console.log(param)
+
             //记录访问历史
             if($rootScope.PAGE_CONFIG.mode && $rootScope.PAGE_CONFIG.mode=='file' && !param.isHistory) {
                 var history = $rootScope.PAGE_CONFIG.visitHistory.selectedHistory;
                 //如果当前点击的节点跟当前选中的历史节点相同，则不做处理
-//                if(param.partition == history.partition && param.mountid == history.mountid && param.path == history.path){
-//                    return ;
-//                }
+                var curParam = {};
+                for(var pro in history){
+                    if(pro != 'index' && pro != 'selected' && pro != 'isHistory'){
+                        curParam[pro] = history[pro];
+                    }
+                }
+                var isEquils = checkObjEquils(param,curParam);
+                if(isEquils){
+                    return ;
+                }
                 $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();
                 param.selected = true;
                 param.isHistory = true;
