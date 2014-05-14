@@ -1977,6 +1977,11 @@ angular.module('gkClientIndex.directives', [])
                 });
 
 
+
+                scope.atMember = function(at){
+                    scope.insertStr = ['@',at,' '].join('');
+                };
+
                 scope.handleKeyDown = function ($event, message) {
                     var msg = GKKeyEvent.postMsgKeyDown($event,message,'',scope.it_isOpen);
                     if(msg == "-1" || msg == "0"){

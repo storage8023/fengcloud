@@ -148,4 +148,11 @@ html,body{
     overflow: hidden;
 }
 
+.at_member {
+    color: #448DE8;
+    cursor: pointer;
+}
 
+.at_member.mine {
+    color: #f16262;
+}

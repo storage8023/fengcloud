@@ -32,7 +32,7 @@
             </ul>
         </section>
         <footer style="height:100px">
-             <textarea ng-style="textareaStyle" ng-model="discussContent" focus-me="focusTextarea" input-tip="@"  input-tip-placement="top right"  placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;" ng-keydown="handleKeyDown($event,discussContent)"></textarea>
+             <textarea ng-style="textareaStyle" ng-model="discussContent" focus-me="focusTextarea" insert-to="insertStr" input-tip="@"  input-tip-placement="top right"  placeholder="按Enter键发送，不超过800字" class="scrollbar post_text ng-pristine ng-valid"  style="text-indent: 0px;" ng-keydown="handleKeyDown($event,discussContent)"></textarea>
              <div class="btn_wrapper">
                 <span class="ng-binding">你已输入了{{discussContent.length}}个字</span>
                 <button class="btn btn-primary pull-right post_btn" ng-click="sendDiscussion(discussContent)">发 送</button>
