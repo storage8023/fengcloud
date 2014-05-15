@@ -1960,7 +1960,10 @@ angular.module('gkClientIndex.directives', [])
                     scope.discussionList = [];
                     scope.currentDiscussFile = file;
                     scope.canShowHistory = true;
-                    element.animate({right:0},300);
+                    element.animate({right:0},300,function(){
+
+                        scope.focusTextarea = true;
+                    });
 
                     GKFile.getDiscussHistory(file).then(function(data){
                         for(var i=data.list.length-1;i>=0;i--){
@@ -1983,12 +1986,13 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 scope.handleKeyDown = function ($event, message) {
-                    var msg = GKKeyEvent.postMsgKeyDown($event,message,'',scope.it_isOpen);
+                    var msg = GKKeyEvent.postMsgKeyDown($event,message,'',scope.it_isOpen,'',140);
                     if(msg == "-1" || msg == "0"){
                        return;
                     }else{
                         scope.discussContent = "";
                         postMsg(msg);
+                        scope.focusTextarea = true;
                     }
                 };
                 scope.sendDiscussion = function(message){
@@ -1996,12 +2000,13 @@ angular.module('gkClientIndex.directives', [])
                     if (!message) {
                         return;
                     }
-                    if (message.length > 800) {
-                        alert('一次发送的消息字数不能超过800字，请分条发送');
+                    if (message.length > 140) {
+                        alert('一次发送的消息字数不能超过140字，请分条发送');
                         return;
                     }
                     scope.discussContent = "";
                     postMsg(message);
+                    scope.focusTextarea = true;
                 };
                 var postMsg = function(message){
                     var newDisscussMsg = {

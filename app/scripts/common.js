@@ -2374,7 +2374,7 @@ angular.module('GKCommon.services', [])
     }])
     .factory('GKKeyEvent',[function(){
         return{
-            postMsgKeyDown: function ($event, postText,showTopicLabel,isToolTipOpen,topic) {
+            postMsgKeyDown: function ($event, postText,showTopicLabel,isToolTipOpen,topic,charLen) {
 
                 var keyCode = $event.keyCode;
                 if (isToolTipOpen) {
@@ -2385,8 +2385,8 @@ angular.module('GKCommon.services', [])
                         $event.preventDefault();
                         return "-1";
                     }
-                    if (postText.length > 800) {
-                        alert('一次发送的消息字数不能超过800字，请分条发送');
+                    if (postText.length > charLen) {
+                        alert('一次发送的消息字数不能超过'+charLen+'字，请分条发送');
                         return "-1";
                     }
                     if (showTopicLabel) {

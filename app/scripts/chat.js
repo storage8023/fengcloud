@@ -150,7 +150,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
 
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
-            var postMsgKeyDown = GKKeyEvent.postMsgKeyDown($event,postText,$scope.showTopicLabel,$scope.it_isOpen,$scope.topic);
+            var postMsgKeyDown = GKKeyEvent.postMsgKeyDown($event,postText,$scope.showTopicLabel,$scope.it_isOpen,$scope.topic,800);
             if(postMsgKeyDown == "-1"){
                return;
             }else if(postMsgKeyDown == "0"){
