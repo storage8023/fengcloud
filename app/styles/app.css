@@ -2468,6 +2468,8 @@ padding: 6px 21px;
     width:420px;
 }
 
+
+/*拷贝文件和文件夹到邮箱内功能样式*/
 .copy_to_mail_container{
     position: absolute;
     right:320px;
@@ -2500,4 +2502,13 @@ padding: 6px 21px;
 
 .client_icon.copy_tomail:active{
     background-position: -44px -1962px;
+}
+
+/*智能桌面功能样式*/
+.smart_desktop_icon{
+    width: 24px;
+    height:24px;
+    background-image: url(../images/icon/smart_desktop_icon.png?v=1);
+    background-repeat: no-repeat;
+    display: inline-block;
 }
