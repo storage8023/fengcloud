@@ -1428,11 +1428,70 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('copyToEmail', [function () {
+    .directive('copyToEmail', ['$rootScope','GKFileList','GKMount','$filter','GKApi',function ($rootScope,GKFileList,GKMount,$filter,GKApi) {
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/copytoemail_directives.html"
+            templateUrl: "views/copytoemail_directives.html",
+            link:function($scope,$element){
+
+                console.log($rootScope.PAGE_CONFIG.user);
+
+                var getTemplate = function(linkUrl,imgData,imgUrl,fileName,fileSize,expricess){
+                    return '<a href="'+linkUrl+'" target="_blank" style="display: block;width:450px;a"><div style="height:120px; width:450px; background-color:#f2f5f5; padding:15px;">'+
+                           '<div style="width:120px; float:left;">'+
+                           '<img src="'+imgData+'" data-src="'+imgUrl+'"/>'+
+                           '</div><div style="width:315px;float:left;padding-left:15px;padding-top:30px;padding-bottom:30px;">'+
+                           '<div style="font-size:20px; color:#666666; font-weight:bold;">' +
+                           fileName +
+                           '</div><div style="padding-top:10px; font-size:12px; color:#939ca9;">' +
+                           '大小:'+fileSize+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到期时间:'+expricess+
+                           '</div></div></div> </a> <br/><br/>'
+                };
+                var getBase64FromImageUrl = function(fileUrl,callback) {
+                    var img = new Image();
+                    img.crossOrigin = "*";
+                    img.src = fileUrl;
+                    img.onload = function () {
+                        var canvas = document.createElement("canvas");
+                        canvas.width =this.width;
+                        canvas.height =this.height;
+                        var ctx = canvas.getContext("2d");
+                        ctx.drawImage(this, 0, 0);
+                        var dataURL = canvas.toDataURL("image/png");
+                        if(typeof callback == 'function'){
+                            callback(dataURL);
+                        }
+                    }
+                };
+                $scope.copyToEmail = function(file){
+                    var imgSize = 128;
+                    var expreeDate = 7;
+                    if(!file) return;
+                    var mountId = GKFileList.getOptFileMountId(file);
+                    var iconUrl = GKApi.getIcon(file.dir,file.filename,imgSize);
+                    getBase64FromImageUrl(iconUrl,function(data){
+                        var currDate = new Date()
+                        var expireDate = currDate.getTime() + expreeDate*(24*60*60*1000);
+                        var param = {
+                            memberid:file.creator_member_id,
+                            mountid:mountId,
+                            hash:file.hash,
+                            dateline:expireDate/1000
+                        }
+                        var linkUrl = gkClient.gGetShareLink(JSON.stringify(param));
+                        var sizeLen = file.filesize/(1024 * 1024);
+                        if(sizeLen < 1){
+                            sizeLen = Math.ceil(file.filesize/1024)+"KB";
+                        }else{
+                            sizeLen = Math.ceil(sizeLen)+"MB";
+                        }
+                        var tem = getTemplate(linkUrl,data,iconUrl,file.filename,sizeLen,Util.Date.format(new Date(expireDate),'yyyy年MM月dd日'));
+                            gkClient.gSetClipboardDataHtml(tem);
+                            alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
+                        });
+                }
+            }
         }
     }])
     .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout','$rootScope', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout,$rootScope) {

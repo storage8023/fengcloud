@@ -2159,6 +2159,9 @@ angular.module('GKCommon.services', [])
                     data: params
                 });
             },
+            getIcon:function(dir,filename,size){
+                return gkClientInterface.getSiteDomain() + '/index/fileicon?dir='+dir+"&filename="+filename+"&size="+size;
+            },
             summarys:function(mountId,from,to,start,size){
                 var params = {
                     mount_id: mountId,
