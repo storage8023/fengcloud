@@ -1428,6 +1428,13 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
+    .directive('copyToEmail', [function () {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/copytoemail_directives.html"
+        }
+    }])
     .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout','$rootScope', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout,$rootScope) {
         return {
             replace: true,
