@@ -980,7 +980,11 @@ angular.module('gkClientIndex.directives', [])
                             $this.addClass('toggle_btn_2');
                         }
                     })
-                })
+                });
+                //打开智能桌面
+                $scope.openSmartDesktop = function(){
+                    GKModal.smartDesktop();
+                }
             }
         }
     }])

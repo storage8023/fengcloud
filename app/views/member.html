@@ -7,8 +7,10 @@
             </span>
         <span class="name">{{user.member_name}}</span>
     </div>
-    <div style="position: absolute;width:24px;height:24px;right:10px;top:13px;">
-        <i class="smart_desktop_icon"></i>
+    <div class="smart_desktop_container">
+        <a href="javascript:void();" ng-click="openSmartDesktop()">
+         <i class="smart_desktop_icon"></i>
+        </a>
     </div>
     <div class="btn_wrapper">
         <button class="btn btn-dark add_lib" ng-click="handleCreate()" href="javascript:void(0)"><i>+</i> 创建云库</button>

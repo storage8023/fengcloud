@@ -363,7 +363,7 @@ footer {
 }
 .left_sidebar  .account .account_info{
     height: 32px;
-    margin: 9px 0 0 0;
+    margin: 9px 35px 0 0;
     line-height: 32px;
 }
 .left_sidebar  .account .account_info > *{
@@ -2481,26 +2481,15 @@ padding: 6px 21px;
     visibility:visible;
 }
 
-.client_icon{
-    width: 16px;
-    height: 16px;
-    background-image: url(../images/icon/icon_client16X16.png?v=1);
-    background-repeat: no-repeat;
-    display: inline-block;
-    vertical-align: middle;
-}
-
-
-
-.client_icon.copy_tomail{
+.icon16x16.copy_tomail{
     background-position: -4px -1962px;
 }
 
-.client_icon.copy_tomail:hover{
+.icon16x16.copy_tomail:hover{
     background-position: -24px -1962px;
 }
 
-.client_icon.copy_tomail:active{
+.icon16x16.copy_tomail:active{
     background-position: -44px -1962px;
 }
 
@@ -2511,4 +2500,72 @@ padding: 6px 21px;
     background-image: url(../images/icon/smart_desktop_icon.png?v=1);
     background-repeat: no-repeat;
     display: inline-block;
+}
+
+.account .smart_desktop_container{
+    position: absolute;
+    width:24px;
+    height:24px;
+    right:10px;
+    top:13px;
+}
+
+.modal-backdrop.fade.gk_window_backdrop.in{
+    opacity: 0.9;
+    background-color:#494f56;
+}
+
+.modal.gk_window{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100%;
+    height: 100%;
+    border: 0px solid #999;
+    margin-left: 0px;
+    border: 0px solid rgba(0, 0, 0, 0.3);
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    outline: none;
+    -webkit-box-shadow:none;
+    -moz-box-shadow:none;
+    box-shadow:none;
+    -webkit-background-clip: none;
+    -moz-background-clip: none;
+    background-clip:none;
+    border: 0 none;
+    background:none;
+    color: #fff;
+    margin-left: 0px;
+}
+
+.modal.gk_window.fade.in{
+    top:0px;
+}
+
+
+.smart_desktop_icon94x94{
+    width: 92px;
+    height: 92px;
+    background-image: url(../images/icon/smart_catagory.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.smart_desktop_icon94x94.last_visit{
+    background-position: 0px 0px;
+}
+
+.smart_desktop_icon94x94.last_modify{
+    background-position: 0px -92px;
+}
+
+.smart_desktop_icon94x94.last_message{
+    background-position: 0px -184px;
+}
+
+.smart_desktop_icon94x94.last_account{
+    background-position: 0px -276px;
 }

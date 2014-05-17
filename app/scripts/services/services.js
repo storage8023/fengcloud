@@ -475,7 +475,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
+    .factory('GKModal', ['$rootScope', '$modal','gkWindow', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal,gkWindow,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -489,6 +489,20 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            smartDesktop:function(param){
+                var option = {
+                    templateUrl:'views/smart_desktop_dialog.html',
+                    windowClass:'smart_desktop_content',
+                    controller:function($scope,gkWindowInstance){
+
+                        $scope.cancel = function () {
+                            gkWindowInstance.dismiss('cancel');
+                        };
+                    }
+                }
+                option = angular.extend({}, defaultOption, option);
+                return gkWindow.open(option);
+            },
             summaryDetail:function(param){
                 var option = {
                     templateUrl: 'views/summary_dialog.html',
