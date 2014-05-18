@@ -506,6 +506,7 @@ angular.module('gkClientIndex.services', [])
                             pararm['filter'] = item.filter;
                             GKMode.setMode(mode);
                             $timeout(function(){
+                                $rootScope.$broadcast("selectSmartFolder",item.type);
                                 $location.search(pararm);
                                 gkWindowInstance.dismiss('cancel');
                             })
