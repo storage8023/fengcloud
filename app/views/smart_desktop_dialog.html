@@ -2,64 +2,66 @@
     <button type="button" class="close" ng-click="cancel()">&times;</button>
 </div>
 <div class="modal-body scrollbar">
-     <div style="text-align: center; font-size: 30px">智能桌面</div>
-     <div style="margin:30px 0px 30px 0px; text-align: center;">
-         <input style="width: 60%;border: 0px; border-radius: 15px; background-color: #464b52; height: 30px; padding-left:10px;padding-right:25px;"/>
-         <i class="icon16x16 icon_search" style="position: absolute;right:20%;margin-right: 15px;margin-top:5px;"></i>
+     <div class="smart_desktop_title">智能桌面</div>
+     <div class="smart_desktop_search">
+         <input />
+         <i class="icon16x16 icon_search"></i>
      </div>
-     <div style="text-align: center;width:830px;margin:0px auto;padding-top: 30px;">
-         <span style="display:block;float:left;background-color:#9abd5c;width:200px;height:150px;">
-             <div style="padding:15px 0px;">
+     <div class="smart_desktop_topItem">
+         <span class="last_visit">
+             <div ng-click="clickItem(smartFolders[0])">
                  <i class="smart_desktop_icon94x94 last_visit"></i>
-                 <div style="padding:5px 0; font-size: 16px;">最近访问的文件</div>
+                 <div ng-bind="smartFolders[0].name"></div>
              </div>
+             </a>
          </span>
-         <span style="display:block;float:left;background-color:#3fa7e3;width:200px;height:150px;margin-left:10px;">
-             <div style="padding:15px 0px;">
+
+         <span class="last_modify">
+             <div ng-click="clickItem(smartFolders[1])">
                  <i class="smart_desktop_icon94x94 last_modify"></i>
-                 <div style="padding:5px 0; font-size: 16px;">最近修改的文件</div>
+                 <div  ng-bind="smartFolders[1].name"></div>
              </div>
 
          </span>
-         <span style="display:block;float:left;background-color:#ecb75a;width:200px;height:150px;margin-left:10px;">
+         <span class="last_message">
               <!--消息提醒-->
-           <div style="position: absolute;">
-                 <span style="position:absolute;left:10px; top: 5px;">
-                    <i class="hint" style="width:12px; height: 12px; border-radius: 12px;"></i>
-                </span>
+           <div class="message_tips" ng-show="newMsg">
+                 <p>
+                    <i class="hint"></i>
+                </p>
            </div>
-             <div style="padding:15px 0px;">
+             <div ng-click="openNews();">
                  <i class="smart_desktop_icon94x94 last_message"></i>
-                 <div style="padding:5px 0; font-size: 16px;">消息(4)</div>
+                 <div>消息</div>
              </div>
 
          </span>
-         <span style="display:block;float:left;background-color:#ef6e61;width:200px;height:150px;margin-left:10px;">
-             <div style="padding:15px 0px;">
+         <span class="last_account">
+             <div ng-click="personalOpen();">
                  <i class="smart_desktop_icon94x94 last_account"></i>
-                 <div style="padding:5px 0; font-size: 16px;">账户信息</div>
+                 <div>账户信息</div>
              </div>
          </span>
      </div>
     <div style="clear: both"></div>
-    <div style="text-align: center;width:806px;margin: 20px auto 0px auto">
-        <span style="display:block;float:left; width: 126px;height:86px; background-image:url(images/icon/smart_red.png)">
-            <div style="padding-top:43px; font-size: 14px;">星型</div>
+    <div class="smart_desktop_item">
+        <span>
+            <div ng-bind="smartFolders[2].name"  ng-click="clickItem(smartFolders[2])"></div>
         </span>
-        <span style="display:block;float:left;margin-left:10px;width: 126px;height:86px; background-image:url(images/icon/smart_orange.png)">
-         <div style="padding-top:43px; font-size: 14px;">月亮</div>
+        <span>
+         <div ng-bind="smartFolders[3].name"  ng-click="clickItem(smartFolders[3])"></div>
         </span>
-        <span style="display:block;float:left;margin-left:10px;width: 126px;height:86px; background-image:url(images/icon/smart_yellow.png)">
-        <div style="padding-top:43px; font-size: 14px;">爱心</div>
+        <span>
+        <div ng-bind="smartFolders[4].name"  ng-click="clickItem(smartFolders[4])"></div>
         </span>
-        <span style="display:block;float:left;margin-left:10px;width: 126px;height:86px; background-image:url(images/icon/smart_green.png)">
-            <div style="padding-top:43px; font-size: 14px;">幸运草</div>
+        <span>
+            <div ng-bind="smartFolders[5].name"  ng-click="clickItem(smartFolders[5])"></div>
         </span>
-        <span style="display:block;float:left;margin-left:10px;width: 126px;height:86px; background-image:url(images/icon/smart_cyanblue.png)">
-             <div style="padding-top:43px; font-size: 14px;">三角形</div>
+        <span>
+             <div  ng-bind="smartFolders[6].name"  ng-click="clickItem(smartFolders[6])"></div>
         </span>
-        <span style="display:block;float:left;margin-left:10px;width: 126px;height:86px; background-image:url(images/icon/smart_blue.png)">
-            <div style="padding-top:43px; font-size: 14px;">钻石</div>
+        <span>
+            <div ng-bind="smartFolders[7].name"  ng-click="clickItem(smartFolders[7])"></div>
         </span>
     </div>
     <div style="clear: both"></div>

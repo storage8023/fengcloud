@@ -2569,3 +2569,146 @@ padding: 6px 21px;
 .smart_desktop_icon94x94.last_account{
     background-position: 0px -276px;
 }
+
+.smart_desktop_title{
+    text-align: center;
+    font-size: 30px
+}
+
+.smart_desktop_search{
+    margin:30px 0px;
+    text-align: center;
+}
+
+.smart_desktop_search input{
+    width: 60%;
+    border: 0px;
+    color:#ffffff;
+    border-radius: 15px;
+    background-color: #464b52;
+    height: 30px;
+    padding-left:10px;
+    padding-right:25px;
+}
+
+.smart_desktop_search i{
+    position: absolute;
+    right:20%;
+    margin-right: 15px;
+    margin-top:5px;
+}
+
+.smart_desktop_topItem{
+    text-align: center;
+    width:810px;
+    margin:0px auto;
+    padding-top: 30px;
+}
+
+.smart_desktop_topItem  span{
+    display:block;
+    float:left;
+    width:195px;
+    height:150px;
+
+}
+
+.smart_desktop_topItem .last_visit{
+    background-color:#9abd5c;
+}
+
+.smart_desktop_topItem .last_modify{
+    background-color:#3fa7e3;
+    margin-left: 10px;
+}
+
+.smart_desktop_topItem .last_message{
+    background-color:#ecb75a;
+    margin-left: 10px;
+}
+.smart_desktop_topItem .last_account{
+    background-color:#ef6e61;
+    margin-left: 10px;
+}
+
+.smart_desktop_topItem .last_visit div:last-child,
+.smart_desktop_topItem .last_modify div:last-child,
+.smart_desktop_topItem .last_message div:last-child,
+.smart_desktop_topItem .last_account div:last-child{
+    cursor: pointer;
+    padding:15px 0px;
+    color: #ffffff;
+}
+
+.smart_desktop_topItem .last_visit div:last-child div,
+.smart_desktop_topItem .last_modify div:last-child div,
+.smart_desktop_topItem .last_message div:last-child div,
+.smart_desktop_topItem .last_account div:last-child div{
+    padding:5px 0;
+    font-size: 16px;
+}
+
+
+.smart_desktop_topItem .last_message .message_tips{
+    position: absolute;
+}
+
+.smart_desktop_topItem .last_message .message_tips p{
+    position:absolute;
+    left:10px;
+    top: 5px;
+    width:12px;
+    height: 12px
+}
+
+.smart_desktop_topItem .last_message .message_tips p i{
+    width:12px;
+    height: 12px;
+    border-radius: 12px;
+}
+
+.smart_desktop_item{
+    text-align: center;
+    width:806px;
+    margin: 20px auto 0px auto
+}
+.smart_desktop_item span{
+    display:block;
+    float:left;
+    width: 126px;
+    height:86px;
+    margin-left:10px;
+}
+
+.smart_desktop_item span:nth-child(1){
+    margin-left:0px;
+    background-image:url(../images/icon/smart_red.png)
+}
+
+.smart_desktop_item span:nth-child(2){
+    background-image:url(../images/icon/smart_orange.png)
+}
+
+.smart_desktop_item span:nth-child(3){
+    background-image:url(../images/icon/smart_yellow.png)
+}
+
+.smart_desktop_item span:nth-child(4){
+    background-image:url(../images/icon/smart_green.png)
+}
+
+.smart_desktop_item span:nth-child(5){
+    background-image:url(../images/icon/smart_cyanblue.png)
+}
+
+.smart_desktop_item span:nth-child(6){
+    background-image:url(../images/icon/smart_blue.png)
+}
+
+.smart_desktop_item span div:first-child{
+    padding-top:43px;
+    font-size: 14px;
+    width:100%;
+    height:100%;
+    cursor: pointer;
+}

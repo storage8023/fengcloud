@@ -475,7 +475,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal','gkWindow', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal,gkWindow,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
+    .factory('GKModal', ['$rootScope', '$modal','gkWindow', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi','GKSmartFolder','GKMode','localStorageService',function ($rootScope, $modal,gkWindow,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi,GKSmartFolder,GKMode,localStorageService) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -494,6 +494,33 @@ angular.module('gkClientIndex.services', [])
                     templateUrl:'views/smart_desktop_dialog.html',
                     windowClass:'smart_desktop_content',
                     controller:function($scope,gkWindowInstance){
+                        var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
+                        $scope.smartFolders = GKSmartFolder.getFolders()||[];
+                        $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+                        $scope.clickItem = function(item){
+                            var mode = 'file';
+                            var partition =  item.partition;
+                            var pararm = {
+                                partition: partition
+                            };
+                            pararm['filter'] = item.filter;
+                            GKMode.setMode(mode);
+                            $timeout(function(){
+                                $location.search(pararm);
+                                gkWindowInstance.dismiss('cancel');
+                            })
+                        }
+
+                        $scope.openNews = function(){
+                            $rootScope.$broadcast("openNews");
+                            gkWindowInstance.dismiss('cancel');
+                        }
+
+                        $scope.personalOpen = function(){
+                            $rootScope.$broadcast("personalOpen");
+                            gkWindowInstance.dismiss('cancel');
+                        }
+
 
                         $scope.cancel = function () {
                             gkWindowInstance.dismiss('cancel');

@@ -887,7 +887,6 @@ angular.module('gkClientIndex.directives', [])
             },
             link: function ($scope, $element) {
                 var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
-
                 $timeout(function(){
                     $scope.newMsg = !!localStorageService.get(unreadMsgKey);
                     $scope.openNews = function(){
@@ -924,6 +923,13 @@ angular.module('gkClientIndex.directives', [])
                     localStorageService.remove(unreadMsgKey);
                     gkClientInterface.clearMessage();
                 })
+
+                $scope.$on("openNews",function(){
+                    GKModal.news(GKNews, GKApi);
+                });
+                $scope.$on("personalOpen",function(){
+                    GKDialog.openSetting('account');
+                });
 
                 $scope.personalOpen = function ($scope) {
                     GKDialog.openSetting('account');
