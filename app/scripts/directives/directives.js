@@ -1445,8 +1445,6 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/copytoemail_directives.html",
             link:function($scope,$element){
 
-                console.log($rootScope.PAGE_CONFIG.user);
-
                 var getTemplate = function(linkUrl,imgData,imgUrl,fileName,fileSize,expricess){
                     return '<a href="'+linkUrl+'" target="_blank" style="display: block;width:450px;a"><div style="height:120px; width:450px; background-color:#f2f5f5; padding:15px;">'+
                            '<div style="width:120px; float:left;">'+

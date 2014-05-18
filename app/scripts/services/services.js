@@ -496,7 +496,12 @@ angular.module('gkClientIndex.services', [])
                     controller:function($scope,gkWindowInstance){
                         var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
                         $scope.smartFolders = GKSmartFolder.getFolders()||[];
+                        console.log($scope.smartFolders)
                         $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+                        $scope.editItem = function($event){
+
+                            $event.stopPropagation();
+                        }
                         $scope.clickItem = function(item){
                             var mode = 'file';
                             var partition =  item.partition;

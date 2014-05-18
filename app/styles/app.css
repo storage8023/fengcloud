@@ -2672,7 +2672,7 @@ padding: 6px 21px;
     width:806px;
     margin: 20px auto 0px auto
 }
-.smart_desktop_item span{
+.smart_desktop_item .item{
     display:block;
     float:left;
     width: 126px;
@@ -2680,28 +2680,28 @@ padding: 6px 21px;
     margin-left:10px;
 }
 
-.smart_desktop_item span:nth-child(1){
+.smart_desktop_item .item:nth-child(1){
     margin-left:0px;
     background-image:url(../images/icon/smart_red.png)
 }
 
-.smart_desktop_item span:nth-child(2){
+.smart_desktop_item .item:nth-child(2){
     background-image:url(../images/icon/smart_orange.png)
 }
 
-.smart_desktop_item span:nth-child(3){
+.smart_desktop_item .item:nth-child(3){
     background-image:url(../images/icon/smart_yellow.png)
 }
 
-.smart_desktop_item span:nth-child(4){
+.smart_desktop_item .item:nth-child(4){
     background-image:url(../images/icon/smart_green.png)
 }
 
-.smart_desktop_item span:nth-child(5){
+.smart_desktop_item .item:nth-child(5){
     background-image:url(../images/icon/smart_cyanblue.png)
 }
 
-.smart_desktop_item span:nth-child(6){
+.smart_desktop_item .item:nth-child(6){
     background-image:url(../images/icon/smart_blue.png)
 }
 
@@ -2712,6 +2712,21 @@ padding: 6px 21px;
     height:100%;
     cursor: pointer;
 }
+
+.smart_desktop_item span div div{
+    visibility: hidden;
+    position: absolute;
+    width:16px;
+    height:16px;
+    right:10px;
+    top:50%;
+    cursor: pointer;
+}
+
+.smart_desktop_item span div:hover div i{
+    visibility: visible;
+}
+
 .smart_rightside_title{
     height: 35px;
     margin:0px 0;

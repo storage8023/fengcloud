@@ -45,23 +45,42 @@
      </div>
     <div style="clear: both"></div>
     <div class="smart_desktop_item">
-        <span>
-            <div ng-bind="smartFolders[2].name"  ng-click="clickItem(smartFolders[2])"></div>
+        <span class="item">
+            <div  ng-click="clickItem(smartFolders[2])">
+               <span>{{smartFolders[2].name}}</span>
+                <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+            </div>
+
         </span>
-        <span>
-         <div ng-bind="smartFolders[3].name"  ng-click="clickItem(smartFolders[3])"></div>
+        <span class="item">
+         <div  ng-click="clickItem(smartFolders[3])">
+             <span>{{smartFolders[3].name}}</span>
+             <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+         </div>
         </span>
-        <span>
-        <div ng-bind="smartFolders[4].name"  ng-click="clickItem(smartFolders[4])"></div>
+        <span class="item">
+        <div ng-click="clickItem(smartFolders[4])">
+            <span>{{smartFolders[4].name}}</span>
+            <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+        </div>
         </span>
-        <span>
-            <div ng-bind="smartFolders[5].name"  ng-click="clickItem(smartFolders[5])"></div>
+        <span class="item">
+            <div  ng-click="clickItem(smartFolders[5])">
+                <span>{{smartFolders[5].name}}</span>
+                <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+            </div>
         </span>
-        <span>
-             <div  ng-bind="smartFolders[6].name"  ng-click="clickItem(smartFolders[6])"></div>
+        <span class="item">
+             <div  ng-click="clickItem(smartFolders[6])">
+                 <span>{{smartFolders[6].name}}</span>
+                 <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+             </div>
         </span>
-        <span>
-            <div ng-bind="smartFolders[7].name"  ng-click="clickItem(smartFolders[7])"></div>
+        <span class="item">
+            <div  ng-click="clickItem(smartFolders[7])">
+                <span>{{smartFolders[7].name}}</span>
+                <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+            </div>
         </span>
     </div>
     <div style="clear: both"></div>

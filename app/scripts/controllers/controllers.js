@@ -1676,6 +1676,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     $scope.smartSidebar = true;
                     $scope.sidebarData = GKSmartFolder.getFolders();
                     $scope.$on("selectSmartFolder",function(obj,index){
+                        console.log(index);
                         unSelectSmartFolder($scope.sidebarData);
                         $scope.sidebarData[index + 1].active = true;
                     })
