@@ -84,7 +84,18 @@
                     >
             </abn-tree>
         </div>
-
+        <abn-tree tree-data="smartTreeList"
+                  header="智能文件夹"
+                  icon-leaf="icon_file"
+                  icon-expand="icon_fold"
+                  icon-collapse="icon_unfold"
+                  icon-node-expand="icon_smartfolder"
+                  icon-node-collapse="icon_smartfolder"
+                  selected-branch="selectedBranch"
+                  on-select="handleSelect(branch)"
+                  class="smart_tree_list"
+                >
+        </abn-tree>
     </div>
 
     <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='chat'">

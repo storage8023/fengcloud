@@ -499,6 +499,7 @@ angular.module('gkClientIndex.services', [])
                         angular.forEach($scope.smartFolders,function(value){
                             value.active = false;
                             value.edit = false;
+                            value.newName = value.name;
                         });
 
                         $scope.lastVisitFolder = $scope.smartFolders[0] || {};
@@ -526,6 +527,17 @@ angular.module('gkClientIndex.services', [])
                         }
                         $scope.saveItemEdit = function($event,index){
 
+                            var newName = $scope.smartFolders[index].newName;
+                            if (!GKSmartFolder.checkFolderName(newName)) {
+                                return;
+                            }
+                            if (newName === $scope.smartFolders[index].name) {
+                                $scope.smartFolders[index].edit = false;
+                                return;
+                            }
+                            GKOpt.renameSmartFolder(data.type, newName).then(function () {
+                                $scope.smartFolders[index].edit = false;
+                            });
                         }
                         $scope.closeItemEdit = function($event,index){
                             $scope.smartFolders[index].edit = false;
