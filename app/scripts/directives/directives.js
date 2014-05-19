@@ -594,6 +594,52 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
+    .directive('editsmartContextmenu',['GKModal',function(GKModal){
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                /**
+                 * 设置右键菜单
+                 */
+                jQuery.contextMenu({
+                    selector: '.smart_desktop_item .item .item_container',
+                    reposition: false,
+                    zIndex: 9999,
+                    className: 'smart_right_contextmenu',
+                    animation: {
+                        show: "show",
+                        hide: "hide"
+                    },
+
+                    events: {
+                        show: function () {
+                            this.addClass('hover');
+                        },
+                        hide: function () {
+                            this.removeClass('hover');
+                        }
+                    },
+                    build: function ($trigger, e) {
+                        var   items = {
+                            'editSmartName': {
+                                name: '编辑',
+                                callback: function () {
+                                    var data = $trigger.data('branch');
+                                    GKModal.editSmartFolder(data);
+                                }
+                            }
+                        }
+                        return {
+                            callback: function () {
+
+                            },
+                            items: items
+                        }
+                    }
+                });
+            }
+        }
+    }])
     .directive('contextmenu', ['GKContextMenu', function (GKContextMenu) {
         return {
             restrict: 'A',

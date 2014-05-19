@@ -493,10 +493,36 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            editSmartFolder:function(smartObj){
+                var option = {
+                    templateUrl: 'views/editsmartfolder_dialog.html',
+                    windowClass: 'edit_smartfolder',
+                    controller: function ($scope, gkWindowInstance) {
+                        $scope.smart = smartObj;
+                        $scope.saveSmart = function(){
+                            var newName = $scope.smart.newName;
+                            if (!GKSmartFolder.checkFolderName(newName)) {
+                                return;
+                            }
+                            if (newName === $scope.smart.name) {
+                                return;
+                            }
+                            GKSmartFolder.renameSmartFolder($scope.smart.type, newName).then(function () {
+                                gkWindowInstance.dismiss('cancel');
+                            });
+                        }
+                        $scope.cancel = function () {
+                            gkWindowInstance.dismiss('cancel');
+                        };
+                    }
+                }
+                option = angular.extend({}, defaultOption, option);
+                return gkWindow.open(option);
+            },
             smartDesktop:function(param){
                 var option = {
                     templateUrl:'views/smart_desktop_dialog.html',
-                    windowClass:'smart_desktop_content',
+                    windowClass:'gk_window smart_desktop_content',
                     controller:function($scope,gkWindowInstance){
                         var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
                         $scope.searchKeyword = "";
@@ -545,20 +571,13 @@ angular.module('gkClientIndex.services', [])
                             })
                             event.stopPropagation();
                         }
+
+
                         $scope.saveItemEdit = function($event,index){
 
-                            var newName = $scope.smartFolders[index].newName;
-                            if (!GKSmartFolder.checkFolderName(newName)) {
-                                return;
-                            }
-                            if (newName === $scope.smartFolders[index].name) {
-                                $scope.smartFolders[index].edit = false;
-                                return;
-                            }
-                            GKSmartFolder.renameSmartFolder($scope.smartFolders[index].type, newName).then(function () {
-                                $scope.smartFolders[index].edit = false;
-                            });
+
                         }
+
                         $scope.closeItemEdit = function($event,index){
                             $scope.smartFolders[index].edit = false;
                         }

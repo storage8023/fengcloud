@@ -47,11 +47,10 @@
      </div>
     <div style="clear: both"></div>
     <div class="smart_desktop_item">
-        <span class="item" ng-repeat="smart in smartFolders">
+        <span class="item" ng-repeat="smart in smartFolders" editsmart-contextmenu >
             <!--智能文件夹名-->
-            <div class="item_container" style="cursor:pointer;" ng-click="clickItem(smart,$index)" ng-show="!smart.edit">
+            <div class="item_container" style="cursor:pointer;" ng-click="clickItem(smart,$index)" data-branch="{{smart}}">
                 <span>{{smart.name}}</span>
-                <div ng-click="editItem($event,$index);"><i class="icon16x16 icon_edit"></i></div>
             </div>
             <!--编辑-->
             <div class="item_container" ng-show="smart.edit" >

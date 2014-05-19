@@ -2515,7 +2515,7 @@ padding: 6px 21px;
     background-color:#494f56;
 }
 
-.modal.gk_window{
+.modal.fade.gk_window{
     position: fixed;
     top: 0;
     left: 0;
@@ -2783,4 +2783,20 @@ padding: 6px 21px;
 
 .smart_rightside_list div.icon_diamond{
     background-color: #47c3f6;
+}
+
+.smart_right_contextmenu{
+    width:80px;
+    background-color: #3D434A;
+    color:#ffffff;
+}
+
+.edit_smartfolder{
+
+}
+
+.modal.fade.edit_smartfolder.in{
+    top:25%;
+    width:550px;
+    margin-left:-225px;
 }

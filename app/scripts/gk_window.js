@@ -389,7 +389,7 @@ angular.module("template/gkwindow/backdrop.html", []).run(["$templateCache", fun
 
 angular.module("template/gkwindow/window.html", []).run(["$templateCache", function($templateCache) {
     $templateCache.put("template/gkwindow/window.html",
-            "<div tabindex=\"-1\" class=\"modal gk_window fade {{ windowClass }}\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\" ng-click=\"close($event)\">\n" +
+            "<div tabindex=\"-1\" class=\"modal fade {{ windowClass }}\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\" ng-click=\"close($event)\">\n" +
             "    <div class=\"modal-dialog\"><div class=\"modal-content\" ng-transclude></div></div>\n" +
             "</div>");
 }]);

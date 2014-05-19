@@ -1,0 +1,13 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+    <h4>更改智能文件夹名称</h4>
+</div>
+<div class="modal-body scrollbar">
+       <div style="height:50px;text-align: center">
+            <input ng-model="smart.newName" style="height: 40px; border: 0px; border-radius: 4px; width:350px;line-height: 30px;font-size: 16px;">
+       </div>
+       <div style="text-align: center;margin-top: 10px;">
+           <button class="btn btn-primary" style="width:80px" ng-click="saveSmart();">确定</button>
+           <button class="btn btn-default" style="width:80px;margin-left: 20px;" ng-click="cancel();">取消</button>
+       </div>
+</div>
