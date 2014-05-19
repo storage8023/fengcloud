@@ -2705,12 +2705,11 @@ padding: 6px 21px;
     background-image:url(../images/icon/smart_blue.png)
 }
 
-.smart_desktop_item span div:first-child{
+.smart_desktop_item span .item_container{
     padding-top:43px;
     font-size: 16px;
     width:100%;
     height:100%;
-    cursor: pointer;
 }
 
 .smart_desktop_item span div div{

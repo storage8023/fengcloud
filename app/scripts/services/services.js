@@ -496,13 +496,21 @@ angular.module('gkClientIndex.services', [])
                     controller:function($scope,gkWindowInstance){
                         var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
                         $scope.smartFolders = GKSmartFolder.getFolders()||[];
+                        angular.forEach($scope.smartFolders,function(value){
+                            value.active = false;
+                            value.edit = false;
+                        });
+
+                        $scope.lastVisitFolder = $scope.smartFolders[0] || {};
+                        $scope.lastModifyFolder = $scope.smartFolders[1] || {};
+                        $scope.smartFolders = $scope.smartFolders.slice(2);
                         console.log($scope.smartFolders)
                         $scope.newMsg = !!localStorageService.get(unreadMsgKey);
-                        $scope.editItem = function($event){
-
+                        $scope.editItem = function($event,index){
+                            $scope.smartFolders[index].edit = true;
                             $event.stopPropagation();
                         }
-                        $scope.clickItem = function(item){
+                        $scope.clickItem = function(item,$index){
                             var mode = 'file';
                             var partition =  item.partition;
                             var pararm = {
@@ -511,12 +519,17 @@ angular.module('gkClientIndex.services', [])
                             pararm['filter'] = item.filter;
                             GKMode.setMode(mode);
                             $timeout(function(){
-                                $rootScope.$broadcast("selectSmartFolder",item.type);
                                 $location.search(pararm);
                                 gkWindowInstance.dismiss('cancel');
                             })
+                            event.stopPropagation();
                         }
+                        $scope.saveItemEdit = function($event,index){
 
+                        }
+                        $scope.closeItemEdit = function($event,index){
+                            $scope.smartFolders[index].edit = false;
+                        }
                         $scope.openNews = function(){
                             $rootScope.$broadcast("openNews");
                             gkWindowInstance.dismiss('cancel');

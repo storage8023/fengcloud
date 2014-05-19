@@ -1675,14 +1675,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }else{
                     $scope.smartSidebar = true;
                     $scope.sidebarData = GKSmartFolder.getFolders();
-                    $scope.$on("selectSmartFolder",function(obj,index){
-                        console.log(index);
-                        unSelectSmartFolder($scope.sidebarData);
-                        $scope.sidebarData[index + 1].active = true;
-                    })
+                    angular.forEach($scope.sidebarData,function(value){
+                        value.active = false;
+                        value.edit = false;
+                        if(value.filter == param.filter){
+                            value.active = true;
+                        }
+                    });
+                    $scope.lastVisitFolder = $scope.sidebarData[0] || {};
+                    $scope.lastModifyFolder = $scope.sidebarData[1] || {};
+                    $scope.sidebarData = $scope.sidebarData.slice(2);
                     $scope.selectSmartFolder = function(smart){
                         unSelectSmartFolder($scope.sidebarData);
-                        $scope.sidebarData[smart.type + 1].active = true;
+                        $scope.sidebarData[smart.type - 1].active = true;
                         var pararm = {
                             partition: smart.partition,
                             filter: smart.filter

@@ -9,17 +9,19 @@
      </div>
      <div class="smart_desktop_topItem">
          <span class="last_visit">
-             <div ng-click="clickItem(smartFolders[0])">
+
+             <div ng-click="clickItem(lastVisitFolder)">
                  <i class="smart_desktop_icon94x94 last_visit"></i>
-                 <div ng-bind="smartFolders[0].name"></div>
+                 <div ng-bind="lastVisitFolder.name"></div>
              </div>
-             </a>
+
+
          </span>
 
          <span class="last_modify">
-             <div ng-click="clickItem(smartFolders[1])">
+             <div ng-click="clickItem(lastModifyFolder)">
                  <i class="smart_desktop_icon94x94 last_modify"></i>
-                 <div  ng-bind="smartFolders[1].name"></div>
+                 <div  ng-bind="lastModifyFolder.name"></div>
              </div>
 
          </span>
@@ -45,43 +47,20 @@
      </div>
     <div style="clear: both"></div>
     <div class="smart_desktop_item">
-        <span class="item">
-            <div  ng-click="clickItem(smartFolders[2])">
-               <span>{{smartFolders[2].name}}</span>
-                <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
+        <span class="item" ng-repeat="smart in smartFolders">
+            <!--智能文件夹名-->
+            <div class="item_container"  ng-click="clickItem(smart,$index)" ng-show="!smart.edit">
+                <span>{{smart.name}}</span>
+                <div ng-click="editItem($event,$index);"><i class="icon16x16 icon_edit"></i></div>
             </div>
+            <!--编辑-->
+            <div class="item_container" ng-show="smart.edit" >
+                <input style="width:80px;border:0px;" ng-model="smart.name"/>
+                <i class="icon16x16 glyphicon-device-active" ng-click="saveItemEdit($event,$index);"></i>
+                <i class="icon16x16 glyphicon-device-disable" ng-click="closeItemEdit($event,$index);"></i>
+            </div>
+        </span>
 
-        </span>
-        <span class="item">
-         <div  ng-click="clickItem(smartFolders[3])">
-             <span>{{smartFolders[3].name}}</span>
-             <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
-         </div>
-        </span>
-        <span class="item">
-        <div ng-click="clickItem(smartFolders[4])">
-            <span>{{smartFolders[4].name}}</span>
-            <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
-        </div>
-        </span>
-        <span class="item">
-            <div  ng-click="clickItem(smartFolders[5])">
-                <span>{{smartFolders[5].name}}</span>
-                <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
-            </div>
-        </span>
-        <span class="item">
-             <div  ng-click="clickItem(smartFolders[6])">
-                 <span>{{smartFolders[6].name}}</span>
-                 <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
-             </div>
-        </span>
-        <span class="item">
-            <div  ng-click="clickItem(smartFolders[7])">
-                <span>{{smartFolders[7].name}}</span>
-                <div ng-click="editItem($event);"><i class="icon16x16 icon_pen"></i></div>
-            </div>
-        </span>
     </div>
     <div style="clear: both"></div>
 </div>
