@@ -1065,8 +1065,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         var getFileData = function(){
             var param =  $location.search();
-            console.log("======controllers line 1068======");
-            console.log(param);
             if(!param.partition) return;
             $scope.fileDataLoaded = false;
             $scope.path = param.path || '';
@@ -1677,7 +1675,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }else{
                     $scope.smartSidebar = true;
                     $scope.sidebarData = GKSmartFolder.getFolders();
-                    console.log($scope.sidebarData);
                     angular.forEach($scope.sidebarData,function(value){
                         value.active = false;
                         value.edit = false;

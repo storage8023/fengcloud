@@ -19,14 +19,16 @@
     <i class="icon16x16 icon_search" ng-click="searchFile()"></i>
     <i class="icon_cancel" ng-click="cancelSearch($event)">&times;</i>
     <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"  ui-keydown="{'enter':'searchFile()'}"/>
+
     <div class="searching_label dropdown">
         <a href="javascript:void(0)" dropdown-toggle title="在 {{currentSearchScope['text']}} 中搜索：">
-            <span>在 {{currentSearchScope['text']}} 中搜索：</span><i ng-if="searchScopes.length>1" class="gk_down_arrow"></i>
+            <span>在 {{currentSearchScope['text']}} 中搜索：</span><i ng-if="searchScopes.length>1 && currentSearchScope.name != 'partition'" class="gk_down_arrow"></i>
         </a>
-        <ul class="dropdown-menu" ng-if="searchScopes.length>1">
+        <ul class="dropdown-menu" ng-if="searchScopes.length>1&&currentSearchScope.name != 'partition'">
             <li ng-repeat="searchScope in searchScopes">
                 <a href="javascript:void(0)" ng-click="setSearchScope(searchScope)">{{searchScope['text']}}</a>
             </li>
         </ul>
     </div>
+
 </div>

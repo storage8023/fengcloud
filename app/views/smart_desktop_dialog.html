@@ -4,8 +4,8 @@
 <div class="modal-body scrollbar">
      <div class="smart_desktop_title">智能桌面</div>
      <div class="smart_desktop_search">
-         <input />
-         <i class="icon16x16 icon_search"></i>
+         <input ng-model="searchKeyword"  ui-keydown="{'enter':'searchFile(searchKeyword)'}"/>
+         <i class="icon16x16 icon_search" ng-click="searchFile(searchKeyword)"></i>
      </div>
      <div class="smart_desktop_topItem">
          <span class="last_visit">

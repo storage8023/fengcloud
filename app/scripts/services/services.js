@@ -16,6 +16,10 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .value('smartSearchConfig',{
+        name: 'partition',
+        text: '所有云库'
+    })
     .factory('GKSope', [function () {
         return {
             rightSidebar:null
@@ -475,7 +479,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal','gkWindow', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi','GKSmartFolder','GKMode','localStorageService',function ($rootScope, $modal,gkWindow,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi,GKSmartFolder,GKMode,localStorageService) {
+    .factory('GKModal', ['$rootScope', '$modal','gkWindow', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi','GKSmartFolder','GKMode','localStorageService','smartSearchConfig',function ($rootScope, $modal,gkWindow,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi,GKSmartFolder,GKMode,localStorageService,smartSearchConfig) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -495,6 +499,7 @@ angular.module('gkClientIndex.services', [])
                     windowClass:'smart_desktop_content',
                     controller:function($scope,gkWindowInstance){
                         var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
+                        $scope.searchKeyword = "";
                         $scope.smartFolders = GKSmartFolder.getFolders()||[];
                         angular.forEach($scope.smartFolders,function(value){
                             value.active = false;
@@ -506,6 +511,22 @@ angular.module('gkClientIndex.services', [])
                         $scope.lastModifyFolder = $scope.smartFolders[1] || {};
                         $scope.smartFolders = $scope.smartFolders.slice(2);
                         $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+                        $scope.searchFile = function(searchKeyword){
+                            if (!searchKeyword || !searchKeyword.length) {
+                                return;
+                            }
+                            if(searchKeyword.indexOf('|')>=0){
+                                alert('搜索关键字中不能包含 | ');
+                                return;
+                            }
+                            var extendParam = {
+                                search:[searchKeyword,smartSearchConfig.name].join('|')
+                            };
+                            var search = $location.search();
+                            $location.search(angular.extend(search, extendParam));
+                            gkWindowInstance.dismiss('cancel');
+                        }
+
                         $scope.editItem = function($event,index){
                             $scope.smartFolders[index].edit = true;
                             $event.stopPropagation();
@@ -3922,7 +3943,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope','smartSearchConfig',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope,smartSearchConfig) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -4090,11 +4111,9 @@ angular.module('gkClientIndex.services', [])
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
-                console.log("=========services line 4093==========");
-                console.log($scope)
                 if ($scope.search) {
                     var searchArr = $scope.search.split('|');
-                    if (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash') {
+                    if (searchArr[1] == smartSearchConfig.name || (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash')) {
                         source = 'api';
                         $rootScope.$broadcast('searchStateChange','loading');
                         var fileSearch = new GKFileSearch();

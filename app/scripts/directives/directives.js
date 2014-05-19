@@ -1643,7 +1643,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder','GKPath', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder,GKPath) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder','GKPath','smartSearchConfig', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder,GKPath,smartSearchConfig) {
         return {
             replace: true,
             restrict: 'E',
@@ -1803,12 +1803,12 @@ angular.module('gkClientIndex.directives', [])
                             text: GKSmartFolder.getSmartFoldeName(params.filter)
                         })
                     } else {
-                        if(GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)){
-                            searchScopes.push({
-                                name: 'partition',
-                                text: '所有云库'
-                            });
-                        }
+//                        if(GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)){
+//                            searchScopes.push({
+//                                name: 'partition',
+//                                text: '所有云库'
+//                            });
+//                        }
                         searchScopes.push({
                             name: 'mount',
                             text: $rootScope.PAGE_CONFIG.mount['name']
@@ -1826,6 +1826,10 @@ angular.module('gkClientIndex.directives', [])
 
                 var getCurrentSearchScope = function(scope,searchScopes){
                     var currentScope;
+                    if(scope == smartSearchConfig.name){
+                        currentScope = smartSearchConfig;
+                        return currentScope;
+                    }
                     angular.forEach(searchScopes,function(val){
                         if(val.name == scope){
                             currentScope = val;
@@ -1838,7 +1842,6 @@ angular.module('gkClientIndex.directives', [])
                 var getSearchParam = function(){
                     var params = $location.search();
                     $scope.searchScopes =  getSearchScopes();
-
                     if(!params.search){
                         resetSearch();
                         var len = $scope.searchScopes.length;
