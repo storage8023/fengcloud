@@ -1671,6 +1671,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }else if(param.filter||param.search){
                 $scope.sidebar = 'nofile';
                 if(param.search) {
+                    $scope.smartSidebar = false;
                     $scope.sidbarData = getSidbarData(param);
                 }else{
                     $scope.smartSidebar = true;
