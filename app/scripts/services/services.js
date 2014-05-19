@@ -505,7 +505,6 @@ angular.module('gkClientIndex.services', [])
                         $scope.lastVisitFolder = $scope.smartFolders[0] || {};
                         $scope.lastModifyFolder = $scope.smartFolders[1] || {};
                         $scope.smartFolders = $scope.smartFolders.slice(2);
-                        console.log($scope.smartFolders)
                         $scope.newMsg = !!localStorageService.get(unreadMsgKey);
                         $scope.editItem = function($event,index){
                             $scope.smartFolders[index].edit = true;
@@ -535,7 +534,7 @@ angular.module('gkClientIndex.services', [])
                                 $scope.smartFolders[index].edit = false;
                                 return;
                             }
-                            GKOpt.renameSmartFolder(data.type, newName).then(function () {
+                            GKSmartFolder.renameSmartFolder($scope.smartFolders[index].type, newName).then(function () {
                                 $scope.smartFolders[index].edit = false;
                             });
                         }
@@ -1932,6 +1931,24 @@ angular.module('gkClientIndex.services', [])
                 }
                 }
                 return deferred.promise;
+            },
+            renameSmartFolder: function (condition, name) {
+                var deferred = $q.defer();
+                var param = {
+                    condition: condition,
+                    name: name
+                };
+                gkClientInterface.renameSmartFolder(param, function (re) {
+                    if (!re.error) {
+                        var filter = GKSmartFolder.getFolderAliasByType(condition);
+                        $rootScope.$broadcast('editSmartFolder', name, condition, filter);
+                        deferred.resolve();
+                    } else {
+                        GKException.handleClientException(re);
+                        deferred.reject();
+                    }
+                });
+                return deferred.promise;
             }
         };
         return GKSmartFolder;
@@ -3027,24 +3044,6 @@ angular.module('gkClientIndex.services', [])
                 }).error(function (request) {
                         GKException.handleAjaxException(request);
                     });
-            },
-            renameSmartFolder: function (condition, name) {
-                var deferred = $q.defer();
-                var param = {
-                    condition: condition,
-                    name: name
-                };
-                gkClientInterface.renameSmartFolder(param, function (re) {
-                    if (!re.error) {
-                        var filter = GKSmartFolder.getFolderAliasByType(condition);
-                        $rootScope.$broadcast('editSmartFolder', name, condition, filter);
-                        deferred.resolve();
-                    } else {
-                        GKException.handleClientException(re);
-                        deferred.reject();
-                    }
-                });
-                return deferred.promise;
             },
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
