@@ -4090,6 +4090,8 @@ angular.module('gkClientIndex.services', [])
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
+                console.log("=========services line 4093==========");
+                console.log($scope)
                 if ($scope.search) {
                     var searchArr = $scope.search.split('|');
                     if (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash') {
