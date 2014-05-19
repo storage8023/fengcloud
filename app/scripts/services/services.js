@@ -1808,18 +1808,19 @@ angular.module('gkClientIndex.services', [])
                 return filterName;
             },
             getFolders: function (exclue) {
+                var newSmartFolder = smartFolders.slice(0);
                 if (exclue) {
                     if (!angular.isArray(exclue)) exclue = [exclue];
                     angular.forEach(exclue, function (value) {
-                        angular.forEach(smartFolders, function (smart, key) {
+                        angular.forEach(newSmartFolder, function (smart, key) {
                             if (smart.filter == value) {
-                                smartFolders.splice(key, 1);
+                                newSmartFolder.splice(key, 1);
                                 return false
                             }
                         })
                     });
                 }
-                return smartFolders;
+                return newSmartFolder;
             },
             getFolderByCode: function (code) {
                 var value, smartFolder = null;

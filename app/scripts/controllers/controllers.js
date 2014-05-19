@@ -1675,6 +1675,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 }else{
                     $scope.smartSidebar = true;
                     $scope.sidebarData = GKSmartFolder.getFolders();
+                    console.log($scope.sidebarData);
                     angular.forEach($scope.sidebarData,function(value){
                         value.active = false;
                         value.edit = false;
@@ -1682,12 +1683,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                             value.active = true;
                         }
                     });
-                    $scope.lastVisitFolder = $scope.sidebarData[0] || {};
-                    $scope.lastModifyFolder = $scope.sidebarData[1] || {};
-                    $scope.sidebarData = $scope.sidebarData.slice(2);
+
                     $scope.selectSmartFolder = function(smart){
                         unSelectSmartFolder($scope.sidebarData);
-                        $scope.sidebarData[smart.type - 1].active = true;
+                        smart.active = true;
                         var pararm = {
                             partition: smart.partition,
                             filter: smart.filter

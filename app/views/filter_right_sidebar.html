@@ -10,6 +10,7 @@
     </div>
     <div ng-show="smartSidebar">
         <div  class="smart_rightside_title">智能文件夹</div>
+
         <div class="smart_rightside_list"  ng-repeat="smart in sidebarData" ng-class="smart.active?'active':''" ng-click="selectSmartFolder(smart)">
             <div ng-class="smart.icon"></div>
             {{smart.name}}
