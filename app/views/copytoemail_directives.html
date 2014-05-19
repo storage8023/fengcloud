@@ -1,6 +1,5 @@
-<div>
 
-    <div class="file_item">
+    <div>
     <div class="thumb" bo-title="file.fullpath">
         <i class="file_icon128x128" bo-class="file.filename | getFileIcon:file.dir:0:(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
             <img bo-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0" error-src="" ng-src="{{file.hash | getThumbUrl:file.filehash:file.fullpath}}"/>
@@ -37,4 +36,3 @@
            <a href="javascript:;" ng-click="copyToEmail(file)"><i class="icon16x16 copy_tomail"></i></a>
     </div>
     </div>
-</div>
