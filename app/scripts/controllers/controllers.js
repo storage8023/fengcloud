@@ -1188,13 +1188,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             });
         });
 
-        //判断讨论历史窗口是否打开
-        $scope.showDisscussHitoryWin = false;
+
         $scope.handleClick = function ($event, index,file) {
-            //如果文件或文件夹讨论历史窗口被打开，则加载数据
-            if($scope.showDisscussHitoryWin){
-                $scope.$broadcast("showDiscussHistory",file);
-            }
+
             var fileItem = jQuery($event.target).hasClass('item')?jQuery($event.target):jQuery($event.target).parents('.item');
             var file = $scope.fileData[index];
             if ($event.ctrlKey || $event.metaKey) {

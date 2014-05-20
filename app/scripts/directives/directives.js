@@ -1907,7 +1907,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
-    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember){
+    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember','$location',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember,$location){
         return{
             restrict: 'E',
             replace: true,
@@ -1919,10 +1919,19 @@ angular.module('gkClientIndex.directives', [])
                 scope.discussionList = [];
                 scope.discussContent = "";
                 scope.loadDiscussionhistory = true;
-                scope.isOpen = false;
+                scope.selectObj = {
+                    partition:'',
+                    mountid:''
+                };
                 scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
-                    close();
+                    var param = $location.search();
+                    var newParam  = {
+                        partition:param.partition,
+                        mountid:param.mountid
+                    }
+                    console.log(Util.object.equil);
+                   close();
                 });
                 scope.$watch(function(){
                     return $rootScope.PAGE_CONFIG.mode;
@@ -1960,6 +1969,7 @@ angular.module('gkClientIndex.directives', [])
                    close();
                 });
                 scope.$on("showDiscussHistory",function(obj,file){
+                    console.log(file);
                     scope.isOpen = true;
                     scope.showDisscussHitoryWin = true;
                     scope.loadDiscussionhistory = true;
