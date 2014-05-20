@@ -1190,7 +1190,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
 
         $scope.handleClick = function ($event, index,file) {
-
+            if($scope.showDisscussHitoryWin){
+                $scope.$broadcast('showDiscussHistory',file);
+            }
             var fileItem = jQuery($event.target).hasClass('item')?jQuery($event.target):jQuery($event.target).parents('.item');
             var file = $scope.fileData[index];
             if ($event.ctrlKey || $event.metaKey) {

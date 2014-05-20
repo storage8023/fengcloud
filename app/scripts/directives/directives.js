@@ -1907,7 +1907,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
-    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember','$location',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember,$location){
+    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember','$location','GKFileList',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember,$location,GKFileList){
         return{
             restrict: 'E',
             replace: true,
@@ -1921,17 +1921,14 @@ angular.module('gkClientIndex.directives', [])
                 scope.loadDiscussionhistory = true;
                 scope.selectObj = {
                     partition:'',
-                    mountid:''
+                    mountid:'',
+                    path:''
                 };
                 scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
-                    var param = $location.search();
-                    var newParam  = {
-                        partition:param.partition,
-                        mountid:param.mountid
-                    }
-                    console.log(Util.object.equil);
-                   close();
+                    var selectedFile = GKFileList.getSelectedFile();
+                    console.log(selectedFile);
+                   // if(!selectedFile || )
                 });
                 scope.$watch(function(){
                     return $rootScope.PAGE_CONFIG.mode;
