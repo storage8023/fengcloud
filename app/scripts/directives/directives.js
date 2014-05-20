@@ -1929,12 +1929,12 @@ angular.module('gkClientIndex.directives', [])
                 },function(value,oldValue){
                     if(value == 'chat'){
                         //保存切换前的状态
-                        var opened = scope.isOpen;
+                        var opened = scope.showDisscussHitoryWin;
                         close();
                         //重新复制
-                        scope.isOpen = opened;
+                        scope.showDisscussHitoryWin = opened;
                     }else if(value == 'file'){
-                        if(scope.isOpen){
+                        if(scope.showDisscussHitoryWin){
                             scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
                         }
                     }
@@ -2038,7 +2038,6 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var close = function(){
-                    scope.isOpen = false;
                     scope.showDisscussHitoryWin = false;
                     scope.loadDiscussionhistory = true;
                     element.animate({right:ELEMENT_RIGHT},200,function(){
