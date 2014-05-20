@@ -429,6 +429,30 @@
             this._handleException(e);
         }
     },
+
+
+    /**
+     * 获取最新修改的文件
+     *
+     *eg:{
+     *        mountid:'',
+     *        start:0,
+     *        count10
+     * }
+     *
+     */
+    getFileUpdateList:function(params,callback){
+        try{
+            gkClient.gGetFileListByTime(JSON.stringify(params),function(re){
+                re = typeof re ==='object'?re:JSON.parse(re);
+                if(typeof callback === 'function'){
+                    callback(re);
+                }
+            });
+        }catch(e){
+            this._handleException(e);
+        }
+    },
     /**
      * 通过浏览器打开链接
      * @param url
