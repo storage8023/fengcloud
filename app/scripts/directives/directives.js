@@ -1970,6 +1970,7 @@ angular.module('gkClientIndex.directives', [])
                     scope.discussionList = [];
                     scope.currentDiscussFile = file;
                     scope.canShowHistory = true;
+                    element.show();
                     element.animate({right:0},300,function(){
                         scope.focusTextarea = true;
                     });
@@ -2043,6 +2044,7 @@ angular.module('gkClientIndex.directives', [])
                     element.animate({right:ELEMENT_RIGHT},200,function(){
                         scope.canShowHistory = false;
                         scope.discussionList = [];
+                        element.hide();
                     });
                 };
 
@@ -2051,6 +2053,7 @@ angular.module('gkClientIndex.directives', [])
                 };
                 $timeout(function(){
                     element.css("right",ELEMENT_RIGHT+"px");
+                    element.hide();
                 });
             }
         }
