@@ -1960,7 +1960,8 @@ angular.module('gkClientIndex.services', [])
                     selectedpath: selectFile,
                     view:view,
                     filter:filter,
-                    entid:mount['ent_id']?mount['ent_id']:-1
+                    entid:mount['ent_id']?mount['ent_id']:-1,
+                    time:new Date().getTime()
                 };
 
                 if (mount) {
