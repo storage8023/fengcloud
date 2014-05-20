@@ -1919,6 +1919,7 @@ angular.module('gkClientIndex.directives', [])
                 scope.discussionList = [];
                 scope.discussContent = "";
                 scope.loadDiscussionhistory = true;
+                scope.isOpen = false;
                 scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
                     close();
@@ -1927,7 +1928,15 @@ angular.module('gkClientIndex.directives', [])
                     return $rootScope.PAGE_CONFIG.mode;
                 },function(value,oldValue){
                     if(value == 'chat'){
+                        //保存切换前的状态
+                        var opened = scope.isOpen;
                         close();
+                        //重新复制
+                        scope.isOpen = opened;
+                    }else if(value == 'file'){
+                        if(scope.isOpen){
+                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
+                        }
                     }
                 })
                 scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
@@ -1951,6 +1960,7 @@ angular.module('gkClientIndex.directives', [])
                    close();
                 });
                 scope.$on("showDiscussHistory",function(obj,file){
+                    scope.isOpen = true;
                     scope.showDisscussHitoryWin = true;
                     scope.loadDiscussionhistory = true;
                     if(file && !file.mount_id){
@@ -1961,7 +1971,6 @@ angular.module('gkClientIndex.directives', [])
                     scope.currentDiscussFile = file;
                     scope.canShowHistory = true;
                     element.animate({right:0},300,function(){
-
                         scope.focusTextarea = true;
                     });
 
@@ -1971,7 +1980,6 @@ angular.module('gkClientIndex.directives', [])
                             value.status = true
                             scope.discussionList.push(value);
                         }
-
                         scope.scrollToIndex = scope.discussionList.length -1;
                         scope.loadDiscussionhistory = false;
                     },function(data){
@@ -2030,6 +2038,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var close = function(){
+                    scope.isOpen = false;
                     scope.showDisscussHitoryWin = false;
                     scope.loadDiscussionhistory = true;
                     element.animate({right:ELEMENT_RIGHT},200,function(){
