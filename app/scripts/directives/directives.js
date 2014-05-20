@@ -1484,7 +1484,7 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('copyToEmail', ['$rootScope','GKFileList','GKMount','$filter','GKApi',function ($rootScope,GKFileList,GKMount,$filter,GKApi) {
+    .directive('copyToEmail', ['$rootScope','GKFileList','GKMount','$filter','GKApi','GKAuth',function ($rootScope,GKFileList,GKMount,$filter,GKApi,GKAuth) {
         return {
             replace: true,
             restrict: 'E',
@@ -1523,6 +1523,10 @@ angular.module('gkClientIndex.directives', [])
                     var expreeDate = 7;
                     if(!file) return;
                     var mountId = GKFileList.getOptFileMountId(file);
+                    if(!GKAuth.check(mountId,'','file_link')){
+                        alert("对不起，你没有权限获取该文件或文件夹的外链地址。");
+                        return;
+                    }
                     var iconUrl = GKApi.getIcon(file.dir,file.filename,imgSize);
                     getBase64FromImageUrl(iconUrl,function(data){
                         var currDate = new Date()
