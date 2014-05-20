@@ -1926,23 +1926,21 @@ angular.module('gkClientIndex.directives', [])
                 };
                 scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
-                    var selectedFile = GKFileList.getSelectedFile();
-                    console.log(selectedFile);
-                   // if(!selectedFile || )
+                     close();
                 });
                 scope.$watch(function(){
                     return $rootScope.PAGE_CONFIG.mode;
                 },function(value,oldValue){
                     if(value == 'chat'){
                         //保存切换前的状态
-                        var opened = scope.showDisscussHitoryWin;
+                       // var opened = scope.showDisscussHitoryWin;
                         close();
                         //重新复制
-                        scope.showDisscussHitoryWin = opened;
+                        //scope.showDisscussHitoryWin = opened;
                     }else if(value == 'file'){
-                        if(scope.showDisscussHitoryWin){
-                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
-                        }
+//                        if(scope.showDisscussHitoryWin){
+//                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
+//                        }
                     }
                 })
                 scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
