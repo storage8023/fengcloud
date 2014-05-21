@@ -1721,16 +1721,47 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.rootSidebarData = getRootSidebarData($location.search());
 
+        var unSelectSmartFolder = function(list){
+            angular.forEach(list,function(value){
+                value.active = false;
+            })
+        }
+
+
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
             $scope.rootSidebarData = getRootSidebarData(param);
-
             if(param.path){
                 $scope.sidebar = 'singlefile';
             }else if(param.filter||param.search){
                 $scope.sidebar = 'nofile';
-                $scope.sidbarData = getSidbarData(param);
+                if(param.search) {
+                    $scope.smartSidebar = false;
+                    $scope.sidbarData = getSidbarData(param);
+                }else{
+                    $scope.smartSidebar = true;
+                    $scope.sidebarData = GKSmartFolder.getFolders();
+                    angular.forEach($scope.sidebarData,function(value){
+                        value.active = false;
+                        value.edit = false;
+                        if(value.filter == param.filter){
+                            value.active = true;
+                        }
+                    });
+
+                    $scope.selectSmartFolder = function(smart){
+                        unSelectSmartFolder($scope.sidebarData);
+                        smart.active = true;
+                        var pararm = {
+                            partition: smart.partition,
+                            filter: smart.filter
+                        };
+                        $timeout(function(){
+                            $location.search(pararm);
+                        })
+                    }
+                }
             }
             $scope.currentTab = 'member';
             $timeout(function(){

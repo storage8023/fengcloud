@@ -16,6 +16,10 @@ angular.module('gkClientIndex.services', [])
         //tolerance:'fit',
         distance: 10
     })
+    .value('smartSearchConfig',{
+        name: 'partition',
+        text: '所有云库'
+    })
     .factory('GKSope', [function () {
         return {
             rightSidebar:null
@@ -475,7 +479,7 @@ angular.module('gkClientIndex.services', [])
             }
         };
     }])
-    .factory('GKModal', ['$rootScope', '$modal', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi',function ($rootScope, $modal,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi) {
+    .factory('GKModal', ['$rootScope', '$modal','gkWindow', 'GKChat','GK', 'GKMount', 'GKPartition', '$location', '$timeout', 'GKException', 'GKDialog', 'GKPath', 'GKSync', 'GKFile', 'GKApi','GKSmartFolder','GKMode','localStorageService','smartSearchConfig',function ($rootScope, $modal,gkWindow,GKChat, GK, GKMount, GKPartition, $location, $timeout, GKException, GKDialog, GKPath, GKSync, GKFile,GKApi,GKSmartFolder,GKMode,localStorageService,smartSearchConfig) {
         var defaultOption = {
             backdrop: 'static'
         };
@@ -489,6 +493,113 @@ angular.module('gkClientIndex.services', [])
         };
 
         return{
+            editSmartFolder:function(smartObj){
+                var option = {
+                    templateUrl: 'views/editsmartfolder_dialog.html',
+                    windowClass: 'edit_smartfolder',
+                    controller: function ($scope, gkWindowInstance) {
+                        $scope.smart = smartObj;
+                        $scope.saveSmart = function(){
+                            var newName = $scope.smart.newName;
+                            if (!GKSmartFolder.checkFolderName(newName)) {
+                                return;
+                            }
+                            if (newName === $scope.smart.name) {
+                                return;
+                            }
+                            GKSmartFolder.renameSmartFolder($scope.smart.type, newName).then(function () {
+                                gkWindowInstance.dismiss('cancel');
+                            });
+                        }
+                        $scope.cancel = function () {
+                            gkWindowInstance.dismiss('cancel');
+                        };
+                    }
+                }
+                option = angular.extend({}, defaultOption, option);
+                return gkWindow.open(option);
+            },
+            smartDesktop:function(param){
+                var option = {
+                    templateUrl:'views/smart_desktop_dialog.html',
+                    windowClass:'gk_window smart_desktop_content',
+                    controller:function($scope,gkWindowInstance){
+                        var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
+                        $scope.searchKeyword = "";
+                        $scope.smartFolders = GKSmartFolder.getFolders()||[];
+                        angular.forEach($scope.smartFolders,function(value){
+                            value.active = false;
+                            value.edit = false;
+                            value.newName = value.name;
+                        });
+
+                        $scope.lastVisitFolder = $scope.smartFolders[0] || {};
+                        $scope.lastModifyFolder = $scope.smartFolders[1] || {};
+                        $scope.smartFolders = $scope.smartFolders.slice(2);
+                        $scope.newMsg = !!localStorageService.get(unreadMsgKey);
+                        $scope.searchFile = function(searchKeyword){
+                            if (!searchKeyword || !searchKeyword.length) {
+                                return;
+                            }
+                            if(searchKeyword.indexOf('|')>=0){
+                                alert('搜索关键字中不能包含 | ');
+                                return;
+                            }
+                            var extendParam = {
+                                search:[searchKeyword,smartSearchConfig.name].join('|')
+                            };
+                            var search = $location.search();
+                            $location.search(angular.extend(search, extendParam));
+                            gkWindowInstance.dismiss('cancel');
+                        }
+
+                        $scope.editItem = function($event,index){
+                            $scope.smartFolders[index].edit = true;
+                            $event.stopPropagation();
+                        }
+                        $scope.clickItem = function(item,$index){
+                            var mode = 'file';
+                            var partition =  item.partition;
+                            var pararm = {
+                                partition: partition
+                            };
+                            pararm['filter'] = item.filter;
+                            GKMode.setMode(mode);
+                            $timeout(function(){
+                                $location.search(pararm);
+                                gkWindowInstance.dismiss('cancel');
+                            })
+                            event.stopPropagation();
+                        }
+
+
+                        $scope.saveItemEdit = function($event,index){
+
+
+                        }
+
+                        $scope.closeItemEdit = function($event,index){
+                            $scope.smartFolders[index].edit = false;
+                        }
+                        $scope.openNews = function(){
+                            $rootScope.$broadcast("openNews");
+                            gkWindowInstance.dismiss('cancel');
+                        }
+
+                        $scope.personalOpen = function(){
+                            $rootScope.$broadcast("personalOpen");
+                            gkWindowInstance.dismiss('cancel');
+                        }
+
+
+                        $scope.cancel = function () {
+                            gkWindowInstance.dismiss('cancel');
+                        };
+                    }
+                }
+                option = angular.extend({}, defaultOption, option);
+                return gkWindow.open(option);
+            },
             summaryDetail:function(param){
                 var option = {
                     templateUrl: 'views/summary_dialog.html',
@@ -1738,18 +1849,19 @@ angular.module('gkClientIndex.services', [])
                 return filterName;
             },
             getFolders: function (exclue) {
+                var newSmartFolder = smartFolders.slice(0);
                 if (exclue) {
                     if (!angular.isArray(exclue)) exclue = [exclue];
                     angular.forEach(exclue, function (value) {
-                        angular.forEach(smartFolders, function (smart, key) {
+                        angular.forEach(newSmartFolder, function (smart, key) {
                             if (smart.filter == value) {
-                                smartFolders.splice(key, 1);
+                                newSmartFolder.splice(key, 1);
                                 return false
                             }
                         })
                     });
                 }
-                return smartFolders;
+                return newSmartFolder;
             },
             getFolderByCode: function (code) {
                 var value, smartFolder = null;
@@ -1860,6 +1972,24 @@ angular.module('gkClientIndex.services', [])
                         });
                 }
                 }
+                return deferred.promise;
+            },
+            renameSmartFolder: function (condition, name) {
+                var deferred = $q.defer();
+                var param = {
+                    condition: condition,
+                    name: name
+                };
+                gkClientInterface.renameSmartFolder(param, function (re) {
+                    if (!re.error) {
+                        var filter = GKSmartFolder.getFolderAliasByType(condition);
+                        $rootScope.$broadcast('editSmartFolder', name, condition, filter);
+                        deferred.resolve();
+                    } else {
+                        GKException.handleClientException(re);
+                        deferred.reject();
+                    }
+                });
                 return deferred.promise;
             }
         };
@@ -2998,24 +3128,6 @@ angular.module('gkClientIndex.services', [])
                         GKException.handleAjaxException(request);
                     });
             },
-            renameSmartFolder: function (condition, name) {
-                var deferred = $q.defer();
-                var param = {
-                    condition: condition,
-                    name: name
-                };
-                gkClientInterface.renameSmartFolder(param, function (re) {
-                    if (!re.error) {
-                        var filter = GKSmartFolder.getFolderAliasByType(condition);
-                        $rootScope.$broadcast('editSmartFolder', name, condition, filter);
-                        deferred.resolve();
-                    } else {
-                        GKException.handleClientException(re);
-                        deferred.reject();
-                    }
-                });
-                return deferred.promise;
-            },
             setOrder: function ($scope, type, asc) {
                 var orderAsc = $scope.order.slice(0, 1);
                 if (asc === undefined) {
@@ -3892,7 +4004,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope','GKPath',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope,GKPath) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope','smartSearchConfig',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope,smartSearchConfig) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -4089,9 +4201,9 @@ angular.module('gkClientIndex.services', [])
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
-                  if ($scope.search) {
+                if ($scope.search) {
                     var searchArr = $scope.search.split('|');
-                    if (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash') {
+                    if (searchArr[1] == smartSearchConfig.name || (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash')) {
                         source = 'api';
                         $rootScope.$broadcast('searchStateChange','loading');
                         var fileSearch = new GKFileSearch();

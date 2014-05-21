@@ -1,6 +1,6 @@
 'use strict';
 angular.module('LocalStorageModule').value('prefix', 'gkClientIndex');
-angular.module('gkClientIndex', ['angular-contextMenu','treeControl','GKCommon','pasvaz.bindonce','gkClientIndex.controllers', 'gkClientIndex.filters', 'gkClientIndex.directives', 'gkClientIndex.services', 'LocalStorageModule', 'ui.directives', 'ui.utils', 'ui.bootstrap','ngSanitize', 'LocalStorageModule','gkDragDrop'])
+angular.module('gkClientIndex', ['angular-contextMenu','treeControl','GKCommon','pasvaz.bindonce','gkClientIndex.controllers', 'gkClientIndex.filters', 'gkClientIndex.directives', 'gkClientIndex.services', 'LocalStorageModule', 'ui.directives', 'ui.utils', 'ui.bootstrap','ngSanitize', 'LocalStorageModule','gkDragDrop','gk.window'])
     .config(['$sceDelegateProvider',function ($sceDelegateProvider) {
         var siteDomain = gkClientInterface.getSiteDomain();
         $sceDelegateProvider.resourceUrlWhitelist([

@@ -1,0 +1,65 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()">&times;</button>
+</div>
+<div class="modal-body scrollbar">
+     <div class="smart_desktop_title">智能桌面</div>
+     <div class="smart_desktop_search">
+         <input ng-model="searchKeyword"  ui-keydown="{'enter':'searchFile(searchKeyword)'}"/>
+         <i class="icon16x16 icon_search" ng-click="searchFile(searchKeyword)"></i>
+     </div>
+     <div class="smart_desktop_topItem">
+         <span class="last_visit">
+
+             <div ng-click="clickItem(lastVisitFolder)">
+                 <i class="smart_desktop_icon94x94 last_visit"></i>
+                 <div ng-bind="lastVisitFolder.name"></div>
+             </div>
+
+
+         </span>
+
+         <span class="last_modify">
+             <div ng-click="clickItem(lastModifyFolder)">
+                 <i class="smart_desktop_icon94x94 last_modify"></i>
+                 <div  ng-bind="lastModifyFolder.name"></div>
+             </div>
+
+         </span>
+         <span class="last_message">
+              <!--消息提醒-->
+           <div class="message_tips" ng-show="newMsg">
+                 <p>
+                    <i class="hint"></i>
+                </p>
+           </div>
+             <div ng-click="openNews();">
+                 <i class="smart_desktop_icon94x94 last_message"></i>
+                 <div>消息</div>
+             </div>
+
+         </span>
+         <span class="last_account">
+             <div ng-click="personalOpen();">
+                 <i class="smart_desktop_icon94x94 last_account"></i>
+                 <div>账号信息</div>
+             </div>
+         </span>
+     </div>
+    <div style="clear: both"></div>
+    <div class="smart_desktop_item">
+        <span class="item" ng-repeat="smart in smartFolders" editsmart-contextmenu >
+            <!--智能文件夹名-->
+            <div class="item_container" style="cursor:pointer;" ng-click="clickItem(smart,$index)" data-branch="{{smart}}">
+                <span>{{smart.name}}</span>
+            </div>
+            <!--编辑-->
+            <div class="item_container" ng-show="smart.edit" >
+                <input style="width:80px;border:0px;" ng-model="smart.newName"/>
+                <i class="icon16x16 glyphicon-device-active" ng-click="saveItemEdit($event,$index);"></i>
+                <i class="icon16x16 glyphicon-device-disable" ng-click="closeItemEdit($event,$index);"></i>
+            </div>
+        </span>
+
+    </div>
+    <div style="clear: both"></div>
+</div>

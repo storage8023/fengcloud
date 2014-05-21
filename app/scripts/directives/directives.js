@@ -594,6 +594,52 @@ angular.module('gkClientIndex.directives', [])
             }
         };
     }])
+    .directive('editsmartContextmenu',['GKModal',function(GKModal){
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                /**
+                 * 设置右键菜单
+                 */
+                jQuery.contextMenu({
+                    selector: '.smart_desktop_item .item .item_container',
+                    reposition: false,
+                    zIndex: 9999,
+                    className: 'smart_right_contextmenu',
+                    animation: {
+                        show: "show",
+                        hide: "hide"
+                    },
+
+                    events: {
+                        show: function () {
+                            this.addClass('hover');
+                        },
+                        hide: function () {
+                            this.removeClass('hover');
+                        }
+                    },
+                    build: function ($trigger, e) {
+                        var   items = {
+                            'editSmartName': {
+                                name: '编辑',
+                                callback: function () {
+                                    var data = $trigger.data('branch');
+                                    GKModal.editSmartFolder(data);
+                                }
+                            }
+                        }
+                        return {
+                            callback: function () {
+
+                            },
+                            items: items
+                        }
+                    }
+                });
+            }
+        }
+    }])
     .directive('contextmenu', ['GKContextMenu', function (GKContextMenu) {
         return {
             restrict: 'A',
@@ -887,7 +933,6 @@ angular.module('gkClientIndex.directives', [])
             },
             link: function ($scope, $element) {
                 var unreadMsgKey = $rootScope.PAGE_CONFIG.user.member_id+'_unreadmsg';
-
                 $timeout(function(){
                     $scope.newMsg = !!localStorageService.get(unreadMsgKey);
                     $scope.openNews = function(){
@@ -924,6 +969,13 @@ angular.module('gkClientIndex.directives', [])
                     localStorageService.remove(unreadMsgKey);
                     gkClientInterface.clearMessage();
                 })
+
+                $scope.$on("openNews",function(){
+                    GKModal.news(GKNews, GKApi);
+                });
+                $scope.$on("personalOpen",function(){
+                    GKDialog.openSetting('account');
+                });
 
                 $scope.personalOpen = function ($scope) {
                     GKDialog.openSetting('account');
@@ -980,7 +1032,11 @@ angular.module('gkClientIndex.directives', [])
                             $this.addClass('toggle_btn_2');
                         }
                     })
-                })
+                });
+                //打开智能桌面
+                $scope.openSmartDesktop = function(){
+                    GKModal.smartDesktop();
+                }
             }
         }
     }])
@@ -1430,6 +1486,74 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
+    .directive('copyToEmail', ['$rootScope','GKFileList','GKMount','$filter','GKApi','GKAuth',function ($rootScope,GKFileList,GKMount,$filter,GKApi,GKAuth) {
+        return {
+            replace: true,
+            restrict: 'E',
+            templateUrl: "views/copytoemail_directives.html",
+            link:function($scope,$element){
+
+                var getTemplate = function(linkUrl,imgData,imgUrl,fileName,fileSize,expricess){
+                    return '<a href="'+linkUrl+'" target="_blank" style="display: block;width:450px;a"><div style="height:120px; width:450px; background-color:#f2f5f5; padding:15px;">'+
+                           '<div style="width:120px; float:left;">'+
+                           '<img src="'+imgData+'" data-src="'+imgUrl+'"/>'+
+                           '</div><div style="width:315px;float:left;padding-left:15px;padding-top:30px;padding-bottom:30px;">'+
+                           '<div style="font-size:20px; color:#666666; font-weight:bold;">' +
+                           fileName +
+                           '</div><div style="padding-top:10px; font-size:12px; color:#939ca9;">' +
+                           '大小:'+fileSize+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;到期时间:'+expricess+
+                           '</div></div></div> </a> <br/><br/>'
+                };
+                var getBase64FromImageUrl = function(fileUrl,callback) {
+                    var img = new Image();
+                    img.crossOrigin = "*";
+                    img.src = fileUrl;
+                    img.onload = function () {
+                        var canvas = document.createElement("canvas");
+                        canvas.width =this.width;
+                        canvas.height =this.height;
+                        var ctx = canvas.getContext("2d");
+                        ctx.drawImage(this, 0, 0);
+                        var dataURL = canvas.toDataURL("image/png");
+                        if(typeof callback == 'function'){
+                            callback(dataURL);
+                        }
+                    }
+                };
+                $scope.copyToEmail = function(file){
+                    var imgSize = 128;
+                    var expreeDate = 7;
+                    if(!file) return;
+                    var mountId = GKFileList.getOptFileMountId(file);
+                    if(!GKAuth.check(mountId,'','file_link')){
+                        alert("对不起，你没有权限获取该文件或文件夹的外链地址。");
+                        return;
+                    }
+                    var iconUrl = GKApi.getIcon(file.dir,file.filename,imgSize);
+                    getBase64FromImageUrl(iconUrl,function(data){
+                        var currDate = new Date()
+                        var expireDate = currDate.getTime() + expreeDate*(24*60*60*1000);
+                        var param = {
+                            memberid:file.creator_member_id,
+                            mountid:mountId,
+                            hash:file.hash,
+                            dateline:expireDate/1000
+                        }
+                        var linkUrl = gkClient.gGetShareLink(JSON.stringify(param));
+                        var sizeLen = file.filesize/(1024 * 1024);
+                        if(sizeLen < 1){
+                            sizeLen = Math.ceil(file.filesize/1024)+"KB";
+                        }else{
+                            sizeLen = Math.ceil(sizeLen)+"MB";
+                        }
+                        var tem = getTemplate(linkUrl,data,iconUrl,file.filename,sizeLen,Util.Date.format(new Date(expireDate),'yyyy年MM月dd日'));
+                            gkClient.gSetClipboardDataHtml(tem);
+                            alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
+                        });
+                }
+            }
+        }
+    }])
     .directive('toolbar', ['GKFilter', 'GKPartition', 'GKSmartFolder', 'GKMount', '$location', '$compile', '$timeout','$rootScope', function (GKFilter, GKPartition, GKSmartFolder, GKMount, $location, $compile, $timeout,$rootScope) {
         return {
             replace: true,
@@ -1571,7 +1695,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder','GKPath', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder,GKPath) {
+    .directive('breadsearch', ['$location', '$timeout', 'GKPartition', '$rootScope', 'GKSmartFolder','GKPath','smartSearchConfig', function ($location, $timeout, GKPartition, $rootScope, GKSmartFolder,GKPath,smartSearchConfig) {
         return {
             replace: true,
             restrict: 'E',
@@ -1739,12 +1863,12 @@ angular.module('gkClientIndex.directives', [])
                             text: GKSmartFolder.getSmartFoldeName(params.filter)
                         })
                     } else {
-                        if(GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)){
-                            searchScopes.push({
-                                name: 'partition',
-                                text: '所有云库'
-                            });
-                        }
+//                        if(GKPartition.isTeamFilePartition(params.partition) || GKPartition.isEntFilePartition(params.partition)){
+//                            searchScopes.push({
+//                                name: 'partition',
+//                                text: '所有云库'
+//                            });
+//                        }
                         searchScopes.push({
                             name: 'mount',
                             text: $rootScope.PAGE_CONFIG.mount['name']
@@ -1762,6 +1886,10 @@ angular.module('gkClientIndex.directives', [])
 
                 var getCurrentSearchScope = function(scope,searchScopes){
                     var currentScope;
+                    if(scope == smartSearchConfig.name){
+                        currentScope = smartSearchConfig;
+                        return currentScope;
+                    }
                     angular.forEach(searchScopes,function(val){
                         if(val.name == scope){
                             currentScope = val;
@@ -1774,7 +1902,6 @@ angular.module('gkClientIndex.directives', [])
                 var getSearchParam = function(){
                     var params = $location.search();
                     $scope.searchScopes =  getSearchScopes();
-
                     if(!params.search){
                         resetSearch();
                         var len = $scope.searchScopes.length;

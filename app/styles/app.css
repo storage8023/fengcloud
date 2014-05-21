@@ -363,7 +363,7 @@ footer {
 }
 .left_sidebar  .account .account_info{
     height: 32px;
-    margin: 9px 0 0 0;
+    margin: 9px 35px 0 0;
     line-height: 32px;
 }
 .left_sidebar  .account .account_info > *{
@@ -2503,6 +2503,7 @@ padding: 6px 21px;
     float: left;
     width:420px;
 }
+
 /*云库树节点搜索区域样式*/
 .icon_clear{
     height:17px;
@@ -2597,4 +2598,336 @@ footer .btn_wrapper .label{
 
 .disscuss-history footer{
     height:100px
+}
+
+/*拷贝文件和文件夹到邮箱内功能样式*/
+.copy_to_mail_container{
+    position: absolute;
+    right:320px;
+    top: 0px;
+    visibility:hidden;
+}
+
+.file_item:hover .copy_to_mail_container{
+    visibility:visible;
+}
+
+.icon16x16.copy_tomail{
+    background-position: -4px -1962px;
+}
+
+.icon16x16.copy_tomail:hover{
+    background-position: -24px -1962px;
+}
+
+.icon16x16.copy_tomail:active{
+    background-position: -44px -1962px;
+}
+
+/*智能桌面功能样式*/
+.smart_desktop_icon{
+    width: 24px;
+    height:24px;
+    background-image: url(../images/icon/smart_desktop_icon.png?v=1);
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
+.account .smart_desktop_container{
+    position: absolute;
+    width:24px;
+    height:24px;
+    right:10px;
+    top:13px;
+}
+
+.modal-backdrop.fade.gk_window_backdrop.in{
+    opacity: 0.9;
+    background-color:#494f56;
+}
+
+.modal.fade.gk_window{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1050;
+    width: 100%;
+    height: 100%;
+    border: 0px solid #999;
+    margin-left: 0px;
+    border: 0px solid rgba(0, 0, 0, 0.3);
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    outline: none;
+    -webkit-box-shadow:none;
+    -moz-box-shadow:none;
+    box-shadow:none;
+    -webkit-background-clip: none;
+    -moz-background-clip: none;
+    background-clip:none;
+    border: 0 none;
+    background:none;
+    color: #fff;
+    margin-left: 0px;
+}
+
+.modal.gk_window.fade.in{
+    top:0px;
+}
+
+
+.smart_desktop_icon94x94{
+    width: 92px;
+    height: 92px;
+    background-image: url(../images/icon/smart_catagory.png);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.smart_desktop_icon94x94.last_visit{
+    background-position: 0px 0px;
+}
+
+.smart_desktop_icon94x94.last_modify{
+    background-position: 0px -92px;
+}
+
+.smart_desktop_icon94x94.last_message{
+    background-position: 0px -184px;
+}
+
+.smart_desktop_icon94x94.last_account{
+    background-position: 0px -276px;
+}
+
+.smart_desktop_title{
+    text-align: center;
+    font-size: 30px
+}
+
+.smart_desktop_search{
+    margin:30px 0px;
+    text-align: center;
+}
+
+.smart_desktop_search input{
+    width: 60%;
+    border: 0px;
+    color:#ffffff;
+    border-radius: 15px;
+    background-color: #464b52;
+    height: 30px;
+    padding-left:10px;
+    padding-right:25px;
+}
+
+.smart_desktop_search i{
+    position: absolute;
+    right:20%;
+    margin-right: 15px;
+    margin-top:5px;
+}
+
+.smart_desktop_topItem{
+    text-align: center;
+    width:810px;
+    margin:0px auto;
+    padding-top: 30px;
+}
+
+.smart_desktop_topItem  span{
+    display:block;
+    float:left;
+    width:195px;
+    height:150px;
+
+}
+
+.smart_desktop_topItem .last_visit{
+    background-color:#9abd5c;
+}
+
+.smart_desktop_topItem .last_modify{
+    background-color:#3fa7e3;
+    margin-left: 10px;
+}
+
+.smart_desktop_topItem .last_message{
+    background-color:#ecb75a;
+    margin-left: 10px;
+}
+.smart_desktop_topItem .last_account{
+    background-color:#ef6e61;
+    margin-left: 10px;
+}
+
+.smart_desktop_topItem .last_visit div:last-child,
+.smart_desktop_topItem .last_modify div:last-child,
+.smart_desktop_topItem .last_message div:last-child,
+.smart_desktop_topItem .last_account div:last-child{
+    cursor: pointer;
+    padding:15px 0px;
+    color: #ffffff;
+}
+
+.smart_desktop_topItem .last_visit div:last-child div,
+.smart_desktop_topItem .last_modify div:last-child div,
+.smart_desktop_topItem .last_message div:last-child div,
+.smart_desktop_topItem .last_account div:last-child div{
+    padding:5px 0;
+    font-size: 16px;
+}
+
+
+.smart_desktop_topItem .last_message .message_tips{
+    position: absolute;
+}
+
+.smart_desktop_topItem .last_message .message_tips p{
+    position:absolute;
+    left:10px;
+    top: 5px;
+    width:12px;
+    height: 12px
+}
+
+.smart_desktop_topItem .last_message .message_tips p i{
+    width:12px;
+    height: 12px;
+    border-radius: 12px;
+}
+
+.smart_desktop_item{
+    text-align: center;
+    width:806px;
+    margin: 20px auto 0px auto
+}
+.smart_desktop_item .item{
+    display:block;
+    float:left;
+    width: 126px;
+    height:86px;
+    margin-left:10px;
+}
+
+.smart_desktop_item .item:nth-child(1){
+    margin-left:0px;
+    background-image:url(../images/icon/smart_red.png)
+}
+
+.smart_desktop_item .item:nth-child(2){
+    background-image:url(../images/icon/smart_orange.png)
+}
+
+.smart_desktop_item .item:nth-child(3){
+    background-image:url(../images/icon/smart_yellow.png)
+}
+
+.smart_desktop_item .item:nth-child(4){
+    background-image:url(../images/icon/smart_green.png)
+}
+
+.smart_desktop_item .item:nth-child(5){
+    background-image:url(../images/icon/smart_cyanblue.png)
+}
+
+.smart_desktop_item .item:nth-child(6){
+    background-image:url(../images/icon/smart_blue.png)
+}
+
+.smart_desktop_item span .item_container{
+    padding-top:43px;
+    font-size: 16px;
+    width:100%;
+    height:100%;
+}
+
+.smart_desktop_item span div div{
+    visibility: hidden;
+    position: absolute;
+    width:16px;
+    height:16px;
+    right:10px;
+    top:50%;
+    cursor: pointer;
+}
+
+.smart_desktop_item span div:hover div i{
+    visibility: visible;
+}
+
+.smart_rightside_title{
+    height: 35px;
+    margin:0px 0;
+    font-size: 18px;
+    padding:5px 10px 5px 10px;
+    background-color: #e1e3e7;
+
+}
+
+.smart_rightside_list{
+    padding:10px 10px;
+    height:36px;
+}
+
+.smart_rightside_list:hover{
+    background-color:#e1e3e7;
+}
+.smart_rightside_list.active{
+    background-color:#ffffff;
+}
+
+.smart_rightside_list div{
+    float:left;
+    height:16px;
+    width: 16px;
+    border-radius: 16px;
+    margin-right: 5px;
+}
+
+.smart_rightside_list div.icon_recent_visit{
+    background-color: #9abd5c;
+}
+
+.smart_rightside_list div.icon_recent{
+    background-color: #3fa7e3;
+}
+.smart_rightside_list div.icon_star{
+    background-color: #f6757e;
+}
+
+.smart_rightside_list div.icon_moon{
+    background-color: #f6be75;
+}
+
+.smart_rightside_list div.icon_heart{
+    background-color: #e3dc68;
+}
+
+.smart_rightside_list div.icon_flower{
+    background-color: #98de72;
+}
+.smart_rightside_list div.icon_triangle{
+    background-color: #49d8bb;
+}
+
+.smart_rightside_list div.icon_diamond{
+    background-color: #47c3f6;
+}
+
+.smart_right_contextmenu{
+    width:80px;
+    background-color: #3D434A;
+    color:#ffffff;
+}
+
+.edit_smartfolder{
+
+}
+
+.modal.fade.edit_smartfolder.in{
+    top:25%;
+    width:550px;
+    margin-left:-225px;
 }

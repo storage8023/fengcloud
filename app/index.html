@@ -33,6 +33,7 @@
     <script src="bower_components/angular-ui/ui-utils/ui-utils.js?v=8"></script>
     <script src="bower_components/angular-localstorage/angular-local-storage.js?v=8"></script>
     <script src="bower_components/bootstrap/ui-bootstrap.js?v=8"></script>
+    <script src="scripts/gk_window.js"></script>
     <script src="scripts/common.js?v=8"></script>
     <script src="scripts/controllers/controllers.js?v=8"></script>
     <script src="scripts/filters/filters.js?v=8"></script>
@@ -83,18 +84,7 @@
                     >
             </abn-tree>
         </div>
-        <abn-tree tree-data="smartTreeList"
-                  header="智能文件夹"
-                  icon-leaf="icon_file"
-                  icon-expand="icon_fold"
-                  icon-collapse="icon_unfold"
-                  icon-node-expand="icon_smartfolder"
-                  icon-node-collapse="icon_smartfolder"
-                  selected-branch="selectedBranch"
-                  on-select="handleSelect(branch)"
-                  class="smart_tree_list"
-                >
-        </abn-tree>
+
     </div>
 
     <div class="tree_wrapper" contextmenu ng-if="PAGE_CONFIG.browserMode=='chat'">
@@ -237,37 +227,7 @@
                              drop-success="handleDrop(file,$index)"
                              drag-helper="getHelper"
                              bindonce>
-                            <div class="thumb" bo-title="file.fullpath">
-                                <i class="file_icon128x128" bo-class="file.filename | getFileIcon:file.dir:0:(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
-                                    <img bo-if="['jpg','jpeg','png','gif','bmp'].indexOf(file.ext)>=0" error-src="" ng-src="{{file.hash | getThumbUrl:file.filehash:file.fullpath}}"/>
-                                    <s bo-if="file.status==2" class="icon16x16 icon_down"></s>
-                                    <s bo-if="file.status==1" class="icon16x16 icon_up"></s>
-                                    <s bo-if="file.lock>0" class="icon16x16 icon_lock_color" ng-class="{'icon_lock_green':file.lock==1,'icon_edit_color':file.lock==2}" title="{{'已被'+file.lock_member_name+'锁定'}}"></s>
-                                </i>
-                            </div>
-                            <div class="file_icon_wrapper" bo-title="file.fullpath">
-                                <span>
-                                    <i class="file_icon"
-                                       bo-class="file.filename | getFileIcon:file.dir:0:(file.sync||PAGE_CONFIG.file.syncpath?1:0)">
-                                        <!--<img error-src="" ng-src="{{file.hash | getThumbUrl:file.filehash}}" bo-if="['jpg','bmp','jpeg','png','gif'].indexOf(file.ext)>=0" />-->
-                                        <s bo-if="file.status==2" class="icon16x16 icon_down"></s>
-                                        <s bo-if="file.status==1" class="icon16x16 icon_up"></s>
-                                        <s bo-if="file.lock>0" class="icon16x16" ng-class="{'icon_lock_green':file.lock==1,'icon_edit_color':file.lock==2}" title="{{'已被'+(file.lock==1?file.lock_member_name:'我')+'锁定'}}"></s>
-                                    </i>
-                                </span>
-                            </div>
-                            <div class="file_name" bo-title="file.fullpath">
-                                <span class="name" bo-text="file.filename"></span>
-                            </div>
-                            <div class="last_edit_time">
-                                <span bo-text="file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'"></span>
-                            </div>
-                            <div class="file_type">
-                                <span bo-text="file.filename | getFileType:file.dir:file.ext"></span>
-                            </div>
-                            <div class="file_size">
-                                <span bo-text="file.dir==1?'-':(file.filesize|bitSize)"></span>
-                            </div>
+                             <copy-to-email></copy-to-email>
                         </div>
                     </div>
                 </div>
