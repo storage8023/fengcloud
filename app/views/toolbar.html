@@ -18,6 +18,6 @@
     </button>
     </div>
     <span class="opt f_r opt_view_change">
-       <a href="javascript:;" title="最近更新文件"  ng-click="changeView('fileupdate')" class="fileupdate_view" ng-class="view=='fileupdate'?'active':''"><i class="icon16x16 icon_fileupdate"></i></a><a href="javascript:;" title="列表模式" ng-click="changeView('list')" class="list_view" ng-class="view=='list'?'active':''"><i class="icon16x16 icon_listview"></i></a><a href="javascript:;" title="缩略图模式" ng-click="changeView('thumb')" class="thumb_view" ng-class="view=='thumb'?'active':''"><i class="icon16x16 icon_thumbview"></i></a>
+       <a href="javascript:;" title="最近更新文件" ng-if="fileUpdate.canShow"  ng-click="changeView('fileupdate')" class="fileupdate_view" ng-class="view=='fileupdate'?'active':''"><i class="icon16x16 icon_fileupdate"></i></a><a href="javascript:;" title="列表模式" ng-click="changeView('list')" class="list_view" ng-class="view=='list'?'active':''"><i class="icon16x16 icon_listview"></i></a><a href="javascript:;" title="缩略图模式" ng-click="changeView('thumb')" class="thumb_view" ng-class="view=='thumb'?'active':''"><i class="icon16x16 icon_thumbview"></i></a>
     </span>
 </div>

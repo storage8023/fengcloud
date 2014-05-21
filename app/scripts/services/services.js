@@ -501,11 +501,9 @@ angular.module('gkClientIndex.services', [])
                         $scope.smart = smartObj;
                         $scope.saveSmart = function(){
                             var newName = $scope.smart.newName;
-                            console.log(GKSmartFolder.checkFolderName(newName));
                             if (!GKSmartFolder.checkFolderName(newName)) {
                                 return;
                             }
-                            console.log(newName === $scope.smart.name);
                             if (newName === $scope.smart.name) {
                                 return;
                             }
@@ -4096,22 +4094,18 @@ angular.module('gkClientIndex.services', [])
                 return selectedFile;
             },
             changeView: function ($scope, view) {
-                if ($scope.search && view == 'fileupdate') {
-                    alert("搜索模式下不能切换到最近更新视图");
-                    return;
-                }
-                if($scope.oldView != $scope.view && $scope.view != 'fileupdate') {
+                if($scope.oldView != $scope.view && $scope.view != $scope.fileUpdate.fileUpdateView) {
                     $scope.oldView = $scope.view;
                 }
                 $scope.view = currentView = view;
-                if(view && view == 'fileupdate') {
+                if(view && view == $scope.fileUpdate.fileUpdateView) {
                     if($scope.showDisscussHitoryWin){
                         $scope.$broadcast('closeDiscussHistory');
                     }
                     //更新视图
                     $scope.fileUpdate.isFileUpdateView = true;
                     $scope.setOpts();
-                    $scope.limit = 50;
+                    $scope.limit = 100;
                     $scope.breads = GKPath.getBread($scope);
                     GKFileList.unSelectAll($scope);
                     $scope.order = "-last_edit_time"
@@ -4276,6 +4270,12 @@ angular.module('gkClientIndex.services', [])
                 return deferred.promise;
             },
             refreahData: function ($scope, selectPath) {
+                if($scope.search || $scope.filter) {
+                    $scope.view = $scope.oldView;
+                    $scope.fileUpdate.canShow = false;
+                }else{
+                    $scope.fileUpdate.canShow = true;
+                }
                 var context = this;
                 $scope.loadingFileData = true;
                 $scope.errorMsg = '';

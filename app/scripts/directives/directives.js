@@ -1805,8 +1805,6 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $scope.searchFile = function () {
-                    if($scope.fileUpdate.isFileUpdateView)
-                        $scope.$broadcast('changeView',$scope.oldView);
                     if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                         return;
                     }
