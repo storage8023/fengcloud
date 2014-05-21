@@ -15,7 +15,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope','GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
+    .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope','GKMount', '$location', 'GKFile','GKFileList', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile,GKFileList, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
         $rootScope.PAGE_CONFIG = {
             siteDomain:gkClientInterface.getSiteDomain(),
             user: gkClientInterface.getUser(),
@@ -38,12 +38,22 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         }
                     });
                 },
-                removeHistory:function(fullpath) {
+                renameFolderUpdateHistory:function(file,oldFilePath,newFilePath){
+                    var mountId = GKFileList.getOptFileMountId(file);
+                    for (var i = 0; i < this.historyArr.length; i++) {
+                        var value = this.historyArr[i];
+                        if(value.mountid == mountId && value.path.indexOf(oldFilePath) != -1){
+                            var otherPath = value.path.substring(oldFilePath.length);
+                            value.path = newFilePath + otherPath;
+                        }
+                    }
+                },
+                removeHistory:function(fullpath,mountId) {
                     var indexArr = [];
-                    if (fullpath && fullpath.length > 0){
+                    if (fullpath.length > 0){
                         for (var i = 0; i < this.historyArr.length; i++) {
                             var value = this.historyArr[i];
-                            if (value && value.mountid == $rootScope.PAGE_CONFIG.mount.mount_id && value.path.indexOf(fullpath) != -1) {
+                            if (value && value.mountid == mountId && value.path.indexOf(fullpath) != -1) {
                                 indexArr.push(value.index);
                                 if (value.selected) {
                                     if (this.historyArr[value.index - 1])
@@ -53,14 +63,17 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                                 }
                             }
                         }
-                    }else if(fullpath && fullpath.length == 0){
-                        if (value && value.mountid == $rootScope.PAGE_CONFIG.mount.mount_id){
-                            indexArr.push(value.index);
-                            if (value.selected) {
-                                if (this.historyArr[value.index - 1])
-                                    this.historyArr[value.index - 1].selected = true;
-                                else if (this.historyArr[value.index + 1])
-                                    this.historyArr[value.index + 1].selected = true;
+                    }else if( fullpath.length == 0) {
+                        for (var i = 0; i < this.historyArr.length; i++) {
+                            var value = this.historyArr[i];
+                            if (value && value.mountid == mountId) {
+                                indexArr.push(value.index);
+                                if (value.selected) {
+                                    if (this.historyArr[value.index - 1])
+                                        this.historyArr[value.index - 1].selected = true;
+                                    else if (this.historyArr[value.index + 1])
+                                        this.historyArr[value.index + 1].selected = true;
+                                }
                             }
                         }
                     }
@@ -730,6 +743,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     mount = GKMount.getMountByOrgId(param.org_id);
                 }
                 if(!mount) return;
+                $rootScope.PAGE_CONFIG.visitHistory.removeHistory("",mount.mount_id);
                 var partition = GKPartition.getPartitionByMountType(mount['type'],mount['ent_id']);
                 if (GKPartition.isTeamFilePartition(partition)) {
                     GKMount.removeTeamList($scope, mount.org_id);
@@ -748,6 +762,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 创建云库成功
          */
         $scope.$on('createOrgSuccess', function (event, newOrg) {
+
             if (GKMount.checkMountExsit(newOrg.mountid)) {
                 return;
             }
@@ -768,6 +783,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if(!mount){
                 return;
             }
+
             if($scope.browseMode == 'chat'){
                 list = $scope.allTreeList;
             }else{
@@ -1232,7 +1248,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
         $scope.$on('$locationChangeSuccess',function(){
             var param = $location.search();
-
             //记录访问历史
             if($rootScope.PAGE_CONFIG.mode && $rootScope.PAGE_CONFIG.mode=='file' && !param.isHistory) {
                 var history = $rootScope.PAGE_CONFIG.visitHistory.selectedHistory;
@@ -1243,15 +1258,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         curParam[pro] = history[pro];
                     }
                 }
-                if(Util.object.checkObjEquils(param,curParam)){
-                    return ;
+                if(!Util.object.checkObjEquils(param,curParam)){
+                    $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();
+                    param.selected = true;
+                    param.isHistory = true;
+                    param.index = $rootScope.PAGE_CONFIG.visitHistory.historyArr.length;
+                    $rootScope.PAGE_CONFIG.visitHistory.selectedHistory = param;
+                    $rootScope.PAGE_CONFIG.visitHistory.historyArr.push(param);
                 }
-                $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();
-                param.selected = true;
-                param.isHistory = true;
-                param.index = $rootScope.PAGE_CONFIG.visitHistory.historyArr.length;
-                $rootScope.PAGE_CONFIG.visitHistory.selectedHistory = param;
-                $rootScope.PAGE_CONFIG.visitHistory.historyArr.push(param);
+
             }
             setBread();
             getFileData();
@@ -1276,6 +1291,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             if (filename === file.filename) {
                 file.rename = false;
             } else {
+                var oldFilePath = file.fullpath;
                 var upPath = Util.String.dirName(file.fullpath);
                 var newpath = upPath + (upPath ? '/' : '') + filename;
                 GK.rename({
@@ -1288,6 +1304,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         file.ext = Util.String.getExt(filename);
                         file.rename = false;
                         GKFileListView.updateFileItem(index,file);
+                        $rootScope.PAGE_CONFIG.visitHistory.renameFolderUpdateHistory(file,oldFilePath,newpath);
                     }, function (error) {
                         file.rename = false;
                         GKException.handleClientException(error);

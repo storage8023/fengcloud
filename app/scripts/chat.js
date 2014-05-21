@@ -465,7 +465,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
 
         $scope.$on('UpdateMembers', function ($event, param) {
-            if ($scope.currentSession.mountid == param.mountid) {
+            if ($scope.currentSession && $scope.currentSession.mountid == param.mountid) {
                 chatMember.refreshMembers($scope.currentSession.orgid);
                 $scope.remindMembers = chatMember.getMembers($scope.currentSession.orgid);
             }
