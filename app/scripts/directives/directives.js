@@ -1667,8 +1667,10 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  */
                 $scope.selectBread = function ($event, bread) {
-                    if($scope.fileUpdate.isFileUpdateView)
-                        $scope.$broadcast('changeView',$scope.oldView);
+                    if($scope.fileUpdate.isFileUpdateView) {
+                        return false;
+                        //$scope.$broadcast('changeView', $scope.oldView);
+                    }
                     var params = $location.search();
                     GKPath.gotoFile(params.mountid,bread.path || '', '','', bread.filter,'file');
                     $event.stopPropagation();
@@ -1934,7 +1936,6 @@ angular.module('gkClientIndex.directives', [])
                 scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
                    close();
-                    scope.showDisscussHitoryWin = false;
                 });
 
                 scope.$watch(function(){
@@ -1946,10 +1947,6 @@ angular.module('gkClientIndex.directives', [])
                         close();
                         //重新复制
                         //scope.showDisscussHitoryWin = opened;
-                    }else if(value == 'file'){
-                        if(scope.showDisscussHitoryWin){
-                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
-                        }
                     }
                 })
                 scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
@@ -1971,10 +1968,8 @@ angular.module('gkClientIndex.directives', [])
                 });
                 scope.$on("closeDiscussHistory",function(){
                    close();
-                   scope.showDisscussHitoryWin = false;
                 });
                 scope.$on("showDiscussHistory",function(obj,file){
-                    scope.isOpen = true;
                     scope.showDisscussHitoryWin = true;
                     scope.loadDiscussionhistory = true;
                     if(file && !file.mount_id){
@@ -2053,6 +2048,7 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var close = function(){
+                    scope.showDisscussHitoryWin = false;
                     scope.loadDiscussionhistory = true;
                     element.animate({right:ELEMENT_RIGHT},200,function(){
                         scope.canShowHistory = false;

@@ -716,14 +716,12 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setNewMsgTime(orgId,new Date().getTime(),'visitTime');
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount','chatService',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount,chatService) {
 
         $scope.fileDataArr = [];//文件存储备份
         $scope.oldView = 'list';
         $scope.fileUpdate = {
-             isFileUpdateView:false,
-             mountid:'',
-             data:[]
+             isFileUpdateView:false
         }
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
@@ -741,7 +739,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         var setBread = function(){
             var param = $location.search();
             if(!param.partition) return;
-            $scope.breads = GKPath.getBread();
+            $scope.breads = GKPath.getBread($scope);
             $scope.path = $rootScope.PAGE_CONFIG.file.fullpath || '';
         }
 
@@ -896,6 +894,19 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 改变视图
          */
         $scope.changeView = function (view) {
+            var param = {
+                partition: $rootScope.PAGE_CONFIG.partition,
+                path: "",
+                mountid: $rootScope.PAGE_CONFIG.mount.mountid,
+                entid: 0,
+                filter: ""
+            }
+            if(view == 'fileupdate'){
+                param.view = 'fileupdate';
+            }else{
+                param.view = 'normal';
+            }
+
             GKFileList.changeView($scope,view);
         };
 
@@ -1184,7 +1195,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 var discussHistoryArr = [];
                 if (re && re.list && re.list.length) {
                     angular.forEach(re.list, function (item) {
-
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
                             minMsgTime = time;

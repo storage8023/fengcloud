@@ -1981,12 +1981,17 @@ angular.module('gkClientIndex.services', [])
                 };
                 return '/file?' + jQuery.param(params);
             },
-            getBread: function () {
+            getBread: function ($scope) {
                 var path = $location.search().path || '';
                 var partition = $location.search().partition || GKPartition.teamFile;
                 var filter = $location.search().filter;
                 var mountId = $location.search().mountid;
                 var breads = [], bread;
+
+                if($scope && $scope.view == 'fileupdate'){
+                    path = '文件更新'
+                }
+
                 if (path.length) {
                     path = Util.String.rtrim(Util.String.ltrim(path, '/'), '/');
                     var paths = path.split('/');
@@ -3887,7 +3892,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope','GKPath',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope,GKPath) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';
@@ -3976,6 +3981,9 @@ angular.module('gkClientIndex.services', [])
                 return selectedFile;
             },
             changeView: function ($scope, view) {
+                if ($scope.search && view == 'fileupdate') {
+                    return;
+                }
                 if($scope.oldView != $scope.view && $scope.view != 'fileupdate') {
                     $scope.oldView = $scope.view;
                 }
@@ -3987,14 +3995,9 @@ angular.module('gkClientIndex.services', [])
                     //更新视图
                     $scope.fileUpdate.isFileUpdateView = true;
                     $scope.setOpts();
+                    $scope.limit = 50;
+                    $scope.breads = GKPath.getBread($scope);
                     GKFileList.unSelectAll($scope);
-                    if($scope.fileUpdate.data && $scope.fileUpdate.data.length >0){
-                        console.log($scope.mountId == $scope.fileUpdate.mountid)
-                        if($scope.mountId == $scope.fileUpdate.mountid){
-                            $scope.fileData = $scope.fileUpdate.data;
-                            return;
-                        }
-                    }
                     $scope.order = "-last_edit_time"
                     GKFileList.refreahData($scope);
                 }else{
@@ -4003,6 +4006,7 @@ angular.module('gkClientIndex.services', [])
                             $scope.$broadcast('closeDiscussHistory');
                         }
                         GKFileList.unSelectAll($scope);
+                        $scope.breads = GKPath.getBread();
                     }
                     $scope.fileUpdate.isFileUpdateView = false;
                     $scope.fileData = $scope.fileDataArr;
@@ -4169,11 +4173,6 @@ angular.module('gkClientIndex.services', [])
                     $scope.fileData = $filter('orderBy')(newFileData, order);
                     //判断如果不是文件更新视图
                     if(!$scope.fileUpdate.isFileUpdateView) $scope.fileDataArr = $scope.fileData;
-                    //如果是文件更新视图
-                    else{
-                        $scope.fileUpdate.mountid = $scope.mountId;
-                        $scope.fileUpdate.data = $scope.fileData;
-                    }
                     if (selectPath) {
                         $timeout(function(){
                             GKFileList.unSelectAll($scope);
