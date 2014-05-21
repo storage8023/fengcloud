@@ -2601,19 +2601,14 @@ footer .btn_wrapper .label{
 }
 
 /*拷贝文件和文件夹到邮箱内功能样式*/
-.copy_to_mail_container{
-    position: absolute;
-    right:320px;
-    top: 0px;
-    visibility:hidden;
-}
 
-.file_item:hover .copy_to_mail_container{
-    visibility:visible;
-}
 
 .icon16x16.copy_tomail{
     background-position: -4px -1962px;
+}
+
+.icon16x16.copy_tomail_white{
+    background-position: -24px -1962px;
 }
 
 .icon16x16.copy_tomail:hover{
@@ -2622,6 +2617,23 @@ footer .btn_wrapper .label{
 
 .icon16x16.copy_tomail:active{
     background-position: -44px -1962px;
+}
+
+.item.file_item .last_edit_time span:nth-child(1){
+   display:block;
+}
+.item.file_item .last_edit_time span:nth-child(2){
+    display:none;
+}
+.item.file_item.selected .last_edit_time span:nth-child(1){
+    display:none;
+}
+.item.file_item.selected .last_edit_time span:nth-child(2){
+    display:block;
+}
+.item.file_item.selected .last_edit_time span:nth-child(2) i{
+     margin:0 10px;
+    cursor: pointer;
 }
 
 /*智能桌面功能样式*/

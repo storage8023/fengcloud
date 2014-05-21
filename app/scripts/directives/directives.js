@@ -1344,7 +1344,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.showMilestoneDialog = function(file){
                     $scope.$emit("showDiscussHistory",file);
                     return;
-                    var firstHistory = histories[0];
+                    /*var firstHistory = histories[0];
                     var oldMsg = '';
                     if(firstHistory){
                         oldMsg = firstHistory['property']?firstHistory['property']['message']||'' : '';
@@ -1356,7 +1356,7 @@ angular.module('gkClientIndex.directives', [])
                         $timeout(function(){
                             getFileInfo($scope.localFile, {data: 'sidebar', type: 'history', cache: false});
                         },1000);
-                    });
+                    });*/
                 }
 
                 /**
@@ -1486,11 +1486,11 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('copyToEmail', ['$rootScope','GKFileList','GKMount','$filter','GKApi','GKAuth',function ($rootScope,GKFileList,GKMount,$filter,GKApi,GKAuth) {
+    .directive('fileItemOpt', ['$rootScope','GKFileList','GKMount','$filter','GKApi','GKAuth','GKModal',function ($rootScope,GKFileList,GKMount,$filter,GKApi,GKAuth,GKModal) {
         return {
             replace: true,
             restrict: 'E',
-            templateUrl: "views/copytoemail_directives.html",
+            templateUrl: "views/fileitemopt_directives.html",
             link:function($scope,$element){
 
                 var getTemplate = function(linkUrl,imgData,imgUrl,fileName,fileSize,expricess){
@@ -1520,12 +1520,32 @@ angular.module('gkClientIndex.directives', [])
                         }
                     }
                 };
-                $scope.copyToEmail = function(file){
+
+                $scope.showMilestoneDialog = function($event,file){
+                    $scope.$emit("showDiscussHistory",file);
+                    $event.stopPropagation();
+                }
+
+                //发布外链
+                $scope.publishFile = function($event,file){
+                    var mountId = GKFileList.getOptFileMountId(file);
+                    var mount = GKMount.getMountById(mountId);
+                    if(!GKAuth.check(mount,'','file_link')){
+                        alert("对不起，你没有权限发布该文件或文件夹的外链地址。");
+                        return;
+                    }
+                    GKModal.publish(GKFileList.getOptFileMountId(file),file);
+                    $event.stopPropagation();
+                };
+                //拷贝到邮箱
+                $scope.copyToEmail = function($event,file){
                     var imgSize = 128;
                     var expreeDate = 7;
                     if(!file) return;
                     var mountId = GKFileList.getOptFileMountId(file);
-                    if(!GKAuth.check(mountId,'','file_link')){
+                    var mount = GKMount.getMountById(mountId);
+                    console.log(mount);
+                    if(mount.ent_id ==1 && !GKAuth.check(mount,'','file_link')){
                         alert("对不起，你没有权限获取该文件或文件夹的外链地址。");
                         return;
                     }
@@ -1550,6 +1570,7 @@ angular.module('gkClientIndex.directives', [])
                             gkClient.gSetClipboardDataHtml(tem);
                             alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
                         });
+                    $event.stopPropagation();
                 }
             }
         }

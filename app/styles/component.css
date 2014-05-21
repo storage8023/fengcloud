@@ -640,6 +640,9 @@ a:hover > .icon16x16.icon_chat,
 .icon16x16.icon_link{
     background-position: -4px -1604px;
 }
+.icon16x16.icon_link_white{
+    background-position: -24px -1604px;
+}
 a:hover > .icon16x16.icon_link,
 .icon16x16.icon_link_color{
     background-position: -44px -1604px;
