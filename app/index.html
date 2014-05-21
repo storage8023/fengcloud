@@ -104,12 +104,12 @@
 <header ng-controller="header">
     <div class="tabbar">
         <ul ng-if="PAGE_CONFIG.browserMode== 'chat'">
-            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
+            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>动态</li>
             <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
         </ul>
         <ul ng-if="PAGE_CONFIG.browserMode== 'file'">
             <li ng-class="PAGE_CONFIG.mode=='file'?'current':''" ng-click="changeMode('file')"><i class="icon16x16 icon_file_white"></i>文件</li>
-            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>讨论</li>
+            <li check-auth="file_discuss" ng-class="PAGE_CONFIG.mode=='chat'?'current':''" ng-click="changeMode('chat')"><i class="icon16x16 icon_chat_white"></i>动态</li>
         </ul>
     </div>
     <div class="menu">
