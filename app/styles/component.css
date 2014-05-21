@@ -279,6 +279,14 @@ a:hover > .icon16x16.icon_info,
 .icon16x16.icon_thumbview{
     background-position: -24px -604px;
 }
+.icon16x16.icon_fileupdate{
+    background-position: -24px -1984px;
+}
+
+.icon16x16.icon_fileupdate_white{
+    background-position: -24px -1984px;
+}
+
 .icon16x16.icon_thumbview_white{
     background-position: -24px -604px;
 }
@@ -1594,6 +1602,10 @@ text-align: center;
     background-position: -24px -604px;
 }
 
+.opt_view_change a:hover.fileupdate_view > i,
+.opt_view_change a.active.fileupdate_view > i {
+    background-position: -24px -1984px;
+}
 
 .guider{
     position: absolute;

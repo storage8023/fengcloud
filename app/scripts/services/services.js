@@ -2280,6 +2280,31 @@ angular.module('gkClientIndex.services', [])
                 })
                 return deferred.promise;
             },
+	    
+	       /*
+            * 获取文件更新列表
+            * */
+            getFileUpdateList:function(mountId){
+                var deferred = $q.defer(),
+                    list;
+                var defaultOption = {
+                    count: 1000,
+                    start: 0,
+                    mountid:mountId
+                };
+
+                gkClientInterface.getFileUpdateList(defaultOption,function(re){
+                    if (!re.error) {
+                        list = GKFile.dealFileList(re['list'], 'client');
+                        deferred.resolve(list);
+                    } else {
+                        deferred.reject(GKException.getClientErrorMsg(re));
+                    }
+                });
+
+                return deferred.promise;
+            },
+	    
             getFileList: function (mountId, fullpath, source, option) {
                 var deferred = $q.defer(),
                     list;
@@ -3951,8 +3976,31 @@ angular.module('gkClientIndex.services', [])
                 return selectedFile;
             },
             changeView: function ($scope, view) {
+                if($scope.oldView != $scope.view && $scope.view != 'fileupdate') {
+                    $scope.oldView = $scope.view;
+                }
                 $scope.view = currentView = view;
-
+                if(view && view == 'fileupdate') {
+                    //更新视图
+                    $scope.fileUpdate.isFileUpdateView = true;
+                    $scope.setOpts();
+                    GKFileList.unSelectAll($scope);
+                    if($scope.fileUpdate.data && $scope.fileUpdate.data.length >0){
+                        console.log($scope.mountId == $scope.fileUpdate.mountid)
+                        if($scope.mountId == $scope.fileUpdate.mountid){
+                            $scope.fileData = $scope.fileUpdate.data;
+                            return;
+                        }
+                    }
+                    $scope.order = "-last_edit_time"
+                    GKFileList.refreahData($scope);
+                }else{
+                    if($scope.fileUpdate.isFileUpdateView)
+                        GKFileList.unSelectAll($scope);
+                    $scope.fileUpdate.isFileUpdateView = false;
+                    $scope.fileData = $scope.fileDataArr;
+                    $scope.setOpts();
+                }
             },
             getCurrentView:function(){
               return currentView;
@@ -4030,7 +4078,7 @@ angular.module('gkClientIndex.services', [])
                 var fileList,
                     source = 'client',
                     deferred = $q.defer();
-                if ($scope.search) {
+                  if ($scope.search) {
                     var searchArr = $scope.search.split('|');
                     if (GKPartition.isMountPartition($scope.partition) && $scope.filter != 'trash') {
                         source = 'api';
@@ -4073,12 +4121,22 @@ angular.module('gkClientIndex.services', [])
                                 option.current = 1;
                             }
                         }
-                        GKFile.getFileList($scope.mountId, $scope.path, source,option).then(function(list){
-                            smartFileList = list;
-                            deferred.resolve(list);
-                        },function(re){
-                            deferred.reject(re);
-                        });
+                        if(!$scope.fileUpdate.isFileUpdateView) {
+                            GKFile.getFileList($scope.mountId, $scope.path, source, option).then(function (list) {
+                                smartFileList = list;
+                                deferred.resolve(list);
+                            }, function (re) {
+                                deferred.reject(re);
+                            });
+                        }else{
+                            //获取文件更新列表
+                            GKFile.getFileUpdateList($scope.mountId).then(function(list){
+                                smartFileList = list;
+                                deferred.resolve(list);
+                            }, function (re) {
+                                deferred.reject(re);
+                            })
+                        }
                     } else {
                         GKSmartFolder.getList($scope.filter).then(function(list){
                             smartFileList = list;
@@ -4102,6 +4160,13 @@ angular.module('gkClientIndex.services', [])
                         order = [desc + 'dir', $scope.order];
                     }
                     $scope.fileData = $filter('orderBy')(newFileData, order);
+                    //判断如果不是文件更新视图
+                    if(!$scope.fileUpdate.isFileUpdateView) $scope.fileDataArr = $scope.fileData;
+                    //如果是文件更新视图
+                    else{
+                        $scope.fileUpdate.mountid = $scope.mountId;
+                        $scope.fileUpdate.data = $scope.fileData;
+                    }
                     if (selectPath) {
                         $timeout(function(){
                             GKFileList.unSelectAll($scope);
