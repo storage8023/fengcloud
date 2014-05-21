@@ -1012,6 +1012,53 @@ angular.module('GKCommon.directives', [])
             }
         }
     }])
+    .directive('scrollToMsg', ['$timeout', function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function ($scope, $element, $attrs) {
+                $scope.$watch($attrs.scrollToMsg, function (value, oldValue) {
+                    if (angular.isNumber(value)) {
+                        if (value < 0) value = 0;
+                        $timeout(function () {
+                            var chatItem = $element.find('.chat_item:eq(' + value + ')');
+                            if (chatItem.size()) {
+                                $element.scrollTop(chatItem.position().top + $element.scrollTop());
+                            }
+                        });
+                        $scope[$attrs.scrollToMsg] = undefined;
+                    }
+                });
+            }
+        }
+    }])
+    .directive('chatBind', ['$compile', '$rootScope',function ($compile,$rootScope) {
+        return function (scope, element, attr) {
+            scope.$watch(attr.chatBind, function (value) {
+                var bind = value;
+                //对html文本和js代码转义
+                bind = bind.replace(/>/g, '&gt;')
+                bind = bind.replace(/</g, '&lt;');
+                var atMatches =  value.match(Util.RegExp.AT);
+                if(atMatches && atMatches.length){
+                    atMatches = Util.Array.unique(atMatches);
+                    angular.forEach(atMatches,function(val){
+                        var name = jQuery.trim(val.replace('@',''));
+                        bind = bind.replace(new RegExp(val, 'g'), '<span ng-click="atMember(\''+name+'\')" class="at_member'+(name==$rootScope.PAGE_CONFIG.user.member_name?' mine':'')+'">'+val+'</span>');
+                    });
+                }
+
+                if (Util.RegExp.HTTPStrict.test(bind)) {
+                    bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
+                }
+                /**工具栏**/
+//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
+//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1"  class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
+//                }
+                bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
+                element.html(bind === undefined ? '' : bind);
+            });
+        }
+    }]);
 ;
 /* Services */
 angular.module('GKCommon.services', [])
@@ -1049,7 +1096,101 @@ angular.module('GKCommon.services', [])
         };
         return GKWindowCom;
     }])
-
+    .factory('chatService', ['$q', function ($q) {
+        var chat = {
+            add: function (type, orgId, content, metadata, time, status) {
+                var deferred = $q.defer();
+                metadata = angular.isDefined(metadata) ? metadata : '';
+                status = angular.isDefined(status) ? status : 0;
+                gkClientInterface.postChatMessage({
+                    'content': content,
+                    'receiver': String(orgId),
+                    'metadata': metadata,
+                    'type': type,
+                    'time': time,
+                    status: status
+                }, function (re) {
+                    if (!re.error) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            },
+            search: function (orgId, dateline, size, topic) {
+                topic = angular.isDefined(topic) ? topic : '';
+                var deferred = $q.defer();
+                gkClientInterface.getChatMessage({
+                    'receiver': String(orgId),
+                    'dateline': dateline,
+                    'count': size,
+                    'before': 1,
+                    'topic': topic
+                }, function (re) {
+                    if (!re.error) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            },
+            list: function (orgId, lastTime, count, topic) {
+                topic = angular.isDefined(topic) ? topic : '';
+                var deferred = $q.defer();
+                gkClientInterface.getChatMessage({
+                    'receiver': String(orgId),
+                    'dateline': lastTime,
+                    'count': count,
+                    'before': 0,
+                    'topic': topic
+                }, function (re) {
+                    if (!re.error) {
+                        deferred.resolve(re);
+                    } else {
+                        deferred.reject(re);
+                    }
+                });
+                return deferred.promise;
+            }
+        };
+        return chat;
+    }])
+    .factory('chatMember', ['GKApi', function (GKApi) {
+        var members = {};
+        var chatMember = {
+            getMembers: function (orgId) {
+                if (!members[orgId]) {
+                    var re = gkClientInterface.getOrgMembers({
+                        orgid: orgId
+                    });
+                    members[orgId] = re.list || [];
+                }
+                return members[orgId];
+            },
+            getMemberItem: function (orgId, memberId) {
+                var members = this.getMembers(orgId),
+                    member;
+                angular.forEach(members, function (value) {
+                    if (value.username == memberId) {
+                        member = value;
+                        return false;
+                    }
+                })
+                return member;
+            },
+            refreshMembers: function (orgId) {
+                if (members[orgId] !== undefined) {
+                    var re = gkClientInterface.getOrgMembers({
+                        orgid: orgId
+                    });
+                    members[orgId] = re.list || [];
+                }
+            }
+        };
+        return chatMember;
+    }])
     .factory('GKException', [function () {
         var GKException = {
             getAjaxError: function (request, textStatus, errorThrown) {
@@ -2176,6 +2317,23 @@ angular.module('GKCommon.services', [])
                     data: params
                 });
             },
+            disscussHistory:function(mountId,path){
+                 var params = {
+                     mount_id:mountId,
+                     fullpath:path,
+                     token:gkClientInterface.getToken(),
+                     start:0,
+                     size:999999
+                 };
+                var sign = gkClientInterface.getApiAuthorization(params);
+                params.sign = sign;
+                return jQuery.ajax({
+                     type:'GET',
+                     url:gkClientInterface.getApiHost() + '/1/file/remark',
+                    data:params
+                });
+
+            },
             list: function (mountId, fullpath, start, size, dir) {
                 var params = {
                     mount_id: mountId,
@@ -2213,6 +2371,34 @@ angular.module('GKCommon.services', [])
             }
         }
         return GKApi;
+    }])
+    .factory('GKKeyEvent',[function(){
+        return{
+            postMsgKeyDown: function ($event, postText,showTopicLabel,isToolTipOpen,topic,charLen) {
+
+                var keyCode = $event.keyCode;
+                if (isToolTipOpen) {
+                    return "-1";
+                }
+                if (keyCode == 13) {
+                    if (!postText && !showTopicLabel) {
+                        $event.preventDefault();
+                        return "-1";
+                    }
+                    if (postText.length > charLen) {
+                        alert('一次发送的消息字数不能超过'+charLen+'字，请分条发送');
+                        return "-1";
+                    }
+                    if (showTopicLabel) {
+                        postText = '#' + topic + '#' + postText
+                    }
+                    $event.preventDefault();
+
+                    return postText;
+                }
+                return "0";
+             }
+        }
     }])
 ;
 angular.module('GKCommon.filters', [])

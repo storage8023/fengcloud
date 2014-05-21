@@ -2467,3 +2467,98 @@ padding: 6px 21px;
     float: left;
     width:420px;
 }
+/*云库树节点搜索区域样式*/
+.icon_clear{
+    height:17px;
+    background: url(../images/icon/clear.png);
+}
+
+footer textarea{
+    position: absolute;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom: 34px;
+    border:0 none;
+    box-shadow: none;
+    z-index: 10;
+}
+footer .btn_wrapper{
+    height: 34px;
+    line-height: 34px;
+    background: #F4F4F6;
+    border-top: 1px solid #ceded7;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+footer .btn_wrapper > span{
+    float: left;
+    margin-left: 10px;
+    color: #ACB4BF;
+}
+footer .post_btn{
+    width: 94px;
+    padding: 0;
+    height: 34px;
+    line-height: 34px;
+    margin-top: -1px;
+    float: right;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+}
+
+footer .btn_wrapper .label{
+    margin:-2px 5px 0 5px;
+    cursor: pointer;
+}
+
+.discuss-list .c_f_after{
+    padding-top:10px;
+    padding-bottom:10px;
+    padding-left:10px;
+
+}
+
+.disscuss-history{
+    width:300px;
+    height:100%;
+    position:absolute;
+    background-color: #ffffff;
+    z-index:111;
+    right:-300px;
+    bottom:0px;
+    border-left:1px solid #D0D0D0;
+    box-shadow:0px 0px 10px rgba(0,0,0,0.3);
+}
+
+.disscuss-history header{
+    width:100%;
+    height:45px;
+    background-color:#E2E3E7;
+    vertical-align: middle;
+}
+
+.disscuss-history section{
+    -webkit-user-select:auto;
+    user-select:auto;
+    position:absolute;
+    top:45px;
+    left:0px;
+    right:0px;
+    padding: 0px;
+    bottom: 100px;
+    overflow: auto;
+
+
+}
+.disscuss-history .no_file_discussion{
+    background-image: URL(../images/icon/no_file_discussion.png);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.disscuss-history footer{
+    height:100px
+}

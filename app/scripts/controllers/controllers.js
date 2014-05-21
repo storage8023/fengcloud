@@ -706,7 +706,9 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
            var list = param['list'];
             $scope.$apply(function(){
                 setChatState(list);
-            })
+            });
+            if($rootScope.PAGE_CONFIG.mode == 'file')
+                $scope.$parent.$broadcast("loadDiscussHistory",list);
         })
 
         $rootScope.$on('clearMsgTime',function(event,param){
@@ -714,7 +716,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             setNewMsgTime(orgId,new Date().getTime(),'visitTime');
         })
     }])
-    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {
+    .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount','chatService',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount,chatService) {
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.mountReadable = true;
@@ -1157,7 +1159,40 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * @param $event
          * @param index
          */
+        var maxCount = 20,
+            maxMsgTime = 0,
+            minMsgTime = 0;
+        $scope.$on("loadDiscussHistory",function(obj,items){
+            chatService.list($scope.PAGE_CONFIG.mount.org_id, maxMsgTime, maxCount, '').then(function (re) {
+                var discussHistoryArr = [];
+                if (re && re.list && re.list.length) {
+                    angular.forEach(re.list, function (item) {
+
+                        var time = Number(item.time);
+                        if (minMsgTime == 0 || time < minMsgTime) {
+                            minMsgTime = time;
+                        }
+                        if (time > maxMsgTime) {
+                            maxMsgTime = time;
+                        }
+                        //如果是当前用户发送的消息，直接过滤
+
+                        if(item.sender != $rootScope.PAGE_CONFIG.user.member_name && item.type && item.type == 'file'){
+                            discussHistoryArr.push(item);
+                        }
+                    });
+                    if(discussHistoryArr.length > 0){
+                        $scope.$broadcast("updateDiscussMsg",discussHistoryArr);
+                    }
+                }
+            });
+        });
+
+
         $scope.handleClick = function ($event, index,file) {
+            if($scope.showDisscussHitoryWin){
+                $scope.$broadcast('showDiscussHistory',file);
+            }
             var fileItem = jQuery($event.target).hasClass('item')?jQuery($event.target):jQuery($event.target).parents('.item');
             var file = $scope.fileData[index];
             if ($event.ctrlKey || $event.metaKey) {
@@ -1258,6 +1293,10 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 return;
             }
             if (!$target.hasClass('file_item') && !$target.parents('.file_item').size()) {
+                //如果文件或文件夹讨论历史窗口被打开，则关闭
+                if($scope.showDisscussHitoryWin){
+                    $scope.$broadcast('closeDiscussHistory');
+                }
                 GKFileList.unSelectAll($scope);
             }
         };

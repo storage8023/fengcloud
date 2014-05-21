@@ -1286,6 +1286,8 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.showMilestoneDialog = function(file){
+                    $scope.$emit("showDiscussHistory",file);
+                    return;
                     var firstHistory = histories[0];
                     var oldMsg = '';
                     if(firstHistory){
@@ -1903,6 +1905,162 @@ angular.module('gkClientIndex.directives', [])
             restrict: 'E',
             replace: true,
             templateUrl: "views/filter_right_sidebar.html"
+        }
+    }])
+    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember','$location','GKFileList',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember,$location,GKFileList){
+        return{
+            restrict: 'E',
+            replace: true,
+            templateUrl: "views/singlefile-right-discusshistory.html",
+            link:function(scope, element, attrs){
+                var ELEMENT_RIGHT = -300;
+                scope.canShowHistory = false;
+                scope.currentDiscussFile = null;
+                scope.discussionList = [];
+                scope.discussContent = "";
+                scope.loadDiscussionhistory = true;
+                scope.selectObj = {
+                    partition:'',
+                    mountid:'',
+                    path:''
+                };
+                scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
+                scope.$on('$locationChangeStart',function() {
+                     close();
+                });
+                scope.$watch(function(){
+                    return $rootScope.PAGE_CONFIG.mode;
+                },function(value,oldValue){
+                    if(value == 'chat'){
+                        //保存切换前的状态
+                       // var opened = scope.showDisscussHitoryWin;
+                        close();
+                        //重新复制
+                        //scope.showDisscussHitoryWin = opened;
+                    }else if(value == 'file'){
+//                        if(scope.showDisscussHitoryWin){
+//                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
+//                        }
+                    }
+                })
+                scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
+                    if(!scope.currentDiscussFile){
+                        return;
+                    }
+                    angular.forEach(discussHistoryArr,function(item){
+                        if(item.sender != $rootScope.PAGE_CONFIG.user.member_name){
+                            if(item.receiver && item.receiver == $rootScope.PAGE_CONFIG.mount.org_id){
+                                var fileInfo = JSON.parse(item.metadata);
+                                if(scope.currentDiscussFile.hash == fileInfo.hash){
+                                    item.status = true;
+                                    scope.discussionList.push(item);
+                                    scope.scrollToIndex = scope.discussionList.length -1;
+                                }
+                            }
+                        }
+                    });
+                });
+                scope.$on("closeDiscussHistory",function(){
+                   close();
+                });
+                scope.$on("showDiscussHistory",function(obj,file){
+                    console.log(file);
+                    scope.isOpen = true;
+                    scope.showDisscussHitoryWin = true;
+                    scope.loadDiscussionhistory = true;
+                    if(file && !file.mount_id){
+                        file.mount_id = $rootScope.PAGE_CONFIG.mount.mount_id;
+                    }
+
+                    scope.discussionList = [];
+                    scope.currentDiscussFile = file;
+                    scope.canShowHistory = true;
+                    element.show();
+                    element.animate({right:0},300,function(){
+                        scope.focusTextarea = true;
+                    });
+
+                    GKFile.getDiscussHistory(file).then(function(data){
+                        for(var i=data.list.length-1;i>=0;i--){
+                            var value = data.list[i];
+                            value.status = true
+                            scope.discussionList.push(value);
+                        }
+                        scope.scrollToIndex = scope.discussionList.length -1;
+                        scope.loadDiscussionhistory = false;
+                    },function(data){
+                        scope.loadDiscussionhistory = false;
+                    });
+                });
+
+
+
+                scope.atMember = function(at){
+                    scope.insertStr = ['@',at,' '].join('');
+                };
+
+                scope.handleKeyDown = function ($event, message) {
+                    var msg = GKKeyEvent.postMsgKeyDown($event,message,'',scope.it_isOpen,'',140);
+                    if(msg == "-1" || msg == "0"){
+                       return;
+                    }else{
+                        scope.discussContent = "";
+                        postMsg(msg);
+                        scope.focusTextarea = true;
+                    }
+                };
+                scope.sendDiscussion = function(message){
+                    if(!scope.currentDiscussFile) return;
+                    if (!message) {
+                        return;
+                    }
+                    if (message.length > 140) {
+                        alert('一次发送的消息字数不能超过140字，请分条发送');
+                        return;
+                    }
+                    scope.discussContent = "";
+                    postMsg(message);
+                    scope.focusTextarea = true;
+                };
+                var postMsg = function(message){
+                    var newDisscussMsg = {
+                        content:message,
+                        receiver:$rootScope.PAGE_CONFIG.mount.org_id,
+                        sender:$rootScope.PAGE_CONFIG.user.member_name,
+                        medadata:[],
+                        time:new Date().getTime(),
+                        status:true,
+                        type:"text"
+                    }
+                    scope.discussionList.push(newDisscussMsg)
+                    scope.scrollToIndex = scope.discussionList.length -1;
+                    GKApi.markMilestone(scope.currentDiscussFile.mount_id,scope.currentDiscussFile.fullpath,message,1)
+                        .success(function(data){
+                            newDisscussMsg.status=true;
+                        })
+                        .error(function(reqest){
+                            newDisscussMsg.status=false;
+                        })
+                };
+
+                var close = function(){
+                    scope.showDisscussHitoryWin = false;
+                    scope.loadDiscussionhistory = true;
+                    element.animate({right:ELEMENT_RIGHT},200,function(){
+                        scope.canShowHistory = false;
+                        scope.discussionList = [];
+                        element.hide();
+                    });
+                };
+
+                scope.cancel = function(){
+                    close();
+                };
+                $timeout(function(){
+                    element.css("right",ELEMENT_RIGHT+"px");
+                    element.hide();
+                });
+            }
         }
     }])
 ;

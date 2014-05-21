@@ -29,7 +29,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         'chatTopic',
         '$filter',
         'GKAuth',
-        function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember, $window, $interval, GKApi, localStorageService, GKDialog, $document,chatTopic,$filter,GKAuth) {
+        'GKKeyEvent',
+        function ($scope, chatSession, $location, $timeout, chatContent, $rootScope, chatService, GKException, chatMember, $window, $interval, GKApi, localStorageService, GKDialog, $document,chatTopic,$filter,GKAuth,GKKeyEvent) {
         var maxCount = 20,
             maxMsgTime = 0,
             minMsgTime = 0,
@@ -80,7 +81,6 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             $scope.loadingHistoryMsg = true;
             chatService.list($scope.currentSession.orgid, lastTime, maxCount, topic).then(function (re) {
                 if (re && re.list && re.list.length) {
-
                     angular.forEach(re.list, function (item) {
                         var time = Number(item.time);
                         if (minMsgTime == 0 || time < minMsgTime) {
@@ -150,30 +150,20 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
 
         $scope.handleKeyDown = function ($event, postText) {
             var keyCode = $event.keyCode;
-            if ($scope.it_isOpen) {
-                return;
-            }
-            if (keyCode == 13) {
-                if (!postText && !$scope.showTopicLabel) {
-                    $event.preventDefault();
-                    return;
+            var postMsgKeyDown = GKKeyEvent.postMsgKeyDown($event,postText,$scope.showTopicLabel,$scope.it_isOpen,$scope.topic,800);
+            if(postMsgKeyDown == "-1"){
+               return;
+            }else if(postMsgKeyDown == "0"){
+                if (keyCode == 8) {
+                    if($scope.showTopicLabel && !postText.length){
+                        $scope.topic = '';
+                        $scope.onlyShowTopic = false;
+                        toggleTopicLabel('hide');
+                    }
                 }
-                if (postText.length > 800) {
-                    alert('一次发送的消息字数不能超过800字，请分条发送');
-                    return;
-                }
-                if ($scope.showTopicLabel) {
-                    postText = '#' + $scope.topic + '#' + postText
-                }
-                $scope.postText = '';
-                post('text', postText);
-                $event.preventDefault();
-            } else if (keyCode == 8) {
-                if($scope.showTopicLabel && !postText.length){
-                    $scope.topic = '';
-                    $scope.onlyShowTopic = false;
-                    toggleTopicLabel('hide');
-                }
+            }else{
+                $scope.postText = "";
+                post('text', postMsgKeyDown);
             }
         };
 
@@ -648,8 +638,8 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
                         }
                     }
                 }
-                if(value.type == 'summary' && value.metadata){
-                    value.content = gkClient.gGetMetadataChange('{"count":'+value.metadata.count+',"from":'+value.metadata.from+',"to":'+value.metadata.to+'}');
+                if(value.type == 'summary' && value.metadata) {
+                    value.content = gkClientInterface.getSummaryText(value.metadata.count, value.metadata.from, value.metadata.to);
                 }
                 angular.extend(value, extendValue);
                 return value;
@@ -757,101 +747,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
         };
         return chatTopic;
     }])
-    .factory('chatMember', ['GKApi', function (GKApi) {
-        var members = {};
-        var chatMember = {
-            getMembers: function (orgId) {
-                if (!members[orgId]) {
-                    var re = gkClientInterface.getOrgMembers({
-                        orgid: orgId
-                    });
-                    members[orgId] = re.list || [];
-                }
-                return members[orgId];
-            },
-            getMemberItem: function (orgId, memberId) {
-                var members = this.getMembers(orgId),
-                    member;
-                angular.forEach(members, function (value) {
-                    if (value.username == memberId) {
-                        member = value;
-                        return false;
-                    }
-                })
-                return member;
-            },
-            refreshMembers: function (orgId) {
-                if (members[orgId] !== undefined) {
-                    var re = gkClientInterface.getOrgMembers({
-                        orgid: orgId
-                    });
-                    members[orgId] = re.list || [];
-                }
-            }
-        };
-        return chatMember;
-    }])
-    .factory('chatService', ['$q', function ($q) {
-        var chat = {
-            add: function (type, orgId, content, metadata, time, status) {
-                var deferred = $q.defer();
-                metadata = angular.isDefined(metadata) ? metadata : '';
-                status = angular.isDefined(status) ? status : 0;
-                gkClientInterface.postChatMessage({
-                    'content': content,
-                    'receiver': String(orgId),
-                    'metadata': metadata,
-                    'type': type,
-                    'time': time,
-                    status: status
-                }, function (re) {
-                    if (!re.error) {
-                        deferred.resolve(re);
-                    } else {
-                        deferred.reject(re);
-                    }
-                });
-                return deferred.promise;
-            },
-            search: function (orgId, dateline, size, topic) {
-                topic = angular.isDefined(topic) ? topic : '';
-                var deferred = $q.defer();
-                gkClientInterface.getChatMessage({
-                    'receiver': String(orgId),
-                    'dateline': dateline,
-                    'count': size,
-                    'before': 1,
-                    'topic': topic
-                }, function (re) {
-                    if (!re.error) {
-                        deferred.resolve(re);
-                    } else {
-                        deferred.reject(re);
-                    }
-                });
-                return deferred.promise;
-            },
-            list: function (orgId, lastTime, count, topic) {
-                topic = angular.isDefined(topic) ? topic : '';
-                var deferred = $q.defer();
-                gkClientInterface.getChatMessage({
-                    'receiver': String(orgId),
-                    'dateline': lastTime,
-                    'count': count,
-                    'before': 0,
-                    'topic': topic
-                }, function (re) {
-                    if (!re.error) {
-                        deferred.resolve(re);
-                    } else {
-                        deferred.reject(re);
-                    }
-                });
-                return deferred.promise;
-            }
-        };
-        return chat;
-    }])
+
     .directive('scrollToBottom', ['$timeout', function ($timeout) {
         return {
             restrict: 'A',
@@ -867,25 +763,7 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             }
         }
     }])
-    .directive('scrollToMsg', ['$timeout', function ($timeout) {
-        return {
-            restrict: 'A',
-            link: function ($scope, $element, $attrs) {
-                $scope.$watch($attrs.scrollToMsg, function (value, oldValue) {
-                    if (angular.isNumber(value)) {
-                        if (value < 0) value = 0;
-                        $timeout(function () {
-                            var chatItem = $element.find('.chat_item:eq(' + value + ')');
-                            if (chatItem.size()) {
-                                $element.scrollTop(chatItem.position().top + $element.scrollTop());
-                            }
-                        });
-                        $scope[$attrs.scrollToMsg] = undefined;
-                    }
-                });
-            }
-        }
-    }])
+
     .directive('chatFile', [function () {
         return {
             replace: true,
@@ -921,31 +799,4 @@ angular.module('gkChat', ['GKCommon', 'ui.bootstrap', 'LocalStorageModule'])
             templateUrl: "views/chat_audio.html"
         }
     }])
-    .directive('chatBind', ['$compile', '$rootScope',function ($compile,$rootScope) {
-        return function (scope, element, attr) {
-            scope.$watch(attr.chatBind, function (value) {
-                var bind = value;
-                //对html文本和js代码转义
-                bind = bind.replace(/>/g, '&gt;')
-                bind = bind.replace(/</g, '&lt;');
-                var atMatches =  value.match(Util.RegExp.AT);
-                if(atMatches && atMatches.length){
-                    atMatches = Util.Array.unique(atMatches);
-                    angular.forEach(atMatches,function(val){
-                        var name = jQuery.trim(val.replace('@',''));
-                        bind = bind.replace(new RegExp(val, 'g'), '<span ng-click="atMember(\''+name+'\')" class="at_member'+(name==$rootScope.PAGE_CONFIG.user.member_name?' mine':'')+'">'+val+'</span>');
-                    });
-                }
 
-                if (Util.RegExp.HTTPStrict.test(bind)) {
-                    bind = bind.replace(Util.RegExp.HTTPStrict, '<a href="$&">$&</a>');
-                }
-                /**工具栏**/
-//                if (Util.RegExp.POUND_TOPIC.test(bind)) {
-//                    bind = bind.replace(Util.RegExp.POUND_TOPIC, '<span title="$1"  class="label label-success" ng-click="quoteTopic(\'$1\')">$1</span> ');
-//                }
-                bind = $compile(angular.element('<span>' + bind + '</span>'))(scope);
-                element.html(bind === undefined ? '' : bind);
-            });
-        }
-    }]);
