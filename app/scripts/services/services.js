@@ -4004,7 +4004,7 @@ angular.module('gkClientIndex.services', [])
         };
         return GKFileListView;
     }])
-    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope','smartSearchConfig',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope,smartSearchConfig) {
+    .factory('GKFileList', ['$location', '$q', 'GKFile', 'GKApi', 'GKPartition', '$filter', 'GKException', 'GKFilter', '$rootScope', 'GKFileListView', '$timeout', 'GKSmartFolder', 'GKAuth','GKMount','GKSope','smartSearchConfig','GKPath',function ($location, $q, GKFile, GKApi, GKPartition, $filter, GKException, GKFilter, $rootScope, GKFileListView, $timeout, GKSmartFolder,GKAuth,GKMount,GKSope,smartSearchConfig,GKPath) {
         var selectedFile = [];
         var selectedIndex = [];
         var selectedPath = '';

@@ -894,18 +894,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
          * 改变视图
          */
         $scope.changeView = function (view) {
-            var param = {
-                partition: $rootScope.PAGE_CONFIG.partition,
-                path: "",
-                mountid: $rootScope.PAGE_CONFIG.mount.mountid,
-                entid: 0,
-                filter: ""
-            }
-            if(view == 'fileupdate'){
-                param.view = 'fileupdate';
-            }else{
-                param.view = 'normal';
-            }
 
             GKFileList.changeView($scope,view);
         };
