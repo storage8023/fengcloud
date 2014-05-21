@@ -18,9 +18,10 @@ var Util = {
         return uuid;
     }
 };
+
 Util.object = {
     //比较两个对象是否具有相同的属性和相同的属性值
-    checkObjEquils:function(obj1,obj2){
+     checkObjEquils:function(obj1,obj2){
         var objKeys_1 = [];
         var objKeys_2 = [];
         for(var key_1 in obj1){
@@ -44,6 +45,7 @@ Util.object = {
         return false;
     }
 }
+
 Util.String = {
     escapeHtml:function(text){
         return text

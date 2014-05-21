@@ -15,7 +15,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             }
         })
     }])
-    .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope', 'GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
+    .controller('initClient', ['GKBrowserMode','localStorageService','$rootScope', 'GKNews', '$scope','GKMount', '$location', 'GKFile', 'GKPartition', 'GKModal', 'GKApi' , 'GKDialog','$timeout','GKFrame','GKAuth','GKPath','$window','GKMode',function (GKBrowserMode,localStorageService,$rootScope, GKNews, $scope, GKMount, $location, GKFile, GKPartition, GKModal, GKApi,GKDialog,$timeout,GKFrame,GKAuth,GKPath,$window,GKMode) {
         $rootScope.PAGE_CONFIG = {
             siteDomain:gkClientInterface.getSiteDomain(),
             user: gkClientInterface.getUser(),
@@ -25,7 +25,95 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             mode:'',
             browserMode:GKBrowserMode.getMode(),
             partition:'',
-            networkConnected: Number(gkClientInterface.getNetworkStatus())
+            networkConnected: Number(gkClientInterface.getNetworkStatus()),
+            visitHistory:{
+                //记录访问历史，实现回退前进功能
+                historyArr:[],
+                selectedHistory:{},
+                //清空历史游标
+                clearHistoryFlag:function(){
+                    angular.forEach(this.historyArr,function(value){
+                        if(value && value.selected){
+                            value.selected = false;
+                        }
+                    });
+                },
+                removeHistory:function(fullpath) {
+                    var indexArr = [];
+                    if (fullpath && fullpath.length > 0){
+                        for (var i = 0; i < this.historyArr.length; i++) {
+                            var value = this.historyArr[i];
+                            if (value && value.mountid == $rootScope.PAGE_CONFIG.mount.mount_id && value.path.indexOf(fullpath) != -1) {
+                                indexArr.push(value.index);
+                                if (value.selected) {
+                                    if (this.historyArr[value.index - 1])
+                                        this.historyArr[value.index - 1].selected = true;
+                                    else if (this.historyArr[value.index + 1])
+                                        this.historyArr[value.index + 1].selected = true;
+                                }
+                            }
+                        }
+                    }else if(fullpath && fullpath.length == 0){
+                        if (value && value.mountid == $rootScope.PAGE_CONFIG.mount.mount_id){
+                            indexArr.push(value.index);
+                            if (value.selected) {
+                                if (this.historyArr[value.index - 1])
+                                    this.historyArr[value.index - 1].selected = true;
+                                else if (this.historyArr[value.index + 1])
+                                    this.historyArr[value.index + 1].selected = true;
+                            }
+                        }
+                    }
+                    if(!indexArr || indexArr.length == 0) return;
+                    for(var i=indexArr.length - 1;i>=0;i--){
+                        this.historyArr.splice(indexArr[i],1);
+                    }
+                    for(var i=0;i<this.historyArr.length;i++){
+                        this.historyArr[i].index = i;
+                        if(this.historyArr[i].selected) this.selectedHistory = this.historyArr[i];
+                    }
+                },
+
+                hasPrev:function(){
+                    if(this.historyArr){
+                        var len = this.historyArr.length;
+                        if(len > 1){
+                            var currIndex = this.selectedHistory.index;
+                            if(currIndex > 0) return true;
+                        }
+                    }
+                    return false;
+                },
+                hasNext:function(){
+                    if(this.historyArr) {
+                        var len = this.historyArr.length;
+                        if (len > 1) {
+                            var currIndex = this.selectedHistory.index;
+                            if(currIndex < len-1) return true;
+                        }
+                    }
+                    return false;
+                },
+                clickPrev:function(){
+                   if(this.hasPrev()) {
+                       var index = this.selectedHistory.index;
+                       this.historyArr[index].selected = false;
+                       this.historyArr[index - 1].selected = true;
+                       this.selectedHistory = this.historyArr[index - 1];
+                       $location.search(this.selectedHistory);
+                   }
+                },
+                clickNext:function(){
+                    if(this.hasNext()) {
+                        var index = this.selectedHistory.index;
+                        this.historyArr[index].selected = false;
+                        this.historyArr[index + 1].selected = true;
+                        this.selectedHistory = this.historyArr[index + 1];
+                        $location.search(this.selectedHistory);
+                    }
+                }
+            }
+
         };
 
         $scope.showLoading = gkClientInterface.needLoading() == 1?true:false;
@@ -349,6 +437,37 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         if(!$location.search().partition){
             $scope.initSelectedBranch = $scope.orgTreeList[0];
         }
+
+        //监听是否转入搜索视图
+        $scope.searchText = "";
+        $scope.curIsActive = false;
+        $scope.$watch(function(){
+            return $scope.allTreeList.length;
+        },function(nValue,oValue){
+             $scope.$emit("searchTextChange",$scope.searchText);
+        });
+        $scope.$on('searchTextChange',function(obj,searchText){
+            if(searchText && searchText.length > 0){
+                $scope.searchTreeList = [];
+                angular.forEach($scope.allTreeList,function(treeNode){
+                    if(treeNode.label.indexOf(searchText) != -1){
+                        $scope.searchTreeList.push(treeNode);
+                    }
+                });
+                //$scope.initSelectedBranch = $scope.searchTreeList[0];
+                $rootScope.PAGE_CONFIG.isSearch = true;
+            }else{
+                $rootScope.PAGE_CONFIG.isSearch = false;
+            }
+        });
+        $scope.$watch("searchText",function(nValue,oValue){
+            $scope.$emit("searchTextChange",nValue);
+        });
+        //清空搜索
+        $scope.clearSearch = function(){
+            $scope.searchText = "";
+        }
+    //end
         $scope.$on('initSelectedBranch',function(){
             $timeout(function(){
                 unSelectAllBranch();
@@ -1112,6 +1231,28 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         $scope.limit = 100;
 
         $scope.$on('$locationChangeSuccess',function(){
+            var param = $location.search();
+
+            //记录访问历史
+            if($rootScope.PAGE_CONFIG.mode && $rootScope.PAGE_CONFIG.mode=='file' && !param.isHistory) {
+                var history = $rootScope.PAGE_CONFIG.visitHistory.selectedHistory;
+                //如果当前点击的节点跟当前选中的历史节点相同，则不做处理
+                var curParam = {};
+                for(var pro in history){
+                    if(pro != 'index' && pro != 'selected' && pro != 'isHistory'){
+                        curParam[pro] = history[pro];
+                    }
+                }
+                if(Util.object.checkObjEquils(param,curParam)){
+                    return ;
+                }
+                $rootScope.PAGE_CONFIG.visitHistory.clearHistoryFlag();
+                param.selected = true;
+                param.isHistory = true;
+                param.index = $rootScope.PAGE_CONFIG.visitHistory.historyArr.length;
+                $rootScope.PAGE_CONFIG.visitHistory.selectedHistory = param;
+                $rootScope.PAGE_CONFIG.visitHistory.historyArr.push(param);
+            }
             setBread();
             getFileData();
         })

@@ -878,6 +878,7 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         $scope.$on('removeTeam', function (event, orgId) {
+                            $rootScope.PAGE_CONFIG.visitHistory.removeHistory("");
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
@@ -1417,6 +1418,7 @@ angular.module('gkClientIndex.services', [])
                         };
 
                         $scope.$on('removeTeam', function (event, orgId) {
+                            $rootScope.PAGE_CONFIG.visitHistory.removeHistory("");
                             gkClientInterface.notice({type: 'removeOrg', 'org_id': Number(orgId)}, function (param) {
                                 if (param) {
                                     $rootScope.$broadcast('RemoveOrgObject', {'org_id': orgId});
@@ -4143,6 +4145,9 @@ angular.module('gkClientIndex.services', [])
                         if(selectedIndex.indexOf(key)>=0){
                             context.unSelect($scope,key);
                         }
+                        //如果删除的是文件夹，则去除访问历史
+                        if(file.dir == 1)
+                            $rootScope.PAGE_CONFIG.visitHistory.removeHistory(file.fullpath);
                     }
                 })
             },

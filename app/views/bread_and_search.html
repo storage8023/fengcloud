@@ -1,3 +1,15 @@
+<div>
+
+<div style="float:left;width:50px;margin-left:10px; margin-top:6px;">
+    <a href="javascript:;" ng-click="PAGE_CONFIG.visitHistory.clickPrev();">
+        <li title="后退" ng-class="PAGE_CONFIG.visitHistory.hasPrev()?'forword-back back-active':'forword-back back'"></li>
+    </a>
+
+    &nbsp;&nbsp;
+    <a href="javascript:;" ng-click="PAGE_CONFIG.visitHistory.clickNext();">
+        <li title="前进" ng-class="PAGE_CONFIG.visitHistory.hasNext()?'forword-back forword-active':'forword-back forword'"></li>
+    </a>
+</div>
 <div class="bread_and_search_wrapper" ng-class="searchState?'searching '+searchState:''" ng-click="showSearch($event)" >
     <div class="dropdown hide_bread" ng-show="hideBreads && hideBreads.length">
         <a href="javascript:void(0)" dropdown-toggle><i class="gk_down_arrow"></i></a>
@@ -19,7 +31,6 @@
     <i class="icon16x16 icon_search" ng-click="searchFile()"></i>
     <i class="icon_cancel" ng-click="cancelSearch($event)">&times;</i>
     <input type="text" value="" name="keyword" id="keyword" ng-model="keyword" ng-style="inputStyle" autocomplete="off"  ui-keydown="{'enter':'searchFile()'}"/>
-
     <div class="searching_label dropdown">
         <a href="javascript:void(0)" dropdown-toggle title="在 {{currentSearchScope['text']}} 中搜索：">
             <span>在 {{currentSearchScope['text']}} 中搜索：</span><i ng-if="searchScopes.length>1 && currentSearchScope.name != 'partition'" class="gk_down_arrow"></i>

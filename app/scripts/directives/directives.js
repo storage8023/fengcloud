@@ -939,7 +939,6 @@ angular.module('gkClientIndex.directives', [])
                         GKModal.news(GKNews, GKApi);
                     }
                 },1500);
-
                 var t,count = 0;
                 $scope.$on('UpdateMessage', function () {
                     if(t){
