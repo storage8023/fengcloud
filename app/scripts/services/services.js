@@ -3981,6 +3981,9 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.view = currentView = view;
                 if(view && view == 'fileupdate') {
+                    if($scope.showDisscussHitoryWin){
+                        $scope.$broadcast('closeDiscussHistory');
+                    }
                     //更新视图
                     $scope.fileUpdate.isFileUpdateView = true;
                     $scope.setOpts();
@@ -3995,8 +3998,12 @@ angular.module('gkClientIndex.services', [])
                     $scope.order = "-last_edit_time"
                     GKFileList.refreahData($scope);
                 }else{
-                    if($scope.fileUpdate.isFileUpdateView)
+                    if($scope.fileUpdate.isFileUpdateView) {
+                        if($scope.showDisscussHitoryWin){
+                            $scope.$broadcast('closeDiscussHistory');
+                        }
                         GKFileList.unSelectAll($scope);
+                    }
                     $scope.fileUpdate.isFileUpdateView = false;
                     $scope.fileData = $scope.fileDataArr;
                     $scope.setOpts();
