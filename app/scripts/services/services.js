@@ -501,13 +501,16 @@ angular.module('gkClientIndex.services', [])
                         $scope.smart = smartObj;
                         $scope.saveSmart = function(){
                             var newName = $scope.smart.newName;
+                            console.log(GKSmartFolder.checkFolderName(newName));
                             if (!GKSmartFolder.checkFolderName(newName)) {
                                 return;
                             }
+                            console.log(newName === $scope.smart.name);
                             if (newName === $scope.smart.name) {
                                 return;
                             }
                             GKSmartFolder.renameSmartFolder($scope.smart.type, newName).then(function () {
+                                $scope.smart.name = newName;
                                 gkWindowInstance.dismiss('cancel');
                             });
                         }
@@ -4094,6 +4097,7 @@ angular.module('gkClientIndex.services', [])
             },
             changeView: function ($scope, view) {
                 if ($scope.search && view == 'fileupdate') {
+                    alert("搜索模式下不能切换到最近更新视图");
                     return;
                 }
                 if($scope.oldView != $scope.view && $scope.view != 'fileupdate') {

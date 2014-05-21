@@ -4,8 +4,8 @@
 <div class="modal-body scrollbar">
      <div class="smart_desktop_title">智能桌面</div>
      <div class="smart_desktop_search">
-         <input ng-model="searchKeyword"  ui-keydown="{'enter':'searchFile(searchKeyword)'}"/>
-         <i class="icon16x16 icon_search" ng-click="searchFile(searchKeyword)"></i>
+         <input ng-model="searchKeyword"  placeholder="请输入搜索关键字..." ui-keydown="{'enter':'searchFile(searchKeyword)'}"/>
+         <i class="icon16x16 icon_search" style="cursor: pointer;" ng-click="searchFile(searchKeyword)" title="搜索所有云库的文件"></i>
      </div>
      <div class="smart_desktop_topItem">
          <span class="last_visit">
@@ -41,7 +41,7 @@
          <span class="last_account">
              <div ng-click="personalOpen();">
                  <i class="smart_desktop_icon94x94 last_account"></i>
-                 <div>账号信息</div>
+                 <div>帐号信息</div>
              </div>
          </span>
      </div>
@@ -51,12 +51,6 @@
             <!--智能文件夹名-->
             <div class="item_container" style="cursor:pointer;" ng-click="clickItem(smart,$index)" data-branch="{{smart}}">
                 <span>{{smart.name}}</span>
-            </div>
-            <!--编辑-->
-            <div class="item_container" ng-show="smart.edit" >
-                <input style="width:80px;border:0px;" ng-model="smart.newName"/>
-                <i class="icon16x16 glyphicon-device-active" ng-click="saveItemEdit($event,$index);"></i>
-                <i class="icon16x16 glyphicon-device-disable" ng-click="closeItemEdit($event,$index);"></i>
             </div>
         </span>
 
