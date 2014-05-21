@@ -900,7 +900,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.$on('changeView',function(event,view){
-            if(arguments.length>2){
+            if(arguments.length>=2){
                 GKFileList.changeView($scope,view);
             }else{
                 $scope.$apply(function(){

@@ -1913,7 +1913,7 @@ angular.module('gkClientIndex.directives', [])
             templateUrl: "views/filter_right_sidebar.html"
         }
     }])
-    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember','$location','GKFileList',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember,$location,GKFileList){
+    .directive('discussHistory',['$timeout','$interval','GKFile','GKApi','$rootScope','GKKeyEvent','chatMember','$location','GKFileList','GKPartition',function($timeout,$interval,GKFile,GKApi,$rootScope,GKKeyEvent,chatMember,$location,GKFileList,GKPartition){
         return{
             restrict: 'E',
             replace: true,
@@ -1925,6 +1925,7 @@ angular.module('gkClientIndex.directives', [])
                 scope.discussionList = [];
                 scope.discussContent = "";
                 scope.loadDiscussionhistory = true;
+                scope.showDisscussHitoryWin = false;
                 scope.selectObj = {
                     partition:'',
                     mountid:'',
@@ -1932,8 +1933,10 @@ angular.module('gkClientIndex.directives', [])
                 };
                 scope.remindMembers = chatMember.getMembers($rootScope.PAGE_CONFIG.mount.org_id);
                 scope.$on('$locationChangeStart',function() {
-                     close();
+                   close();
+                    scope.showDisscussHitoryWin = false;
                 });
+
                 scope.$watch(function(){
                     return $rootScope.PAGE_CONFIG.mode;
                 },function(value,oldValue){
@@ -1944,9 +1947,9 @@ angular.module('gkClientIndex.directives', [])
                         //重新复制
                         //scope.showDisscussHitoryWin = opened;
                     }else if(value == 'file'){
-//                        if(scope.showDisscussHitoryWin){
-//                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
-//                        }
+                        if(scope.showDisscussHitoryWin){
+                            scope.$broadcast("showDiscussHistory",scope.currentDiscussFile);
+                        }
                     }
                 })
                 scope.$on("updateDiscussMsg",function(obj,discussHistoryArr){
@@ -1968,9 +1971,9 @@ angular.module('gkClientIndex.directives', [])
                 });
                 scope.$on("closeDiscussHistory",function(){
                    close();
+                   scope.showDisscussHitoryWin = false;
                 });
                 scope.$on("showDiscussHistory",function(obj,file){
-                    console.log(file);
                     scope.isOpen = true;
                     scope.showDisscussHitoryWin = true;
                     scope.loadDiscussionhistory = true;
@@ -2050,7 +2053,6 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 var close = function(){
-                    scope.showDisscussHitoryWin = false;
                     scope.loadDiscussionhistory = true;
                     element.animate({right:ELEMENT_RIGHT},200,function(){
                         scope.canShowHistory = false;
