@@ -1665,6 +1665,8 @@ angular.module('gkClientIndex.directives', [])
                  * @param $event
                  */
                 $scope.selectBread = function ($event, bread) {
+                    if($scope.fileUpdate.isFileUpdateView)
+                        $scope.$broadcast('changeView',$scope.oldView);
                     var params = $location.search();
                     GKPath.gotoFile(params.mountid,bread.path || '', '','', bread.filter,'file');
                     $event.stopPropagation();
@@ -1675,6 +1677,8 @@ angular.module('gkClientIndex.directives', [])
                 })
 
                 $scope.searchFile = function () {
+                    if($scope.fileUpdate.isFileUpdateView)
+                        $scope.$broadcast('changeView',$scope.oldView);
                     if (!$scope.keyword || !$scope.keyword.length || $scope.searchState == 'loading') {
                         return;
                     }
@@ -1698,6 +1702,8 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.cancelSearch = function ($event) {
+                    if($scope.fileUpdate.isFileUpdateView)
+                        $scope.$broadcast('changeView',$scope.oldView);
                     var search = $location.search();
                     $location.search(angular.extend(search, {
                         search: ''

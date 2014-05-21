@@ -715,11 +715,18 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
     }])
     .controller('fileBrowser', ['$location','$interval', 'GKDialog', '$scope', '$filter', 'GKPath', 'GK', 'GKException', 'GKOpt', '$rootScope', '$q', 'GKFileList', 'GKPartition', 'GKFileOpt', '$timeout', 'GKFile', 'GKFileListView','GKChat','GKModal','GKAuth','GKMount',function ($location,$interval, GKDialog, $scope, $filter, GKPath, GK, GKException, GKOpt, $rootScope, $q, GKFileList, GKPartition, GKFileOpt, $timeout, GKFile,GKFileListView,GKChat,GKModal,GKAuth,GKMount) {
+
+        $scope.fileDataArr = [];//文件存储备份
+        $scope.oldView = 'list';
+        $scope.fileUpdate = {
+             isFileUpdateView:false,
+             mountid:'',
+             data:[]
+        }
         $scope.fileData = []; //文件列表的数据
         $scope.errorMsg = '';
         $scope.mountReadable = true;
         $scope.order = '+filename'; //当前的排序
-
         $scope.allOpts = null;
         $scope.rightOpts = [];
         $scope.showHint = false;
@@ -845,6 +852,15 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 topOptKeys = optKeys;
             }
 
+            if($scope.fileUpdate.isFileUpdateView){
+                angular.forEach(['sync', 'new_file','add'], function (value) {
+                    var index=topOptKeys.indexOf(value)
+                    if (index >= 0) {
+                        topOptKeys.splice(index, 1);
+                    }
+                })
+            }
+
             angular.forEach(topOptKeys, function (value) {
                 if (excludeOpts.indexOf(value) < 0) {
                     var opt = $scope.allOpts[value];
@@ -862,7 +878,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
 
                 }
             });
-
+            console.log($scope.opts);
             //$scope.allOpts = null;
         };
 
@@ -882,7 +898,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         };
 
         $scope.$on('changeView',function(event,view){
-            if(arguments.length>2){
+            if(arguments.length>=2){
                 GKFileList.changeView($scope,view);
             }else{
                 $scope.$apply(function(){
@@ -1074,6 +1090,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             $scope.mountId = Number(param.mountid || $rootScope.PAGE_CONFIG.mount.mount_id);
             $scope.search = param.search || '';
             $scope.showHint =$rootScope.PAGE_CONFIG.file.syncpath?true:false;
+            $scope.order = "+filename"
             if($rootScope.PAGE_CONFIG.mode == 'file'){
                 loadFiledata(param);
             }
@@ -1497,7 +1514,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
         })
 
         $scope.$on('OpenMountPath',function($event,param){
-            if($scope.view == 'chat'){
+            if($scope.view == 'chat' || $scope.view == 'fileupdate'){
                 GKFileList.changeView($scope,'list');
             }
             var mountId = param.mountid,

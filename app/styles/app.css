@@ -863,6 +863,14 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     background: -webkit-gradient(linear, 0 0, 0 85%, from(#dfe4ea), to(rgb(255, 255, 255)));
 }
 
+.file_list_wrapper .fileupdate_view .file_name {
+    margin-right: 340px;
+    height: 31px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .file_list_wrapper .list_view .file_name {
     margin-right: 340px;
     height: 31px;
@@ -877,6 +885,11 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     text-overflow: ellipsis;
     height: 28px;
     padding: 0 10px;
+}
+
+.file_list_wrapper .fileupdate_view .file_name img{
+    width: 32px;
+    vertical-align: middle;
 }
 .file_list_wrapper .list_view .file_name img{
     width: 32px;
@@ -947,6 +960,17 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     outline: 0;
 }
 
+.file_list_wrapper .fileupdate_view{
+
+}
+.fileupdate_view .item {
+    padding: 5px 0;
+    height: 42px;
+    line-height: 32px;
+}
+
+
+
 .file_list_wrapper .list_view {
 
 }
@@ -982,6 +1006,13 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     display: block;
 }
 
+.fileupdate_view .item .last_edit_time,
+.fileupdate_view .item .file_type,
+.fileupdate_view .item .file_size,
+.fileupdate_view .item .file_icon_wrapper{
+    display: block;
+}
+
 .file_list .item .file_icon {
     display: inline-block;
     width: 32px;
@@ -1002,6 +1033,11 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
 .list_view .item .thumb{
     display: none;
 }
+
+.fileupdate_view .item .thumb{
+    display: none;
+}
+
 .thumb_view .item .thumb{
     display: block;
     width: 128px;
