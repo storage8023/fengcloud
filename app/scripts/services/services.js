@@ -4271,8 +4271,11 @@ angular.module('gkClientIndex.services', [])
             },
             refreahData: function ($scope, selectPath) {
                 if($scope.search || $scope.filter) {
-                    $scope.view = $scope.oldView;
+                    if($scope.view == $scope.fileUpdate.fileUpdateView)
+                        $scope.view = $scope.oldView;
+                    $scope.fileUpdate.isFileUpdateView = false;
                     $scope.fileUpdate.canShow = false;
+                    $scope.breads = GKPath.getBread($scope);
                 }else{
                     $scope.fileUpdate.canShow = true;
                 }
