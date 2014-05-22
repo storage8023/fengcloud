@@ -2525,7 +2525,7 @@ padding: 6px 21px;
 .search_area input{
     border-radius: 16px;
     border: 0px;
-    padding:0 25px;
+    padding:0 30px;
     background-color: #40464d;
     width:90%;
     height:24px;
@@ -2538,9 +2538,9 @@ padding: 6px 21px;
 .search_area button{
     border:0px;
     position: absolute;
-    width:16px;
-    height: 16px;
-    bottom:11px;
+    width:30px;
+    height: 30px;
+    bottom:2px;
     background:none;
 }
 
@@ -2551,11 +2551,11 @@ padding: 6px 21px;
 }
 
 .search_area button:nth-child(1){
-    left:5%;
+    left:3%;
     margin-left:5px;
 }
 .search_area button:nth-last-child(1){
-    right:5%;
+    right:3%;
     margin-right:5px;
 }
 
@@ -2756,12 +2756,12 @@ footer .btn_wrapper .label{
     top:13px;
 }
 
-.modal-backdrop.fade.gk_window_backdrop.in{
+.modal-backdrop.gk_window_backdrop.in{
     opacity: 0.95;
     background-color:#494f56;
 }
 
-.modal.fade.gk_window{
+.modal.gk_window{
     position: fixed;
     top: 0;
     left: 0;
@@ -2786,7 +2786,7 @@ footer .btn_wrapper .label{
     margin-left: 0px;
 }
 
-.modal.gk_window.fade.in{
+.modal.gk_window.in{
     top:0px;
 }
 

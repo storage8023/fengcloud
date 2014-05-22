@@ -384,12 +384,12 @@ angular.module('gk.window.ui', ['gk.window.transition'])
 
 angular.module("template/gkwindow/backdrop.html", []).run(["$templateCache", function($templateCache) {
     $templateCache.put("template/gkwindow/backdrop.html",
-        "<div class=\"modal-backdrop  fade  gk_window_backdrop\" ng-class=\"{in: animate} \" ng-style=\"{'z-index': 1040 + index*10}\"></div>");
+        "<div class=\"modal-backdrop  gk_window_backdrop\" ng-class=\"{in: animate} \" ng-style=\"{'z-index': 1040 + index*10}\"></div>");
 }]);
 
 angular.module("template/gkwindow/window.html", []).run(["$templateCache", function($templateCache) {
     $templateCache.put("template/gkwindow/window.html",
-            "<div tabindex=\"-1\" class=\"modal fade {{ windowClass }}\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\" ng-click=\"close($event)\">\n" +
+            "<div tabindex=\"-1\" class=\"modal {{ windowClass }}\" ng-class=\"{in: animate}\" ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\" ng-click=\"close($event)\">\n" +
             "    <div class=\"modal-dialog\"><div class=\"modal-content\" ng-transclude></div></div>\n" +
             "</div>");
 }]);
