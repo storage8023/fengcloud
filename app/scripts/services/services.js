@@ -3935,6 +3935,8 @@ angular.module('gkClientIndex.services', [])
                             var file = selectedFile[0],
                                 parentFile = $rootScope.PAGE_CONFIG.file;
                             var mountId = GKFileList.getOptFileMountId(file);
+                            console.log(file);
+                            console.log(parentFile);
                             GKModal.filePropery(mountId, file, parentFile);
                         }
                     },

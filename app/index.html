@@ -272,7 +272,9 @@
                             </div>
                             <div class="last_edit_time">
                                 <span bo-text="file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'"></span>
-                                <file-item-opt></file-item-opt>
+
+                                <file-item-opt ng-if="filter != 'trash'"></file-item-opt>
+                                <span ng-if="filter == 'trash'" bo-text="file.last_edit_time*1000 | date:'yyyy/MM/dd HH:mm'"></span>
                             </div>
                             <div class="file_type">
                                 <span bo-text="file.filename | getFileType:file.dir:file.ext"></span>
