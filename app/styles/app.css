@@ -3030,26 +3030,27 @@ footer .btn_wrapper .label{
     background-position: -4px -984px;
 }
 .smart_rightside_list div.icon_star{
-    background-color: #f6757e;
+    background-color: #f6be75;
+
 }
 
 .smart_rightside_list div.icon_moon{
-    background-color: #f6be75;
-}
-
-.smart_rightside_list div.icon_heart{
     background-color: #e3dc68;
 }
 
+.smart_rightside_list div.icon_heart{
+    background-color: #f6757e;
+
+}
 .smart_rightside_list div.icon_flower{
-    background-color: #98de72;
+    background-color: #49d8bb;
 }
 .smart_rightside_list div.icon_triangle{
-    background-color: #49d8bb;
+    background-color: #47c3f6;
 }
 
 .smart_rightside_list div.icon_diamond{
-    background-color: #47c3f6;
+    background-color: #b267e5;
 }
 
 .smart_right_contextmenu{
