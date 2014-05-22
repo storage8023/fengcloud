@@ -1882,6 +1882,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             var param = $location.search();
             $scope.localFile = $rootScope.PAGE_CONFIG.file;
             $scope.rootSidebarData = getRootSidebarData(param);
+            $scope.smartSidebar = false;
             if(param.path){
                 $scope.sidebar = 'singlefile';
             }else if(param.filter||param.search){
