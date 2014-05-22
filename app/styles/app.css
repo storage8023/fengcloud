@@ -2927,15 +2927,17 @@ footer .btn_wrapper .label{
 
 .smart_desktop_item .item:nth-child(1){
     margin-left:0px;
-    background-image:url(../images/icon/smart_red.png)
+    background-image:url(../images/icon/smart_orange.png)
+
 }
 
 .smart_desktop_item .item:nth-child(2){
-    background-image:url(../images/icon/smart_orange.png)
+    background-image:url(../images/icon/smart_yellow.png)
 }
 
 .smart_desktop_item .item:nth-child(3){
-    background-image:url(../images/icon/smart_yellow.png)
+    background-image:url(../images/icon/smart_red.png)
+
 }
 
 .smart_desktop_item .item:nth-child(4){
@@ -2943,11 +2945,11 @@ footer .btn_wrapper .label{
 }
 
 .smart_desktop_item .item:nth-child(5){
-    background-image:url(../images/icon/smart_cyanblue.png)
+    background-image:url(../images/icon/smart_blue.png)
 }
 
 .smart_desktop_item .item:nth-child(6){
-    background-image:url(../images/icon/smart_blue.png)
+    background-image:url(../images/icon/smart_purple.png)
 }
 
 .smart_desktop_item span .item_container{
@@ -3007,11 +3009,25 @@ footer .btn_wrapper .label{
 }
 
 .smart_rightside_list div.icon_recent_visit{
-    background-color: #9abd5c;
+    width: 16px;
+    height: 16px;
+    background-image: url(../images/icon/icon16x16.png?v=14);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 0px;
+    background-position: -4px -1724px;
 }
 
 .smart_rightside_list div.icon_recent{
-    background-color: #3fa7e3;
+    width: 16px;
+    height: 16px;
+    background-image: url(../images/icon/icon16x16.png?v=14);
+    background-repeat: no-repeat;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 0px;
+    background-position: -4px -984px;
 }
 .smart_rightside_list div.icon_star{
     background-color: #f6757e;
