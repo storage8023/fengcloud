@@ -1,5 +1,21 @@
 <span>
-   <i class="icon16x16 copy_tomail_white" ng-click="copyToEmail($event,file)"></i>
-   <i class="icon16x16 icon_link_white" ng-click="publishFile($event,file)"></i>
-   <i class="icon16x16 icon_chat_white" ng-click="showMilestoneDialog($event,file)"></i>
+
+  <span class="item-selected-style">
+    <i class="icon16x16 copy_tomail_white" ng-if="linkBtnActive"  ng-click="copyToEmail($event,file)" title="云附件"></i>
+    <i class="icon16x16 copy_tomail_disable disabled" ng-if="!linkBtnActive"  title="云附件"></i>
+    <i class="icon16x16 icon_link_white" ng-if="linkBtnActive" ng-click="publishFile($event,file)" title="链接"></i>
+    <i class="icon16x16 icon_link_disable disabled" ng-if="!linkBtnActive"  title="链接"></i>
+    <i class="icon16x16 icon_chat_white"  ng-if="discussBtnActive" ng-click="showMilestoneDialog($event,file)" title="讨论"></i>
+      <i class="icon16x16 icon_chat_disable disabled"  ng-if="!discussBtnActive" title="讨论"></i>
+  </span>
+
+  <span class="item-hover-style">
+     <i class="icon16x16 copy_tomail" ng-if="linkBtnActive"  ng-click="copyToEmail($event,file)" title="云附件"></i>
+    <i class="icon16x16 copy_tomail_disable disabled" ng-if="!linkBtnActive"  title="云附件"></i>
+    <i class="icon16x16 icon_link" ng-if="linkBtnActive" ng-click="publishFile($event,file)" title="链接"></i>
+    <i class="icon16x16 icon_link_disable disabled" ng-if="!linkBtnActive"  title="链接"></i>
+    <i class="icon16x16 icon_chat"  ng-if="discussBtnActive" ng-click="showMilestoneDialog($event,file)" title="讨论"></i>
+      <i class="icon16x16 icon_chat_disable disabled"  ng-if="!discussBtnActive" title="讨论"></i>
+  </span>
+
 </span>

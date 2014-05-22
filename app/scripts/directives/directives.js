@@ -1039,7 +1039,7 @@ angular.module('gkClientIndex.directives', [])
             }
         }
     }])
-    .directive('singlefileRightSidebar', ['GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document','GKMode',function (GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document,GKMode) {
+    .directive('singlefileRightSidebar', ['GKFilter', 'GKSmartFolder', '$timeout', 'GKApi', '$rootScope', 'GKModal', 'GKException', 'GKPartition', 'GKFile', 'GKMount', '$interval', 'GKDialog','GKChat','GKPath','$location','GKAuth','$filter','$document','GKMode','GKCilpboard',function (GKFilter, GKSmartFolder, $timeout, GKApi, $rootScope, GKModal, GKException, GKPartition, GKFile, GKMount, $interval,GKDialog,GKChat,GKPath,$location,GKAuth,$filter,$document,GKMode,GKCilpboard) {
         return {
             replace: true,
             restrict: 'E',
@@ -1181,7 +1181,7 @@ angular.module('gkClientIndex.directives', [])
                         });
 
                     $scope.showChatBtn = GKAuth.check(mount,'','file_discuss');
-                    $scope.showLinkBtn = GKAuth.check(mount,'','file_link');
+                    $scope.showLinkBtn = mount.ent_id ==0 || GKAuth.check(mount,'','file_link');
                     $scope.showHistory = GKAuth.check(mount,'','file_history');
                     $scope.showMilestone = GKAuth.check(mount,'','file_history_unlimit');
                 };
@@ -1340,6 +1340,13 @@ angular.module('gkClientIndex.directives', [])
                    GKModal.publish(getOptMountId(file),file);
                 };
 
+                //拷贝到邮箱
+                $scope.copyToEmail = function(file){
+                    GKCilpboard.copyModule(file,null,function(){
+                        alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
+                    })
+                }
+
                 $scope.showMilestoneDialog = function(file){
                     $scope.$emit("showDiscussHistory",file);
                     return;
@@ -1485,13 +1492,15 @@ angular.module('gkClientIndex.directives', [])
 
         }
     }])
-    .directive('fileItemOpt', ['$rootScope','GKFileList','GKMount','$filter','GKApi','GKAuth','GKModal',function ($rootScope,GKFileList,GKMount,$filter,GKApi,GKAuth,GKModal) {
+    .directive('fileItemOpt', ['$rootScope','GKFileList','GKMount','$filter','GKApi','GKAuth','GKModal','GKCilpboard',function ($rootScope,GKFileList,GKMount,$filter,GKApi,GKAuth,GKModal,GKCilpboard) {
         return {
             replace: true,
             restrict: 'E',
             templateUrl: "views/fileitemopt_directives.html",
             link:function($scope,$element){
-
+                var currentMount = $rootScope.PAGE_CONFIG.mount;
+                $scope.linkBtnActive = (currentMount.ent_id ==0 || GKAuth.check(currentMount,'','file_link'))?true:false;
+                $scope.discussBtnActive = GKAuth.check(currentMount,'','file_discuss');
                 var getTemplate = function(linkUrl,imgData,imgUrl,fileName,fileSize,expricess){
                     return '<a href="'+linkUrl+'" target="_blank" style="display: block;width:450px;a"><div style="height:120px; width:450px; background-color:#f2f5f5; padding:15px;">'+
                            '<div style="width:120px; float:left;">'+
@@ -1521,6 +1530,12 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.showMilestoneDialog = function($event,file){
+                    var mountId = GKFileList.getOptFileMountId(file);
+                    var mount = GKMount.getMountById(mountId);
+                    if(!GKAuth.check(mount,'','file_discuss')) {
+                        alert("对不起，你没有讨论权限");
+                        return;
+                    }
                     $scope.$emit("showDiscussHistory",file);
                     $event.stopPropagation();
                 }
@@ -1529,7 +1544,7 @@ angular.module('gkClientIndex.directives', [])
                 $scope.publishFile = function($event,file){
                     var mountId = GKFileList.getOptFileMountId(file);
                     var mount = GKMount.getMountById(mountId);
-                    if(!GKAuth.check(mount,'','file_link')){
+                    if(mount.ent_id ==1 && !GKAuth.check(mount,'','file_link')){
                         alert("对不起，你没有权限发布该文件或文件夹的外链地址。");
                         return;
                     }
@@ -1538,37 +1553,9 @@ angular.module('gkClientIndex.directives', [])
                 };
                 //拷贝到邮箱
                 $scope.copyToEmail = function($event,file){
-                    var imgSize = 128;
-                    var expreeDate = 7;
-                    if(!file) return;
-                    var mountId = GKFileList.getOptFileMountId(file);
-                    var mount = GKMount.getMountById(mountId);
-                    console.log(mount);
-                    if(mount.ent_id ==1 && !GKAuth.check(mount,'','file_link')){
-                        alert("对不起，你没有权限获取该文件或文件夹的外链地址。");
-                        return;
-                    }
-                    var iconUrl = GKApi.getIcon(file.dir,file.filename,imgSize);
-                    getBase64FromImageUrl(iconUrl,function(data){
-                        var currDate = new Date()
-                        var expireDate = currDate.getTime() + expreeDate*(24*60*60*1000);
-                        var param = {
-                            memberid:file.creator_member_id,
-                            mountid:mountId,
-                            hash:file.hash,
-                            dateline:expireDate/1000
-                        }
-                        var linkUrl = gkClient.gGetShareLink(JSON.stringify(param));
-                        var sizeLen = file.filesize/(1024 * 1024);
-                        if(sizeLen < 1){
-                            sizeLen = Math.ceil(file.filesize/1024)+"KB";
-                        }else{
-                            sizeLen = Math.ceil(sizeLen)+"MB";
-                        }
-                        var tem = getTemplate(linkUrl,data,iconUrl,file.filename,sizeLen,Util.Date.format(new Date(expireDate),'yyyy年MM月dd日'));
-                            gkClient.gSetClipboardDataHtml(tem);
-                            alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
-                        });
+                    GKCilpboard.copyModule(file,null,function(){
+                        alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
+                    })
                     $event.stopPropagation();
                 }
             }

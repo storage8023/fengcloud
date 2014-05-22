@@ -2685,13 +2685,12 @@ footer .btn_wrapper .label{
     background-position: -24px -1962px;
 }
 
-.icon16x16.copy_tomail:hover{
-    background-position: -24px -1962px;
+.icon16x16.copy_tomail_disable{
+    background-position: -64px -1962px;
 }
 
-.icon16x16.copy_tomail:active{
-    background-position: -44px -1962px;
-}
+
+
 
 .item.file_item .last_edit_time span:nth-child(1){
    display:block;
@@ -2705,9 +2704,37 @@ footer .btn_wrapper .label{
 .item.file_item.selected .last_edit_time span:nth-child(2){
     display:block;
 }
-.item.file_item.selected .last_edit_time span:nth-child(2) i{
+
+.item.file_item.selected .last_edit_time span:nth-child(2) span:nth-child(1){
+    display:block;
+}
+
+.item.file_item.selected .last_edit_time span:nth-child(2) span:nth-child(2){
+    display:none;
+}
+
+.item.file_item.item-hover .last_edit_time span:nth-child(1){
+    display:none;
+}
+.item.file_item.item-hover .last_edit_time span:nth-child(2){
+    display:block;
+}
+
+.item.file_item.item-hover .last_edit_time span:nth-child(2) span:nth-child(1){
+    display:none;
+}
+
+.item.file_item.item-hover .last_edit_time span:nth-child(2) span:nth-child(2){
+    display:block;
+}
+
+.item.file_item .last_edit_time span:nth-child(2) span i{
      margin:0 10px;
     cursor: pointer;
+}
+
+.item.file_item .last_edit_time span:nth-child(2) span .disabled{
+    cursor:default ;
 }
 
 /*智能桌面功能样式*/

@@ -633,6 +633,9 @@ a:hover > .icon16x16.icon_team_upgrade,
 .icon16x16.icon_chat_white{
     background-position: -24px -1564px;
 }
+.icon16x16.icon_chat_disable{
+    background-position: -64px -1564px;
+}
 a:hover > .icon16x16.icon_chat,
 .icon16x16.icon_chat_color{
     background-position: -44px -1564px;
@@ -642,6 +645,9 @@ a:hover > .icon16x16.icon_chat,
 }
 .icon16x16.icon_link_white{
     background-position: -24px -1604px;
+}
+.icon16x16.icon_link_disable{
+    background-position: -64px -1604px;
 }
 a:hover > .icon16x16.icon_link,
 .icon16x16.icon_link_color{
