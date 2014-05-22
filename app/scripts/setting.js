@@ -113,7 +113,7 @@ angular.module('gkClientSetting', ['GKCommon','angular-md5','gkClientIndex.servi
             },
             {
                 type: 'checkbox',
-                label: '讨论冒泡提醒',
+                label: '动态冒泡提醒',
                 name: 'msg',
                 model: $scope.setting['msg']
             },

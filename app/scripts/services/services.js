@@ -4182,9 +4182,9 @@ angular.module('gkClientIndex.services', [])
                     $scope.limit = 100;
                     $scope.breads = GKPath.getBread($scope);
                     GKFileList.unSelectAll($scope);
-                    $scope.order = "-last_edit_time"
                     GKFileList.refreahData($scope);
                 }else{
+                    $scope.order = "+filename";
                     if($scope.fileUpdate.isFileUpdateView) {
                         if($scope.showDisscussHitoryWin){
                             $scope.$broadcast('closeDiscussHistory');
@@ -4364,9 +4364,14 @@ angular.module('gkClientIndex.services', [])
                 GKFileList.getFileData($scope).then(function (newFileData) {
                     $scope.loadingFileData = false;
                     var order = $scope.order;
-                    if ($scope.order.indexOf('filename') >= 0) {
-                        var desc = $scope.order.indexOf('-') ? '-' : '+';
-                        order = [desc + 'dir', $scope.order];
+                    if(!$scope.fileUpdate.isFileUpdateView) {
+                        if ($scope.order.indexOf('filename') >= 0) {
+                            var desc = $scope.order.indexOf('-') ? '-' : '+';
+                            order = [desc + 'dir', $scope.order];
+                        }
+                    }else{
+                        $scope.order = "-last_edit_time"
+                        order = [$scope.order];
                     }
                     $scope.fileData = $filter('orderBy')(newFileData, order);
                     //判断如果不是文件更新视图
