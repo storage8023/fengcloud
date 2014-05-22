@@ -905,16 +905,28 @@ angular.module('gkClientIndex.services', [])
                 option = angular.extend({}, defaultOption, option);
                 return $modal.open(option);
             },
-            filePropery: function (mountId, file, parentFile) {
+            filePropery: function (mountId, file) {
                 var option = {
                     templateUrl: 'views/file_property_dialog.html',
                     windowClass: 'file_property_dialog',
-                    controller: function ($scope, $modalInstance, mountId, file, parentFile) {
+                    controller: function ($scope, $modalInstance, mountId, file) {
                         $scope.file = file;
                         $scope.mountId = mountId;
-                        $scope.parentFile = parentFile;
+                        var parentFile = {};
                         $scope.publishEnable = false;
                         var mount = GKMount.getMountById(mountId);
+                        var filePath = $scope.file.fullpath;
+                        var index = filePath.lastIndexOf("/");
+                        if(-1 != index){
+                            parentFile = gkClientInterface.getFileInfo({
+                                mountid: Number(mountId),
+                                webpath: filePath.substring(0,index)
+                            });
+                        }else{
+                            parentFile = mount;
+                        }
+                        parentFile.fullpath = angular.isDefined(parentFile.path)?parentFile.path:"";
+                        $scope.parentFile = parentFile;
                         if (!$scope.parentFile.fullpath && mount && file.dir == 1 && GKMount.isAdmin(mount)) {
                             $scope.publishEnable = true;
                         }
@@ -925,9 +937,11 @@ angular.module('gkClientIndex.services', [])
                             var syncItem = GKSync.getSyncByMountIdFullpath(mountId, syncPath);
                             if (syncItem) {
                                 var rePath = ($scope.file.fullpath + '/').replace(syncItem.webpath + '/', '');
+                                console.log(rePath);
                                 var grid = gkClientInterface.isWindowsClient() ? '\\' : '/';
+                                console.log(gkClientInterface.isWindowsClient());
                                 if (gkClientInterface.isWindowsClient()) {
-                                    rePath = rePath.replace('/', '\\');
+                                    rePath = rePath.replace(/\//g, "\\");
                                 }
                                 $scope.localUri = syncItem.fullpath + rePath;
                             }
@@ -984,10 +998,11 @@ angular.module('gkClientIndex.services', [])
                         },
                         file: function () {
                             return file;
-                        },
-                        parentFile: function () {
-                            return parentFile;
-                        }
+                         }
+//                        ,
+//                        parentFile: function () {
+//                            return parentFile;
+//                        }
                     }
                 };
 
@@ -3928,9 +3943,7 @@ angular.module('gkClientIndex.services', [])
                             var file = selectedFile[0],
                                 parentFile = $rootScope.PAGE_CONFIG.file;
                             var mountId = GKFileList.getOptFileMountId(file);
-                            console.log(file);
-                            console.log(parentFile);
-                            GKModal.filePropery(mountId, file, parentFile);
+                            GKModal.filePropery(mountId, file);
                         }
                     },
                     'order_by': {
@@ -4166,6 +4179,7 @@ angular.module('gkClientIndex.services', [])
                 }
                 $scope.view = currentView = view;
                 if(view && view == $scope.fileUpdate.fileUpdateView) {
+                    $scope.showHint = false;
                     if($scope.showDisscussHitoryWin){
                         $scope.$broadcast('closeDiscussHistory');
                     }
@@ -4177,6 +4191,7 @@ angular.module('gkClientIndex.services', [])
                     GKFileList.unSelectAll($scope);
                     GKFileList.refreahData($scope);
                 }else{
+                    $scope.showHint = $rootScope.PAGE_CONFIG.file.syncpath?true:false;
                     $scope.order = "+filename";
                     if($scope.fileUpdate.isFileUpdateView) {
                         if($scope.showDisscussHitoryWin){
