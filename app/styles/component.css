@@ -1230,7 +1230,7 @@ button.close_window{
     right:0;
 }
 .item.selected {
-    background-color:#448de8;
+    background-color:#448de8 !important;
 }
 
 /*右键菜单*/
