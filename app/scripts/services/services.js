@@ -4066,7 +4066,7 @@ angular.module('gkClientIndex.services', [])
                 };
                 angular.forEach(atts,function(value,key){
                     if(key == 'last_edit_time'){
-                        oldFileItem.find('.' + key + ' span')[0].text(value);
+                        $(oldFileItem.find('.' + key + ' span')[0]).text(value);
                     }
                     else {
                         oldFileItem.find('.' + key + ' span').text(value);
