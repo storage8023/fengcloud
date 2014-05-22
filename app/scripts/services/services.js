@@ -3907,7 +3907,7 @@ angular.module('gkClientIndex.services', [])
                                 alert('上传中的文件不能获取分享链接');
                                 return;
                             }
-                            if(!GKAuth.check(mount,'','file_link')){
+                            if(mount.ent_id == 1 && !GKAuth.check(mount,'','file_link')){
                                 alert('你没有权限获取该文件的分享链接');
                                 return;
                             }

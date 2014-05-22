@@ -1337,6 +1337,10 @@ angular.module('gkClientIndex.directives', [])
                  * @param file
                  */
                 $scope.publishFile = function(file){
+                    if(file.status==1){
+                        alert('上传中的文件不能获取分享链接');
+                        return;
+                    }
                    GKModal.publish(getOptMountId(file),file);
                 };
 
@@ -1542,6 +1546,10 @@ angular.module('gkClientIndex.directives', [])
 
                 //发布外链
                 $scope.publishFile = function($event,file){
+                    if(file.status==1){
+                        alert('上传中的文件不能获取分享链接');
+                        return;
+                    }
                     var mountId = GKFileList.getOptFileMountId(file);
                     var mount = GKMount.getMountById(mountId);
                     if(mount.ent_id ==1 && !GKAuth.check(mount,'','file_link')){

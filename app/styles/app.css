@@ -2325,9 +2325,11 @@ body.resizing *{
 }
 .set_milestone_dialog,
 .publish_dialog{
-    width: 434px;
-    margin-left: -217px;
+    width: 530px;
+    margin-left: -265px;
 }
+
+
 
 .publish_dialog .file_wrapper .icon_wrapper img,
 .set_milestone_dialog .file_wrapper .icon_wrapper img{
@@ -2402,7 +2404,7 @@ padding: 6px 21px;
     margin-bottom: 10px;
 }
 .publish_dialog .modal-body{
-    height: 300px;
+    height: 390px;
     overflow: hidden;
     padding: 10px 0;
 }
