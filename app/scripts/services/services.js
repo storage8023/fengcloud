@@ -4189,9 +4189,11 @@ angular.module('gkClientIndex.services', [])
                         }
                         GKFileList.unSelectAll($scope);
                         $scope.breads = GKPath.getBread();
+                        $scope.fileUpdate.isFileUpdateView = false;
+                        GKFileList.refreahData($scope);
+                    }else{
+                        $scope.fileData = $scope.fileDataArr;
                     }
-                    $scope.fileUpdate.isFileUpdateView = false;
-                    $scope.fileData = $scope.fileDataArr;
                     $scope.setOpts();
                 }
             },
