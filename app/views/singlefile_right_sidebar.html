@@ -36,11 +36,11 @@
                     </div>
                     <div class="opt_wrapper" ng-show="showTab">
                         <button class="btn btn-opt" ng-if="showLinkBtn" ng-click="copyToEmail(file)"><i class="icon16x16 copy_tomail"></i> 云附件</button>
-                        <button class="btn btn-opt" ng-if="!showLinkBtn" style="cursor: default;"><i class="icon16x16 copy_tomail_disable"></i> 云附件</button>
+                        <button class="btn btn-opt" disabled ng-if="!showLinkBtn" style="cursor: default;"><i class="icon16x16 copy_tomail_disable"></i> 云附件</button>
                         <button class="btn btn-opt" ng-if="showLinkBtn" ng-click="publishFile(file)"><i class="icon16x16 icon_link"></i> 链接</button>
-                        <button class="btn btn-opt" ng-if="!showLinkBtn" style="cursor: default;"><i class="icon16x16 icon_link_disable"></i> 链接</button>
+                        <button class="btn btn-opt" disabled ng-if="!showLinkBtn" style="cursor: default;"><i class="icon16x16 icon_link_disable"></i> 链接</button>
                         <button class="btn btn-opt" ng-if="showChatBtn" ng-click="showMilestoneDialog(file)"><i class="icon16x16 icon_chat"></i> 讨论</button>
-                        <button class="btn btn-opt" ng-if="!showChatBtn" style="cursor: default;"><i class="icon16x16 icon_chat_disable"></i> 讨论</button>
+                        <button class="btn btn-opt" disabled ng-if="!showChatBtn" style="cursor: default;"><i class="icon16x16 icon_chat_disable"></i> 讨论</button>
                     </div>
                 </section>
             </div>
