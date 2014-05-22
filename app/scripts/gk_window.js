@@ -149,7 +149,7 @@ angular.module('gk.window.ui', ['gk.window.transition'])
                 openedWindows.remove(gkWindowInstance);
 
                 //remove window DOM element
-                removeAfterAnimate(modalWindow.modalDomEl, modalWindow.modalScope, 300, checkRemoveBackdrop);
+                removeAfterAnimate(modalWindow.modalDomEl, modalWindow.modalScope, 0, checkRemoveBackdrop);
                 body.toggleClass(OPENED_MODAL_CLASS, openedWindows.length() > 0);
             }
 
