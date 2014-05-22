@@ -4065,7 +4065,12 @@ angular.module('gkClientIndex.services', [])
                     'file_size':file.dir==1?'-':$filter('bitSize')(file.filesize)
                 };
                 angular.forEach(atts,function(value,key){
-                    oldFileItem.find('.' +key+ ' span').text(value);
+                    if(key == 'last_edit_time'){
+                        oldFileItem.find('.' + key + ' span')[0].text(value);
+                    }
+                    else {
+                        oldFileItem.find('.' + key + ' span').text(value);
+                    }
                 })
                 return oldFileItem;
             }
