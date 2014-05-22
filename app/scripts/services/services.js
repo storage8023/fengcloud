@@ -3943,10 +3943,11 @@ angular.module('gkClientIndex.services', [])
                 this.getFileItem(index).removeClass('selected');
             },
             hoverItem:function(index){
-                this.getFileItem(index).addClass('hover');
+                //this.getFileItem(index).addClass('hover');
+                this.getFileItem(index).css('background-color','#e1e3e7');
             },
             unhoverItem:function(index){
-                this.getFileItem(index).removeClass('hover');
+                this.getFileItem(index).removeAttr('style');
             },
             removeFileItem:function(index){
                 this.getFileItem(index).remove();

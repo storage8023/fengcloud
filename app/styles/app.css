@@ -1106,10 +1106,10 @@ ul.nav.nav-list.abn-tree > li .hint_wrapper .hint{
     padding: 8px 0;
 }
 
-.thumb_view .item.hover,
-.thumb_view .item:hover{
+/*.thumb_view .item.hover,*/
+/*.thumb_view .item:hover{*/
     /*background-color:#E1E3E7;*/
-}
+/*}*/
 
 .thumb_view .item.selected {
     background-color:#448de8;

@@ -1218,6 +1218,7 @@ button.close_window{
 .item:nth-child(even) {
     background-color: #F7F7F7;
 }
+
 .item.odd{
     background:transparent;
 }

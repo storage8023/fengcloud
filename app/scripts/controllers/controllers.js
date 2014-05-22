@@ -1545,7 +1545,6 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
             GKFileListView.unhoverItem(index);
         };
 
-
         $scope.handleDrop = function (file,index) {
             if(!draging) return;
             var toMountId = $scope.mountId,
