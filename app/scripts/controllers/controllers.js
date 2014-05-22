@@ -113,6 +113,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                        this.historyArr[index].selected = false;
                        this.historyArr[index - 1].selected = true;
                        this.selectedHistory = this.historyArr[index - 1];
+                       this.selectedHistory.view = this.selectedHistory.history_view;
                        $location.search(this.selectedHistory);
                    }
                 },
@@ -122,6 +123,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                         this.historyArr[index].selected = false;
                         this.historyArr[index + 1].selected = true;
                         this.selectedHistory = this.historyArr[index + 1];
+                        this.selectedHistory.view = this.selectedHistory.history_view;
                         $location.search(this.selectedHistory);
                     }
                 }
@@ -1254,7 +1256,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                 //如果当前点击的节点跟当前选中的历史节点相同，则不做处理
                 var curParam = {};
                 for(var pro in history){
-                    if(pro != 'index' && pro != 'selected' && pro != 'isHistory'){
+                    if(pro != 'index' && pro != 'selected' && pro != 'isHistory' && pro != 'history_view'){
                         curParam[pro] = history[pro];
                     }
                 }
@@ -1263,6 +1265,7 @@ angular.module('gkClientIndex.controllers', ['angularBootstrapNavTree'])
                     param.selected = true;
                     param.isHistory = true;
                     param.index = $rootScope.PAGE_CONFIG.visitHistory.historyArr.length;
+                    param.history_view =  $scope.view;
                     $rootScope.PAGE_CONFIG.visitHistory.selectedHistory = param;
                     $rootScope.PAGE_CONFIG.visitHistory.historyArr.push(param);
                 }
