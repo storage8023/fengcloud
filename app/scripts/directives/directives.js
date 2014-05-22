@@ -1346,12 +1346,20 @@ angular.module('gkClientIndex.directives', [])
 
                 //拷贝到邮箱
                 $scope.copyToEmail = function(file){
+                    if(file.status==1){
+                        alert('上传中的文件不能成为云附件');
+                        return;
+                    }
                     GKCilpboard.copyModule(file,null,function(){
                         alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
                     })
                 }
 
                 $scope.showMilestoneDialog = function(file){
+                    if(file.status==1){
+                        alert('上传中的文件不能进行讨论');
+                        return;
+                    }
                     $scope.$emit("showDiscussHistory",file);
                     return;
                     /*var firstHistory = histories[0];
@@ -1534,6 +1542,10 @@ angular.module('gkClientIndex.directives', [])
                 };
 
                 $scope.showMilestoneDialog = function($event,file){
+                    if(file.status==1){
+                        alert('上传中的文件不能进行讨论');
+                        return;
+                    }
                     var mountId = GKFileList.getOptFileMountId(file);
                     var mount = GKMount.getMountById(mountId);
                     if(!GKAuth.check(mount,'','file_discuss')) {
@@ -1561,6 +1573,10 @@ angular.module('gkClientIndex.directives', [])
                 };
                 //拷贝到邮箱
                 $scope.copyToEmail = function($event,file){
+                    if(file.status==1){
+                        alert('上传中的文件不能成为云附近');
+                        return;
+                    }
                     GKCilpboard.copyModule(file,null,function(){
                         alert("已将该文件信息保存到剪切板，你可以直接复制到邮件中。");
                     })
